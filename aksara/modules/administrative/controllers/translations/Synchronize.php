@@ -14,6 +14,11 @@ class Synchronize extends Aksara
 	{
 		parent::__construct();
 		
+		if(defined('DEMO_MODE') && DEMO_MODE)
+		{
+			return throw_exception(301, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
+		}
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->parent_module('translations');

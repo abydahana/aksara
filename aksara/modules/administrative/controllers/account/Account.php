@@ -12,6 +12,8 @@ class Account extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission();
 		$this->set_theme('backend');
 		

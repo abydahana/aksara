@@ -14,6 +14,9 @@ class Users extends Aksara
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->unset_delete('user_id', array('1')); // prevent user to delete user id 1
@@ -23,6 +26,7 @@ class Users extends Aksara
 	{
 		$this->set_title(phrase('manage_users'))
 		->set_icon('mdi mdi-account-group-outline')
+		
 		->set_primary('user_id, username')
 		
 		/* add extra option button */

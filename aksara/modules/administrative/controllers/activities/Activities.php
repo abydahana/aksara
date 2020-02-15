@@ -16,6 +16,8 @@ class Activities extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		
@@ -64,6 +66,11 @@ class Activities extends Aksara
 	
 	public function truncate()
 	{
+		if(defined('DEMO_MODE') && DEMO_MODE)
+		{
+			return throw_exception(301, phrase('changes_will_not_saved_in_demo_mode'), go_to());
+		}
+		
 		if($this->model->truncate($this->_table))
 		{
 			return throw_exception(301, phrase('log_activities_was_successfully_cleared'), go_to());

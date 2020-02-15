@@ -14,6 +14,8 @@ class Settings extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->set_method('update');
@@ -69,7 +71,7 @@ class Settings extends Aksara
 				'app_icon'							=> 'image',
 				'reports_logo'						=> 'image',
 				'office_address'					=> 'textarea',
-				'office_map'						=> 'map_coordinate',
+				'office_map'						=> 'coordinate',
 				'one_device_login'					=> 'boolean',
 				'login_annually'					=> 'boolean',
 				'enable_username_changes'			=> 'boolean',

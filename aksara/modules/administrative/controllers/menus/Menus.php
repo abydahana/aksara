@@ -15,6 +15,8 @@ class Menus extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->unset_delete('menu_id', array('1', '2')); // prevent user to delete group id 1

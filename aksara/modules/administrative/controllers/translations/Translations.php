@@ -14,6 +14,8 @@ class Translations extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->unset_update('id', array('1')); // prevent user to update group id 1

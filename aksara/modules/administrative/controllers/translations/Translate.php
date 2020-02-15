@@ -13,6 +13,8 @@ class Translate extends Aksara
 	{
 		parent::__construct();
 		
+		$this->restrict_on_demo();
+		
 		$this->set_permission(1); // only user with group id 1 can access this module
 		$this->set_theme('backend');
 		$this->set_method('update');
@@ -57,6 +59,11 @@ class Translate extends Aksara
 	
 	public function validate_translation()
 	{
+		if(defined('DEMO_MODE') && DEMO_MODE)
+		{
+			return throw_exception(301, phrase('changes_will_not_saved_in_demo_mode'), $this->_redirect_back);
+		}
+		
 		/* load additional library and helper */
 		$this->load->library('form_validation');
 		$this->load->helper('security');
