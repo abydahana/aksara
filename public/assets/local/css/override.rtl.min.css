@@ -1,0 +1,170 @@
+/**
+ * Fix the RTL support
+ *
+ * @version			1.0
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ */
+.navbar-toggler-icon
+{
+	transform: rotate(180deg)
+}
+
+.mCS-dir-rtl>.mCSB_inside>.mCSB_container,
+.mCS-dir-rtl>.mCSB_inside>.mCSB_container_wrapper
+{
+	margin-left: 0
+}
+
+.sidebar-menu
+{
+	left: auto
+}
+
+.sidebar-menu a.nav-link
+{
+	padding-left: 0;
+	padding-right: 3rem
+}
+
+.sidebar-menu a.nav-link i:not(.float-right)
+{
+	left: 0;
+	right: 1rem
+}
+
+.sidebar-menu a.nav-link i.mdi.float-right
+{
+	margin-left: -.5rem;
+	transform: rotate(180deg)
+}
+
+@media (max-width: 639px)
+{
+	.sidebar-menu a.nav-link
+	{
+		padding-left: 1rem;
+		padding-right: 4.7rem
+	}
+	
+	.navbar-collapse .navbar-nav .nav-link,
+	.navbar-collapse .navbar-nav .dropdown-menu .dropdown-item,
+	.navbar-collapse .navbar-nav .dropdown-menu .dropdown-header
+	{
+		padding: .5rem 4.7rem .5rem 1rem
+	}
+	
+	.navbar-nav .dropdown-toggle:after
+	{
+		transform: rotate(90deg)
+	}
+}
+
+@media (max-width: 991px)
+{
+	.navbar-collapse.collapsing
+	{
+		height: auto;
+		-webkit-transition: right 0.3s ease!important;
+		-o-transition: right 0.3s ease!important;
+		-moz-transition: right 0.3s ease!important;
+		transition: right 0.3s ease!important;
+		left: auto;
+		right: -100%;
+    }
+	
+	.navbar-collapse.show
+	{
+		left: auto;
+		right: 0;
+		-webkit-transition: right 0.3s ease-in!important;
+		-o-transition: right 0.3s ease-in!important;
+		-moz-transition: right 0.3s ease-in!important;
+		transition: right 0.3s ease-in!important;
+    }
+	
+	.sidebar-expanded .navbar-collapse.collapse.show,
+	.sidebar-expanded .navbar-collapse.collapsing,
+	.sidebar-expanded .sidebar-menu
+	{
+		left: auto;
+		right: 0;
+		border-right: 0;
+		border-left: 60px solid rgba(0, 0, 0, .5);
+		transition: .3s all ease-in-out!important
+	}
+	
+	.sidebar-collapsing .navbar-collapse.collapse.show,
+	.sidebar-collapsing .navbar-collapse.collapsing,
+	.sidebar-menu
+	{
+		left: auto;
+		right: -100%;
+		border-right: 0;
+		border-left: 1px solid rgba(255, 255, 255, .5);
+		transition: .3s all ease-in-out!important
+	}
+	
+	.navbar-collapse .navbar-nav .nav-link i.mdi,
+	.navbar-collapsing .navbar-nav .nav-link i.mdi
+	{
+		left: auto;
+		right: 1rem
+	}
+	
+	.navbar-nav .dropdown-toggle:after
+	{
+		float: left
+	}
+}
+
+ @media (min-width: 992px)
+{
+	.sidebar-collapsed:not(.sidebar-hovered) #content-placeholder
+	{
+		padding-left: 0;
+		padding-right: 56px
+	}
+	
+	.sidebar-collapsed:not(.sidebar-hovered) #sidebar-wrapper a.nav-link
+	{
+		padding-right: 0
+	}
+}
+
+@media (min-width: 992px) and (max-width: 1023px)
+{
+	#content-placeholder
+	{
+		padding-left: 0;
+		padding-right: 200px
+	}
+}
+
+@media (min-width: 1024px) and (max-width: 1280px)
+{
+	#content-placeholder
+	{
+		padding-left: 0;
+		padding-right: 200px
+	}
+	
+	.text-lg-center
+	{
+		text-align: center!important
+	}
+	
+	.headline-text
+	{
+		font-size: 60px
+	}
+}
+
+@media (min-width: 1281px)
+{
+	#content-placeholder
+	{
+		padding-left: 0;
+		padding-right: 200px
+	}
+}

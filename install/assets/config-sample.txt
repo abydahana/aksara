@@ -1,0 +1,104 @@
+%OPENTAG%
+/**
+ * Configuration file
+ * Parameter commented with UPPERCASE must be followed
+ *
+ * @return		void
+ * @author		Aby Dahana
+ * @profile		abydahana.github.io
+ *
+ * Sometimes you need a fool to complete a complicated job :)
+ */
+
+/**
+ * Set the default timezone
+ */
+date_default_timezone_set('%TIMEZONE%');
+
+/**
+ * Set the default site url
+ */
+define('BASE_URL', ((empty($_SERVER['HTTPS']) OR strtolower($_SERVER['HTTPS']) === 'off') ? 'http' : 'https') . '://'. $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+
+/**
+ * Set the default index page (index.php) if any
+ */
+define('INDEX_PAGE', null);
+
+/**
+ * Set the enviroment
+ * Available option: development, production
+ */
+define('AKSARA_ENVIROMENT', 'production');
+
+/**
+ * Set the application mode
+ */
+define('DEMO_MODE', false);
+
+/**
+ * Set the security hash
+ */
+define('SALT', '%ENCRYPTION_HASH%');
+
+/**
+ * Cookie prefix
+ * Prevent conflicts between applications built with Aksara
+ */
+define('COOKIE_PREFIX', '%COOKIE_PREFIX%');
+
+/**
+ * Default database connection
+ */
+define('DB_DSN', '%DSN%');
+define('DB_DRIVER', '%DB_DRIVER%');
+define('DB_HOSTNAME', '%DB_HOSTNAME%');
+define('DB_PORT', '%DB_PORT%');
+define('DB_USERNAME', '%DB_USERNAME%');
+define('DB_PASSWORD', '%DB_PASSWORD%');
+define('DB_DATABASE', '%DB_DATABASE%');
+define('DB_DEBUG', true);
+
+/**
+ * Upload config
+ */
+define('DOCUMENT_FORMAT_ALLOWED', '%DOCUMENT_EXTENSION%');
+define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');
+define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%);
+define('IMAGE_DIMENSION', %IMAGE_DIMENSION%);
+define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%);
+define('ICON_DIMENSION', %ICON_DIMENSION%);
+
+/**
+ * Set the upload path
+ * USE FORWARD SLASH INSTEAD OF BACKSLASH IF NEEDED!
+ * DIRECTORY MUST BE REWRITABLE!
+ * NO TRAILING SLASH!
+ */
+define('UPLOAD_PATH', 'public/uploads');
+
+/**
+ * Set the log path. Make it secret :)
+ * DIRECTORY MUST BE REWRITABLE!
+ * NO TRAILING SLASH!
+ */
+define('LOG_PATH', 'public/logs');
+
+/**
+ * Set the translations path. Make it secret :)
+ * DIRECTORY MUST BE REWRITABLE!
+ * NO TRAILING SLASH!
+ */
+define('TRANSLATION_PATH', 'public/languages');
+
+/**
+ * Set the assets path
+ * NO TRAILING SLASH!
+ */
+define('ASSET_PATH', 'public/assets');
+
+/**
+ * Set the themes path
+ * NO TRAILING SLASH!
+ */
+define('THEME_PATH', 'themes');
