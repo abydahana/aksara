@@ -34,6 +34,10 @@
 	{
 		$error										= 'The cookie prefix cannot be empty!';
 	}
+	elseif(!$_SESSION['security']['first_name'])
+	{
+		$error										= 'The first name cannot be empty!';
+	}
 	elseif(!$_SESSION['security']['email'])
 	{
 		$error										= 'The email cannot be empty!';
@@ -86,6 +90,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Installation Mode
+							<b class="text-danger">*</b>
 						</label>
 						<select name="mode" class="form-control form-control-sm">
 							<option value="0"' . (isset($_SESSION['system']['mode']) && !$_SESSION['system']['mode'] ? ' selected' : null) . '>Basic (With Sample)</option>
@@ -97,6 +102,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Timezone
+							<b class="text-danger">*</b>
 						</label>
 						<select name="timezone" class="form-control form-control-sm">
 							' . $timezone . '
@@ -111,12 +117,14 @@
 			<div class="form-group">
 				<label class="d-block mb-0">
 					Site Title
+					<b class="text-danger">*</b>
 				</label>
 				<input type="text" name="site_title" class="form-control form-control-sm" placeholder="Enter the site title" value="' . (isset($_SESSION['system']['site_title']) ? $_SESSION['system']['site_title'] : null) . '" />
 			</div>
 			<div class="form-group">
 				<label class="d-block mb-0">
 					Site Description
+					<b class="text-danger">*</b>
 				</label>
 				<textarea name="site_description" class="form-control form-control-sm" placeholder="Enter the site description">' . (isset($_SESSION['system']['site_description']) ? $_SESSION['system']['site_description'] : null) . '</textarea>
 			</div>
@@ -129,6 +137,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Allowed File Extension
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="file_extension" class="form-control form-control-sm" placeholder="Separate with vertical comma" value="' . (isset($_SESSION['system']['file_extension']) ? $_SESSION['system']['file_extension'] : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv') . '" />
 					</div>
@@ -137,6 +146,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Allowed Image Extension
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="image_extension" class="form-control form-control-sm" placeholder="Separate with comma" value="' . (isset($_SESSION['system']['image_extension']) ? $_SESSION['system']['image_extension'] : 'jpg,jpeg,gif,png') . '" />
 					</div>
@@ -147,6 +157,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Max Upload Size (in Kb)
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="max_upload_size" class="form-control form-control-sm" placeholder="e.g: 2048" value="' . (isset($_SESSION['system']['max_upload_size']) ? $_SESSION['system']['max_upload_size'] : '2048') . '" />
 					</div>
@@ -161,6 +172,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Original
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="image_dimension" class="form-control form-control-sm" placeholder="in pixel" value="' . (isset($_SESSION['system']['image_dimension']) ? $_SESSION['system']['image_dimension'] : '1024') . '" />
 					</div>
@@ -169,6 +181,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Thumbnail
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="thumbnail_dimension" class="form-control form-control-sm" placeholder="in pixel" value="' . (isset($_SESSION['system']['thumbnail_dimension']) ? $_SESSION['system']['thumbnail_dimension'] : '250') . '" />
 					</div>
@@ -177,6 +190,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Icon
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="icon_dimension" class="form-control form-control-sm" placeholder="in pixel" value="' . (isset($_SESSION['system']['icon_dimension']) ? $_SESSION['system']['icon_dimension'] : '80') . '" />
 					</div>

@@ -30,6 +30,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Database Driver
+							<b class="text-danger">*</b>
 						</label>
 						<select name="db_driver" class="form-control form-control-sm">
 							' . $driver . '
@@ -42,6 +43,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Hostname
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="db_hostname" class="form-control form-control-sm" placeholder="e.g: localhost" value="' . (isset($_SESSION['database']['hostname']) ? $_SESSION['database']['hostname'] : null) . '" />
 					</div>
@@ -60,6 +62,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Username
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="db_username" class="form-control form-control-sm" placeholder="e.g: root" value="' . (isset($_SESSION['database']['username']) ? $_SESSION['database']['username'] : null) . '" />
 					</div>
@@ -78,6 +81,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Initial Database
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="db_initial" class="form-control form-control-sm" value="' . (isset($_SESSION['database']['initial']) ? $_SESSION['database']['initial'] : null) . '" />
 					</div>

@@ -24,7 +24,7 @@
 		);
 	}
 	
-	if(!$_SESSION['database']['driver'] && !$_SESSION['database']['hostname'] && !$_SESSION['database']['username'] && !$_SESSION['database']['initial'])
+	if(!$_SESSION['database']['driver'] || !$_SESSION['database']['hostname'] || !$_SESSION['database']['username'] || !$_SESSION['database']['initial'])
 	{
 		echo json_encode
 		(
@@ -88,12 +88,14 @@
 			<div class="form-group">
 				<label class="d-block mb-0">
 					Encryption Hash
+					<b class="text-danger">*</b>
 				</label>
 				<input type="text" name="encryption" class="form-control form-control-sm" placeholder="Your encryption hash" value="' . (isset($_SESSION['security']['encryption']) ? $_SESSION['security']['encryption'] : null) . '" />
 			</div>
 			<div class="form-group">
 				<label class="d-block mb-0">
 					Cookie Prefix
+					<b class="text-danger">*</b>
 				</label>
 				<input type="text" name="cookie_prefix" class="form-control form-control-sm" placeholder="Unique cookie prefix to prevent session conflict" value="' . (isset($_SESSION['security']['cookie_prefix']) ? $_SESSION['security']['cookie_prefix'] : null) . '" />
 			</div>
@@ -106,6 +108,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							First Name
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="first_name" class="form-control form-control-sm" placeholder="e.g: John" value="' . (isset($_SESSION['security']['first_name']) ? $_SESSION['security']['first_name'] : null) . '" />
 					</div>
@@ -124,6 +127,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Email Address
+							<b class="text-danger">*</b>
 						</label>
 						<input type="email" name="email" class="form-control form-control-sm" placeholder="e.g: johndoe@example.com" value="' . (isset($_SESSION['security']['email']) ? $_SESSION['security']['email'] : null) . '" />
 					</div>
@@ -132,6 +136,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Username
+							<b class="text-danger">*</b>
 						</label>
 						<input type="text" name="username" class="form-control form-control-sm" placeholder="Create a username for superuser" value="' . (isset($_SESSION['security']['username']) ? $_SESSION['security']['username'] : null) . '" />
 					</div>
@@ -142,6 +147,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Password
+							<b class="text-danger">*</b>
 						</label>
 						<input type="password" name="password" class="form-control form-control-sm" placeholder="Password for superuser" />
 					</div>
@@ -150,6 +156,7 @@
 					<div class="form-group">
 						<label class="d-block mb-0">
 							Confirm Password
+							<b class="text-danger">*</b>
 						</label>
 						<input type="password" name="confirm_password" class="form-control form-control-sm" placeholder="Retype password for superuser" />
 					</div>
