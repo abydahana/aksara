@@ -52,7 +52,7 @@
 	}
 	elseif($_SESSION['security']['password'] !== $_SESSION['security']['confirm_password'])
 	{
-		$error										= 'The confirmation password didn\'t match!';
+		$error										= 'The password confirmation didn\'t match!';
 	}
 	
 	if($error)
