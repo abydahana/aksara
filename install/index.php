@@ -203,7 +203,7 @@
 					})
 					.fail(function(response, status, error)
 					{
-						$(this).find('button[type=submit]').text('Continue').prop('disabled', false),
+						$(this).find('button[type=submit]').prop('disabled', false),
 						$('<div class="alert alert-danger failure"><b>Woops!</b> ' + error + '</div>').prependTo('.--validate-form'),
 						$('html, body').animate
 						({
@@ -226,7 +226,7 @@
 						beforeSend: function()
 						{
 							$('.failure').remove(),
-							$(this).find('button[type=submit]').text('Continue...').prop('disabled', true)
+							$(this).find('button[type=submit]').prop('disabled', true)
 						}
 					})
 					.done(function(response)
@@ -240,14 +240,14 @@
 							}, 500)
 						}
 						
-						$(this).find('button[type=submit]').text('Continue').prop('disabled', false),
+						$(this).find('button[type=submit]').prop('disabled', false),
 						$('.step' + response.active).addClass('text-warning'),
 						$(response.passed).removeClass('text-warning').addClass('text-success'),
 						$('.step-content').html(response.html)
 					})
 					.fail(function(response, status, error)
 					{
-						$(this).find('button[type=submit]').text('Continue').prop('disabled', false),
+						$(this).find('button[type=submit]').prop('disabled', false),
 						$('<div class="alert alert-danger failure"><b>Woops!</b> ' + error + '</div>').prependTo('.--validate-form'),
 						$('html, body').animate
 						({
