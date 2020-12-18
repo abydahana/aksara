@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `app__groups` (
   `group_description` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `group_privileges` longtext NOT NULL,
   `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 --
 -- Dumping data for table `app__groups`
@@ -148,15 +148,14 @@ CREATE TABLE IF NOT EXISTS `app__languages` (
   `code` varchar(32) NOT NULL,
   `locale` varchar(64) NOT NULL,
   `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `app__languages`
 --
 
 INSERT INTO `app__languages` (`id`, `language`, `description`, `code`, `locale`, `status`) VALUES
-(1, 'Default (English)', 'Default language', 'english', 'en-US,en_US,en_US.UTF8,en-us,en,english', 1),
-(2, 'Bahasa Indonesia', 'Terjemahan bahasa Indonesia', 'indonesian', 'id-ID,id_ID,id_ID.UTF8,id-id,id,indonesian', 1);
+(1, 'Default (English)', 'Default language', 'english', 'en-US,en_US,en_US.UTF8,en-us,en,english', 1);
 
 -- --------------------------------------------------------
 
@@ -337,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `blogs__categories` (
   `category_image` varchar(256) NOT NULL,
   `language_id` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 --
 -- Dumping data for table `blogs__categories`
@@ -773,12 +772,12 @@ ALTER TABLE `app__announcements`
 -- AUTO_INCREMENT for table `app__groups`
 --
 ALTER TABLE `app__groups`
-  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `app__languages`
 --
 ALTER TABLE `app__languages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `app__menus`
 --
@@ -803,7 +802,7 @@ ALTER TABLE `blogs`
 -- AUTO_INCREMENT for table `blogs__categories`
 --
 ALTER TABLE `blogs__categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `countries`
 --
