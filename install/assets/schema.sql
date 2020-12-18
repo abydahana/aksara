@@ -230,7 +230,7 @@ CREATE TABLE `app__settings` (
 	`instagram_username` varchar(64) NOT NULL, 
 	`whatsapp_number` varchar(16) NOT NULL, 
 	`smtp_email_masking` varchar(255) NOT NULL, 
-	`smpt_sender_masking` varchar(64) NOT NULL, 
+	`smtp_sender_masking` varchar(64) NOT NULL, 
 	`smtp_host` varchar(255) NOT NULL, 
 	`smtp_port` int(5) NOT NULL, 
 	`smtp_username` varchar(64) NOT NULL, 
