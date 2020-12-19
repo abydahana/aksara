@@ -190,7 +190,7 @@
 						}
 						else if(response.status !== 200)
 						{
-							$('<div class="alert alert-warning failure"><b>Woops!</b> ' + response.message + '</div>').prependTo('.--validate-form'),
+							$('<div class="alert alert-warning failure"><b>Whoops!</b> ' + response.message + '</div>').prependTo('.--validate-form'),
 							$('html, body').animate
 							({
 								scrollTop: $('.failure').offset().top - 60
@@ -204,7 +204,7 @@
 					.fail(function(response, status, error)
 					{
 						$(this).find('button[type=submit]').prop('disabled', false),
-						$('<div class="alert alert-danger failure"><b>Woops!</b> ' + error + '</div>').prependTo('.--validate-form'),
+						$('<div class="alert alert-danger failure"><b>Whoops!</b> ' + error + '</div>').prependTo('.--validate-form'),
 						$('html, body').animate
 						({
 							scrollTop: $('.failure').offset().top - 60
@@ -233,7 +233,7 @@
 					{
 						if(response.status !== 200)
 						{
-							$('<div class="alert alert-warning failure"><b>Woops!</b> ' + response.message + '</div>').prependTo('.--validate-form'),
+							$('<div class="alert alert-warning failure"><b>Whoops!</b> ' + response.message + '</div>').prependTo('.--validate-form'),
 							$('html, body').animate
 							({
 								scrollTop: $('.failure').offset().top - 60
@@ -248,7 +248,7 @@
 					.fail(function(response, status, error)
 					{
 						$(this).find('button[type=submit]').prop('disabled', false),
-						$('<div class="alert alert-danger failure"><b>Woops!</b> ' + error + '</div>').prependTo('.--validate-form'),
+						$('<div class="alert alert-danger failure"><b>Whoops!</b> ' + error + '</div>').prependTo('.--validate-form'),
 						$('html, body').animate
 						({
 							scrollTop: $('.failure').offset().top - 60
