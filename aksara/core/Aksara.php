@@ -4856,7 +4856,7 @@ class Aksara extends CI_Controller
 						}
 						else
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('image', $type) ? phrase('images') : phrase('file')) . '</span>';
+							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('images', $type) ? phrase('image') : phrase('file')) . '</span>';
 						}
 					}
 					elseif(in_array('attributes', $type))
