@@ -152,7 +152,7 @@ class Aksara extends CI_Controller
 	public $_parent_module							= null;
 	public $_insert_id								= 0;
 	
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 		
