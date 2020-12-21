@@ -9,4 +9,12 @@ Metode ini untuk menambahkan suatu kolom filter pada formulir pencarian pada tab
 
 ##### Contoh Penggunaan
 
-`$this->add_filter('<select name="jenis_kelamin" class="form-control form-control-sm"><option value="1">Pria</option><option value="2">Wanita</option></select>');`
+```
+$this->add_filter
+('
+	<select name="jenis_kelamin" class="form-control form-control-sm">
+		<option value="1">Pria</option>
+		<option value="2">Wanita</option>
+	</select>
+');
+```
