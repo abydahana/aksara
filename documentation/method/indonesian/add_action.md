@@ -13,4 +13,5 @@ Metode ini dugunakan ketika akan menambahkan tombol atau link pada suatu data ya
 
 ##### Contoh Penggunaan
 `$this->add_action('toolbar', 'current/pages/import', 'Import Data', 'btn-success --xhr', 'mdi mdi-import', array('id' => 3));`
+
 Pemanggilan metode di atas akan menambah satu tombol pada toolbar yang mengarah pada modul `current/pages/import?id=3`
