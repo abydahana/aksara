@@ -24,7 +24,7 @@ $this->add_class
 	array
 	(
 		'nama_lengkap'			=> 'extra-class',
-		'alamat'			=> 'another-class'
+		'alamat'				=> 'another-class'
 	)
 );
 ```
