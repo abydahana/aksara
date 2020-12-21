@@ -1,16 +1,29 @@
-Metode ini dugunakan ketika akan menambahkan tombol atau link pada suatu data yang ditampilkan dalam tabel CRUD. Pada kasus tertentu, Anda mungkin akan membutuhkannya apabila ingin menambahkan tindakan lain terkait dengan primary ID yang diminta, misal untuk menghubungkan ke dalam modul lain, dengan primary ID yang diambil dari referensi tabel CRUD saat ini.
+Ada kalanya untuk menjalankan suatu trigger javascript, memerlukan suatu *class identity* unik pada element tertentu. Pada kasusn pemanggilan metode `add_class` di sini, Anda akan menambahkan ekstra class pada bidang input.
 
 ##### Referensi
-`add_action($placement, $url, $label, $class, $icon, $parameter, $new_tab)`
+
+`add_class($params, $value)`
+
 ##### Parameter
-* **$placement** (string) - penempatan posisi tombol, [`toolbar`, `option`, `dropdown`] (default: `option`),
-* **$url** (string) - link target,
-* **$label** (string) - label untuk tombol,
-* **$class** (string) - class CSS untuk jenis tombol,
-* **$icon** (string) - ikon untuk tombol (default `mdi mdi-link`),
-* **$parameter** (array) - parameter tambahan untuk ditambahkan sebagai query string,
-* **$new_tab** (bool) - opsi tab window pada saat membuka link.
+
+* **$params** (mixed) - nama kolom inputan / field,
+* **$value** (string) - class yang akan ditambahkan.
 
 ##### Contoh Penggunaan
-`$this->add_action('toolbar', 'current/pages/import', 'Import Data', 'btn-success --xhr', 'mdi mdi-import', array('id' => 3));`
-Pemanggilan metode di atas akan menambah satu tombol pada toolbar yang mengarah pada modul `current/pages/import?id=3`
+
+`$this->add_class('nama_lengkap', 'extra-class');`
+
+Pemanggilan metode di atas akan menambah class CSS pada kolom input dan akan menghasilkan contoh output seperti berikut:
+
+`<input name="nama_lengkap" class="extra-class" />`
+
+Anda juga dapat menggunakan metode ini secara multiple, misalnya:
+
+`$this->add_class
+(
+	array
+	(
+		'nama_lengkap'			=> 'extra-class',
+		'alamat'						=> 'another-class'
+	)
+);`
