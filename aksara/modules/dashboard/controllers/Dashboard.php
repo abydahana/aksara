@@ -35,9 +35,9 @@ class Dashboard extends Aksara
 			(
 				'writable'							=> array
 				(
-					'uploads'						=> (is_writable(UPLOAD_PATH) ? true : false),
-					'logs'							=> (is_writable(LOG_PATH) ? true : false),
-					'translations'					=> (is_writable(TRANSLATION_PATH) ? true : false)
+					'uploads'						=> (is_dir(UPLOAD_PATH) && is_writable(UPLOAD_PATH) ? true : false),
+					'logs'							=> (is_dir(LOG_PATH) && is_writable(LOG_PATH) ? true : false),
+					'translations'					=> (is_dir(TRANSLATION_PATH) && is_writable(TRANSLATION_PATH) ? true : false)
 				),
 				'visitors'							=> $this->_visitors(),
 				'recent_signed'						=> $this->_recent_signed(),
