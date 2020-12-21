@@ -8,6 +8,7 @@
 if(!file_exists('config.php'))
 {
 	header('Location: install');
+	exit;
 }
 
 require_once('config.php');
