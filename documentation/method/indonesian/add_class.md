@@ -18,12 +18,13 @@ Pemanggilan metode di atas akan menambah class CSS pada kolom input dan akan men
 `<input name="nama_lengkap" class="extra-class" />`
 
 Anda juga dapat menggunakan metode ini secara multiple, misalnya:
-
-`$this->add_class
+```php
+$this->add_class
 (
 	array
 	(
 		'nama_lengkap'			=> 'extra-class',
-		'alamat'						=> 'another-class'
+		'alamat'			=> 'another-class'
 	)
-);`
+);
+```
