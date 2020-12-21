@@ -145,7 +145,20 @@ if(!function_exists('make_json'))
 		ini_set('memory_limit', -1);
 		
 		$CI											=& get_instance();
-		$output										= preg_replace(array('/\s+/', '/(\s+)?\\t(\s+)?/', '/\\n/'), array(' ', '', ''), json_encode($data));
+		
+		if(isset($data->html))
+		{
+			/* make a backup of "pre" tag */
+			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
+			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
+			
+			$data->html								= preg_replace(array('/[\n\t\s]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '\\1', '$1$2'), $data->html);
+			
+			/* rollback the pre tag */
+			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
+		}
+		
+		$output										= json_encode($data);
 		
 		if($filename)
 		{

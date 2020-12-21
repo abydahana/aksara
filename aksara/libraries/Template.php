@@ -170,7 +170,7 @@ class Template
 			// If it uses a view, load it
 			if (isset($partial['view']))
 			{
-				$template['partials'][$name] = $this->_find_view($partial['view'], $partial['data']);
+				$template['partials'][$name] 		= $this->_find_view($partial['view'], $partial['data']);
 			}
 
 			// Otherwise the partial must be a string
@@ -181,7 +181,7 @@ class Template
 					$partial['string'] = $this->_ci->parser->parse_string($partial['string'], $this->_data + $partial['data'], TRUE, TRUE);
 				}
 
-				$template['partials'][$name] = $partial['string'];
+				$template['partials'][$name] 		= $partial['string'];
 			}
 		}
 
@@ -322,50 +322,50 @@ class Template
 	public function view_template($view = 'index', $data = array(), $language = null)
 	{
 		/* get current classname */
-		$classname								= ($this->_ci->router->fetch_module() != $this->_ci->router->fetch_class() ? $this->_ci->router->fetch_class() . '/' : null);
+		$classname									= ($this->_ci->router->fetch_module() != $this->_ci->router->fetch_class() ? $this->_ci->router->fetch_class() . '/' : null);
 		
 		/* get the module location to detect the view path */
-		$view_path								= str_ireplace('/controllers/', '/views/', $this->_ci->router->fetch_directory() . $classname . $view);
+		$view_path									= str_ireplace('/controllers/', '/views/', $this->_ci->router->fetch_directory() . $classname . $view);
 		
 		/* safe check for same class and module name */
 		if(stripos($view_path, '/' . $classname . $classname) !== false)
 		{
-			$view_path							= str_replace('/' . $classname . $classname, '/' . $classname, $view_path);
+			$view_path								= str_replace('/' . $classname . $classname, '/' . $classname, $view_path);
 		}
 		
 		/* remove first jumps path to check the file existence */
-		$view_path_check						= substr($view_path, 3);
+		$view_path_check							= substr($view_path, 3);
 		
 		/* add suffix to view to detect if mobile or modal template is sets */
-		$suffix									= ($this->_is_mobile ? '_mobile' : ('modal' == $this->_ci->input->post('prefer') ? '_modal' : null));
+		$suffix										= ($this->_is_mobile ? '_mobile' : ('modal' == $this->_ci->input->post('prefer') ? '_modal' : null));
 		
 		/* get current classname */
-		$classname								= $this->_ci->router->fetch_class();
+		$classname									= $this->_ci->router->fetch_class();
 		
 		/**
 		 * fix the view path location
 		 * remove or comment it if error's persist
 		 */
-		$view_path								= '../' . $view_path;
+		$view_path									= '../' . $view_path;
 		
 		/**
 		 * find views based from module path and active language
 		 */
 		if(strpos($view_path_check, 'views/' . $classname . '/') !== false && file_exists(APPPATH . preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path_check) . $suffix . '.php'))
 		{
-			$view								= preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path) . $suffix;
+			$view									= preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path) . $suffix;
 		}
 		elseif(strpos($view_path_check, 'views/' . $classname . '/') !== false && file_exists(APPPATH . preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path_check) . '.php'))
 		{
-			$view								= preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path);
+			$view									= preg_replace('~\/(views\/' . $classname . '\/)~', '/views/' . $classname . '/' . $language . '/', $view_path);
 		}
 		elseif(file_exists(APPPATH . preg_replace('~\/(views)~', '/views/' . $language, $view_path_check) . $suffix . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, $view_path) . $suffix;
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, $view_path) . $suffix;
 		}
 		elseif(file_exists(APPPATH . preg_replace('~\/(views)~', '/views/' . $language, $view_path_check) . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, $view_path);
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, $view_path);
 		}
 		
 		/**
@@ -373,11 +373,11 @@ class Template
 		 */
 		elseif(file_exists(APPPATH . $view_path_check . $suffix . '.php'))
 		{
-			$view								= $view_path . $suffix;
+			$view									= $view_path . $suffix;
 		}
 		elseif(file_exists(APPPATH . $view_path_check . '.php'))
 		{
-			$view								= $view_path;
+			$view									= $view_path;
 		}
 		
 		/**
@@ -385,11 +385,11 @@ class Template
 		 */
 		elseif(file_exists(preg_replace('~\/(views)~', '/views/' . $language, APPPATH . dirname($view_path_check) . ($classname ? '/' . $classname : null)) . $suffix . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path) . ($classname ? '/' . $classname : null)) . $suffix;
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path) . ($classname ? '/' . $classname : null)) . $suffix;
 		}
 		elseif(file_exists(preg_replace('~\/(views)~', '/views/' . $language, APPPATH . dirname($view_path_check) . ($classname ? '/' . $classname : null)) . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path) . ($classname ? '/' . $classname : null));
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path) . ($classname ? '/' . $classname : null));
 		}
 		
 		/**
@@ -397,11 +397,11 @@ class Template
 		 */
 		elseif(file_exists(APPPATH . dirname($view_path_check) . ($classname ? '/' . $classname : null) . $suffix . '.php'))
 		{
-			$view								= dirname($view_path) . ($classname ? '/' . $classname : null) . $suffix;
+			$view									= dirname($view_path) . ($classname ? '/' . $classname : null) . $suffix;
 		}
 		elseif(file_exists(APPPATH . dirname($view_path_check) . ($classname ? '/' . $classname : null) . '.php'))
 		{
-			$view								= dirname($view_path) . ($classname ? '/' . $classname : null);
+			$view									= dirname($view_path) . ($classname ? '/' . $classname : null);
 		}
 		
 		/**
@@ -409,11 +409,11 @@ class Template
 		 */
 		elseif(file_exists(preg_replace('~\/(views)~', '/views/' . $language, APPPATH . dirname($view_path_check)) . $suffix . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path)) . $suffix;
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path)) . $suffix;
 		}
 		elseif(file_exists(preg_replace('~\/(views)~', '/views/' . $language, APPPATH . dirname($view_path_check)) . '.php'))
 		{
-			$view								= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path));
+			$view									= preg_replace('~\/(views)~', '/views/' . $language, dirname($view_path));
 		}
 		
 		/**
@@ -421,11 +421,11 @@ class Template
 		 */
 		elseif(file_exists(APPPATH . dirname($view_path_check) . $suffix . '.php'))
 		{
-			$view								= dirname($view_path) . $suffix;
+			$view									= dirname($view_path) . $suffix;
 		}
 		elseif(file_exists(APPPATH . dirname($view_path_check) . '.php'))
 		{
-			$view								= dirname($view_path);
+			$view									= dirname($view_path);
 		}
 		
 		/**
@@ -433,15 +433,15 @@ class Template
 		 */
 		elseif(isset($data->results) && !empty($data->results) && file_exists(APPPATH . 'views/templates/' . $view . $suffix . '.php'))
 		{
-			$view								= 'templates/' . $view . $suffix;
+			$view									= 'templates/' . $view . $suffix;
 		}
 		elseif(isset($data->results) && !empty($data->results) && file_exists(APPPATH . 'views/templates/' . $view . '.php'))
 		{
-			$view								= 'templates/' . $view;
+			$view									= 'templates/' . $view;
 		}
 		else
 		{
-			$view								= 'templates/error';
+			$view									= 'templates/error';
 		}
 		
 		return $view;
@@ -460,36 +460,44 @@ class Template
 	public function render($view = null, $data = array(), $breadcrumb = array(), $language = null)
 	{
 		/* get view from module structure */
-		$view									= $this->view_template($view, $data, $language);
+		$view										= $this->view_template($view, $data, $language);
 		
 		// Generate output
-		$title									= (isset($data->meta->title) ? $data->meta->title : phrase('title_was_not_set'));
-		$description							= (isset($data->meta->description) ? $data->meta->description : null);
-		$icon									= (isset($data->meta->icon) ? $data->meta->icon : 'mdi mdi-table');
+		$title										= (isset($data->meta->title) ? $data->meta->title : phrase('title_was_not_set'));
+		$description								= (isset($data->meta->description) ? $data->meta->description : null);
+		$icon										= (isset($data->meta->icon) ? $data->meta->icon : 'mdi mdi-table');
 		
 		if(file_exists(str_replace(array('../', '/views/'), array(null, '/css/'), $view) . '.css'))
 		{
-			$this->_css							= '<link rel="stylesheet" type="text/css" href="' . base_url(str_replace(array('../', '/views/'), array(null, '/css/'), $view) . '.css', array('cache' => time())) . '" />';
+			$this->_css								= '<link rel="stylesheet" type="text/css" href="' . base_url(str_replace(array('../', '/views/'), array(null, '/css/'), $view) . '.css', array('cache' => time())) . '" />';
 		}
 		elseif(file_exists(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/css/'), $view) . '.css'))
 		{
-			$this->_css							= '<link rel="stylesheet" type="text/css" href="' . base_url(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/css/'), $view) . '.css', array('cache' => time())) . '" />';
+			$this->_css								= '<link rel="stylesheet" type="text/css" href="' . base_url(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/css/'), $view) . '.css', array('cache' => time())) . '" />';
 		}
 		
 		if(file_exists(str_replace(array('../', '/views/'), array(null, '/js/'), $view) . '.js'))
 		{
-			$this->_js							= '<script language="javascript" type="text/javascript" src="' . base_url(str_replace(array('../', '/views/'), array(null, '/js/'), $view) . '.js', array('cache' => time())) . '"></script>';
+			$this->_js								= '<script language="javascript" type="text/javascript" src="' . base_url(str_replace(array('../', '/views/'), array(null, '/js/'), $view) . '.js', array('cache' => time())) . '"></script>';
 		}
 		elseif(file_exists(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/js/'), $view) . '.js'))
 		{
-			$this->_js							= '<script language="javascript" type="text/javascript" src="' . base_url(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/js/'), $view) . '.js', array('cache' => time())) . '"></script>';
+			$this->_js								= '<script language="javascript" type="text/javascript" src="' . base_url(str_replace(array('../', '/modules/', '/views/'), array(null, '/aksara/modules/', '/js/'), $view) . '.js', array('cache' => time())) . '"></script>';
 		}
 		
 		/* check if request is from Promise */
 		if($this->_ci->input->is_ajax_request())
 		{
-			/* format output to html */
-			$data->html							= $this->_css . preg_replace(array('/\s+/', '/\n/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/(\>)\s*(\<)/m'), array(' ', '', '>', '<', '\\1', '$1$2'), $this->_ci->load->view($view, $data, true)) . $this->_js;
+			$data->html								= $this->_css . $this->_ci->load->view($view, $data, true) . $this->_js;
+			
+			/* make a backup of "pre" tag */
+			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
+			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
+			
+			$data->html								= preg_replace(array('/[\n\t\s]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '\\1', '$1$2'), $data->html);
+			
+			/* rollback the pre tag */
+			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
 			
 			/* make a return */
 			return make_json($data);
@@ -514,56 +522,56 @@ class Template
 	 */
 	public function breadcrumb($data = array(), $title = null, $found = null)
 	{
-		$slug									= null;
-		$checker								= $this->_ci->uri->segment_array();
-		$params									= $this->_ci->input->get();
-		$params['per_page']						= null;
-		$params['q']							= null;
-		$params['order']						= null;
-		$params['sort']							= null;
+		$slug										= null;
+		$checker									= $this->_ci->uri->segment_array();
+		$params										= $this->_ci->input->get();
+		$params['per_page']							= null;
+		$params['q']								= null;
+		$params['order']							= null;
+		$params['sort']								= null;
 		
 		if(!$data || !is_array($data))
 		{
 			foreach($checker as $key => $val)
 			{
-				$data[$val]						= ucwords(str_replace('_', ' ', $val));
+				$data[$val]							= ucwords(str_replace('_', ' ', $val));
 			}
 		}
 		
-		$current_slug							= end($checker);
-		$slug									= null;
-		$output									= array
+		$current_slug								= end($checker);
+		$slug										= null;
+		$output										= array
 		(
 			array
 			(
-				'url'							=> base_url('dashboard'),
-				'label'							=> phrase('dashboard'),
-				'icon'							=> 'mdi mdi-home'
+				'url'								=> base_url('dashboard'),
+				'label'								=> phrase('dashboard'),
+				'icon'								=> 'mdi mdi-home'
 			)
 		);
 		
 		foreach($data as $segment => $label)
 		{
-			$slug								.= $segment . '/';
+			$slug									.= $segment . '/';
 			if($segment && $label)
 			{
 				if($segment != $current_slug)
 				{
-					$output[]					= array
+					$output[]						= array
 					(
-						'url'					=> base_url($slug, $params),
-						'label'					=> ($found ? phrase($label) : ucwords($label)),
-						'icon'					=> null
+						'url'						=> base_url($slug, $params),
+						'label'						=> ($found ? phrase($label) : ucwords($label)),
+						'icon'						=> null
 					);
 				}
 			}
 		}
 		
-		$output[]								= array
+		$output[]									= array
 		(
-			'url'								=> '',
-			'label'								=> $title,
-			'icon'								=> ''
+			'url'									=> '',
+			'label'									=> $title,
+			'icon'									=> ''
 		);
 		
 		/*  remove the last element of array */
