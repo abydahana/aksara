@@ -1,13 +1,14 @@
 Metode ini untuk menambahkan suatu kolom filter pada formulir pencarian pada tabel
 
-##### Referensi
+###### Referensi
 
 `add_filter($filter)`
 
-##### Parameter
+###### Parameter
 * **$filter** (string) filter yang akan ditambahkan dalam formulir pencarian.
 
-##### Contoh Penggunaan
+###### Contoh Penggunaan
+
 
 ```
 $this->add_filter
