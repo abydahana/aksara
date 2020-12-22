@@ -13,4 +13,5 @@ Metode ini sama seperti [column_order](../column_order), perbedaannya adalah pad
 `$this->field_order('nama_depan, nama_belakang, jenis_kelamin, alamat');`
 
 Contekan lain yang terkait dengan metode ini antara lain:
-* [column_order](../column_order)
+
+* [column_order](/column_order)
