@@ -26,6 +26,5 @@ $this->field_append
 );
 ```
 
-Contekan lain yang terkait dengan metode ini antara lain:
-
-* [field_prepend](../field_prepend)
+###### Baca juga
+* [field_prepend](./field_prepend)
