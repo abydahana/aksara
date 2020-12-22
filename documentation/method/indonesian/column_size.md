@@ -33,4 +33,5 @@ Pengertian dari parameter di atas adalah:
 Kolom 1 menggunakan class `col-md-8` dan kolom 2 menggunakan class `col-md-4`.
 
 Referensi lain terkait inisial class yang tersedia, silakan merujuk pada penggunaan grid pada Bootstrap pada tautan berikut:
-https://getbootstrap.com/docs/4.5/layout/grid/
+
+[https://getbootstrap.com/docs/4.5/layout/grid/](https://getbootstrap.com/docs/4.5/layout/grid/)
