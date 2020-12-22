@@ -9,8 +9,7 @@ Metode ini untuk menambahkan suatu kolom filter pada formulir pencarian pada tab
 
 ###### Contoh Penggunaan
 
-
-```
+```php
 $this->add_filter
 ('
 	<select name="jenis_kelamin" class="form-control form-control-sm">
