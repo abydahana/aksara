@@ -1,4 +1,4 @@
-Sesuai dengan nama metodenya, field append menambahkan komponen atau prefix pada field yang mana dapat berupa prefix keterangan dari sebuah elemen input.
+Sesuai dengan nama metodenya, field append menambahkan komponen atau suffix setelah field yang mana dapat berupa suffix keterangan dari sebuah elemen input.
 
 ###### Referensi
 
@@ -11,7 +11,7 @@ Sesuai dengan nama metodenya, field append menambahkan komponen atau prefix pada
 
 ###### Contoh penggunaan
 
-`$this->field_append('harga', 'Rp.');`
+`$this->field_append('pajak', '%');`
 
 Anda juga dapat menggunakan metode secara multiple seperti berikut:
 
@@ -20,8 +20,11 @@ $this->field_append
 (
 	array
 	(
-		'harga'		=> 'Rp.',
-		'url'		=> 'http://'
+		'pajak'		=> '%',
+		'ukuran'	=> 'cm'
 	)
 );
 ```
+
+Contekan lain yang terkait dengan metode ini antara lain:
+* [field_prepend](../field_prepend)
