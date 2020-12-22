@@ -23,6 +23,5 @@ kolom_3 | kolom_1 | kolom_2
 Konten kolom_3 | Konten kolom_1 | Konten kolom_2
 Konten lain kolom_3 | Konten lain kolom_1 | Konten lain kolom_2
 
-Contekan lain yang terkait dengan metode ini antara lain:
-
-* [field_order](/field_order)
+###### Baca juga
+* [field_order](./field_order)
