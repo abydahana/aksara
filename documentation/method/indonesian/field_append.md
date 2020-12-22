@@ -7,7 +7,7 @@ Sesuai dengan nama metodenya, field append menambahkan komponen atau suffix sete
 ###### Parameter
 
 * **$params** (mixed) - nama daripada field
-* **$value** (string) - isi prefix yang digunakan
+* **$value** (string) - isi suffix yang digunakan
 
 ###### Contoh penggunaan
 
