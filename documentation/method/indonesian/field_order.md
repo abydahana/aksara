@@ -1,4 +1,4 @@
-Metode ini sama seperti [column_order](https://www.aksaracms.com/pages/documentation/method/column_order), perbedaannya adalah pada lokasi jenis sortir. Apabila `column_order` digunakan untuk sortir urutan kolom tabel, pada metode `field_order` digunakan untuk mengurutkan posisi daripada komponen input dalam formulir.
+Metode ini sama seperti [column_order](../column_order), perbedaannya adalah pada lokasi jenis sortir. Apabila `column_order` digunakan untuk sortir urutan kolom tabel, pada metode `field_order` digunakan untuk mengurutkan posisi daripada komponen input dalam formulir.
 
 ###### Referensi
 
@@ -11,3 +11,6 @@ Metode ini sama seperti [column_order](https://www.aksaracms.com/pages/documenta
 ###### Contoh penggunaan
 
 `$this->field_order('nama_depan, nama_belakang, jenis_kelamin, alamat');`
+
+Contekan lain yang terkait dengan metode ini antara lain:
+* [column_order](../column_order)
