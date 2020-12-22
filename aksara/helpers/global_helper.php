@@ -568,7 +568,7 @@ if(!function_exists('time_ago'))
 
 		if(!$full)
 		{
-			$string								= array_slice($string, 0, 1);
+			$string									= array_slice($string, 0, 1);
 		}
 		
 		return $string ? implode(', ', $string) . ' ' . phrase('ago') : phrase('just_now');
