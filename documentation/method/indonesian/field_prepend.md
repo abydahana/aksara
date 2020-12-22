@@ -28,4 +28,4 @@ $this->field_prepend
 
 Contekan lain yang terkait dengan metode ini antara lain:
 
-* [field_append](/field_append)
+* [field_append](../field_append)
