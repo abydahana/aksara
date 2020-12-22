@@ -24,7 +24,7 @@ $this->default_value
 	array
 	(
 		'nama_lengkap'			=> 'John Doe',
-		'usia'				=> 20
+		'usia'					=> 20
 	)
 );
 ```
