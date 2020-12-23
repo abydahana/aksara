@@ -498,7 +498,7 @@ class Template
 		}
 		
 		/* check if request is from Promise */
-		if($this->_ci->input->is_ajax_request())
+		if(($this->_ci->input->is_ajax_request() && stripos($this->_ci->input->server('HTTP_REFERER'), $this->_ci->input->server('SERVER_NAME')) !== false) || $this->_api_request)
 		{
 			$data->html								= $this->_css . $this->_ci->load->view($view, $data, true) . $this->_js;
 			

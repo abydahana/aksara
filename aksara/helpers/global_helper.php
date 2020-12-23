@@ -371,7 +371,7 @@ if(!function_exists('throw_exception'))
 		$CI											=& get_instance();
 		
 		/* check if the request isn't through xhr */
-		if(!$CI->input->is_ajax_request() && $target)
+		if((!$CI->input->is_ajax_request() || stripos($CI->input->server('HTTP_REFERER'), $CI->input->server('SERVER_NAME')) === false) && $target)
 		{
 			/* check if data isn't an array */
 			if($data && !is_array($data))

@@ -21,7 +21,7 @@ class Aksara extends CI_Controller
 	/**
 	 * Definition of the default params
 	 */
-	private $_api_request							= false;
+	public $_api_request							= false;
 	private $_language								= null;
 	private $_crud									= false;
 	private $_restrict_on_demo						= false;
@@ -2788,7 +2788,7 @@ class Aksara extends CI_Controller
 			}
 			else
 			{
-				if('html' != $this->input->post('prefer') && $this->input->is_ajax_request() && stripos($this->template->view_template($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data)))
+				if(('html' != $this->input->post('prefer') && $this->input->is_ajax_request() && stripos($this->template->view_template($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
 				{
 					/**
 					 * The request is trough Promise or XHR
@@ -2810,10 +2810,13 @@ class Aksara extends CI_Controller
 					/**
 					 * Returning the response as json format
 					 */
-					return make_json
-					(
-						$this->_output
-					);
+					if(stripos($this->input->server('HTTP_REFERER'), $this->input->server('SERVER_NAME')) !== false || $this->_api_request)
+					{
+						return make_json
+						(
+							$this->_output
+						);
+					}
 				}
 				
 				/* Display to the browser */
@@ -7655,25 +7658,55 @@ class Aksara extends CI_Controller
 	
 	/**
 	 * _handshake
-	 * Make a blah
+	 * Make a handshake between device and server
 	 */
 	private function _handshake($api_key = 0)
 	{
-		$client										= $this->model->get_where
+		$client										= $this->model->select
+		('
+			rest__clients.ip_range,
+			rest__clients.status AS client_status,
+			rest__services.status AS service_status
+		')
+		->join
 		(
 			'rest__clients',
+			'rest__clients.user_id = rest__permissions.client_id'
+		)
+		->join
+		(
+			'rest__services',
+			'rest__services.id = rest__permissions.service_id'
+		)
+		->get_where
+		(
+			'rest__permissions',
 			array
 			(
-				'api_key'							=> $api_key,
-				'valid_until >= '					=> date('Y-m-d')
+				'rest__permissions.status'			=> 1,
+				'rest__clients.api_key'				=> $api_key,
+				'rest__clients.valid_until >= '		=> date('Y-m-d'),
+				'rest__services.url'				=> $this->_slug
 			),
 			1
 		)
 		->row();
 		
-		if(!$client || ($client->ip_range && !$this->_ip_in_range($client->ip_range)))
+		if(!$client)
 		{
-			return false;
+			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_source'));
+		}
+		elseif($client->ip_range && !$this->_ip_in_range($client->ip_range))
+		{
+			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
+		}
+		elseif(!$client->client_status)
+		{
+			return throw_exception(403, phrase('your_api_key_is_temporary_disabled'));
+		}
+		elseif(!$client->service_status)
+		{
+			return throw_exception(404, phrase('the_api_service_you_requested_is_temporary_deactivated'));
 		}
 		
 		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
@@ -7683,6 +7716,10 @@ class Aksara extends CI_Controller
 		return $this;
 	}
 	
+	/**
+	 * _ip_in_range
+	 * check the IP if it's being blacklisted or not
+	 */
 	private function _ip_in_range($whitelist = array())
 	{
 		if($whitelist && !is_array($whitelist))
