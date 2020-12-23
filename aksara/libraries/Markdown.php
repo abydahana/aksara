@@ -1474,7 +1474,7 @@ class Markdown
             $url = $this->urls[$link_id];
             $url = $this->encodeURLAttribute($url);
 
-            $result = "<a href=\"$url\"";
+            $result = "<a href=\"$url\"" . (strpos($url, "://") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
             if (isset($this->titles[$link_id])) {
                 $title = $this->titles[$link_id];
                 $title = $this->encodeAttribute($title);
@@ -1517,7 +1517,7 @@ class Markdown
 
         $url = $this->encodeURLAttribute($url);
 
-        $result = "<a href=\"$url\"";
+        $result = "<a href=\"$url\"" . (strpos($url, "://") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
         if (isset($title)) {
             $title = $this->encodeAttribute($title);
             $result .= " title=\"$title\"";
@@ -2191,7 +2191,7 @@ class Markdown
         $attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? 'pre' : 'code', $attrs, null, $classes);
         $pre_attr_str = $this->code_attr_on_pre ? $attr_str : '';
         $code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
-        $codeblock = "<pre class=\"code\">$codeblock</pre>";
+        $codeblock = "<pre class=\"code\" lang=\"$classname\">$codeblock</pre>";
 
         return "\n\n".$this->hashBlock($codeblock)."\n\n";
     }
@@ -3132,7 +3132,7 @@ class Markdown
     protected function _doAutoLinks_url_callback($matches)
     {
         $url = $this->encodeURLAttribute($matches[1], $text);
-        $link = "<a href=\"$url\">$text</a>";
+        $link = "<a href=\"$url\" class=\"text-primary\" target=\"_blank\">$text</a>";
 
         return $this->hashPart($link);
     }

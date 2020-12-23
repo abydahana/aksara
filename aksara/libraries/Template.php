@@ -405,6 +405,18 @@ class Template
 		}
 		
 		/**
+		 * find views based from module name with nested view and active language
+		 */
+		elseif(file_exists(APPPATH . str_replace('/' . $classname, '/' . $language . '/' . $classname, dirname($view_path_check)) . $suffix . '.php'))
+		{
+			$view									= str_replace('/' . $classname, '/' . $language . '/' . $classname, dirname($view_path)) . $suffix;
+		}
+		elseif(file_exists(APPPATH . str_replace('/' . $classname, '/' . $language . '/' . $classname, dirname($view_path_check)) . '.php'))
+		{
+			$view									= str_replace('/' . $classname, '/' . $language . '/' . $classname, dirname($view_path));
+		}
+		
+		/**
 		 * find views based from module name and active language
 		 */
 		elseif(file_exists(preg_replace('~\/(views)~', '/views/' . $language, APPPATH . dirname($view_path_check)) . $suffix . '.php'))
