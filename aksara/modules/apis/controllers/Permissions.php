@@ -19,7 +19,7 @@ class Permissions extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->_primary								= $this->input->get('id');
+		$this->_primary								= $this->input->get('client');
 		
 		if('fetch-parameter' == $this->input->post('method'))
 		{
@@ -29,6 +29,62 @@ class Permissions extends Aksara
 	
 	public function index()
 	{
+		if($this->_primary)
+		{
+			$query									= $this->model->select
+			('
+				app__users.first_name,
+				app__users.last_name
+			')
+			->join
+			(
+				'app__users',
+				'app__users.user_id = rest__clients.user_id'
+			)
+			->get_where
+			(
+				'rest__clients',
+				array
+				(
+					'rest__clients.user_id'			=> $this->_primary
+				),
+				1
+			)
+			->row();
+			
+			if($query)
+			{
+				$this->set_description
+				('
+					<div class="row">
+						<div class="col-4 col-sm-3 col-md-2 text-muted text-uppercase">
+							' . phrase('client') . '
+						</div>
+						<div class="col-8 col-sm-9 col-md-4 font-weight-bold">
+							' . $query->first_name . ' ' . $query->last_name . '
+						</div>
+					</div>
+				');
+				
+				$this->set_default
+				(
+					array
+					(
+						'client_id'					=> $this->_primary
+					)
+				)
+				->where
+				(
+					array
+					(
+						'client_id'					=> $this->_primary
+					)
+				)
+				->unset_column('first_name')
+				->unset_field('client_id');
+			}
+		}
+		
 		$this->set_title(phrase('client_permissions'))
 		->set_icon('mdi mdi-account-check-outline')
 		->unset_column('id, parameter')
@@ -57,29 +113,38 @@ class Permissions extends Aksara
 		->add_class('url_id', 'fetch-parameter')
 		->set_relation
 		(
-			'url_id',
+			'service_id',
 			'rest__services.id',
 			'{rest__services.title}',
 			array
 			(
-				'rest__services.status'					=> 1
+				'rest__services.status'				=> 1
 			)
 		)
 		->set_relation
 		(
 			'client_id',
-			'rest__clients.id',
-			'{rest__clients.title}',
+			'rest__clients.user_id',
+			'{app__users.first_name} {app__users.last_name}',
 			array
 			(
-				'rest__clients.status'				=> 1
+				'rest__clients.status'				=> 1,
+				'app__users.status'					=> 1
+			),
+			array
+			(
+				array
+				(
+					'app__users',
+					'app__users.user_id = rest__clients.user_id'
+				)
 			)
 		)
 		->set_validation
 		(
 			array
 			(
-				'title'								=> 'required|xss_clean|is_unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
+				'title'								=> 'required|xss_clean|is_unique[' . $this->_table . '.title.id.' . $this->input->get('id') . ']',
 				'description'						=> 'required|xss_clean',
 				'status'							=> 'is_boolean'
 			)
@@ -89,10 +154,15 @@ class Permissions extends Aksara
 		(
 			array
 			(
-				'url_id'							=> phrase('service_or_module'),
-				'client_id'							=> phrase('client')
+				'service_id'						=> phrase('service_or_module'),
+				'client_id'							=> phrase('client'),
+				'title'								=> phrase('title'),
+				'description'						=> phrase('description'),
+				'method'							=> phrase('request_method'),
+				'status'							=> phrase('status')
 			)
 		)
+		->merge_content('{first_name} {last_name}', phrase('client'))
 		->render($this->_table);
 	}
 	

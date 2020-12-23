@@ -476,12 +476,9 @@ CREATE TABLE IF NOT EXISTS `peoples` (
 --
 
 CREATE TABLE IF NOT EXISTS `rest__clients` (
-  `id` int(11) NOT NULL,
-  `title` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `description` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` int(11) NOT NULL,
   `api_key` varchar(24) NOT NULL,
   `ip_range` text NOT NULL COMMENT 'separate with comma',
-  `redirect_uri_validator` varchar(255) NOT NULL,
   `valid_until` date NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -494,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `rest__clients` (
 
 CREATE TABLE IF NOT EXISTS `rest__permissions` (
   `id` int(11) NOT NULL,
-  `url_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `title` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `description` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -516,25 +513,6 @@ CREATE TABLE IF NOT EXISTS `rest__services` (
   `description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `services`
---
-
-CREATE TABLE IF NOT EXISTS `services` (
-  `id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
-  `description` longtext NOT NULL,
-  `attributes` text NOT NULL,
-  `cover` varchar(255) NOT NULL,
-  `screenshot` text NOT NULL,
-  `language_id` int(11) NOT NULL,
-  `featured` tinyint(1) NOT NULL,
-  `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -718,14 +696,14 @@ ALTER TABLE `peoples`
 -- Indexes for table `rest__clients`
 --
 ALTER TABLE `rest__clients`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`user_id`);
 
 --
 -- Indexes for table `rest__permissions`
 --
 ALTER TABLE `rest__permissions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `url_id` (`url_id`),
+  ADD KEY `url_id` (`service_id`),
   ADD KEY `client_id` (`client_id`);
 
 --
@@ -733,13 +711,6 @@ ALTER TABLE `rest__permissions`
 --
 ALTER TABLE `rest__services`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `language_id` (`language_id`);
 
 --
 -- Indexes for table `testimonials`
@@ -834,11 +805,6 @@ ALTER TABLE `pages__faqs`
 ALTER TABLE `peoples`
   MODIFY `people_id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `rest__clients`
---
-ALTER TABLE `rest__clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `rest__permissions`
 --
 ALTER TABLE `rest__permissions`
@@ -847,11 +813,6 @@ ALTER TABLE `rest__permissions`
 -- AUTO_INCREMENT for table `rest__services`
 --
 ALTER TABLE `rest__services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `testimonials`
@@ -943,17 +904,17 @@ ALTER TABLE `pages__faqs`
   ADD CONSTRAINT `pages__faqs_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `app__languages` (`id`) ON UPDATE CASCADE;
 
 --
+-- Constraints for table `rest__clients`
+--
+ALTER TABLE `rest__clients`
+  ADD CONSTRAINT `rest__clients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app__users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `rest__permissions`
 --
 ALTER TABLE `rest__permissions`
-  ADD CONSTRAINT `rest__permissions_ibfk_1` FOREIGN KEY (`url_id`) REFERENCES `rest__services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `rest__permissions_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `rest__clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `services`
---
-ALTER TABLE `services`
-  ADD CONSTRAINT `services_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `app__languages` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `rest__permissions_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `rest__clients` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rest__permissions_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `rest__services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `testimonials`

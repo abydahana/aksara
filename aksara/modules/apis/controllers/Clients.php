@@ -19,7 +19,7 @@ class Clients extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->_primary								= $this->input->get('id');
+		$this->_primary								= $this->input->get('user_id');
 	}
 	
 	public function index()
@@ -29,6 +29,8 @@ class Clients extends Aksara
 		->unset_column('id, redirect_uri_validator')
 		->unset_field('id')
 		->unset_view('id')
+		->column_order('first_name')
+		->add_action('option', '../permissions', phrase('permission'), 'btn-dark', 'mdi mdi-security-network', array('client' => 'user_id'))
 		->set_field
 		(
 			array
@@ -51,16 +53,38 @@ class Clients extends Aksara
 				'DELETE'							=> 'DELETE'
 			)
 		)
+		->set_field('first_name', 'hyperlink', 'apis/permissions', array('client' => 'user_id'))
+		->set_relation
+		(
+			'user_id',
+			'app__users.user_id',
+			'{app__users.first_name} {app__users.last_name}',
+			array
+			(
+				'app__users.status'					=> 1
+			)
+		)
 		->set_validation
 		(
 			array
 			(
-				'title'								=> 'required|xss_clean|max_length[64]|is_unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
-				'description'						=> 'required|xss_clean',
+				'user_id'							=> 'required|is_unique[' . $this->_table . '.user_id.id.' . $this->_primary . ']',
 				'api_key'							=> 'required|max_length[32]|is_unique[' . $this->_table . '.api_key.id.' . $this->_primary . ']',
 				'status'							=> 'is_boolean'
 			)
 		)
+		->set_alias
+		(
+			array
+			(
+				'user_id'							=> phrase('user'),
+				'api_key'							=> phrase('api_key'),
+				'ip_range'							=> phrase('ip_range'),
+				'valid_until'						=> phrase('valid_until'),
+				'status'							=> phrase('status')
+			)
+		)
+		->merge_content('{first_name} {last_name}', phrase('user'))
 		->merge_field('valid_until, status')
 		->render($this->_table);
 	}

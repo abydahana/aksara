@@ -21,6 +21,7 @@ class Aksara extends CI_Controller
 	/**
 	 * Definition of the default params
 	 */
+	private $_api_request							= false;
 	private $_language								= null;
 	private $_crud									= false;
 	private $_restrict_on_demo						= false;
@@ -285,6 +286,11 @@ class Aksara extends CI_Controller
 			}
 		}
 		
+		if($this->input->get_request_header('X-API-KEY'))
+		{
+			$this->_handshake($this->input->get_request_header('X-API-KEY'));
+		}
+		
 		/* push log */
 		$this->_push_log();
 	}
@@ -385,17 +391,17 @@ class Aksara extends CI_Controller
 			$permissive_user						= array_map('trim', explode(',', $permissive_user));
 		}
 		
-		if($this->_set_permission && !get_userdata('is_logged'))
+		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			/* user isn't signed in */
 			return throw_exception(301, phrase('session_has_been_expired'), base_url(), true);
 		}
-		elseif(!in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method))
+		elseif(!in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method) && !$this->_api_request)
 		{
 			/* user been signed in but blocked by group privilege */
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
 		}
-		elseif($permissive_user && !in_array(get_userdata('group_id'), $permissive_user))
+		elseif($permissive_user && !in_array(get_userdata('group_id'), $permissive_user) && !$this->_api_request)
 		{
 			/* user been signed in but blocked by group privilege */
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
@@ -2211,7 +2217,7 @@ class Aksara extends CI_Controller
 						}
 						elseif(in_array($val, $this->_set_primary) && $this->model->field_exists($val, $this->_from) && isset($this->_set_default[$val]) && null != $this->_set_default[$val])
 						{
-							if(('read' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array($this->input->get($val), $this->_unset_update[$val])) || ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array($this->input->get($val), $this->_unset_delete[$val])) || ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])))
+							if(('read' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array($this->input->get($val), $this->_unset_update[$val])) || ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array($this->input->get($val), $this->_unset_delete[$val])) || ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->input->get($val), $this->_unset_read[$val])) || !$this->_api_request)
 							{
 								if(in_array($this->_method, array('read', 'export', 'print', 'pdf')))
 								{
@@ -4764,7 +4770,7 @@ class Aksara extends CI_Controller
 					
 					if(isset($this->_set_relation[$field]))
 					{
-						$content					= $this->_get_relation($this->_set_relation[$field], $content);
+						$content					= $this->_get_relation($this->_set_relation[$field], $original);
 					}
 					elseif(isset($this->_set_autocomplete[$field]))
 					{
@@ -4856,7 +4862,7 @@ class Aksara extends CI_Controller
 						}
 						else
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('images', $type) ? phrase('image') : phrase('file')) . '</span>';
+							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('image', $type) ? phrase('images') : phrase('file')) . '</span>';
 						}
 					}
 					elseif(in_array('attributes', $type))
@@ -4947,51 +4953,51 @@ class Aksara extends CI_Controller
 					{
 						if(in_array('radio', $type) && isset($parameter[$original]))
 						{
-							$content					= $parameter[$original];
+							$content				= $parameter[$original];
 						}
 						elseif(in_array('checkbox', $type))
 						{
-							$json						= json_decode($content, true);
+							$json					= json_decode($content, true);
 							
 							if(is_array($json) && sizeof($json) > 0)
 							{
-								$items					= null;
+								$items				= null;
 								
-								foreach($json as $key => $val)
+								foreach($json as $_key => $_val)
 								{
-									if(!is_array($val) && isset($this->_set_field[$field]['parameter'][$val]))
+									if(!is_array($_val) && isset($this->_set_field[$field]['parameter'][$_val]))
 									{
-										$items				.= '<span class="badge badge-info">' . $this->_set_field[$field]['parameter'][$val] . '</span> ';
+										$items		.= '<span class="badge badge-info">' . $this->_set_field[$field]['parameter'][$val] . '</span> ';
 									}
 								}
 								if($items)
 								{
-									$content			= $items;
+									$content		= $items;
 								}
 							}
 						}
 						else
 						{
-							$items						= json_decode($content, true);
+							$items					= json_decode($content, true);
 							
 							if($extra_params)
 							{
-								$content				= $original;
+								$content			= $original;
 							}
 							elseif(isset($parameter[$original]))
 							{
-								$content				= $parameter[$original];
+								$content			= $parameter[$original];
 							}
 							elseif($items)
 							{
-								$content				= (is_array($items) ? sizeof($items) : 0);
-								$content				= $content . ' ' . ($content > 0 ? phrase('options') : phrase('option'));
+								$content			= (is_array($items) ? sizeof($items) : 0);
+								$content			= $content . ' ' . ($content > 0 ? phrase('options') : phrase('option'));
 							}
 						}
 					}
 					elseif(in_array('colorpicker', $type))
 					{
-						$content						= '<span class="badge" style="background:' . $original . '">' . $original . '</span>';
+						$content					= '<span class="badge" style="background:' . $original . '">' . $original . '</span>';
 					}
 					elseif(in_array('boolean', $type))
 					{
@@ -5023,64 +5029,6 @@ class Aksara extends CI_Controller
 						{
 							$content				= $original;
 						}
-						
-						if(in_array('hyperlink', $type))
-						{
-							if(isset($extra_params) && is_array($extra_params))
-							{
-								$hyperlink_params	= array_search('hyperlink', $type);
-								$skip				= false;
-								$uri				= array('per_page' => null, 'order' => null, 'column' => null, 'sort' => null, 'q' => null);
-								
-								if(isset($extra_params[$hyperlink_params]) && is_array($extra_params[$hyperlink_params]))
-								{
-									foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
-									{
-										$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
-									}
-								}
-								else
-								{
-									foreach($extra_params as $url_key => $url_val)
-									{
-										$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
-									}
-								}
-								
-								if(is_array($another_params))
-								{
-									foreach($another_params as $key_except => $val_except)
-									{
-										if(isset($val[$key_except]['original']) && $val[$key_except]['original'] != $val_except)
-										{
-											$skip	= true;
-										}
-									}
-									$another_params	= null;
-								}
-								
-								if(!$skip)
-								{
-									$content		= '
-										<a href="' . base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
-											<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
-												<i class="mdi mdi-open-in-new"></i>' . $content . '
-											</b>
-										</a>
-									';
-								}
-							}
-							else
-							{
-								$content			= '
-									<a href="' . $this->_set_field[$field]['parameter'] . '" class="--xhr" style="display:block">
-										<b>
-											<i class="mdi mdi-open-in-new"></i>' . $content . '
-										</b>
-									</a>
-								';
-							}
-						}
 					}
 					
 					if(in_array('number_format', $type) || in_array('price_format', $type) || in_array('percent_format', $type))
@@ -5091,6 +5039,64 @@ class Aksara extends CI_Controller
 						}
 						
 						$content					= '<p class="text-md-right m-0" style="padding-right:15px">' . (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content) . '</p>';
+					}
+					
+					if(in_array('hyperlink', $type))
+					{
+						if(isset($extra_params) && is_array($extra_params))
+						{
+							$hyperlink_params		= array_search('hyperlink', $type);
+							$skip					= false;
+							$uri					= array('per_page' => null, 'order' => null, 'column' => null, 'sort' => null, 'q' => null);
+							
+							if(isset($extra_params[$hyperlink_params]) && is_array($extra_params[$hyperlink_params]))
+							{
+								foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
+								{
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+								}
+							}
+							else
+							{
+								foreach($extra_params as $url_key => $url_val)
+								{
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+								}
+							}
+							
+							if(is_array($another_params))
+							{
+								foreach($another_params as $key_except => $val_except)
+								{
+									if(isset($val[$key_except]['original']) && $val[$key_except]['original'] != $val_except)
+									{
+										$skip		= true;
+									}
+								}
+								$another_params		= null;
+							}
+							
+							if(!$skip)
+							{
+								$content			= '
+									<a href="' . base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+										<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
+											<i class="mdi mdi-open-in-new"></i>' . $content . '
+										</b>
+									</a>
+								';
+							}
+						}
+						else
+						{
+							$content				= '
+								<a href="' . $this->_set_field[$field]['parameter'] . '" class="--xhr" style="display:block">
+									<b>
+										<i class="mdi mdi-open-in-new"></i>' . $content . '
+									</b>
+								</a>
+							';
+						}
 					}
 					
 					/**
@@ -5426,7 +5432,7 @@ class Aksara extends CI_Controller
 	
 	
 	/**------------------------------------------------------------------------
-	 * Method related to the database query
+	 * Method related to the query builder
 	 *-------------------------------------------------------------------------
 	 */
 	
@@ -7645,6 +7651,63 @@ class Aksara extends CI_Controller
 				' . $items . '
 			</ul>
 		';
+	}
+	
+	/**
+	 * _handshake
+	 * Make a blah
+	 */
+	private function _handshake($api_key = 0)
+	{
+		$client										= $this->model->get_where
+		(
+			'rest__clients',
+			array
+			(
+				'api_key'							=> $api_key,
+				'valid_until >= '					=> date('Y-m-d')
+			),
+			1
+		)
+		->row();
+		
+		if(!$client || ($client->ip_range && !$this->_ip_in_range($client->ip_range)))
+		{
+			return false;
+		}
+		
+		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
+		
+		$this->_api_request							= true;
+		
+		return $this;
+	}
+	
+	private function _ip_in_range($whitelist = array())
+	{
+		if($whitelist && !is_array($whitelist))
+		{
+			$whitelist								= array_map('trim', explode(',', $whitelist));
+		}
+		
+		if(in_array($this->input->server('REMOTE_ADDR'), $whitelist))
+		{
+			return true;
+		}
+		else
+		{
+			foreach($whitelist as $key => $val)
+			{
+				$wildcardPos						= strpos($val, '*');
+				
+				if($wildcardPos !== false && substr($this->input->server('REMOTE_ADDR'), 0, $wildcardPos) . '*' == $val)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 	
 	/**

@@ -158,7 +158,7 @@ if(!function_exists('make_json'))
 			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
 		}
 		
-		$output										= json_encode($data);
+		$output										= preg_replace(array('/\\\t/', '/\\\n/'), array(null, null), json_encode($data));
 		
 		if($filename)
 		{
@@ -422,7 +422,7 @@ if(!function_exists('throw_exception'))
 				array
 				(
 					'status'						=> $code,
-					'exception'						=> $exception,
+					'exception'						=> preg_replace(array('/\\\t/', '/\\\n/'), array(null, null), $exception),
 					'target'						=> $target,
 					'redirect'						=> $redirect
 				)
