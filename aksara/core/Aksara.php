@@ -396,7 +396,7 @@ class Aksara extends CI_Controller
 			/* user isn't signed in */
 			return throw_exception(301, phrase('session_has_been_expired'), base_url(), true);
 		}
-		elseif(!in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method) && !$this->_api_request)
+		elseif(!$this->_api_request && !in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method))
 		{
 			/* user been signed in but blocked by group privilege */
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
@@ -7664,6 +7664,7 @@ class Aksara extends CI_Controller
 	{
 		$client										= $this->model->select
 		('
+			rest__clients.user_id,
 			rest__clients.ip_range,
 			rest__clients.status AS client_status,
 			rest__services.status AS service_status
@@ -7692,7 +7693,7 @@ class Aksara extends CI_Controller
 		)
 		->row();
 		
-		if(!$client)
+		if(!$client || !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method, $client->user_id))
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_source'));
 		}

@@ -68,8 +68,8 @@ class Clients extends Aksara
 		(
 			array
 			(
-				'user_id'							=> 'required|is_unique[' . $this->_table . '.user_id.id.' . $this->_primary . ']',
-				'api_key'							=> 'required|max_length[32]|is_unique[' . $this->_table . '.api_key.id.' . $this->_primary . ']',
+				'user_id'							=> 'required|is_unique[' . $this->_table . '.user_id.user_id.' . $this->_primary . ']',
+				'api_key'							=> 'required|max_length[32]|is_unique[' . $this->_table . '.api_key.user_id.' . $this->_primary . ']',
 				'status'							=> 'is_boolean'
 			)
 		)

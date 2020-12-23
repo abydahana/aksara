@@ -20,20 +20,23 @@ class Permission
 	/**
 	 * allow
 	 */
-	public function allow($module = null, $submodule = null, $controller = null, $method = null)
+	public function allow($module = null, $submodule = null, $controller = null, $method = null, $user_id = 0)
 	{
 		if(!$method)
 		{
 			$method									= 'index';
 		}
 		
-		if(!$this->_ci->db->get_where('app__users', array('user_id' => $this->_ci->session->userdata('user_id'), 'status' => 1), 1)->num_rows() && ($this->_ci->db->table_exists('pos__employees') && !$this->_ci->db->get_where('pos__employees', array('employee_id' => $this->_ci->session->userdata('user_id'), 'status' => 1), 1)->num_rows()))
+		$user										= $this->_ci->db->select('user_id, group_id')->get_where('app__users', array('user_id' => ($user_id ? $user_id : $this->_ci->session->userdata('user_id')), 'status' => 1), 1)->row();
+		
+		if(!$user)
 		{
 			$this->_ci->session->sess_destroy();
+			
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), base_url());
 		}
 		
-		$privileges									= $this->_ci->db->select('group_privileges')->get_where('app__groups', array('group_id' => $this->_ci->session->userdata('group_id')), 1)->row('group_privileges');
+		$privileges									= $this->_ci->db->select('group_privileges')->get_where('app__groups', array('group_id' => $user->group_id), 1)->row('group_privileges');
 		$privileges									= json_decode($privileges, true);
 		
 		if(!isset($privileges[$module][$submodule][$controller]) || (isset($privileges[$module][$submodule][$controller]) && !in_array($method, $privileges[$module][$submodule][$controller])))
@@ -49,7 +52,7 @@ class Permission
 		else
 		{
 			/* write log activities */
-			if('modal' != $this->_ci->input->post('prefer'))
+			if('modal' != $this->_ci->input->post('prefer') && !$user_id)
 			{
 				/* only if request is not from session storage */
 				$this->_push_logs($module, $submodule, $controller, $method);
