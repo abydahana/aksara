@@ -200,40 +200,40 @@ CREATE TABLE IF NOT EXISTS `app__sessions` (
 --
 
 CREATE TABLE `app__settings` (
-	`id` int(11) NOT NULL, 
-	`app_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, 
-	`app_description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, 
-	`app_logo` varchar(256) NOT NULL, 
-	`app_icon` varchar(256) NOT NULL, 
-	`app_theme` varchar(32) NOT NULL, 
-	`app_language` int(11) NOT NULL, 
-	`office_name` varchar(255) NOT NULL, 
-	`office_phone` varchar(32) NOT NULL, 
-	`office_email` varchar(64) NOT NULL, 
-	`office_fax` varchar(32) NOT NULL, 
-	`office_address` text NOT NULL, 
-	`office_map` text NOT NULL, 
-	`one_device_login` tinyint(1) NOT NULL, 
-	`username_changes` tinyint(1) NOT NULL, 
-	`frontend_registration` tinyint(1) NOT NULL, 
-	`default_membership_group` int(11) NOT NULL, 
-	`auto_active_registration` tinyint(1) NOT NULL COMMENT '1 = auto active', 
-	`google_analytics_key` varchar(32) NOT NULL, 
-	`openlayers_search_provider` varchar(10) NOT NULL, 
-	`openlayers_search_key` varchar(128) NOT NULL, 
-	`facebook_app_id` varchar(22) NOT NULL, 
-	`facebook_app_secret` varchar(512) NOT NULL, 
-	`google_client_id` varchar(255) NOT NULL, 
-	`google_client_secret` varchar(512) NOT NULL, 
-	`twitter_username` varchar(64) NOT NULL, 
-	`instagram_username` varchar(64) NOT NULL, 
-	`whatsapp_number` varchar(16) NOT NULL, 
-	`smtp_email_masking` varchar(255) NOT NULL, 
-	`smtp_sender_masking` varchar(64) NOT NULL, 
-	`smtp_host` varchar(255) NOT NULL, 
-	`smtp_port` int(5) NOT NULL, 
-	`smtp_username` varchar(64) NOT NULL, 
-	`smtp_password` varchar(512) NOT NULL
+  `id` int(11) NOT NULL, 
+  `app_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, 
+  `app_description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, 
+  `app_logo` varchar(256) NOT NULL, 
+  `app_icon` varchar(256) NOT NULL, 
+  `app_theme` varchar(32) NOT NULL, 
+  `app_language` int(11) NOT NULL, 
+  `office_name` varchar(255) NOT NULL, 
+  `office_phone` varchar(32) NOT NULL, 
+  `office_email` varchar(64) NOT NULL, 
+  `office_fax` varchar(32) NOT NULL, 
+  `office_address` text NOT NULL, 
+  `office_map` text NOT NULL, 
+  `one_device_login` tinyint(1) NOT NULL, 
+  `username_changes` tinyint(1) NOT NULL, 
+  `frontend_registration` tinyint(1) NOT NULL, 
+  `default_membership_group` int(11) NOT NULL, 
+  `auto_active_registration` tinyint(1) NOT NULL COMMENT '1 = auto active', 
+  `google_analytics_key` varchar(32) NOT NULL, 
+  `openlayers_search_provider` varchar(10) NOT NULL, 
+  `openlayers_search_key` varchar(128) NOT NULL, 
+  `facebook_app_id` varchar(22) NOT NULL, 
+  `facebook_app_secret` varchar(512) NOT NULL, 
+  `google_client_id` varchar(255) NOT NULL, 
+  `google_client_secret` varchar(512) NOT NULL, 
+  `twitter_username` varchar(64) NOT NULL, 
+  `instagram_username` varchar(64) NOT NULL, 
+  `whatsapp_number` varchar(16) NOT NULL, 
+  `smtp_email_masking` varchar(255) NOT NULL, 
+  `smtp_sender_masking` varchar(64) NOT NULL, 
+  `smtp_host` varchar(255) NOT NULL, 
+  `smtp_port` int(5) NOT NULL, 
+  `smtp_username` varchar(64) NOT NULL, 
+  `smtp_password` varchar(512) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
 -- --------------------------------------------------------
@@ -295,8 +295,8 @@ CREATE TABLE IF NOT EXISTS `app__users_privileges` (
 --
 
 CREATE TABLE `app__users_hash` (
-	`user_id` int(11) NOT NULL, 
-	`hash` varchar(64) NOT NULL
+  `user_id` int(11) NOT NULL, 
+  `hash` varchar(64) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
 -- --------------------------------------------------------
@@ -539,12 +539,12 @@ CREATE TABLE IF NOT EXISTS `testimonials` (
 --
 
 CREATE TABLE `inquiries`(
-    `id` INT(11) NOT NULL,
-    `sender_full_name` VARCHAR(64) NOT NULL,
-    `sender_email` VARCHAR(255) NOT NULL,
-    `subject` VARCHAR(255) NOT NULL,
-    `messages` TEXT NOT NULL,
-    `timestamp` DATETIME NOT NULL
+  `id` INT(11) NOT NULL,
+  `sender_full_name` VARCHAR(64) NOT NULL,
+  `sender_email` VARCHAR(255) NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `messages` TEXT NOT NULL,
+  `timestamp` DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
