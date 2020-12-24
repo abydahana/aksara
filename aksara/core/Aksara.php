@@ -2800,7 +2800,7 @@ class Aksara extends CI_Controller
 					 */
 					if('modal' == $this->input->post('prefer'))
 					{
-						unset($this->_output->breadcrumb, $this->_output->pagination);
+						unset($this->_output->breadcrumb, $this->_output->total, $this->_output->pagination);
 						
 						if($this->_set_method)
 						{

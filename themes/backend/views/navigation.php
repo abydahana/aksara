@@ -45,6 +45,11 @@
 	</button>
 	<div class="collapse navbar-collapse" id="navbarExpand">
 		<ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link nav-padding-left p-1 --toggle-full-screen">
+					<i class="mdi mdi-fullscreen mdi-2x"></i>
+				</a>
+			</li>
 			<?php if($language_list) { ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link nav-padding-left dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

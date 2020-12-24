@@ -85,10 +85,15 @@ class Permissions extends Aksara
 			}
 		}
 		
+		if(!$this->input->post('_token'))
+		{
+			$this->unset_field('parameter');
+		}
+		
 		$this->set_title(phrase('client_permissions'))
 		->set_icon('mdi mdi-security-network')
 		->unset_column('id, parameter')
-		->unset_field('id, parameter')
+		->unset_field('id')
 		->unset_view('id, parameter')
 		->set_field
 		(
@@ -110,7 +115,7 @@ class Permissions extends Aksara
 				'DELETE'							=> 'DELETE '
 			)
 		)
-		->add_class('url_id', 'fetch-parameter')
+		->add_class('service_id', 'fetch-parameter')
 		->set_relation
 		(
 			'service_id',
@@ -170,12 +175,13 @@ class Permissions extends Aksara
 	{
 		$query										= $this->model->select
 		('
-			rest__services.url
+			rest__services.url,
+			rest__permissions.parameter
 		')
 		->join
 		(
 			'rest__services',
-			'rest__services.id = rest__permissions.url_id'
+			'rest__services.id = rest__permissions.service_id'
 		)
 		->get_where
 		(
@@ -186,18 +192,19 @@ class Permissions extends Aksara
 			),
 			1
 		)
-		->row('url');
+		->row();
 		
 		if($query)
 		{
-			$query									= base_url($query . '/create');
+			$query->url								= base_url($query->url . '/create');
 		}
 		
 		return make_json
 		(
 			array
 			(
-				'url'								=> $query
+				'url'								=> (isset($query->url) ? $query->url : null),
+				'parameter'							=> (isset($query->parameter) ? $query->parameter : null)
 			)
 		);
 	}
