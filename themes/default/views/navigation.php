@@ -1,20 +1,22 @@
 <?php
-	$user_language								= null;
-	$translations								= array();
-	$language									= get_languages();
-	$language_list								= null;
+	$user_language									= null;
+	$translations									= array();
+	$language										= get_languages();
+	$language_list									= null;
 	if($language && sizeof((array) $language) > 1)
 	{
 		foreach($language as $key => $val)
 		{
 			if(get_userdata('language_id') == $val->id)
 			{
-				$user_language					= $val->language;
+				$user_language						= $val->language;
+				
+				continue;
 			}
 			
-			$translations[$val->code]			= $val->language;
+			$translations[$val->code]				= $val->language;
 			
-			$language_list						.= '
+			$language_list							.= '
 				<li class="nav-item">
 					<a class="nav-link nav-padding-left --xhr" href="' . base_url('xhr/language/' . $val->code) . '">
 						<i class="mdi mdi-flag-outline"></i>
@@ -25,7 +27,7 @@
 		}
 	}
 ?>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" id="hide-on-scroll">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary" id="hide-on-scroll">
 	<a class="navbar-brand --xhr" href="<?php echo base_url(); ?>">
 		<img src="<?php echo get_image('settings', get_setting('app_logo')); ?>" class="rounded" />
 		<?php echo ($this->session->userdata('year') ? '<span class="badge badge-warning">' . $this->session->userdata('year') . '</span>' : ''); ?>

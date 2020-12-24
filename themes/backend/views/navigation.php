@@ -10,6 +10,8 @@
 			if(get_userdata('language_id') == $val->id)
 			{
 				$user_language					= $val->language;
+				
+				continue;
 			}
 			
 			$translations[$val->code]			= $val->language;
