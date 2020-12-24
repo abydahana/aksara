@@ -398,12 +398,12 @@ class Aksara extends CI_Controller
 			/* user isn't signed in */
 			return throw_exception(301, phrase('session_has_been_expired'), base_url(), true);
 		}
-		elseif(!$this->_api_request && !in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method))
+		elseif(!in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method, get_userdata('user_id')))
 		{
 			/* user been signed in but blocked by group privilege */
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
 		}
-		elseif($permissive_user && !in_array(get_userdata('group_id'), $permissive_user) && !$this->_api_request)
+		elseif($permissive_user && !in_array(get_userdata('group_id'), $permissive_user))
 		{
 			/* user been signed in but blocked by group privilege */
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
@@ -7667,9 +7667,14 @@ class Aksara extends CI_Controller
 	 */
 	private function _handshake($api_key = 0)
 	{
+		/* destroy previous session to prevent hijacking */
+		$this->session->sess_destroy();
+		
 		$client										= $this->model->select
 		('
-			rest__clients.user_id,
+			app__users.user_id,
+			app__users.group_id,
+			app__users.language_id,
 			rest__clients.ip_range,
 			rest__clients.status AS client_status,
 			rest__services.status AS service_status
@@ -7681,6 +7686,11 @@ class Aksara extends CI_Controller
 		)
 		->join
 		(
+			'app__users',
+			'app__users.user_id = rest__clients.user_id'
+		)
+		->join
+		(
 			'rest__services',
 			'rest__services.id = rest__permissions.service_id'
 		)
@@ -7689,6 +7699,7 @@ class Aksara extends CI_Controller
 			'rest__permissions',
 			array
 			(
+				'app__users.status'					=> 1,
 				'rest__permissions.status'			=> 1,
 				'rest__clients.api_key'				=> $api_key,
 				'rest__clients.valid_until >= '		=> date('Y-m-d'),
@@ -7714,6 +7725,17 @@ class Aksara extends CI_Controller
 		{
 			return throw_exception(404, phrase('the_api_service_you_requested_is_temporary_deactivated'));
 		}
+		
+		/* set the temporary session */
+		$this->session->set_userdata
+		(
+			array
+			(
+				'user_id'							=> $client->user_id,
+				'group_id'							=> $client->group_id,
+				'language_id'						=> $client->language_id
+			)
+		);
 		
 		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
 		
