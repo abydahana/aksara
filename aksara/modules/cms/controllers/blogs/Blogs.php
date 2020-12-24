@@ -25,7 +25,7 @@ class Blogs extends Aksara
 		$this->set_title(phrase('blog_posts'))
 		->set_icon('mdi mdi-newspaper')
 		->set_primary('post_id')
-		->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp')
+		->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, updated_timestamp, headline, language')
 		->unset_field('post_id, author')
 		->unset_view('post_id')
 		->column_order('featured_image, post_title, category_title, first_name, headline, updated_timestamp, status')

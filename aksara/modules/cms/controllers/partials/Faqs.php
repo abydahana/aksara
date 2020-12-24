@@ -24,7 +24,7 @@ class Faqs extends Aksara
 	{
 		$this->set_title(phrase('manage_frequently_asked_questions'))
 		->set_icon('mdi mdi-file-question')
-		->unset_column('faq_id, created_timestamp, language')
+		->unset_column('faq_id, created_timestamp, updated_timestamp, language')
 		->unset_field('faq_id')
 		->unset_view('faq_id')
 		->set_field

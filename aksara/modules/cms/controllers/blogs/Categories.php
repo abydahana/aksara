@@ -29,7 +29,7 @@ class Categories extends Aksara
 		$this->set_title(phrase('blog_categories'))
 		->set_icon('mdi mdi-sitemap')
 		->set_primary('category_id')
-		->unset_column('category_id')
+		->unset_column('category_id, language')
 		->unset_field('category_id')
 		->unset_view('category_id')
 		->column_order('category_image')

@@ -26,7 +26,7 @@ class Announcements extends Aksara
 		$this->set_title(phrase('manage_announcements'))
 		->set_icon('mdi mdi-bullhorn-outline')
 		->set_primary('announcement_id')
-		->unset_column('announcement_id, content, created_timestamp, announcement_slug')
+		->unset_column('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
 		->unset_field('announcement_id')
 		->unset_view('announcement_id')
 		->set_field

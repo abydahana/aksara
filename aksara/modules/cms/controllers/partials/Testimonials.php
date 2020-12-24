@@ -27,7 +27,7 @@ class Testimonials extends Aksara
 		$this->set_title(phrase('manage_testimonials'))
 		->set_icon('mdi mdi-comment-account-outline')
 		->set_primary('testimonial_id')
-		->unset_column('testimonial_id, testimonial_content, timestamp')
+		->unset_column('testimonial_id, testimonial_content, timestamp, language')
 		->unset_field('testimonial_id')
 		->unset_view('testimonial_id')
 		->set_field

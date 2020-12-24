@@ -5187,7 +5187,7 @@ class Aksara extends CI_Controller
 					$columns[$val]					= array
 					(
 						'field'						=> $val,
-						'label'						=> (isset($this->_set_alias[$val]) ? $this->_set_alias[$val] : ucwords(str_replace('_', ' ', $val))),
+						'label'						=> (isset($this->_merge_label[$val]) ? $this->_merge_label[$val] : (isset($this->_set_alias[$val]) ? $this->_set_alias[$val] : ucwords(str_replace('_', ' ', $val)))),
 						'aksara'					=> generate_token(($qs ? array_merge($qs, array('order' => $val, 'sort' => get_userdata('sortOrder'))) : array('order' => $val, 'sort' => get_userdata('sortOrder')))),
 						'sort'						=> get_userdata('sortOrder'),
 						'align'						=> (isset($this->_set_field[$val]['field_type']) && (in_array('number_format', $this->_set_field[$val]['field_type']) || in_array('price_format', $this->_set_field[$val]['field_type']) || in_array('percent_format', $this->_set_field[$val]['field_type'])) ? 'right' : null)

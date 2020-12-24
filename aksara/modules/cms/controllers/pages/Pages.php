@@ -26,7 +26,7 @@ class Pages extends Aksara
 		$this->set_title(phrase('manage_front_end_pages'))
 		->set_icon('mdi mdi-file-document-outline')
 		->set_primary('page_id')
-		->unset_column('page_id, author, page_slug, page_content, created_timestamp')
+		->unset_column('page_id, author, page_slug, page_content, carousel_title, faq_title, created_timestamp, updated_timestamp, language')
 		->unset_field('page_id, author')
 		->unset_view('page_id, author')
 		->column_order('page_title, page_description, carousel_title, faq_title, updated, status')

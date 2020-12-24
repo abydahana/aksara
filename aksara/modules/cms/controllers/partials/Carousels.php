@@ -27,7 +27,7 @@ class Carousels extends Aksara
 	{
 		$this->set_title(phrase('manage_carousels'))
 		->set_icon('mdi mdi-view-carousel')
-		->unset_column('carousel_id, created_timestamp, language')
+		->unset_column('carousel_id, created_timestamp, updated_timestamp, language')
 		->unset_field('carousel_id')
 		->unset_view('carousel_id')
 		->set_field

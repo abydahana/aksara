@@ -35,7 +35,7 @@ class Users extends Aksara
 		->unset_column('user_id, password, phone, gender, bio, address, country, country_name, language, postal_code, registered_date')
 		->unset_field('user_id, last_login, is_logged, registered_date')
 		->unset_view('user_id, password')
-		->column_order('photo, username, first_name, email, group_name, status')
+		->column_order('photo, username, first_name, email, group_name')
 		->field_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language_id, group_id, status')
 		->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, country_name, language_id, group_id, group_name, status, last_login')
 		->set_field

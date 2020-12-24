@@ -19,7 +19,7 @@ class Menus extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->unset_delete('menu_id', array(1));
+		$this->unset_delete('menu_id', array(1, 2));
 	}
 	
 	public function index()
@@ -28,6 +28,7 @@ class Menus extends Aksara
 		->set_icon('mdi mdi-menu')
 		->unset_column('menu_id, serialized_data')
 		->unset_view('menu_id')
+		->column_order('menu_label, menu_placement, menu_description, group_name')
 		->unset_field('menu_id')
 		->set_primary('menu_id')
 		->set_field('serialized_data', 'custom_format', $this->_menus())

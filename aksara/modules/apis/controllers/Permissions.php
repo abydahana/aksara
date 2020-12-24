@@ -95,6 +95,7 @@ class Permissions extends Aksara
 		->unset_column('id, parameter')
 		->unset_field('id')
 		->unset_view('id, parameter')
+		->column_order('title, description, method, first_name')
 		->set_field
 		(
 			array

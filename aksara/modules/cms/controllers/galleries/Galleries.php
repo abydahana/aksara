@@ -26,7 +26,7 @@ class Galleries extends Aksara
 		$this->set_title(phrase('galleries'))
 		->set_icon('mdi mdi-folder-multiple-image')
 		->set_primary('gallery_id')
-		->unset_column('gallery_id, gallery_slug, gallery_tags, gallery_attributes, created_timestamp')
+		->unset_column('gallery_id, gallery_slug, gallery_tags, gallery_attributes, created_timestamp, updated_timestamp, featured')
 		->unset_field('gallery_id, author')
 		->unset_view('gallery_id, first_name')
 		->column_order('gallery_images, gallery_title, gallery_description, first_name, featured, status')
