@@ -7693,7 +7693,7 @@ class Aksara extends CI_Controller
 		)
 		->row();
 		
-		if(!$client || !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method, $client->user_id))
+		if(!$client || ($this->_set_permission && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method, $client->user_id)))
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_source'));
 		}
