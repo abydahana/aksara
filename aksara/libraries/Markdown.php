@@ -1474,7 +1474,7 @@ class Markdown
             $url = $this->urls[$link_id];
             $url = $this->encodeURLAttribute($url);
 
-            $result = "<a href=\"$url\"" . (strpos($url, "://") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
+            $result = "<a href=\"$url\"" . (strpos($url, "//") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
             if (isset($this->titles[$link_id])) {
                 $title = $this->titles[$link_id];
                 $title = $this->encodeAttribute($title);
@@ -1517,7 +1517,7 @@ class Markdown
 
         $url = $this->encodeURLAttribute($url);
 
-        $result = "<a href=\"$url\"" . (strpos($url, "://") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
+        $result = "<a href=\"$url\"" . (strpos($url, "//") !== false ? " target=\"_blank\"" : " class=\"text-primary --xhr\"");
         if (isset($title)) {
             $title = $this->encodeAttribute($title);
             $result .= " title=\"$title\"";

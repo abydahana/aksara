@@ -145,20 +145,36 @@ if(!function_exists('make_json'))
 		ini_set('memory_limit', -1);
 		
 		$CI											=& get_instance();
+		$html										= null;
 		
 		if(isset($data->html))
 		{
-			/* make a backup of "pre" tag */
-			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
-			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
+			$html									= $data->html;
 			
-			$data->html								= preg_replace(array('/[\n\t\s]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '\\1', '$1$2'), $data->html);
+			/* make a backup of "pre" tag */
+			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $html, $pre_backup);
+			$html									= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $html);
+			
+			$html									= preg_replace(array('/[ \t]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '$1$2'), $html);
 			
 			/* rollback the pre tag */
-			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
+			$html									= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $html);
 		}
 		
-		$output										= preg_replace(array('/\\\t/', '/\\\n/'), array(null, null), json_encode($data));
+		if($html)
+		{
+			unset($data->html);
+			
+			$data									= json_decode(preg_replace(array('/\\\t/', '/\\\n/'), array(null, null), json_encode($data)));
+			
+			$data->html								= $html;
+			
+			$output									= json_encode($data);
+		}
+		else
+		{
+			$output									= preg_replace(array('/\\\t/', '/\\\n/'), array(null, null), json_encode($data));
+		}
 		
 		if($filename)
 		{

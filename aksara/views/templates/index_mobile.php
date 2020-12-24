@@ -99,7 +99,7 @@
 		/**
 		 * Table data
 		 */
-		if(isset($results->table_data) && $total > 0)
+		if(isset($results->table_data) && $total)
 		{
 			foreach($results->table_data as $key => $val)
 			{

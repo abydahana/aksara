@@ -25,6 +25,7 @@ function compress()
  * 
  * @author			Aby Dahana
  * @website			www.aksaracms.com
+ *
  ';
 	
 		if(in_array($content_type, array('application/x-javascript', 'text/javascript', 'text/css')))

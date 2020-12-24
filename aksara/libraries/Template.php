@@ -506,7 +506,7 @@ class Template
 			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
 			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
 			
-			$data->html								= preg_replace(array('/[\n\t\s]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '\\1', '$1$2'), $data->html);
+			$data->html								= preg_replace(array('/[ \t]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '$1$2'), $data->html);
 			
 			/* rollback the pre tag */
 			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
@@ -532,7 +532,7 @@ class Template
 	 * @param	string	$title
 	 * @return	mixed
 	 */
-	public function breadcrumb($data = array(), $title = null, $found = null)
+	public function breadcrumb($data = array(), $title = null, $found = null, $crud = false)
 	{
 		$slug										= null;
 		$checker									= $this->_ci->uri->segment_array();
@@ -552,15 +552,31 @@ class Template
 		
 		$current_slug								= end($checker);
 		$slug										= null;
-		$output										= array
-		(
-			array
+		
+		if($crud)
+		{
+			$output									= array
 			(
-				'url'								=> base_url('dashboard'),
-				'label'								=> phrase('dashboard'),
-				'icon'								=> 'mdi mdi-home'
-			)
-		);
+				array
+				(
+					'url'							=> base_url('dashboard'),
+					'label'							=> phrase('dashboard'),
+					'icon'							=> 'mdi mdi-home'
+				)
+			);
+		}
+		else
+		{
+			$output									= array
+			(
+				array
+				(
+					'url'							=> base_url(),
+					'label'							=> phrase('homepage'),
+					'icon'							=> 'mdi mdi-home'
+				)
+			);
+		}
 		
 		foreach($data as $segment => $label)
 		{
@@ -736,9 +752,11 @@ class Template
 			$html									= str_get_html($output);
 			$output									= array
 			(
+				'total'								=> $data->total_rows,
 				'last_page'							=> $last_page,
 				'text'								=> phrase('showing') . ' ' . ($data->offset ? number_format($data->offset) : number_format(($data->total_rows > 0 ? 1 : 0))) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries_found') : phrase('entry_found'))
 			);
+			
 			foreach($html->find('ul li') as $li)
 			{
 				$output['results'][]				= array
@@ -749,8 +767,10 @@ class Template
 					'label'							=> $li->find('a', 0)->innertext
 				);
 			}
+			
 			return $output;
 		}
+		
 		return $output;
 	}
 

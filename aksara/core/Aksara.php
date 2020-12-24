@@ -161,10 +161,12 @@ class Aksara extends CI_Controller
 		$this->load->model('crud_model', 'model');
 		
 		/* load the required library */
-		$this->load->library(array('encryption', 'permission', 'session', 'template', 'user_agent'));
+		$this->load->library(array('benchmark', 'encryption', 'permission', 'session', 'template', 'user_agent'));
 		
 		/* load the required helper */
 		$this->load->helper(array('global', 'file', 'language', 'url'));
+		
+		$this->benchmark->mark('request_started');
 		
 		/* set the language based by the browser default language */
 		set_user_language();
@@ -2668,6 +2670,8 @@ class Aksara extends CI_Controller
 			$this->_results							= $this->_query;
 		}
 		
+		$this->benchmark->mark('request_ended');
+		
 		/**
 		 * Prepare the output
 		 */
@@ -2675,7 +2679,7 @@ class Aksara extends CI_Controller
 		(
 			'_token'								=> sha1(current_page() . SALT . get_userdata('session_generated')),
 			'method'								=> $this->_method,
-			'breadcrumb'							=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query),
+			'breadcrumb'							=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query, $this->_crud),
 			'current_page'							=> current_page(null, $this->input->get()),
 			'meta'									=> array
 			(
@@ -2685,7 +2689,7 @@ class Aksara extends CI_Controller
 				'modal_size'						=> $this->_modal_size
 			),
 			'results'								=> $this->_results,
-			'total'									=> $this->_data,
+			'total'									=> $this->_total,
 			'pagination'							=> array
 			(
 				'offset'							=> $this->_offset,
@@ -2693,7 +2697,8 @@ class Aksara extends CI_Controller
 				'total_rows'						=> $this->_total,
 				'url'								=> current_page(null, array('per_page' => null))
 			),
-			'query_string'							=> $this->input->get()
+			'query_string'							=> $this->input->get(),
+			'elapsed_time'							=> $this->benchmark->elapsed_time('request_started', 'request_ended')
 		);
 		
 		if(isset($this->_set_template['view']) || isset($this->_set_template['form']))
@@ -5322,7 +5327,7 @@ class Aksara extends CI_Controller
 	{
 		if(!$data && $this->model->table_exists($this->_from))
 		{
-			$this->_data							= 0;
+			$this->_data							= false;
 			$data									= array(array_flip($this->model->list_fields($this->_from)));
 		}
 		
