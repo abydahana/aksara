@@ -30,6 +30,16 @@ class Auth extends Aksara
 		{
 			return throw_exception(301, phrase('you_have_been_signed_in'), base_url('dashboard'), true);
 		}
+		elseif($this->input->get('code') && $this->input->get('scope') && $this->input->get('prompt'))
+		{
+			/* google login authentication */
+			return $this->google_auth();
+		}
+		elseif($this->input->get('code') && $this->input->get('state') && $this->session->userdata('FBRLH_state'))
+		{
+			/* facebook login authentication */
+			return $this->facebook_auth();
+		}
 		
 		$this->set_title(phrase('dashboard_access'))
 		->set_icon('mdi mdi-lock-open-outline')

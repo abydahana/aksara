@@ -22,6 +22,7 @@ class Aksara extends CI_Controller
 	 * Definition of the default params
 	 */
 	public $_api_request							= false;
+	public $_api_request_parameter					= array();
 	private $_language								= null;
 	private $_crud									= false;
 	private $_restrict_on_demo						= false;
@@ -79,7 +80,6 @@ class Aksara extends CI_Controller
 	private $_after_update							= null;
 	private $_before_delete							= null;
 	private $_after_delete							= null;
-	private $_batch_data							= null;
 	private $_old_files								= array();
 	private $_group_field							= array();
 	
@@ -243,38 +243,6 @@ class Aksara extends CI_Controller
 		/* token checker */
 		if($this->input->get())
 		{
-			if($this->input->get('fbclid'))
-			{
-				/**
-				 * unset unecessary tracking parameter
-				 */
-				unset($_GET['fbclid']);
-			}
-			
-			/* paypal checkout */
-			elseif($this->input->get('subscription_id') && $this->input->get('PayerID') && method_exists($this, 'paypal_payment'))
-			{
-				return $this->paypal_payment();
-			}
-			
-			/* midtrans checkout */
-			elseif(200 == $this->input->get('status_code') && $this->input->get('merchant_id') && $this->input->get('order_id') && method_exists($this, 'paid'))
-			{
-				return $this->paid();
-			}
-			
-			/* google auth */
-			if($this->input->get('code') && $this->input->get('scope') && $this->input->get('prompt') && method_exists($this, 'google_auth'))
-			{
-				return $this->google_auth();
-			}
-			
-			/* facebook auth */
-			elseif($this->input->get('code') && $this->input->get('state') && $this->session->userdata('FBRLH_state') && method_exists($this, 'facebook_auth'))
-			{
-				return $this->facebook_auth();
-			}
-			
 			$token									= $this->input->get('aksara');
 			$query_string							= $this->input->get();
 			
@@ -1095,21 +1063,6 @@ class Aksara extends CI_Controller
 	public function form_callback($callback = null)
 	{
 		$this->_form_callback						= $callback;
-		
-		return $this;
-	}
-	
-	/**
-	 * batch_data
-	 * There are no enough time to set add description
-	 *
-	 * @access		public
-	 * @param		string		$field
-	 * @return		mixed
-	 */
-	public function batch_data($field = null)
-	{
-		$this->_batch_data							= $field;
 		
 		return $this;
 	}
@@ -2791,12 +2744,19 @@ class Aksara extends CI_Controller
 					return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), $this->_redirect_back);
 				}
 			}
+			elseif($this->_api_request && in_array($this->_method, array('create', 'update')) && 'POST' == $this->input->server('REQUEST_METHOD'))
+			{
+				/**
+				 * Indicate the method is requested through API
+				 */
+				return $this->validate_form($this->_query);
+			}
 			else
 			{
 				if(('html' != $this->input->post('prefer') && $this->input->is_ajax_request() && stripos($this->template->view_template($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
 				{
 					/**
-					 * The request is trough Promise or XHR
+					 * Indicate the method is requested through Promise (XHR) or API
 					 */
 					if('modal' == $this->input->post('prefer'))
 					{
@@ -2817,6 +2777,14 @@ class Aksara extends CI_Controller
 					 */
 					if(stripos($this->input->server('HTTP_REFERER'), $this->input->server('SERVER_NAME')) !== false || $this->_api_request)
 					{
+						if($this->_api_request && 'GET' != $this->input->server('REQUEST_METHOD'))
+						{
+							/**
+							 * Indicate the method is requested through API
+							 */
+							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+						}
+						
 						return make_json
 						(
 							$this->_output
@@ -2856,29 +2824,40 @@ class Aksara extends CI_Controller
 	 */
 	public function insert_data($table = null, $data = array())
 	{
+		if($this->_api_request && 'POST' != $this->input->server('REQUEST_METHOD'))
+		{
+			/**
+			 * Indicate the method is requested through API
+			 */
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+		}
+		
 		if($table && $this->model->table_exists($table))
 		{
 			if(method_exists($this, 'before_insert'))
 			{
 				$this->before_insert();
 			}
+			
 			if($this->model->insert($table, $data))
 			{
 				$this->_insert_id					= $this->model->insert_id();
+				
 				if(method_exists($this, 'after_insert'))
 				{
 					$this->after_insert();
 				}
-				return throw_exception(301, phrase('data_was_successfully_submitted'), $this->_redirect_back);
+				
+				return throw_exception(($this->_api_request ? 200 : 301), phrase('data_was_successfully_submitted'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 			else
 			{
-				return throw_exception(500, phrase('unable_to_submit_your_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (insert)</b>', $this->_redirect_back);
+				return throw_exception(500, phrase('unable_to_submit_your_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (insert)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		else
 		{
-			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), $this->_redirect_back);
+			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
 	
@@ -2896,6 +2875,14 @@ class Aksara extends CI_Controller
 	 */
 	public function update_data($table = null, $data = array(), $where = array(), $redirect = null, $callback = null)
 	{
+		if($this->_api_request && 'POST' != $this->input->server('REQUEST_METHOD'))
+		{
+			/**
+			 * Indicate the method is requested through API
+			 */
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+		}
+		
 		if($table && $this->model->table_exists($table))
 		{
 			if(is_array($where) && sizeof($where) > 0 && $this->model->get_where($table, $where, 1)->num_rows() > 0)
@@ -2935,7 +2922,7 @@ class Aksara extends CI_Controller
 						$this->after_update();
 					}
 					
-					return throw_exception(301, phrase('data_was_successfully_updated'), $this->_redirect_back);
+					return throw_exception(($this->_api_request ? 200 : 301), phrase('data_was_successfully_updated'), (!$this->_api_request ? $this->_redirect_back : null));
 				}
 				else
 				{
@@ -2945,7 +2932,7 @@ class Aksara extends CI_Controller
 					}
 					else
 					{
-						return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', $this->_redirect_back);
+						return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 					}
 				}
 			}
@@ -2968,7 +2955,7 @@ class Aksara extends CI_Controller
 				}
 				else
 				{
-					return throw_exception(404, phrase('the_data_you_want_to_update_is_not_found'), $this->_redirect_back);
+					return throw_exception(404, phrase('the_data_you_want_to_update_is_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 		}
@@ -2980,7 +2967,7 @@ class Aksara extends CI_Controller
 			}
 			else
 			{
-				return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), $this->_redirect_back);
+				return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		
@@ -2999,10 +2986,18 @@ class Aksara extends CI_Controller
 	 */
 	public function delete_data($table = null, $where = array(), $limit = 1)
 	{
+		if($this->_api_request && 'DELETE' != $this->input->server('REQUEST_METHOD'))
+		{
+			/**
+			 * Indicate the method is requested through API
+			 */
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+		}
+		
 		/* check if app on demo mode */
 		if($this->_restrict_on_demo)
 		{
-			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), $this->_redirect_back);
+			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* hide the system error and show in the exception instead */
@@ -3012,7 +3007,7 @@ class Aksara extends CI_Controller
 		if(!$where)
 		{
 			/* otherwise, redirect to previous page */
-			return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), $this->_redirect_back);
+			return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* check if delete have a callback message */
@@ -3079,83 +3074,24 @@ class Aksara extends CI_Controller
 						$this->after_delete();
 					}
 					
-					return throw_exception(301, phrase('data_was_successfully_removed'), $this->_redirect_back);
+					return throw_exception(($this->_api_request ? 200 : 301), phrase('data_was_successfully_removed'), (!$this->_api_request ? $this->_redirect_back : null));
 				}
 				else
 				{
 					/* otherwise, the item is cannot be deleted */
-					return throw_exception(500, phrase('unable_to_remove_the_selected_data') . '. ' . phrase('please_try_again_or_contact_the_system_administrator') . '. ' . phrase('error_code') . ': <b>500 (delete)</b>', $this->_redirect_back);
+					return throw_exception(500, phrase('unable_to_remove_the_selected_data') . '. ' . phrase('please_try_again_or_contact_the_system_administrator') . '. ' . phrase('error_code') . ': <b>500 (delete)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 			else
 			{
 				/* no item found */
-				return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), $this->_redirect_back);
+				return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		else
 		{
 			/* the targeted database table isn't exists */
-			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), $this->_redirect_back);
-		}
-	}
-	
-	/**
-	 * insert_batch
-	 * Insert multiple data into database
-	 *
-	 * @access		public
-	 * @param		string		$table
-	 * @param		mixed		$data
-	 * @param		int			$batch_size
-	 * @return		mixed
-	 */
-	public function insert_batch($table = null, $data = array(), $batch_size = 1)
-	{
-		if($table && $this->model->table_exists($table))
-		{
-			if($this->model->insert_batch($table, $data, null, $batch_size))
-			{
-				return throw_exception(301, phrase('data_was_successfully_submitted'), $this->_redirect_back);
-			}
-			else
-			{
-				return throw_exception(500, phrase('unable_to_submit_your_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (insert)</b>', $this->_redirect_back);
-			}
-		}
-		else
-		{
-			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), $this->_redirect_back);
-		}
-	}
-	
-	/**
-	 * update_batch
-	 * Update multiple data from the database
-	 *
-	 * @access		public
-	 * @param		string		$table
-	 * @param		mixed		$data
-	 * @param		string		$field
-	 * @param		int			$batch_size
-	 * @return		mixed
-	 */
-	public function update_batch($table = null, $data = array(), $field = null, $batch_size = 1)
-	{
-		if($table && $this->model->table_exists($table) && $this->model->field_exists($field, $table))
-		{
-			if($this->model->update_batch($table, $data, $field, $batch_size))
-			{
-				return throw_exception(301, phrase('data_was_successfully_updated'), $this->_redirect_back);
-			}
-			else
-			{
-				return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', $this->_redirect_back);
-			}
-		}
-		else
-		{
-			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), $this->_redirect_back);
+			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
 	
@@ -3169,10 +3105,18 @@ class Aksara extends CI_Controller
 	 */
 	public function delete_batch($table = null)
 	{
+		if($this->_api_request && 'DELETE' != $this->input->server('REQUEST_METHOD'))
+		{
+			/**
+			 * Indicate the method is requested through API
+			 */
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+		}
+		
 		/* check if app on demo mode */
 		if($this->_restrict_on_demo)
 		{
-			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), $this->_redirect_back);
+			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* get the checked items */
@@ -3250,11 +3194,11 @@ class Aksara extends CI_Controller
 		
 		if($affected_rows)
 		{
-			return throw_exception(301, $affected_rows . ' ' . phrase('of') . ' ' . sizeof($items) . ' ' . phrase('data_was_successfully_removed'), $this->_redirect_back);
+			return throw_exception(($this->_api_request ? 200 : 301), $affected_rows . ' ' . phrase('of') . ' ' . sizeof($items) . ' ' . phrase('data_was_successfully_removed'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		else
 		{
-			return throw_exception(403, phrase('cannot_remove_the_selected_data'), $this->_redirect_back);
+			return throw_exception(403, phrase('cannot_remove_the_selected_data'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
 	
@@ -3268,6 +3212,14 @@ class Aksara extends CI_Controller
 	 */
 	public function render_form($data = array())
 	{
+		if($this->_api_request && 'POST' != $this->input->server('REQUEST_METHOD'))
+		{
+			/**
+			 * Indicate the method is requested through API
+			 */
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+		}
+		
 		if(!$data && !$this->_insert_on_update_fail && 'autocomplete' != $this->input->post('method'))
 		{
 			return throw_exception(404, phrase('the_data_you_requested_does_not_exists_or_it_has_been_removed'), $this->_redirect_back);
@@ -6896,7 +6848,7 @@ class Aksara extends CI_Controller
 		/* check if app on demo mode */
 		if($this->_restrict_on_demo)
 		{
-			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), $this->_redirect_back);
+			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* load additional library and helper */
@@ -6912,6 +6864,9 @@ class Aksara extends CI_Controller
 			
 			foreach($serialized[0] as $key => $val)
 			{
+				/* check if field is manageable through API */
+				if($this->_api_request_parameter && !in_array($key, $this->_api_request_parameter)) continue;
+				
 				$type								= $val['type'];
 				
 				if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($key, $this->_unset_field)) || (in_array($key, $this->_unset_field) && !isset($this->_set_default[$key])) || in_array('disabled', $type)) continue;
@@ -7030,6 +6985,9 @@ class Aksara extends CI_Controller
 				
 				foreach($serialized[0] as $field => $value)
 				{
+					/* check if field is manageable through API */
+					if($this->_api_request_parameter && !in_array($key, $this->_api_request_parameter)) continue;
+					
 					$type							= $value['type'];
 					
 					/* skip field because it were disable */
@@ -7295,49 +7253,17 @@ class Aksara extends CI_Controller
 					}
 				}
 				
-				if($this->_batch_data)
+				if($prepare && in_array('create', array($this->_method, $this->_set_method)))
 				{
-					$field							= $this->_batch_data;
-					$input							= $this->input->post($field);
-					$batch_size						= 1;
-					
-					if(is_array($input) && sizeof($input) > 0)
-					{
-						foreach($input as $sub_key => $sub_val)
-						{
-							$prepare[$field]		= $sub_val;
-							$batch_data[]			= $prepare;
-							$batch_size++;
-						}
-					}
-					
-					if($batch_data && in_array('create', array($this->_method, $this->_set_method)))
-					{
-						$this->insert_batch($this->_from, $batch_data, $batch_size);
-					}
-					elseif($batch_data && in_array('update', array($this->_method, $this->_set_method)))
-					{
-						$this->update_batch($this->_from, $batch_data, $field, null, $batch_size);
-					}
-					else
-					{
-						return throw_exception(500, phrase('the_method_you_requested_is_not_allowed') . ': <b>(' . ($this->_set_method ? $this->_set_method : $this->_method) . ')</b>', $this->_redirect_back);
-					}
+					$this->insert_data($this->_from, $prepare);
+				}
+				elseif($prepare && in_array('update', array($this->_method, $this->_set_method)))
+				{
+					$this->update_data($this->_from, $prepare, $this->_where);
 				}
 				else
 				{
-					if($prepare && in_array('create', array($this->_method, $this->_set_method)))
-					{
-						$this->insert_data($this->_from, $prepare);
-					}
-					elseif($prepare && in_array('update', array($this->_method, $this->_set_method)))
-					{
-						$this->update_data($this->_from, $prepare, $this->_where);
-					}
-					else
-					{
-						return throw_exception(500, phrase('the_method_you_requested_is_not_allowed') . ': <b>(' . ($this->_set_method ? $this->_set_method : $this->_method) . ')</b>', $this->_redirect_back);
-					}
+					return throw_exception(500, phrase('the_method_you_requested_is_not_allowed') . ': <b>(' . ($this->_set_method ? $this->_set_method : $this->_method) . ')</b>', $this->_redirect_back);
 				}
 			}
 		}
@@ -7675,6 +7601,8 @@ class Aksara extends CI_Controller
 			app__users.user_id,
 			app__users.group_id,
 			app__users.language_id,
+			rest__permissions.method,
+			rest__permissions.parameter,
 			rest__clients.ip_range,
 			rest__clients.status AS client_status,
 			rest__services.status AS service_status
@@ -7713,17 +7641,21 @@ class Aksara extends CI_Controller
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_source'));
 		}
-		elseif($client->ip_range && !$this->_ip_in_range($client->ip_range))
-		{
-			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
-		}
 		elseif(!$client->client_status)
 		{
 			return throw_exception(403, phrase('your_api_key_is_temporary_disabled'));
 		}
 		elseif(!$client->service_status)
 		{
-			return throw_exception(404, phrase('the_api_service_you_requested_is_temporary_deactivated'));
+			return throw_exception(403, phrase('the_api_service_you_requested_is_temporary_deactivated'));
+		}
+		elseif(!in_array($this->input->server('REQUEST_METHOD'), json_decode($client->method, true)))
+		{
+			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_using_the_requested_method') . ': ' . $this->input->server('REQUEST_METHOD'));
+		}
+		elseif($client->ip_range && !$this->_ip_in_range($client->ip_range))
+		{
+			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
 		}
 		
 		/* set the temporary session */
@@ -7737,9 +7669,37 @@ class Aksara extends CI_Controller
 			)
 		);
 		
+		/* set the language based by the browser default language */
+		set_user_language();
+		
+		$language_id								= (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+		$language									= $this->model->select
+		('
+			code
+		')
+		->get_where
+		(
+			'app__languages',
+			array
+			(
+				'id'								=> $language_id
+			),
+			1
+		)
+		->row('code');
+		
+		/* set default language */
+		if(is_dir(APPPATH . 'language/' . $language))
+		{
+			$this->_language						= $language;
+			
+			$this->config->set_item('language', $language);
+		}
+		
 		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
 		
 		$this->_api_request							= true;
+		$this->_api_request_parameter				= json_decode($client->parameter, true);
 		
 		return $this;
 	}
