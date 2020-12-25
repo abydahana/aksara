@@ -1,4 +1,4 @@
-Metode ini berfungsi untuk menjalankan fungsi CRUD pada render. Secara default, apabila tema yang digunakan adalah tema `back end`, maka fungsi CRUD otomatis diinisialisasi. Namun pada kasus tertentu, apabila ingin menjalankan fungsi CRUD pada `font end` maka metode ini wajib dijalankan.
+Metode ini berfungsi untuk menjalankan fungsi CRUD pada render. Untuk dapat melakukan fungsi `Create`, `Update` dan `Delete`, Anda wajib untuk memanggil metode ini pada controller.
 
 ###### Referensi
 
