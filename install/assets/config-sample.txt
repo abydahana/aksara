@@ -101,4 +101,4 @@ define('ASSET_PATH', 'public/assets');
  * Set the themes path
  * NO TRAILING SLASH!
  */
-define('THEME_PATH', 'themes');
+define('THEME_PATH', 'public/themes');

@@ -85,5 +85,5 @@ $config['theme'] = 'default';
 */
 
 $config['theme_locations'] = array(
-	FCPATH.'themes/'
+	THEME_PATH . '/'
 );
