@@ -2596,7 +2596,7 @@ class Aksara extends CI_Controller
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : phrase('page_not_found')));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud ? $this->render_table($this->_query) : $this->_query);
+				$this->_results						= $this->render_table($this->_query);
 			}
 			
 			/* otherwise */
@@ -2606,7 +2606,7 @@ class Aksara extends CI_Controller
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : phrase('page_not_found')));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud ? $this->render_table($this->_query) : $this->_query);
+				$this->_results						= $this->render_table($this->_query);
 			}
 		}
 		else
@@ -2710,6 +2710,11 @@ class Aksara extends CI_Controller
 			 */
 			if($this->input->post('_token'))
 			{
+				if(!$this->_crud)
+				{
+					return throw_exception(403, phrase('this_module_is_not_prepared_to_use_the_crud_feature'), (!$this->_api_request ? $this->_redirect_back : null));
+				}
+				
 				/**
 				 * Post token is initial to validate form. It's mean the request were
 				 * submitted through the form
@@ -4681,6 +4686,16 @@ class Aksara extends CI_Controller
 	 */
 	public function render_table($data = array())
 	{
+		if(!$this->_crud)
+		{
+			$this->_unset_action					= array_merge($this->_unset_action, array('create', 'update', 'delete'));
+			
+			if('backend' != $this->_set_theme)
+			{
+				return $data;
+			}
+		}
+		
 		$serialized									= $this->serialize($data);
 		$output										= array();
 		$query_string								= array();
