@@ -663,7 +663,7 @@ ALTER TABLE `galleries`
 -- Indexes for table `oauth__login`
 --
 ALTER TABLE `oauth__login`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`,`service_provider`) USING BTREE;
 
 --
 -- Indexes for table `pages`
