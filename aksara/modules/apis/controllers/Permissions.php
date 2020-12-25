@@ -94,9 +94,9 @@ class Permissions extends Aksara
 		
 		$this->set_title(phrase('client_permissions'))
 		->set_icon('mdi mdi-security-network')
-		->unset_column('id, parameter')
+		->unset_column('id, method, parameter')
 		->unset_field('id')
-		->unset_view('id, parameter')
+		->unset_view('id')
 		->column_order('title, description, method, first_name')
 		->set_field
 		(

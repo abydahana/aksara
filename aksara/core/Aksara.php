@@ -7578,7 +7578,7 @@ class Aksara extends CI_Controller
 		}
 		
 		return '
-			<ul class="list-unstyled' . (!$children ? 'ml-3' : null) . '">
+			<ul class="list-unstyled' . ($children ? ' ml-3' : null) . '">
 				' . $items . '
 			</ul>
 		';
