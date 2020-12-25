@@ -17,6 +17,8 @@ class Privileges extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		$this->set_method('update');
 		$this->parent_module('administrative/users');
 		$this->insert_on_update_fail();

@@ -17,6 +17,8 @@ class Account extends Aksara
 		$this->set_permission();
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		$this->set_method('update');
 		$this->parent_module('dashboard');
 	}

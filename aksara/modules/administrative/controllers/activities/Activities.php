@@ -21,6 +21,8 @@ class Activities extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		if($this->input->get('user_id'))
 		{
 			redirect(base_url('administrative/users/read?user_id=' . $this->input->get('user_id')));

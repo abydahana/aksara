@@ -407,11 +407,6 @@ class Aksara extends CI_Controller
 		
 		$this->template->set_theme($theme);
 		
-		if('backend' == $theme)
-		{
-			$this->_crud							= true;
-		}
-		
 		return $this;
 	}
 	
@@ -2891,10 +2886,12 @@ class Aksara extends CI_Controller
 				{
 					$this->_redirect_back			= $redirect;
 				}
+				
 				if(method_exists($this, 'before_update'))
 				{
 					$this->before_update();
 				}
+				
 				if($this->model->update($table, $data, $where, 1))
 				{
 					/* check if file is updated */

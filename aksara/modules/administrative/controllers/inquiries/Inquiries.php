@@ -17,6 +17,8 @@ class Inquiries extends Aksara
 		$this->set_permission();
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		$this->unset_action('create, update');
 	}
 	

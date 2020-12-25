@@ -19,6 +19,8 @@ class Permissions extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		$this->_primary								= $this->input->get('client');
 		
 		if('fetch-parameter' == $this->input->post('method'))
@@ -112,7 +114,6 @@ class Permissions extends Aksara
 			(
 				'GET'								=> 'GET ',
 				'POST'								=> 'POST ',
-				'PUT'								=> 'PUT ',
 				'DELETE'							=> 'DELETE '
 			)
 		)
@@ -152,6 +153,7 @@ class Permissions extends Aksara
 			(
 				'title'								=> 'required|xss_clean|is_unique[' . $this->_table . '.title.id.' . $this->input->get('id') . ']',
 				'description'						=> 'required|xss_clean',
+				'method'							=> 'required|in_list[GET,POST,DELETE]',
 				'status'							=> 'is_boolean'
 			)
 		)

@@ -19,6 +19,8 @@ class Services extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
+		$this->crud();
+		
 		$this->_primary								= $this->input->get('id');
 	}
 	

@@ -18,6 +18,8 @@ class Privileges extends Aksara
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		$this->crud();
 	}
 	
 	public function index()
@@ -37,7 +39,6 @@ class Privileges extends Aksara
 				' . phrase('after_modify_this_adjustment_to_sets_new_roles') . '
 			</div>
 		')
-		->set_primary('id')
 		->unset_column('id, privileges')
 		->unset_view('id')
 		->unset_field('id, last_generated')

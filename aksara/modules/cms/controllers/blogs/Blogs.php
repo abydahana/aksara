@@ -18,6 +18,8 @@ class Blogs extends Aksara
 		
 		$this->set_permission(array(1, 2));
 		$this->set_theme('backend');
+		
+		$this->crud();
 	}
 	
 	public function index()
