@@ -1,3 +1,6 @@
+# I am updating to the latest CodeIgniter 4
+Please wait until it's released officially. I am updating to CodeIgniter 4 for better development scalability.
+
 # Preparing an awesome...
 
 ![Preview](https://user-images.githubusercontent.com/10624446/102225698-1a6d4380-3f1a-11eb-9d49-ec3669bf008b.png)
