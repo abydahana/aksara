@@ -1,4 +1,4 @@
-# I am updating to the latest CodeIgniter 4
+# Update progress to the latest CodeIgniter 4
 Please wait until it's released officially. I am updating to CodeIgniter 4 for better development scalability.
 
 # Preparing an awesome...
