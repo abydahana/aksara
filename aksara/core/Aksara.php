@@ -6091,18 +6091,18 @@ class Aksara extends CI_Controller
 					/**
 					 * Individual table
 					 */
-					list($_table, $field)			= array_pad(explode('.', $val), 2, null);
+					list($table, $field)			= array_pad(explode('.', $val), 2, null);
 					
 					$field							= (stripos($field, ' ') !== false ? substr($field, strripos($field, ' ') + 1) : $field);
 					
-					if($_table && $field && in_array($field, $this->_forge_select))
+					if($table && $field && in_array($field, $this->_forge_select))
 					{
 						/**
 						 * Format column of select
 						 */
-						if($_table != $this->_from)
+						if($table != $this->_from)
 						{
-							$val					= $val . ' AS ' . $_table . '_' . $field;
+							$val					= $table . '.' . $field . ' AS ' . $table . '_' . $field;
 						}
 					}
 				}
