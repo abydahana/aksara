@@ -6100,7 +6100,7 @@ class Aksara extends CI_Controller
 						/**
 						 * Format column of select
 						 */
-						if($_table != $table)
+						if($_table != $this->_from)
 						{
 							$val					= $val . ' AS ' . $_table . '_' . $field;
 						}
