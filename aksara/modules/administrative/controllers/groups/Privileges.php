@@ -18,8 +18,6 @@ class Privileges extends Aksara
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
-		
-		$this->crud();
 	}
 	
 	public function index()

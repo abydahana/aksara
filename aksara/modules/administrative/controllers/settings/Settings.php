@@ -19,8 +19,6 @@ class Settings extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->set_method('update');
 		$this->set_upload_path('settings');
 	}

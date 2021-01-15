@@ -19,8 +19,6 @@ class Users extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->unset_delete('user_id', array(1));
 	}
 	

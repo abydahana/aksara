@@ -20,8 +20,6 @@ class Synchronize extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->parent_module('translations');
 	}
 	

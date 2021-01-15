@@ -19,8 +19,6 @@ class Translations extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->unset_update('id', array(1));
 		$this->unset_delete('id', array(1));
 	}

@@ -19,8 +19,6 @@ class Menus extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->unset_delete('menu_id', array(1, 2));
 	}
 	

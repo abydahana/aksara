@@ -20,8 +20,6 @@ class Carousels extends Aksara
 		$this->set_permission(array(1, 2));
 		$this->set_theme('backend');
 		
-		$this->crud();
-		
 		$this->set_upload_path('carousels');
 	}
 	
