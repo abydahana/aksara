@@ -70,11 +70,11 @@ if(!function_exists('aksara'))
 		
 		if('version' == $variable)
 		{
-			return (date('y', $modified) - (date('y', $modified) - 2)) . '.' . date('n', $modified) . '.' . date('j', $modified);
+			return (date('y', $modified) - 18) . '.' . date('n', $modified) . '.' . date('j', $modified);
 		}
 		elseif('built_version' == $variable)
 		{
-			return (date('y', $modified) - (date('y', $modified) - 2)) . '.' . date('n', $modified) . '.' . date('j', $modified) . CI_VERSION;
+			return (date('y', $modified) - 18) . '.' . date('n', $modified) . '.' . date('j', $modified) . CI_VERSION;
 		}
 		elseif('date_modified' == $variable)
 		{
