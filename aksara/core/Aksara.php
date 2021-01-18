@@ -7588,6 +7588,8 @@ class Aksara extends CI_Controller
 		/* destroy previous session to prevent hijacking */
 		$this->session->sess_destroy();
 		
+		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
+		
 		$client										= $this->model->select
 		('
 			app__users.user_id,
@@ -7687,8 +7689,6 @@ class Aksara extends CI_Controller
 			
 			$this->config->set_item('language', $language);
 		}
-		
-		$_SERVER['HTTP_X_REQUESTED_WITH']			= 'XMLHttpRequest';
 		
 		$this->_api_request							= true;
 		$this->_api_request_parameter				= json_decode($client->parameter, true);

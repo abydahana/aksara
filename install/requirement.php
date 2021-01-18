@@ -128,7 +128,7 @@
 					</div>
 				</div>
 			</div>
-			' . ($error ? '<div class="alert alert-warning failure"><b>Woops!</b> Some requirement aren\'t yet fulfilled! Please update your server configuration, refresh this page and try again...</div>' : null) . '
+			' . ($error ? '<div class="alert alert-warning failure"><b>Whoops!</b> Some requirement aren\'t yet fulfilled! Please update your server configuration, refresh this page and try again...</div>' : null) . '
 			<hr class="row" />
 			<div class="row">
 				<div class="col-md-6">
