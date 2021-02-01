@@ -1,9 +1,0 @@
-* linguist-vendored
-*.php linguist-vendored=false
-*.css linguist-vendored=false
-*.js linguist-vendored=false
-
-.git* export-ignore
-.editorconfig export-ignore
-README.md export-ignore
-documentation export-ignore
