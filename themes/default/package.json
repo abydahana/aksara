@@ -1,13 +1,14 @@
 {
 	"name": "Default front end theme",
 	"description": "The default front end theme bundle",
-	"version": "2.1",
+	"version": "1.0",
 	"author": "Aby Dahana",
 	"website": "https://abydahana.github.io",
+	"demo_url": "https://www.aksaracms.com",
 	"type": "frontend",
 	"compatibility":
 	[
-		"2.12"
+		"4.1"
 	],
 	"screenshot":
 	[
