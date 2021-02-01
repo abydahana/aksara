@@ -3,7 +3,11 @@
 	
 	require_once 'includes/function.php';
 	
-	if(!is_dir(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'vendor'))
+	if(version_compare(PHP_VERSION, '7.3', '<'))
+	{
+		exit(phrase('you_need_to_update_your_php_version'));
+	}
+	elseif(!is_dir(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'vendor'))
 	{
 		exit(phrase('please_run') . ' "<code>composer install</code>" ' . phrase('from') . ' "<code>' . dirname(dirname(__DIR__)) . '</code>" ' . phrase('to_fetch_the_required_repository_before_we_start_the_installation_wizard'));
 	}

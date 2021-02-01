@@ -13,6 +13,7 @@ return array
 (
 	// Global
 	'aksara_installer' => 'Aksara Installer',
+	'you_need_to_update_your_php_version' => 'You need to upgrade your version of PHP. Minimum version needed is PHP 7.3',
 	'please_run' => 'Please run',
 	'from' => 'from',
 	'to_fetch_the_required_repository_before_we_start_the_installation_wizard' => 'to fetch the required repository before we start the installation wizard.',

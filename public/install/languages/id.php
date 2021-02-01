@@ -13,10 +13,11 @@ return array
 (
 	// Global
 	'aksara_installer' => 'Instalasi Aksara',
+	'you_need_to_update_your_php_version' => 'Anda perlu memperbarui PHP ke versi yang lebih tinggi. Versi minimum yang dibutuhkan adalah PHP 7.3',
 	'please_run' => 'Silakan jalankan',
 	'from' => 'dari',
 	'to_fetch_the_required_repository_before_we_start_the_installation_wizard' => 'untuk mendapatkan aset yang diperlukan sebelum kita lanjutkan ke tahap instalasi.',
-	'whoops' => 'Anjay!',
+	'whoops' => 'Galat!',
 	'back' => 'Kembali',
 	'refresh' => 'Periksa Ulang',
 	'continue' => 'Lanjutkan',
