@@ -32,7 +32,7 @@ chdir(__DIR__);
 
 // Load our paths config file
 // This is the line that might need to be changed, depending on your folder structure.
-require realpath(FCPATH . '../app/Config/Paths.php') ?: FCPATH . '../app/Config/Paths.php';
+require realpath(FCPATH . '../aksara/Config/Paths.php') ?: FCPATH . '../aksara/Config/Paths.php';
 // ^^^ Change this if you move your application folder
 
 $paths = new Config\Paths();
