@@ -42,7 +42,7 @@
 					
 					echo $items;
 					
-					echo $this->template->pagination($pagination);
+					echo $template->pagination;
 				}
 				else
 				{

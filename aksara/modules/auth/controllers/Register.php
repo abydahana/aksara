@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Auth\Controllers;
 /**
  * Auth > Register
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Register extends Aksara
+class Register extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -26,16 +28,16 @@ class Register extends Aksara
 		}
 		
 		/* unlink old captcha if any */
-		if($this->session->userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . $this->session->userdata('captcha_file')))
+		if(get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file')))
 		{
-			@unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . $this->session->userdata('captcha_file'));
+			@unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
 		}
 	}
 	
 	public function index()
 	{
 		/* captcha challenge */
-		if(!$this->input->post('_token'))
+		if(!service('request')->getPost('_token'))
 		{
 			$string									= '123456789ABCDEF';
 			$length									= 6;
@@ -43,9 +45,14 @@ class Register extends Aksara
 			
 			if(is_writable(UPLOAD_PATH))
 			{
+				if(!is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
+				{
+					@mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
+				}
+				
 				if(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
 				{
-					$this->load->helper('captcha');
+					helper('captcha');
 					
 					$captcha						= create_captcha
 					(
@@ -68,10 +75,6 @@ class Register extends Aksara
 						)
 					);
 				}
-				else
-				{
-					@mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha');
-				}
 			}
 			
 			if(!$captcha)
@@ -84,7 +87,7 @@ class Register extends Aksara
 			}
 			
 			/* set captcha word into session, used to next validation */
-			$this->session->set_userdata
+			set_userdata
 			(
 				array
 				(
@@ -110,6 +113,7 @@ class Register extends Aksara
 		->set_icon('mdi mdi-account-plus')
 		->set_description(phrase('fill_all_the_required_field_below_to_take_a_new_account'))
 		->form_callback('_validate_form')
+		
 		->render();
 	}
 	
@@ -118,38 +122,37 @@ class Register extends Aksara
 	 */
 	public function _validate_form()
 	{
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), base_url());
 		}
 		
 		/* load additional library and helper */
-		$this->load->library('form_validation');
-		$this->load->helper('security');
 		
-		$this->form_validation->set_rules('first_name', phrase('first_name'), 'required|max_length[32]');
-		$this->form_validation->set_rules('username', phrase('username'), 'required|alpha_numeric|is_unique[app__users.username]');
-		$this->form_validation->set_rules('email', phrase('email_address'), 'required|valid_email|is_unique[app__users.email]');
-		$this->form_validation->set_rules('phone', phrase('phone_number'), 'required|min_length[8]|max_length[16]');
-		$this->form_validation->set_rules('password', phrase('password'), 'required|min_length[6]');
+		$this->form_validation->setRule('first_name', phrase('first_name'), 'required|max_length[32]');
+		$this->form_validation->setRule('last_name', phrase('last_name'), 'max_length[32]');
+		$this->form_validation->setRule('username', phrase('username'), 'required|alpha_numeric|is_unique[app__users.username]');
+		$this->form_validation->setRule('email', phrase('email_address'), 'required|valid_email|is_unique[app__users.email]');
+		$this->form_validation->setRule('phone', phrase('phone_number'), 'required|min_length[8]|max_length[16]');
+		$this->form_validation->setRule('password', phrase('password'), 'required|min_length[6]');
 		
 		/* validate captcha */
-		$this->form_validation->set_rules('captcha', phrase('bot_challenge'), 'required|regex_match[/' . $this->session->userdata('captcha') . '/i]');
+		$this->form_validation->setRule('captcha', phrase('bot_challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 		
 		/* run form validation */
-		if($this->form_validation->run() === false)
+		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
-			return throw_exception(400, $this->form_validation->error_array());
+			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		
 		/* prepare the insert data */
 		$prepare									= array
 		(
-			'first_name'							=> $this->input->post('first_name'),
-			'username'								=> $this->input->post('username'),
-			'email'									=> $this->input->post('email'),
-			'phone'									=> $this->input->post('phone'),
-			'password'								=> password_hash($this->input->post('password') . SALT, PASSWORD_DEFAULT),
+			'first_name'							=> service('request')->getPost('first_name'),
+			'username'								=> service('request')->getPost('username'),
+			'email'									=> service('request')->getPost('email'),
+			'phone'									=> service('request')->getPost('phone'),
+			'password'								=> password_hash(service('request')->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT),
 			'group_id'								=> (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3),
 			'language_id'							=> (get_setting('app_language') > 0 ? get_setting('app_language') : 1),
 			'registered_date'						=> date('Y-m-d'),
@@ -163,14 +166,14 @@ class Register extends Aksara
 			$insert_id								= $this->model->insert_id();
 			
 			/* unset stored captcha */
-			$this->session->unset_userdata(array('captcha', 'captcha_file'));
+			unset_userdata(array('captcha', 'captcha_file'));
 			
 			if(get_setting('auto_active_registration'))
 			{
 				$default_membership_group			= (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
 				
 				/* set the user credential into session */
-				$this->session->set_userdata
+				set_userdata
 				(
 					array
 					(
@@ -182,7 +185,7 @@ class Register extends Aksara
 				);
 				
 				/* send email to user */
-				$this->_send_welcome_email($this->input->post('email'), $this->input->post('username'), $this->input->post('first_name'), $this->input->post('last_name'));
+				$this->_send_welcome_email(service('request')->getPost('email'), service('request')->getPost('username'), service('request')->getPost('first_name'), service('request')->getPost('last_name'));
 				
 				/* return to previous page */
 				return throw_exception(301, phrase('your_account_has_been_registered_successfully'), base_url('dashboard'), true);
@@ -190,7 +193,7 @@ class Register extends Aksara
 			else
 			{
 				/* send email to user */
-				$this->_send_activation_email($insert_id, $this->input->post('email'), $this->input->post('first_name'), $this->input->post('last_name'));
+				$this->_send_activation_email($insert_id, service('request')->getPost('email'), service('request')->getPost('first_name'), service('request')->getPost('last_name'));
 				
 				/* return to previous page */
 				return throw_exception(301, phrase('follow_the_link_we_sent_to_your_email_to_activate_your_account'), base_url('auth'));
@@ -207,7 +210,10 @@ class Register extends Aksara
 	{
 		$query										= $this->model->select
 		('
-			app__users.user_id
+			app__users.user_id,
+			app__users.username,
+			app__users.group_id,
+			app__users.language_id
 		')
 		->join
 		(
@@ -219,7 +225,7 @@ class Register extends Aksara
 			'app__users_hash',
 			array
 			(
-				'app__users_hash.hash'				=> $this->input->get('hash')
+				'app__users_hash.hash'				=> service('request')->getGet('hash')
 			),
 			1
 		)
@@ -249,7 +255,21 @@ class Register extends Aksara
 				)
 			);
 			
-			return throw_exception(301, phrase('your_account_has_been_successfully_activated'), base_url('auth', array('hash' => null)));
+			/* set the user credential into session */
+			set_userdata
+			(
+				array
+				(
+					'user_id'						=> $query->user_id,
+					'username'						=> $query->username,
+					'group_id'						=> $query->group_id,
+					'language_id'					=> $query->language_id,
+					'is_logged'						=> true,
+					'session_generated'				=> time()
+				)
+			);
+			
+			return throw_exception(301, phrase('your_account_has_been_successfully_activated'), base_url());
 		}
 		else
 		{
@@ -276,28 +296,31 @@ class Register extends Aksara
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->load->library('email');
+		$this->email								= \Config\Services::email();
 		
-		$config['useragent']       					= 'Aksara';
+		$host										= get_setting('smtp_host');
+		
+		$config['userAgent']       					= 'Aksara';
 		$config['protocol']							= 'smtp';
-		$config['smtp_host']						= get_setting('smtp_host');
-		$config['smtp_port']						= get_setting('smtp_port');
-		$config['smtp_user']						= get_setting('smtp_username');
-		$config['smtp_pass']						= $this->encryption->decrypt(get_setting('smtp_password'));
-		$config['smtp_timeout']						= '7';
+		$config['SMTPCrypto']						= 'ssl';
+		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+		$config['SMTPPort']							= get_setting('smtp_port');
+		$config['SMTPUser']							= get_setting('smtp_username');
+		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPTimeout']						= 5;
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
-		$config['mailtype']							= 'html'; // text or html
-		$config['wordwrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not     
+		$config['mailType']							= 'html'; // text or html
+		$config['wordWrap']							= true;
+		$config['validation']						= true; // bool whether to validate email or not
 		
 		$this->email->initialize($config);		
 		
-		$this->email->from(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->to($email);
+		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setTo($email);
 		
-		$this->email->subject(phrase('account_activation'));
-		$this->email->message
+		$this->email->setSubject(phrase('account_activation'));
+		$this->email->setMessage
 		('
 			<!DOCTYPE html>
 			<html>
@@ -323,13 +346,6 @@ class Register extends Aksara
 					<br />
 					<br />
 					<p>
-						' . phrase('regards') . ',
-					</p>
-					<p>
-						<b>
-							' . phrase('notification_system') . '
-						</b>
-						<br />
 						<b>
 							' . get_setting('office_name') . '
 						</b>
@@ -354,28 +370,31 @@ class Register extends Aksara
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->load->library('email');
+		$this->email								= \Config\Services::email();
 		
-		$config['useragent']       					= 'Aksara';
+		$host										= get_setting('smtp_host');
+		
+		$config['userAgent']       					= 'Aksara';
 		$config['protocol']							= 'smtp';
-		$config['smtp_host']						= get_setting('smtp_host');
-		$config['smtp_port']						= get_setting('smtp_port');
-		$config['smtp_user']						= get_setting('smtp_username');
-		$config['smtp_pass']						= $this->encryption->decrypt(get_setting('smtp_password'));
-		$config['smtp_timeout']						= '7';
+		$config['SMTPCrypto']						= 'ssl';
+		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+		$config['SMTPPort']							= get_setting('smtp_port');
+		$config['SMTPUser']							= get_setting('smtp_username');
+		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPTimeout']						= 5;
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
-		$config['mailtype']							= 'html'; // text or html
-		$config['wordwrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not     
+		$config['mailType']							= 'html'; // text or html
+		$config['wordWrap']							= true;
+		$config['validation']						= true; // bool whether to validate email or not
 		
 		$this->email->initialize($config);		
 		
-		$this->email->from(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->to($email);
+		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setTo($email);
 		
-		$this->email->subject(phrase('account_registration_successfully'));
-		$this->email->message
+		$this->email->setSubject(phrase('account_registration_successfully'));
+		$this->email->setMessage
 		('
 			<!DOCTYPE html>
 			<html>
@@ -400,13 +419,6 @@ class Register extends Aksara
 					<br />
 					<br />
 					<p>
-						' . phrase('regards') . ',
-					</p>
-					<p>
-						<b>
-							' . phrase('notification_system') . '
-						</b>
-						<br />
 						<b>
 							' . get_setting('office_name') . '
 						</b>

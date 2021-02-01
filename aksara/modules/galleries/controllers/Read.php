@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Galleries\Controllers;
 /**
  * Galleries > Read
  * Show the individual photo from the gallery
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Read extends Aksara
+class Read extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'galleries';
 	
@@ -59,6 +61,7 @@ class Read extends Aksara
 		)
 		->limit(1)
 		->modal_size('modal-lg')
+		
 		->render($this->_table);
 	}
 }

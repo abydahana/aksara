@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers;
 /**
  * CMS
  * Landing page for Content Management Module.
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Cms extends Aksara
+class Cms extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -23,6 +25,7 @@ class Cms extends Aksara
 	{
 		$this->set_title(phrase('content_management_system'))
 		->set_icon('mdi mdi-briefcase-outline')
+		
 		->render();
 	}
 }

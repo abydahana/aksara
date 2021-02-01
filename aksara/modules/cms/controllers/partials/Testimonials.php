@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials > Testimonials
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Testimonials extends Aksara
+class Testimonials extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'testimonials';
 	
@@ -24,7 +26,7 @@ class Testimonials extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_testimonials'))
+		$this->set_title(phrase('testimonials'))
 		->set_icon('mdi mdi-comment-account-outline')
 		->set_primary('testimonial_id')
 		->unset_column('testimonial_id, testimonial_content, timestamp, language')
@@ -54,12 +56,12 @@ class Testimonials extends Aksara
 		(
 			array
 			(
-				'first_name'						=> 'required|xss_clean',
-				'last_name'							=> 'xss_clean',
-				'testimonial_title'					=> 'required|xss_clean',
-				'testimonial_content'				=> 'required|xss_clean',
+				'first_name'						=> 'required|string',
+				'last_name'							=> 'string',
+				'testimonial_title'					=> 'required|string',
+				'testimonial_content'				=> 'required|string',
 				'language_id'						=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -76,6 +78,7 @@ class Testimonials extends Aksara
 		)
 		->merge_field('first_name, last_name')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
+		
 		->render($this->_table);
 	}
 }

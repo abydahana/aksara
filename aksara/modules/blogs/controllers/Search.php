@@ -1,31 +1,33 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs > Search
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Search extends Aksara
+use Aksara\Laboratory\Core;
+
+class Search extends Core
 {
 	public function __construct()
 	{
 		parent::__construct();
 		
-		$this->parent_module('blogs');
-		
-		$this->_keywords							= htmlspecialchars(($this->input->post('q') ? $this->input->post('q') : $this->input->get('q')));
+		$this->_keywords							= htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 	}
 	
 	public function index()
 	{
-		if($this->input->get('category'))
+		if(service('request')->getGet('category'))
 		{
-			$this->where('blogs__categories.category_slug', $this->input->get('category'));
+			$this->where('blogs__categories.category_slug', service('request')->getGet('category'));
 		}
 		
 		$this->set_title(phrase('search'))
-		->set_description(phrase('search_result_for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->input->get('category') ? '{category_title}' : phrase('all'))))
+		->set_description(phrase('search_result_for') . ' ' . ($this->_keywords ? $this->_keywords : (service('request')->getGet('category') ? '{category_title}' : phrase('all'))))
 		->set_icon('mdi mdi-magnify')
 		
 		->set_output
@@ -38,7 +40,7 @@ class Search extends Aksara
 					'blogs__categories',
 					array
 					(
-						'category_slug'				=> $this->input->get('category')
+						'category_slug'				=> service('request')->getGet('category')
 					),
 					1
 				)
@@ -88,6 +90,7 @@ class Search extends Aksara
 			)
 		)
 		->order_by('blogs.updated_timestamp', 'DESC')
+		
 		->render('blogs');
 	}
 }

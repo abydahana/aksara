@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Pages\Controllers;
 /**
  * Pages > About
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class About extends Aksara
+class About extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -18,6 +20,7 @@ class About extends Aksara
 		$this->set_title(phrase('about_the_project'))
 		->set_icon('mdi mdi-information-outline')
 		->set_description(phrase('including_the_credits_of_external_resources'))
+		
 		->render();
 	}
 }

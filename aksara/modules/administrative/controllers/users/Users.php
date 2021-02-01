@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Users;
 /**
  * Administrative > Users
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Users extends Aksara
+class Users extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__users';
 	
@@ -95,12 +97,12 @@ class Users extends Aksara
 		(
 			array
 			(
-				'username'							=> 'trim|required|alpha_numeric|is_unique[app__users.username.user_id.' . $this->input->get('user_id') . ']',
-				'email'								=> 'required|valid_email|is_unique[app__users.email.user_id.' . $this->input->get('user_id') . ']',
-				'first_name'						=> 'trim|required|xss_clean|max_length[32]',
-				'last_name'							=> 'trim|xss_clean|max_length[32]',
+				'username'							=> 'required|alpha_numeric|is_unique[app__users.username,user_id,' . service('request')->getGet('user_id') . ']',
+				'email'								=> 'required|valid_email|is_unique[app__users.email,user_id,' . service('request')->getGet('user_id') . ']',
+				'first_name'						=> 'required|string|max_length[32]',
+				'last_name'							=> 'string|max_length[32]',
 				'group_id'							=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->field_position

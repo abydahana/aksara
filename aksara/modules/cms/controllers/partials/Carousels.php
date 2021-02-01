@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials
  * Manage frontend carousel slideshow
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Carousels extends Aksara
+class Carousels extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages__carousels';
 	
@@ -25,7 +27,7 @@ class Carousels extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_carousels'))
+		$this->set_title(phrase('carousels'))
 		->set_icon('mdi mdi-view-carousel')
 		->unset_column('carousel_id, created_timestamp, updated_timestamp, language')
 		->unset_field('carousel_id')
@@ -57,7 +59,7 @@ class Carousels extends Aksara
 			(
 				'title'								=> 'required',
 				'language_id'						=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -74,6 +76,7 @@ class Carousels extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

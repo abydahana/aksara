@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 $extra_toolbar										= null;
 $primary											= array();
 
@@ -62,9 +62,9 @@ if(isset($results->extra_action->toolbar))
 		<div class="col<?php echo (!isset($results->filter) || !$results->filter ? '-4' : null); ?>">
 			<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
 				<?php
-					if($this->input->get())
+					if(service('request')->getGet())
 					{
-						foreach($this->input->get() as $key => $val)
+						foreach(service('request')->getGet() as $key => $val)
 						{
 							if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
 							
@@ -75,17 +75,20 @@ if(isset($results->extra_action->toolbar))
 				<div class="input-group input-group-sm">
 					
 					<?php echo (isset($results->filter) ? $results->filter : null); ?>
-					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo $this->input->get('q'); ?>" role="autocomplete" />
+					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo service('request')->getGet('q'); ?>" role="autocomplete" />
 					<select name="column" class="form-control">
 						<option value="all"><?php echo phrase('all_columns'); ?></option>
 						<?php
-							foreach($results->columns as $key => $val)
+							if(isset($results->columns))
 							{
-								echo '
-									<option value="' . $val->field . '"' . ($val->field == $this->input->get('column') ? ' selected' : null) . '>
-										' . $val->label . '
-									</option>
-								';
+								foreach($results->columns as $key => $val)
+								{
+									echo '
+										<option value="' . $val->field . '"' . ($val->field == service('request')->getGet('column') ? ' selected' : null) . '>
+											' . $val->label . '
+										</option>
+									';
+								}
 							}
 						?>
 					</select>
@@ -123,8 +126,8 @@ if(isset($results->extra_action->toolbar))
 							{
 								echo '
 									<th class="border-top-0' . ('right' == $val->align ? ' text-right' : null) . '">
-										<a href="' . go_to(null, array('order' => $val->field, 'sort' => get_userdata('sortOrder'))) . '" class="--xhr' . ($val->field == $this->input->get('order') ? ' text-primary' : ' text-default') . '">
-											<i class="mdi mdi-sort-' . ($val->field == $this->input->get('order') && 'asc' == $this->input->get('sort') ? 'ascending' : 'descending') . ' float-right' . ($val->field == $this->input->get('order') ? ' text-primary' : ' text-muted') . '"></i>
+										<a href="' . go_to(null, array('order' => $val->field, 'sort' => get_userdata('sortOrder'))) . '" class="--xhr' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-default') . '">
+											<i class="mdi mdi-sort-' . ($val->field == service('request')->getGet('order') && 'asc' == service('request')->getGet('sort') ? 'ascending' : 'descending') . ' float-right' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-muted') . '"></i>
 											' . $val->label . '
 										</a>
 									</th>
@@ -289,7 +292,7 @@ if(isset($results->extra_action->toolbar))
 	</div>
 	<div class="row alias-pagination border-top pt-2 pb-2">
 		<div class="col-12">
-		<?php echo $this->template->pagination($pagination); ?>
+		<?php echo $template->pagination; ?>
 		</div>
 	</div>
 </div>

@@ -66,7 +66,7 @@
 			<form action="<?php echo current_page(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
 				<div class="form-group">
 					<div class="input-group">
-						<input type="text" name="keyword" class="form-control" placeholder="<?php echo phrase('search_phrase'); ?>" value="<?php echo $this->input->get('keyword'); ?>" />
+						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('search_phrase'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
 						<div class="input-group-append">
 							<button type="submit" class="btn btn-primary">
 								<i class="mdi mdi-magnify"></i>
@@ -77,9 +77,13 @@
 			</form>
 		</div>
 	</div>
+	
 	<hr class="row" />
-	<?php echo $this->template->pagination($pagination); ?>
+	
+	<?php echo $template->pagination; ?>
+	
 	<hr class="row" />
+	
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
 		<div class="row">
 			<?php
@@ -105,10 +109,11 @@
 				}
 			?>
 		</div>
+		<div class="--validation-callback mb-0"></div>
 		<div class="opt-btn-overlap-fix d-none d-md-block"></div><!-- fix the overlap -->
 		<div class="row opt-btn">
 			<div class="col-md-12">
-				<a href="<?php echo current_page('../', array('id' => null, 'code' => null, 'per_page' => null)); ?>" class="btn btn-link --xhr">
+				<a href="<?php echo current_page('../', array('id' => null, 'code' => null, 'per_page' => null, 'q' => null)); ?>" class="btn btn-link --xhr">
 					<i class="mdi mdi-arrow-left"></i>
 					<?php echo phrase('back'); ?>
 				</a>
@@ -119,10 +124,12 @@
 			</div>
 		</div>
 	</form>
+	
 	<hr class="row" />
+	
 	<div class="row">
 		<div class="col-md-12">
-			<?php echo $this->template->pagination($pagination); ?>
+			<?php echo $template->pagination; ?>
 		</div>
 	</div>
 	<div class="mb-5 d-md-none"><!-- fix mobile overlap --></div>

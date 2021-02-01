@@ -1,0 +1,23 @@
+{
+	"name": "Default front end theme",
+	"description": "The default front end theme bundle",
+	"version": "2.1",
+	"author": "Aby Dahana",
+	"website": "https://abydahana.github.io",
+	"type": "frontend",
+	"compatibility":
+	[
+		"2.12"
+	],
+	"screenshot":
+	[
+		{
+			"src": "homepage.png",
+			"alt": "homepage.png"
+		},
+		{
+			"src": "blog.png",
+			"alt": "blog.png"
+		}
+	]
+}

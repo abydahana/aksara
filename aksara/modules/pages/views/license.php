@@ -45,7 +45,7 @@
 			</div>
 			<div class="article text-justify">
 				<p>
-					Three notes should be enough. You shall leave this license page here and may not override it's content. I look forward to your support!
+					Three notes should be enough. You shall leave this license page here and may not override its content. I look forward to your support!
 				</p>
 			</div>
 		</div>

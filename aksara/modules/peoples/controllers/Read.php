@@ -1,28 +1,28 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Peoples\Controllers;
 /**
  * Peoples > Read
  * Show the selected people details
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Read extends Aksara
+class Read extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'peoples';
 	
 	public function __construct()
 	{
 		parent::__construct();
-		
-		$this->parent_module('peoples');
 	}
 	
 	public function index($slug = null)
 	{
-		if($this->input->get('people_slug'))
+		if(service('request')->getGet('people_slug'))
 		{
-			$slug									= $this->input->get('people_slug');
+			$slug									= service('request')->getGet('people_slug');
 		}
 		
 		$this->set_title('{first_name} {last_name}', phrase('people_not_found'))
@@ -45,6 +45,7 @@ class Read extends Aksara
 		)
 		->where('people_slug', $slug)
 		->limit(1)
+		
 		->render($this->_table);
 	}
 }

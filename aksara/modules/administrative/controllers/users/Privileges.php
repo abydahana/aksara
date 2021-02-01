@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Users;
 /**
  * Administrative > Users > Privileges
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Privileges extends Aksara
+class Privileges extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__users_privileges';
 	
@@ -18,10 +20,9 @@ class Privileges extends Aksara
 		$this->set_theme('backend');
 		
 		$this->set_method('update');
-		$this->parent_module('administrative/users');
 		$this->insert_on_update_fail();
 		
-		$this->_primary								= $this->input->get('user_id');
+		$this->_primary								= service('request')->getGet('user_id');
 		
 		$this->_user								= $this->model->select
 		('
@@ -78,11 +79,12 @@ class Privileges extends Aksara
 			array
 			(
 				'user_id'							=> $this->_primary,
-				'access_year'						=> $this->input->post('year')
+				'access_year'						=> service('request')->getPost('year')
 			)
 		)
 		->where('user_id', $this->_primary)
 		->limit(1)
+		
 		->render($this->_table);
 	}
 	

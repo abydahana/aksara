@@ -1,4 +1,10 @@
 {
     "require": {
+        "codeigniter4/framework": "^4.1",
+        "mpdf/mpdf": "^8.0",
+        "halaxa/json-machine": "^0.5.0",
+        "facebook/graph-sdk": "^5.7",
+        "google/apiclient": "^2.8",
+        "midtrans/midtrans-php": "^2.3"
     }
 }

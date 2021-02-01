@@ -95,7 +95,7 @@
 					</button>
 				</div>
 				<div class="tab-pane show active" id="results-pretty" role="tabpanel">
-					<pre class="code border-top border-bottom" data-language="json"></pre>
+					<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
 				</div>
 			</div>
 		</div>
@@ -142,12 +142,11 @@
 			if(!$(this).find('input[name=url]').val())
 			{
 				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send'),
-				$('pre.code').text(JSON.stringify({error: "<?php echo phrase('no_service_url_given'); ?>"}, null, 4)).highlight
-				({
-					source: false,
-					zebra: true,
-					indent: 'tab'
-				});
+				
+				$('pre code').text(JSON.stringify({error: "<?php echo phrase('no_service_url_given'); ?>"}, null, 4)),
+				
+				Prism.highlightAll();
+				
 				return;
 			}
 			
@@ -184,7 +183,7 @@
 				headers: header,
 				beforeSend: function()
 				{
-					$('pre.code').text(''),
+					$('pre code').text(''),
 					$('.result-html').html('')
 				}
 			})
@@ -199,23 +198,17 @@
 					};
 				}
 				
-				$('pre.code').text(JSON.stringify(response, null, 4)).highlight
-				({
-					source: false,
-					zebra: true,
-					indent: 'tab'
-				})
+				$('pre code').text(JSON.stringify(response, null, 4)),
+				
+				Prism.highlightAll()
 			})
 			.fail(function(response, text, message)
 			{
 				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
 				
-				$('pre.code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4)).highlight
-				({
-					source: false,
-					zebra: true,
-					indent: 'tab'
-				})
+				$('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4)),
+				
+				Prism.highlightAll()
 			})
 		})
 	})

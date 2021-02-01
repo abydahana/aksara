@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Translations;
 /**
  * Administrative > Translations
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Translations extends Aksara
+class Translations extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__languages';
 	
@@ -50,11 +52,11 @@ class Translations extends Aksara
 		(
 			array
 			(
-				'language'							=> 'required|xss_clean|max_length[32]',
-				'description'						=> 'required|xss_clean',
-				'code'								=> 'required|alpha_dash|max_length[32]|is_unique[app__languages.code.id.' . $this->input->get('id') . ']',
-				'locale'							=> 'required|xss_clean|max_length[64]',
-				'status'							=> 'is_boolean'
+				'language'							=> 'required|string|max_length[32]',
+				'description'						=> 'required|string',
+				'code'								=> 'required|alpha_dash|max_length[32]|is_unique[app__languages.code,id,' . service('request')->getGet('id') . ']',
+				'locale'							=> 'required|string|max_length[64]',
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -68,6 +70,7 @@ class Translations extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 	
@@ -77,15 +80,15 @@ class Translations extends Aksara
 		try
 		{
 			/* check if language directory is exists */
-			if(!is_dir(TRANSLATION_PATH) && mkdir(TRANSLATION_PATH, 0755, true))
+			if(!is_dir(WRITEPATH . 'translations') && mkdir(WRITEPATH . 'translations', 0755, true))
 			{
 				/* put content into file */
-				file_put_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->input->post('code') . '.json', json_encode(array()));
+				file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json', json_encode(array()));
 			}
 			else
 			{
 				/* put content into file */
-				file_put_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->input->post('code') . '.json', json_encode(array()));
+				file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json', json_encode(array()));
 			}
 		}
 		catch(Exception $e)
@@ -100,10 +103,10 @@ class Translations extends Aksara
 		try
 		{
 			/* check if language directory is exists */
-			if(file_exists(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->input->get('code') . '.json'))
+			if(file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getGet('code') . '.json'))
 			{
 				/* rename old file */
-				rename(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->input->get('code') . '.json', TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->input->post('code') . '.json');
+				rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json');
 			}
 		}
 		catch(Exception $e)

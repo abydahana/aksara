@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Peoples;
 /**
  * CMS > Peoples
  * Manage peoples that will be shown in the frontpage
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Peoples extends Aksara
+class Peoples extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'peoples';
 	
@@ -49,8 +51,8 @@ class Peoples extends Aksara
 		(
 			array
 			(
-				'first_name'						=> 'required|xss_clean',
-				'status'							=> 'is_boolean'
+				'first_name'						=> 'required|string',
+				'status'							=> 'boolean'
 			)
 		)
 		->merge_field('first_name, last_name')
@@ -82,6 +84,7 @@ class Peoples extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

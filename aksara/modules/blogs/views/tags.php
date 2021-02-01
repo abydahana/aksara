@@ -28,7 +28,7 @@
 		<div class="row">
 			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
 				<form action="<?php echo base_url('blogs/search', array('category_id' => null, 'per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
-					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo $this->input->get('q'); ?>" />
+					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
 					<button type="submit" class="btn btn-lg float-right absolute top right">
 						<i class="mdi mdi-magnify font-weight-bold"></i>
 					</button>
@@ -105,7 +105,7 @@
 						';
 					}
 					
-					echo $this->template->pagination($pagination);
+					echo $template->pagination;
 				}
 				else
 				{

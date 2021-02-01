@@ -1,5 +1,3 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-
 <div class="container-fluid">
 	<div class="row bg-dark full-height">
 		<div class="col-12">
@@ -8,7 +6,7 @@
 					[info@localhost ~]# aksara --tell -readonly
 				</p>
 				<p class="mb-0 text-danger">
-					<?php echo phrase('no_view_could_be_loaded'); ?>
+					<?php echo phrase('no_response_could_be_loaded'); ?>
 					<br />
 					<?php echo phrase('make_sure_to_check_the_following_mistake'); ?>:
 					<ol class="text-danger">
@@ -16,7 +14,7 @@
 							<?php echo phrase('module_structure'); ?>,
 						</li>
 						<li>
-							<?php echo phrase('incorect_view_path'); ?>,
+							<?php echo phrase('incorrect_view_path'); ?>,
 						</li>
 						<li>
 							<?php echo phrase('database_table_existence'); ?>,

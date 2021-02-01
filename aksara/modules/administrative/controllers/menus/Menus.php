@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Menus;
 /**
  * Administrative > Menus
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Menus extends Aksara
+class Menus extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__menus';
 	
@@ -66,6 +68,7 @@ class Menus extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 	
@@ -82,7 +85,7 @@ class Menus extends Aksara
 			$this->_table,
 			array
 			(
-				'menu_id'							=> $this->input->get('menu_id')
+				'menu_id'							=> service('request')->getGet('menu_id')
 			),
 			1
 		)

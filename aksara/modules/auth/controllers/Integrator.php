@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Auth\Controllers;
 /**
  * Auth > Integrator
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Integrator extends Aksara
+class Integrator extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -27,7 +29,7 @@ class Integrator extends Aksara
 				'last_name'							=> get_userdata('last_name'),
 				'gender'							=> get_userdata('gender'),
 				'avatar'							=> get_image('users', get_userdata('photo'), 'thumb'),
-				'ip_address'						=> $this->input->ip_address()
+				'ip_address'						=> service('request')->getIPAddress()
 			)
 		);
 	}

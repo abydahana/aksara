@@ -1,38 +1,17 @@
-<?php
-/** 
- * Check PHP version.
+<?php namespace Aksara\Libraries;
+/**
+ * Midtrans Payment Library
+ * A connector to integrate payment withing Midtrans
+ *
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-    throw new Exception('PHP version >= 5.4 required');
-}
-
-// Check PHP Curl & json decode capabilities.
-if (!function_exists('curl_init') || !function_exists('curl_exec')) {
-    throw new Exception('Midtrans needs the CURL PHP extension.');
-}
-if (!function_exists('json_decode')) {
-    throw new Exception('Midtrans needs the JSON PHP extension.');
-}
-
-// Configurations
-require_once 'Midtrans/Config.php';
-
-// Midtrans API Resources
-require_once 'Midtrans/Transaction.php';
-
-// Plumbing
-require_once 'Midtrans/ApiRequestor.php';
-require_once 'Midtrans/SnapApiRequestor.php';
-require_once 'Midtrans/Notification.php';
-require_once 'Midtrans/CoreApi.php';
-require_once 'Midtrans/Snap.php';
-
-// Sanitization
-require_once 'Midtrans/Sanitizer.php';
-
 class Midtrans
 {
-	function __construct($params = array())
+	public function __construct($params = array())
 	{
 		// Set your Merchant Server Key
 		\Midtrans\Config::$serverKey = (isset($params['server_key']) ? $params['server_key'] : null);
@@ -42,5 +21,19 @@ class Midtrans
 		\Midtrans\Config::$isSanitized = (isset($params['sanitized']) ? $params['sanitized'] : true);
 		// Set 3DS transaction for credit card to true
 		\Midtrans\Config::$is3ds = (isset($params['3ds']) ? $params['3ds'] : true);
+	}
+	
+	public function snap($params = array())
+	{
+		try
+		{
+			$paymentUrl								= \Midtrans\Snap::createTransaction($params)->redirect_url;
+			
+			return throw_exception(301, null, $paymentUrl, true);
+		}
+		catch (\Exception $e)
+		{
+			return throw_exception(500, $e->getMessage());
+		}
 	}
 }

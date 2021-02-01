@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Blogs;
 /**
  * CMS > Blogs
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Blogs extends Aksara
+class Blogs extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'blogs';
 	
@@ -22,7 +24,50 @@ class Blogs extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('blog_posts'))
+		if(service('request')->getGet('category'))
+		{
+			$query									= $this->model->get_where
+			(
+				'blogs__categories',
+				array
+				(
+					'category_id'					=> service('request')->getGet('category')
+				)
+			)
+			->row();
+			
+			if($query)
+			{
+				$this->set_description
+				('
+					<div class="row">
+						<div class="col-4 col-sm-3 col-md-2 text-muted text-uppercase">
+							' . phrase('category') . '
+						</div>
+						<div class="col-8 col-sm-9 col-md-4 font-weight-bold">
+							' . $query->category_title . '
+						</div>
+					</div>
+				')
+				->unset_field('post_category')
+				->set_default
+				(
+					array
+					(
+						'post_category'				=> $query->category_id
+					)
+				)
+				->where
+				(
+					array
+					(
+						'post_category'				=> $query->category_id
+					)
+				);
+			}
+		}
+		
+		$this->set_title(phrase('blogs'))
 		->set_icon('mdi mdi-newspaper')
 		->set_primary('post_id')
 		->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, updated_timestamp, headline, language')
@@ -48,6 +93,7 @@ class Blogs extends Aksara
 		)
 		->set_field('post_slug', 'to_slug', 'post_title')
 		->set_field('post_title', 'hyperlink', 'blogs/category/post', array('post_slug' => 'post_slug'), true)
+		->set_field('category_title', 'hyperlink', 'cms/blogs', array('category' => 'post_category'))
 		
 		->add_action('option', '../../blogs/category/post', phrase('view_post'), 'btn-success', 'mdi mdi-eye', array('post_slug' => 'post_slug'), true)
 		
@@ -55,11 +101,11 @@ class Blogs extends Aksara
 		(
 			array
 			(
-				'post_title'						=> 'required|max_length[256]|is_unique[' . $this->_table . '.post_title.post_id.' . $this->input->get('post_id') . ']',
+				'post_title'						=> 'required|max_length[256]|is_unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
 				'post_content'						=> 'required',
 				'post_category'						=> 'required',
-				'headline'							=> 'is_boolean',
-				'status'							=> 'is_boolean'
+				'headline'							=> 'boolean',
+				'status'							=> 'boolean'
 			)
 		)
 		->set_relation
@@ -133,6 +179,7 @@ class Blogs extends Aksara
 				'author'							=> get_userdata('user_id')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

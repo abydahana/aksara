@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials > Media
  * Manage uploaded media.
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Media extends Aksara
+class Media extends \Aksara\Laboratory\Core
 {
 	private $_folders								= array();
 	private $_files									= array();
@@ -26,23 +28,23 @@ class Media extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_media'))
+		$this->set_title(phrase('media'))
 		->set_icon('mdi mdi-folder-image')
 		->set_output
 		(
 			array
 			(
-				'results'							=> $this->_directory_list($this->input->get('directory'))
+				'results'							=> $this->_directory_list(service('request')->getGet('directory'))
 			)
 		)
+		
 		->render();
 	}
 	
 	private function _directory_list($directory = null)
 	{
 		/* load required helper */
-		$this->load->helper('directory');
-		$this->load->helper('file');
+		helper('filesystem');
 		
 		$data										= directory_map(UPLOAD_PATH);
 		
@@ -63,7 +65,7 @@ class Media extends Aksara
 			}
 		}
 		
-		$filename									= $this->input->get('file');
+		$filename									= service('request')->getGet('file');
 		$parent_directory							= substr($directory, 0, strpos($directory, DIRECTORY_SEPARATOR));
 		$folders									= array();
 		$files										= array();
@@ -75,11 +77,12 @@ class Media extends Aksara
 		
 		$description								= null;
 		
-		if($this->input->get('file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename))
+		if(service('request')->getGet('file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename))
 		{
+			$file									= new \CodeIgniter\Files\File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
 			$description							= get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
 			$description['icon']					= $this->_get_icon($directory, $filename);
-			$description['mime_type']				= get_mime_by_extension(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+			$description['mime_type']				= $file->getMimeType();
 		}
 		elseif(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory))
 		{
@@ -121,11 +124,13 @@ class Media extends Aksara
 					{
 						if(stripos($val, 'placeholder') !== false) continue;
 						
+						$file						= new \CodeIgniter\Files\File(UPLOAD_PATH . ($directory ? DIRECTORY_SEPARATOR . $directory : null) . DIRECTORY_SEPARATOR . $val);
+						
 						$this->_files[]				= array
 						(
 							'source'				=> $val,
 							'label'					=> $val,
-							'type'					=> get_mime_by_extension($val),
+							'type'					=> $file->getMimeType(),
 							'icon'					=> $this->_get_icon($directory, $val)
 						);
 					}

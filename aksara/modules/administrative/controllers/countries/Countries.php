@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Countries;
 /**
  * Administrative > Countries
  *
- * @version			2.1.0
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Countries extends Aksara
+class Countries extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'countries';
 	
@@ -19,7 +21,7 @@ class Countries extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->_primary								= $this->input->get('id');
+		$this->_primary								= service('request')->getGet('id');
 	}
 	
 	public function index()
@@ -34,9 +36,9 @@ class Countries extends Aksara
 		(
 			array
 			(
-				'code'								=> 'required|alpha_dash|max_length[5]|is_unique[' . $this->_table . '.code.id.' . $this->_primary . ']',
+				'code'								=> 'required|alpha_dash|max_length[5]|is_unique[' . $this->_table . '.code,id,' . $this->_primary . ']',
 				'country'							=> 'required|alpha|max_length[32]',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -48,6 +50,7 @@ class Countries extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

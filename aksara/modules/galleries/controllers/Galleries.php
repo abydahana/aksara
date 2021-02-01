@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Galleries\Controllers;
 /**
  * Galleries
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Galleries extends Aksara
+class Galleries extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -21,6 +23,7 @@ class Galleries extends Aksara
 		->set_primary('gallery_slug')
 		->order_by('gallery_title', 'RANDOM')
 		->where('status', 1)
+		
 		->render('galleries');
 	}
 }

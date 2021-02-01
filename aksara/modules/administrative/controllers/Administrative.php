@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers;
 /**
  * Administrative
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Administrative extends Aksara
+class Administrative extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -22,6 +24,7 @@ class Administrative extends Aksara
 	{
 		$this->set_title(phrase('administrative_page'))
 		->set_icon('mdi mdi-briefcase-outline')
+		
 		->render();
 	}
 }

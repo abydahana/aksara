@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Settings;
 /**
  * Administrative > Settings
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Settings extends Aksara
+class Settings extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__settings';
 	
@@ -26,6 +28,7 @@ class Settings extends Aksara
 	public function index()
 	{
 		$required_api_key							= null;
+		$required_analytic_key						= null;
 		$required_facebook_app_id					= null;
 		$required_facebook_app_secret				= null;
 		$required_google_client_id					= null;
@@ -33,30 +36,35 @@ class Settings extends Aksara
 		$required_email_masking						= null;
 		$required_smtp_host							= null;
 		
-		if($this->input->post('openlayers_search_provider'))
+		if(service('request')->getPost('openlayers_search_provider') && in_array(service('request')->getPost('openlayers_search_provider'), array('google', 'osm')))
 		{
 			$required_api_key						= 'required|';
 		}
 		
-		if($this->input->post('facebook_app_id'))
+		if(service('request')->getPost('google_analytics_key'))
+		{
+			$required_analytic_key					= 'required|';
+		}
+		
+		if(service('request')->getPost('facebook_app_id'))
 		{
 			$required_facebook_app_secret			= 'required';
 		}
-		elseif($this->input->post('facebook_app_secret'))
+		elseif(service('request')->getPost('facebook_app_secret'))
 		{
 			$required_facebook_app_id				= 'required';
 		}
 		
-		if($this->input->post('google_client_id'))
+		if(service('request')->getPost('google_client_id'))
 		{
 			$required_google_client_secret			= 'required';
 		}
-		elseif($this->input->post('google_client_secret'))
+		elseif(service('request')->getPost('google_client_secret'))
 		{
 			$required_google_client_id				= 'required';
 		}
 		
-		if($this->input->post('smtp_email_masking'))
+		if(service('request')->getPost('smtp_email_masking'))
 		{
 			$required_email_masking					= 'valid_email';
 		}
@@ -90,10 +98,11 @@ class Settings extends Aksara
 			'radio',
 			array
 			(
-				''									=> 'OpenLayers',
+				'openlayers'						=> 'OpenLayers',
 				'google'							=> 'Google',
 				'osm'								=> 'OpenStreetMap'
-			)
+			),
+			'<br />'
 		)
 		->set_relation
 		(
@@ -119,21 +128,22 @@ class Settings extends Aksara
 		(
 			array
 			(
-				'app_name'							=> 'required|xss_clean|max_length[60]',
-				'app_description'					=> 'xss_clean',
+				'app_name'							=> 'required|string|max_length[60]',
+				'app_description'					=> 'string',
 				'office_email'						=> 'required|valid_email',
 				
 				/* MEMBERSHIP */
-				'username_changes'					=> 'is_boolean',
-				'frontend_registration'				=> 'is_boolean',
-				'auto_active_registration'			=> 'is_boolean',
-				'one_device_login'					=> 'is_boolean',
+				'username_changes'					=> 'boolean',
+				'frontend_registration'				=> 'boolean',
+				'auto_active_registration'			=> 'boolean',
+				'one_device_login'					=> 'boolean',
 				
 				/* APIS */
-				'openlayers_search_provider'		=> 'in_list[google,osm]',
-				'openlayers_search_key'				=> $required_api_key . 'alpha_dash|max_length[128]',
+				'openlayers_search_provider'		=> 'in_list[openlayers,google,osm]',
+				'openlayers_search_key'				=> ($required_api_key ? $required_api_key . 'alpha_dash|max_length[128]' : null),
 				'maps_provider'						=> 'in_list[disabled,google,openlayers]',
-				'google_analytics_key'				=> 'alpha_dash|max_length[32]',
+				'google_analytics_key'				=> ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
+				'disqus_site_domain'				=> (service('request')->getPost('disqus_site_domain') ? 'valid_url|max_length[128]' : null),
 				
 				/* OAUTH */
 				'facebook_app_id'					=> $required_facebook_app_id,
@@ -152,6 +162,7 @@ class Settings extends Aksara
 			(
 				'app_name'							=> phrase('application_name'),
 				'app_description'					=> phrase('application_description'),
+				'office_name'						=> phrase('office_name'),
 				'office_email'						=> phrase('office_email'),
 				'office_phone'						=> phrase('office_phone'),
 				'office_fax'						=> phrase('office_fax'),
@@ -176,6 +187,7 @@ class Settings extends Aksara
 				'openlayers_search_provider'		=> phrase('openlayers_search_provider'),
 				'openlayers_search_key'				=> phrase('openlayers_search_key'),
 				'google_analytics_key'				=> phrase('google_analytics_key'),
+				'disqus_site_domain'				=> phrase('disqus_site_domain'),
 				
 				/* OATH */
 				'facebook_app_id'					=> phrase('facebook_app_id'),
@@ -200,6 +212,7 @@ class Settings extends Aksara
 			)
 		)
 		->limit(1)
+		
 		->render($this->_table);
 	}
 }

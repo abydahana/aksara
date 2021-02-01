@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Account;
 /**
  * Administrative > Account
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Account extends Aksara
+class Account extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -18,7 +20,6 @@ class Account extends Aksara
 		$this->set_theme('backend');
 		
 		$this->set_method('update');
-		$this->parent_module('dashboard');
 	}
 	
 	public function index()
@@ -85,12 +86,12 @@ class Account extends Aksara
 		(
 			array
 			(
-				'first_name'						=> 'required|alpha_numeric_spaces|max_length[32]',
-				'last_name'							=> 'alpha_numeric_spaces|max_length[32]',
-				'email'								=> 'required|valid_email|is_unique[app__users.email.user_id.' . get_userdata('user_id') . ']',
-				'username'							=> $username_required . 'alpha_dash|is_unique[app__users.username.user_id.' . get_userdata('user_id') . ']',
-				'bio'								=> 'xss_clean',
-				'address'							=> 'xss_clean',
+				'first_name'						=> 'required|max_length[32]',
+				'last_name'							=> 'max_length[32]',
+				'email'								=> 'required|valid_email|is_unique[app__users.email,user_id,' . get_userdata('user_id') . ']',
+				'username'							=> $username_required . 'alpha_dash|is_unique[app__users.username,user_id,' . get_userdata('user_id') . ']',
+				'bio'								=> 'string',
+				'address'							=> 'string',
 				'country'							=> 'required',
 				'language_id'						=> 'required'
 			)
@@ -113,6 +114,7 @@ class Account extends Aksara
 				'bio'								=> phrase('biography')
 			)
 		)
+		
 		->render('app__users');
 	}
 	
@@ -123,16 +125,16 @@ class Account extends Aksara
 			'app__languages',
 			array
 			(
-				'id'								=> $this->input->post('language')
+				'id'								=> service('request')->getPost('language')
 			)
 		)
 		->row('code');
 		
-		$this->session->set_userdata
+		set_userdata
 		(
 			array
 			(
-				'username'							=> ($this->input->post('username') ? $this->input->post('username') : get_userdata('username')),
+				'username'							=> (service('request')->getPost('username') ? service('request')->getPost('username') : get_userdata('username')),
 				'language'							=> $language
 			)
 		);

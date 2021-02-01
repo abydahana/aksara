@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Xhr\Controllers;
 /**
  * XHR > Summernote
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Summernote extends Aksara
+class Summernote extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -14,7 +16,7 @@ class Summernote extends Aksara
 		
 		if(!get_userdata('is_logged'))
 		{
-			redirect(base_url());
+			redirect_to(base_url());
 		}
 		
 		$this->permission->must_ajax(base_url());
@@ -30,36 +32,50 @@ class Summernote extends Aksara
 			}
 		}
 		
-		$config['allowed_types'] 					= IMAGE_FORMAT_ALLOWED;
-		$config['upload_path'] 						= UPLOAD_PATH . '/summernote';
-		$config['max_size']      					= (is_numeric(MAX_UPLOAD_SIZE) ? MAX_UPLOAD_SIZE : 1024*2);
-		$config['encrypt_name']	 					= TRUE;
+		$source										= service('request')->getFile('image');
 		
-		/* load and initialize the library */
-		$this->load->library('upload');
-		$this->upload->initialize($config);
-		
-		if($this->upload->do_upload('image'))
+		if(!$source->isValid() || $source->hasMoved())
 		{
-			$upload_data							= $this->upload->data();
-			
-			/* compress image */
-			$config['image_library']				= 'gd2';
-			$config['source_image']					= UPLOAD_PATH . '/summernote/' . $upload_data['file_name'];
-			$config['create_thumb']					= false;
-			$config['maintain_ratio']				= true;
-			$config['width']						= 800;
-			$config['height']						= 800;
-			$config['new_image']					= UPLOAD_PATH . '/summernote/' . $upload_data['file_name'];
-			$this->load->library('image_lib', $config);
-			$this->image_lib->resize();
-			
+			return false;
+		}
+		
+		$mime_type									= new \Config\Mimes;
+		$valid_mime									= array();
+		
+		$filetype									= array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
+		
+		foreach($filetype as $key => $val)
+		{
+			$valid_mime[]							= $mime_type->guessTypeFromExtension($val);
+		}
+		
+		if(!$source->getName() || !in_array($source->getMimeType(), $valid_mime) || $source->getSizeByUnit('kb') > MAX_UPLOAD_SIZE || !is_dir(UPLOAD_PATH) || !is_writable(UPLOAD_PATH))
+		{
+			return make_json
+			(
+				array
+				(
+					'status'						=> 'error',
+					'messages'						=> phrase('upload_error')
+				)
+			);
+		}
+		
+		$filename									= $source->getRandomName();
+		$imageinfo									= getimagesize($source);
+		$width										= ($imageinfo[0] > 800 ? 800 : $imageinfo[0]);
+		$height										= ($imageinfo[1] > 800 ? 800 : $imageinfo[1]);
+		$master_dimension							= ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+		$this->image								= \Config\Services::image('gd');
+		
+		if($this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/summernote/' . $filename))
+		{
 			return make_json
 			(
 				array
 				(
 					'status'						=> 'success',
-					'source'						=> get_image('summernote', $upload_data['file_name'])
+					'source'						=> get_image('summernote', $filename)
 				)
 			);
 		}
@@ -76,7 +92,8 @@ class Summernote extends Aksara
 	
 	public function delete()
 	{
-		$filename									= basename($this->input->post('source'));
+		$filename									= basename(service('request')->getPost('source'));
+		
 		if(file_exists(UPLOAD_PATH . '/summernote/' . $filename))
 		{
 			@unlink(UPLOAD_PATH . '/summernote/' . $filename);

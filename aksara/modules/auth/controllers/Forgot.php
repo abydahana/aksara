@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Auth\Controllers;
 /**
  * Auth > Forgot
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Forgot extends Aksara
+class Forgot extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -34,13 +36,11 @@ class Forgot extends Aksara
 	{
 		error_reporting(0); // prevent the PHP throw errors before exception
 		
-		$this->load->library('form_validation');
+		$this->form_validation->setRule('username', phrase('username_or_email'), 'required');
 		
-		$this->form_validation->set_rules('username', phrase('username_or_email'), 'required');
-		
-		if($this->form_validation->run() === false)
+		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
-			return throw_exception(400, $this->form_validation->error_array());
+			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		
 		$query										= $this->model->select
@@ -51,12 +51,8 @@ class Forgot extends Aksara
 			last_name,
 			status
 		')
-		
-		->group_start()
-		->where('email', $this->input->post('username'))
-		->or_where('username', $this->input->post('username'))
-		->group_end()
-		
+		->where('username', service('request')->getPost('username'))
+		->or_where('email', service('request')->getPost('username'))
 		->get_where
 		(
 			'app__users',
@@ -76,33 +72,36 @@ class Forgot extends Aksara
 			return throw_exception(400, array('username' => phrase('your_account_is_temporary_disabled_or_not_yet_activated')));
 		}
 		
-		$token										= sha1($this->input->post('username') . time());
+		$token										= sha1(service('request')->getPost('username') . time());
 		
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->load->library('email');
+		$this->email								= \Config\Services::email();
 		
-		$config['useragent']       					= 'Aksara';
+		$host										= get_setting('smtp_host');
+		
+		$config['userAgent']       					= 'Aksara';
 		$config['protocol']							= 'smtp';
-		$config['smtp_host']						= get_setting('smtp_host');
-		$config['smtp_port']						= get_setting('smtp_port');
-		$config['smtp_user']						= get_setting('smtp_username');
-		$config['smtp_pass']						= $this->encryption->decrypt(get_setting('smtp_password'));
-		$config['smtp_timeout']						= '7';
+		$config['SMTPCrypto']						= 'ssl';
+		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+		$config['SMTPPort']							= get_setting('smtp_port');
+		$config['SMTPUser']							= get_setting('smtp_username');
+		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPTimeout']						= 5;
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
-		$config['mailtype']							= 'html'; // text or html
-		$config['wordwrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not     
+		$config['mailType']							= 'html'; // text or html
+		$config['wordWrap']							= true;
+		$config['validation']						= true; // bool whether to validate email or not
 		
 		$this->email->initialize($config);		
 		
-		$this->email->from(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->to($query->email);
+		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setTo($query->email);
 		
-		$this->email->subject(phrase('reset_password'));
-		$this->email->message
+		$this->email->setSubject(phrase('reset_password'));
+		$this->email->setMessage
 		('
 			<!DOCTYPE html>
 			<html>
@@ -131,13 +130,6 @@ class Forgot extends Aksara
 					<br />
 					<br />
 					<p>
-						' . phrase('regards') . ',
-					</p>
-					<p>
-						<b>
-							' . phrase('technical_support') . '
-						</b>
-						<br />
 						<b>
 							' . get_setting('office_name') . '
 						</b>
@@ -152,8 +144,8 @@ class Forgot extends Aksara
 		
 		if(!$this->email->send())
 		{
-			//echo $this->email->print_debugger(); exit;
-			return throw_exception(400, array('message' => $this->email->print_debugger()));
+			//echo $this->email->printDebugger(); exit;
+			return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 		
 		$this->model->insert
@@ -176,7 +168,7 @@ class Forgot extends Aksara
 			'app__users_hash',
 			array
 			(
-				'hash'								=> $this->input->get('hash')
+				'hash'								=> service('request')->getGet('hash')
 			),
 			1
 		)
@@ -200,14 +192,12 @@ class Forgot extends Aksara
 	{
 		error_reporting(0); // prevent the PHP throw errors before exception
 		
-		$this->load->library('form_validation');
+		$this->form_validation->setRule('password', phrase('new_password'), 'required');
+		$this->form_validation->setRule('confirm_password', phrase('password_confirmation'), 'required|matches[password]');
 		
-		$this->form_validation->set_rules('password', phrase('new_password'), 'required');
-		$this->form_validation->set_rules('confirm_password', phrase('password_confirmation'), 'required|matches[password]');
-		
-		if($this->form_validation->run() === false)
+		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
-			return throw_exception(400, $this->form_validation->error_array());
+			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		
 		$query										= $this->model->select
@@ -228,7 +218,7 @@ class Forgot extends Aksara
 			'app__users_hash',
 			array
 			(
-				'app__users_hash.hash'				=> $this->input->get('hash')
+				'app__users_hash.hash'				=> service('request')->getGet('hash')
 			),
 			1
 		)
@@ -248,7 +238,7 @@ class Forgot extends Aksara
 			'app__users',
 			array
 			(
-				'password'							=> password_hash($this->input->post('password') . SALT, PASSWORD_DEFAULT)
+				'password'							=> password_hash(service('request')->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT)
 			),
 			array
 			(
@@ -259,28 +249,31 @@ class Forgot extends Aksara
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->load->library('email');
+		$this->email								= \Config\Services::email();
 		
-		$config['useragent']       					= 'Aksara';
+		$host										= get_setting('smtp_host');
+		
+		$config['userAgent']       					= 'Aksara';
 		$config['protocol']							= 'smtp';
-		$config['smtp_host']						= get_setting('smtp_host');
-		$config['smtp_port']						= get_setting('smtp_port');
-		$config['smtp_user']						= get_setting('smtp_username');
-		$config['smtp_pass']						= $this->encryption->decrypt(get_setting('smtp_password'));
-		$config['smtp_timeout']						= '7';
+		$config['SMTPCrypto']						= 'ssl';
+		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+		$config['SMTPPort']							= get_setting('smtp_port');
+		$config['SMTPUser']							= get_setting('smtp_username');
+		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPTimeout']						= 5;
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
-		$config['mailtype']							= 'html'; // text or html
-		$config['wordwrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not     
+		$config['mailType']							= 'html'; // text or html
+		$config['wordWrap']							= true;
+		$config['validation']						= true; // bool whether to validate email or not
 		
 		$this->email->initialize($config);		
 		
-		$this->email->from(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->to($query->email);
+		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setTo($query->email);
 		
-		$this->email->subject(phrase('password_reset_successfully'));
-		$this->email->message
+		$this->email->setSubject(phrase('password_reset_successfully'));
+		$this->email->setMessage
 		('
 			<!DOCTYPE html>
 			<html>
@@ -304,13 +297,6 @@ class Forgot extends Aksara
 					<br />
 					<br />
 					<p>
-						' . phrase('regards') . ',
-					</p>
-					<p>
-						<b>
-							' . phrase('technical_support') . '
-						</b>
-						<br />
 						<b>
 							' . get_setting('office_name') . '
 						</b>
@@ -325,8 +311,8 @@ class Forgot extends Aksara
 		
 		if(!$this->email->send())
 		{
-			//echo $this->email->print_debugger(); exit;
-			return throw_exception(400, array('message' => $this->email->print_debugger()));
+			//echo $this->email->printDebugger(); exit;
+			return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 		
 		$this->model->delete

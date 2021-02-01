@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Pages\Controllers;
 /**
  * Pages > License
  * End user license agreement
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class License extends Aksara
+class License extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -19,6 +21,7 @@ class License extends Aksara
 		$this->set_title(phrase('end_user_license_agreement'))
 		->set_icon('mdi mdi-certificate')
 		->set_description(phrase('include_the_term_of_service'))
+		
 		->render();
 	}
 }

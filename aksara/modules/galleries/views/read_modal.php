@@ -1,7 +1,7 @@
 <?php
 	$images											= json_decode($results[0]->gallery_images);
 	$attributes										= json_decode($results[0]->gallery_attributes);
-	$current										= $this->uri->segment(3);
+	$current										= service('request')->uri->getSegment(3);
 ?>
 
 <style type="text/css">
@@ -11,11 +11,11 @@
 	}
 </style>
 <div class="photo-view">
-	<a href="javascript:void(0)" class="close text-light absolute" data-dismiss="modal" style="top:15px; right:15px">
+	<a href="javascript:void(0)" class="close text-light text-shadow absolute" data-dismiss="modal" style="top:15px; right:15px">
 		<i class="mdi mdi-window-close"></i>
 	</a>
 	<a href="<?php echo get_image('galleries', $current); ?>" target="_blank">
-		<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid card-img-top" alt="<?php echo $this->input->get('item'); ?>" />
+		<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid card-img-top" alt="<?php echo service('request')->getGet('item'); ?>" />
 	</a>
 </div>
 <div class="card-body">
@@ -83,7 +83,5 @@
 	</div>
 </div>
 <div class="card-footer">
-	<div class="fb-comments-container">
-		<div class="fb-comments" data-href="<?php echo current_page(); ?>" data-numposts="5" data-width="100%"></div>
-	</div>
+	<?php echo load_comment_plugin(current_page()); ?>
 </div>

@@ -1,24 +1,22 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Libraries;
 /**
  * Google Login Library
  *
- * @author		Aby Dahana
- * @profile		abydahana.github.io
- * @website		www.dwitrimedia.com
- * @copyright	(c) 2019 - DWITRI Media
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
 class Google
 {
 	public function __construct()
 	{
-		$this->_ci									=& get_instance();
 		$this->_client_id							= get_setting('google_client_id');
-		$this->_client_secret						= $this->_ci->encryption->decrypt(get_setting('google_client_secret'));
+		$this->_client_secret						= service('encrypter')->decrypt(base64_decode(get_setting('google_client_secret')));
 		
-		require_once('google/Google_Client.php');
-		require_once('google/contrib/Google_Oauth2Service.php');
+		$this->client								= new \Google_Client();
 		
-		$this->client								= new Google_Client();
 		$this->client->setClientId($this->_client_id);
 		$this->client->setClientSecret($this->_client_secret);
 		$this->client->setRedirectUri(base_url('auth'));
@@ -45,15 +43,16 @@ class Google
 	 */
 	public function validate()
 	{
-		$user										= new Google_Oauth2Service($this->client);
+		$user										= new \Google_Service_Oauth2($this->client);
 		
-		if($this->_ci->input->get('code') && !$this->_ci->session->userdata('access_token'))
+		if(service('request')->getGet('code') && !get_userdata('access_token'))
 		{
-			$this->client->authenticate($this->_ci->input->get('code'));
-			$this->_ci->session->set_userdata('access_token', $this->client->getAccessToken());
+			$this->client->authenticate(service('request')->getGet('code'));
+			
+			set_userdata('access_token', $this->client->getAccessToken());
 		}
 		
-		$this->client->setAccessToken($this->_ci->session->userdata('access_token'));
+		$this->client->setAccessToken(get_userdata('access_token'));
 		
 		$user										= $user->userinfo->get();
 		

@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 	$extra_submit					= null;
 	
 	if($results->extra_action->submit)
@@ -182,15 +182,15 @@
 		
 	}
 ?>
-<div class="container-fluid <?php echo ($map || ('modal' == $this->input->post('prefer') && $meta->description) ? 'pb-3' : 'pt-3 pb-3'); ?>">
+<div class="container-fluid <?php echo ($map || ('modal' == service('request')->getPost('prefer') && $meta->description) ? 'pb-3' : 'pt-3 pb-3'); ?>">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
 		
-		<?php echo ('modal' == $this->input->post('prefer') ? $meta->description : null); ?>
+		<?php echo ('modal' == service('request')->getPost('prefer') ? $meta->description : null); ?>
 		
 		<?php echo $map; ?>
 		
 		<div class="row">
-			<div class="col-md-<?php echo ('modal' == $this->input->post('prefer') ? 12 : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
+			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? 12 : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
 				<?php
 					if(4 == $results->column_total)
 					{
@@ -249,11 +249,11 @@
 				<div class="--validation-callback mb-0"></div>
 			</div>
 		</div>
-		<?php echo ('modal' == $this->input->post('prefer') ? '<hr class="row" />' : '<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->'); ?>
-		<div class="row<?php echo ('modal' != $this->input->post('prefer') ? ' opt-btn' : null); ?>">
-			<div class="col-md-<?php echo ('modal' == $this->input->post('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
+		<?php echo ('modal' == service('request')->getPost('prefer') ? '<hr class="row" />' : '<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->'); ?>
+		<div class="row<?php echo ('modal' != service('request')->getPost('prefer') ? ' opt-btn' : null); ?>">
+			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
 				
-				<?php if('modal' == $this->input->post('prefer')) { ?>
+				<?php if('modal' == service('request')->getPost('prefer')) { ?>
 				<button type="button" class="btn btn-light" data-dismiss="modal">
 					<?php echo phrase('close'); ?>
 					<em class="text-sm">(esc)</em>

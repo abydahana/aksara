@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Blogs;
 /**
  * CMS > Blogs > Categories
  * Manage the blog categories
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Categories extends Aksara
+class Categories extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'blogs__categories';
 	
@@ -43,6 +45,7 @@ class Categories extends Aksara
 			)
 		)
 		->set_field('category_slug', 'to_slug', 'category_title')
+		->set_field('category_title', 'hyperlink', 'cms/blogs', array('category' => 'category_id'))
 		->set_relation
 		(
 			'language_id',
@@ -57,9 +60,9 @@ class Categories extends Aksara
 		(
 			array
 			(
-				'category_title'					=> 'required|max_length[64]|is_unique[' . $this->_table . '.category_title.category_id.' . $this->input->get('category_id') . ']',
+				'category_title'					=> 'required|max_length[64]|is_unique[' . $this->_table . '.category_title,category_id,' . service('request')->getGet('category_id') . ']',
 				'category_description'				=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -74,6 +77,7 @@ class Categories extends Aksara
 				'language_id'						=> phrase('language')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

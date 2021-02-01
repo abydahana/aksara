@@ -1,7 +1,7 @@
 <?php
 	$images											= json_decode($results[0]->gallery_images);
 	$attributes										= json_decode($results[0]->gallery_attributes);
-	$current										= $this->uri->segment(3);
+	$current										= service('request')->uri->getSegment(3);
 ?>
 <style type="text/css">
 	.rounded-top-0
@@ -19,7 +19,7 @@
 	}
 </style>
 <div class="photo-view text-center bg-dark">
-	<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid" alt="<?php echo $this->input->get('item'); ?>" />
+	<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid" alt="<?php echo service('request')->getGet('item'); ?>" />
 </div>
 <div class="container">
 	<div class="row">
@@ -90,9 +90,7 @@
 					</div>
 				</div>
 				<div class="card-footer">
-					<div class="fb-comments-container">
-						<div class="fb-comments" data-href="<?php echo current_page(); ?>" data-numposts="5" data-width="100%"></div>
-					</div>
+					<?php echo load_comment_plugin(current_page()); ?>
 				</div>
 			</div>
 		</div>

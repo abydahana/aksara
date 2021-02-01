@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Dashboard\Controllers;
 /**
  * Dashboard
  * Dashboard module, can be override to the /modules/ path. Also applied for other module
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Dashboard extends Aksara
+class Dashboard extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -18,57 +20,46 @@ class Dashboard extends Aksara
 		
 		$this->set_method('index');
 		
-		if('count_upload' == $this->input->post('request'))
+		if('fetch_information' == service('request')->getPost('request'))
 		{
-			return make_json($this->_directory_info(true));
+			return $this->_fetch_information();
 		}
 	}
 	
 	public function index()
 	{
+		if(get_userdata('group_id') > 2)
+		{
+			$this->set_template('index', 'index_subscriber');
+		}
+		else
+		{
+			$this->set_output
+			(
+				array
+				(
+					'writable'						=> array
+					(
+						'uploads'					=> (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
+						'logs'						=> (is_dir(WRITEPATH . 'logs') && is_writable(WRITEPATH . 'logs') ? true : false),
+						'translations'				=> (is_dir(WRITEPATH . 'translations') && is_writable(WRITEPATH . 'translations') ? true : false)
+					),
+					'visitors'						=> $this->_visitors(),
+					'recent_signed'					=> $this->_recent_signed(),
+					'system_language'				=> $this->_system_language()
+				)
+			);
+		}
+		
 		$this->set_title(phrase('dashboard'))
 		->set_icon('mdi mdi-monitor-dashboard')
-		
-		->set_output
-		(
-			array
-			(
-				'writable'							=> array
-				(
-					'uploads'						=> (is_dir(UPLOAD_PATH) && is_writable(UPLOAD_PATH) ? true : false),
-					'logs'							=> (is_dir(LOG_PATH) && is_writable(LOG_PATH) ? true : false),
-					'translations'					=> (is_dir(TRANSLATION_PATH) && is_writable(TRANSLATION_PATH) ? true : false)
-				),
-				'visitors'							=> $this->_visitors(),
-				'recent_signed'						=> $this->_recent_signed(),
-				'directory'							=> $this->_directory_info(),
-				'system_language'					=> $this->_system_language()
-			)
-		)
 		
 		->render();
 	}
 	
 	private function _visitors()
 	{
-		$frontend_log								= array();
-		
-		foreach(range(0, 6) as $key => $val)
-		{
-			if(file_exists(LOG_PATH . '/' . ($val ? date('Y-m-d', strtotime('-' . $val . ' day')) : date('Y-m-d')) . '.json'))
-			{
-				$get_log							= file_get_contents(LOG_PATH . '/' . ($val ? date('Y-m-d', strtotime('-' . $val . ' day')) : date('Y-m-d')) . '.json');
-				$get_log							= ($get_log ? json_decode($get_log, true) : array());
-				
-				foreach($get_log as $_key => $_val)
-				{
-					$identity						= $_val['ip_address'] . '_' . strtotime($_val['timestamp']);
-					$frontend_log[$identity]		= $_val;
-				}
-			}
-		}
-		
-		$backend_log								= $this->model->select
+		$visitors									= $this->model->select
 		('
 			ip_address,
 			browser,
@@ -76,53 +67,30 @@ class Dashboard extends Aksara
 			timestamp,
 			DATE(timestamp) AS date
 		')
-		->group_by('user_id, date')
+		->group_by('ip_address, date')
 		->get_where
 		(
-			'app__activity_logs',
+			'app__visitor_logs',
 			array
 			(
-				'timestamp >= '						=> date('Y-m-d H:i:s', strtotime('-7 days'))
+				'timestamp >= '						=> date('Y-m-d H:i:s', strtotime('-6 days'))
 			)
 		)
-		->result_array();
+		->result();
 		
 		$output										= array();
 		
 		foreach(range(1, 7) as $key => $val)
 		{
-			$date									= new DateTime();
-			$date->add(new DateInterval('P' . $val . 'D'));
+			$date									= new \DateTime();
+			$date->add(new \DateInterval('P' . $val . 'D'));
 			
 			$day									= phrase(strtolower($date->format('l')));
-			$output['day'][]						= $day;
-			$output['frontend'][$day]				= 0;
-			$output['backend'][$day]				= 0;
+			$output['days'][]						= $day;
+			$output['visits'][$day]					= 0;
 		}
 		
-		if($frontend_log)
-		{
-			foreach($frontend_log as $key => $val)
-			{
-				$date								= phrase(date('l', strtotime($val['timestamp'])));
-				
-				$output['frontend'][$date]++;
-			}
-		}
-		
-		if($backend_log)
-		{
-			foreach($backend_log as $key => $val)
-			{
-				$date								= phrase(date('l', strtotime($val['timestamp'])));
-				
-				$output['backend'][$date]++;
-			}
-		}
-		
-		$browsers									= array_merge($frontend_log, $backend_log);
-		
-		$browser_log								= array
+		$browsers									= array
 		(
 			'chrome'								=> 0,
 			'firefox'								=> 0,
@@ -133,49 +101,52 @@ class Dashboard extends Aksara
 			'unknown'								=> 0
 		);
 		
-		if($browsers)
+		if($visitors)
 		{
-			foreach($browsers as $key => $val)
+			foreach($visitors as $key => $val)
 			{
-				if(stripos($val['browser'], 'chrome') !== false)
+				$date								= phrase(date('l', strtotime($val->timestamp)));
+				
+				$output['visits'][$date]++;
+				
+				if(stripos($val->browser, 'chrome') !== false)
 				{
-					$browser_log['chrome']++;
+					$browsers['chrome']++;
 				}
-				elseif(stripos($val['browser'], 'firefox') !== false)
+				elseif(stripos($val->browser, 'firefox') !== false)
 				{
-					$browser_log['firefox']++;
+					$browsers['firefox']++;
 				}
-				elseif(stripos($val['browser'], 'safari') !== false)
+				elseif(stripos($val->browser, 'safari') !== false)
 				{
-					$browser_log['safari']++;
+					$browsers['safari']++;
 				}
-				elseif(stripos($val['browser'], 'edge') !== false)
+				elseif(stripos($val->browser, 'edge') !== false)
 				{
-					$browser_log['edge']++;
+					$browsers['edge']++;
 				}
-				elseif(stripos($val['browser'], 'opera') !== false)
+				elseif(stripos($val->browser, 'opera') !== false)
 				{
-					$browser_log['opera']++;
+					$browsers['opera']++;
 				}
-				elseif(stripos($val['browser'], 'explorer') !== false)
+				elseif(stripos($val->browser, 'explorer') !== false)
 				{
-					$browser_log['explorer']++;
+					$browsers['explorer']++;
 				}
 				else
 				{
-					$browser_log['unknown']++;
+					$browsers['unknown']++;
 				}
 			}
-			
-			arsort($browser_log);
 		}
+		
+		arsort($browsers);
 		
 		return array
 		(
-			'categories'							=> $output['day'],
-			'frontend'								=> array_values($output['frontend']),
-			'backend'								=> array_values($output['backend']),
-			'browsers'								=> $browser_log
+			'categories'							=> $output['days'],
+			'visits'								=> array_values($output['visits']),
+			'browsers'								=> $browsers
 		);
 	}
 	
@@ -208,31 +179,66 @@ class Dashboard extends Aksara
 		return $query;
 	}
 	
-	private function _directory_info($approximate = false)
+	private function _fetch_information()
 	{
-		$bytestotal									= 0;
-		$path										= realpath($_SERVER['DOCUMENT_ROOT'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+		$updater									= null;
 		
-		if($approximate)
+		if(in_array(get_userdata('group_id'), array(1)) && function_exists('curl_init') && function_exists('curl_exec'))
 		{
-			$upload_path							= UPLOAD_PATH;
-			if($upload_path && file_exists($upload_path))
-			{
-				foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($upload_path, FilesystemIterator::SKIP_DOTS)) as $object)
-				{
-					$bytestotal						+= $object->getSize();
-				}
-			}
+			$curl									= curl_init();
 			
-			$base									= log($bytestotal, 1024);
-			$suffix									= array('', 'KB', 'MB', 'GB', 'TB');
-			$bytestotal								= number_format(round(pow(1024, $base - floor($base)), 2)) . ' ' . $suffix[floor($base)];
+			curl_setopt_array
+			(
+				$curl,
+				array
+				(
+					CURLOPT_CONNECTTIMEOUT			=> 5,
+					CURLOPT_HEADER					=> 0,
+					CURLOPT_RETURNTRANSFER			=> 1,
+					CURLOPT_URL						=> 'https://www.aksaracms.com/updater/ping',
+					CURLOPT_FOLLOWLOCATION			=> true,
+					CURLOPT_HTTPHEADER				=> array
+					(
+						'Content-Type: application/x-www-form-urlencoded'
+					),
+					CURLOPT_CUSTOMREQUEST			=> 'POST',
+					CURLOPT_POSTFIELDS				=> http_build_query
+					(
+						array
+						(
+							'version'				=> aksara('version'),
+							'built_version'			=> aksara('built_version')
+						)
+					)
+				)
+			);
+			
+			$updater								= json_decode(curl_exec($curl));
+			
+			curl_close($curl);
 		}
 		
-		return array
+		$bytestotal									= 0;
+		
+		if(UPLOAD_PATH && is_dir(UPLOAD_PATH))
+		{
+			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(FCPATH . UPLOAD_PATH, \FilesystemIterator::SKIP_DOTS)) as $object)
+			{
+				$bytestotal							+= $object->getSize();
+			}
+		}
+		
+		$base										= log($bytestotal, 1024);
+		$suffix										= array('', 'KB', 'MB', 'GB', 'TB');
+		$bytestotal									= number_format(round(pow(1024, $base - floor($base)), 2)) . ' ' . $suffix[floor($base)];
+		
+		return make_json
 		(
-			'path'									=> $path,
-			'size'									=> $bytestotal
+			array
+			(
+				'update_available'					=> $updater,
+				'upload_size'						=> $bytestotal
+			)
 		);
 	}
 	
@@ -240,6 +246,7 @@ class Dashboard extends Aksara
 	{
 		
 		$language_id								= get_setting('app_language');
+		
 		$query										= $this->model->select('language')->get_where
 		(
 			'app__languages',

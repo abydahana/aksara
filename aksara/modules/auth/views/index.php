@@ -41,9 +41,10 @@
 							<div class="form-group">
 								<div class="row">
 									<div class="col-7">
-										<label>
-											<input type="checkbox" name="remember_session" value="1" /> 
-											<?php echo phrase('remember_session'); ?>
+										<label class="mt-2">
+											<a href="<?php echo current_page('forgot'); ?>" class="--xhr">
+												<?php echo phrase('forgot_password'); ?>
+											</a>
 										</label>
 									</div>
 									<div class="col-5">

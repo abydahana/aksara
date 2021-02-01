@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 
 if($total > 0 && isset($results->table_data))
 {
@@ -242,7 +242,7 @@ if($total > 0 && isset($results->table_data))
 				</table>
 				' . ($method == 'print' ? '
 				<div class="no-print">
-					' . $this->template->pagination($pagination) . '
+					' . $template->pagination . '
 				</div>
 				' : null) . '
 				' . ($method == 'pdf' ? '

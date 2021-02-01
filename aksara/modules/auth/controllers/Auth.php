@@ -1,26 +1,18 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Auth\Controllers;
 /**
  * Auth
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Auth extends Aksara
+class Auth extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
 		parent::__construct();
-		
-		if(get_setting('google_client_id') && get_setting('google_client_secret'))
-		{
-			$this->load->library('google');
-		}
-		
-		if(get_setting('facebook_app_id') && get_setting('facebook_app_secret'))
-		{
-			$this->load->library('fb');
-		}
 	}
 	
 	public function index()
@@ -30,12 +22,12 @@ class Auth extends Aksara
 		{
 			return throw_exception(301, phrase('you_have_been_signed_in'), base_url('dashboard'), true);
 		}
-		elseif($this->input->get('code') && $this->input->get('scope') && $this->input->get('prompt'))
+		elseif(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
 		{
 			/* google login authentication */
 			return $this->google_auth();
 		}
-		elseif($this->input->get('code') && $this->input->get('state') && $this->session->userdata('FBRLH_state'))
+		elseif(service('request')->getGet('code') && service('request')->getGet('state') && get_userdata('FBRLH_state'))
 		{
 			/* facebook login authentication */
 			return $this->facebook_auth();
@@ -61,22 +53,18 @@ class Auth extends Aksara
 			// under research
 		}
 		
-		/* load additional library and helper */
-		$this->load->library('form_validation');
-		$this->load->helper('security');
-		
-		$this->form_validation->set_rules('username', phrase('username'), 'required');
-		$this->form_validation->set_rules('password', phrase('password'), 'required');
+		$this->form_validation->setRule('username', phrase('username'), 'required');
+		$this->form_validation->setRule('password', phrase('password'), 'required');
 		
 		/* run form validation */
-		if($this->form_validation->run() === false)
+		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
-			return throw_exception(400, $this->form_validation->error_array());
+			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		else
 		{
-			$username								= $this->input->post('username');
-			$password								= $this->input->post('password');
+			$username								= service('request')->getPost('username');
+			$password								= service('request')->getPost('password');
 			$execute								= $this->model->select
 			('
 				user_id,
@@ -100,7 +88,7 @@ class Auth extends Aksara
 			{
 				return throw_exception(404, phrase('your_account_is_temporary_disabled_or_not_yet_activated'));
 			}
-			elseif($execute && password_verify($password . SALT, $execute->password))
+			elseif($execute && password_verify($password . ENCRYPTION_KEY, $execute->password))
 			{
 				/* update the last login timestamp */
 				$this->model->update
@@ -118,19 +106,13 @@ class Auth extends Aksara
 				);
 				
 				/* check session store */
-				if(1 == $this->input->post('remember_session'))
+				if(1 == service('request')->getPost('remember_session'))
 				{
 					/* store session to the current device */
-					$this->session->sess_expiration	= 0;
-				}
-				else
-				{
-					/* use default session time instead */
-					$this->session->sess_expiration	= 900;
 				}
 				
 				/* set the user credential into session */
-				$this->session->set_userdata
+				set_userdata
 				(
 					array
 					(
@@ -160,12 +142,14 @@ class Auth extends Aksara
 		 */
 		if(get_setting('google_client_id') && get_setting('google_client_secret') && get_userdata('oauth_uid'))
 		{
+			$this->google							= new \Aksara\Libraries\Google();
+			
 			$this->google->revokeToken();
 		}
 		
 		$group_id									= get_userdata('group_id');
 		
-		$this->session->sess_destroy();
+		service('session')->destroy();
 		
 		return throw_exception(301, phrase('you_were_logged_out'), base_url(), true);
 	}
@@ -174,7 +158,9 @@ class Auth extends Aksara
 	 */
 	public function google()
 	{
-		redirect($this->google->get_login_url());
+		$this->google								= new \Aksara\Libraries\Google();
+		
+		redirect_to($this->google->get_login_url());
 	}
 	
 	/**
@@ -182,7 +168,7 @@ class Auth extends Aksara
 	 */
 	public function google_auth()
 	{
-		$this->load->library('google');
+		$this->google								= new \Aksara\Libraries\Google();
 		
 		$session									= $this->google->validate();
 		
@@ -194,7 +180,9 @@ class Auth extends Aksara
 	 */
 	public function facebook()
 	{
-		redirect($this->fb->get_login_url());
+		$this->facebook								= new \Aksara\Libraries\Facebook();
+		
+		redirect_to($this->facebook->get_login_url());
 	}
 	
 	/**
@@ -202,9 +190,9 @@ class Auth extends Aksara
 	 */
 	public function facebook_auth()
 	{
-		$this->load->library('fb');
+		$this->facebook								= new \Aksara\Libraries\Facebook();
 		
-		$session									= $this->fb->validate();
+		$session									= $this->facebook->validate();
 		
 		return $this->_validate($session);
 	}
@@ -214,7 +202,7 @@ class Auth extends Aksara
 	 */
 	private function _validate($session = null)
 	{
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), base_url());
 		}
@@ -247,7 +235,7 @@ class Auth extends Aksara
 			if($query)
 			{
 				/* set the user credential into session */
-				$this->session->set_userdata
+				set_userdata
 				(
 					array
 					(
@@ -306,7 +294,11 @@ class Auth extends Aksara
 			{
 				$photo								= $upload_name;
 				
-				$this->generateThumbnail('users', $upload_name);
+				$thumbnail_dimension				= (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+				$icon_dimension						= (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+				
+				$this->_resize_image('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
+				$this->_resize_image('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
 			}
 			else
 			{
@@ -333,7 +325,7 @@ class Auth extends Aksara
 					'group_id'						=> $default_membership,
 					'registered_date'				=> date('Y-m-d'),
 					'last_login'					=> date('Y-m-d H:i:s'),
-					'status'						=> (get_setting('auto_active_registration') ? 1 : 0)
+					'status'						=> 1
 				)
 			);
 			
@@ -353,106 +345,107 @@ class Auth extends Aksara
 					)
 				);
 				
+				$this->_send_welcome_email($session);
+				
 				return $this->_validate($session);
 			}
 		}
 	}
 	
-	/**
-	 * generateThumbnail
-	 * Generate the thumbnail of uploaded image
-	 *
-	 * @access		private
-	 */
-	private function generateThumbnail($type = null, $source = null)
+	private function _send_welcome_email($session)
 	{
-		/* load and initialize the library */
-		$this->load->library('image_lib');
+		/**
+		 * to working with Google SMTP, make sure to activate less secure apps setting
+		 */
+		$this->email								= \Config\Services::email();
 		
-		/* initialize for thumbnail creation */
-		$this->image_lib->initialize
-		(
-			array
-			(
-				'image_library'						=> 'gd2',
-				'source_image'						=> UPLOAD_PATH . '/' . $type . '/' . $source,
-				'new_image'							=> UPLOAD_PATH . '/' . $type . '/thumbs/' . $source,
-				'create_thumb'						=> false,
-				'width'								=> (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 250),
-				'height'							=> (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 250)
-			)
-		);
-		if($this->image_lib->resize())
+		$host										= get_setting('smtp_host');
+		
+		$config['userAgent']       					= 'Aksara';
+		$config['protocol']							= 'smtp';
+		$config['SMTPCrypto']						= 'ssl';
+		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+		$config['SMTPPort']							= get_setting('smtp_port');
+		$config['SMTPUser']							= get_setting('smtp_username');
+		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPTimeout']						= 5;
+		$config['charset']							= 'utf-8';
+		$config['newline']							= "\r\n";
+		$config['mailType']							= 'html'; // text or html
+		$config['wordWrap']							= true;
+		$config['validation']						= true; // bool whether to validate email or not
+		
+		$this->email->initialize($config);		
+		
+		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setTo($session->email);
+		
+		$this->email->setSubject(phrase('welcome_to') . ' ' . get_setting('app_name'));
+		$this->email->setMessage
+		('
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<meta name="viewport" content="width=device-width" />
+					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+					<title>
+						' . phrase('welcome_to') . ' ' . get_setting('app_name') . '
+					</title>
+				</head>
+				<body>
+					<p>
+						' . phrase('hi') . ', <b>' . $session->first_name . ' ' . $session->last_name . '</b>
+					</p>
+					<p>
+						' . phrase('you_are_successfully_registered_to_our_website') . ' ' . phrase('now_you_can_sign_in_to_our_website_using_your_' . $session->oauth_provider . '_account') . ' ' . phrase('be_sure_to_set_your_password_and_username_so_you_can_sign_in_using_your_email_or_username_in_next_time') . '
+					</p>
+					<p>
+						' . phrase('please_contact_us_directly_if_you_still_cannot_signing_in') . '
+					</p>
+					<br />
+					<br />
+					<p>
+						<b>
+							' . get_setting('office_name') . '
+						</b>
+						<br />
+						' . get_setting('office_address') . '
+						<br />
+						' . get_setting('office_phone') . '
+					</p>
+				</body>
+			</html>
+		');
+		
+		if(!$this->email->send())
 		{
-			$this->image_lib->clear();
-			$this->crop($type, $source, 'thumbs');
-		}
-			
-		/* initialize for icon creation */
-		$this->image_lib->initialize
-		(
-			array
-			(
-				'image_library'						=> 'gd2',
-				'source_image'						=> UPLOAD_PATH . '/' . $type . '/' . $source,
-				'new_image'							=> UPLOAD_PATH . '/' . $type . '/icons/' . $source,
-				'create_thumb'						=> false,
-				'width'								=> (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 80),
-				'height'							=> (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 80)
-			)
-		);
-		if($this->image_lib->resize())
-		{
-			$this->image_lib->clear();
-			$this->crop($type, $source, 'icons');
+			//echo $this->email->printDebugger(); exit;
+			return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 	}
 	
 	/**
-	 * crop
-	 * Crop the uploaded image
+	 * _resize_image
+	 * Generate the thumbnail of uploaded image
 	 *
 	 * @access		private
 	 */
-	private function crop($type = null, $source = null, $size = null)
+	private function _resize_image($path = null, $filename = null, $type = null, $width = 0, $height = 0)
 	{
-		if('thumbs' == $size)
-		{
-			$dimension								= (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 250);
-		}
-		else
-		{
-			$dimension								= (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 80);
-		}
+		$source										= UPLOAD_PATH . '/' . $path . '/' . $filename;
+		$target										= UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
 		
-		$config['image_library'] 					= 'gd2';
-		$config['source_image'] 					= UPLOAD_PATH . '/' . $type . '/' . $size . '/' . $source;
-		$config['new_image'] 						= UPLOAD_PATH . '/' . $type . '/' . $size . '/' . $source;
-		$config['create_thumb'] 					= FALSE;
-		$config['maintain_ratio'] 					= FALSE;
-		$config['width']     						= $dimension;
-		$config['height']   						= $dimension;
-		list($width, $height)						= getimagesize($config['source_image']);
+		$imageinfo									= getimagesize($source);
+		$master_dimension							= ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 		
-		if($width >= $height)
-		{
-			/* master dimension in width because the width is greater or equal to height */
-			$config['master_dim']					= 'width';
-			$config['x_axis']						= 0;
-			$config['y_axis']						= -($width - $height) / 2;
-		}
-		else
-		{
-			/* master dimension in height because the height is greater width */
-			$config['master_dim']					= 'height';
-			$config['x_axis']						= -($height - $width) / 2;
-			$config['y_axis']						= 0;
-		}
+		// load image manipulation library
+		$this->image								= \Config\Services::image('gd');
 		
-		/* load and initialize the library */
-		$this->load->library('image_lib');
-		$this->image_lib->initialize($config);
-		$this->image_lib->crop();
-		$this->image_lib->clear();
+		// resize image
+		if($this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target))
+		{
+			// crop image after resized
+			$this->image->withFile($target)->fit($width, $height, 'center')->save($target);
+		}
 	}
 }

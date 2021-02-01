@@ -18,9 +18,10 @@
 				<div class="--validation-callback mb-3"></div>
 				
 				<div class="form-group">
-					<label class="d-none">
-						<input type="checkbox" name="remember_session" value="1" checked /> 
-						<?php echo phrase('remember_session'); ?>
+					<label class="mt-2">
+						<a href="<?php echo current_page('forgot'); ?>" class="--xhr">
+							<?php echo phrase('forgot_password'); ?>
+						</a>
 					</label>
 				</div>
 				<div class="form-group">

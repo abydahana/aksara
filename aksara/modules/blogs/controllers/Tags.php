@@ -1,20 +1,22 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs > Tags
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Tags extends Aksara
+use Aksara\Laboratory\Core;
+
+class Tags extends Core
 {
 	public function __construct()
 	{
 		parent::__construct();
 		
-		$this->parent_module('blogs');
-		
-		$this->_keywords							= htmlspecialchars(($this->input->post('q') ? $this->input->post('q') : $this->input->get('q')));
+		$this->_keywords							= htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 	}
 	
 	public function index()
@@ -52,6 +54,7 @@ class Tags extends Aksara
 		)
 		->like('blogs.post_tags', $this->_keywords)
 		->where('blogs.status', 1)
+		
 		->render('blogs');
 	}
 }

@@ -1,12 +1,16 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Blogs extends Aksara
+use Aksara\Laboratory\Core;
+
+class Blogs extends Core
 {
 	public function __construct()
 	{
@@ -29,6 +33,7 @@ class Blogs extends Aksara
 				'articles'							=> $this->_get_articles()
 			)
 		)
+		
 		->render();
 	}
 	

@@ -1,14 +1,16 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Activities;
 /**
  * Administrative > Activities
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
 ini_set('memory_limit', -1);
 
-class Activities extends Aksara
+class Activities extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__activity_logs';
 	
@@ -21,9 +23,9 @@ class Activities extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		if($this->input->get('user_id'))
+		if(service('request')->getGet('user_id'))
 		{
-			redirect(base_url('administrative/users/read?user_id=' . $this->input->get('user_id')));
+			redirect(base_url('administrative/users/read?user_id=' . service('request')->getGet('user_id')));
 		}
 	}
 	
@@ -66,7 +68,7 @@ class Activities extends Aksara
 	
 	public function truncate()
 	{
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('changes_will_not_saved_in_demo_mode'), go_to());
 		}

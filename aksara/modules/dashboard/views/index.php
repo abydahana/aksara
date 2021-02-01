@@ -4,15 +4,16 @@
 		echo '
 			<div class="alert alert-danger pr-3 pl-3 rounded-0 mb-0">
 				<h5>
-					' . phrase('warning') . '
+					' . phrase('notice') . '
 				</h5>
-				' . (!$writable->uploads ? '<p class="mb-0"><b>' . FCPATH . UPLOAD_PATH . '</b> ' . phrase('directory_is_not_writable') . '</p>' : null) . '
-				' . (!$writable->logs ? '<p class="mb-0"><b>' . FCPATH . LOG_PATH . '</b> ' . phrase('directory_is_not_writable') . '</p>' : null) . '
-				' . (!$writable->translations ? '<p class="mb-0"><b>' . FCPATH . TRANSLATION_PATH . '</b> ' . phrase('directory_is_not_writable') . '</p>' : null) . '
+				' . (!$writable->uploads ? '<p class="mb-0"><b>' . ROOTPATH . UPLOAD_PATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$writable->logs ? '<p class="mb-0"><b>' . WRITEPATH . 'logs' . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$writable->translations ? '<p class="mb-0"><b>' . WRITEPATH . 'translations' . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
 			</div>
 		';
 	}
 ?>
+<div class="updater-placeholder"></div>
 <div class="container-fluid">
 	<div class="row border-bottom pt-3">
 		<div class="col-6 col-lg-3 mb-3">
@@ -104,26 +105,30 @@
 							</div>
 							<div class="card-body p-3">
 								<?php
-									$num	= 0;
-									foreach($visitors->browsers as $key => $val)
+									$num			= 0;
+									
+									if(isset($visitors->browsers))
 									{
-										echo '
-											' . ($num ? '<hr class="mt-2 mb-2" />' : null) . '
-											<div class="row no-gutters">
-												<div class="col-3 col-sm-2">
-													<i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
+										foreach($visitors->browsers as $key => $val)
+										{
+											echo '
+												' . ($num ? '<hr class="mt-2 mb-2" />' : null) . '
+												<div class="row no-gutters">
+													<div class="col-3 col-sm-2">
+														<i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
+													</div>
+													<div class="col-9 col-sm-10 pl-3">
+														<b>
+															' . ($key == 'chrome' ? phrase('google_chrome') : ($key == 'firefox' ? phrase('mozilla_firefox') : ($key == 'safari' ? phrase('safari') : ($key == 'edge' ? phrase('microsoft_edge') : ($key == 'opera' ? phrase('opera') : ($key == 'explorer' ? phrase('internet_explorer') : phrase('unknown'))))))) . '
+														</b>
+														<p class="mb-0 text-sm text-muted">
+															' . number_format($val) . ' ' . phrase('usage_in_a_week') . '
+														</p>
+													</div>
 												</div>
-												<div class="col-9 col-sm-10 pl-3">
-													<b>
-														' . ($key == 'chrome' ? phrase('google_chrome') : ($key == 'firefox' ? phrase('mozilla_firefox') : ($key == 'safari' ? phrase('safari') : ($key == 'edge' ? phrase('microsoft_edge') : ($key == 'opera' ? phrase('opera') : ($key == 'explorer' ? phrase('internet_explorer') : phrase('unknown'))))))) . '
-													</b>
-													<p class="mb-0 text-sm text-muted">
-														' . number_format($val) . ' ' . phrase('usage_in_a_week') . '
-													</p>
-												</div>
-											</div>
-										';
-										$num++;
+											';
+											$num++;
+										}
 									}
 								?>
 							</div>
@@ -260,11 +265,11 @@
 				},
 				xAxis:
 				{
-					categories: <?php echo json_encode($visitors->categories); ?>,
+					categories: <?php echo (isset($visitors->categories) ? json_encode($visitors->categories) : '[]'); ?>,
 					plotBands:
 					[{
-						from: 4.5,
-						to: 6.5,
+						from: 5.5,
+						to: 7.5,
 						color: 'rgba(68, 170, 213, .2)'
 					}]
 				},
@@ -279,7 +284,7 @@
 				tooltip:
 				{
 					shared: true,
-					valueSuffix: ' <?php echo phrase('users'); ?>'
+					valueSuffix: ' <?php echo phrase('visits'); ?>'
 				},
 				credits:
 				{
@@ -294,12 +299,8 @@
 				},
 				series:
 				[{
-					name: '<?php echo phrase('front_end'); ?>',
-					data: <?php echo json_encode($visitors->frontend); ?>
-				},
-				{
-					name: '<?php echo phrase('back_end'); ?>',
-					data: <?php echo json_encode($visitors->backend); ?>
+					name: '<?php echo phrase('visitors'); ?>',
+					data: <?php echo (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>
 				}]
 			})
 		}),
@@ -310,21 +311,45 @@
 			method: 'POST',
 			data:
 			{
-				request: 'count_upload'
+				request: 'fetch_information'
 			},
 			beforeSend: function()
 			{
-				var size		= 0;
-				interval		= setInterval(function()
+				var size							= 0;
+				interval							= setInterval(function()
 				{
 					$('.uploaded-file').text(size);
+					
 					size++;
 				}, 50)
 			}
 		})
 		.done(function(response)
 		{
-			$('.uploaded-file').text(response.size),
+			if(response.updater)
+			{
+				$('.updater-placeholder').html
+				(
+					'<div class="alert alert-info text-sm rounded-0 border-0 p-3 mb-0">' +
+						'<h5>' +
+							'<?php echo phrase('update_available'); ?>' +
+						'</h5>' +
+						'<p>' +
+							'<?php echo phrase('a_newer_version_of_aksara_is_available'); ?>' +
+							'<?php echo phrase('click_the_button_below_to_update_your_core_system_directly'); ?>' +
+							'<?php echo phrase('your_created_modules_and_themes_will_not_be_replaced'); ?>' +
+						'</p>' +
+						'<hr />' +
+						'<a href="<?php echo base_url('administrative/updater'); ?>" class="btn btn-sm btn-success --xhr">' +
+							'<i class="mdi mdi-update"></i>' +
+							'<?php echo phrase('update_now'); ?>' +
+						'</a>' +
+					'</div>'
+				)
+			}
+			
+			$('.uploaded-file').text(response.upload_size),
+			
 			clearInterval(interval)
 		})
 	})

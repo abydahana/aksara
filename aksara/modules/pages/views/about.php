@@ -85,15 +85,11 @@
 		</a>
 		&middot;
 		<a href="//codeigniter.com" target="_blank">
-			Codeigniter
+			CodeIgniter
 		</a>
 		&middot;
 		<a href="//getcomposer.org" target="_blank">
 			Composer
-		</a>
-		&middot;
-		<a href="//bitbucket.org/wiredesignz/codeigniter-modular-extensions-hmvc" target="_blank">
-			HMVC
 		</a>
 		&middot;
 		<a href="//mpdf.github.io" target="_blank">
@@ -141,10 +137,6 @@
 			HighCharts
 		</a>
 		&middot;
-		<a href="//github.com/ematsakov/highlight" target="_blank">
-			Highlight
-		</a>
-		&middot;
 		<a href="//infinite-scroll.com" target="_blank">
 			Infinite Scroll
 		</a>
@@ -187,6 +179,14 @@
 		&middot;
 		<a href="//popper.js.org" target="_blank">
 			Popper
+		</a>
+		&middot;
+		<a href="//prismjs.com" target="_blank">
+			Prism
+		</a>
+		&middot;
+		<a href="//github.com/julien-maurel/jQuery-Scanner-Detection" target="_blank">
+			Scanner
 		</a>
 		&middot;
 		<a href="//select2.org" target="_blank">

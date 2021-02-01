@@ -34,7 +34,7 @@
 								if(!$badge) continue;
 								
 								$tags				.= '
-									<a href="' . go_to('tags', array('q' => trim($badge))) . '" class="--xhr">
+									<a href="' . go_to('../tags', array('q' => trim($badge))) . '" class="--xhr">
 										<span class="badge badge-secondary">
 											' . trim($badge) . '
 										</span>
@@ -50,9 +50,8 @@
 							<p class="mb-5">
 								' . $tags . '
 							</p>
-							<div class="fb-comments-container mb-5">
-								<div class="fb-comments" data-href="' . current_page() . '" data-numposts="5" data-width="100%"></div>
-							</div>
+							
+							' . load_comment_plugin(current_page()) . '
 						';
 					}
 				}
@@ -131,12 +130,12 @@
 							$similar_article		.= '
 								<div class="row form-group">
 									<div class="col-2 col-sm-1 col-md-2 pr-0">
-										<a href="' . go_to(array($val->category_slug, $val->post_slug)) . '" class="--xhr">
+										<a href="' . go_to('../' . $val->category_slug . '/' . $val->post_slug) . '" class="--xhr">
 											<img src="' . get_image('blogs', $val->featured_image, 'icon') . '" class="img-fluid rounded" />
 										</a>
 									</div>
 									<div class="col col-sm-11 col-md-10">
-										<a href="' . go_to(array($val->category_slug, $val->post_slug)) . '" class="--xhr">
+										<a href="' . go_to('../' . $val->category_slug . '/' . $val->post_slug) . '" class="--xhr">
 											<b>
 												' . $val->post_title . '
 											</b>
@@ -166,12 +165,12 @@
 							$similar_category		.= '
 								<div class="row form-group">
 									<div class="col-2 pr-0">
-										<a href="' . go_to($val->category_slug) . '" class="--xhr">
+										<a href="' . go_to('../' . $val->category_slug) . '" class="--xhr">
 											<img src="' . get_image('blogs', $val->category_image, 'icon') . '" class="img-fluid rounded" />
 										</a>
 									</div>
 									<div class="col">
-										<a href="' . go_to($val->category_slug) . '" class="--xhr">
+										<a href="' . go_to('../' . $val->category_slug) . '" class="--xhr">
 											<h5>
 												' . $val->category_title . '
 											</h5>

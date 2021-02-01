@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Pages\Controllers;
 /**
  * Pages > Blank
  * This page to simulate the "about:blank" request that not supported in Cordova
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Blank extends Aksara
+class Blank extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{

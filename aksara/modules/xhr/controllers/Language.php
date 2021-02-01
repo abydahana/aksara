@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Xhr\Controllers;
 /**
  * XHR > Language
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Language extends Aksara
+class Language extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -30,8 +32,8 @@ class Language extends Aksara
 		
 		if($query)
 		{
-			$this->session->set_userdata('language', $params);
-			$this->session->set_userdata('language_id', $query);
+			set_userdata('language', $params);
+			set_userdata('language_id', $query);
 			
 			if(get_userdata('is_logged'))
 			{

@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials
  * Landing page for partials module
  *
- * @version			2.1.0
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Partials extends Aksara
+class Partials extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -21,8 +23,9 @@ class Partials extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('partials'))
+		$this->set_title(phrase('partial_content'))
 		->set_icon('mdi mdi-briefcase-outline')
+		
 		->render();
 	}
 }

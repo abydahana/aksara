@@ -34,7 +34,7 @@
 				';
 			}
 			
-			echo $this->template->pagination($pagination);
+			echo $template->pagination;
 		}
 		else
 		{

@@ -1,14 +1,16 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Apis\Controllers;
 /**
  * APIS > Services
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Services extends Aksara
+class Services extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'rest__services';
+	private $_table									= 'app__rest_api';
 	
 	public function __construct()
 	{
@@ -19,14 +21,14 @@ class Services extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->_primary								= $this->input->get('id');
+		$this->_primary								= service('request')->getGet('id');
 	}
 	
 	public function index()
 	{
 		$this->set_title(phrase('manage_services'))
 		->set_icon('mdi mdi-link-variant')
-		->unset_column('id')
+		->unset_column('id, api_key, method, ip_range')
 		->unset_field('id')
 		->unset_view('id')
 		->set_field
@@ -34,71 +36,83 @@ class Services extends Aksara
 			array
 			(
 				'description'						=> 'textarea',
+				'ip_range'							=> 'textarea',
 				'status'							=> 'boolean'
 			)
 		)
-		->set_field('url', 'dropdown', $this->_modules())
+		->set_field
+		(
+			'method',
+			'checkbox',
+			array
+			(
+				'GET'								=> 'GET ',
+				'POST'								=> 'POST ',
+				'DELETE'							=> 'DELETE '
+			)
+		)
+		->default_value('api_key', $this->_api_key_generator())
+		->merge_field('valid_until, status')
 		->set_validation
 		(
 			array
 			(
-				'url'								=> 'required|valid_url|is_unique[' . $this->_table . '.url.id.' . $this->_primary . ']',
-				'title'								=> 'required|xss_clean|max_length[64]|is_unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
-				'description'						=> 'required|xss_clean',
-				'status'							=> 'is_boolean'
+				'title'								=> 'required|string|max_length[64]|is_unique[' . $this->_table . '.title,id,' . $this->_primary . ']',
+				'description'						=> 'required|string',
+				'api_key'							=> 'required|alpha_numeric|min_length[32]',
+				'method'							=> 'required|in_list[GET,POST,DELETE]',
+				'valid_until'						=> 'required|valid_date',
+				'status'							=> 'boolean'
 			)
 		)
+		
+		->set_alias
+		(
+			array
+			(
+				'title'								=> phrase('title'),
+				'description'						=> phrase('description'),
+				'api_key'							=> phrase('api_key'),
+				'ip_range'							=> phrase('ip_range'),
+				'method'							=> phrase('request_method'),
+				'valid_until'						=> phrase('valid_until'),
+				'status'							=> phrase('status')
+			)
+		)
+		
 		->render($this->_table);
 	}
 	
-	private function _modules()
+	private function _api_key_generator($length = 32)
 	{
-		$current									= $this->model->select('url')->get_where
+		$characters									= '0123456789ABCDEF';
+		
+		$char_length								= strlen($characters);
+		$output										= '';
+		
+		for($i = 0; $i < $length; $i++)
+		{
+			$output									.= $characters[rand(0, $char_length - 1)];
+		}
+		
+		$exist										= $this->model->select
+		('
+			api_key
+		')
+		->get_where
 		(
 			$this->_table,
 			array
 			(
-				'id'								=> $this->input->get('id')
+				'api_key'							=> $output
 			),
 			1
 		)
-		->row('url');
+		->row('api_key');
 		
-		$query										= $this->model->select('url')->get($this->_table)->result();
-		$existing									= array();
-		
-		if($query)
+		if($exist)
 		{
-			foreach($query as $key => $val)
-			{
-				$existing[]							= $val->url;
-			}
-		}
-		
-		$query										= $this->model->order_by('module, (module != submodule), submodule')->get('app__groups_privileges')->result();
-		
-		$output										= array();
-		
-		if($query)
-		{
-			foreach($query as $key => $val)
-			{
-				$slug								= $val->module;
-				
-				if($val->module != $val->submodule)
-				{
-					$slug							.= '/' . $val->submodule;
-				}
-				
-				if($val->submodule != $val->controller)
-				{
-					$slug							.= '/' . $val->controller;
-				}
-				
-				if(in_array($slug, $existing) && $slug != $current) continue;
-				
-				$output[$slug]						= $slug;
-			}
+			$this->_api_key_generator();
 		}
 		
 		return $output;

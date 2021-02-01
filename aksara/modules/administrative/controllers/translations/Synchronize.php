@@ -1,35 +1,35 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Translations;
 /**
  * Administrative > Translations > Synchronize
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Synchronize extends Aksara
+class Synchronize extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
 		parent::__construct();
 		
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 		}
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
-		
-		$this->parent_module('translations');
 	}
 	
 	public function index()
 	{
 		/* load the additional helper */
-		$this->load->helper('file');
+		helper('filesystem');
 		
 		/* list the file inside the language folder */
-		$languages									= get_filenames(TRANSLATION_PATH);
+		$languages									= get_filenames(WRITEPATH . 'translations');
 		$phrases									= array();
 		$error										= 0;
 		
@@ -42,7 +42,7 @@ class Synchronize extends Aksara
 				if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') continue;
 				
 				/* get translation */
-				$phrase								= file_get_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val);
+				$phrase								= file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
 				
 				/* decode phrases */
 				$phrase								= json_decode($phrase, true);
@@ -58,7 +58,7 @@ class Synchronize extends Aksara
 				if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') continue;
 				
 				/* get translation */
-				$phrase								= file_get_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val);
+				$phrase								= file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
 				
 				/* decode phrases */
 				$phrase								= json_decode($phrase, true);
@@ -77,7 +77,7 @@ class Synchronize extends Aksara
 				ksort($phrase);
 				
 				/* try to add language file */
-				if(!is_writable(TRANSLATION_PATH) || !file_put_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val, json_encode($phrase)))
+				if(!is_writable(WRITEPATH . 'translations') || !file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase)))
 				{
 					/* failed to write file, throw an error exception */
 					$error++;

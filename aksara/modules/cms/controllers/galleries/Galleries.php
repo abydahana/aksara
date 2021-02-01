@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Galleries;
 /**
  * CMS > Galleries
  * Manage galleries
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Galleries extends Aksara
+class Galleries extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'galleries';
 	
@@ -63,10 +65,10 @@ class Galleries extends Aksara
 		(
 			array
 			(
-				'gallery_title'						=> 'required|max_length[64]|is_unique[' . $this->_table . '.gallery_title.gallery_id.' . $this->input->get('gallery_id') . ']',
+				'gallery_title'						=> 'required|max_length[64]|is_unique[' . $this->_table . '.gallery_title,gallery_id,' . service('request')->getGet('gallery_id') . ']',
 				'gallery_description'				=> 'required',
-				'featured'							=> 'is_boolean',
-				'status'							=> 'is_boolean'
+				'featured'							=> 'boolean',
+				'status'							=> 'boolean'
 			)
 		)
 		->set_default('author', get_userdata('user_id'))
@@ -105,6 +107,7 @@ class Galleries extends Aksara
 				'updated_timestamp'					=> phrase('updated')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

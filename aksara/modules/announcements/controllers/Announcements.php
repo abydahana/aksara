@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Announcements\Controllers;
 /**
  * Announcements
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Announcements extends Aksara
+class Announcements extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__announcements';
 	
@@ -22,6 +24,7 @@ class Announcements extends Aksara
 		->set_icon('mdi mdi-bullhorn-outline')
 		->set_primary('announcements_slug')
 		->order_by('end_date')
+		
 		->render($this->_table);
 	}
 }

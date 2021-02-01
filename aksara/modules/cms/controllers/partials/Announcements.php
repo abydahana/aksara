@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials > Announcements
  * Manage announcements.
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Announcements extends Aksara
+class Announcements extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__announcements';
 	
@@ -23,7 +25,7 @@ class Announcements extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_announcements'))
+		$this->set_title(phrase('announcements'))
 		->set_icon('mdi mdi-bullhorn-outline')
 		->set_primary('announcement_id')
 		->unset_column('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
@@ -72,10 +74,10 @@ class Announcements extends Aksara
 		(
 			array
 			(
-				'title'								=> 'required|max_length[256]|is_unique[' . $this->_table . '.title.announcement_id.' . $this->input->get('announcement_id') . ']',
+				'title'								=> 'required|max_length[256]|is_unique[' . $this->_table . '.title,announcement_id,' . service('request')->getGet('announcement_id') . ']',
 				'content'							=> 'required',
 				'language_id'						=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -94,6 +96,7 @@ class Announcements extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

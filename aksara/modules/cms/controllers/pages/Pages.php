@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Pages;
 /**
  * CMS > Pages
  * Manage frontend pages
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Pages extends Aksara
+class Pages extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages';
 	
@@ -23,7 +25,7 @@ class Pages extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_front_end_pages'))
+		$this->set_title(phrase('pages'))
 		->set_icon('mdi mdi-file-document-outline')
 		->set_primary('page_id')
 		->unset_column('page_id, author, page_slug, page_content, carousel_title, faq_title, created_timestamp, updated_timestamp, language')
@@ -81,9 +83,9 @@ class Pages extends Aksara
 		(
 			array
 			(
-				'page_title'						=> 'required|max_length[64]|is_unique[' . $this->_table . '.page_title.page_id.' . $this->input->get('page_id') . ']',
+				'page_title'						=> 'required|max_length[64]|is_unique[' . $this->_table . '.page_title,page_id,' . service('request')->getGet('page_id') . ']',
 				'page_content'						=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_default
@@ -132,6 +134,7 @@ class Pages extends Aksara
 			)
 		)
 		->modal_size('modal-xl')
+		
 		->render($this->_table);
 	}
 }

@@ -1,13 +1,15 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Peoples\Controllers;
 /**
  * Peoples
  * Show the list of peoples
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Peoples extends Aksara
+class Peoples extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'peoples';
 	
@@ -22,6 +24,7 @@ class Peoples extends Aksara
 		->set_description(phrase('meet_the_people_behind_this'))
 		->set_icon('mdi mdi-account-group-outline')
 		->where('status', 1)
+		
 		->render($this->_table);
 	}
 }

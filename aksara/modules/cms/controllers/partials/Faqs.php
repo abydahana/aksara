@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Cms\Controllers\Partials;
 /**
  * CMS > Partials > FAQ
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Faqs extends Aksara
+class Faqs extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages__faqs';
 	
@@ -22,7 +24,7 @@ class Faqs extends Aksara
 	
 	public function index()
 	{
-		$this->set_title(phrase('manage_frequently_asked_questions'))
+		$this->set_title(phrase('faqs'))
 		->set_icon('mdi mdi-file-question')
 		->unset_column('faq_id, created_timestamp, updated_timestamp, language')
 		->unset_field('faq_id')
@@ -55,7 +57,7 @@ class Faqs extends Aksara
 			(
 				'title'								=> 'required',
 				'language_id'						=> 'required',
-				'status'							=> 'is_boolean'
+				'status'							=> 'boolean'
 			)
 		)
 		->set_alias
@@ -72,6 +74,7 @@ class Faqs extends Aksara
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->render($this->_table);
 	}
 }

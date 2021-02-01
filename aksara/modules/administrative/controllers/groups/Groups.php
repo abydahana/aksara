@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Groups;
 /**
  * Administrative > Groups
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Groups extends Aksara
+class Groups extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__groups';
 	
@@ -19,7 +21,7 @@ class Groups extends Aksara
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
-		$this->unset_delete('group_id', array(1, 2));
+		$this->unset_delete('group_id', array(1, 2, 3));
 	}
 	
 	public function index()
@@ -84,7 +86,7 @@ class Groups extends Aksara
 		->get('app__groups_privileges')
 		->result();
 		
-		$current									= $this->model->select('group_privileges')->get_where($this->_table, array('group_id' => $this->input->get('group_id')), 1)->row('group_privileges');
+		$current									= $this->model->select('group_privileges')->get_where($this->_table, array('group_id' => service('request')->getGet('group_id')), 1)->row('group_privileges');
 		$current									= json_decode($current, true);
 		$output										= null;
 		
@@ -131,47 +133,47 @@ class Groups extends Aksara
 					if('index' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-primary';
+						$badge_color				= 'badge-primary';
 					}
 					elseif('create' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-success';
+						$badge_color				= 'badge-success';
 					}
 					elseif('read' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-info';
+						$badge_color				= 'badge-info';
 					}
 					elseif('update' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-warning';
+						$badge_color				= 'badge-warning';
 					}
 					elseif('delete' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-danger';
+						$badge_color				= 'badge-danger';
 					}
 					elseif('export' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-success';
+						$badge_color				= 'badge-success';
 					}
 					elseif('print' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-warning';
+						$badge_color				= 'badge-warning';
 					}
 					elseif('pdf' == $privilege)
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-danger';
+						$badge_color				= 'badge-danger';
 					}
 					else
 					{
 						$label						= phrase($privilege);
-						$label_color				= 'text-secondary';
+						$badge_color				= 'badge-secondary';
 					}
 					
 					if('read' === $this->_method)
@@ -180,8 +182,8 @@ class Groups extends Aksara
 						{
 							$privilege_output		.= '
 								<div class="col-6 col-md-3">
-									<label class="d-block font-weight-bold text-truncate text-sm ' . $label_color . '"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
-										' . $label . '
+									<label class="d-block font-weight-bold text-truncate"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
+										<span class="badge ' . $badge_color . '">' . $label . '</span>
 									</label>
 								</div>
 							';
@@ -191,10 +193,10 @@ class Groups extends Aksara
 					{
 						$privilege_output			.= '
 							<div class="col-6 col-md-3">
-								<label class="d-block font-weight-bold text-truncate text-sm ' . $label_color . '"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
+								<label class="d-block font-weight-bold"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
 									<input type="checkbox" name="group_privileges[' . $val->module . '][' . $val->submodule . '][' . $val->controller . '][]" value="' . $privilege . '" class="checker-children"' . (isset($current[$val->module][$val->submodule][$val->controller]) && in_array($privilege, $current[$val->module][$val->submodule][$val->controller]) ? ' checked' : '') . ' />
 									&nbsp;
-									' . $label . '
+									<span class="badge ' . $badge_color . '">' . $label . '</span>
 								</label>
 							</div>
 						';

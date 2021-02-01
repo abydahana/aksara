@@ -1,18 +1,18 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs > Category
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Category extends Aksara
+class Category extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
 		parent::__construct();
-		
-		$this->parent_module('blogs');
 	}
 	
 	public function index($slug = null)
@@ -99,6 +99,7 @@ class Category extends Aksara
 				'blogs.status'						=> 1
 			)
 		)
+		
 		->render('blogs');
 	}
 }

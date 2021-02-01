@@ -1,6 +1,6 @@
 <div class="container-fluid pb-3">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-		<div class="border-bottom bg-white mb-3 sticky-top" style="margin-right:-1rem; margin-left:-1rem; overflow-x: auto; top:88px">
+		<div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x: auto; top:88px">
 			<ul class="nav" style="flex-wrap: nowrap">
 				<li class="nav-item">
 					<a href="#pills-setting" data-toggle="pill" id="pills-setting-tab" class="nav-link no-wrap active">
@@ -190,13 +190,13 @@
 								</div>
 							</div>
 							<div class="col-md-6">
+								<div class="form-group">
+									<label class="text-muted d-block" for="username_changes_input">
+										<?php echo $results->form_data->username_changes->label; ?>
+									</label>
+									<?php echo $results->form_data->username_changes->content; ?>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label class="text-muted d-block" for="username_changes_input">
-								<?php echo $results->form_data->username_changes->label; ?>
-							</label>
-							<?php echo $results->form_data->username_changes->content; ?>
 						</div>
 						<hr />
 						<div class="row">
@@ -211,19 +211,25 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="pills-apis">
-						<div class="form-group">
-							<label class="text-muted d-block" for="openlayers_search_provider_input">
-								<?php echo $results->form_data->openlayers_search_provider->label; ?>
-								<?php echo ($results->form_data->openlayers_search_provider->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
-							</label>
-							<?php echo $results->form_data->openlayers_search_provider->content; ?>
-						</div>
-						<div class="form-group">
-							<label class="text-muted d-block" for="openlayers_search_key_input">
-								<?php echo $results->form_data->openlayers_search_key->label; ?>
-								<?php echo ($results->form_data->openlayers_search_key->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
-							</label>
-							<?php echo $results->form_data->openlayers_search_key->content; ?>
+						<div class="row">
+							<div class="col-md-5">
+								<div class="form-group">
+									<label class="text-muted d-block" for="openlayers_search_provider_input">
+										<?php echo $results->form_data->openlayers_search_provider->label; ?>
+										<?php echo ($results->form_data->openlayers_search_provider->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+									</label>
+									<?php echo $results->form_data->openlayers_search_provider->content; ?>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label class="text-muted d-block" for="openlayers_search_key_input">
+										<?php echo $results->form_data->openlayers_search_key->label; ?>
+										<?php echo ($results->form_data->openlayers_search_key->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+									</label>
+									<?php echo $results->form_data->openlayers_search_key->content; ?>
+								</div>
+							</div>
 						</div>
 						<hr />
 						<div class="row">
@@ -234,6 +240,15 @@
 										<?php echo ($results->form_data->google_analytics_key->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
 									</label>
 									<?php echo $results->form_data->google_analytics_key->content; ?>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label class="text-muted d-block" for="disqus_site_domain_input">
+										<?php echo $results->form_data->disqus_site_domain->label; ?>
+										<?php echo ($results->form_data->disqus_site_domain->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+									</label>
+									<?php echo $results->form_data->disqus_site_domain->content; ?>
 								</div>
 							</div>
 						</div>
@@ -285,6 +300,9 @@
 						<h5 class="mb-3">
 							<?php echo phrase('email_notifier'); ?>
 						</h5>
+						<div class="alert alert-warning">
+							<?php echo phrase('to_working_with_google_smtp_make_sure_to_activate_less_secure_apps_setting_on_your_google_account'); ?>
+						</div>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">

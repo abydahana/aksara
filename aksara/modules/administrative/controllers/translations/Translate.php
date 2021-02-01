@@ -1,12 +1,14 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Aksara\Modules\Administrative\Controllers\Translations;
 /**
  * Administrative > Translations > Translate
  *
- * @version			2.1.1
  * @author			Aby Dahana
  * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Translate extends Aksara
+class Translate extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
@@ -18,14 +20,13 @@ class Translate extends Aksara
 		$this->set_theme('backend');
 		
 		$this->set_method('update');
-		$this->parent_module('translations');
 		
-		$this->_primary								= $this->input->get('id');
-		$this->_code								= $this->input->get('code');
-		$this->_translation_file					= TRANSLATION_PATH . DIRECTORY_SEPARATOR . $this->_code . '.json';
+		$this->_primary								= service('request')->getGet('id');
+		$this->_code								= service('request')->getGet('code');
+		$this->_translation_file					= WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->_code . '.json';
 		$this->_total_phrase						= 0;
 		$this->_limit								= 99;
-		$this->_offset								= ($this->input->get('per_page') > 1 ? ($this->input->get('per_page') * $this->_limit) - $this->_limit : 0);
+		$this->_offset								= (service('request')->getGet('per_page') > 1 ? (service('request')->getGet('per_page') * $this->_limit) - $this->_limit : 0);
 	}
 	
 	public function index()
@@ -54,23 +55,24 @@ class Translate extends Aksara
 				'code'								=> $this->_code
 			)
 		)
+		
 		->render('app__languages');
 	}
 	
 	public function delete_phrase()
 	{
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('changes_will_not_saved_in_demo_mode'), current_page());
 		}
 		
-		$delete_key									= $this->input->get('phrase');
+		$delete_key									= service('request')->getGet('phrase');
 		
 		/* load the additional helper */
-		$this->load->helper('file');
+		helper('filesystem');
 		
 		/* list the file inside the language folder */
-		$languages									= get_filenames(TRANSLATION_PATH);
+		$languages									= get_filenames(WRITEPATH . 'translations');
 		$phrases									= array();
 		$error										= 0;
 		
@@ -83,7 +85,7 @@ class Translate extends Aksara
 				if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') continue;
 				
 				/* get translation */
-				$phrase								= file_get_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val);
+				$phrase								= file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
 				
 				/* decode phrases */
 				$phrase								= json_decode($phrase, true);
@@ -99,7 +101,7 @@ class Translate extends Aksara
 				if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') continue;
 				
 				/* get translation */
-				$phrase								= file_get_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val);
+				$phrase								= file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
 				
 				/* decode phrases */
 				$phrase								= json_decode($phrase, true);
@@ -121,7 +123,7 @@ class Translate extends Aksara
 				unset($phrase[$delete_key]);
 				
 				/* try to add language file */
-				if(!is_writable(TRANSLATION_PATH) || !file_put_contents(TRANSLATION_PATH . DIRECTORY_SEPARATOR . $val, json_encode($phrase)))
+				if(!is_writable(WRITEPATH . 'translations') || !file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase)))
 				{
 					/* failed to write file, throw an error exception */
 					$error++;
@@ -139,20 +141,16 @@ class Translate extends Aksara
 	
 	public function validate_translation()
 	{
-		if(defined('DEMO_MODE') && DEMO_MODE)
+		if(DEMO_MODE)
 		{
 			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
 		}
 		
-		/* load additional library and helper */
-		$this->load->library('form_validation');
-		$this->load->helper('security');
-		
-		$this->form_validation->set_rules('phrase[]', phrase('phrase'), 'xss_clean');
+		$this->form_validation->setRule('phrase[]', phrase('phrase'), 'trim');
 		
 		if($this->form_validation->run() === false)
 		{
-			return throw_exception(400, $this->form_validation->error_array());
+			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		
 		if(file_exists($this->_translation_file))
@@ -160,7 +158,7 @@ class Translate extends Aksara
 			$phrase									= file_get_contents($this->_translation_file);
 			$phrase									= json_decode($phrase, true);
 			
-			foreach($this->input->post('phrase') as $key => $val)
+			foreach(service('request')->getPost('phrase') as $key => $val)
 			{
 				if(isset($phrase[$key]))
 				{
@@ -197,9 +195,9 @@ class Translate extends Aksara
 			{
 				foreach($phrase as $key => $val)
 				{
-					if($this->input->get('keyword') && stripos($val, $this->input->get('keyword')) === false) continue;
+					if(service('request')->getGet('q') && stripos($val, service('request')->getGet('q')) === false) continue;
 					
-					$phrases[$key]					= $val;
+					$phrases[$key]					= htmlspecialchars($val);
 				}
 			}
 			

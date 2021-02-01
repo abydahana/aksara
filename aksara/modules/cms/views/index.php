@@ -106,7 +106,7 @@
 						</div>
 						<div class="col">
 							<h5 class="card-title mb-0">
-								<?php echo phrase('carousel_slideshow'); ?>
+								<?php echo phrase('carousels'); ?>
 							</h5>
 							<p class="card-text">
 								<?php echo phrase('manage_carousel_slideshow'); ?>
@@ -127,7 +127,7 @@
 						</div>
 						<div class="col">
 							<h5 class="card-title mb-0">
-								<?php echo phrase('faq_manager'); ?>
+								<?php echo phrase('faqs'); ?>
 							</h5>
 							<p class="card-text">
 								<?php echo phrase('manage_frequently_asked_question'); ?>

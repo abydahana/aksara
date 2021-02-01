@@ -1,10 +1,13 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+<?php namespace Aksara\Libraries;
 /**
  * The PDF Library
  * This class is used to generate PDF's file
  *
- * Property of DWITRI Media
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
 
 ini_set('pcre.backtrack_limit', 99999999);
@@ -16,96 +19,94 @@ class Document
 	 *
 	 * @object
 	 */
-	private $_params						= array();
+	private $_params								= array();
 	
 	/**
 	 * default page width
 	 *
 	 * @string
 	 */
-	private $_pageWidth						= '8.5in';
+	private $_pageWidth								= '8.5in';
 	
 	/**
 	 * default page height
 	 *
 	 * @string
 	 */
-	private $_pageHeight					= '13in';
+	private $_pageHeight							= '13in';
 	
 	/**
 	 * page orientation
 	 *
 	 * @string
 	 */
-	private $_pageOrientation				= 'portrait';
+	private $_pageOrientation						= 'portrait';
 	
 	/**
 	 * margin top
 	 *
 	 * @int
 	 */
-	private $_pageMarginTop					= 0;
+	private $_pageMarginTop							= 0;
 	
 	/**
 	 * margin right
 	 *
 	 * @int
 	 */
-	private $_pageMarginRight				= 0;
+	private $_pageMarginRight						= 0;
 	
 	/**
 	 * margin bottom
 	 *
 	 * @int
 	 */
-	private $_pageMarginBottom				= 0;
+	private $_pageMarginBottom						= 0;
 	
 	/**
 	 * margin left
 	 * @int
 	 */
-	private $_pageMarginLeft				= 0;
+	private $_pageMarginLeft						= 0;
 	
 	public function __construct()
 	{
-		// load composer
-		require_once(APPPATH . '../vendor/autoload.php');
 	}
 	
 	public function generate($html = null, $filename = null, $method = 'embed', $params = array())
 	{
 		// push parameter
-		$this->_params						= array_merge($this->_params, $params);
+		$this->_params								= array_merge($this->_params, $params);
 		
 		// default page width (better use "in" a.k.a inches)
 		if(!isset($this->_params['page-width']))
 		{
-			$this->_params['page-width']	= '8.5in';
+			$this->_params['page-width']			= '8.5in';
 		}
 		// default page height (better use "in" a.k.a inches)
 		if(!isset($this->_params['page-height']))
 		{
-			$this->_params['page-height']	= '13in';
+			$this->_params['page-height']			= '13in';
 		}
 		// default top margin of page
 		if(!isset($this->_params['margin-top']))
 		{
-			$this->_params['margin-top']	= 10;
+			$this->_params['margin-top']			= 10;
 		}
 		// default right margin of page
 		if(!isset($this->_params['margin-right']))
 		{
-			$this->_params['margin-right']	= 10;
+			$this->_params['margin-right']			= 10;
 		}
 		// default bottom margin of page
 		if(!isset($this->_params['margin-bottom']))
 		{
-			$this->_params['margin-bottom']	= 10;
+			$this->_params['margin-bottom']			= 10;
 		}
 		// default left margin of page
 		if(!isset($this->_params['margin-left']))
 		{
-			$this->_params['margin-left']	= 10;
+			$this->_params['margin-left']			= 10;
 		}
 		if('export' == strtolower($method))
 		{
@@ -117,32 +118,43 @@ class Document
 		{
 			// use mPDF instead
 			// online doc can be found in https://mpdf.github.io/
-			return $this->_mpdf($html, $filename, $method, $this->_params);
+			$output									= $this->_mpdf($html, $filename, 'attach', $this->_params);
+			
+			if($method == 'embed')
+			{
+				service('response')->setContentType('application/pdf');
+				
+				return service('response')->setBody($output)->send();
+			}
+			else
+			{
+				return $output;
+			}
 		}
 	}
 	
 	public function pageSize($width = '8.5in', $height = '13in')
 	{
 		// explode to get initial setup
-		$widthHeight						= explode(' ', preg_replace('!\s+!', ' ', $width));
+		$widthHeight								= explode(' ', preg_replace('!\s+!', ' ', $width));
 		
 		if(2 == sizeof($widthHeight))
 		{
 			// the page size and orientation is sets with units
-			$this->_params['page-width']	= $widthHeight[0];
-			$this->_params['page-height']	= $widthHeight[1];
+			$this->_params['page-width']			= $widthHeight[0];
+			$this->_params['page-height']			= $widthHeight[1];
 		}
 		elseif('landscape' == strtolower($height))
 		{
 			// the page size and orientation is sets with initial, ex: A4, landscape
-			$this->_params['page-size']		= $width;
-			$this->_params['orientation']	= $height;
+			$this->_params['page-size']				= $width;
+			$this->_params['orientation']			= $height;
 		}
 		else
 		{
 			// the page size and orientation is sets with initial, ex: A4, landscape
-			$this->_params['page-width']	= $width;
-			$this->_params['page-height']	= $height;
+			$this->_params['page-width']			= $width;
+			$this->_params['page-height']			= $height;
 		}
 		
 		return $this;
@@ -154,34 +166,34 @@ class Document
 		if($top && !$right && !$bottom && !$left)
 		{
 			// margin of the edge is equal
-			$this->_params['margin-top']	= $top;
-			$this->_params['margin-right']	= $top;
-			$this->_params['margin-bottom']	= $top;
-			$this->_params['margin-left']	= $top;
+			$this->_params['margin-top']			= $top;
+			$this->_params['margin-right']			= $top;
+			$this->_params['margin-bottom']			= $top;
+			$this->_params['margin-left']			= $top;
 		}
 		elseif($top && $right && !$bottom && !$left)
 		{
 			// margin-top and bottom is equal, also margin-right and left
-			$this->_params['margin-top']	= $top;
-			$this->_params['margin-right']	= $right;
-			$this->_params['margin-bottom']	= $top;
-			$this->_params['margin-left']	= $right;
+			$this->_params['margin-top']			= $top;
+			$this->_params['margin-right']			= $right;
+			$this->_params['margin-bottom']			= $top;
+			$this->_params['margin-left']			= $right;
 		}
 		elseif($top && $right && $bottom && !$left)
 		{
 			// only left margin is equal to the right margin
-			$this->_params['margin-top']	= $top;
-			$this->_params['margin-right']	= $right;
-			$this->_params['margin-bottom']	= $bottom;
-			$this->_params['margin-left']	= $right;
+			$this->_params['margin-top']			= $top;
+			$this->_params['margin-right']			= $right;
+			$this->_params['margin-bottom']			= $bottom;
+			$this->_params['margin-left']			= $right;
 		}
 		else
 		{
 			// all edge is used custom margin
-			$this->_params['margin-top']	= $top;
-			$this->_params['margin-right']	= $right;
-			$this->_params['margin-bottom']	= $bottom;
-			$this->_params['margin-left']	= $left;
+			$this->_params['margin-top']			= $top;
+			$this->_params['margin-right']			= $right;
+			$this->_params['margin-bottom']			= $bottom;
+			$this->_params['margin-left']			= $left;
 		}
 		
 		return $this;
@@ -190,66 +202,44 @@ class Document
 	private function _mpdf($html = null, $filename = null, $method = 'embed', $params = array())
 	{
 		// rendering mode
-		$params['mode']						= 'utf-8';
+		$params['mode']								= 'utf-8';
 		
 		// auto top margin
-		$params['setAutoTopMargin']			= 'stretch';
+		$params['setAutoTopMargin']					= 'stretch';
 		
 		// auto bottom margin
-		$params['setAutoBottomMargin']		= 'stretch';
+		$params['setAutoBottomMargin']				= 'stretch';
 		
 		// use subtitutions
-		$params['showImageErrors']			= true;
+		$params['showImageErrors']					= true;
 		
 		// use subtitutions
-		$params['useSubstitutions']			= false;
+		$params['useSubstitutions']					= false;
 		
 		// table proportions
-		$params['keep_table_proportions']	= true;
+		$params['keep_table_proportions']			= true;
 		
 		// auto page break enabled
-		$params['autoPageBreak']			= true;
+		$params['autoPageBreak']					= true;
 		
 		// temporary folder
-		$params['tempDir']					= sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'mpdf';
-		
-		// font directory
-		$params['fontDir']					= array(__DIR__ . '/document/fonts');
-		
-		// font configuration
-		$params['fontdata']					= array
-		(
-			'consolas'						=> array
-			(
-				'R'							=> 'Consolas.ttf',
-				'B'							=> 'Consolas.ttf',
-				'I'							=> 'Consolas.ttf',
-				'O'							=> 'Consolas.ttf'
-			),
-			'tahoma'						=> array
-			(
-				'R'							=> 'Tahoma.ttf',
-				'B'							=> 'Tahoma-Bold.ttf',
-				'I'							=> 'Tahoma-Oblique.ttf',
-				'O'							=> 'Tahoma-BoldOblique.ttf'
-			)
-		);
+		$params['tempDir']							= sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'mpdf';
 		
 		// used font
-		$params['default_font']				= (isset($params['default_font']) ? $params['default_font'] : 'tahoma');
+		$params['default_font']						= (isset($params['default_font']) ? $params['default_font'] : 'tahoma');
 		
 		// DPI
-		$params['dpi']						= 80;
+		$params['dpi']								= 80;
 		
 		/* check if page size is defined */
 		if(isset($params['page-width']) && isset($params['page-height']))
 		{
 			// set the page size
-			$params['format']				= array(preg_replace('/[^0-9.]/', '', $params['page-width']) * 25.4, preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4);
+			$params['format']						= array(preg_replace('/[^0-9.]/', '', $params['page-width']) * 25.4, preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4);
 		}
 		
 		// load generator
-		$pdf								= new \Mpdf\Mpdf($params);
+		$pdf										= new \Mpdf\Mpdf($params);
 		
 		// render output
 		$pdf->SetCreator('Aby Dahana (abydahana.github.io)');
@@ -259,12 +249,12 @@ class Document
 		if(isset($params['setWatermarkText']))
 		{
 			$pdf->SetWatermarkText($params['setWatermarkText']);
-			$pdf->showWatermarkText			= true;
+			$pdf->showWatermarkText					= true;
 		}
 		if(isset($params['setWatermarkImage']))
 		{
 			$pdf->SetWatermarkImage($params['setWatermarkImage']);
-			$pdf->showWatermarkImage		= true;
+			$pdf->showWatermarkImage				= true;
 		}
 		
 		$pdf->WriteHTML($html);
@@ -291,37 +281,38 @@ class Document
 		libxml_use_internal_errors(true);
 		
 		// remove special tags
-		$html								= preg_replace('/<htmlpagefooter(.*)<\/htmlpagefooter>/iUs', '', preg_replace('/<htmlpageheader(.*)<\/htmlpageheader>/iUs', '', $html));
+		$html										= preg_replace('/<htmlpagefooter(.*)<\/htmlpagefooter>/iUs', '', preg_replace('/<htmlpageheader(.*)<\/htmlpageheader>/iUs', '', $html));
 		
 		// load dom
-		$dom								= new DOMDocument();
+		$dom										= new \DOMDocument();
 		$dom->loadHTML($html);
 		
 		// get only style element
-		$styles								= $dom->getElementsByTagName('style');
-		$css								= null;
+		$styles										= $dom->getElementsByTagName('style');
+		$css										= null;
 		foreach($styles as $style)
 		{
-			$css							= $dom->saveHTML($style);
+			$css									= $dom->saveHTML($style);
 		}
 		
 		// get only table element
-		$tables								= $dom->getElementsByTagName('table');
-		$output								= null;
+		$tables										= $dom->getElementsByTagName('table');
+		$output										= null;
 		foreach($tables as $table)
 		{
 			if($table->getAttribute('class') !== 'table') continue;
 			
-			$output							.= $dom->saveHTML($table); 
+			$output									.= $dom->saveHTML($table); 
 		}
 		
-		$output								= '<!DOCTYPE html><head><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
+		$output										= '<!DOCTYPE html><head><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
 		
 		header('Content-type: application/vnd.ms-excel');
 		header('Content-Transfer-Encoding: binary');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
 		header('Content-Disposition: attachment; filename=' . $filename . '.xls');
+		
 		echo $output;
 	}
 }

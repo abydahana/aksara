@@ -27,7 +27,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-				<form action="<?php echo base_url('blogs/search', array('category' => $this->uri->segment(2), 'per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
+				<form action="<?php echo base_url('blogs/search', array('category' => (service('request')->uri->getTotalSegments() > 1 ? service('request')->uri->getSegment(2) : null), 'per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
 					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post_under') . ' ' . $meta->title; ?>" />
 					<button type="submit" class="btn btn-lg float-right absolute top right">
 						<i class="mdi mdi-magnify font-weight-bold"></i>
@@ -58,7 +58,7 @@
 								if($badge)
 								{
 									$tags			.= '
-										<a href="' . go_to('tags', array('q' => $badge)) . '" class="--xhr">
+										<a href="' . go_to('../tags', array('q' => $badge)) . '" class="--xhr">
 											<span class="badge badge-secondary mr-2">
 												#' . trim($badge) . '
 											</span>
@@ -71,7 +71,7 @@
 						echo '
 							<div class="row">
 								<div class="col-3 col-sm-3">
-									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr">
+									<a href="' . go_to('../' . $val->category_slug . '/' . $val->post_slug) . '" class="--xhr">
 										<img id="og-image" src="' . get_image('blogs', $val->featured_image, 'thumb') . '" class="img-fluid rounded" />
 									</a>
 								</div>
@@ -86,13 +86,13 @@
 											<i class="mdi mdi-clock-outline"></i> ' . time_ago($val->updated_timestamp) . '
 										</span>
 									</div>
-									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr">
+									<a href="' . go_to('../' . $val->category_slug . '/' . $val->post_slug) . '" class="--xhr">
 										<h5>
 											' . $val->post_title . '
 										</h5>
 									</a>
 									<p class="mb-0">
-										<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr text-muted">
+										<a href="' . go_to('../' . $val->category_slug . '/' . $val->post_slug) . '" class="--xhr text-muted">
 											' . truncate($val->post_excerpt, 128) . '
 										</a>
 									</p>
@@ -105,7 +105,7 @@
 						';
 					}
 					
-					echo $this->template->pagination($pagination);
+					echo $template->pagination;
 				}
 				else
 				{
@@ -135,7 +135,7 @@
 										<img src="' . get_image('blogs', $val->category_image, 'icon') . '" class="img-fluid rounded" />
 									</div>
 									<div class="col">
-										<a href="' . go_to($val->category_slug) . '" class="--xhr">
+										<a href="' . go_to('../' . $val->category_slug) . '" class="--xhr">
 											<h5>
 												' . $val->category_title . '
 											</h5>

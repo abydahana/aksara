@@ -1,5 +1,3 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-
 <div class="container-fluid pt-3 pb-3">
 	<?php
 		$prefix_action								= array();
@@ -267,7 +265,7 @@
 		/**
 		 * Pagination
 		 */
-		echo ($pagination->total_rows > 0 ? '<div class="pt-3">' . $this->template->pagination($pagination) . '</div>' : null);
+		echo ($pagination->total_rows > 0 ? '<div class="pt-3">' . $template->pagination . '</div>' : null);
 	?>
 	<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->
 	<!-- bottom toolbar -->
@@ -323,9 +321,9 @@
 			</div>
 			<div class="modal-body">
 				<?php
-					if($this->input->get())
+					if(service('request')->getGet())
 					{
-						foreach($this->input->get() as $key => $val)
+						foreach(service('request')->getGet() as $key => $val)
 						{
 							if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
 							
@@ -337,7 +335,7 @@
 				<?php echo (isset($results->filter) ? '<div class="form-group">' . $results->filter . '</div>' : null); ?>
 				
 				<div class="form-group">
-					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo $this->input->get('q'); ?>" role="autocomplete" />
+					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo service('request')->getGet('q'); ?>" role="autocomplete" />
 				</div>
 				<div class="form-group">
 					<select name="column" class="form-control">
@@ -345,7 +343,7 @@
 						<?php
 							foreach($results->columns as $key => $val)
 							{
-								echo '<option value="' . $val->field . '"' . ($val->field == $this->input->get('column') ? ' selected' : null) . '>' . $val->label . '</option>';
+								echo '<option value="' . $val->field . '"' . ($val->field == service('request')->getGet('column') ? ' selected' : null) . '>' . $val->label . '</option>';
 							}
 						?>
 					</select>
