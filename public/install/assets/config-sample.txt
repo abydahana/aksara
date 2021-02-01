@@ -1,0 +1,69 @@
+%OPENTAG%
+/**
+ * Configuration file
+ * Parameter commented with UPPERCASE must be followed
+ *
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
+ * -------------------------------------------------------------------
+ * Sometimes you need a fool to complete a complicated job :)
+ * -------------------------------------------------------------------
+ */
+
+/**
+ * Set the default timezone
+ */
+define('TIMEZONE', '%TIMEZONE%');
+
+/**
+ * Set the environment
+ * Available option: development, production
+ */
+define('ENVIRONMENT', 'production');
+
+/**
+ * Set the default site url
+ */
+define('BASE_URL', ((empty($_SERVER['HTTPS']) OR strtolower($_SERVER['HTTPS']) === 'off') ? 'http' : 'https') . '://'. $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+
+/**
+ * Set the application mode
+ */
+define('DEMO_MODE', false);
+
+/**
+ * Set the security hash
+ * Make it secret!
+ */
+define('ENCRYPTION_KEY', '%ENCRYPTION_KEY%');
+
+/**
+ * Cookie name
+ * Prevent conflicts between applications built with Aksara
+ */
+define('COOKIE_NAME', '%COOKIE_NAME%');
+
+/**
+ * Default database connection
+ */
+define('DB_DSN', '%DSN%');
+define('DB_DRIVER', '%DB_DRIVER%');
+define('DB_HOSTNAME', '%DB_HOSTNAME%');
+define('DB_PORT', '%DB_PORT%');
+define('DB_USERNAME', '%DB_USERNAME%');
+define('DB_PASSWORD', '%DB_PASSWORD%');
+define('DB_DATABASE', '%DB_DATABASE%');
+
+/**
+ * Upload config
+ */
+define('UPLOAD_PATH', 'uploads');
+define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%);
+define('DOCUMENT_FORMAT_ALLOWED', '%DOCUMENT_EXTENSION%');
+define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');
+define('IMAGE_DIMENSION', %IMAGE_DIMENSION%);
+define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%);
+define('ICON_DIMENSION', %ICON_DIMENSION%);

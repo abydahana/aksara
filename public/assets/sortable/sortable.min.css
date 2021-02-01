@@ -1,0 +1,76 @@
+ul.sortable
+{
+	margin: 0;
+	padding: 0
+}
+ul.sortable li
+{
+	list-style-type: none
+}
+
+ul.sortable li:firs-child
+{
+	border-radius: .3rem .3rem 0 0
+}
+
+ul.sortable li:last-child
+{
+	border-radius: 0 0 .3rem .3rem
+}
+
+ul.sortable li.hidden
+{
+	display: none
+}
+
+.sortableListsCurrent,
+ul.sortable li#sortableListsHint {
+    width: 100%;
+    background: #fafafa;
+    padding: .2rem;
+	border-radius: .3rem;
+    margin-top: -1px;
+    margin-bottom: 0;
+    list-style-type: none
+}
+
+ul.sortable li#sortableListsPlaceholder {
+    visibility: hidden
+}
+
+ul.sortable li#sortableListsHint {
+    background: #fafffa;
+    border: 1px dashed #ddd
+}
+
+ul.sortable li {
+    margin-bottom: 0
+}
+
+ul.sortable li .baseClass .input-group-addon {
+    padding-left: 0;
+    padding-right: 0;
+    width: 40px
+}
+
+ul.sortable ul {
+    padding-left: 45px
+}
+
+.item-add.masking {
+    border: 2px dashed #aaa;
+    color: #888;
+    visibility: visible;
+    padding: 2px;
+    text-align: center;
+    margin-bottom: 12px
+}
+
+.sortable-chosen {
+    background: #fafafa;
+    cursor: move
+}
+
+#sortableListsBase ul li {
+    list-style-type: none
+}
