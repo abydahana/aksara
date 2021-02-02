@@ -17,9 +17,7 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 # Installation
 There are two installation methods that you can choose:
 ### Composer Installation
-- Run "`composer create-project abydahana/aksara aksaracms`" anywhere inside your root directory of your web server;
-- The command above will create "`aksaracms`" folder;
-- If you omit the "`aksaracms`" argument, the command will create an "`aksara`" folder instead, which can be renamed as appropriate;
+- Run "`composer create-project abydahana/aksara aksaracms`" anywhere inside your root directory of your web server. The command will create "`aksaracms`" folder. If you omit the "`aksaracms`" argument, the command will create an "`aksara`" folder instead, which can be renamed as appropriate;
 - Access your project from the browser and;
 - Follow the installation wizard.
 
