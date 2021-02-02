@@ -19,15 +19,16 @@ if(! function_exists('aksara'))
 	 */
 	function aksara($parameter = null)
 	{
+		$version									= '4.2.2';
 		$modified									= filemtime(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php');
 		
 		if('version' == $parameter)
 		{
-			return (date('y', $modified) - 17) . '.' . date('n', $modified) . '.' . date('j', $modified);
+			return $version;
 		}
 		elseif('built_version' == $parameter)
 		{
-			return (date('y', $modified) - 17) . '.' . date('n', $modified) . '.' . date('j', $modified) . \CodeIgniter\CodeIgniter::CI_VERSION;
+			return $version . \CodeIgniter\CodeIgniter::CI_VERSION;
 		}
 		elseif('date_modified' == $parameter)
 		{
