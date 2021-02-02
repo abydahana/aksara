@@ -442,9 +442,16 @@
 				}
 			}
 			
-			if(!$_SESSION['system']['mode'])
+			if($error)
 			{
-				if(!$error)
+				if(file_exists($output))
+				{
+					@unlink($output);
+				}
+			}
+			else
+			{
+				if(!$_SESSION['system']['mode'])
 				{
 					$zip							= new \ZipArchive();
 					$unzip							= $zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip');
@@ -454,15 +461,6 @@
 						$zip->extractTo(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'modules');
 						$zip->close();
 					}
-				}
-				else
-				{
-					if(file_exists($output))
-					{
-						@unlink($output);
-					}
-					
-					$error							= $error;
 				}
 			}
 		}
@@ -558,7 +556,7 @@
 				&nbsp;
 			</div>
 			<div class="col-sm-6">
-				' . (file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php') ? '<a href="' . (!$_SESSION['system']['mode'] && $unzip ? '../xhr/boot' : '../home/partial_error') . '" class="btn btn-warning btn-block font-weight-bold">' . phrase('launch_your_site') . '</a>' : '<a href="install.php?validate_config=1" class="btn btn-warning btn-block font-weight-bold --xhr">' . phrase('revalidate_configuration') . '</a>') . '
+				' . (file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php') ? '<a href="' . (!$_SESSION['system']['mode'] && !$unzip ? '../home/partial_error' : '../xhr/boot') . '" class="btn btn-warning btn-block font-weight-bold">' . phrase('launch_your_site') . '</a>' : '<a href="install.php?validate_config=1" class="btn btn-warning btn-block font-weight-bold --xhr">' . phrase('revalidate_configuration') . '</a>') . '
 			</div>
 		</div>
 	';
