@@ -15,10 +15,20 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 - [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
 
 # Installation
+There are two installation methods that you can choose:
+### Composer Installation
+- Run "`composer create-project abydahana/aksara aksaracms`" anywhere inside your root directory of your web server;
+- The command above will create "`aksaracms`" folder;
+- If you omit the "`aksaracms`" argument, the command will create an "`aksara`" folder instead, which can be renamed as appropriate;
+- Access your project from the browser and;
+- Follow the installation wizard.
+
+### Manual Installation
 - Download the source code and extract its content to the directory of your webserver;
-- Run `composer install` from the root of Aksara directory;
-- Access the Aksara from your browser;
-- Follow the installation instruction;
+- Run "`composer install`" from the root of Aksara directory;
+- Access your project from the browser and;
+- Follow the installation wizard.
+
 - As simple as that!
 
 # Some Screenshot
