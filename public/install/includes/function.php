@@ -36,7 +36,7 @@ if(!function_exists('random_string'))
 		if($symbol)
 		{
 			/* add extra symbols */
-			$characters								.= '~`!@#%^&*()_-+=|}]{[?/>.<,';
+			$characters								.= '~`!@#%^&*()_-+|}]{[?/.,';
 		}
 		
 		$char_length								= strlen($characters);
