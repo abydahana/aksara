@@ -47,7 +47,7 @@
 	<body class="bg-light">
 		<div class="container-fluid h-100">
 			<div class="row h-100 align-items-center">
-				<div class="col-md-8 offset-md-2 pt-3 pb-3">
+				<div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2 pt-3 pb-3">
 					<div class="card shadow">
 						<div class="card-body pt-0 pr-3 pb-0 pl-3">
 							<div class="row">

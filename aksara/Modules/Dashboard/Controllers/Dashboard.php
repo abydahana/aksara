@@ -64,16 +64,16 @@ class Dashboard extends \Aksara\Laboratory\Core
 			ip_address,
 			browser,
 			platform,
-			timestamp,
-			DATE(timestamp) AS date
+			timestamp
 		')
-		->group_by('ip_address, date')
+		->group_by('ip_address, DATE(timestamp)')
 		->get_where
 		(
 			'app__visitor_logs',
 			array
 			(
-				'timestamp >= '						=> date('Y-m-d H:i:s', strtotime('-6 days'))
+				'timestamp > '						=> date('Y-m-d', strtotime('-6 days')) . ' 00:00:00',
+				'timestamp < '						=> date('Y-m-d H:i:s')
 			)
 		)
 		->result();

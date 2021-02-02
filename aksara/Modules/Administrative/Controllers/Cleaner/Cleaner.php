@@ -51,7 +51,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 			'app__visitor_logs',
 			array
 			(
-				'DATE(timestamp) < '				=> date('Y-m-d', strtotime('-6 days'))
+				'timestamp < '						=> date('Y-m-d H:i:s', strtotime('-7 days'))
 			)
 		);
 		
