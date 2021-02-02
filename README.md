@@ -29,7 +29,7 @@ There are two installation methods that you can choose:
 - Access your project from the browser and;
 - Follow the installation wizard.
 
-- As simple as that!
+**Yes, as simple as that!**
 
 # Some Screenshot
 | ![Login Screen](https://user-images.githubusercontent.com/10624446/105020814-5dbb5480-5a7a-11eb-9ba7-e934feffd31c.png) | ![Dashboard](https://user-images.githubusercontent.com/10624446/105020792-572cdd00-5a7a-11eb-8ef9-3fe369f8f670.png) | ![CMS (Blogs)](https://user-images.githubusercontent.com/10624446/105020799-58f6a080-5a7a-11eb-9ebd-8555c963f541.png) |
