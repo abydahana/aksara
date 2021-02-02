@@ -12,7 +12,7 @@
 								<?php echo phrase('blogs'); ?>
 							</h5>
 							<p class="card-text">
-								<?php echo phrase('manage_blog_posts'); ?>
+								<?php echo phrase('manage_blog_post'); ?>
 							</p>
 						</div>
 					</div>
@@ -50,7 +50,7 @@
 								<?php echo phrase('galleries'); ?>
 							</h5>
 							<p class="card-text">
-								<?php echo phrase('manage_photo_albums'); ?>
+								<?php echo phrase('manage_photo_album'); ?>
 							</p>
 						</div>
 					</div>

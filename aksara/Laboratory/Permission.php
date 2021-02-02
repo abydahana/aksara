@@ -230,7 +230,7 @@ class Permission
 		}
 		else
 		{
-			$user_agent								= phrase('undefined');
+			$user_agent								= phrase('unknown');
 		}
 		
 		$prepare									= array
