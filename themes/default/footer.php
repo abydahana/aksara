@@ -53,27 +53,27 @@
 							</h6>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="<?php echo base_url('documentation'); ?>" class="--xhr">
+							<a href="//www.aksaracms.com/pages/documentation" class="--xhr">
 								<?php echo phrase('documentation'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="<?php echo base_url('pages/features'); ?>" class="--xhr">
+							<a href="//www.aksaracms.com/pages/features" class="--xhr">
 								<?php echo phrase('features'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="<?php echo base_url('pages/faqs'); ?>" class="--xhr">
+							<a href="//www.aksaracms.com/pages/faqs" class="--xhr">
 								<?php echo phrase('faqs'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="<?php echo base_url('pages/terms-and-conditions'); ?>" class="--xhr">
+							<a href="//www.aksaracms.com/pages/terms-and-conditions" class="--xhr">
 								<?php echo phrase('terms_and_conditions'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="<?php echo base_url('pages/privacy-policy'); ?>" class="--xhr">
+							<a href="//www.aksaracms.com/pages/privacy-policy" class="--xhr">
 								<?php echo phrase('privacy_policy'); ?>
 							</a>
 						</li>
@@ -104,8 +104,8 @@
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/partners" target="_blank">
-								Become a Partner
+							<a href="//www.aksaracms.com/pages/about/sponsors" target="_blank">
+								Become a Sponsor
 							</a>
 						</li>
 						<li class="pt-1 pb-1">

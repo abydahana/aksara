@@ -1,3 +1,22 @@
+<?php
+	if(!$permission->uploads || $permission->writable)
+	{
+		echo '
+			<div class="alert alert-danger rounded-0 border-0 mb-0">
+				<div class="container">
+					<h4>
+						Notice!
+					</h4>
+					' . (!$permission->uploads ? '<p class="mb-0 text-danger"><b>' . FCPATH . UPLOAD_PATH . '/</b> is not writable.</p>' : null) . '
+					' . (!$permission->writable ? '<p class="mb-0 text-danger"><b>' . WRITEPATH . '</b> is not writable.</p>' : null) . '
+					<br />
+					<a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>Click here</b></a> to get advice how to solve this issue.
+				</div>
+			</div>
+		';
+	}
+?>
+
 <div class="jumbotron jumbotron-fluid bg-light">
 	<div class="container">
 		<div class="row">
@@ -19,17 +38,13 @@
 				You are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
 			</h3>
 			<?php
-				if($error && !file_exists(ROOTPATH . 'modules/Home/Controllers/Home.php'))
+				if($error)
 				{
 					echo '
 						<div class="mb-5">
 							<p>
 								Unfortunatelly, your request to install the sample data cannot be processed due to folder permission issue.
 							</p>
-							' . (!$writable->uploads ? '<p class="mb-0 text-danger"><b>' . FCPATH . UPLOAD_PATH . '</b> is not writable.</p>' : null) . '
-							' . (!$writable->logs ? '<p class="mb-0 text-danger"><b>' . WRITEPATH . 'logs</b> is not writable.</p>' : null) . '
-							' . (!$writable->translations ? '<p class="mb-0 text-danger"><b>' . WRITEPATH . 'translations</b> is not writable.</p>' : null) . '
-							<br />
 							<p>
 								You could install the sample data manually by using this method:
 							</p>
@@ -57,12 +72,12 @@
 							<p>
 								This module is located in
 								<br />
-								<code>' . FCPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . 'Home</code>.
+								<code>' . ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . 'Home</code>.
 							</p>
 							<p>
 								You can <b>override</b> this module into
 								<br />
-								<code>' . FCPATH . 'Modules' . DIRECTORY_SEPARATOR . 'Home</code> without removing the original one.
+								<code>' . ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . 'Home</code> without removing the original one.
 							</p>
 							<p>
 								<b>How could that be done?</b> Because you are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
@@ -84,7 +99,7 @@
 				<p>
 					The Guidelines contains an introduction, tutorial, a number of "how to" guides, and then reference documentation for the components that make up the <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
 					<br />
-					<a href="//www.aksaracms.com/documentation" class="text-primary" target="_blank"><b>Check the Documentation</b></a>!
+					<a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Check the Documentation</b></a>!
 				</p>
 			</div>
 			<h4 class="mb-3">
@@ -97,8 +112,8 @@
 					You can open discussion related to the features, bugs or suggestions to the following community forum:
 				</p>
 				<p class="mb-1">
-					<a href="https://github.com/abydahana/aksara4/issues" class="text-primary" target="blank">
-						https://github.com/abydahana/aksara4/issues<i class="mdi mdi-open-in-new"></i>
+					<a href="https://github.com/abydahana/Aksara/issues" class="text-primary" target="blank">
+						https://github.com/abydahana/Aksara/issues<i class="mdi mdi-open-in-new"></i>
 					</a>
 				</p>
 				<p class="mb-1">
@@ -144,10 +159,10 @@
 				</p>
 			</div>
 			<h3 class="text-center font-weight-light">
-				Once again, thank you,
+				Once again, thank you.
 			</h3>
 			<h3 class="text-center font-weight-light mb-3">
-				we're awesome!
+				We are awesome!
 			</h3>
 			<h3 class="text-center">
 				<a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
