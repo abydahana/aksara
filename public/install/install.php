@@ -455,12 +455,14 @@
 				{
 					$zip							= new \ZipArchive();
 					
-					if(@$zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
+					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
-						$zip->extractTo(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'modules');
-						$zip->close();
+						if(@$zip->extractTo(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'modules'))
+						{
+							$unzip					= true;
+						}
 						
-						$unzip						= true;
+						$zip->close();
 					}
 				}
 			}
