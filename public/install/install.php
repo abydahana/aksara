@@ -23,7 +23,7 @@
 				array
 				(
 					'status'						=> 301,
-					'url'							=> '../xhr/boot'
+					'url'							=> (!$_SESSION['system']['mode'] && !isset($_SESSION['unzip']) ? '../home/partial_error' : '../xhr/boot')
 				)
 			);
 			exit;
@@ -38,7 +38,6 @@
 	header('Content-Type: application/json');
 	
 	$error											= false;
-	$unzip											= false;
 	
 	$source											= file_get_contents('assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 	$output											= dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php';
@@ -459,7 +458,7 @@
 					{
 						if(@$zip->extractTo(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'modules'))
 						{
-							$unzip					= true;
+							$_SESSION['unzip']		= true;
 						}
 						
 						$zip->close();
@@ -559,7 +558,7 @@
 				&nbsp;
 			</div>
 			<div class="col-sm-6">
-				' . (file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php') ? '<a href="' . (!$_SESSION['system']['mode'] && !$unzip ? '../home/partial_error' : '../xhr/boot') . '" class="btn btn-warning btn-block font-weight-bold">' . phrase('launch_your_site') . '</a>' : '<a href="install.php?validate_config=1" class="btn btn-warning btn-block font-weight-bold --xhr">' . phrase('revalidate_configuration') . '</a>') . '
+				' . (file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php') ? '<a href="' . (!$_SESSION['system']['mode'] && !isset($_SESSION['unzip']) ? '../home/partial_error' : '../xhr/boot') . '" class="btn btn-warning btn-block font-weight-bold">' . phrase('launch_your_site') . '</a>' : '<a href="install.php?validate_config=1" class="btn btn-warning btn-block font-weight-bold --xhr">' . phrase('revalidate_configuration') . '</a>') . '
 			</div>
 		</div>
 	';
