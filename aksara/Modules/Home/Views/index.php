@@ -1,5 +1,5 @@
 <?php
-	if(!$permission->uploads || $permission->writable)
+	if(!$permission->uploads || !$permission->writable)
 	{
 		echo '
 			<div class="alert alert-danger rounded-0 border-0 mb-0">
