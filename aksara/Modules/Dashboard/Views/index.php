@@ -326,7 +326,7 @@
 		})
 		.done(function(response)
 		{
-			if(response.updater)
+			if(response.update_available)
 			{
 				$('.updater-placeholder').html
 				(
