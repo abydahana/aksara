@@ -454,12 +454,13 @@
 				if(!$_SESSION['system']['mode'])
 				{
 					$zip							= new \ZipArchive();
-					$unzip							= $zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip');
 					
-					if($unzip === true)
+					if(@$zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
 						$zip->extractTo(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'modules');
 						$zip->close();
+						
+						$unzip						= true;
 					}
 				}
 			}
