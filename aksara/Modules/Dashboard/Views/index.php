@@ -1,14 +1,15 @@
 <?php
-	if(in_array(get_userdata('group_id'), array(1)) && (!$writable->uploads || !$writable->translations || !$writable->logs))
+	if(in_array(get_userdata('group_id'), array(1)) && (!$permission->uploads || !$permission->writable))
 	{
 		echo '
 			<div class="alert alert-danger pr-3 pl-3 rounded-0 mb-0">
 				<h5>
 					' . phrase('notice') . '
 				</h5>
-				' . (!$writable->uploads ? '<p class="mb-0"><b>' . ROOTPATH . UPLOAD_PATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
-				' . (!$writable->logs ? '<p class="mb-0"><b>' . WRITEPATH . 'logs' . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
-				' . (!$writable->translations ? '<p class="mb-0"><b>' . WRITEPATH . 'translations' . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$permission->uploads ? '<p class="mb-0"><b>' . FCPATH . UPLOAD_PATH . '/</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$permission->logs ? '<p class="mb-0"><b>' . WRITEPATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				<br />
+				<a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>' . phrase('click_here') . '</b></a> ' . phrase('to_get_advice_how_to_solve_this_issue') . '
 			</div>
 		';
 	}

@@ -24,21 +24,26 @@ class Account extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if(get_setting('username_changes'))
+		if(get_setting('username_changes') || !get_userdata('username'))
 		{
 			$username_required						= 'required|';
+			
+			$this->field_order('photo, first_name, last_name, email, username, password, phone, address, postal_code, country, language_id');
+			$this->merge_field('email, username');
 		}
 		else
 		{
 			$username_required						= null;
+			
 			$this->unset_field('username');
+			$this->field_order('photo, first_name, last_name, email, phone, password, address, postal_code, country, language_id');
+			$this->merge_field('email, phone');
 		}
 		
 		$this->set_title(phrase('account_setting'))
 		->set_icon('mdi mdi-account-edit')
 		->set_upload_path('users')
 		->unset_field('user_id, group_id, registered_date, last_login, status')
-		->field_order('photo, first_name, last_name, email, phone, username, password, address, postal_code, country, language_id')
 		->set_field
 		(
 			array
@@ -80,7 +85,6 @@ class Account extends \Aksara\Laboratory\Core
 			)
 		)
 		->merge_field('first_name, last_name')
-		->merge_field('email, phone')
 		->merge_field('country, language_id')
 		->set_validation
 		(

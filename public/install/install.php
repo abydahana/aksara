@@ -250,6 +250,7 @@
 					office_map,
 					frontend_registration,
 					default_membership_group,
+					username_changes,
 					openlayers_search_provider
 				)
 				VALUES
@@ -266,6 +267,7 @@
 					"[]",
 					1,
 					3,
+					1,
 					"openlayers"
 				);
 			';
