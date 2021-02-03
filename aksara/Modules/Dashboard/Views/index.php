@@ -335,8 +335,8 @@
 							'<?php echo phrase('update_available'); ?>' +
 						'</h5>' +
 						'<p>' +
-							'<?php echo phrase('a_newer_version_of_aksara_is_available'); ?>' +
-							'<?php echo phrase('click_the_button_below_to_update_your_core_system_directly'); ?>' +
+							'<?php echo phrase('a_newer_version_of_aksara_is_available'); ?> ' +
+							'<?php echo phrase('click_the_button_below_to_update_your_core_system_directly'); ?> ' +
 							'<?php echo phrase('your_created_modules_and_themes_will_not_be_replaced'); ?>' +
 						'</p>' +
 						'<hr />' +
