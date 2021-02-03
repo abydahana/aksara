@@ -12,7 +12,7 @@
 class Updater extends \Aksara\Laboratory\Core
 {
 	private $_collection							= array();
-	private $_branch_name							= 'Aksara4-main';
+	private $_updater_name							= 'Aksara';
 	
 	public function __construct()
 	{
@@ -154,6 +154,8 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		if($response)
 		{
+			$this->_updater_name					= $this->_updater_name . '-' . $response->version;
+			
 			// update package found, run updater
 			$this->_run_updater($response);
 		}
@@ -256,7 +258,7 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		
 		// remove updater files
-		delete_files(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_branch_name, true);
+		delete_files(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name, true);
 		
 		// femove backup file
 		unlink(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name);
@@ -478,7 +480,7 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		
 		// remove updater files
-		$this->_ftp_rmdir($connection, WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_branch_name, true);
+		$this->_ftp_rmdir($connection, WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name, true);
 		
 		// remove backup file
 		ftp_delete($connection, WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name);
@@ -565,7 +567,7 @@ class Updater extends \Aksara\Laboratory\Core
 		$update_package								= file_get_contents($response->updater);
 		
 		// create update package to system temporary, it's must be writable by default
-		$tmp_file									= tempnam(sys_get_temp_dir(), $this->_branch_name);
+		$tmp_file									= tempnam(sys_get_temp_dir(), $this->_updater_name);
 		
 		// put update package
 		file_put_contents($tmp_file, $update_package);
@@ -583,7 +585,7 @@ class Updater extends \Aksara\Laboratory\Core
 			$zip->close();
 			
 			// map the update directory
-			$updater_file							= directory_map(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_branch_name);
+			$updater_file							= directory_map(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name);
 			
 			if($updater_file)
 			{
@@ -608,10 +610,10 @@ class Updater extends \Aksara\Laboratory\Core
 				// folder found, reinitialize collector
 				$this->_recursive_collector($val, (strpos($key, '/') !== false ? $path . $key : null));
 			}
-			elseif(!file_exists(ROOTPATH . $path . $val) || (md5_file(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_branch_name . DIRECTORY_SEPARATOR . $path . $val) != md5_file(ROOTPATH . $path . $val)))
+			elseif(!file_exists(ROOTPATH . $path . $val) || (md5_file(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name . DIRECTORY_SEPARATOR . $path . $val) != md5_file(ROOTPATH . $path . $val)))
 			{
 				// update file found
-				$source								= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_branch_name . DIRECTORY_SEPARATOR . $path . $val;
+				$source								= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name . DIRECTORY_SEPARATOR . $path . $val;
 				$target								= ROOTPATH . $path . $val;
 				
 				// push to update collection
