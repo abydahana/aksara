@@ -186,10 +186,12 @@ class Updater extends \Aksara\Laboratory\Core
 		if($updated)
 		{
 			// core system updated
+			return throw_exception(301, phrase('your_core_system_was_successfully_updated'), current_page('../'));
 		}
 		else
 		{
 			// failded to update core system
+			return throw_exception(403, phrase('something_went_wrong_while_updating_your_core_system') . ' ' . phrase('please_try_again_later'), current_page('../'));
 		}
 	}
 	
@@ -604,7 +606,7 @@ class Updater extends \Aksara\Laboratory\Core
 		foreach($data as $key => $val)
 		{
 			// in order to keep the file in writable and skipping update the updater script
-			if(in_array($path, array('writable/', 'themes/')) || ($path == 'aksara/Modules/Administrative/Controllers/Updater/' && $val == 'Updater.php')) continue;
+			if(in_array($path, array('writable/', 'themes/'))) continue;
 			
 			if(is_array($val))
 			{

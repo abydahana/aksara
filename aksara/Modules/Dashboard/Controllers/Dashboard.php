@@ -41,7 +41,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 					'permission'					=> array
 					(
 						'uploads'					=> (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
-						'writable'					=> (is_dir(WRITEPATH . 'logs') && is_writable(WRITEPATH) ? true : false),
+						'writable'					=> (is_dir(WRITEPATH) && is_writable(WRITEPATH) ? true : false),
 					),
 					'visitors'						=> $this->_visitors(),
 					'recent_signed'					=> $this->_recent_signed(),
