@@ -403,6 +403,7 @@
   "please_click_the_button_below_to_reset_your_password": "Klik pada tombol di bawah ini untuk mengatur ulang kata sandi Anda.",
   "please_contact_us_directly_if_you_still_cannot_signing_in": "Silakan hubungi kami apabila Anda tetap tidak dapat masuk ke dalam website.",
   "please_fill_all_required_field_below_to_add_new_data": "Silakan isi seluruh bidang yang diminta di bawah ini untuk menambahkan data.",
+  "please_try_again_later": "Silakan coba beberapa saat lagi...",
   "port": "Port",
   "position": "Posisi",
   "post": "Postingan",
@@ -484,6 +485,7 @@
   "social_account": "Akun Media Sosial",
   "someone_is_recently_asked_to_reset_the_password_for_an_account_linked_to_your_email": "Baru-baru ini seseorang telah meminta pemulihan kata sandi untuk akun yang terhubung dengan email Anda.",
   "something_caused_by_typo": "Sesuatu yang disebabkan oleh typo",
+  "something_went_wrong_while_updating_your_core_system": "Terjadi kesalahan dalam melakukan pembaruan sistem inti.",
   "sorted_ascending": "Diurutkan A-Z",
   "spotlight": "Sorotan",
   "start_date": "Tanggal Mulai",
@@ -621,6 +623,7 @@
   "your_api_key_is_not_eligible_to_access_the_requested_source_or_already_expired": "Kunci API Anda tidak mencukupi untuk mengakes sumber yang diminta atau telah kadaluwarsa.",
   "your_content_goes_here": "Masukkan konten di sini...",
   "your_core_system_is_up_to_date": "Anda menggunakan sistem inti yang terbarukan.",
+  "your_core_system_was_successfully_updated": "Sistem inti Aksara berhasil diperbarui...",
   "your_created_modules_and_themes_will_not_be_replaced": "Modul dan tema yang Anda buat tidak akan diubah oleh pembaruan ini.",
   "your_first_name": "Nama Depan",
   "your_last_name": "Nama Belakang"
