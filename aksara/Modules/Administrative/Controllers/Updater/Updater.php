@@ -47,7 +47,7 @@ class Updater extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'updater'							=> $this->_ping_upstream()
+				'updater'							=> $this->ping_upstream(true)
 			)
 		)
 		
@@ -57,7 +57,7 @@ class Updater extends \Aksara\Laboratory\Core
 	/**
 	 * Ping upstream
 	 */
-	private function _ping_upstream()
+	public static function ping_upstream($changelog = false)
 	{
 		if(!function_exists('curl_init') || !function_exists('curl_exec'))
 		{
@@ -78,7 +78,8 @@ class Updater extends \Aksara\Laboratory\Core
 				CURLOPT_FOLLOWLOCATION				=> true,
 				CURLOPT_HTTPHEADER					=> array
 				(
-					'Content-Type: application/x-www-form-urlencoded'
+					'Content-Type: application/x-www-form-urlencoded',
+					'Referer: ' . current_page()
 				),
 				CURLOPT_CUSTOMREQUEST				=> 'POST',
 				CURLOPT_POSTFIELDS					=> http_build_query
@@ -87,7 +88,7 @@ class Updater extends \Aksara\Laboratory\Core
 					(
 						'version'					=> aksara('version'),
 						'built_version'				=> aksara('built_version'),
-						'changelog'					=> true
+						'changelog'					=> $changelog
 					)
 				)
 			)

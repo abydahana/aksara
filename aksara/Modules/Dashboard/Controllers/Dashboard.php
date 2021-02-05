@@ -180,42 +180,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 	
 	private function _fetch_information()
 	{
-		$updater									= null;
-		
-		if(in_array(get_userdata('group_id'), array(1)) && function_exists('curl_init') && function_exists('curl_exec'))
-		{
-			$curl									= curl_init();
-			
-			curl_setopt_array
-			(
-				$curl,
-				array
-				(
-					CURLOPT_CONNECTTIMEOUT			=> 5,
-					CURLOPT_HEADER					=> 0,
-					CURLOPT_RETURNTRANSFER			=> 1,
-					CURLOPT_URL						=> 'https://www.aksaracms.com/updater/ping',
-					CURLOPT_FOLLOWLOCATION			=> true,
-					CURLOPT_HTTPHEADER				=> array
-					(
-						'Content-Type: application/x-www-form-urlencoded'
-					),
-					CURLOPT_CUSTOMREQUEST			=> 'POST',
-					CURLOPT_POSTFIELDS				=> http_build_query
-					(
-						array
-						(
-							'version'				=> aksara('version'),
-							'built_version'			=> aksara('built_version')
-						)
-					)
-				)
-			);
-			
-			$updater								= json_decode(curl_exec($curl));
-			
-			curl_close($curl);
-		}
+		$updater									= \Aksara\Modules\Administrative\Controllers\Updater\Updater::ping_upstream();
 		
 		$bytestotal									= 0;
 		

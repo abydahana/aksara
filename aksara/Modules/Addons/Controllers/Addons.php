@@ -275,7 +275,8 @@ class Addons extends \Aksara\Laboratory\Core
 				CURLOPT_FOLLOWLOCATION				=> true,
 				CURLOPT_HTTPHEADER					=> array
 				(
-					'Content-Type: application/x-www-form-urlencoded'
+					'Content-Type: application/x-www-form-urlencoded',
+					'Referer: ' . current_page()
 				),
 				CURLOPT_CUSTOMREQUEST				=> 'POST',
 				CURLOPT_POSTFIELDS					=> http_build_query

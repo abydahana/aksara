@@ -7,7 +7,7 @@
 					' . phrase('notice') . '
 				</h5>
 				' . (!$permission->uploads ? '<p class="mb-0"><b>' . FCPATH . UPLOAD_PATH . '/</b> ' . phrase('is_not_writable') . '</p>' : null) . '
-				' . (!$permission->logs ? '<p class="mb-0"><b>' . WRITEPATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$permission->writable ? '<p class="mb-0"><b>' . WRITEPATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
 				<br />
 				<a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>' . phrase('click_here') . '</b></a> ' . phrase('to_get_advice_how_to_solve_this_issue') . '
 			</div>
