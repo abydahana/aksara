@@ -5530,7 +5530,7 @@ class Core extends Controller
 				{
 					$field							= substr($val[1], 0, strripos($val[1], ' AS '));
 					
-					if(!$this->field_exists($field, $val[0]))
+					if(!$this->model->field_exists($field, $val[0]))
 					{
 						unset($select[$key]);
 					}
