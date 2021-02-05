@@ -79,7 +79,7 @@ class Updater extends \Aksara\Laboratory\Core
 				CURLOPT_HTTPHEADER					=> array
 				(
 					'Content-Type: application/x-www-form-urlencoded',
-					'Referer: ' . current_page()
+					'Referer: ' . base_url()
 				),
 				CURLOPT_CUSTOMREQUEST				=> 'POST',
 				CURLOPT_POSTFIELDS					=> http_build_query
