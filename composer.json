@@ -12,17 +12,7 @@
 			"role": "Developer"
 		}
 	],
-	"keywords": [
-		"aksara",
-		"aksaracms",
-		"aksara cms",
-		"restful",
-		"api",
-		"codeigniter",
-		"framework",
-		"crud",
-		"crud generator"
-	],
+	"keywords": ["aksara", "aksaracms", "aksara cms", "restful", "api", "codeigniter", "framework", "crud", "crud generator"],
     "require": {
 		"php": "^7.3||^8.0",
         "codeigniter4/framework": "^4.1",
