@@ -9,6 +9,9 @@
  * @since			version 4.1.22
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+use \Composer\Console\Application;
+use \Symfony\Component\Console\Input\ArrayInput;
+
 class Updater extends \Aksara\Laboratory\Core
 {
 	private $_collection							= array();
@@ -185,6 +188,23 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		if($updated)
 		{
+			// change out of the webroot so that the vendors file is not created in
+			putenv('COMPOSER_HOME=' . ROOTPATH . '/vendor/bin/composer');
+			
+			//Create the commands
+			$input									= new ArrayInput
+			(
+				array
+				(
+					'command'						=> 'update'
+				)
+			);
+			
+			//Create the application and run it with the commands
+			$application							= new Application();
+			$application->setAutoExit(false);
+			$application->run($input);
+			
 			// core system updated
 			return throw_exception(301, phrase('your_core_system_was_successfully_updated'), current_page('../'));
 		}
@@ -606,7 +626,7 @@ class Updater extends \Aksara\Laboratory\Core
 		foreach($data as $key => $val)
 		{
 			// in order to keep the file in writable and skipping update the updater script
-			if(in_array($path, array('writable/', 'themes/'))) continue;
+			if(in_array($path, array('themes/', 'writable/'))) continue;
 			
 			if(is_array($val))
 			{

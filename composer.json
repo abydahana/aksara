@@ -1,7 +1,7 @@
 {
     "name": "abydahana/aksara",
 	"type": "project",
-	"description": "Aksara is a CodeIgniter Based CRUD Toolkit that you can use to build complex applications become shorter, secure and more reliable in just a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based) output just by writing in single controller. Yet it's reusable, scalable and ready to use!",
+	"description": "Aksara is a CodeIgniter based CRUD Toolkit that you can use to build complex applications become shorter, secure and more reliable in just a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based) output just by writing in single controller. Yet it's reusable, scalable and ready to use!",
 	"homepage": "https://www.aksaracms.com",
 	"license": "MIT",
 	"authors": [
@@ -16,7 +16,7 @@
     "require": {
 		"php": "^7.3||^8.0",
         "codeigniter4/framework": "^4.1",
-		"symfony/console": "^5.2",
+		"composer/composer": "^2.0",
         "mpdf/mpdf": "^8.0",
         "halaxa/json-machine": "^0.5.0",
         "facebook/graph-sdk": "^5.7",
