@@ -213,6 +213,21 @@ class Model
 	 */
 	public function query($query = null)
 	{
+		// convert multiple line to single line
+		$query										= preg_replace('/[\r\n]*/', '', $query);
+		
+		// remove string inside bracket to extract the primary table
+		$extract_table								= preg_replace('/\(([^()]*+|(?R))*\)/', '', preg_replace('/[\r\n]*/', '', $query));
+		
+		// get primary table
+		preg_match('/FROM[\s]+(.*?)[\s]+/i', $extract_table, $matches);
+		
+		if(isset($matches[1]))
+		{
+			// primary table found
+			$this->_table							= trim(str_replace(array('`', '"', '\''), '', $matches[1]));
+		}
+		
 		$this->_query								= $query;
 		
 		return $this;
@@ -1765,7 +1780,7 @@ class Model
 		
 		if($this->_query)
 		{
-			$output									= $builder->query($this->_query)->$result_type();
+			$output									= $this->db->query($this->_query)->$result_type();
 			
 			$this->_reset_property();
 			
