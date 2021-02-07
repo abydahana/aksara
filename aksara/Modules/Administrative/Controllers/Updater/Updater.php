@@ -308,6 +308,13 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		foreach($this->_collection as $key => $val)
 		{
+			// check if new folder were found
+			if(!is_dir(dirname($val)))
+			{
+				// new folder found, add the directory
+				@mkdir(dirname($val), 0755);
+			}
+			
 			// copy updater file
 			if(@copy($key, $val))
 			{
