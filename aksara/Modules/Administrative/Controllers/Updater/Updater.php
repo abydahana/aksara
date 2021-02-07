@@ -195,7 +195,7 @@ class Updater extends \Aksara\Laboratory\Core
 			{
 				if($this->_composer_update && isset($this->_composer_update['require']))
 				{
-					$package						= json_encode(file_get_contents(ROOTPATH . 'composer.json'), true);
+					$package						= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
 					
 					if($package && isset($package['require']))
 					{
