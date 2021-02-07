@@ -537,6 +537,13 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		foreach($this->_collection as $key => $val)
 		{
+			// check if new folder were found
+			if(!is_dir(dirname($val)))
+			{
+				// new folder found, add the directory
+				ftp_mkdir($connection, dirname($val));
+			}
+			
 			// copy updater file
 			if(ftp_put($connection, $val, $key, FTP_ASCII))
 			{
