@@ -35,7 +35,7 @@
 		<span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarExpand">
-		<div class="p-3 user-bg-masking d-lg-none d-xl-none" onclick="component.profile($(this))" data-translations="<?php echo htmlspecialchars(json_encode($translations)); ?>" data-dashboard-url="<?php echo base_url('dashboard'); ?>" data-guidelines-url="<?php echo base_url('pages/guidelines'); ?>">
+		<div class="p-3 user-bg-masking d-lg-none d-xl-none" onclick="component.profile($(this))" data-translations="<?php echo htmlspecialchars(json_encode($translations)); ?>">
 			<div class="row">
 				<div class="col-3">
 					<img src="<?php echo get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded" />
