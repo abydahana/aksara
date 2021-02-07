@@ -191,7 +191,7 @@ class Updater extends \Aksara\Laboratory\Core
 		{
 			$notice									= false;
 			
-			if(!function_exists('putenv'))
+			if(function_exists('putenv'))
 			{
 				if($this->_composer_update && isset($this->_composer_update['require']))
 				{
