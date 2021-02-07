@@ -201,27 +201,26 @@ class Updater extends \Aksara\Laboratory\Core
 					{
 						$package['require']			= array_merge($package['require'], $this->_composer_update['require']);
 						
-						if(file_put_contents(ROOTPATH . 'composer.json', json_encode($package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)))
-						{
-							// change out of the webroot so that the vendors file is not created in
-							putenv('COMPOSER_HOME=' . ROOTPATH . 'vendor/bin/composer');
-							
-							//Create the commands
-							$input					= new ArrayInput
-							(
-								array
-								(
-									'command'		=> 'update'
-								)
-							);
-							
-							//Create the application and run it with the commands
-							$application			= new Application();
-							$application->setAutoExit(false);
-							$application->run($input);
-						}
+						file_put_contents(ROOTPATH . 'composer.json', json_encode($package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 					}
 				}
+				
+				// change out of the webroot so that the vendors file is not created in
+				putenv('COMPOSER_HOME=' . ROOTPATH . 'vendor/bin/composer');
+				
+				//Create the commands
+				$input								= new ArrayInput
+				(
+					array
+					(
+						'command'					=> 'update'
+					)
+				);
+				
+				//Create the application and run it with the commands
+				$application						= new Application();
+				$application->setAutoExit(false);
+				$application->run($input);
 			}
 			else
 			{
