@@ -189,8 +189,17 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		if($updated)
 		{
+			$new_package							= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
+			
+			if($new_package && isset($new_package['require']))
+			{
+				$new_package['require']				= array_unique(array_merge($this->_old_package['require'], $new_package['require']));
+				
+				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+			}
+			
 			$html									= '
-				<div class="text-center mb-2">
+				<div class="text-center mb-3">
 					<i class="mdi mdi-arrow-up-circle-outline mdi-5x text-success"></i>
 					<br />
 					<h5>
@@ -211,6 +220,21 @@ class Updater extends \Aksara\Laboratory\Core
 					<i class="mdi mdi-heart text-danger"></i>
 					<a href="//abydahana.github.io" target="_blank">Aby Dahana</a>
 				</p>
+				<hr class="row" />
+				<div class="row">
+					<div class="col-6">
+						<a href="//www.aksaracms.com/pages/about/donation" class="btn btn-light btn-block" target="_blank">
+							<i class="mdi mdi-launch"></i>
+							' . phrase('donate') . '
+						</a>
+					</div>
+					<div class="col-6">
+						<a href="' . current_page('../') . '" class="btn btn-primary btn-block">
+							<i class="mdi mdi-reload"></i>
+							' . phrase('refresh') . '
+						</a>
+					</div>
+				</div>
 			';
 			
 			return make_json
