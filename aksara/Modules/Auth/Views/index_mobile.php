@@ -44,7 +44,7 @@
 				</p>
 			</div>
 		<?php } ?>
-		<?php if(get_setting('frontend_registration')){ ?>
+		<?php if(get_setting('frontend_registration') && ((get_setting('google_client_id') && get_setting('google_client_secret')) || (get_setting('facebook_app_id') && get_setting('facebook_app_secret')))){ ?>
 			<div class="pr-2 pl-2">
 				<p class="text-center text-muted pt-2">
 					<?php echo phrase('or_sign_in_with_your_social_account'); ?>

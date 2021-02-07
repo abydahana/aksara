@@ -14,6 +14,7 @@ use \Symfony\Component\Console\Input\ArrayInput;
 
 class Updater extends \Aksara\Laboratory\Core
 {
+	private $_composer_update						= array();
 	private $_collection							= array();
 	private $_updater_name							= 'Aksara';
 	
@@ -192,6 +193,18 @@ class Updater extends \Aksara\Laboratory\Core
 			
 			if(function_exists('putenv'))
 			{
+				if($this->_composer_update && isset($this->_composer_update['require']))
+				{
+					$package						= json_encode(file_get_contents(ROOTPATH . 'composer.json'), true);
+					
+					if($package && isset($package['require']))
+					{
+						$package['require']			= array_merge($package['require'], $this->_composer_update['require']);
+						
+						file_put_contents(ROOTPATH . 'composer.json', json_encode($package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+					}
+				}
+				
 				// change out of the webroot so that the vendors file is not created in
 				putenv('COMPOSER_HOME=' . ROOTPATH . 'vendor/bin/composer');
 				
@@ -682,6 +695,11 @@ class Updater extends \Aksara\Laboratory\Core
 				
 				// push to update collection
 				$this->_collection[$source]			= $target;
+				
+				if('composer.json' == $val && !$this->_composer_update)
+				{
+					$this->_composer_update			= json_decode(file_get_contents($source), true);
+				}
 			}
 		}
 	}

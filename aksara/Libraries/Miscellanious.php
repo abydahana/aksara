@@ -20,7 +20,9 @@ class Miscellanious
 	 */
 	public function qrcode_generator($params = null)
 	{
-		return 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($params) . '&choe=UTF-8';
+		$generator									= new \chillerlan\QRCode\QRCode();
+		
+		return $generator->render($params);
 	}
 	
 	/**
@@ -28,12 +30,15 @@ class Miscellanious
 	 */
 	public function barcode_generator($params = null)
 	{
+		$generator									= new \Picqer\Barcode\BarcodeGeneratorPNG();
+		
+		return 'data:image/png;base64,' . base64_encode($generator->getBarcode($params, $generator::TYPE_CODE_128, 1, 60));
 	}
 	
 	/**
 	 * shortlink generator
 	 */
-	public function shortlink_generator($params = null)
+	public function shortlink_generator($params = null, $slug = null)
 	{
 		if(!$params) return false;
 		
@@ -100,6 +105,6 @@ class Miscellanious
 			);
 		}
 		
-		return base_url('s/' . $hash);
+		return base_url(($slug ? $slug : 'shortlink') . '/' . $hash);
 	}
 }

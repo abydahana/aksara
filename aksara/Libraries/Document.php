@@ -11,6 +11,7 @@
  */
 
 ini_set('pcre.backtrack_limit', 99999999);
+ini_set('memory_limit', '-1');
 
 class Document
 {

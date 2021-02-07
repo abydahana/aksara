@@ -27,9 +27,14 @@
 							</small>
 						</p>
 						<a href="' . $val->commit_url . '" target="_blank">
-							' . nl2br(str_replace("\n\n", "\n", $val->message)) . '
-							<i class="mdi mdi-launch"></i>
+							<h4>
+								' . $val->title . '
+								<i class="mdi mdi-launch"></i>
+							</h4>
 						</a>
+						<p>
+							' . nl2br(str_replace("\n\n", "\n", $val->message)) . '
+						</p>
 					</div>
 				</div>
 			';
@@ -48,7 +53,7 @@
 			</div>
 			<div class="container-fluid pt-3 pb-3">
 				<h6 class="mb-3">
-					' . phrase('changelog') . ' ' . $updater->server_version . '
+					' . phrase('changelog') . '
 				</h6>
 				<div class="row">
 					<div class="col-md-8">
@@ -71,7 +76,7 @@
 					' . phrase('your_core_system_is_up_to_date') . '
 				</h5>
 				<p>
-					' . phrase('no_update_available_at_this_time') . ' ' . phrase('the_update_will_be_informed_to_you_if_available') . '
+					' . phrase('no_update_available_at_this_time') . ' The update will be inform to you if available.
 				</p>
 				<hr />
 				<a href="' . base_url('administrative/updater') . '" class="btn btn-sm btn-success --xhr show-progress">

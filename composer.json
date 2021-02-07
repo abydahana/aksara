@@ -15,11 +15,12 @@
 	"keywords": ["aksara", "aksaracms", "aksara cms", "restful", "api", "codeigniter", "framework", "crud", "crud generator"],
     "require": {
 		"php": "^7.3||^8.0",
-        "codeigniter4/framework": "^4.1",
+		"codeigniter4/framework": "^4.1",
 		"composer/composer": "^2.0",
-        "mpdf/mpdf": "^8.0",
-        "halaxa/json-machine": "^0.5.0",
-        "facebook/graph-sdk": "^5.7",
-        "google/apiclient": "^2.8"
+		"mpdf/mpdf": "^8.0",
+		"facebook/graph-sdk": "^5.7",
+		"google/apiclient": "^2.8",
+		"chillerlan/php-qrcode": "^3.4",
+		"picqer/php-barcode-generator": "^2.1"
     }
 }
