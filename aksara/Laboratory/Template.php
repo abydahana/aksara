@@ -14,21 +14,32 @@ class Template
 	private $_css;
 	private $_js;
 	
-	public function __construct($theme = 'default', $model = null, $_api_request = null)
+	public function __construct($theme = 'frontend', $_api_request = null)
 	{
-		$this->theme								= $theme;
-		$this->model								= $model;
+		$this->model								= new \Aksara\Laboratory\Model();
+		
 		$this->_api_request							= $_api_request;
-	}
-	
-	public function set_theme($theme = 'default')
-	{
-		return $this->theme							= $theme;
+		$this->_theme								= $theme;
 	}
 	
 	public function get_theme()
 	{
-		return $this->theme;
+		if(!in_array($this->_theme, array('frontend', 'backend'))) return false;
+		
+		$site_id									= get_setting('id');
+		
+		$query										= $this->model->select($this->_theme . '_theme')->get_where
+		(
+			'app__settings',
+			array
+			(
+				'id'								=> $site_id
+			),
+			1
+		)
+		->row($this->_theme . '_theme');
+		
+		return $query;
 	}
 	
 	/**
@@ -36,12 +47,12 @@ class Template
 	 */
 	public function get_theme_property($parameter = null)
 	{
-		if(file_exists('../themes/' . $this->theme . '/package.json') )
+		if(file_exists('../themes/' . $this->_theme . '/package.json') )
 		{
 			/**
 			 * check if active theme has a property
 			 */
-			$property								= json_decode(@file_get_contents('../themes/' . $this->theme . '/package.json'));
+			$property								= json_decode(@file_get_contents('../themes/' . $this->_theme . '/package.json'));
 			
 			if($parameter && isset($property->$parameter))
 			{
@@ -86,7 +97,7 @@ class Template
 		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : null));
 		
 		// generate theme view
-		$theme_view									= '../themes/' . $this->theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
+		$theme_view									= '../themes/' . $this->_theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
 		
 		// generate module view
 		$module_view								= '../modules/' . $base_view . '.php';
@@ -565,7 +576,7 @@ class Template
 				)
 			);
 			
-			$output									= $this->_minify(view('../../themes/' . $this->theme . '/layout', $output));
+			$output									= $this->_minify(view('../../themes/' . $this->_theme . '/layout', $output));
 			
 			return service('response')->setBody($output)->send();
 		}
@@ -869,6 +880,7 @@ class Template
 			else
 			{
 				$visible_menus						= array();
+				
 				$menu								= $this->model->select
 				('
 					serialized_data

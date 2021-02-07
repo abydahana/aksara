@@ -164,7 +164,7 @@ class Updater extends \Aksara\Laboratory\Core
 			$this->_run_updater($response);
 		}
 		
-		return false;
+		return throw_exception(404, phrase('no_update_available_at_this_time'), current_page('../'));
 	}
 	
 	/**
@@ -188,31 +188,72 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		if($updated)
 		{
-			// change out of the webroot so that the vendors file is not created in
-			putenv('COMPOSER_HOME=' . ROOTPATH . '/vendor/bin/composer');
+			$notice									= false;
 			
-			//Create the commands
-			$input									= new ArrayInput
+			if(function_exists('putenv'))
+			{
+				// change out of the webroot so that the vendors file is not created in
+				putenv('COMPOSER_HOME=' . ROOTPATH . 'vendor/bin/composer');
+				
+				//Create the commands
+				$input								= new ArrayInput
+				(
+					array
+					(
+						'command'					=> 'update'
+					)
+				);
+				
+				//Create the application and run it with the commands
+				$application						= new Application();
+				$application->setAutoExit(false);
+				$application->run($input);
+			}
+			else
+			{
+				$notice								= true;
+			}
+			
+			$html									= '
+				<div class="text-center mb-2">
+					<i class="mdi mdi-arrow-up-circle-outline mdi-5x text-success"></i>
+					<br />
+					<h5>
+						' . phrase('your_core_system_was_successfully_updated') . '
+					</h5>
+				</div>
+				' . ($notice ? '
+				<p class="text-center text-warning">
+					' . phrase('unfortunately_we_are_unable_to_update_the_dependencies_since_its_disabled_on_your_web_server') . '
+				</p>
+				' : null) . '
+				<hr class="row" />
+				<p class="text-center">
+					' . phrase('you_will_be_notified_if_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
+				</p>
+				<p class="text-center lead">
+					<i class="mdi mdi-heart text-danger"></i>
+					<a href="//abydahana.github.io" target="_blank">Aby Dahana</a>
+				</p>
+			';
+			
+			return make_json
 			(
 				array
 				(
-					'command'						=> 'update'
+					'status'						=> 206,
+					'exception'						=> array
+					(
+						'title'						=> phrase('update_success'),
+						'icon'						=> 'mdi mdi-check',
+						'html'						=> $html
+					)
 				)
 			);
-			
-			//Create the application and run it with the commands
-			$application							= new Application();
-			$application->setAutoExit(false);
-			$application->run($input);
-			
-			// core system updated
-			return throw_exception(301, phrase('your_core_system_was_successfully_updated'), current_page('../'));
 		}
-		else
-		{
-			// failded to update core system
-			return throw_exception(403, phrase('something_went_wrong_while_updating_your_core_system') . ' ' . phrase('please_try_again_later'), current_page('../'));
-		}
+		
+		// failded to update core system
+		return throw_exception(403, phrase('something_went_wrong_while_updating_your_core_system') . ' ' . phrase('please_try_again_later'), current_page('../'));
 	}
 	
 	/**

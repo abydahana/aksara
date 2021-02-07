@@ -81,6 +81,7 @@ class Assets extends \Aksara\Laboratory\Core
 			'assets/local/js/require.min.js',
 			'assets/popper/popper.min.js',
 			'assets/bootstrap/bootstrap.min.js',
+			'assets/sprintf/sprintf.min.js',
 			'assets/actual/actual.min.js',
 			'assets/mcustomscrollbar/jquery.mousewheel.min.js',
 			'assets/mcustomscrollbar/jquery.mCustomScrollbar.min.js',

@@ -157,16 +157,19 @@ if(isset($results->extra_action->toolbar))
 									$class				= null;
 									$label				= null;
 									$icon				= null;
+									
 									if(isset($_val->new_tab) && is_object($_val->new_tab))
 									{
 										if(isset($_val->new_tab->restrict))
 										{
 											$id			= key((array) $_val->new_tab->restrict);
+											
 											if(in_array($val->$id->original, $_val->new_tab->restrict->$id)) continue;
 										}
 										else
 										{
 											$original	= $_val->new_tab->key;
+											
 											if(isset($_val->new_tab->key) && isset($_val->new_tab->value) && isset($val->$original->original) && $val->$original->original == $_val->new_tab->value)
 											{
 												$class	= (isset($_val->new_tab->class) ? $_val->new_tab->class : null);

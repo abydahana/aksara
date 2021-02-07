@@ -19,6 +19,9 @@ class Router
 		$this->_request								= \Config\Services::request();
 		$this->_uri_string							= trim(uri_string(), '/');
 		
+		$find_duplicate								= array_reverse(explode('/', $this->_uri_string));
+		$is_duplicate								= (isset($find_duplicate[0]) && isset($find_duplicate[1]) && $find_duplicate[0] == $find_duplicate[1] ? true : false);
+		
 		$this->_found								= false;
 		$this->_collection							= array();
 		
@@ -49,19 +52,19 @@ class Router
 				$namespace							= str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method));
 				
 				/* add route for current request */
-				$routes->add($this->_uri_string, $namespace);
+				$routes->add($this->_uri_string, $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null));
 			}
 			elseif(file_exists('../' . $second_file))
 			{
 				$namespace							= str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));
 				
 				/* add route for current request */
-				$routes->add($this->_uri_string, $namespace);
+				$routes->add($this->_uri_string, $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null));
 			}
 			else
 			{
 				/* add route for current request */
-				$routes->add($this->_uri_string, $namespace . ($method && strtolower($controller) != strtolower($method) ? '::' . $method : null));
+				$routes->add($this->_uri_string, $namespace . (!$is_duplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null));
 			}
 		}
 		

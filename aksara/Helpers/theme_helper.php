@@ -1,18 +1,5 @@
 <?php
 
-if(!function_exists('theme_url'))
-{
-	/**
-	 * get the base theme url
-	 */
-	function theme_url($slug = null)
-	{
-		$template									= new \Aksara\Laboratory\Template();
-		
-		return base_url('themes/' . $template->get_theme() . '/' . $slug);
-	}
-}
-
 if(!function_exists('asset_loader'))
 {
 	/**
@@ -20,7 +7,11 @@ if(!function_exists('asset_loader'))
 	 */
 	function asset_loader($data = array())
 	{
-		$template									= new \Aksara\Laboratory\Template();
+		$backtrace									= debug_backtrace();
+		$theme										= preg_match('/\/themes\/(.*?)\//', (isset($backtrace[0]['file']) ? $backtrace[0]['file'] : null), $matched);
+		$theme										= (isset($matched[1]) ? $matched[1] : null);
+		
+		if(!$theme) return false;
 		
 		if(!is_array($data))
 		{
@@ -31,15 +22,15 @@ if(!function_exists('asset_loader'))
 		
 		foreach($data as $key => $val)
 		{
-			if(file_exists('../themes/' . $template->get_theme() . '/' . $val))
+			if(file_exists('../themes/' . $theme . '/' . $val))
 			{
 				if('css' == strtolower(pathinfo($val, PATHINFO_EXTENSION)))
 				{
-					$output							.= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . theme_url($val) . "\" />\n";
+					$output							.= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . base_url('themes/' . $theme . '/' . $val) . "\" />\n";
 				}
 				else
 				{
-					$output							.= "<script type=\"text/javascript\" src=\"" . theme_url($val) . "\"></script>\n";
+					$output							.= "<script type=\"text/javascript\" src=\"" . base_url('themes/' . $theme . '/' . $val) . "\"></script>\n";
 				}
 			}
 		}

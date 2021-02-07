@@ -46,7 +46,7 @@ class Permission
 		
 		if(!isset($privileges[$module][$submodule][$controller]) || (isset($privileges[$module][$submodule][$controller]) && !in_array($method, $privileges[$module][$submodule][$controller])))
 		{
-			if(method_exists(service('router')->controllerName(), $method))
+			if(method_exists(service('router')->controllerName(), $method) || ($controller && in_array($method, array('index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'))))
 			{
 				/* push to group privileges */
 				$this->_push_privileges($module, $submodule, $controller, $method);

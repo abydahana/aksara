@@ -1,11 +1,11 @@
 <?php
-	$extra_submit					= null;
+	$extra_submit									= null;
 	
 	if($results->extra_action->submit)
 	{
 		foreach($results->extra_action->submit as $key => $val)
 		{
-			$extra_submit			.= '
+			$extra_submit							.= '
 				<a href="' . go_to($val->url, $val->parameter) . '" class="' . ($val->class ? $val->class : 'btn-default --xhr') . ' float-right ml-1"' . ($val->new_tab ? ' target="_blank"' : null) . '>
 					<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
 					' . $val->label . '
@@ -14,33 +14,36 @@
 		}
 	}
 	
-	$col							= null;
-	$column_1						= null;
-	$column_2						= null;
-	$column_3						= null;
-	$column_4						= null;
-	$merged							= array();
-	$map							= null;
+	$col											= null;
+	$column_1										= null;
+	$column_2										= null;
+	$column_3										= null;
+	$column_4										= null;
+	$merged											= array();
+	$map											= null;
 	
 	foreach($results->form_data as $field => $params)
 	{
 		if(in_array('coordinate', $params->type) || in_array('point', $params->type) || in_array('polygon', $params->type) || in_array('linestring', $params->type))
 		{
-			$map					= '
+			$map									= '
 				<div class="form-group" style="margin-right: -15px; margin-left: -15px">
 					' . $params->content . '
 				</div>
 			';
+			
 			continue;
 		}
+		
 		if(isset($results->merged_field->$field))
 		{
-			$col					= null;
+			$col									= null;
+			
 			foreach($results->merged_field->$field as $key => $val)
 			{
 				if(in_array($val, $merged) || !isset($results->form_data->$val)) continue;
 				
-				$col				.= '
+				$col								.= '
 					<div class="' . (isset($results->field_size->$val) ? $results->field_size->$val : 'col') . '">
 						<div class="form-group">
 							<label class="text-muted d-block" for="' . $val . '_input">
@@ -71,50 +74,51 @@
 					</div>
 				';
 				
-				$merged[]			= $val;
+				$merged[]							= $val;
 			}
+			
 			if(4 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_4		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_4						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_4			.= '<div class="row">' . $col . '</div>';
+				$column_4							.= '<div class="row">' . $col . '</div>';
 			}
 			elseif(3 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_3		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_3						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_3			.= '<div class="row">' . $col . '</div>';
+				$column_3							.= '<div class="row">' . $col . '</div>';
 			}
 			elseif(2 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_2		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_2						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_2			.= '<div class="row">' . $col . '</div>';
+				$column_2							.= '<div class="row">' . $col . '</div>';
 			}
 			else
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_1		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_1						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_1			.= '<div class="row">' . $col . '</div>';
+				$column_1							.= '<div class="row">' . $col . '</div>';
 			}
 		}
 		else
 		{
 			if(in_array($field, $merged)) continue;
 			
-			$output					= '
+			$output									= '
 				<div class="form-group">
 					<label class="text-muted d-block" for="' . $field . '_input">
 						' . $params->label . '
@@ -142,41 +146,42 @@
 					' . ($params->prepend || $params->append ? '</div>' : '') . '
 				</div>
 			';
+			
 			if(4 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_4		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_4						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_4				.= $output;
+				$column_4							.= $output;
 			}
 			elseif(3 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_3		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_3						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_3				.= $output;
+				$column_3							.= $output;
 			}
 			elseif(2 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_2		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_2						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_2				.= $output;
+				$column_2							.= $output;
 			}
 			else
 			{
 				if(isset($results->set_heading->$field))
 				{
-					$column_1		.= '<h5>' . $results->set_heading->$field . '</h5>';
+					$column_1						.= '<h5>' . $results->set_heading->$field . '</h5>';
 				}
 				
-				$column_1				.= $output;
+				$column_1							.= $output;
 			}
 		}
 		

@@ -114,17 +114,17 @@
 					{
 						if(isset($_val->new_tab->restrict))
 						{
-							$id					= key((array) $_val->new_tab->restrict);
+							$id						= key((array) $_val->new_tab->restrict);
 							if(in_array($val->$id->original, $_val->new_tab->restrict->$id)) continue;
 						}
 						
-						$extra_option[]			= array
+						$extra_option[]				= array
 						(
-							'url'				=> go_to($_val->url, $_val->parameter),
-							'class'				=> 'btn ' . str_replace('btn', 'btn-ignore', $_val->class),
-							'icon'				=> $_val->icon,
-							'label'				=> $_val->label,
-							'new_tab'			=> $_val->new_tab
+							'url'					=> go_to($_val->url, $_val->parameter),
+							'class'					=> 'btn ' . str_replace('btn', 'btn-ignore', $_val->class),
+							'icon'					=> $_val->icon,
+							'label'					=> $_val->label,
+							'new_tab'				=> $_val->new_tab
 						);
 					}
 				}

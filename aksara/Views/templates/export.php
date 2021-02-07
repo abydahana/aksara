@@ -269,10 +269,10 @@ if($total > 0 && isset($results->table_data))
 }
 elseif($total > 0 && isset($results->form_data))
 {
-	$fields										= null;
+	$fields											= null;
 	foreach($results->form_data as $field => $params)
 	{
-		$fields									.= '
+		$fields										.= '
 			<tr>
 				<td class="text-muted text-uppercase text-right">
 					' . $params->label . '

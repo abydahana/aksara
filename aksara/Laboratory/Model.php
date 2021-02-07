@@ -126,7 +126,7 @@ class Model
 	{
 		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
 		
-		if($this->db->tableExists($table))
+		if($table && $this->db->tableExists($table))
 		{
 			return true;
 		}
@@ -141,7 +141,7 @@ class Model
 	{
 		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
 		
-		if($this->db->fieldExists($field, $table))
+		if($table && $field && $this->db->fieldExists($field, $table))
 		{
 			return true;
 		}
@@ -156,7 +156,7 @@ class Model
 	{
 		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
 		
-		if($this->db->tableExists($table))
+		if($table && $this->db->tableExists($table))
 		{
 			return $this->db->getFieldNames($table);
 		}
@@ -171,7 +171,7 @@ class Model
 	{
 		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
 		
-		if($this->db->tableExists($table))
+		if($table && $this->db->tableExists($table))
 		{
 			return $this->db->getFieldData($table);
 		}
@@ -1780,7 +1780,7 @@ class Model
 		
 		if($this->_query)
 		{
-			$output									= $this->db->query($this->_query)->$result_type();
+			$output									= $this->db->query($this->_query)->$result_type($parameter);
 			
 			$this->_reset_property();
 			

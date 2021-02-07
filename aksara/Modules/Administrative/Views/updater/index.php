@@ -71,7 +71,7 @@
 					' . phrase('your_core_system_is_up_to_date') . '
 				</h5>
 				<p>
-					' . phrase('no_update_available_at_this_time') . ' The update will be inform to you if available.
+					' . phrase('no_update_available_at_this_time') . ' ' . phrase('the_update_will_be_informed_to_you_if_available') . '
 				</p>
 				<hr />
 				<a href="' . base_url('administrative/updater') . '" class="btn btn-sm btn-success --xhr show-progress">
@@ -81,4 +81,3 @@
 			</div>
 		';
 	}
-	

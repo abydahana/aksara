@@ -47,7 +47,7 @@ class Core extends Controller
 	private $_set_messages							= array();
 	private $_view									= 'index';
 	private $_set_template							= array();
-	private $_set_theme								= 'default';
+	private $_set_theme								= 'frontend';
 	private $_set_upload_path						= null;
 	private $_upload_data							= array();
 	private $_upload_error							= array();
@@ -401,9 +401,24 @@ class Core extends Controller
 	 * @access		public
 	 * @return		object
 	 */
-	public function set_theme($theme = 'default')
+	public function set_theme($theme = 'frontend')
 	{
-		$this->_set_theme							= $theme;
+		if(!in_array($theme, array('frontend', 'backend'))) return false;
+		
+		$site_id									= get_setting('id');
+		
+		$query										= $this->model->select($theme . '_theme')->get_where
+		(
+			'app__settings',
+			array
+			(
+				'id'								=> $site_id
+			),
+			1
+		)
+		->row($theme . '_theme');
+		
+		$this->_set_theme							= $query;
 		
 		return $this;
 	}
@@ -2130,7 +2145,7 @@ class Core extends Controller
 			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), $this->_redirect_back);
 		}
 		
-		$this->template								= new Template($this->_set_theme, $this->model, $this->_api_request);
+		$this->template								= new Template($this->_set_theme, $this->_api_request);
 		
 		/* check if given table is exists in database */
 		if($table && $this->model->table_exists($table))
@@ -4762,7 +4777,7 @@ class Core extends Controller
 			
 			if(!$this->template)
 			{
-				$this->template						= new Template($this->_set_theme, $this->model, $this->_api_request);
+				$this->template						= new Template($this->_set_theme, $this->_api_request);
 			}
 			
 			if('backend' != $this->template->get_theme_property('type'))

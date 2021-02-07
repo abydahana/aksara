@@ -181,9 +181,11 @@ class Groups extends \Aksara\Laboratory\Core
 						if(isset($current[$val->module][$val->submodule][$val->controller]) && in_array($privilege, $current[$val->module][$val->submodule][$val->controller]))
 						{
 							$privilege_output		.= '
-								<div class="col-6 col-md-3">
-									<label class="d-block font-weight-bold text-truncate"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
-										<span class="badge ' . $badge_color . '">' . $label . '</span>
+								<div class="col-6 col-md-3 bg-white">
+									<label class="d-block font-weight-bold mb-0"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
+										<i class="mdi mdi-check text-primary"></i>
+										&nbsp;
+										<span class="badge pr-0 pl-0">' . $label . '</span>
 									</label>
 								</div>
 							';
@@ -192,11 +194,11 @@ class Groups extends \Aksara\Laboratory\Core
 					else
 					{
 						$privilege_output			.= '
-							<div class="col-6 col-md-3">
-								<label class="d-block font-weight-bold"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
+							<div class="col-6 col-md-3 bg-white">
+								<label class="d-block font-weight-bold mb-0"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
 									<input type="checkbox" name="group_privileges[' . $val->module . '][' . $val->submodule . '][' . $val->controller . '][]" value="' . $privilege . '" class="checker-children"' . (isset($current[$val->module][$val->submodule][$val->controller]) && in_array($privilege, $current[$val->module][$val->submodule][$val->controller]) ? ' checked' : '') . ' />
 									&nbsp;
-									<span class="badge ' . $badge_color . '">' . $label . '</span>
+									<span class="badge pr-0 pl-0">' . $label . '</span>
 								</label>
 							</div>
 						';
