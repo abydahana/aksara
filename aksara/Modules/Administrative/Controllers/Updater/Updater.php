@@ -198,8 +198,11 @@ class Updater extends \Aksara\Laboratory\Core
 					</h5>
 				</div>
 				<div class="alert alert-warning text-sm border-0 rounded-0 row">
-					' . phrase('you_may_need_to_run_the_composer_update_from_the_directory_below_to_update_the_dependencies') . ':
-					<code>' . ROOTPATH . '</code>
+					<div class="text-center">
+						' . phrase('you_may_need_to_run_the_composer_update_from_the_directory_below_to_update_the_dependencies') . ':
+						<br />
+						<b>' . ROOTPATH . '</b>
+					</div>
 				</div>
 				<p class="text-center">
 					' . phrase('you_will_be_notified_if_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
