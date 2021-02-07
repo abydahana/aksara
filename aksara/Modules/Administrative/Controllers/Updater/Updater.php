@@ -701,7 +701,7 @@ class Updater extends \Aksara\Laboratory\Core
 				// folder found, reinitialize collector
 				$this->_recursive_collector($val, (strpos($key, '/') !== false ? $path . $key : null));
 			}
-			elseif(!file_exists(ROOTPATH . $path . $val) || (md5_file(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name . DIRECTORY_SEPARATOR . $path . $val) != md5_file(ROOTPATH . $path . $val)))
+			else
 			{
 				// update file found
 				$source								= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name . DIRECTORY_SEPARATOR . $path . $val;
