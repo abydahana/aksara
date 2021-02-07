@@ -312,7 +312,7 @@ class Updater extends \Aksara\Laboratory\Core
 			if(!is_dir(dirname($val)))
 			{
 				// new folder found, add the directory
-				@mkdir(dirname($val), 0755);
+				@mkdir(dirname($val), 0755, true);
 			}
 			
 			// copy updater file
@@ -541,7 +541,7 @@ class Updater extends \Aksara\Laboratory\Core
 			if(!is_dir(dirname($val)))
 			{
 				// new folder found, add the directory
-				ftp_mkdir($connection, dirname($val));
+				$this->_ftp_mkdir($connection, ROOTPATH, str_replace(ROOTPATH, null, dirname($val)));
 			}
 			
 			// copy updater file
@@ -714,6 +714,26 @@ class Updater extends \Aksara\Laboratory\Core
 				{
 					$this->_composer_update			= json_decode(file_get_contents($source), true);
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Create recursive directory using FTP
+	 */
+	private function _ftp_mkdir($connection = null, $parent_dir = null, $dir = null)
+	{
+		@ftp_chdir($connection, $parent_dir);
+		
+		$parts										= explode(DIRECTORY_SEPARATOR, $dir);
+		
+		foreach($parts as $key => $val)
+		{
+			if(!@ftp_chdir($connection, $val))
+			{
+				ftp_mkdir($connection, $val);
+				ftp_chdir($connection, $val);
+				ftp_chmod($connection, 0755, $val);
 			}
 		}
 	}
