@@ -53,27 +53,27 @@
 							</h6>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/documentation" class="--xhr">
+							<a href="//www.aksaracms.com/pages/documentation" target="_blank">
 								<?php echo phrase('documentation'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/features" class="--xhr">
+							<a href="//www.aksaracms.com/pages/features" target="_blank">
 								<?php echo phrase('features'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/faqs" class="--xhr">
+							<a href="//www.aksaracms.com/pages/faqs" target="_blank">
 								<?php echo phrase('faqs'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/terms-and-conditions" class="--xhr">
+							<a href="//www.aksaracms.com/pages/terms-and-conditions" target="_blank">
 								<?php echo phrase('terms_and_conditions'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/privacy-policy" class="--xhr">
+							<a href="//www.aksaracms.com/pages/privacy-policy" target="_blank">
 								<?php echo phrase('privacy_policy'); ?>
 							</a>
 						</li>
