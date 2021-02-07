@@ -189,41 +189,6 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		if($updated)
 		{
-			$notice									= false;
-			
-			if(function_exists('putenv'))
-			{
-				$new_package						= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
-				
-				if($new_package && isset($new_package['require']))
-				{
-					$new_package['require']			= array_unique(array_merge($this->_old_package['require'], $new_package['require']));
-					
-					file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-				}
-				
-				// change out of the webroot so that the vendors file is not created in
-				putenv('COMPOSER_HOME=' . ROOTPATH . 'vendor/bin/composer');
-				
-				//Create the commands
-				$input								= new ArrayInput
-				(
-					array
-					(
-						'command'					=> 'update'
-					)
-				);
-				
-				//Create the application and run it with the commands
-				$application						= new Application();
-				$application->setAutoExit(false);
-				$application->run($input);
-			}
-			else
-			{
-				$notice								= true;
-			}
-			
 			$html									= '
 				<div class="text-center mb-2">
 					<i class="mdi mdi-arrow-up-circle-outline mdi-5x text-success"></i>
@@ -232,12 +197,10 @@ class Updater extends \Aksara\Laboratory\Core
 						' . phrase('your_core_system_was_successfully_updated') . '
 					</h5>
 				</div>
-				' . ($notice ? '
-				<p class="text-center text-warning">
-					' . phrase('unfortunately_we_are_unable_to_update_the_dependencies_since_its_disabled_on_your_web_server') . '
-				</p>
-				' : null) . '
-				<hr class="row" />
+				<div class="alert alert-warning text-sm border-0 rounded-0 row">
+					' . phrase('you_may_need_to_run_the_composer_update_from_the_directory_below_to_update_the_dependencies') . ':
+					<code>' . ROOTPATH . '</code>
+				</div>
 				<p class="text-center">
 					' . phrase('you_will_be_notified_if_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
 				</p>

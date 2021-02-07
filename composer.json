@@ -16,7 +16,6 @@
     "require": {
 		"php": "^7.3||^8.0",
 		"codeigniter4/framework": "^4.1",
-		"composer/composer": "^2.0",
 		"mpdf/mpdf": "^8.0",
 		"facebook/graph-sdk": "^5.7",
 		"google/apiclient": "^2.8",
