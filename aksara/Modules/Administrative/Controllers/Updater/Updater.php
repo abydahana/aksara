@@ -309,7 +309,7 @@ class Updater extends \Aksara\Laboratory\Core
 		foreach($this->_collection as $key => $val)
 		{
 			// copy updater file
-			if(copy($key, $val))
+			if(@copy($key, $val))
 			{
 				// copy success
 				$copied++;
