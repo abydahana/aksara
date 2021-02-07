@@ -47,7 +47,7 @@ class Core extends Controller
 	private $_set_messages							= array();
 	private $_view									= 'index';
 	private $_set_template							= array();
-	private $_set_theme								= 'frontend';
+	private $_set_theme								= 'default';
 	private $_set_upload_path						= null;
 	private $_upload_data							= array();
 	private $_upload_error							= array();
