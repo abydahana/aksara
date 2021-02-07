@@ -240,6 +240,8 @@
 				(
 					app_name,
 					app_description,
+					app_logo,
+					app_icon,
 					frontend_theme,
 					backend_theme,
 					app_language,
@@ -257,10 +259,12 @@
 				(
 					"' . addslashes($_SESSION['system']['site_title']) . '",
 					"' . addslashes($_SESSION['system']['site_description']) . '",
+					"logo.png",
+					"logo.png",
 					"default",
 					"backend",
 					1,
-					"Some Company Name",
+					"GeekTech Karya Indonesia, PT",
 					"+6281381614558",
 					"info@example.com",
 					"2nd Floor Example Tower Building, Some Road Name, Any Region",
