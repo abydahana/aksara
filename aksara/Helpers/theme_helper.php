@@ -8,7 +8,8 @@ if(!function_exists('asset_loader'))
 	function asset_loader($data = array())
 	{
 		$backtrace									= debug_backtrace();
-		$theme										= preg_match('/\/themes\/(.*?)\//', (isset($backtrace[0]['file']) ? $backtrace[0]['file'] : null), $matched);
+		$pattern									= ('/' == DIRECTORY_SEPARATOR ? '/\/themes\/(.*?)\//' : '/\\\themes\\\(.*?)\\\/');
+		$theme										= preg_match($pattern, (isset($backtrace[0]['file']) ? $backtrace[0]['file'] : null), $matched);
 		$theme										= (isset($matched[1]) ? $matched[1] : null);
 		
 		if(!$theme) return false;
