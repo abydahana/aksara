@@ -8363,7 +8363,7 @@ class Core extends Controller
 		$this->_set_language(get_userdata('language_id'));
 		
 		$this->_api_request							= true;
-		$this->_api_request_parameter				= json_decode($api_service->parameter, true);
+		$this->_api_request_parameter				= json_decode($api_service->method, true);
 		
 		return $this;
 	}
