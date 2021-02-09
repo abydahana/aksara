@@ -23,7 +23,7 @@ There are two installation methods that you can choose:
 
 ### Manual Installation
 - Download the source code and extract its content to the directory of your webserver;
-- Run "`composer install`" from the root of Aksara directory;
+- Run "`composer install`" from the root of Aksara project directory;
 - Access your project from the browser and;
 - Follow the installation wizard.
 
