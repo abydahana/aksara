@@ -57,31 +57,58 @@ class Validation extends \CodeIgniter\Validation\Rules
 				// skip non-callable rules
 				if(stripos($val['rules'], 'callback_') === false) continue;
 				
+				// destructure the rules
 				$rules								= array_map('trim', explode('|', $val['rules']));
 				
 				if($rules)
 				{
+					// rules found, find the callback
 					foreach($rules as $_key => $_val)
 					{
+						// check if callback were called
 						if(stripos($_val, 'callback_') !== false)
 						{
-							$method					= str_replace('callback_', null, $_val);
+							// callback found, find method if exists
+							$method					= preg_replace('/callback_/', null, $_val, 1);
 							
+							if(!method_exists($class, $method))
+							{
+								// validation method does not exists
+								return throw_exception(400, array($key => $method . ': ' . phrase('function_does_not_exists')));
+							}
+							
+							// find the validation parameter
 							if(strpos($method, '[') !== false && strpos($method, ']') !== false)
 							{
+								// parameter found, destructure the parameter
 								preg_match('#\[(.*?)\]#', $method, $params);
 								
 								$params				= explode('.', $params[1]);
 								$method				= preg_replace('/\[([^\[\]]++|(?R))*+\]/', null, $method);
 								
-								$class->$method($params);
+								// call the validation method
+								$validate			= $class->$method(service('request')->getVar($key), $params);
 							}
 							else
 							{
-								$class->$method();
+								// call the validation method
+								$validate			= $class->$method(service('request')->getVar($key));
 							}
+							
+							// check if validation success
+							if($validate !== true)
+							{
+								// validation error, throw exception
+								return throw_exception(400, array($key => $validate));
+							}
+							
+							// unset the callback validation
+							unset($rules[$_key]);
 						}
 					}
+					
+					// reinitialize the validation rules for current field
+					$this->form_validation->setRule($key, $val['label'], implode('|', $rules));
 				}
 			}
 		}
@@ -142,7 +169,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	{
 		if(null != $value && 1 != $value)
 		{
-			$this->form_validation->setError('boolean', phrase('the_field') . ' {field} ' . phrase('is_not_a_valid_boolean'));
+			return false;
 		}
 		
 		return true;
@@ -155,7 +182,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	{
 		if(!preg_match('/^\s*[$]?\s*((\d+)|(\d{1,3}(\,\d{3})+))(\.\d{2})?\s*$/', $value))
 		{
-			$this->form_validation->setError('is_currency', '%s: ' . phrase('the_field_must_contain_a_valid_currency'));
+			return false;
 		}
 		
 		return true;
@@ -170,7 +197,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 		
 		if(!$valid_date || $valid_date && $valid_date->format('Y-m-d') !== $value)
 		{
-			$this->form_validation->setError('valid_date', phrase('the_field') . ' %s ' . phrase('is_not_a_valid_date'));
+			return false;
 		}
 		
 		return true;
@@ -185,7 +212,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 		
 		if(!in_array($value, $valid_year))
 		{
-			$this->form_validation->setError('valid_year', phrase('the_field') . ' %s ' . phrase('is_not_a_valid_year'));
+			return false;
 		}
 		
 		return true;

@@ -77,6 +77,8 @@ class Announcements extends \Aksara\Laboratory\Core
 				'title'								=> 'required|max_length[256]|is_unique[' . $this->_table . '.title,announcement_id,' . service('request')->getGet('announcement_id') . ']',
 				'content'							=> 'required',
 				'language_id'						=> 'required',
+				'start_date'						=> 'required',
+				'end_date'							=> 'required|callback_validate_end_date',
 				'status'							=> 'boolean'
 			)
 		)
@@ -98,5 +100,15 @@ class Announcements extends \Aksara\Laboratory\Core
 		)
 		
 		->render($this->_table);
+	}
+	
+	public function validate_end_date($value = null)
+	{
+		if(strtotime(service('request')->getPost('start_date')) >= strtotime($value))
+		{
+			return phrase('the_end_date_must_be_greater_than_start_date');
+		}
+		
+		return true;
 	}
 }

@@ -69,4 +69,7 @@ return [
 	'mime_in'  => '{field} tidak memiliki sebuah tipe mime yang valid.',
 	'ext_in'   => '{field} tidak memiliki sebuah ekstensi berkas yang valid.',
 	'max_dims' => '{field} bukan gambar, atau terlalu lebar atau tinggi.',
+	
+	// Custom
+	'boolean'				=> 'Bidang {field} hanya boleh dicentang atau diabaikan'
 ];
