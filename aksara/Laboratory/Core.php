@@ -279,7 +279,7 @@ class Core extends Controller
 	 */
 	public function _remap($method = null, $segment_1 = null, $segment_2 = null, $segment_3 = null, $segment_4 = null, $segment_5 = null, $segment_6 = null)
 	{
-		if(method_exists($this, $method) && !in_array($method, get_class_methods($this->model)))
+		if(method_exists($this, $method) && !in_array($method, get_class_methods('\Aksara\Laboratory\Core')))
 		{
 			// check if method is defined in requested class
 			$this->$method($segment_1, $segment_2, $segment_3, $segment_4, $segment_5, $segment_6);
@@ -2725,7 +2725,7 @@ class Core extends Controller
 		/**
 		 * Generate output from the method
 		 */
-		if('delete' == $this->_method && $this->_where)
+		if('delete' == $this->_method)
 		{
 			/**
 			 * Method delete
@@ -2735,7 +2735,7 @@ class Core extends Controller
 				/* batch delete */
 				return $this->delete_batch($this->_from);
 			}
-			else
+			elseif($this->_where)
 			{
 				/* single delete */
 				return $this->delete_data($this->_from, $this->_where, $this->_limit);
@@ -8358,6 +8358,31 @@ class Core extends Controller
 		elseif($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range))
 		{
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
+		}
+		
+		$cookie										= $this->model->select
+		('
+			data
+		')
+		->get_where
+		(
+			'app__sessions',
+			array
+			(
+				'id'								=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
+				'timestamp >= '						=> strtotime('-1 days')
+			),
+			1
+		)
+		->row('data');
+		
+		if($cookie)
+		{
+			session_decode($cookie);
+			
+			$_SESSION['access_token']				= service('request')->getHeaderLine('X-ACCESS-TOKEN');
+			
+			set_userdata(array_filter($_SESSION));
 		}
 		
 		$this->_set_language(get_userdata('language_id'));

@@ -241,13 +241,14 @@ class Updater extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'status'						=> 206,
-					'exception'						=> array
+					'status'						=> 200,
+					'meta'							=> array
 					(
 						'title'						=> phrase('update_success'),
 						'icon'						=> 'mdi mdi-check',
-						'html'						=> $html
-					)
+						'popup'						=> true
+					),
+					'html'							=> $html
 				)
 			);
 		}
@@ -441,13 +442,14 @@ class Updater extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'status'						=> 206,
-					'exception'						=> array
+					'status'						=> 200,
+					'meta'							=> array
 					(
 						'title'						=> phrase('update_failed'),
 						'icon'						=> 'mdi mdi-alert',
-						'html'						=> $html
-					)
+						'popup'						=> true
+					),
+					'html'							=> $html
 				)
 			);
 		}
@@ -473,13 +475,14 @@ class Updater extends \Aksara\Laboratory\Core
 				(
 					array
 					(
-						'status'					=> 206,
-						'exception'					=> array
+						'status'					=> 200,
+						'meta'						=> array
 						(
 							'title'					=> phrase('update_failed'),
 							'icon'					=> 'mdi mdi-alert',
-							'html'					=> $html
-						)
+							'popup'					=> true
+						),
+						'html'						=> $html
 					)
 				);
 			}

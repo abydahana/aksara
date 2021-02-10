@@ -49,7 +49,7 @@ class Modules extends \Aksara\Laboratory\Core
 		if($package)
 		{
 			$package->folder						= service('request')->uri->getSegment(4);
-			$package->integrity					= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
+			$package->integrity						= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 		}
 		
 		$this->set_title('Module Detail')
@@ -130,11 +130,12 @@ class Modules extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'status'						=> 206,
+					'status'						=> 200,
 					'meta'							=> array
 					(
 						'title'						=> phrase('action_warning'),
-						'icon'						=> 'mdi mdi-alert-outline'
+						'icon'						=> 'mdi mdi-alert-outline',
+						'popup'						=> true
 					),
 					'html'							=> $html
 				)

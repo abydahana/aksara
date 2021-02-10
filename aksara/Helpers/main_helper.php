@@ -184,12 +184,13 @@ if(!function_exists('throw_exception'))
 			array
 			(
 				'status'							=> $code,
-				'exception'							=> $exception,
+				'message'							=> $exception,
 				'target'							=> $target,
 				'redirect'							=> $redirect
 			)
 		);
 		
+		http_response_code($code);
 		header('Content-Type: application/json');
 		exit($output);
 	}

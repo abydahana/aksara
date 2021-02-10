@@ -20,7 +20,25 @@ class Auth extends \Aksara\Laboratory\Core
 		/* check if use is already signed in */
 		if(get_userdata('is_logged'))
 		{
-			return throw_exception(301, phrase('you_have_been_signed_in'), base_url('dashboard'), true);
+			// check if request is made through API or not
+			if($this->_api_request)
+			{
+				// requested through API, provide the access token
+				return make_json
+				(
+					array
+					(
+						'status'					=> 200,
+						'message'					=> phrase('you_were_logged_in'),
+						'access_token'				=> session_id()
+					)
+				);
+			}
+			else
+			{
+				// requested through browser
+				return throw_exception(301, phrase('you_were_logged_in'), base_url('dashboard'), true);
+			}
 		}
 		elseif(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
 		{
@@ -125,7 +143,25 @@ class Auth extends \Aksara\Laboratory\Core
 					)
 				);
 				
-				return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_were_logged_in'), base_url('dashboard'), true);
+				// check if request is made through API or not
+				if($this->_api_request)
+				{
+					// requested through API, provide the access token
+					return make_json
+					(
+						array
+						(
+							'status'				=> 200,
+							'message'				=> phrase('you_were_logged_in'),
+							'access_token'			=> session_id()
+						)
+					);
+				}
+				else
+				{
+					// requested through browser
+					return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_have_been_signed_in'), base_url('dashboard'), true);
+				}
 			}
 			
 			return throw_exception(400, array('password' => phrase('username_or_email_and_password_did_not_match') . '<hr class="mt-0 mb-1" /><a href="' . current_page('forgot') . '" class="--xhr"><b>' . phrase('click_here') . '</b></a> ' . phrase('to_reset_your_password')));
@@ -147,9 +183,25 @@ class Auth extends \Aksara\Laboratory\Core
 			$this->google->revokeToken();
 		}
 		
-		$group_id									= get_userdata('group_id');
+		// get the session id
+		if(get_userdata('access_token') && session_id() !== get_userdata('access_token'))
+		{
+			$session_id								= array
+			(
+				session_id(),
+				get_userdata('access_token')
+			);
+		}
+		else
+		{
+			$session_id								= array(session_id());
+		}
 		
+		// destroy session
 		service('session')->destroy();
+		
+		// remove session from database
+		$this->model->where_in('id', array_filter($session_id))->delete('app__sessions');
 		
 		return throw_exception(301, phrase('you_were_logged_out'), base_url(), true);
 	}

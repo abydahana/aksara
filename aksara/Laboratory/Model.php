@@ -513,7 +513,7 @@ class Model
 	{
 		if(!is_array($field))
 		{
-			if(is_array($value['value']))
+			if(isset($value['value']))
 			{
 				$this->_where_in[$field]			= $value;
 			}
@@ -1512,9 +1512,30 @@ class Model
 	 */
 	public function delete($table = null, $where = array(), $limit = 0, $reset_data = true)
 	{
-		$where										= array_merge($this->_where, $where);
+		if($table && $this->db->tableExists($table))
+		{
+			$this->_table							= $table;
+		}
 		
-		return $this->db->table($table)->delete($where, $limit, $reset_data);
+		if($where && is_array($where))
+		{
+			foreach($where as $key => $val)
+			{
+				$this->_where[$key]					= array
+				(
+					'value'							=> $val,
+					'escape'						=> true,
+					'case_sensitive'				=> false
+				);
+			}
+		}
+		
+		if($limit)
+		{
+			$this->_limit							= $limit;
+		}
+		
+		return $this->_run_query('delete');
 	}
 	
 	/**
@@ -1526,7 +1547,7 @@ class Model
 	{
 		if(!$table)
 		{
-			$table								= $this->_table;
+			$table									= $this->_table;
 		}
 		
 		return $this->db->table($table)->truncate();
@@ -1541,7 +1562,7 @@ class Model
 	{
 		if(!$table)
 		{
-			$table								= $this->_table;
+			$table									= $this->_table;
 		}
 		
 		return $this->db->table($table)->emptyTable();
@@ -1556,7 +1577,7 @@ class Model
 	{
 		if($table)
 		{
-			$this->_table						= $table;
+			$this->_table							= $table;
 		}
 		
 		return $this->_run_query('countAllResults');
@@ -1571,7 +1592,7 @@ class Model
 	{
 		if($table)
 		{
-			$this->_table						= $table;
+			$this->_table							= $table;
 		}
 		
 		return $this->_run_query('countAll');
@@ -1586,7 +1607,7 @@ class Model
 	{
 		if($table)
 		{
-			$this->_table						= $table;
+			$this->_table							= $table;
 		}
 		
 		return $this->_run_query('countAllResults');
@@ -2067,8 +2088,13 @@ class Model
 			}
 		}
 		
-		if(in_array($result_type, array('countAll', 'countAllResults')))
+		if(in_array($result_type, array('countAll', 'countAllResults', 'delete')))
 		{
+			if(in_array($result_type, array('delete')))
+			{
+				$parameter							= '';
+			}
+			
 			$output									= $builder->$result_type($parameter);
 		}
 		else

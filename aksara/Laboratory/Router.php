@@ -37,25 +37,33 @@ class Router
 		
 		if($this->_collection)
 		{
+			// get higher namespace as route priority
 			$higher									= max(array_keys($this->_collection));
 			$namespace								= $this->_collection[$higher];
 			$namespace								= substr($namespace, 0, strrpos($namespace, '.'));
 			$controller								= substr($namespace, strrpos($namespace, '\\') + 1);
 			$method									= (strpos($this->_uri_string, '/') !== false ? substr($this->_uri_string, strrpos($this->_uri_string, '/') + 1) : null);
 			
+			// get priority file
 			$file									= str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method) . '.php'), '\\')));
 			
+			// get second file under hierarchy
 			$second_file							= str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method) . '.php'), '\\')));
 			
+			// check if priority file is exists
 			if(file_exists('../' . $file))
 			{
+				// file exists, apply to route
 				$namespace							= str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method));
 				
 				/* add route for current request */
 				$routes->add($this->_uri_string, $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null));
 			}
+			
+			// check if second file is exists
 			elseif(file_exists('../' . $second_file))
 			{
+				// file exists, apply to route
 				$namespace							= str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));
 				
 				/* add route for current request */
@@ -68,6 +76,7 @@ class Router
 			}
 		}
 		
+		// apply theme route
 		$this->_theme_route($routes);
 	}
 	

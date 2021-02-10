@@ -187,10 +187,8 @@
 					$('.result-html').html('')
 				}
 			})
-			.done(function(response)
+			.always(function(response, status, error)
 			{
-				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
-				
 				if(typeof response !== 'object')
 				{
 					response					= {
@@ -198,16 +196,8 @@
 					};
 				}
 				
-				$('pre code').text(JSON.stringify(response, null, 4)),
-				
-				Prism.highlightAll()
-			})
-			.fail(function(response, text, message)
-			{
-				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
-				
+				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send'),
 				$('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4)),
-				
 				Prism.highlightAll()
 			})
 		})

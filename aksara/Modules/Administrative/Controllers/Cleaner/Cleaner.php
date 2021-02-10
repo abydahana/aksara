@@ -165,13 +165,14 @@ class Cleaner extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'status'						=> 206,
-					'exception'						=> array
+					'status'						=> 200,
+					'meta'							=> array
 					(
 						'title'						=> phrase('garbage_cleaned'),
 						'icon'						=> 'mdi mdi-check',
-						'html'						=> $html
-					)
+						'popup'						=> true
+					),
+					'html'							=> $html
 				)
 			);
 		}
