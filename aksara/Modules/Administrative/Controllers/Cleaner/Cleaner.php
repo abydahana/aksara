@@ -121,7 +121,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 			// throw with error
 			return throw_exception(403, $error, go_to());
 		}
-		elseif($logs_cleaned || $session_cleaned)
+		elseif($logs_cleaned > 0 || $session_cleaned > 0)
 		{
 			// throw with amount of cleaned garbage
 			$html									= '
