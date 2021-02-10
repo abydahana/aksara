@@ -100,7 +100,7 @@ class Router
 				if(strpos($namespace, '\Config\\') !== false && stripos($namespace, '\Modules\\' . $module[0] . '\Config\\') !== false)
 				{
 					/* apply route from module route config */
-					$extra_route						= lcfirst(ltrim(str_replace('\\', '/', $namespace), '/')) . 'Routes.php';
+					$extra_route					= lcfirst(ltrim(str_replace('\\', '/', $namespace), '/')) . 'Routes.php';
 					
 					if(file_exists('../' . $extra_route))
 					{
