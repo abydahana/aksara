@@ -1,6 +1,6 @@
 <?php namespace Aksara\Libraries;
 /**
- * Miscellanious Library
+ * Miscellaneous Library
  * This class is used to generate any miscellanious features
  *
  * @author			Aby Dahana
@@ -9,7 +9,7 @@
  * @since			version 4.2.4
  * @copyright		(c) 2021 - Aksara Laboratory
  */
-class Miscellanious
+class Miscellaneous
 {
 	public function __construct()
 	{
