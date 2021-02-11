@@ -40,8 +40,11 @@ class Category extends \Aksara\Laboratory\Core
 				/* list of category */
 				'categories'						=> $this->model->select
 				('
-					blogs__categories.*,
-					COUNT(blogs.post_id) AS total_data
+					COUNT(blogs.post_id) AS total_data,
+					blogs__categories.category_slug,
+					blogs__categories.category_title,
+					blogs__categories.category_description,
+					blogs__categories.category_image
 				')
 				->join
 				(
@@ -58,7 +61,7 @@ class Category extends \Aksara\Laboratory\Core
 					)
 				)
 				->order_by('category_title', 'RANDOM')
-				->group_by('category_id')
+				->group_by('category_id, category_slug, category_title, category_description, category_image')
 				->get('blogs__categories')
 				->result()
 			)

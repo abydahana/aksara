@@ -71,7 +71,7 @@ class Read extends Core
 					)
 				)
 				->order_by('total_data', 'DESC')
-				->group_by('category_id')
+				->group_by('category_id, category_slug, category_title, category_description, category_image')
 				->get('blogs__categories')
 				->result(),
 				

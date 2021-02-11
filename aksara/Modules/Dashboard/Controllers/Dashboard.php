@@ -65,7 +65,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 			platform,
 			timestamp
 		')
-		->group_by('ip_address, DATE(timestamp)')
+		->group_by('ip_address, browser, platform, timestamp, DATE(timestamp)')
 		->get_where
 		(
 			'app__visitor_logs',
