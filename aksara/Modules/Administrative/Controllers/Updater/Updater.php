@@ -190,10 +190,10 @@ class Updater extends \Aksara\Laboratory\Core
 			{
 				$new_package['require']				= array_unique(array_merge($this->_old_package['require'], $new_package['require']));
 				
-				file_put_contents(ROOTPATH . 'composer.json', json_encode(json_fixer($new_package), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 			}
 			
-			$seed									= \Aksara\Modules\Administrative\Controllers\Updater\Seeder::seed();
+			$seed									= \Aksara\Laboratory\Seeder::seed();
 			
 			$html									= '
 				<div class="text-center mb-3">
