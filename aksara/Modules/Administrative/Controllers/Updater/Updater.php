@@ -190,10 +190,10 @@ class Updater extends \Aksara\Laboratory\Core
 			{
 				$new_package['require']				= array_unique(array_merge($this->_old_package['require'], $new_package['require']));
 				
-				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+				file_put_contents(ROOTPATH . 'composer.json', json_encode(json_fixer($new_package), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 			}
 			
-			$seed									= \Aksara\Laboratory\Seeder::seed();
+			$seed									= \Aksara\Modules\Administrative\Controllers\Updater\Seeder::seed();
 			
 			$html									= '
 				<div class="text-center mb-3">
@@ -654,7 +654,10 @@ class Updater extends \Aksara\Laboratory\Core
 		$unzip										= $zip->open($tmp_file);
 		
 		// remove update package from system temporary
-		unlink($tmp_file);
+		if(file_exists($tmp_file))
+		{
+			@unlink($tmp_file);
+		}
 		
 		if($unzip === true)
 		{
@@ -681,12 +684,12 @@ class Updater extends \Aksara\Laboratory\Core
 		foreach($data as $key => $val)
 		{
 			// in order to keep the file in writable and skipping update the updater script
-			if(in_array($path, array('themes/', 'writable/'))) continue;
+			if(in_array($path, array('themes/', 'themes\\', 'writable/', 'writable\\'))) continue;
 			
 			if(is_array($val))
 			{
 				// folder found, reinitialize collector
-				$this->_recursive_collector($val, (strpos($key, '/') !== false ? $path . $key : null));
+				$this->_recursive_collector($val, (strpos($key, '/') !== false || strpos($key, '\\') !== false ? $path . $key : null));
 			}
 			else
 			{

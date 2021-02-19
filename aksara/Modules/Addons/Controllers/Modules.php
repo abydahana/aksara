@@ -242,7 +242,7 @@ class Modules extends \Aksara\Laboratory\Core
 					if($package)
 					{
 						$package->folder			= str_replace(array('/', '\\'), array(null, null), $key);
-						$package->integrity		= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
+						$package->integrity			= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 						
 						$output[]					= $package;
 					}
