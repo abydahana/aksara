@@ -69,46 +69,71 @@ class Model
 	
 	public function database_config($driver = null, $hostname = null, $port = null, $username = null, $password = null, $database = null)
 	{
-		if('default' == $driver)
+		// check if "default" connection (from app__connections) is selected
+		if('default' == $driver && !$this->_called)
 		{
-			$this->connector						= new \Aksara\Libraries\Connector;
-			$this->db								= $this->connector->connect();
-		}
-		else
-		{
-			ini_set('sqlsrv.ClientBufferMaxKBSize', 524288);
+			$this->_called							= true;
 			
-			/* set the default dsn for non-standard connection */
-			$dsn									= null;
-			
-			if('pdo' == $driver)
-			{
-				$dsn								= 'dblib:host=' . $hostname . ($port ? (phpversion() <= 7.2 ? ':' : ',') . $port : '') . ';dbname=' . $database;
-			}
-			
-			/* define config */
-			$config									= array
+			$parameter								= $this->db->table('app__connections')->getWhere
 			(
-				'DSN'								=> $dsn,
-				'DBDriver' 							=> $driver,
-				'hostname' 							=> $hostname . ($port ? ',' . $port : null),
-				'username'							=> $username,
-				'password' 							=> $password,
-				'database' 							=> $database
-			);
+				array
+				(
+					'year'							=> (get_userdata('year') ? get_userdata('year') : date('Y')),
+					'status'						=> 1
+				),
+				1
+			)
+			->getRow();
 			
-			/* load the new database connection with the defined config */
-			$this->db								= \Config\Database::connect($config);
+			if($parameter)
+			{
+				$driver								= array
+				(
+					'DBDriver'						=> $parameter->database_driver,
+					'hostname'						=> service('encrypter')->decrypt(base64_decode($parameter->hostname)),
+					'port'						    => service('encrypter')->decrypt(base64_decode($parameter->port)),
+					'username'						=> service('encrypter')->decrypt(base64_decode($parameter->username)),
+					'password'						=> service('encrypter')->decrypt(base64_decode($parameter->password)),
+					'database'						=> service('encrypter')->decrypt(base64_decode($parameter->database_name)),
+					'DBDebug'						=> (ENVIRONMENT !== 'production')
+				);
+			}
+		}
+		elseif($driver && $hostname && $username && $database)
+		{
+			$driver									= array
+			(
+				'DBDriver'							=> $driver,
+				'hostname'							=> $hostname,
+				'port'								=> $port,
+				'username'							=> $username,
+				'password'							=> $password,
+				'database'							=> $database,
+				'DBDebug'							=> (ENVIRONMENT !== 'production')
+			);
+		}
+		
+		$parameter									= $driver;
+		
+		// initialize parameter to new connection
+		$this->db									= \Config\Database::connect($parameter);
+		
+		// check if connection successfully made
+		if(!$this->db->connect())
+		{
+			// connection couldn't be made, throw error
+			return $this->db->error();
 		}
 		
 		return $this;
 	}
 	
 	/**
-	 * ---------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 * Database Helper
-	 * ---------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 */
+	
 	/**
 	 * Listing the available tables on current active
 	 * database
@@ -2109,7 +2134,7 @@ class Model
 	}
 	
 	/**
-	 * Reset property to prevent duplicate 
+	 * Reset property to prevent duplicate
 	 */
 	private function _reset_property()
 	{

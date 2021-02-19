@@ -14,6 +14,25 @@
 				<div class="form-group">
 					<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_password'); ?>" autocomplete="new-password" />
 				</div>
+				<?php
+					if($years)
+					{
+						$option						= null;
+						
+						foreach($years as $key => $val)
+						{
+							$option					.= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
+						}
+						
+						echo '
+							<div class="form-group">
+								<select name="year" class="form-control" placeholder="' . phrase('choose_year') . '" id="year_input">
+									' . $option . '
+								</select>
+							</div>
+						';
+					}
+				?>
 				
 				<div class="--validation-callback mb-3"></div>
 				

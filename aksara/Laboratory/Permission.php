@@ -9,13 +9,11 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
-use Aksara\Laboratory\Model;
-
 class Permission
 {
 	public function __construct()
 	{
-		$this->model								= new Model();
+		$this->model								= new \Aksara\Laboratory\Model();
 	}
 	
 	/**
@@ -28,7 +26,22 @@ class Permission
 			$method									= 'index';
 		}
 		
-		$user										= $this->model->select('user_id, group_id')->get_where('app__users', array('user_id' => ($user_id ? $user_id : service('session')->get('user_id')), 'status' => 1), 1)->row();
+		$user										= $this->model->select
+		('
+			user_id,
+			group_id
+		')
+		->get_where
+		(
+			'app__users',
+			array
+			(
+				'user_id'							=> ($user_id ? $user_id : service('session')->get('user_id')),
+				'status'							=> 1
+			),
+			1
+		)
+		->row();
 		
 		if(!$user)
 		{
@@ -41,7 +54,21 @@ class Permission
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), base_url());
 		}
 		
-		$privileges									= $this->model->select('group_privileges')->get_where('app__groups', array('group_id' => $user->group_id), 1)->row('group_privileges');
+		$privileges									= $this->model->select
+		('
+			group_privileges
+		')
+		->get_where
+		(
+			'app__groups',
+			array
+			(
+				'group_id'							=> $user->group_id
+			),
+			1
+		)
+		->row('group_privileges');
+		
 		$privileges									= json_decode($privileges, true);
 		
 		if(!isset($privileges[$module][$submodule][$controller]) || (isset($privileges[$module][$submodule][$controller]) && !in_array($method, $privileges[$module][$submodule][$controller])))
@@ -79,7 +106,21 @@ class Permission
 			$method									= 'index';
 		}
 		
-		$privileges									= $this->model->select('group_privileges')->get_where('app__groups', array('group_id' => service('session')->get('group_id')), 1)->row('group_privileges');
+		$privileges									= $this->model->select
+		('
+			group_privileges
+		')
+		->get_where
+		(
+			'app__groups',
+			array
+			(
+				'group_id'							=> service('session')->get('group_id')
+			),
+			1
+		)
+		->row('group_privileges');
+		
 		$privileges									= json_decode($privileges, true);
 		
 		if(isset($privileges[$module][$submodule][$controller]) && in_array($method, $privileges[$module][$submodule][$controller]))
@@ -102,7 +143,21 @@ class Permission
 			$method									= 'index';
 		}
 		
-		$privileges									= $this->model->select('group_privileges')->get_where('app__groups', array('group_id' => service('session')->get('group_id')), 1)->row('group_privileges');
+		$privileges									= $this->model->select
+		('
+			group_privileges
+		')
+		->get_where
+		(
+			'app__groups',
+			array
+			(
+				'group_id'							=> service('session')->get('group_id')
+			),
+			1
+		)
+		->row('group_privileges');
+		
 		$privileges									= json_decode($privileges, true);
 		
 		if(isset($privileges[$controller]) && !in_array($method, $privileges[$controller]))
@@ -123,7 +178,21 @@ class Permission
 			$method									= 'index';
 		}
 		
-		$privileges									= $this->model->select('group_privileges')->get_where('app__groups', array('group_id' => service('session')->get('group_id')), 1)->row('group_privileges');
+		$privileges									= $this->model->select
+		('
+			group_privileges
+		')
+		->get_where
+		(
+			'app__groups',
+			array
+			(
+				'group_id'							=> service('session')->get('group_id')
+			),
+			1
+		)
+		->row('group_privileges');
+		
 		$privileges									= json_decode($privileges, true);
 		
 		if(!isset($privileges[$controller]) || (isset($privileges[$controller]) && !in_array($method, $privileges[$controller])))
@@ -152,7 +221,23 @@ class Permission
 	 */
 	private function _push_privileges($module = null, $submodule = null, $controller = null, $method = null)
 	{
-		$privileges									= $this->model->select('privileges')->get_where('app__groups_privileges', array('module' => $module, 'submodule' => $submodule, 'controller' => $controller), 1)->row('privileges');
+		$privileges									= $this->model->select
+		('
+			privileges
+		')
+		->get_where
+		(
+			'app__groups_privileges',
+			array
+			(
+				'module'							=> $module,
+				'submodule'							=> $submodule,
+				'controller'						=> $controller
+			),
+			1
+		)
+		->row('privileges');
+		
 		$privileges									= json_decode($privileges, true);
 		if($privileges)
 		{
@@ -196,6 +281,7 @@ class Permission
 			if(!$checker)
 			{
 				$privileges[]						= $method;
+				
 				$prepare							= array
 				(
 					'module'						=> $module,
@@ -204,6 +290,7 @@ class Permission
 					'privileges'					=> json_encode($privileges),
 					'last_generated'				=> date('Y-m-d H:i:s')
 				);
+				
 				$this->model->insert('app__groups_privileges', $prepare);
 			}
 		}

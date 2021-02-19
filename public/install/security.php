@@ -62,11 +62,11 @@
 			/**
 			 * Connect through MySQLi Driver
 			 */
-			$connection								= @mysqli_connect($_SESSION['database']['hostname'], $_SESSION['database']['username'], $_SESSION['database']['password'], $_SESSION['database']['initial'], (is_int($_SESSION['database']['port']) ? $_SESSION['database']['port'] : 3306));
+			$connection								= new \mysqli($_SESSION['database']['hostname'], $_SESSION['database']['username'], $_SESSION['database']['password'], $_SESSION['database']['initial'], (is_int($_SESSION['database']['port']) ? $_SESSION['database']['port'] : 3306));
 			
-			if(mysqli_connect_errno())
+			if($connection->connect_errno)
 			{
-				$error								= mysqli_connect_error();
+				$error								= $connection->connect_error;
 			}
 		}
 		elseif('Postgre' == $_SESSION['database']['driver'])
@@ -96,12 +96,14 @@
 			 */
 			if(function_exists('sqlsrv_connect'))
 			{
-				$connection							= sqlsrv_connect($_SESSION['database']['hostname'] . ($$_SESSION['database']['port'] ? ',' . $_SESSION['database']['port'] : null), array('UID' => $_SESSION['database']['username'], 'Password' => $_SESSION['database']['password'], 'Database' => $_SESSION['database']['initial']));
+				$connection							= sqlsrv_connect($_SESSION['database']['hostname'] . ($$_SESSION['database']['port'] ? ',' . $_SESSION['database']['port'] : null), array('UID' => $_SESSION['database']['username'], 'Password' => $_SESSION['database']['password'], 'Database' => $_SESSION['database']['initial'], 'LoginTimeout' => 5));
 				
 				if(!$connection)
 				{
-					$error							= sqlsrv_errors();
-					$error							= $error['message'];
+					foreach(sqlsrv_errors() as $key => $val)
+					{
+						$error						= $val['message'];
+					}
 				}
 			}
 			else
@@ -112,7 +114,7 @@
 		elseif('SQLite3' == $_SESSION['database']['driver'])
 		{
 			/**
-			 * Connect through SQLSRV Driver
+			 * Connect through SQLite3 Driver
 			 */
 			if(class_exists('SQLite3'))
 			{
@@ -169,7 +171,7 @@
 					' . phrase('cookie_name') . '
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="cookie_name" class="form-control form-control-sm" placeholder="' . phrase('unique_cookie_name_to_prevent_conflict') . '" value="' . (isset($_SESSION['security']['cookie_name']) ? $_SESSION['security']['cookie_name'] : 'aksara_' . random_string(16)) . '" />
+				<input type="text" name="cookie_name" class="form-control form-control-sm" placeholder="' . phrase('unique_cookie_name_to_prevent_conflict') . '" value="' . (isset($_SESSION['security']['cookie_name']) ? $_SESSION['security']['cookie_name'] : random_string(16)) . '" />
 			</div>
 			<br/>
 			<h5>

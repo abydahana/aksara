@@ -119,7 +119,8 @@ class Assets extends \Aksara\Laboratory\Core
 				openlayers_search_key: "' . htmlspecialchars(get_setting('openlayers_search_key')) . '",
 				map_center: ' . (json_decode(get_setting('office_map')) ? get_setting('office_map') : '{}') . ',
 				google_auth: ' . (get_setting('google_client_id') && get_setting('google_client_secret') ? 'true' : 'false') . ',
-				facebook_auth: ' . (get_setting('facebook_app_id') && get_setting('facebook_app_secret') ? 'true' : 'false') . '
+				facebook_auth: ' . (get_setting('facebook_app_id') && get_setting('facebook_app_secret') ? 'true' : 'false') . ',
+				active_years: ' . json_encode($this->_get_active_years()) . '
 				
 			},
 			phrase									= ' . json_encode(json_decode($this->_i18n()), JSON_UNESCAPED_SLASHES) . ';
@@ -144,5 +145,35 @@ class Assets extends \Aksara\Laboratory\Core
 		}
 		
 		return '[]';
+	}
+	
+	private function _get_active_years()
+	{
+		$output										= array();
+		
+		$query										= $this->model->get_where
+		(
+			'app__years',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($query)
+		{
+			foreach($query as $key => $val)
+			{
+				$output[]							= array
+				(
+					'value'							=> $val->year,
+					'label'							=> $val->year,
+					'selected'						=> $val->default
+				);
+			}
+		}
+		
+		return $output;
 	}
 }

@@ -1100,6 +1100,20 @@ class Template
 									'label'			=> 'Countries',
 									'slug'			=> 'administrative/countries',
 									'icon'			=> 'mdi mdi-map-legend'
+								),
+								array
+								(
+									'id'			=> 0,
+									'label'			=> 'Years',
+									'slug'			=> 'administrative/years',
+									'icon'			=> 'mdi mdi-calendar-clock'
+								),
+								array
+								(
+									'id'			=> 0,
+									'label'			=> 'Connections',
+									'slug'			=> 'administrative/connections',
+									'icon'			=> 'mdi mdi-power-plug'
 								)
 							)
 						),

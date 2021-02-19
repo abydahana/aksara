@@ -36,6 +36,33 @@
 								</div>
 							</div>
 							
+							<?php
+								if($years)
+								{
+									$option			= null;
+									
+									foreach($years as $key => $val)
+									{
+										$option		.= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
+									}
+									
+									echo '
+										<div class="form-group">
+											<div class="input-group flex-nowrap">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="addon-wrapping">
+														<i class="mdi mdi-calendar-check" style="width:22px"></i>
+													</span>
+												</div>
+												<select name="year" class="form-control" placeholder="' . phrase('choose_year') . '" id="year_input">
+													' . $option . '
+												</select>
+											</div>
+										</div>
+									';
+								}
+							?>
+							
 							<div class="--validation-callback mb-0"></div>
 							
 							<div class="form-group">

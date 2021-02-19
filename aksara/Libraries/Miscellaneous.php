@@ -42,38 +42,6 @@ class Miscellaneous
 	{
 		if(!$params) return false;
 		
-		// load forge class
-		$this->dbforge								= \Config\Database::forge();
-		
-		// load model
-		$this->model								= new \Aksara\Laboratory\Model();
-		
-		// check if table already exists
-		if(!$this->model->table_exists('app__shortlink'))
-		{
-			// no table exist, do create
-			$this->dbforge->createTable('app__shortlink');
-			
-			// add column to table
-			$this->dbforge->addColumn
-			(
-				array
-				(
-					'hash'							=> array
-					(
-						'type'						=> 'VARCHAR',
-						'constraint'				=> 6,
-						'unique'					=> true
-					),
-					'url'							=> array
-					(
-						'type'						=> 'VARCHAR',
-						'constraint'				=> 255
-					)
-				)
-			);
-		}
-		
 		// hash generator
 		$hash										= substr(sha1(uniqid(null, true)), -6);
 		

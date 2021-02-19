@@ -54,46 +54,43 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if(!$package)
 		{
-			$curl									= curl_init();
-			
-			curl_setopt_array
+			$curl									= \Config\Services::curlrequest
 			(
-				$curl,
 				array
 				(
-					CURLOPT_CONNECTTIMEOUT			=> 5,
-					CURLOPT_HEADER					=> 0,
-					CURLOPT_RETURNTRANSFER			=> 1,
-					CURLOPT_URL						=> 'https://www.aksaracms.com/market/api/detail',
-					CURLOPT_FOLLOWLOCATION			=> true,
-					CURLOPT_HTTPHEADER				=> array
+					'timeout'						=> 5
+				)
+			);
+			
+			$response								= $curl->post
+			(
+				'https://www.aksaracms.com/market/api/detail',
+				array
+				(
+					'allow_redirects'				=> array
 					(
-						'Content-Type: application/x-www-form-urlencoded'
+						'max'						=> 2
 					),
-					CURLOPT_CUSTOMREQUEST			=> 'POST',
-					CURLOPT_POSTFIELDS				=> http_build_query
+					'headers'						=> array
 					(
-						array
-						(
-							'type'					=> service('request')->getGet('type'),
-							'initial'				=> service('request')->getGet('item'),
-							'version'				=> aksara('version')
-						)
+						'Referer'					=> base_url()
+					),
+					'form_params'					=> array
+					(
+						'type'						=> service('request')->getGet('type'),
+						'initial'					=> service('request')->getGet('item'),
+						'version'					=> aksara('version')
 					)
 				)
 			);
 			
-			$package								= json_decode(curl_exec($curl));
+			$package								= json_decode($response->getBody());
 			
-			$error									= curl_error($curl);
-			
-			curl_close($curl);
-			
-			if($error)
+			if($response->getStatusCode() !== 200)
 			{
 				$package							= array
 				(
-					'error'							=> $error
+					'error'							=> $response->getReason()
 				);
 			}
 		}
@@ -124,45 +121,42 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if(in_array(service('request')->getGet('type'), array('theme', 'module')))
 		{
-			$curl									= curl_init();
-			
-			curl_setopt_array
+			$curl									= \Config\Services::curlrequest
 			(
-				$curl,
 				array
 				(
-					CURLOPT_CONNECTTIMEOUT			=> 5,
-					CURLOPT_HEADER					=> 0,
-					CURLOPT_RETURNTRANSFER			=> 1,
-					CURLOPT_URL						=> 'https://www.aksaracms.com/market/api/detail',
-					CURLOPT_FOLLOWLOCATION			=> true,
-					CURLOPT_HTTPHEADER				=> array
+					'timeout'						=> 5
+				)
+			);
+			
+			$response								= $curl->post
+			(
+				'https://www.aksaracms.com/market/api/detail',
+				array
+				(
+					'allow_redirects'				=> array
 					(
-						'Content-Type: application/x-www-form-urlencoded'
+						'max'						=> 2
 					),
-					CURLOPT_CUSTOMREQUEST			=> 'POST',
-					CURLOPT_POSTFIELDS				=> http_build_query
+					'headers'						=> array
 					(
-						array
-						(
-							'type'					=> service('request')->getGet('type'),
-							'initial'				=> service('request')->getGet('item'),
-							'version'				=> aksara('version'),
-							'install'				=> true
-						)
+						'Referer'					=> base_url()
+					),
+					'form_params'					=> array
+					(
+						'type'						=> service('request')->getGet('type'),
+						'initial'					=> service('request')->getGet('item'),
+						'version'					=> aksara('version'),
+						'install'					=> true
 					)
 				)
 			);
 			
-			$package								= json_decode(curl_exec($curl));
+			$package								= json_decode($response->getBody());
 			
-			$error									= curl_error($curl);
-			
-			curl_close($curl);
-			
-			if($error)
+			if($response->getStatusCode() !== 200)
 			{
-				return throw_exception(403, $error, go_to());
+				return throw_exception(403, $response->getReason(), go_to());
 			}
 			
 			if($package)
@@ -261,57 +255,53 @@ class Addons extends \Aksara\Laboratory\Core
 			);
 		}
 		
-		$curl										= curl_init();
-		
-		curl_setopt_array
+		$curl										= \Config\Services::curlrequest
 		(
-			$curl,
 			array
 			(
-				CURLOPT_CONNECTTIMEOUT				=> 5,
-				CURLOPT_HEADER						=> 0,
-				CURLOPT_RETURNTRANSFER				=> 1,
-				CURLOPT_URL							=> 'https://www.aksaracms.com/market/api',
-				CURLOPT_FOLLOWLOCATION				=> true,
-				CURLOPT_HTTPHEADER					=> array
+				'timeout'							=> 5
+			)
+		);
+		
+		$response									= $curl->post
+		(
+			'https://www.aksaracms.com/market/api',
+			array
+			(
+				'allow_redirects'					=> array
 				(
-					'Content-Type: application/x-www-form-urlencoded',
-					'Referer: ' . current_page()
+					'max'							=> 2
 				),
-				CURLOPT_CUSTOMREQUEST				=> 'POST',
-				CURLOPT_POSTFIELDS					=> http_build_query
+				'headers'							=> array
 				(
-					array
-					(
-						'version'					=> aksara('version')
-					)
+					'Referer'						=> base_url()
+				),
+				'form_params'						=> array
+				(
+					'version'						=> aksara('version')
 				)
 			)
 		);
 		
-		$output										= json_decode(curl_exec($curl), true);
+		$package									= json_decode($response->getBody(), true);
 		
-		$error										= curl_error($curl);
-		
-		curl_close($curl);
-		
-		if($error)
+		if($response->getStatusCode() !== 200)
 		{
 			return array
 			(
-				'error'								=> $error
+				'error'								=> $response->getReason()
 			);
 		}
 		
-		if($output)
+		if($package)
 		{
-			foreach($output as $key => $val)
+			foreach($package as $key => $val)
 			{
-				$output[$key]['detail_url']			= current_page('detail', array('item' => $val['slug'], 'type' => $val['addon_type']));
-				$output[$key]['install_url']		= current_page('install', array('item' => $val['slug'], 'type' => $val['addon_type']));
+				$package[$key]['detail_url']		= current_page('detail', array('item' => $val['slug'], 'type' => $val['addon_type']));
+				$package[$key]['install_url']		= current_page('install', array('item' => $val['slug'], 'type' => $val['addon_type']));
 			}
 		}
 		
-		return make_json($output);
+		return make_json($package);
 	}
 }

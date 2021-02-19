@@ -55,6 +55,14 @@ class Auth extends \Aksara\Laboratory\Core
 		->set_icon('mdi mdi-lock-open-outline')
 		->set_description(phrase('use_your_account_information_to_start_session'))
 		
+		->set_output
+		(
+			array
+			(
+				'years'								=> $this->_get_active_years()
+			)
+		)
+		
 		->form_callback('_validate_form')
 		
 		->render();
@@ -74,6 +82,11 @@ class Auth extends \Aksara\Laboratory\Core
 		$this->form_validation->setRule('username', phrase('username'), 'required');
 		$this->form_validation->setRule('password', phrase('password'), 'required');
 		
+		if(service('request')->getPost('year'))
+		{
+			$this->form_validation->setRule('year', phrase('year'), 'valid_year');
+		}
+		
 		/* run form validation */
 		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
@@ -83,6 +96,7 @@ class Auth extends \Aksara\Laboratory\Core
 		{
 			$username								= service('request')->getPost('username');
 			$password								= service('request')->getPost('password');
+			
 			$execute								= $this->model->select
 			('
 				user_id,
@@ -134,11 +148,12 @@ class Auth extends \Aksara\Laboratory\Core
 				(
 					array
 					(
+						'is_logged'					=> true,
 						'user_id'					=> $execute->user_id,
 						'username'					=> $execute->username,
 						'group_id'					=> $execute->group_id,
 						'language_id'				=> $execute->language_id,
-						'is_logged'					=> true,
+						'year'						=> ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
 						'session_generated'			=> time()
 					)
 				);
@@ -250,6 +265,39 @@ class Auth extends \Aksara\Laboratory\Core
 	}
 	
 	/**
+	 * get active years
+	 */
+	private function _get_active_years()
+	{
+		$output										= array();
+		
+		$query										= $this->model->get_where
+		(
+			'app__years',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($query)
+		{
+			foreach($query as $key => $val)
+			{
+				$output[]							= array
+				(
+					'value'							=> $val->year,
+					'label'							=> $val->year,
+					'selected'						=> $val->default
+				);
+			}
+		}
+		
+		return $output;
+	}
+	
+	/**
 	 * do validation
 	 */
 	private function _validate($session = null)
@@ -291,12 +339,13 @@ class Auth extends \Aksara\Laboratory\Core
 				(
 					array
 					(
+						'is_logged'					=> true,
 						'oauth_uid'					=> $session->oauth_uid,
 						'user_id'					=> $query->user_id,
 						'username'					=> $query->username,
 						'group_id'					=> $query->group_id,
 						'language_id'				=> $query->language_id,
-						'is_logged'					=> true,
+						'year'						=> ($this->_get_active_years() ? date('Y') : null),
 						'session_generated'			=> time()
 					)
 				);
@@ -406,12 +455,19 @@ class Auth extends \Aksara\Laboratory\Core
 	
 	private function _send_welcome_email($session)
 	{
+		error_reporting(0); // prevent the PHP throw errors before exception
+		
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->email								= \Config\Services::email();
-		
 		$host										= get_setting('smtp_host');
+		
+		if(!$host)
+		{
+			return false;
+		}
+		
+		$this->email								= \Config\Services::email();
 		
 		$config['userAgent']       					= 'Aksara';
 		$config['protocol']							= 'smtp';
@@ -419,7 +475,7 @@ class Auth extends \Aksara\Laboratory\Core
 		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
 		$config['SMTPPort']							= get_setting('smtp_port');
 		$config['SMTPUser']							= get_setting('smtp_username');
-		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
+		$config['SMTPPass']							= (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
 		$config['SMTPTimeout']						= 5;
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
@@ -468,12 +524,6 @@ class Auth extends \Aksara\Laboratory\Core
 				</body>
 			</html>
 		');
-		
-		if(!$this->email->send())
-		{
-			//echo $this->email->printDebugger(); exit;
-			return throw_exception(400, array('message' => $this->email->printDebugger()));
-		}
 	}
 	
 	/**

@@ -10,7 +10,7 @@
  */
 class Countries extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'countries';
+	private $_table									= 'app__countries';
 	
 	public function __construct()
 	{

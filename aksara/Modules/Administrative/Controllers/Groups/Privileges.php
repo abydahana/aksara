@@ -82,6 +82,9 @@ class Privileges extends \Aksara\Laboratory\Core
 			$this->_table,
 			array
 			(
+				'module'							=> service('request')->getGet('module'),
+				'submodule'							=> service('request')->getGet('submodule'),
+				'controller'						=> service('request')->getGet('controller')
 			),
 			1
 		)

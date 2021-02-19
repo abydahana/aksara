@@ -68,41 +68,37 @@ class Updater extends \Aksara\Laboratory\Core
 			return false;
 		}
 		
-		$curl										= curl_init();
-		
-		curl_setopt_array
+		$curl										= \Config\Services::curlrequest
 		(
-			$curl,
 			array
 			(
-				CURLOPT_CONNECTTIMEOUT				=> 5,
-				CURLOPT_HEADER						=> 0,
-				CURLOPT_RETURNTRANSFER				=> 1,
-				CURLOPT_URL							=> 'https://www.aksaracms.com/updater/ping',
-				CURLOPT_FOLLOWLOCATION				=> true,
-				CURLOPT_HTTPHEADER					=> array
+				'timeout'							=> 5
+			)
+		);
+		
+		$response									= $curl->post
+		(
+			'https://www.aksaracms.com/updater/ping',
+			array
+			(
+				'allow_redirects'					=> array
 				(
-					'Content-Type: application/x-www-form-urlencoded',
-					'Referer: ' . base_url()
+					'max'							=> 2
 				),
-				CURLOPT_CUSTOMREQUEST				=> 'POST',
-				CURLOPT_POSTFIELDS					=> http_build_query
+				'headers'							=> array
 				(
-					array
-					(
-						'version'					=> aksara('version'),
-						'built_version'				=> aksara('built_version'),
-						'changelog'					=> $changelog
-					)
+					'Referer'						=> base_url()
+				),
+				'form_params'						=> array
+				(
+					'version'						=> aksara('version'),
+					'built_version'					=> aksara('built_version'),
+					'changelog'						=> $changelog
 				)
 			)
 		);
 		
-		$output										= json_decode(curl_exec($curl));
-		
-		curl_close($curl);
-		
-		return $output;
+		return json_decode($response->getBody());
 	}
 	
 	/**
@@ -125,37 +121,36 @@ class Updater extends \Aksara\Laboratory\Core
 			return false;
 		}
 		
-		$curl										= curl_init();
-		
-		curl_setopt_array
+		$curl										= \Config\Services::curlrequest
 		(
-			$curl,
 			array
 			(
-				CURLOPT_CONNECTTIMEOUT				=> 5,
-				CURLOPT_HEADER						=> 0,
-				CURLOPT_RETURNTRANSFER				=> 1,
-				CURLOPT_URL							=> 'https://www.aksaracms.com/updater/update',
-				CURLOPT_FOLLOWLOCATION				=> true,
-				CURLOPT_HTTPHEADER					=> array
+				'timeout'							=> 5
+			)
+		);
+		
+		$response									= $curl->post
+		(
+			'https://www.aksaracms.com/updater/update',
+			array
+			(
+				'allow_redirects'					=> array
 				(
-					'Content-Type: application/x-www-form-urlencoded'
+					'max'							=> 2
 				),
-				CURLOPT_CUSTOMREQUEST				=> 'POST',
-				CURLOPT_POSTFIELDS					=> http_build_query
+				'headers'							=> array
 				(
-					array
-					(
-						'version'					=> aksara('version'),
-						'built_version'				=> aksara('built_version')
-					)
+					'Referer'						=> base_url()
+				),
+				'form_params'						=> array
+				(
+					'version'						=> aksara('version'),
+					'built_version'					=> aksara('built_version')
 				)
 			)
 		);
 		
-		$response									= json_decode(curl_exec($curl));
-		
-		curl_close($curl);
+		$response									= json_decode($response->getBody());
 		
 		if($response)
 		{
@@ -197,6 +192,8 @@ class Updater extends \Aksara\Laboratory\Core
 				
 				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 			}
+			
+			$seed									= \Aksara\Laboratory\Seeder::seed();
 			
 			$html									= '
 				<div class="text-center mb-3">

@@ -39,6 +39,38 @@ CREATE TABLE `app__announcements` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `app__connections`
+--
+
+CREATE TABLE `app__connections` (
+  `year` year(4) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `description` varchar(256) NOT NULL,
+  `database_driver` varchar(32) NOT NULL,
+  `hostname` varchar(256) NOT NULL,
+  `port` varchar(256) NOT NULL,
+  `username` varchar(256) NOT NULL,
+  `password` varchar(256) NOT NULL,
+  `database_name` varchar(256) NOT NULL,
+  `status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `app__countries`
+--
+
+CREATE TABLE `app__countries` (
+  `id` int(11) NOT NULL,
+  `code` varchar(8) NOT NULL,
+  `country` varchar(32) NOT NULL,
+  `status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `app__ftp`
 --
 
@@ -69,7 +101,7 @@ CREATE TABLE `app__groups` (
 --
 
 INSERT INTO `app__groups` (`group_id`, `group_name`, `group_description`, `group_privileges`, `status`) VALUES
-(1, 'Global Administrator', 'Super Admin', '{"addons":{"addons":{"addons":["index","detail","install"]},"ftp":{"ftp":["index"]},"modules":{"modules":["index","detail","delete"]},"themes":{"themes":["index","detail","customize","delete"]}},"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index","update"]},"activities":{"activities":["index","read","truncate","delete","pdf","print"]},"cleaner":{"cleaner":["index","clean"]},"countries":{"countries":["index","create","read","update","delete","export","print","pdf"]},"groups":{"groups":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","create","update","read","delete"],"adjust_privileges":["index","create","read","update","delete","export","print","pdf"]},"menus":{"menus":["index","create","read","update","delete","export","print","pdf"]},"settings":{"settings":["index","update"]},"translations":{"translate":["index","delete_phrase"],"synchronize":["index"],"translations":["index","create","read","update","delete","export","print","pdf"]},"updater":{"updater":["index","update"]},"users":{"users":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","update"]}},"apis":{"apis":{"apis":["index"]},"debug_tool":{"debug_tool":["index"]},"services":{"services":["index","create","read","update","delete","export","print","pdf"]}},"cms":{"cms":{"cms":["index"]},"blogs":{"blogs":["index","create","read","update","delete","export","print","pdf"],"categories":["index","create","read","update","delete","export","print","pdf"]},"galleries":{"galleries":["index","create","read","update","delete","export","print","pdf"]},"pages":{"pages":["index","create","read","update","delete","export","print","pdf"]},"partials":{"faqs":["index","create","read","update","delete","export","print","pdf"],"inquiries":["index","read","delete","export","print","pdf"],"media":["index"],"partials":["index"],"carousels":["index","create","read","update","delete","export","print","pdf"],"testimonials":["index","create","read","update","delete","export","print","pdf"],"announcements":["index","create","read","update","delete","export","print","pdf"]},"peoples":{"peoples":["index","create","read","update","delete","export","print","pdf"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1),
+(1, 'Global Administrator', 'Super Admin', '{"addons":{"addons":{"addons":["index","detail","install"]},"ftp":{"ftp":["index"]},"modules":{"modules":["index","detail","delete"]},"themes":{"themes":["index","detail","customize","delete"]}},"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index","update"]},"activities":{"activities":["index","read","truncate","delete","pdf","print"]},"cleaner":{"cleaner":["index","clean"]},"connections":{"connections":["index","create","read","update","delete","export","print","pdf"]},"countries":{"countries":["index","create","read","update","delete","export","print","pdf"]},"groups":{"groups":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","create","update","read","delete"],"adjust_privileges":["index","create","read","update","delete","export","print","pdf"]},"menus":{"menus":["index","create","read","update","delete","export","print","pdf"]},"settings":{"settings":["index","update"]},"translations":{"translate":["index","delete_phrase"],"synchronize":["index"],"translations":["index","create","read","update","delete","export","print","pdf"]},"updater":{"updater":["index","update"]},"users":{"users":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","update"]},"years":{"years":["index","create","read","update","delete","export","print","pdf"]}},"apis":{"apis":{"apis":["index"]},"debug_tool":{"debug_tool":["index"]},"services":{"services":["index","create","read","update","delete","export","print","pdf"]}},"cms":{"cms":{"cms":["index"]},"blogs":{"blogs":["index","create","read","update","delete","export","print","pdf"],"categories":["index","create","read","update","delete","export","print","pdf"]},"galleries":{"galleries":["index","create","read","update","delete","export","print","pdf"]},"pages":{"pages":["index","create","read","update","delete","export","print","pdf"]},"partials":{"faqs":["index","create","read","update","delete","export","print","pdf"],"media":["index"],"partials":["index"],"carousels":["index","create","read","update","delete","export","print","pdf"],"inquiries":["index","read","delete","export","print","pdf"],"testimonials":["index","create","read","update","delete","export","print","pdf"],"announcements":["index","create","read","update","delete","export","print","pdf"]},"peoples":{"peoples":["index","create","read","update","delete","export","print","pdf"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1),
 (2, 'Technical', 'Group user for technical support', '{"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index"]},"cms":{"cms":{"cms":["index"]},"blogs":{"blogs":["index","create","read","update","delete","export","print","pdf"],"categories":["index","create","read","update","delete","export","print","pdf"]},"galleries":{"galleries":["index","create","read","update","delete","export","print","pdf"]},"pages":{"pages":["index","create","read","update","delete","export","print","pdf"]},"partials":{"faqs":["index","create","read","update","delete","export","print","pdf"],"inquiries":["index","read","delete","export","print","pdf"],"media":["index"],"partials":["index"],"carousels":["index","create","read","update","delete","export","print","pdf"],"testimonials":["index","create","read","update","delete","export","print","pdf"],"announcements":["index","create","read","update","delete","export","print","pdf"]},"peoples":{"peoples":["index","create","read","update","delete","export","print","pdf"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1),
 (3, 'Subscriber', 'Group user for subscriber', '{"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1);
 
@@ -330,6 +362,18 @@ CREATE TABLE IF NOT EXISTS `app__visitor_logs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `app__years`
+--
+
+CREATE TABLE `app__years` (
+  `year` year(4) NOT NULL,
+  `default` tinyint(1) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `blogs`
 --
 
@@ -549,6 +593,18 @@ ALTER TABLE `app__announcements`
   ADD KEY `language_id` (`language_id`);
 
 --
+-- Indexes for table `app__connections`
+--
+ALTER TABLE `app__connections`
+  ADD PRIMARY KEY (`year`,`database_driver`) USING BTREE;
+
+--
+-- Indexes for table `app__countries`
+--
+ALTER TABLE `app__countries`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `app__ftp`
 --
 ALTER TABLE `app__ftp`
@@ -630,6 +686,12 @@ ALTER TABLE `app__users_privileges`
 --
 ALTER TABLE `app__visitor_logs`
   ADD PRIMARY KEY (`ip_address`,`timestamp`);
+
+--
+-- Indexes for table `app__years`
+--
+ALTER TABLE `app__years`
+  ADD PRIMARY KEY (`year`);
 
 --
 -- Indexes for table `blogs`
@@ -721,6 +783,12 @@ ALTER TABLE `app__activity_logs`
 --
 ALTER TABLE `app__announcements`
   MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `app__countries`
+--
+ALTER TABLE `app__countries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `app__groups`
@@ -872,6 +940,12 @@ ALTER TABLE `blogs`
 --
 ALTER TABLE `blogs__categories`
   ADD CONSTRAINT `blogs__categories_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `app__languages` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `app__connections`
+--
+ALTER TABLE `app__connections`
+  ADD CONSTRAINT `app__connections_ibfk_1` FOREIGN KEY (`year`) REFERENCES `app__years` (`year`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `galleries`

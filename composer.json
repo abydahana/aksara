@@ -14,7 +14,7 @@
 	],
 	"keywords": ["aksara", "aksaracms", "aksara cms", "restful", "api", "codeigniter", "framework", "crud", "crud generator"],
     "require": {
-		"php": "^7.3||^8.0",
+		"php": "^7.3",
 		"codeigniter4/framework": "^4.1",
 		"mpdf/mpdf": "^8.0",
 		"facebook/graph-sdk": "^5.7",

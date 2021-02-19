@@ -77,75 +77,77 @@ class Forgot extends \Aksara\Laboratory\Core
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->email								= \Config\Services::email();
-		
 		$host										= get_setting('smtp_host');
 		
-		$config['userAgent']       					= 'Aksara';
-		$config['protocol']							= 'smtp';
-		$config['SMTPCrypto']						= 'ssl';
-		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-		$config['SMTPPort']							= get_setting('smtp_port');
-		$config['SMTPUser']							= get_setting('smtp_username');
-		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
-		$config['SMTPTimeout']						= 5;
-		$config['charset']							= 'utf-8';
-		$config['newline']							= "\r\n";
-		$config['mailType']							= 'html'; // text or html
-		$config['wordWrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not
-		
-		$this->email->initialize($config);		
-		
-		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->setTo($query->email);
-		
-		$this->email->setSubject(phrase('reset_password'));
-		$this->email->setMessage
-		('
-			<!DOCTYPE html>
-			<html>
-				<head>
-					<meta name="viewport" content="width=device-width" />
-					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-					<title>
-						' . phrase('request_new_password') . '
-					</title>
-				</head>
-				<body>
-					<p>
-						' . phrase('hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
-					</p>
-					<p>
-						' . phrase('someone_is_recently_asked_to_reset_the_password_for_an_account_linked_to_your_email') . ' ' . phrase('please_click_the_button_below_to_reset_your_password') . '
-					</p>
-					<p>
-						<a href="' . current_page('reset', array('hash' => $token)) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
-							' . phrase('reset_password') . '
-						</a>
-					</p>
-					<p>
-						' . phrase('if_this_action_is_not_requested_by_yourself_you_can_just_ignore_this_email') . '
-					</p>
-					<br />
-					<br />
-					<p>
-						<b>
-							' . get_setting('office_name') . '
-						</b>
-						<br />
-						' . get_setting('office_address') . '
-						<br />
-						' . get_setting('office_phone') . '
-					</p>
-				</body>
-			</html>
-		');
-		
-		if(!$this->email->send())
+		if($host)
 		{
-			//echo $this->email->printDebugger(); exit;
-			return throw_exception(400, array('message' => $this->email->printDebugger()));
+			$this->email							= \Config\Services::email();
+			
+			$config['userAgent']       				= 'Aksara';
+			$config['protocol']						= 'smtp';
+			$config['SMTPCrypto']					= 'ssl';
+			$config['SMTPHost']						= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+			$config['SMTPPort']						= get_setting('smtp_port');
+			$config['SMTPUser']						= get_setting('smtp_username');
+			$config['SMTPPass']						= (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
+			$config['SMTPTimeout']					= 5;
+			$config['charset']						= 'utf-8';
+			$config['newline']						= "\r\n";
+			$config['mailType']						= 'html'; // text or html
+			$config['wordWrap']						= true;
+			$config['validation']					= true; // bool whether to validate email or not
+			
+			$this->email->initialize($config);		
+			
+			$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+			$this->email->setTo($query->email);
+			
+			$this->email->setSubject(phrase('reset_password'));
+			$this->email->setMessage
+			('
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<meta name="viewport" content="width=device-width" />
+						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+						<title>
+							' . phrase('request_new_password') . '
+						</title>
+					</head>
+					<body>
+						<p>
+							' . phrase('hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
+						</p>
+						<p>
+							' . phrase('someone_is_recently_asked_to_reset_the_password_for_an_account_linked_to_your_email') . ' ' . phrase('please_click_the_button_below_to_reset_your_password') . '
+						</p>
+						<p>
+							<a href="' . current_page('reset', array('hash' => $token)) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
+								' . phrase('reset_password') . '
+							</a>
+						</p>
+						<p>
+							' . phrase('if_this_action_is_not_requested_by_yourself_you_can_just_ignore_this_email') . '
+						</p>
+						<br />
+						<br />
+						<p>
+							<b>
+								' . get_setting('office_name') . '
+							</b>
+							<br />
+							' . get_setting('office_address') . '
+							<br />
+							' . get_setting('office_phone') . '
+						</p>
+					</body>
+				</html>
+			');
+			
+			if(!$this->email->send())
+			{
+				return throw_exception(400, array('message' => $this->email->printDebugger()));
+			}
 		}
 		
 		$this->model->insert
@@ -249,70 +251,72 @@ class Forgot extends \Aksara\Laboratory\Core
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
-		$this->email								= \Config\Services::email();
-		
 		$host										= get_setting('smtp_host');
 		
-		$config['userAgent']       					= 'Aksara';
-		$config['protocol']							= 'smtp';
-		$config['SMTPCrypto']						= 'ssl';
-		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-		$config['SMTPPort']							= get_setting('smtp_port');
-		$config['SMTPUser']							= get_setting('smtp_username');
-		$config['SMTPPass']							= service('encrypter')->decrypt(base64_decode(get_setting('smtp_password')));
-		$config['SMTPTimeout']						= 5;
-		$config['charset']							= 'utf-8';
-		$config['newline']							= "\r\n";
-		$config['mailType']							= 'html'; // text or html
-		$config['wordWrap']							= true;
-		$config['validation']						= true; // bool whether to validate email or not
-		
-		$this->email->initialize($config);		
-		
-		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
-		$this->email->setTo($query->email);
-		
-		$this->email->setSubject(phrase('password_reset_successfully'));
-		$this->email->setMessage
-		('
-			<!DOCTYPE html>
-			<html>
-				<head>
-					<meta name="viewport" content="width=device-width" />
-					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-					<title>
-						' . phrase('password_reset_successfully') . '
-					</title>
-				</head>
-				<body>
-					<p>
-						' . phrase('hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
-					</p>
-					<p>
-						' . phrase('your_password_has_been_reset_successfully') . ' ' . phrase('now_you_can_sign_in_to_our_website_with_your_new_password') . '
-					</p>
-					<p>
-						' . phrase('please_contact_us_directly_if_you_still_cannot_signing_in') . '
-					</p>
-					<br />
-					<br />
-					<p>
-						<b>
-							' . get_setting('office_name') . '
-						</b>
-						<br />
-						' . get_setting('office_address') . '
-						<br />
-						' . get_setting('office_phone') . '
-					</p>
-				</body>
-			</html>
-		');
-		
-		if(!$this->email->send())
+		if($host)
 		{
-			//echo $this->email->printDebugger(); exit;
-			return throw_exception(400, array('message' => $this->email->printDebugger()));
+			$this->email							= \Config\Services::email();
+			
+			$config['userAgent']       				= 'Aksara';
+			$config['protocol']						= 'smtp';
+			$config['SMTPCrypto']					= 'ssl';
+			$config['SMTPHost']						= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+			$config['SMTPPort']						= get_setting('smtp_port');
+			$config['SMTPUser']						= get_setting('smtp_username');
+			$config['SMTPPass']						= (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
+			$config['SMTPTimeout']					= 5;
+			$config['charset']						= 'utf-8';
+			$config['newline']						= "\r\n";
+			$config['mailType']						= 'html'; // text or html
+			$config['wordWrap']						= true;
+			$config['validation']					= true; // bool whether to validate email or not
+			
+			$this->email->initialize($config);		
+			
+			$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+			$this->email->setTo($query->email);
+			
+			$this->email->setSubject(phrase('password_reset_successfully'));
+			$this->email->setMessage
+			('
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<meta name="viewport" content="width=device-width" />
+						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+						<title>
+							' . phrase('password_reset_successfully') . '
+						</title>
+					</head>
+					<body>
+						<p>
+							' . phrase('hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
+						</p>
+						<p>
+							' . phrase('your_password_has_been_reset_successfully') . ' ' . phrase('now_you_can_sign_in_to_our_website_with_your_new_password') . '
+						</p>
+						<p>
+							' . phrase('please_contact_us_directly_if_you_still_cannot_signing_in') . '
+						</p>
+						<br />
+						<br />
+						<p>
+							<b>
+								' . get_setting('office_name') . '
+							</b>
+							<br />
+							' . get_setting('office_address') . '
+							<br />
+							' . get_setting('office_phone') . '
+						</p>
+					</body>
+				</html>
+			');
+			
+			if(!$this->email->send())
+			{
+				return throw_exception(400, array('message' => $this->email->printDebugger()));
+			}
 		}
 		
 		$this->model->delete

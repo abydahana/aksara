@@ -35,6 +35,8 @@
 		}
 	}
 	
+	error_reporting(0);
+	
 	header('Content-Type: application/json');
 	
 	$error											= false;
@@ -68,7 +70,7 @@
 		(
 			'<?php',
 			$_SESSION['security']['encryption'],
-			$_SESSION['security']['cookie_name'],
+			'aksara_' . $_SESSION['security']['cookie_name'],
 			(isset($_SESSION['database']['dsn']) ? $_SESSION['database']['dsn'] : null),
 			$_SESSION['database']['driver'],
 			$_SESSION['database']['hostname'],
@@ -381,7 +383,7 @@
 			
 			elseif('SQLSRV' == $_SESSION['database']['driver'])
 			{
-				$connection							= sqlsrv_connect($_SESSION['database']['hostname'] . ($$_SESSION['database']['port'] ? ',' . $_SESSION['database']['port'] : null), array('UID' => $_SESSION['database']['username'], 'Password' => $_SESSION['database']['password'], 'Database' => $_SESSION['database']['initial']));
+				$connection							= sqlsrv_connect($_SESSION['database']['hostname'] . ($$_SESSION['database']['port'] ? ',' . $_SESSION['database']['port'] : null), array('UID' => $_SESSION['database']['username'], 'Password' => $_SESSION['database']['password'], 'Database' => $_SESSION['database']['initial'], 'LoginTimeout' => 5));
 				
 				if($connection)
 				{
@@ -403,14 +405,21 @@
 					
 					if(sqlsrv_errors())
 					{
-						$error						= sqlsrv_errors();
-						$error						= $error['message'];
+						foreach(sqlsrv_errors() as $key => $val)
+						{
+							$error					= $val['message'];
+						}
 					}
 				}
 				else
 				{
-					$error							= sqlsrv_errors();
-					$error							= $error['message'];
+					if(!$connection)
+					{
+						foreach(sqlsrv_errors() as $key => $val)
+						{
+							$error					= $val['message'];
+						}
+					}
 				}
 			}
 			

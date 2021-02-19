@@ -509,6 +509,8 @@
   "the_curl_module_is_not_enabled": "The Curl Module Is Not Enabled",
   "the_data_you_requested_does_not_exists_or_it_has_been_removed": "The data you requested doesn't exists or it has been removed.",
   "the_data_you_want_to_remove_were_not_found": "The data you want to remove weren't found.",
+  "the_database_connection_is_not_found": "The database connection is not found.",
+  "the_database_was_successfully_connected": "The database was successfully connected.",
   "the_field": "The field",
   "the_laborant": "The Laborant",
   "the_log_path_is_not_writable": "The log path is not writable.",
