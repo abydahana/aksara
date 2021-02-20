@@ -150,5 +150,14 @@ class Seeder
 		$dbforge->createTable('app__shortlink', true);
 		
 		// ----------------------------------------------------------
+		
+		/**
+		 * Rename countries to app__countries
+		 */
+		$dbforge									= \Config\Database::forge();
+		
+		$dbforge->renameTable('countries', 'app__countries');
+		
+		// ----------------------------------------------------------
 	}
 }

@@ -77,11 +77,11 @@ class Account extends \Aksara\Laboratory\Core
 		->set_relation
 		(
 			'country',
-			'countries.id',
-			'{countries.country AS country_name}',
+			'app__countries.id',
+			'{app__countries.country AS country_name}',
 			array
 			(
-				'countries.status'					=> 1
+				'app__countries.status'				=> 1
 			)
 		)
 		->merge_field('first_name, last_name')
