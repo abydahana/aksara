@@ -18,7 +18,7 @@
 		exit;
 	}
 	
-	//error_reporting(0);
+	error_reporting(0);
 	
 	header('Content-Type: application/json');
 	
@@ -48,6 +48,8 @@
 		
 		exit;
 	}
+	
+	error_reporting(0);
 	
 	//$available_driver								= PDO::getAvailableDrivers();
 	$available_driver								= array('MySQLi', 'Postgre', 'SQLSRV', 'SQLite3');

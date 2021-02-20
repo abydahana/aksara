@@ -18,6 +18,8 @@
 		exit;
 	}
 	
+	error_reporting(0);
+	
 	header('Content-Type: application/json');
 	
 	if(!empty($_POST))
