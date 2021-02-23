@@ -140,7 +140,9 @@ return array
 	
 	// System
 	'the_encryption_key_cannot_be_empty' => 'The encryption key cannot be empty!',
+	'the_encryption_key_contain_unsupported_symbol' => 'The encryption key contain unsupported symbol!',
 	'the_cookie_name_cannot_be_empty' => 'The cookie name cannot be empty!',
+	'the_cookie_name_contain_unsupported_symbol' => 'The cookie name contain unsupported symbol!',
 	'the_first_name_cannot_be_empty' => 'The first name cannot be empty!',
 	'please_enter_your_valid_email_address' => 'Please enter your valid email address!',
 	'the_username_must_be_in_alphanumeric_only' => 'The username must be in alphanumeric only and using minimum 5 characters!',

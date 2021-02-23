@@ -2582,6 +2582,8 @@ class Core extends Controller
 				}
 			}
 			
+			$title									= trim($title);
+			
 			/* if method is create */
 			if('create' == $this->_method)
 			{

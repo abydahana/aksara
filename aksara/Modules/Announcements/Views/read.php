@@ -43,20 +43,20 @@
 						<h1 class="text-muted">
 							404
 						</h1>
-						<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+						<i class="mdi mdi-message-alert-outline mdi-5x text-muted"></i>
 					</div>
 					<div class="row mb-5">
 						<div class="col-md-6 offset-md-3">
 							<h2 class="text-center">
-								' . phrase('page_not_found') . '
+								' . phrase('announcement_not_found') . '
 							</h2>
 							<p class="lead text-center mb-5">
-								' . phrase('the_page_you_requested_was_not_found_or_it_is_already_removed') . '
+								' . phrase('the_announcement_you_requested_was_not_found_or_it_is_already_removed') . '
 							</p>
 							<div class="text-center mt-5">
-								<a href="' . go_to() . '" class="btn btn-outline-primary rounded-pill --xhr">
+								<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">
 									<i class="mdi mdi-arrow-left"></i>
-									' . phrase('back_to_home') . '
+									' . phrase('back_to_announcements') . '
 								</a>
 							</div>
 						</div>

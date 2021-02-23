@@ -26,8 +26,8 @@
 	{
 		$_SESSION['security']						= array
 		(
-			'encryption'							=> (isset($_POST['encryption']) ? $_POST['encryption'] : null),
-			'cookie_name'							=> (isset($_POST['cookie_name']) ? $_POST['cookie_name'] : null),
+			'encryption'							=> (isset($_POST['encryption']) && !preg_match('/[\\]|\'/', $_POST['encryption']) ? $_POST['encryption'] : null),
+			'cookie_name'							=> (isset($_POST['cookie_name']) && !preg_match('/[\\]|\'/', $_POST['cookie_name']) ? $_POST['cookie_name'] : null),
 			'first_name'							=> (isset($_POST['first_name']) ? $_POST['first_name'] : null),
 			'last_name'								=> (isset($_POST['last_name']) ? $_POST['last_name'] : null),
 			'email'									=> (isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : null),
@@ -41,11 +41,25 @@
 	
 	if(!$_SESSION['security']['encryption'])
 	{
-		$error										= phrase('the_encryption_key_cannot_be_empty');
+		if(preg_match('/[\\]|\'/', $_POST['encryption']))
+		{
+			$error									= phrase('the_encryption_key_contain_unsupported_symbol');
+		}
+		else
+		{
+			$error									= phrase('the_encryption_key_cannot_be_empty');
+		}
 	}
 	elseif(!$_SESSION['security']['cookie_name'])
 	{
-		$error										= phrase('the_cookie_name_cannot_be_empty');
+		if(preg_match('/[\\]|\'/', $_POST['cookie_name']))
+		{
+			$error									= phrase('the_cookie_name_contain_unsupported_symbol');
+		}
+		else
+		{
+			$error									= phrase('the_cookie_name_cannot_be_empty');
+		}
 	}
 	elseif(!$_SESSION['security']['first_name'])
 	{

@@ -139,7 +139,9 @@ return array
 	
 	// System
 	'the_encryption_key_cannot_be_empty' => 'Kunci enkripsi tidak boleh kosong!',
+	'the_encryption_key_contain_unsupported_symbol' => 'Kunci enkripsi mengandung simbol yang tidak didukung!',
 	'the_cookie_name_cannot_be_empty' => 'Nama cookie tidak boleh kosong!',
+	'the_cookie_name_contain_unsupported_symbol' => 'Nama cookie mengandung simbol yang tidak didukung!',
 	'the_first_name_cannot_be_empty' => 'Nama depan tidak boleh kosong!',
 	'please_enter_your_valid_email_address' => 'Silakan masukkan alamat email Anda yang valid!',
 	'the_username_must_be_in_alphanumeric_only' => 'Nama pengguna harus dalam format alfanumerik dan menggunakan minimal 5 karakter!',

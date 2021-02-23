@@ -102,13 +102,14 @@ class Connections extends \Aksara\Laboratory\Core
 		(
 			array
 			(
+				'year'								=> phrase('year'),
+				'year_label'						=> phrase('year'),
 				'name'								=> phrase('connection_name'),
 				'description'						=> phrase('description'),
 				'database_driver'					=> phrase('database_driver'),
 				'username'							=> phrase('username'),
 				'password'							=> phrase('password'),
-				'database_name'						=> phrase('initial_database'),
-				'year_label'						=> phrase('year')
+				'database_name'						=> phrase('initial_database')
 			)
 		)
 		->render($this->_table);
