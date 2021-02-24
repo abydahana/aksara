@@ -73,6 +73,7 @@ class Model
 		if('default' == $driver && !$this->_called)
 		{
 			$this->_called							= true;
+			$this->db								= \Config\Database::connect();
 			
 			$parameter								= $this->db->table('app__connections')->getWhere
 			(

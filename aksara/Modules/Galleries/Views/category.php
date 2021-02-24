@@ -33,7 +33,7 @@
 						$output						.= '
 							<div class="col-sm-6 col-md-3">
 								<a href="' . current_page($src) . '" class="--modal">
-									<img src="' . get_image('galleries', $src, 'thumb') . '" class="shadow rounded w-100 mb-4" alt="' . $alt . '" />
+									<img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded w-100 mb-4" alt="' . $alt . '" />
 								</a>
 							</div>
 						';

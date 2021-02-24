@@ -182,6 +182,13 @@ class Core extends Controller
 		// start benchmarking
 		service('timer')->start('elapsed_time');
 		
+		// check if accessed from IE browser
+		if(strtolower(service('request')->getUserAgent()->getBrowser()) == 'internet explorer' && service('request')->getUserAgent()->getVersion() < 11)
+		{
+			/* throw compatibility mode */
+			die('The ' . service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion() . ' is no longer supported...');
+		}
+		
 		helper(array('url', 'file', 'theme', 'security', 'main', 'string'));
 		
 		// unset previous data
@@ -2311,7 +2318,7 @@ class Core extends Controller
 				}
 			}
 			
-			if($this->_set_primary && $this->_set_permission)
+			if($this->_set_primary)
 			{
 				$this->_crud						= true;
 			}
@@ -2651,21 +2658,25 @@ class Core extends Controller
 			/* if other method is exists */
 			elseif(method_exists($this, $this->_method))
 			{
+				$view_exists						= ($this->template->get_view($this->_view, $this->_query, $table) != 'templates/index' ? true : false);
+				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud ? $this->render_table($this->_query) : $this->_query);
+				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
 			}
 			
 			/* otherwise */
 			else
 			{
+				$view_exists						= ($this->template->get_view($this->_view, $this->_query, $table) != 'templates/index' ? true : false);
+				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud ? $this->render_table($this->_query) : $this->_query);
+				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
 			}
 		}
 		else
@@ -5191,6 +5202,8 @@ class Core extends Controller
 				
 				if($primary_key)
 				{
+					unset($uri_parameter['aksara']);
+					
 					$uri_parameter					= array_merge(array('aksara' => generate_token(array_filter(array_merge($uri_parameter, $primary_key)))), $uri_parameter, $primary_key);
 				}
 				

@@ -1,8 +1,28 @@
 <?php
+	$count											= 0;
 	$images											= json_decode($results[0]->gallery_images);
 	$attributes										= json_decode($results[0]->gallery_attributes);
 	$current										= service('request')->uri->getSegment(3);
+	$carousel										= null;
+	
+	if($images)
+	{
+		foreach($images as $key => $val)
+		{
+			$carousel								.= '
+				<div class="carousel-item text-center rounded' . ($current == $key ? ' active' : null) . '">
+					<img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
+					<div class="carousel-caption d-none d-md-block text-shadow">
+						' . $val . '
+					</div>
+				</div>
+			';
+			
+			$count++;
+		}
+	}
 ?>
+
 <style type="text/css">
 	.rounded-top-0
 	{
@@ -19,7 +39,27 @@
 	}
 </style>
 <div class="photo-view text-center bg-dark">
-	<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid" alt="<?php echo service('request')->getGet('item'); ?>" />
+	<div class="relative" style="overflow: hidden">
+		<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+			<div class="carousel-inner">
+				<?php echo $carousel; ?>
+			</div>
+			<?php if($count > 1) { ?>
+				<a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">
+						<?php echo phrase('previous'); ?>
+					</span>
+				</a>
+				<a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">
+						<?php echo phrase('next'); ?>
+					</span>
+				</a>
+			<?php } ?>
+		</div>
+	</div>
 </div>
 <div class="container">
 	<div class="row">
@@ -57,9 +97,6 @@
 								</a>
 							</div>
 						</div>
-					</div>
-					<div class="text-break-word mb-3">
-						<?php echo (isset($images->$current) ? $images->$current : null); ?>
 					</div>
 					<?php
 						if($attributes)

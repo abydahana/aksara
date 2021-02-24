@@ -1,7 +1,26 @@
 <?php
+	$count											= 0;
 	$images											= json_decode($results[0]->gallery_images);
 	$attributes										= json_decode($results[0]->gallery_attributes);
 	$current										= service('request')->uri->getSegment(3);
+	$carousel										= null;
+	
+	if($images)
+	{
+		foreach($images as $key => $val)
+		{
+			$carousel								.= '
+				<div class="carousel-item text-center rounded' . ($current == $key ? ' active' : null) . '">
+					<img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
+					<div class="carousel-caption d-none d-md-block text-shadow">
+						' . $val . '
+					</div>
+				</div>
+			';
+			
+			$count++;
+		}
+	}
 ?>
 
 <style type="text/css">
@@ -11,11 +30,29 @@
 	}
 </style>
 <div class="photo-view">
-	<a href="javascript:void(0)" class="close text-light text-shadow absolute" data-dismiss="modal" style="top:15px; right:15px">
+	<div class="relative rounded-top" style="overflow: hidden">
+		<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+			<div class="carousel-inner">
+				<?php echo $carousel; ?>
+			</div>
+			<?php if($count > 1) { ?>
+				<a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">
+						<?php echo phrase('previous'); ?>
+					</span>
+				</a>
+				<a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">
+						<?php echo phrase('next'); ?>
+					</span>
+				</a>
+			<?php } ?>
+		</div>
+	</div>
+	<a href="javascript:void(0)" class="close text-light text-shadow absolute" data-dismiss="modal" style="top:15px; right:15px; z-index:1">
 		<i class="mdi mdi-window-close"></i>
-	</a>
-	<a href="<?php echo get_image('galleries', $current); ?>" target="_blank">
-		<img src="<?php echo get_image('galleries', $current); ?>" class="img-fluid card-img-top" alt="<?php echo service('request')->getGet('item'); ?>" />
 	</a>
 </div>
 <div class="card-body">
@@ -50,9 +87,6 @@
 				</a>
 			</div>
 		</div>
-	</div>
-	<div class="text-break-word mb-3">
-		<?php echo (isset($images->$current) ? $images->$current : null); ?>
 	</div>
 	<?php
 		if($attributes)
