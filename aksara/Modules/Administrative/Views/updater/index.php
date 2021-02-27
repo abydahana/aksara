@@ -2,6 +2,7 @@
 	if(isset($updater->changelog))
 	{
 		$changelog									= null;
+		$parsedown									= new \Aksara\Libraries\Parsedown;
 		
 		foreach($updater->changelog as $key => $val)
 		{
@@ -34,7 +35,7 @@
 						</a>
 						<hr />
 						<p>
-							' . nl2br(str_replace("\n\n", "\n", $val->message)) . '
+							' . $parsedown->parse($val->message) . '
 						</p>
 					</div>
 				</div>
