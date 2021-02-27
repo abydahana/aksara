@@ -2159,7 +2159,7 @@ ol.guide li::before
 	
 	.user-bg-masking
 	{
-		background: #def
+		background: rgb(221, 238, 255, .5)
 	}
 	
 	.text-sm-center
@@ -2409,7 +2409,7 @@ ol.guide li::before
 	
 	.user-bg-masking
 	{
-		background: #def
+		background: rgb(221, 238, 255, .5)
 	}
 	
 	.fixed-top-sm
@@ -2622,7 +2622,7 @@ ol.guide li::before
 {
 	.user-bg-masking
 	{
-		background: #def
+		background: rgb(221, 238, 255, .5)
 	}
 	
 	.fixed-top-sm

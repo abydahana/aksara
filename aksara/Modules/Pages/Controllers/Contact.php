@@ -17,7 +17,7 @@ class Contact extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if(service('request')->getPost('_token'))
+		if($this->valid_token(service('request')->getPost('_token')))
 		{
 			return $this->_send_message();
 		}

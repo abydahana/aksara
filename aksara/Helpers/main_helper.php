@@ -33,10 +33,64 @@ if(!function_exists('aksara_header'))
 	 */
 	function aksara_header()
 	{
+		$stylesheet									= null;
+		$backtrace									= debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+		
+		if(isset($backtrace[0]['file']) && file_exists(str_replace('layout.php', 'package.json', $backtrace[0]['file'])))
+		{
+			$package								= file_get_contents(str_replace('layout.php', 'package.json', $backtrace[0]['file']));
+			$package								= json_decode(($package ? $package : '[]'));
+			
+			if(isset($package->colorscheme))
+			{
+				$stylesheet							= '
+					body
+					{
+						' . (isset($package->colorscheme->page->background) && valid_hex($package->colorscheme->page->background) ? 'background: ' . $package->colorscheme->page->background . '!important;' : null) . '
+						' . (isset($package->colorscheme->page->text) && valid_hex($package->colorscheme->page->text) ? 'color: ' . $package->colorscheme->page->text . '!important;' : null) . '
+					}
+					.aksara-header:not(.bg-transparent)
+					{
+						' . (isset($package->colorscheme->header->background) && valid_hex($package->colorscheme->header->background) ? 'background: ' . $package->colorscheme->header->background . '!important;' : null) . '
+						' . (isset($package->colorscheme->header->text) && valid_hex($package->colorscheme->header->text) ? 'color: ' . $package->colorscheme->header->text . '!important;' : null) . '
+					}
+					.aksara-header > * > ul > li > a,
+					.aksara-header.navbar-dark > * > ul > li > a,
+					.aksara-header.navbar-light > * > ul > li > a
+					{
+						' . (isset($package->colorscheme->header->text) && valid_hex($package->colorscheme->header->text) ? 'color: ' . $package->colorscheme->header->text . '!important;' : null) . '
+					}
+					.aksara-sidebar
+					{
+						' . (isset($package->colorscheme->sidebar->background) && valid_hex($package->colorscheme->sidebar->background) ? 'background: ' . $package->colorscheme->sidebar->background . '!important;' : null) . '
+						' . (isset($package->colorscheme->sidebar->text) && valid_hex($package->colorscheme->sidebar->text) ? 'color: ' . $package->colorscheme->sidebar->text . '!important;' : null) . '
+					}
+					.aksara-sidebar a
+					{
+						' . (isset($package->colorscheme->sidebar->text) && valid_hex($package->colorscheme->sidebar->text) ? 'color: ' . $package->colorscheme->sidebar->text . '!important;' : null) . '
+					}
+					.aksara-footer
+					{
+						' . (isset($package->colorscheme->footer->background) && valid_hex($package->colorscheme->footer->background) ? 'background: ' . $package->colorscheme->footer->background . '!important;' : null) . '
+						' . (isset($package->colorscheme->footer->text) && valid_hex($package->colorscheme->footer->text) ? 'color: ' . $package->colorscheme->footer->text . '!important;' : null) . '
+					}
+					.aksara-footer a
+					{
+						' . (isset($package->colorscheme->footer->text) && valid_hex($package->colorscheme->footer->text) ? 'color: ' . $package->colorscheme->footer->text . '!important;' : null) . '
+					}
+				';
+			}
+		}
+		
 		$output										= '<meta name="_token" content="' . sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />' . "\n";
 		$output										.= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/styles.min.css') . '" />' . "\n";
 		$output										.= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '" />' . "\n";
 		$output										.= '<script type="text/javascript">(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if(x=="ready"){w.bindReadyQ.push(y)}else{w.readyQ.push(x)}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if(f===d||f===u){return a}else{p(f)}}})(window,document)</script>' . "\n";
+		
+		if($stylesheet)
+		{
+			$output									.= '<style type="text/css">' . $stylesheet . '</style>';
+		}
 		
 		return $output;
 	}
@@ -232,5 +286,21 @@ if(!function_exists('format_slug'))
 		}
 		
 		return $string;
+	}
+}
+
+if(!function_exists('valid_hex'))
+{
+	/**
+	 * Validate hex color
+	 */
+	function valid_hex($string = null)
+	{
+		if($string && preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $string))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }

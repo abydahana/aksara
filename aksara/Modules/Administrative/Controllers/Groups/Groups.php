@@ -75,54 +75,40 @@ class Groups extends \Aksara\Laboratory\Core
 	
 	private function _privileges()
 	{
-		$modules									= $this->model->select
+		$modules_collection							= $this->model->select
 		('
-			module,
-			submodule,
-			controller,
+			path,
 			privileges
 		')
-		->order_by('module, (module != submodule), submodule')
+		->order_by('path')
 		->get('app__groups_privileges')
 		->result();
 		
-		$current									= $this->model->select('group_privileges')->get_where($this->_table, array('group_id' => service('request')->getGet('group_id')), 1)->row('group_privileges');
+		$current									= $this->model->select
+		('
+			group_privileges
+		')
+		->get_where
+		(
+			$this->_table,
+			array
+			(
+				'group_id'							=> service('request')->getGet('group_id')
+			),
+			1
+		)
+		->row('group_privileges');
+		
 		$current									= json_decode($current, true);
 		$output										= null;
 		
-		if($modules)
+		if($modules_collection)
 		{
 			$prepare								= array();
+			$modules								= array();
 			
-			foreach($modules as $key => $val)
+			foreach($modules_collection as $key => $val)
 			{
-				if($val->module == $val->submodule && $val->submodule == $val->controller)
-				{
-					$val->submodule					= null;
-					$val->controller				= null;
-				}
-				elseif($val->submodule == $val->controller)
-				{
-					$val->controller				= null;
-				}
-				
-				$prepare[]							= $val;
-			}
-			
-			$module									= null;
-			
-			foreach($modules as $key => $val)
-			{
-				if(!$val->submodule)
-				{
-					$val->submodule					= $val->module;
-				}
-				
-				if(!$val->controller)
-				{
-					$val->controller				= $val->submodule;
-				}
-				
 				$privilege_output					= null;
 				$privileges							= json_decode($val->privileges);
 				
@@ -178,7 +164,7 @@ class Groups extends \Aksara\Laboratory\Core
 					
 					if('read' === $this->_method)
 					{
-						if(isset($current[$val->module][$val->submodule][$val->controller]) && in_array($privilege, $current[$val->module][$val->submodule][$val->controller]))
+						if(isset($current[$val->path]) && in_array($privilege, $current[$val->path]))
 						{
 							$privilege_output		.= '
 								<div class="col-6 col-md-3 bg-white">
@@ -196,7 +182,7 @@ class Groups extends \Aksara\Laboratory\Core
 						$privilege_output			.= '
 							<div class="col-6 col-md-3 bg-white">
 								<label class="d-block font-weight-bold mb-0"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
-									<input type="checkbox" name="group_privileges[' . $val->module . '][' . $val->submodule . '][' . $val->controller . '][]" value="' . $privilege . '" class="checker-children"' . (isset($current[$val->module][$val->submodule][$val->controller]) && in_array($privilege, $current[$val->module][$val->submodule][$val->controller]) ? ' checked' : '') . ' />
+									<input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="checker-children"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
 									&nbsp;
 									<span class="badge pr-0 pl-0">' . $label . '</span>
 								</label>
@@ -205,13 +191,23 @@ class Groups extends \Aksara\Laboratory\Core
 					}
 				}
 				
+				$paths								= explode('/', $val->path);
+				list($module)						= array_pad($paths, 1, null);
+				$module_path						= null;
+				
+				foreach($paths as $_key => $_val)
+				{
+					$module_path					.= ($_key ? ' &gt; ' : null) . phrase($_val);
+				}
+				
 				$output								.= '
-					' . ($module != $val->module ? '
-					<a href="' . base_url($val->module) . '" target="_blank">
+					' . (!in_array($module, $modules) ? '
+					' . ($modules ? '<hr />' : null) . '
+					<a href="' . base_url($val->path) . '" target="_blank">
 						<label class="d-block font-weight-bold">
 							<i class="mdi mdi-puzzle-outline"></i>
 							&nbsp;
-							' . phrase('module') . ': ' . phrase($val->module) . '
+							' . phrase('module') . ': ' . phrase($module) . '
 						</label>
 					</a>
 					' : '') . '
@@ -219,12 +215,9 @@ class Groups extends \Aksara\Laboratory\Core
 						<label class="d-block">
 							' . (in_array($this->_method, array('create', 'update')) ? '<input type="checkbox" data-toggle="tooltip" title="' . phrase('check_all') . '" role="checker" data-parent=".check-group" />
 							&nbsp;' : null) . '
-							' . phrase($val->controller) . '
-							<a href="' . base_url($val->module . ($val->module != $val->submodule ? '/' . $val->submodule : null) . ($val->submodule != $val->controller ? '/' . $val->controller : null)) . '" target="_blank">
-								<small class="text-muted">
-									(' . $val->module . ($val->module != $val->submodule ? '/' . $val->submodule : null) . ($val->submodule != $val->controller ? '/' . $val->controller : null) . ')
-									<i class="mdi mdi-link"></i>
-								</small>
+							' . $module_path . '
+							<a href="' . base_url($val->path) . '" target="_blank">
+								<i class="mdi mdi-launch"></i>
 							</a>
 						</label>
 						<div class="row form-group">
@@ -233,7 +226,10 @@ class Groups extends \Aksara\Laboratory\Core
 					</div>
 				';
 				
-				$module								= $val->module;
+				if(!in_array($module, $modules))
+				{
+					$modules[]						= $module;
+				}
 			}
 		}
 		

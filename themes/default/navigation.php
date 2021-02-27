@@ -26,7 +26,7 @@
 		}
 	}
 ?>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" id="hide-on-scroll">
+<nav class="aksara-header navbar fixed-top navbar-expand-lg navbar-dark bg-dark" id="hide-on-scroll">
 	<a class="navbar-brand --xhr" href="<?php echo base_url(); ?>">
 		<img src="<?php echo get_image('settings', get_setting('app_logo')); ?>" class="rounded" />
 		<?php echo (get_userdata('year') ? '<span class="badge badge-warning">' . get_userdata('year') . '</span>' : ''); ?>

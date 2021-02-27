@@ -26,7 +26,7 @@
 		}
 	}
 ?>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="aksara-header navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
 	<a class="navbar-brand desktop-logo d-none d-md-block d-lg-block d-xl-block" href="<?php echo base_url(); ?>" target="_blank">
 		<img src="<?php echo get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
 		<img src="<?php echo get_image('settings', get_setting('app_icon')); ?>" class="img-fluid img-icon rounded" />

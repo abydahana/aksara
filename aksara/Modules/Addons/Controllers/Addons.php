@@ -31,7 +31,7 @@ class Addons extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title('Add-Ons Market')
+		$this->set_title(phrase('add_on_market'))
 		->set_icon('mdi mdi-cart')
 		
 		->render();
@@ -49,6 +49,13 @@ class Addons extends \Aksara\Laboratory\Core
 			$package								= array
 			(
 				'error'								=> phrase('the_curl_module_is_not_enabled')
+			);
+		}
+		elseif(!@fsockopen('www.aksaracms.com', 80))
+		{
+			return array
+			(
+				'error'								=> phrase('cannot_connect_to_the_aksara_market')
 			);
 		}
 		
@@ -118,6 +125,13 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(403, phrase('the_curl_module_is_not_enabled'), go_to());
 		}
+		elseif(!@fsockopen('www.aksaracms.com', 80))
+		{
+			return array
+			(
+				'error'								=> phrase('cannot_connect_to_the_aksara_market')
+			);
+		}
 		
 		if(in_array(service('request')->getGet('type'), array('theme', 'module')))
 		{
@@ -174,7 +188,10 @@ class Addons extends \Aksara\Laboratory\Core
 				$unzip								= $zip->open($tmp_file);
 				
 				// remove update package from system temporary
-				unlink($tmp_file);
+				if(file_exists($tmp_file))
+				{
+					@unlink($tmp_file);
+				}
 				
 				if($unzip === true)
 				{
@@ -254,6 +271,43 @@ class Addons extends \Aksara\Laboratory\Core
 				'error'								=> phrase('the_curl_module_is_not_enabled')
 			);
 		}
+		elseif(!@fsockopen('www.aksaracms.com', 80))
+		{
+			return array
+			(
+				'error'								=> phrase('cannot_connect_to_the_aksara_market')
+			);
+		}
+		
+		helper('filesystem');
+		
+		$themes										= directory_map(ROOTPATH . 'themes', 1);
+		$ignored_themes								= array();
+		
+		if($themes)
+		{
+			foreach($themes as $key => $val)
+			{
+				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
+				{
+					$ignored_themes[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
+				}
+			}
+		}
+		
+		$modules									= directory_map(ROOTPATH . 'modules', 1);
+		$ignored_modules							= array();
+		
+		if($modules)
+		{
+			foreach($modules as $key => $val)
+			{
+				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
+				{
+					$ignored_modules[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
+				}
+			}
+		}
 		
 		$curl										= \Config\Services::curlrequest
 		(
@@ -278,7 +332,11 @@ class Addons extends \Aksara\Laboratory\Core
 				),
 				'form_params'						=> array
 				(
-					'version'						=> aksara('version')
+					'version'						=> aksara('version'),
+					'ignored_themes'				=> $ignored_themes,
+					'ignored_modules'				=> $ignored_modules,
+					'order'							=> service('request')->getPost('order'),
+					'keyword'						=> service('request')->getPost('keyword')
 				)
 			)
 		);

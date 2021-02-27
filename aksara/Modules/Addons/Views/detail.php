@@ -7,7 +7,9 @@
 		{
 			$carousel								.= '
 				<div class="carousel-item rounded' . (!$key ? ' active' : null) . '">
-					<img src="' . $val->src . '" class="d-block rounded w-100" alt="' . $val->alt . '">
+					<a href="' . $val->src . '" target="_blank">
+						<img src="' . $val->src . '" class="d-block rounded w-100" alt="' . $val->alt . '">
+					</a>
 				</div>
 			';
 		}

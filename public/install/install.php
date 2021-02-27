@@ -255,7 +255,8 @@
 					frontend_registration,
 					default_membership_group,
 					username_changes,
-					openlayers_search_provider
+					openlayers_search_provider,
+					action_sound
 				)
 				VALUES
 				(
@@ -274,7 +275,8 @@
 					1,
 					3,
 					1,
-					"openlayers"
+					"openlayers",
+					1
 				);
 			';
 			

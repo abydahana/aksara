@@ -58,17 +58,20 @@
 								<div class="row">
 									<div class="col-6">
 										' . (($val->type == 'backend' && $val->folder == get_setting('backend_theme')) || ($val->type == 'frontend' && $val->folder == get_setting('frontend_theme')) ? '
-										<a href="' . current_page('customize') . '" class="btn btn-primary btn-block btn-sm">
-											Customize
+										<a href="' . current_page('customize', array('theme' => $val->folder)) . '" class="btn btn-warning btn-block btn-xs --xhr">
+											<i class="mdi mdi-cogs"></i>
+											' . phrase('customize') . '
 										</a>
 										' : '
-										<a href="' . current_page('activate') . '" class="btn btn-primary btn-block btn-sm">
-											Activate
+										<a href="' . current_page('activate', array('theme' => $val->folder)) . '" class="btn btn-success btn-block btn-xs --xhr">
+											<i class="mdi mdi-check"></i>
+											' . phrase('activate') . '
 										</a>
 										') . '
 									</div>
 									<div class="col-6">
-										<a href="' . base_url(('backend' == $val->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $val->folder, 'integrity_check' => $val->integrity)) . '" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
+										<a href="' . base_url(('backend' == $val->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $val->folder, 'integrity_check' => $val->integrity)) . '" class="btn btn-outline-primary btn-block btn-xs" target="_blank">
+											<i class="mdi mdi-magnify"></i>
 											' . phrase('preview') . '
 										</a>
 									</div>

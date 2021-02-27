@@ -25,8 +25,6 @@
 		<link rel="icon" type="image/x-icon" href="<?php echo get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
 		
 		<?php echo aksara_header(); ?>
-		
-		<script type="text/javascript">(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if(x=="ready"){w.bindReadyQ.push(y)}else{w.readyQ.push(x)}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if(f===d||f===u){return a}else{p(f)}}})(window,document)</script>
 	</head>
 	<body>
 		
@@ -34,7 +32,7 @@
 		
 		<?php include_once('breadcrumb.php'); ?>
 		
-		<div id="sidebar-wrapper" class="sidebar-menu">
+		<div id="sidebar-wrapper" class="aksara-sidebar sidebar-menu">
 			<div class="p-3 user-bg-masking hide-on-collapse" onclick="component.profile($(this))" data-translations="<?php echo htmlspecialchars(json_encode($translations)); ?>" data-guidelines-url="<?php echo base_url('pages/guidelines', array('backend' => 1)); ?>">
 				<div class="row">
 					<div class="col-3 col-sm-2 col-lg-4">

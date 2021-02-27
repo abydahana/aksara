@@ -19,7 +19,7 @@ class Permission
 	/**
 	 * allow
 	 */
-	public function allow($module = null, $submodule = null, $controller = null, $method = null, $user_id = 0)
+	public function allow($path = null, $method = null, $user_id = 0)
 	{
 		if(!$method)
 		{
@@ -71,23 +71,23 @@ class Permission
 		
 		$privileges									= json_decode($privileges, true);
 		
-		if(!isset($privileges[$module][$submodule][$controller]) || (isset($privileges[$module][$submodule][$controller]) && !in_array($method, $privileges[$module][$submodule][$controller])))
+		if(!isset($path, $privileges[$path]) || !in_array($method, $privileges[$path]))
 		{
-			if(method_exists(service('router')->controllerName(), $method) || ($controller && in_array($method, array('index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'))))
+			if(method_exists(service('router')->controllerName(), $method) || in_array($method, array('index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf')))
 			{
-				/* push to group privileges */
-				$this->_push_privileges($module, $submodule, $controller, $method);
+				// push to group privileges
+				$this->_push_privileges($path, $method);
 			}
 			
 			return false;
 		}
 		else
 		{
-			/* write log activities */
+			// write log activities
 			if('modal' != service('request')->getPost('prefer'))
 			{
-				/* only if request is not from session storage */
-				$this->_push_logs($module, $submodule, $controller, $method);
+				// only if request is not from session storage
+				$this->_push_logs($path, $method);
 			}
 			
 			return true;
@@ -99,7 +99,7 @@ class Permission
 	/**
 	 * restrict
 	 */
-	public function restrict($module = null, $submodule = null, $controller = null, $method = null)
+	public function restrict($path = null, $method = null)
 	{
 		if(!$method)
 		{
@@ -123,7 +123,7 @@ class Permission
 		
 		$privileges									= json_decode($privileges, true);
 		
-		if(isset($privileges[$module][$submodule][$controller]) && in_array($method, $privileges[$module][$submodule][$controller]))
+		if(isset($privileges[$path]) && in_array($method, $privileges[$path]))
 		{
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_this_page'));
 		}
@@ -136,7 +136,7 @@ class Permission
 	/**
 	 * visible
 	 */
-	public function visible($module = null, $controller = null, $method = null)
+	public function visible($path = null, $method = null)
 	{
 		if(!$method)
 		{
@@ -160,7 +160,7 @@ class Permission
 		
 		$privileges									= json_decode($privileges, true);
 		
-		if(isset($privileges[$controller]) && !in_array($method, $privileges[$controller]))
+		if(isset($privileges[$path]) && !in_array($method, $privileges[$path]))
 		{
 			return true;
 		}
@@ -171,7 +171,7 @@ class Permission
 	/**
 	 * hide
 	 */
-	public function hide($module = null, $controller = null, $method = null)
+	public function hide($path = null, $method = null)
 	{
 		if(!$method)
 		{
@@ -195,7 +195,7 @@ class Permission
 		
 		$privileges									= json_decode($privileges, true);
 		
-		if(!isset($privileges[$controller]) || (isset($privileges[$controller]) && !in_array($method, $privileges[$controller])))
+		if(!isset($privileges[$path]) || (isset($privileges[$path]) && !in_array($method, $privileges[$path])))
 		{
 			return true;
 		}
@@ -219,7 +219,7 @@ class Permission
 	/**
 	 * push privilege into the table
 	 */
-	private function _push_privileges($module = null, $submodule = null, $controller = null, $method = null)
+	private function _push_privileges($path = null, $method = null)
 	{
 		$privileges									= $this->model->select
 		('
@@ -230,34 +230,33 @@ class Permission
 			'app__groups_privileges',
 			array
 			(
-				'module'							=> $module,
-				'submodule'							=> $submodule,
-				'controller'						=> $controller
+				'path'								=> $path
 			),
 			1
 		)
 		->row('privileges');
 		
 		$privileges									= json_decode($privileges, true);
+		
 		if($privileges)
 		{
 			if(!in_array($method, $privileges))
 			{
 				$privileges[]						= $method;
+				
 				$prepare							= array
 				(
 					'privileges'					=> json_encode($privileges),
 					'last_generated'				=> date('Y-m-d H:i:s')
 				);
+				
 				$this->model->update
 				(
 					'app__groups_privileges',
 					$prepare,
 					array
 					(
-						'module'					=> $module,
-						'submodule'					=> $submodule,
-						'controller'				=> $controller
+						'path'						=> $path
 					),
 					1
 				);
@@ -270,9 +269,7 @@ class Permission
 				'app__groups_privileges',
 				array
 				(
-					'module'						=> $module,
-					'submodule'						=> $submodule,
-					'controller'					=> $controller
+					'path'							=> $path
 				),
 				1
 			)
@@ -284,9 +281,7 @@ class Permission
 				
 				$prepare							= array
 				(
-					'module'						=> $module,
-					'submodule'						=> $submodule,
-					'controller'					=> $controller,
+					'path'							=> $path,
 					'privileges'					=> json_encode($privileges),
 					'last_generated'				=> date('Y-m-d H:i:s')
 				);
@@ -299,7 +294,7 @@ class Permission
 	/**
 	 * push to log activities
 	 */
-	private function _push_logs($module = null, $submodule = null, $controller = null, $method = null)
+	private function _push_logs($path = null, $method = null)
 	{
 		$this->agent								= service('request')->getUserAgent();
 		
@@ -323,10 +318,7 @@ class Permission
 		$prepare									= array
 		(
 			'user_id'								=> service('session')->get('user_id'),
-			'module'								=> $module,
-			'submodule'								=> $submodule,
-			'controller'							=> $controller,
-			'page'									=> str_replace(base_url(), null, current_page()),
+			'path'									=> $path,
 			'method'								=> $method,
 			'ip_address'							=> service('request')->getIPAddress(),
 			'browser'								=> $user_agent,

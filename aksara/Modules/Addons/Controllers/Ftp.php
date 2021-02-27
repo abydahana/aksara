@@ -27,7 +27,7 @@ class Ftp extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title('FTP Configuration')
+		$this->set_title(phrase('ftp_configuration'))
 		->set_icon('mdi mdi-console-network')
 		->unset_field('site_id')
 		->set_field

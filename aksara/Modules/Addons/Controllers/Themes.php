@@ -10,8 +10,6 @@
  */
 class Themes extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'app__menus';
-	
 	public function __construct()
 	{
 		parent::__construct();
@@ -26,7 +24,7 @@ class Themes extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title('Theme Manager')
+		$this->set_title(phrase('theme_manager'))
 		->set_icon('mdi mdi-palette')
 		->set_output
 		(
@@ -52,7 +50,7 @@ class Themes extends \Aksara\Laboratory\Core
 			$package->integrity						= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 		}
 		
-		$this->set_title('Theme Detail')
+		$this->set_title(phrase('theme_detail'))
 		->set_icon('mdi mdi-palette')
 		->set_output
 		(
@@ -87,7 +85,54 @@ class Themes extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
 		}
+		elseif(!file_exists(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'))
+		{
+			return throw_exception(404, phrase('no_theme_package_manifest_were_found'), current_page('../'));
+		}
 		
+		$package									= json_decode(file_get_contents(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'));
+		
+		if(!$package)
+		{
+			return throw_exception(403, phrase('no_theme_package_manifest_were_found'), current_page('../'));
+		}
+		
+		$package->folder							= service('request')->getGet('theme');
+		$package->integrity							= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
+		
+		if($this->valid_token(service('request')->getPost('_token')))
+		{
+			if(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
+			{
+				return throw_exception(400, array('colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is_not_writable')));
+			}
+			
+			$package->colorscheme					= service('request')->getPost('colorscheme');
+			$folder									= $package->folder;
+			
+			unset($package->folder, $package->integrity);
+			
+			if(file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json', json_encode($package)))
+			{
+				return throw_exception(301, phrase('the_theme_was_successfully_customized'), current_page());
+			}
+			
+			return throw_exception(400, array('colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is_not_writable')));
+		}
+		
+		$this->set_title(phrase('theme_customization'))
+		->set_icon('mdi mdi-palette')
+		->set_output
+		(
+			array
+			(
+				'writable'							=> (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json') ? true : false),
+				'detail'							=> $package
+			)
+		)
+		->modal_size('modal-lg')
+		
+		->render();
 	}
 	
 	/**
@@ -103,7 +148,7 @@ class Themes extends \Aksara\Laboratory\Core
 		$this->permission->must_ajax(current_page('../'));
 		
 		/* check if theme is exists */
-		if($this->_primary && !is_dir(ROOTPATH . 'themes/' . $this->_primary))
+		if($this->_primary && !is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary))
 		{
 			return throw_exception(404, phrase('the_theme_you_would_to_delete_is_not_exists_or_already_removed'), curent_page('../'));
 		}
@@ -115,7 +160,7 @@ class Themes extends \Aksara\Laboratory\Core
 				<div class="p-3">
 					<form action="' . current_page() . '" method="POST" class="--validate-form">
 						<div class="text-center">
-							Are you sure would to delete this theme?
+							' . phrase('are_you_sure_want_to_delete_this_theme') . '
 						</div>
 						<hr class="row" />
 						<div class="--validation-callback mb-0"></div>
@@ -155,12 +200,12 @@ class Themes extends \Aksara\Laboratory\Core
 		}
 		
 		/* check if requested theme to delete is match */
-		if(service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes/' . service('request')->getPost('theme')))
+		if(service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme')))
 		{
 			/* check if theme property is exists */
-			if(file_exists(ROOTPATH . 'themes/' . service('request')->getPost('theme') . '/package.json'))
+			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'))
 			{
-				$package							= json_decode(file_get_contents(ROOTPATH . 'themes/' . service('request')->getPost('theme') . '/package.json'));
+				$package							= json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'));
 				
 				if(isset($package->type) && 'backend' == $package->type)
 				{
@@ -179,7 +224,7 @@ class Themes extends \Aksara\Laboratory\Core
 				/* delete theme */
 				helper('filesystem');
 				
-				if(!delete_files(ROOTPATH . 'themes/' . service('request')->getPost('theme'), true) || is_dir(ROOTPATH . 'themes/' . service('request')->getPost('theme')))
+				if(!delete_files(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'), true) || (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme')) && !@rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'))))
 				{
 					/* Unable to delete theme. Get FTP configuration */
 					$site_id						= get_setting('id');
@@ -206,7 +251,7 @@ class Themes extends \Aksara\Laboratory\Core
 						if($connection && @ftp_login($connection, $query->username, $query->password))
 						{
 							/* yay! FTP is connected, try to delete theme */
-							$this->_ftp_rmdir($connection, ROOTPATH . 'themes/' . service('request')->getPost('theme'));
+							$this->_ftp_rmdir($connection, ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
 							
 							/* close FTP connection */
 							ftp_close($connection);

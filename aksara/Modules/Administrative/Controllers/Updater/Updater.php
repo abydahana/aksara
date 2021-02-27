@@ -63,7 +63,7 @@ class Updater extends \Aksara\Laboratory\Core
 	 */
 	public static function ping_upstream($changelog = false)
 	{
-		if(!function_exists('curl_init') || !function_exists('curl_exec'))
+		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 80))
 		{
 			return false;
 		}
@@ -116,7 +116,7 @@ class Updater extends \Aksara\Laboratory\Core
 			$this->_validate_form();
 		}
 		
-		if(!function_exists('curl_init') || !function_exists('curl_exec'))
+		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 80))
 		{
 			return false;
 		}
@@ -328,6 +328,11 @@ class Updater extends \Aksara\Laboratory\Core
 		
 		// remove updater files
 		delete_files(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name, true);
+		
+		if(is_dir(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name))
+		{
+			@rmdir(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->_updater_name);
+		}
 		
 		// femove backup file
 		unlink(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name);

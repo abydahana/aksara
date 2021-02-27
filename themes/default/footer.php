@@ -1,4 +1,4 @@
-<div class="bg-white pt-5">
+<div class="aksara-footer bg-white pt-5">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-2 text-sm-center">

@@ -120,7 +120,8 @@ class Assets extends \Aksara\Laboratory\Core
 				map_center: ' . (json_decode(get_setting('office_map')) ? get_setting('office_map') : '{}') . ',
 				google_auth: ' . (get_setting('google_client_id') && get_setting('google_client_secret') ? 'true' : 'false') . ',
 				facebook_auth: ' . (get_setting('facebook_app_id') && get_setting('facebook_app_secret') ? 'true' : 'false') . ',
-				active_years: ' . json_encode($this->_get_active_years()) . '
+				active_years: ' . json_encode($this->_get_active_years()) . ',
+				action_sound: ' . (get_setting('action_sound') ? 'true' : 'false') . '
 				
 			},
 			phrase									= ' . json_encode(json_decode($this->_i18n()), JSON_UNESCAPED_SLASHES) . ';

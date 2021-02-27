@@ -34,13 +34,12 @@ class Activities extends \Aksara\Laboratory\Core
 		$this->set_title(phrase('activity_logs'))
 		->set_icon('mdi mdi-information-outline')
 		->set_primary('id')
-		->unset_column('id, user_id, module, submodule, browser')
+		->unset_column('id, user_id, browser')
 		->unset_view('id, user_id')
 		->add_action('toolbar', 'truncate', phrase('clear_logs'), 'btn-primary --open-delete-confirm', 'mdi mdi-delete-empty')
 		->set_field('timestamp', 'current_timestamp')
 		->set_field('first_name', 'hyperlink', 'administrative/users/read', array('user_id' => 'user_id'))
-		->merge_content('{controller}', phrase('module'))
-		->set_field('page', 'custom_format', '<a href="' . base_url('{page}') . '" class="--xhr" data-toggle="tooltip" title="{page}"><b><i class="mdi mdi-open-in-new"></i> ' . phrase('click_to_open') . '</b></a>')
+		->set_field('path', 'custom_format', '<a href="' . base_url('{path}') . '" class="--xhr" data-toggle="tooltip" title="{path}"><b><i class="mdi mdi-open-in-new"></i> ' . phrase('click_to_open') . '</b></a>')
 		->unset_action('create, update')
 		->column_order('first_name')
 		->view_order('first_name')
@@ -51,11 +50,8 @@ class Activities extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'module'							=> phrase('module'),
-				'submodule'							=> phrase('submodule'),
-				'controller'						=> phrase('controller'),
+				'path'								=> phrase('path'),
 				'method'							=> phrase('method'),
-				'page'								=> phrase('page'),
 				'browser'							=> phrase('browser'),
 				'platform'							=> phrase('platform'),
 				'ip_address'						=> phrase('ip_address'),

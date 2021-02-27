@@ -297,6 +297,19 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="pills-notifier">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="text-muted d-block" for="action_sound_input">
+										<?php echo $results->form_data->action_sound->label; ?>
+										<?php echo ($results->form_data->action_sound->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+										<i class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="<?php echo phrase('turn_the_action_sound_effect_on_or_off'); ?>"></i>
+									</label>
+									<?php echo $results->form_data->action_sound->content; ?>
+								</div>
+							</div>
+						</div>
+						<hr />
 						<h5 class="mb-3">
 							<?php echo phrase('email_notifier'); ?>
 						</h5>

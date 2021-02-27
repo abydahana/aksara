@@ -18,6 +18,7 @@ class Model
 	private $_field_exists;
 	private $_list_fields;
 	private $_field_data;
+	private $_table_alias							= array();
 	
 	private $_query;
 	
@@ -150,7 +151,13 @@ class Model
 	 */
 	public function table_exists($table = null)
 	{
-		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
 		
 		if($table && $this->db->tableExists($table))
 		{
@@ -165,7 +172,13 @@ class Model
 	 */
 	public function field_exists($field = null, $table = null)
 	{
-		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
 		
 		if($table && $field && $this->db->fieldExists($field, $table))
 		{
@@ -180,7 +193,13 @@ class Model
 	 */
 	public function list_fields($table = null)
 	{
-		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
 		
 		if($table && $this->db->tableExists($table))
 		{
@@ -195,7 +214,13 @@ class Model
 	 */
 	public function field_data($table = null)
 	{
-		$table										= (strpos($table, ' ') !== false ? substr($table, 0, strpos($table, ' ')) : $table);
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
 		
 		if($table && $this->db->tableExists($table))
 		{
@@ -284,23 +309,6 @@ class Model
 		{
 			// split selected by comma, but ignore that inside brackets
 			$select									= array_map('trim', preg_split('/,(?![^(]+\))/', $select));
-			
-			foreach($select as $key => $val)
-			{
-				if(!$val || (stripos($val, '(') !== false && stripos($val, ')') !== false)) continue;
-				
-				$val								= explode('.', $val);
-				
-				if(isset($val[1]) && stripos($val[1], ' AS ') !== false)
-				{
-					$field							= substr($val[1], 0, strripos($val[1], ' AS '));
-					
-					if(!$this->field_exists($field, $val[0]))
-					{
-						unset($select[$key]);
-					}
-				}
-			}
 		}
 		
 		$this->_select								= array_merge($this->_select, $select);
@@ -420,6 +428,13 @@ class Model
 	 */
 	public function join($table = null, $condition = null, $type = '', $escape = true)
 	{
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			
+			$this->_table_alias[$destructure[1]]	= $destructure[0];
+		}
+		
 		if(!is_array($table))
 		{
 			if(isset($condition['condition']))
@@ -1538,6 +1553,14 @@ class Model
 	 */
 	public function delete($table = null, $where = array(), $limit = 0, $reset_data = true)
 	{
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
+		
 		if($table && $this->db->tableExists($table))
 		{
 			$this->_table							= $table;

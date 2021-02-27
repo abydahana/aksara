@@ -124,7 +124,11 @@ class Register extends \Aksara\Laboratory\Core
 	{
 		if(DEMO_MODE)
 		{
-			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), base_url());
+			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), current_page());
+		}
+		elseif(!$this->valid_token(service('request')->getPost('_token')))
+		{
+			return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), current_page());
 		}
 		
 		/* load additional library and helper */

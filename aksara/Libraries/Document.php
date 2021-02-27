@@ -115,6 +115,12 @@ class Document
 			// online doc can be found in https://xxx.xx/
 			return $this->_excel($html, $filename, $method, $this->_params);
 		}
+		elseif('doc' == strtolower($method))
+		{
+			// use doc generator
+			// online doc can be found in https://xxx.xx/
+			return $this->_word($html, $filename, $method, $this->_params);
+		}
 		else
 		{
 			// use mPDF instead
@@ -315,5 +321,18 @@ class Document
 		header('Content-Disposition: attachment; filename=' . $filename . '.xls');
 		
 		echo $output;
+	}
+	
+	private function _word($html = null, $filename = null, $method = 'embed', $params = array())
+	{
+		$html										= preg_replace('/<htmlpagefooter[^>].*?<\/htmlpagefooter>/s', null, $html);
+		
+		header('Content-Type: application/vnd.ms-word');
+		header('Content-Transfer-Encoding: binary');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Disposition: attachment; filename=' . $filename . '.doc');
+		
+		echo $html;
 	}
 }

@@ -108,7 +108,7 @@ if(!function_exists('make_json'))
 		
 		$data										= json_fixer($data);
 		
-		$data										= preg_replace('/\\\t/', '', json_encode($data));
+		$data										= preg_replace('/\t/', '', json_encode($data));
 		
 		if($filename)
 		{

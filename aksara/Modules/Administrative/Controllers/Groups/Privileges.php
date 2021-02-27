@@ -57,9 +57,7 @@ class Privileges extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'module'							=> phrase('module'),
-				'submodule'							=> phrase('submodule'),
-				'controller'						=> phrase('controller'),
+				'path'								=> phrase('path'),
 				'privileges'						=> phrase('privileges'),
 				'last_generated'					=> phrase('last_generated')
 			)
@@ -82,9 +80,7 @@ class Privileges extends \Aksara\Laboratory\Core
 			$this->_table,
 			array
 			(
-				'module'							=> service('request')->getGet('module'),
-				'submodule'							=> service('request')->getGet('submodule'),
-				'controller'						=> service('request')->getGet('controller')
+				'path'								=> service('request')->getGet('path')
 			),
 			1
 		)

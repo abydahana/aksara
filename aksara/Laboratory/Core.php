@@ -37,8 +37,6 @@ class Core extends Controller
 	private $_language								= null;
 	private $_restrict_on_demo						= false;
 	private $_module								= null;
-	private $_submodule								= null;
-	private $_controller							= null;
 	private $_redirect_back							= null;
 	private $_set_title								= null;
 	private $_set_title_placeholder					= null;
@@ -78,6 +76,7 @@ class Core extends Controller
 	private $_extra_dropdown						= array();
 	private $_extra_submit							= array();
 	private $_set_attribute							= array();
+	private $_set_placeholder						= array();
 	private $_set_autocomplete						= array();
 	private $_set_option_label						= array();
 	private $_translate_field						= array();
@@ -198,14 +197,10 @@ class Core extends Controller
 		$this->permission							= new Permission();
 		$this->form_validation						= \Config\Services::validation();
 		
-		$path										= strtolower(str_replace('\\', '/', service('router')->controllerName()));
-		$path										= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array(null, null, '/'), $path, 1);
-		$path										= array_unique(explode('/', $path));
+		$path										= service('router')->getMatchedRoute()[0];
 		
-		$this->_module								= $path[0];
-		$this->_submodule							= (isset($path[1]) ? $path[1] : $this->_module);
-		$this->_controller							= (isset($path[2]) ? $path[2] : $this->_submodule);
 		$this->_method								= service('router')->methodName();
+		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', null, $path) : $path);
 		
 		if(service('request')->getGet('limit'))
 		{
@@ -335,6 +330,23 @@ class Core extends Controller
 	}
 	
 	/**
+	 * valid_token
+	 * Validate the token that submitted through form
+	 *
+	 * @access		public
+	 * @return		bool
+	 */
+	public function valid_token($token = null)
+	{
+		if($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * parent_module
 	 * Tell the parent module of current requested class
 	 *
@@ -373,7 +385,7 @@ class Core extends Controller
 			// user isn't signed in
 			return throw_exception(301, phrase('session_has_been_expired'), base_url(), true);
 		}
-		elseif(!in_array($this->_module, $this->_unset_action) && !in_array($this->_method, $this->_unset_action) && !$this->permission->allow($this->_module, $this->_submodule, $this->_controller, $this->_method, get_userdata('user_id')))
+		elseif(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id')))
 		{
 			// user been signed in but blocked by group privilege
 			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
@@ -1466,6 +1478,29 @@ class Core extends Controller
 	}
 	
 	/**
+	 * set_placeholder
+	 * Add the extra attribute into field input
+	 *
+	 * NOTE: It's case sensitive!
+	 *
+	 * @access		public
+	 */
+	public function set_placeholder($params = null, $value = null)
+	{
+		if(!is_array($params))
+		{
+			$params									= array
+			(
+				$params								=> $value
+			);
+		}
+		
+		$this->_set_placeholder						= array_merge($this->_set_placeholder, $params);
+		
+		return $this;
+	}
+	
+	/**
 	 * set_option_label
 	 * Add the extra label into option (select) field
 	 *
@@ -1926,7 +1961,7 @@ class Core extends Controller
 		elseif(in_array($this->_method, array('create', 'update')))
 		{
 			$output									= '
-				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . phrase('please_choose') . '" id="' . $primary_key . '_input"' . (isset($this->_add_attribute[$primary_key]) ? ' ' . $this->_add_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
+				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
 					<option value="' . (!$is_selected_exist ? $selected : null) . '">' . ($selected ? $this->_get_relation($params, $selected, 1, true) : phrase('please_choose')) . '</option>
 					' . $output . '
 				</select>
@@ -2658,7 +2693,7 @@ class Core extends Controller
 			/* if other method is exists */
 			elseif(method_exists($this, $this->_method))
 			{
-				$view_exists						= ($this->template->get_view($this->_view, $this->_query, $table) != 'templates/index' ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
@@ -2670,7 +2705,7 @@ class Core extends Controller
 			/* otherwise */
 			else
 			{
-				$view_exists						= ($this->template->get_view($this->_view, $this->_query, $table) != 'templates/index' ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
@@ -2795,7 +2830,7 @@ class Core extends Controller
 				/* validate sent token */
 				$token_sent							= service('request')->getPost('_token');
 				
-				if($token_sent == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')))
+				if($this->valid_token($token_sent))
 				{
 					/* token approved, check if validation use the custom callback */
 					if(method_exists($this, $this->_form_callback))
@@ -3884,7 +3919,7 @@ class Core extends Controller
 					if(in_array('dropdown', $type))
 					{
 						$content					= '
-							<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('please_choose') . '" id="' . $field . '_input"' . $read_only . '>
+							<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('please_choose')) . '" id="' . $field . '_input"' . $read_only . '>
 								' . $options . '
 							</select>
 						';
@@ -3898,7 +3933,7 @@ class Core extends Controller
 				}
 				elseif(in_array('tagsinput', $type))
 				{
-					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="tagsinput" placeholder="' . phrase('separate_with_comma') . '" id="' . $field . '_input"' . $read_only . ' spellcheck="false" rows="1">' . ($default_value ? $default_value : $original) . '</textarea>';
+					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="tagsinput" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('separate_with_comma')) . '" id="' . $field . '_input"' . $read_only . ' spellcheck="false" rows="1">' . ($default_value ? $default_value : $original) . '</textarea>';
 				}
 				elseif(in_array('hour', $type))
 				{
@@ -3910,7 +3945,7 @@ class Core extends Controller
 					}
 					
 					$content						= '
-						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('choose_hour') . '" id="' . $field . '_input"' . $read_only . '>
+						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('choose_hour')) . '" id="' . $field . '_input"' . $read_only . '>
 							' . $options . '
 						</select>
 					';
@@ -3925,18 +3960,18 @@ class Core extends Controller
 					}
 					
 					$content						= '
-						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('choose_date') . '" id="' . $field . '_input"' . $read_only . '>
+						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('choose_date')) . '" id="' . $field . '_input"' . $read_only . '>
 							' . $options . '
 						</select>
 					';
 				}
 				elseif(in_array('date', $type) || in_array('datepicker', $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-modal="true" data-large-mode="true" placeholder="' . phrase('click_to_select_data') . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? $original : date('Y-m-d'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? $original : date('Y-m-d'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
 				}
 				elseif(in_array('datetime', $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetime" data-modal="true" data-large-mode="true" placeholder="' . phrase('click_to_select_data') . '" value="' . ($default_value != '0000-00-00 00:00:00' ? $default_value : ($original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetime" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value != '0000-00-00 00:00:00' ? $default_value : ($original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
 				}
 				elseif(in_array('monthpicker', $type))
 				{
@@ -3951,7 +3986,7 @@ class Core extends Controller
 					}
 					
 					$content						= '
-						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('choose_month') . '" id="' . $field . '_input"' . $read_only . '>
+						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('choose_month')) . '" id="' . $field . '_input"' . $read_only . '>
 							' . $options . '
 						</select>
 					';
@@ -3967,7 +4002,7 @@ class Core extends Controller
 					}
 					
 					$content						= '
-						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('choose_year') . '" id="' . $field . '_input"' . $read_only . '>
+						<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('choose_year')) . '" id="' . $field . '_input"' . $read_only . '>
 							' . $options . '
 						</select>
 					';
@@ -3992,7 +4027,7 @@ class Core extends Controller
 				}
 				elseif(in_array('wysiwyg', $type))
 				{
-					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="wysiwyg" data-upload-path="' . $this->_set_upload_path . '" placeholder="' . phrase('type_the_content_here') . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1" spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
+					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="wysiwyg" data-upload-path="' . $this->_set_upload_path . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('type_the_content_here')) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1" spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
 				}
 				elseif(in_array('textarea', $type))
 				{
@@ -4000,11 +4035,11 @@ class Core extends Controller
 				}
 				elseif(in_array('price_format', $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" min="0" class="form-control text-right' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" role="price" placeholder="' . phrase('number_only') . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
+					$content						= '<input type="text" name="' . $field . '" min="0" class="form-control text-right' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" role="price" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
 				}
 				elseif(in_array('number_format', $type) || in_array('percent_format', $type))
 				{
-					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . (is_numeric($default_value) ? number_format($default_value) : (is_numeric($original) ? number_format($original, (in_array('percent_format', $type) ? 2 : 0), '.', '') : 0)) . '" placeholder="' . phrase('number_only') . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || in_array('percent_format', $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
+					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . (is_numeric($default_value) ? number_format($default_value) : (is_numeric($original) ? number_format($original, (in_array('percent_format', $type) ? 2 : 0), '.', '') : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || in_array('percent_format', $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
 					
 					if(in_array('percent_format', $type))
 					{
@@ -5549,23 +5584,6 @@ class Core extends Controller
 		{
 			// split selected by comma, but ignore that inside brackets
 			$select									= array_map('trim', preg_split('/,(?![^(]+\))/', $select));
-			
-			foreach($select as $key => $val)
-			{
-				if(!$val || (stripos($val, '(') !== false && stripos($val, ')') !== false)) continue;
-				
-				$val								= explode('.', $val);
-				
-				if(isset($val[1]) && stripos($val[1], ' AS ') !== false)
-				{
-					$field							= substr($val[1], 0, strripos($val[1], ' AS '));
-					
-					if(!$this->model->field_exists($field, $val[0]))
-					{
-						unset($select[$key]);
-					}
-				}
-			}
 		}
 		
 		$this->_select								= array_merge($this->_select, $select);

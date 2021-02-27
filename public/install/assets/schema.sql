@@ -5,11 +5,8 @@
 CREATE TABLE `app__activity_logs` (
   `id` int(22) NOT NULL,
   `user_id` int(22) NOT NULL,
-  `module` varchar(256) NOT NULL,
-  `submodule` varchar(256) NOT NULL,
-  `controller` varchar(256) NOT NULL,
+  `path` varchar(256) NOT NULL,
   `method` varchar(256) NOT NULL,
-  `page` varchar(256) NOT NULL,
   `browser` varchar(256) NOT NULL,
   `platform` varchar(256) NOT NULL,
   `ip_address` varchar(22) NOT NULL,
@@ -101,9 +98,9 @@ CREATE TABLE `app__groups` (
 --
 
 INSERT INTO `app__groups` (`group_id`, `group_name`, `group_description`, `group_privileges`, `status`) VALUES
-(1, 'Global Administrator', 'Super Admin', '{"addons":{"addons":{"addons":["index","detail","install"]},"ftp":{"ftp":["index"]},"modules":{"modules":["index","detail","delete"]},"themes":{"themes":["index","detail","customize","delete"]}},"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index","update"]},"activities":{"activities":["index","read","truncate","delete","pdf","print"]},"cleaner":{"cleaner":["index","clean"]},"connections":{"connections":["index","create","read","update","delete","export","print","pdf"]},"countries":{"countries":["index","create","read","update","delete","export","print","pdf"]},"groups":{"groups":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","create","update","read","delete"],"adjust_privileges":["index","create","read","update","delete","export","print","pdf"]},"menus":{"menus":["index","create","read","update","delete","export","print","pdf"]},"settings":{"settings":["index","update"]},"translations":{"translate":["index","delete_phrase"],"synchronize":["index"],"translations":["index","create","read","update","delete","export","print","pdf"]},"updater":{"updater":["index","update"]},"users":{"users":["index","create","read","update","delete","export","print","pdf"],"privileges":["index","update"]},"years":{"years":["index","create","read","update","delete","export","print","pdf"]}},"apis":{"apis":{"apis":["index"]},"debug_tool":{"debug_tool":["index"]},"services":{"services":["index","create","read","update","delete","export","print","pdf"]}},"cms":{"cms":{"cms":["index"]},"blogs":{"blogs":["index","create","read","update","delete","export","print","pdf"],"categories":["index","create","read","update","delete","export","print","pdf"]},"galleries":{"galleries":["index","create","read","update","delete","export","print","pdf"]},"pages":{"pages":["index","create","read","update","delete","export","print","pdf"]},"partials":{"faqs":["index","create","read","update","delete","export","print","pdf"],"media":["index"],"partials":["index"],"carousels":["index","create","read","update","delete","export","print","pdf"],"inquiries":["index","read","delete","export","print","pdf"],"testimonials":["index","create","read","update","delete","export","print","pdf"],"announcements":["index","create","read","update","delete","export","print","pdf"]},"peoples":{"peoples":["index","create","read","update","delete","export","print","pdf"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1),
-(2, 'Technical', 'Group user for technical support', '{"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index"]},"cms":{"cms":{"cms":["index"]},"blogs":{"blogs":["index","create","read","update","delete","export","print","pdf"],"categories":["index","create","read","update","delete","export","print","pdf"]},"galleries":{"galleries":["index","create","read","update","delete","export","print","pdf"]},"pages":{"pages":["index","create","read","update","delete","export","print","pdf"]},"partials":{"faqs":["index","create","read","update","delete","export","print","pdf"],"inquiries":["index","read","delete","export","print","pdf"],"media":["index"],"partials":["index"],"carousels":["index","create","read","update","delete","export","print","pdf"],"testimonials":["index","create","read","update","delete","export","print","pdf"],"announcements":["index","create","read","update","delete","export","print","pdf"]},"peoples":{"peoples":["index","create","read","update","delete","export","print","pdf"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1),
-(3, 'Subscriber', 'Group user for subscriber', '{"administrative":{"administrative":{"administrative":["index"]},"account":{"account":["index"]}},"dashboard":{"dashboard":{"dashboard":["index"]}}}', 1);
+(1, 'Global Administrator', 'Super Admin', '{"addons":["index","detail","install"],"addons\/ftp":["index"],"addons\/modules":["index","detail","delete"],"addons\/themes":["index","detail","customize","delete"],"administrative":["index"],"administrative\/account":["index","update"],"administrative\/activities":["index","read","truncate","delete","pdf","print"],"administrative\/cleaner":["index","clean"],"administrative\/countries":["index","create","read","update","delete","export","print","pdf"],"administrative\/connections":["index","create","read","update","delete","export","print","pdf"],"administrative\/groups":["index","create","read","update","delete","export","print","pdf"],"administrative\/groups\/adjust_privileges":["index","create","read","update","delete","export","print","pdf"],"administrative\/groups\/privileges":["index","create","update","read","delete"],"administrative\/menus":["index","create","read","update","delete","export","print","pdf"],"administrative\/settings":["index","update"],"administrative\/translations":["index","create","read","update","delete","export","print","pdf"],"administrative\/translations\/synchronize":["index"],"administrative\/translations\/translate":["index","delete_phrase"],"administrative\/updater":["index","update"],"administrative\/users":["index","create","read","update","delete","export","print","pdf"],"administrative\/users\/privileges":["index","update"],"administrative\/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis\/debug_tool":["index"],"apis\/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms\/blogs":["index","create","read","update","delete","export","print","pdf"],"cms\/blogs\/categories":["index","create","read","update","delete","export","print","pdf"],"cms\/galleries":["index","create","read","update","delete","export","print","pdf"],"cms\/pages":["index","create","read","update","delete","export","print","pdf"],"cms\/partials":["index"],"cms\/partials\/announcements":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/carousels":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/faqs":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/inquiries":["index","read","delete","export","print","pdf"],"cms\/partials\/media":["index"],"cms\/partials\/testimonial":["index","create","read","update","delete","export","print","pdf"],"cms\/peoples":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"]}', 1),
+(2, 'Technical', 'Group user for technical support', '{"administrative":["index"],"administrative\/account":["index","update"],"apis":["index"],"apis\/debug_tool":["index"],"apis\/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms\/blogs":["index","create","read","update","delete","export","print","pdf"],"cms\/blogs\/categories":["index","create","read","update","delete","export","print","pdf"],"cms\/galleries":["index","create","read","update","delete","export","print","pdf"],"cms\/pages":["index","create","read","update","delete","export","print","pdf"],"cms\/partials":["index"],"cms\/partials\/announcements":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/carousels":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/faqs":["index","create","read","update","delete","export","print","pdf"],"cms\/partials\/inquiries":["index","read","delete","export","print","pdf"],"cms\/partials\/media":["index"],"cms\/partials\/testimonial":["index","create","read","update","delete","export","print","pdf"],"cms\/peoples":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"]}', 1),
+(3, 'Subscriber', 'Group user for subscriber', '{"administrative":["index"],"administrative\/account":["index","update"],"dashboard":["index"]}', 1);
 
 -- --------------------------------------------------------
 
@@ -112,9 +109,7 @@ INSERT INTO `app__groups` (`group_id`, `group_name`, `group_description`, `group
 --
 
 CREATE TABLE `app__groups_privileges` (
-  `module` varchar(256) NOT NULL,
-  `submodule` varchar(256) NOT NULL,
-  `controller` varchar(256) NOT NULL,
+  `path` varchar(256) NOT NULL,
   `privileges` longtext NOT NULL,
   `last_generated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -123,44 +118,46 @@ CREATE TABLE `app__groups_privileges` (
 -- Dumping data for table `app__groups_privileges`
 --
 
-INSERT INTO `app__groups_privileges` (`module`, `submodule`, `controller`, `privileges`, `last_generated`) VALUES
-('addons', 'addons', 'addons', '["index","detail","install"]', NOW()),
-('addons', 'ftp', 'ftp', '["index"]', NOW()),
-('addons', 'modules', 'modules', '["index","detail","delete"]', NOW()),
-('addons', 'themes', 'themes', '["index","detail","customize","delete"]', NOW()),
-('administrative', 'account', 'account', '["index","update"]', NOW()),
-('administrative', 'activities', 'activities', '["index","read","truncate","delete","pdf","print"]', NOW()),
-('administrative', 'administrative', 'administrative', '["index"]', NOW()),
-('administrative', 'cleaner', 'cleaner', '["index","clean"]', NOW()),
-('administrative', 'countries', 'countries', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('administrative', 'groups', 'adjust_privileges', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('administrative', 'groups', 'groups', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('administrative', 'groups', 'privileges', '["index","create","update","read","delete"]', NOW()),
-('administrative', 'menus', 'menus', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('administrative', 'settings', 'settings', '["index","update"]', NOW()),
-('administrative', 'translations', 'synchronize', '["index"]', NOW()),
-('administrative', 'translations', 'translate', '["index","delete_phrase"]', NOW()),
-('administrative', 'translations', 'translations', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('administrative', 'updater', 'updater', '["index","update"]', NOW()),
-('administrative', 'users', 'privileges', '["index","update"]', NOW()),
-('administrative', 'users', 'users', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('apis', 'apis', 'apis', '["index"]', NOW()),
-('apis', 'debug_tool', 'debug_tool', '["index"]', NOW()),
-('apis', 'services', 'services', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'blogs', 'blogs', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'blogs', 'categories', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'cms', 'cms', '["index"]', NOW()),
-('cms', 'galleries', 'galleries', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'pages', 'pages', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'partials', 'announcements', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'partials', 'carousels', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'partials', 'faqs', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'partials', 'inquiries', '["index","read","delete","export","print","pdf"]', NOW()),
-('cms', 'partials', 'media', '["index"]', NOW()),
-('cms', 'partials', 'partials', '["index"]', NOW()),
-('cms', 'partials', 'testimonials', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('cms', 'peoples', 'peoples', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
-('dashboard', 'dashboard', 'dashboard', '["index"]', NOW());
+INSERT INTO `app__groups_privileges` (`path`, `privileges`, `last_generated`) VALUES
+('addons', '["index","detail","install"]', NOW()),
+('addons/ftp', '["index"]', NOW()),
+('addons/modules', '["index","detail","delete"]', NOW()),
+('addons/themes', '["index","detail","customize","delete"]', NOW()),
+('administrative', '["index"]', NOW()),
+('administrative/account', '["index","update"]', NOW()),
+('administrative/activities', '["index","read","truncate","delete","pdf","print"]', NOW()),
+('administrative/cleaner', '["index","clean"]', NOW()),
+('administrative/countries', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/connections', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/groups', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/groups/adjust_privileges', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/groups/privileges', '["index","create","update","read","delete"]', NOW()),
+('administrative/menus', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/settings', '["index","update"]', NOW()),
+('administrative/translations', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/translations/synchronize', '["index"]', NOW()),
+('administrative/translations/translate', '["index","delete_phrase"]', NOW()),
+('administrative/updater', '["index","update"]', NOW()),
+('administrative/users', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('administrative/users/privileges', '["index","update"]', NOW()),
+('administrative/years', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('apis', '["index"]', NOW()),
+('apis/debug_tool', '["index"]', NOW()),
+('apis/services', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms', '["index"]', NOW()),
+('cms/blogs', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/blogs/categories', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/galleries', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/pages', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/partials', '["index"]', NOW()),
+('cms/partials/announcements', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/partials/carousels', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/partials/faqs', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/partials/inquiries', '["index","read","delete","export","print","pdf"]', NOW()),
+('cms/partials/media', '["index"]', NOW()),
+('cms/partials/testimonials', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('cms/peoples', '["index","create","read","update","delete","export","print","pdf"]', NOW()),
+('dashboard', '["index"]', NOW());
 
 -- --------------------------------------------------------
 
@@ -280,7 +277,8 @@ CREATE TABLE `app__settings` (
   `smtp_host` varchar(255) NOT NULL,
   `smtp_port` int(5) NOT NULL,
   `smtp_username` varchar(64) NOT NULL,
-  `smtp_password` varchar(512) NOT NULL
+  `smtp_password` varchar(512) NOT NULL,
+  `action_sound` tinyint(1) NOT NULL COMMENT '1 = auto active'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -620,7 +618,7 @@ ALTER TABLE `app__groups`
 -- Indexes for table `app__groups_privileges`
 --
 ALTER TABLE `app__groups_privileges`
-  ADD PRIMARY KEY (`module`,`submodule`,`controller`);
+  ADD PRIMARY KEY (`path`);
 
 --
 -- Indexes for table `app__languages`

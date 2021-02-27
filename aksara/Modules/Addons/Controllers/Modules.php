@@ -26,7 +26,7 @@ class Modules extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title('Module Manager')
+		$this->set_title(phrase('module_manager'))
 		->set_icon('mdi mdi-puzzle')
 		->set_output
 		(
@@ -52,7 +52,7 @@ class Modules extends \Aksara\Laboratory\Core
 			$package->integrity						= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 		}
 		
-		$this->set_title('Module Detail')
+		$this->set_title(phrase('module_detail'))
 		->set_icon('mdi mdi-palette')
 		->set_output
 		(
@@ -103,7 +103,7 @@ class Modules extends \Aksara\Laboratory\Core
 				<div class="p-3">
 					<form action="' . current_page() . '" method="POST" class="--validate-form">
 						<div class="text-center">
-							Are you sure would to delete this module?
+							' . phrase('are_you_sure_want_to_delete_this_module') . '
 						</div>
 						<hr class="row" />
 						<div class="--validation-callback mb-0"></div>

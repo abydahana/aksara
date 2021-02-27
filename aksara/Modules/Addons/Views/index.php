@@ -27,6 +27,31 @@
 			</li>
 		</ul>
 	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="row mb-3">
+				<div class="col-6">
+					<a href="<?php echo go_to(null, array('order' => 'popular')); ?>" class="btn btn-secondary btn-block btn-sm --xhr">
+						<?php echo phrase('popular'); ?>
+					</a>
+				</div>
+				<div class="col-6">
+					<a href="<?php echo go_to(null, array('order' => 'latest')); ?>" class="btn btn-secondary btn-block btn-sm --xhr">
+						<?php echo phrase('latest'); ?>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 offset-md-2">
+			<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form mb-3">
+				<input type="text" name="q" class="form-control form-control-sm" placeholder="<?php echo phrase('search_add_on'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
+				<button type="submit" class="btn float-right absolute top right">
+					<i class="mdi mdi-magnify font-weight-bold"></i>
+				</button>
+			</form>
+		</div>
+	</div>
+	<hr class="row mt-0" />
 	<div class="row addon-listing">
 		<!-- addon listing -->
 	</div>
@@ -41,7 +66,9 @@
 			method: 'POST',
 			data:
 			{
-				source: 'market'
+				source: 'market',
+				order: '<?php echo (service('request')->getGet('order') ? service('request')->getGet('order') : null); ?>',
+				keyword: '<?php echo (service('request')->getGet('q') ? service('request')->getGet('q') : null); ?>'
 			},
 			beforeSend: function()
 			{

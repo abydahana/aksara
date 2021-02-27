@@ -13,12 +13,8 @@
 	"screenshot":
 	[
 		{
-			"src": "homepage.png",
-			"alt": "homepage.png"
-		},
-		{
-			"src": "blog.png",
-			"alt": "blog.png"
+			"src": "screenshot.png",
+			"alt": "Screenshot"
 		}
 	]
 }

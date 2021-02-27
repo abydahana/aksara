@@ -186,7 +186,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 		
 		if(UPLOAD_PATH && is_dir(UPLOAD_PATH))
 		{
-			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(FCPATH . UPLOAD_PATH, \FilesystemIterator::SKIP_DOTS)) as $object)
+			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(FCPATH . UPLOAD_PATH, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::LEAVES_ONLY, \RecursiveIteratorIterator::CATCH_GET_CHILD) as $object)
 			{
 				$bytestotal							+= $object->getSize();
 			}
