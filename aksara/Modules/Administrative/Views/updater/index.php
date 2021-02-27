@@ -18,7 +18,7 @@
 						</a>
 					</div>
 					<div class="col-8 col-md-10 col-lg-11">
-						<p class="mb-0">
+						<p class="mb-3">
 							<a href="' . $val->profile_url . '" target="_blank">
 								<b>' . $val->committer . '</b>
 							</a>
@@ -32,6 +32,7 @@
 								<i class="mdi mdi-launch"></i>
 							</h4>
 						</a>
+						<hr />
 						<p>
 							' . nl2br(str_replace("\n\n", "\n", $val->message)) . '
 						</p>
