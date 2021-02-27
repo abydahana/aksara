@@ -193,7 +193,11 @@ class Updater extends \Aksara\Laboratory\Core
 				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_package, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 			}
 			
-			$seed									= \Aksara\Laboratory\Seeder::seed();
+			// load seeder class
+			$seeder									= new \Aksara\Laboratory\Seeder();
+			
+			// apply the required database migration for this updates
+			$seeder->seed();
 			
 			$html									= '
 				<div class="text-center mb-3">

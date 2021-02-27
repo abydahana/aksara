@@ -15,7 +15,7 @@ class Seeder
 		$this->db									= \Config\Database::connect();
 	}
 	
-	public static function seed()
+	public function seed()
 	{
 		if(!$this->db->tableExists('app__years'))
 		{
