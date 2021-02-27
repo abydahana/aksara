@@ -338,7 +338,7 @@ class Core extends Controller
 	 */
 	public function valid_token($token = null)
 	{
-		if($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')))
+		if($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request)
 		{
 			return true;
 		}
