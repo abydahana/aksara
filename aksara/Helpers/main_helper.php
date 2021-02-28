@@ -304,3 +304,78 @@ if(!function_exists('valid_hex'))
 		return false;
 	}
 }
+
+if(!function_exists('array_sort'))
+{
+	/**
+	 * Sort array
+	 */
+	function make_cmp($data = array())
+	{
+		return function ($a, $b) use (&$data)
+		{
+			foreach ($data as $column => $sort)
+			{
+				if(!$sort)
+				{
+					$sort							= 'asc';
+				}
+				$diff								= strcmp((is_object($a) ? $a->$column : $a[$column]), (is_object($b) ? $b->$column : $b[$column]));
+				if($diff !== 0)
+				{
+					if('asc' === strtolower($sort))
+					{
+						return $diff;
+					}
+					return $diff * -1;
+				}
+			}
+			return 0;
+		};
+	}
+	
+	function array_sort($data = null, $order_by = array(), $sort = 'asc')
+	{
+		if(!is_array($order_by) && is_string($order_by))
+		{
+			$order_by								= array($order_by => $sort);
+		}
+		usort($data, make_cmp($order_by));
+		return $data;
+	}
+}
+
+if(!function_exists('reset_sort'))
+{
+	/**
+	 * Reset Sort
+	 */
+	function reset_sort($resource = array())
+	{
+		$is_numeric									= false;
+		
+		foreach($resource as $key => $val)
+		{
+			if(is_array($val))
+			{
+				$resource[$key]						= reset_sort($val);
+			}
+			
+			if(is_numeric($key))
+			{
+				$is_numeric							= true;
+			}
+		}
+		
+		if($is_numeric)
+		{
+			return array_values($resource);
+		}
+		else
+		{
+			return $resource;
+		}
+		
+		return array_values($resource);
+	}
+}

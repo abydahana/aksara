@@ -199,7 +199,7 @@ class Core extends Controller
 		$this->permission							= new Permission();
 		$this->form_validation						= \Config\Services::validation();
 		
-		$path										= service('router')->getMatchedRoute()[0];
+		$path										= (isset(service('router')->getMatchedRoute()[0]) ? service('router')->getMatchedRoute()[0] : null);
 		
 		$this->_method								= service('router')->methodName();
 		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', null, $path) : $path);
