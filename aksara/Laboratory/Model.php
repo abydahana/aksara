@@ -1315,6 +1315,8 @@ class Model
 				
 				foreach($column as $key => $val)
 				{
+					$dir							= null;
+					
 					if(strpos($val, '(') !== false && strpos($val, ')') !== false)
 					{
 						$col						= $val;
