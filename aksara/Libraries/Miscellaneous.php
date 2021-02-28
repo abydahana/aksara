@@ -42,6 +42,8 @@ class Miscellaneous
 	{
 		if(!$params) return false;
 		
+		$this->model								= new \Aksara\Laboratory\Model();
+		
 		// hash generator
 		$hash										= substr(sha1(uniqid(null, true)), -6);
 		
