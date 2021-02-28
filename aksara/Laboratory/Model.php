@@ -163,6 +163,15 @@ class Model
 	 */
 	public function field_exists($field = null, $table = null)
 	{
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$table									= str_ireplace(' AS ', ' ', $table);
+			$destructure							= explode(' ', $table);
+			$table									= $destructure[0];
+			
+			$this->_table_alias[$destructure[1]]	= $table;
+		}
+		
 		if($table && $field && $this->db->fieldExists($field, $table))
 		{
 			return true;
