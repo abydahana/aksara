@@ -18,7 +18,6 @@ class Model
 	private $_field_exists;
 	private $_list_fields;
 	private $_field_data;
-	private $_table_alias							= array();
 	
 	private $_query;
 	
@@ -151,14 +150,6 @@ class Model
 	 */
 	public function table_exists($table = null)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			$table									= $destructure[0];
-			
-			$this->_table_alias[$destructure[1]]	= $table;
-		}
-		
 		if($table && $this->db->tableExists($table))
 		{
 			return true;
@@ -172,14 +163,6 @@ class Model
 	 */
 	public function field_exists($field = null, $table = null)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			$table									= $destructure[0];
-			
-			$this->_table_alias[$destructure[1]]	= $table;
-		}
-		
 		if($table && $field && $this->db->fieldExists($field, $table))
 		{
 			return true;
@@ -193,14 +176,6 @@ class Model
 	 */
 	public function list_fields($table = null)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			$table									= $destructure[0];
-			
-			$this->_table_alias[$destructure[1]]	= $table;
-		}
-		
 		if($table && $this->db->tableExists($table))
 		{
 			return $this->db->getFieldNames($table);
@@ -214,14 +189,6 @@ class Model
 	 */
 	public function field_data($table = null)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			$table									= $destructure[0];
-			
-			$this->_table_alias[$destructure[1]]	= $table;
-		}
-		
 		if($table && $this->db->tableExists($table))
 		{
 			return $this->db->getFieldData($table);
@@ -428,13 +395,6 @@ class Model
 	 */
 	public function join($table = null, $condition = null, $type = '', $escape = true)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			
-			$this->_table_alias[$destructure[1]]	= $destructure[0];
-		}
-		
 		if(!is_array($table))
 		{
 			if(isset($condition['condition']))
@@ -1555,14 +1515,6 @@ class Model
 	 */
 	public function delete($table = null, $where = array(), $limit = 0, $reset_data = true)
 	{
-		if(strpos(trim($table), ' ') !== false)
-		{
-			$destructure							= explode(' ', $table);
-			$table									= $destructure[0];
-			
-			$this->_table_alias[$destructure[1]]	= $table;
-		}
-		
 		if($table && $this->db->tableExists($table))
 		{
 			$this->_table							= $table;

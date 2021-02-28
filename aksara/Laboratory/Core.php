@@ -136,6 +136,7 @@ class Core extends Controller
 	private $_select_sum							= array();
 	private $_from;
 	private $_table;
+	private $_table_alias							= array();
 	private $_join									= array();
 	private $_where									= array();
 	private $_or_where								= array();
@@ -164,6 +165,7 @@ class Core extends Controller
 	private $_or_not_group_start;
 	private $_group_by;
 	private $_order_by								= array();
+	private $_order_by_bm							= array();
 	private $_limit									= 25;
 	private $_offset								= 0;
 	private $_set									= array();
@@ -2346,7 +2348,10 @@ class Core extends Controller
 									$like_val				= substr($like_val, 0, stripos($like_val, ' AS '));
 								}
 								
-								$this->_order_by_bm[]		= '(CASE WHEN ' . $like_val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $like_val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $this->_set_field[service('request')->getPost('origin')]['parameter']))
+								{
+									$this->_order_by_bm[]	= '(CASE WHEN ' . $like_val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $like_val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
+								}
 							}
 						}
 					}
@@ -5703,6 +5708,14 @@ class Core extends Controller
 	 */
 	public function join($table = null, $condition = null, $type = '', $escape = true)
 	{
+		if(strpos(trim($table), ' ') !== false)
+		{
+			$table									= str_ireplace(' AS ', ' ', $table);
+			$destructure							= explode(' ', $table);
+			
+			$this->_table_alias[$destructure[1]]	= $destructure[0];
+		}
+		
 		if(!is_array($table))
 		{
 			$this->_join[$table]					= array

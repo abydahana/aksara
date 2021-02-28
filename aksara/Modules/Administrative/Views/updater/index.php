@@ -62,8 +62,8 @@
 						' . $changelog . '
 					</div>
 				</div>
-				<hr />
-				<a href="' . base_url('administrative/updater/update') . '" class="btn btn-sm btn-success --xhr show-progress">
+				<hr class="row" />
+				<a href="' . base_url('administrative/updater/update') . '" class="btn btn-success --xhr show-progress">
 					<i class="mdi mdi-update"></i>
 					' . phrase('update_now') . '
 				</a>
