@@ -84,31 +84,37 @@ class Document
 		{
 			$this->_params['page-width']			= '8.5in';
 		}
+		
 		// default page height (better use "in" a.k.a inches)
 		if(!isset($this->_params['page-height']))
 		{
 			$this->_params['page-height']			= '13in';
 		}
+		
 		// default top margin of page
 		if(!isset($this->_params['margin-top']))
 		{
 			$this->_params['margin-top']			= 10;
 		}
+		
 		// default right margin of page
 		if(!isset($this->_params['margin-right']))
 		{
 			$this->_params['margin-right']			= 10;
 		}
+		
 		// default bottom margin of page
 		if(!isset($this->_params['margin-bottom']))
 		{
 			$this->_params['margin-bottom']			= 10;
 		}
+		
 		// default left margin of page
 		if(!isset($this->_params['margin-left']))
 		{
 			$this->_params['margin-left']			= 10;
 		}
+		
 		if('export' == strtolower($method))
 		{
 			// use excel generator
