@@ -642,22 +642,22 @@ class Core extends Controller
 	 */
 	public function add_action($placement = 'option', $url = null, $label = null, $class = null, $icon = null, $parameter = array(), $new_tab = false)
 	{
+		$query_string								= service('request')->getGet();
+		
+		if($parameter)
+		{
+			$parameter								= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
+		}
+		
 		if('toolbar' == $placement)
 		{
-			$query_string							= service('request')->getGet();
-			
-			if($parameter)
-			{
-				$query_string						= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
-			}
-			
 			$this->_extra_toolbar[]					= array
 			(
 				'url'								=> $url,
 				'label'								=> $label,
 				'class'								=> $class,
 				'icon'								=> $icon,
-				'parameter'							=> $query_string,
+				'parameter'							=> $parameter,
 				'new_tab'							=> $new_tab
 			);
 		}
@@ -675,20 +675,13 @@ class Core extends Controller
 		}
 		elseif('submit' == $placement)
 		{
-			$query_string							= service('request')->getGet();
-			
-			if($parameter)
-			{
-				$query_string						= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
-			}
-			
 			$this->_extra_submit[]					= array
 			(
 				'url'								=> $url,
 				'label'								=> $label,
 				'class'								=> $class,
 				'icon'								=> $icon,
-				'parameter'							=> $query_string,
+				'parameter'							=> $parameter,
 				'new_tab'							=> $new_tab
 			);
 		}
@@ -5332,24 +5325,16 @@ class Core extends Controller
 				{
 					if(!is_array($_val['parameter'])) continue;
 					
-					$parameter						= service('request')->getGet();
-					
-					if(isset($parameter['aksara']))
-					{
-						unset($parameter['aksara']);
-					}
+					$parameter						= array();
 					
 					foreach($_val['parameter'] as $__key => $__val)
 					{
-						if(!$__val && isset($parameter[$__key]))
+						if(isset($val[$__val]['original']))
 						{
-							unset($parameter[$__key]);
-							continue;
+							$__val					= $val[$__val]['original'];
 						}
 						
-						if(!isset($val[$__val]['original'])) continue;
-						
-						$parameter[$__key]			= $val[$__val]['original'];
+						$parameter[$__key]			= $__val;
 					}
 					
 					if($parameter)
@@ -5369,24 +5354,16 @@ class Core extends Controller
 				{
 					if(!is_array($_val['parameter'])) continue;
 					
-					$parameter						= service('request')->getGet();
-					
-					if(isset($parameter['aksara']))
-					{
-						unset($parameter['aksara']);
-					}
+					$parameter						= array();
 					
 					foreach($_val['parameter'] as $__key => $__val)
 					{
-						if(!$__val && isset($parameter[$__key]))
+						if(isset($val[$__val]['original']))
 						{
-							unset($parameter[$__key]);
-							continue;
+							$__val					= $val[$__val]['original'];
 						}
 						
-						if(!isset($val[$__val]['original'])) continue;
-						
-						$parameter[$__key]			= $val[$__val]['original'];
+						$parameter[$__key]			= $__val;
 					}
 					
 					if($parameter)
