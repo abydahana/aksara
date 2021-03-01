@@ -219,6 +219,19 @@ class Validation extends \CodeIgniter\Validation\Rules
 	}
 	
 	/**
+	 * Check if field is valid hex
+	 */
+	public function valid_hex($value = null)
+	{
+		if(!preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Check relation table
 	 */
 	public function relation_checker($value = 0, $params = null)

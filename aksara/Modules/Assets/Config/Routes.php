@@ -11,7 +11,12 @@
 
 $routes->group('assets', ['namespace' => '\Aksara\Modules\Assets\Controllers'], function($routes)
 {
-	$routes->get('/', 'Assets::index');
 	$routes->get('css/styles.min.css', 'Assets::styles');
 	$routes->get('js/scripts.min.js', 'Assets::scripts');
+	
+	$routes->get('svg/map_marker.svg', 'Svg::map_marker');
+	$routes->get('svg/polygon.svg', 'Svg::polygon');
+	$routes->get('svg/linestring.svg', 'Svg::linestring');
+	$routes->get('svg/folder.svg', 'Svg::folder');
+	$routes->get('svg/back_arrow.svg', 'Svg::back_arrow');
 });

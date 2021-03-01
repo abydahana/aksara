@@ -71,5 +71,9 @@ return [
 	'max_dims' => '{field} bukan gambar, atau terlalu lebar atau tinggi.',
 	
 	// Custom
-	'boolean'				=> 'Bidang {field} hanya boleh dicentang atau diabaikan'
+	'boolean'				=> 'Bidang {field} hanya boleh dicentang atau abaikan.',
+	'currency'				=> 'Bidang {field} hanya boleh berformat mata uang.',
+	'valid_date'			=> 'Bidang {field} harus menggunakan format tanggal.',
+	'valid_year'			=> 'Bidang {field} harus menggunakan format tahun.',
+	'valid_hex'				=> 'Bidang {field} hanya boleh berisi kode warna hex.'
 ];
