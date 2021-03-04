@@ -2691,7 +2691,7 @@ class Core extends Controller
 			/* if other method is exists */
 			elseif(method_exists($this, $this->_method))
 			{
-				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/error')) ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
@@ -2703,7 +2703,7 @@ class Core extends Controller
 			/* otherwise */
 			else
 			{
-				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/error')) ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
