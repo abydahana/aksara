@@ -36,7 +36,7 @@ class Countries extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'code'								=> 'required|alpha_dash|max_length[5]|is_unique[' . $this->_table . '.code,id,' . $this->_primary . ']',
+				'code'								=> 'required|alpha_dash|max_length[5]|unique[' . $this->_table . '.code.id.' . $this->_primary . ']',
 				'country'							=> 'required|alpha|max_length[32]',
 				'status'							=> 'boolean'
 			)

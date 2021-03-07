@@ -117,7 +117,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	/**
 	 * Check if data is already exist in the database table
 	 */
-	public function is_unique($value = null, $params = null, $data = array()) : bool
+	public function unique($value = null, $params = null, $data = array()) : bool
 	{
 		$params										= explode('.', $params);
 		

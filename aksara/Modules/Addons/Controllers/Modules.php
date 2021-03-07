@@ -83,11 +83,6 @@ class Modules extends \Aksara\Laboratory\Core
 	 */
 	public function delete()
 	{
-		if(DEMO_MODE)
-		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
-		}
-		
 		$this->permission->must_ajax(current_page('../'));
 		
 		/* check if module is exists */
@@ -145,6 +140,11 @@ class Modules extends \Aksara\Laboratory\Core
 		/* check if requested module to delete is match */
 		if(service('request')->getPost('module') && is_dir(ROOTPATH . 'modules/' . service('request')->getPost('module')))
 		{
+			if(DEMO_MODE)
+			{
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+			}
+			
 			/* check if module property is exists */
 			if(file_exists(ROOTPATH . 'modules/' . service('request')->getPost('module') . '/package.json'))
 			{

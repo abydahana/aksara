@@ -54,7 +54,7 @@ class Translations extends \Aksara\Laboratory\Core
 			(
 				'language'							=> 'required|string|max_length[32]',
 				'description'						=> 'required|string',
-				'code'								=> 'required|alpha_dash|max_length[32]|is_unique[app__languages.code,id,' . service('request')->getGet('id') . ']',
+				'code'								=> 'required|alpha_dash|max_length[32]|unique[app__languages.code.id.' . service('request')->getGet('id') . ']',
 				'locale'							=> 'required|string|max_length[64]',
 				'status'							=> 'boolean'
 			)

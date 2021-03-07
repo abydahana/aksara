@@ -22,6 +22,11 @@ class Assets extends \Aksara\Laboratory\Core
 		}
 	}
 	
+	public function index()
+	{
+		return throw_exception(404, phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'), base_url());
+	}
+	
 	public function themes()
 	{
 		$extension									= strtolower(pathinfo(service('request')->uri->getPath(), PATHINFO_EXTENSION));

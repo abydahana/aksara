@@ -71,6 +71,7 @@ return [
 	'max_dims' => '{field} bukan gambar, atau terlalu lebar atau tinggi.',
 	
 	// Custom
+	'unique'				=> '{field} yang dimasukkan telah terdaftar.',
 	'boolean'				=> 'Bidang {field} hanya boleh dicentang atau abaikan.',
 	'currency'				=> 'Bidang {field} hanya boleh berformat mata uang.',
 	'valid_date'			=> 'Bidang {field} harus menggunakan format tanggal.',

@@ -65,7 +65,7 @@ class Galleries extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'gallery_title'						=> 'required|max_length[64]|is_unique[' . $this->_table . '.gallery_title,gallery_id,' . service('request')->getGet('gallery_id') . ']',
+				'gallery_title'						=> 'required|max_length[64]|unique[' . $this->_table . '.gallery_title.gallery_id.' . service('request')->getGet('gallery_id') . ']',
 				'gallery_description'				=> 'required',
 				'featured'							=> 'boolean',
 				'status'							=> 'boolean'

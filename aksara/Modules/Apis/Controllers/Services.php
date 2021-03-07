@@ -57,7 +57,7 @@ class Services extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'title'								=> 'required|string|max_length[64]|is_unique[' . $this->_table . '.title,id,' . $this->_primary . ']',
+				'title'								=> 'required|string|max_length[64]|unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
 				'description'						=> 'required|string',
 				'api_key'							=> 'required|alpha_numeric|min_length[32]',
 				'method'							=> 'required|in_list[GET,POST,DELETE]',

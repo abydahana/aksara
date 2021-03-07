@@ -74,7 +74,7 @@ class Announcements extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'title'								=> 'required|max_length[256]|is_unique[' . $this->_table . '.title,announcement_id,' . service('request')->getGet('announcement_id') . ']',
+				'title'								=> 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . service('request')->getGet('announcement_id') . ']',
 				'content'							=> 'required',
 				'language_id'						=> 'required',
 				'start_date'						=> 'required',

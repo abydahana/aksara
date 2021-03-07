@@ -92,8 +92,8 @@ class Account extends \Aksara\Laboratory\Core
 			(
 				'first_name'						=> 'required|max_length[32]',
 				'last_name'							=> 'max_length[32]',
-				'email'								=> 'required|valid_email|is_unique[app__users.email,user_id,' . get_userdata('user_id') . ']',
-				'username'							=> $username_required . 'alpha_dash|is_unique[app__users.username,user_id,' . get_userdata('user_id') . ']',
+				'email'								=> 'required|valid_email|unique[app__users.email.user_id.' . get_userdata('user_id') . ']',
+				'username'							=> $username_required . 'alpha_dash|unique[app__users.username.user_id.' . get_userdata('user_id') . ']',
 				'bio'								=> 'string',
 				'address'							=> 'string',
 				'country'							=> 'required',

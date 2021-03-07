@@ -81,11 +81,7 @@ class Themes extends \Aksara\Laboratory\Core
 	 */
 	public function customize()
 	{
-		if(DEMO_MODE)
-		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
-		}
-		elseif(!file_exists(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'))
+		if(!file_exists(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'))
 		{
 			return throw_exception(404, phrase('no_theme_package_manifest_were_found'), current_page('../'));
 		}
@@ -102,7 +98,11 @@ class Themes extends \Aksara\Laboratory\Core
 		
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
-			if(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
+			if(DEMO_MODE)
+			{
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+			}
+			elseif(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
 			{
 				return throw_exception(400, array('colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is_not_writable')));
 			}
@@ -140,11 +140,6 @@ class Themes extends \Aksara\Laboratory\Core
 	 */
 	public function delete()
 	{
-		if(DEMO_MODE)
-		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
-		}
-		
 		$this->permission->must_ajax(current_page('../'));
 		
 		/* check if theme is exists */
@@ -202,6 +197,11 @@ class Themes extends \Aksara\Laboratory\Core
 		/* check if requested theme to delete is match */
 		if(service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme')))
 		{
+			if(DEMO_MODE)
+			{
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+			}
+			
 			/* check if theme property is exists */
 			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'))
 			{

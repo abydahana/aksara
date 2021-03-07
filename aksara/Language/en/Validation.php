@@ -12,6 +12,7 @@
 // Validation language settings
 return [
 	// Custom
+	'unique'				=> 'The {field} you entered already registered.',
 	'boolean'				=> 'The {field} must be checked or rather ignored.',
 	'currency'				=> 'The {field} must be contain valid currency.',
 	'valid_date'			=> 'The {field} must be contain valid date.',

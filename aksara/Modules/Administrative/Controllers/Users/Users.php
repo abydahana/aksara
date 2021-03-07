@@ -97,8 +97,8 @@ class Users extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'username'							=> 'required|alpha_numeric|is_unique[app__users.username,user_id,' . service('request')->getGet('user_id') . ']',
-				'email'								=> 'required|valid_email|is_unique[app__users.email,user_id,' . service('request')->getGet('user_id') . ']',
+				'username'							=> 'required|alpha_numeric|unique[app__users.username.user_id.' . service('request')->getGet('user_id') . ']',
+				'email'								=> 'required|valid_email|unique[app__users.email.user_id.' . service('request')->getGet('user_id') . ']',
 				'first_name'						=> 'required|string|max_length[32]',
 				'last_name'							=> 'string|max_length[32]',
 				'group_id'							=> 'required',
