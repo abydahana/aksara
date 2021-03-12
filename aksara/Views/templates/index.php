@@ -192,7 +192,7 @@ if(isset($results->extra_action->toolbar))
 								foreach($results->extra_action->dropdown[$key] as $_key => $_val)
 								{
 									$extra_dropdown		.= '
-										<a href="' . go_to($_val->url, $_val->parameter) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0 ' . ($_val->class ? $_val->class : '--xhr') . '"' . (isset($_val->new_tab) && is_bool($_val->new_tab) ? ' target="_blank"' : null) . '>
+										<a href="' . go_to($_val->url, $_val->parameter) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0 ' . ($_val->class ? str_replace('btn', 'unused-btn', $_val->class) : '--xhr') . '"' . (isset($_val->new_tab) && is_bool($_val->new_tab) ? ' target="_blank"' : null) . '>
 											<i class="' . ($_val->icon ? $_val->icon : 'mdi mdi-link') . '" style="width:22px"></i>
 											' . $_val->label . '
 										</a>
@@ -252,7 +252,10 @@ if(isset($results->extra_action->toolbar))
 										' : null) . '
 										' . $extra_option . '
 										' . ($extra_dropdown || ($reading || !isset($results->unset_action) || !in_array('print', $results->unset_action)) || ($reading && (!isset($results->unset_action) || !in_array('pdf', $results->unset_action))) ? '
-											<button type="button" class="btn btn-xs btn-secondary toggle-tooltip" data-title="' . phrase('more_options') . '" data-toggle="popover" data-trigger="focus" data-content=\'<div class="list-group list-group-flush">'  . $extra_dropdown . ($reading || !isset($results->unset_action) || !in_array('print', $results->unset_action) ? '<a href="' . go_to('print', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0" target="_blank"><i class="mdi mdi-printer" style="width:22px"></i>' . phrase('print') . '</a>' : null) . '' . ($reading ||!isset($results->unset_action) || !in_array('pdf', $results->unset_action) ? '<a href="' . go_to('pdf', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0"  target="_blank"><i class="mdi mdi-file-pdf text-danger" style="width:22px"></i>' . phrase('pdf') . '</a>' : null) . '</div>\'" data-container="body" data-html="true">
+											<button type="button" class="btn btn-xs btn-secondary toggle-tooltip" data-title="' . phrase('more_options') . '" data-toggle="popover" data-trigger="focus" data-content=\'<div class="list-group list-group-flush">
+												' . $extra_dropdown . '
+												' . ($reading && !in_array('print', $results->unset_action) ? '<a href="' . go_to('print', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0" target="_blank"><i class="mdi mdi-printer" style="width:22px"></i>' . phrase('print') . '</a>' : null) . '
+												' . ($reading && !in_array('pdf', $results->unset_action) ? '<a href="' . go_to('pdf', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0"  target="_blank"><i class="mdi mdi-file-pdf text-danger" style="width:22px"></i>' . phrase('pdf') . '</a>' : null) . '</div>\'" data-container="body" data-html="true">
 												<i class="mdi mdi-chevron-down"></i>
 											</button>
 										' : null) . '

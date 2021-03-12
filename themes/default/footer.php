@@ -2,11 +2,15 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-2 text-sm-center">
-				<p>
-					<a href="<?php echo base_url(); ?>">
-						<img src="<?php echo get_image('settings', get_setting('app_icon'), 'thumb'); ?>" class="img-fluid grayscale mt-2 --xhr" />
-					</a>
-				</p>
+				<div class="row">
+					<div class="col-4 offset-4 col-sm-4 offset-sm-4 col-md-12 offset-md-0">
+						<p>
+							<a href="<?php echo base_url(); ?>">
+								<img src="<?php echo get_image('settings', get_setting('app_icon'), 'thumb'); ?>" class="img-fluid grayscale mt-2 --xhr" />
+							</a>
+						</p>
+					</div>
+				</div>
 			</div>
 			<div class="col-6 col-sm-4 col-lg-2">
 				<div class="mb-5">

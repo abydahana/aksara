@@ -101,6 +101,7 @@ class Users extends \Aksara\Laboratory\Core
 				'email'								=> 'required|valid_email|unique[app__users.email.user_id.' . service('request')->getGet('user_id') . ']',
 				'first_name'						=> 'required|string|max_length[32]',
 				'last_name'							=> 'string|max_length[32]',
+				'language_id'						=> 'required',
 				'group_id'							=> 'required',
 				'status'							=> 'boolean'
 			)
