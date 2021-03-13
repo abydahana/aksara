@@ -88,12 +88,24 @@
 			CodeIgniter
 		</a>
 		&middot;
-		<a href="//getcomposer.org" target="_blank">
-			Composer
-		</a>
-		&middot;
 		<a href="//mpdf.github.io" target="_blank">
 			mPDF
+		</a>
+		&middot;
+		<a href="//github.com/facebook/graph-sdk" target="_blank">
+			Facebook SDK
+		</a>
+		&middot;
+		<a href="//github.com/google/apiclient" target="_blank">
+			Google SDK
+		</a>
+		&middot;
+		<a href="//github.com/chillerlan/php-qrcode" target="_blank">
+			PHP QR-Code
+		</a>
+		&middot;
+		<a href="//github.com/picqer/php-barcode-generator" target="_blank">
+			PHP Barcode
 		</a>
 	</div>
 	<br />
@@ -147,6 +159,10 @@
 		&middot;
 		<a href="//jqueryui.com/draggable/" target="_blank">
 			jQuery UI Draggable
+		</a>
+		&middot;
+		<a href="//github.com/MrRio/jsPDF" target="_blank">
+			jsPDF
 		</a>
 		&middot;
 		<a href="//stuk.github.io/jszip/" target="_blank">
