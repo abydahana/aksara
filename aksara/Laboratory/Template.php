@@ -566,7 +566,7 @@ class Template
 					'meta'							=> (object) array
 					(
 						'title'						=> truncate($data->meta->title),
-						'description'				=> $data->meta->description
+						'description'				=> truncate($data->meta->description)
 					),
 					'menu'							=> $this->_get_menu(),
 					'breadcrumb'					=> (object) array

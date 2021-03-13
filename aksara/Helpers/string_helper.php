@@ -30,8 +30,7 @@ if(!function_exists('truncate'))
 		$string										= preg_replace('/<embed.*?\/embed>/i','', $string);
 		$string										= preg_replace('/<object.*?\/object>/i','', $string);
 		$string										= str_replace('&nbsp;', ' ', $string);
-		$string										= strip_tags($string);
-		$string										= strip_tags(str_replace(array("\r", "\n"), '', $string));
+		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', $string));
 		
 		if($limit && strlen($string) >= $limit)
 		{
