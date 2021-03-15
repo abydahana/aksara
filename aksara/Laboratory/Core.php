@@ -2881,7 +2881,7 @@ class Core extends Controller
 						
 						if($this->_set_method)
 						{
-							return $this->template->build($this->_view, $this->_output);
+							return $this->template->build($this->_view, $this->_output, null, $this->_from, $this->_language);
 						}
 					}
 					else

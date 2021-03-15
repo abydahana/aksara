@@ -528,10 +528,13 @@ class Template
 			$data									= new \stdClass();
 		}
 		
-		$data->template								= (object) array
-		(
-			'pagination'							=> $this->pagination($data->pagination)
-		);
+		if(isset($data->pagination))
+		{
+			$data->template							= (object) array
+			(
+				'pagination'						=> $this->pagination($data->pagination)
+			);
+		}
 		
 		/**
 		 * Build the result and send to client
