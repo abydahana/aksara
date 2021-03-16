@@ -67,6 +67,8 @@ class Blogs extends \Aksara\Laboratory\Core
 			}
 		}
 		
+		$this->add_filter($this->_filter());
+		
 		$this->set_title(phrase('blogs'))
 		->set_icon('mdi mdi-newspaper')
 		->set_primary('post_id')
@@ -101,7 +103,7 @@ class Blogs extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'post_title'						=> 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
+				'post_title'						=> 'required|max_length[256]|is_unique[' . $this->_table . '.post_title,post_id,' . service('request')->getGet('post_id') . ']',
 				'post_content'						=> 'required',
 				'post_category'						=> 'required',
 				'headline'							=> 'boolean',
@@ -181,5 +183,34 @@ class Blogs extends \Aksara\Laboratory\Core
 		)
 		
 		->render($this->_table);
+	}
+	
+	private function _filter()
+	{
+		$output										= '<option value="0">' . phrase('all_categories') . '</option>';
+		
+		$query										= $this->model->get_where
+		(
+			'blogs__categories',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($query)
+		{
+			foreach($query as $key => $val)
+			{
+				$output								.= '<option value="' . $val->category_id . '"' . ($val->category_id == service('request')->getGet('category') ? ' selected' : null) . '>' . $val->category_title . '</option>';
+			}
+		}
+		
+		return '
+			<select name="category" class="form-control input-sm bordered" placeholder="' . phrase('category') . '">
+				' . $output . '
+			</select>
+		';
 	}
 }
