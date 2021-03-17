@@ -24,6 +24,8 @@ class Blogs extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		$this->add_filter($this->_filter());
+		
 		if(service('request')->getGet('category'))
 		{
 			$query									= $this->model->get_where
@@ -66,8 +68,6 @@ class Blogs extends \Aksara\Laboratory\Core
 				);
 			}
 		}
-		
-		$this->add_filter($this->_filter());
 		
 		$this->set_title(phrase('blogs'))
 		->set_icon('mdi mdi-newspaper')

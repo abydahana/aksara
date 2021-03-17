@@ -26,6 +26,19 @@ class Users extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		$this->add_filter($this->_filter());
+		
+		if(service('request')->getGet('group'))
+		{
+			$this->where
+			(
+				array
+				(
+					'group_id'						=> service('request')->getGet('group')
+				)
+			);
+		}
+		
 		$this->set_title(phrase('manage_users'))
 		->set_icon('mdi mdi-account-group-outline')
 		
@@ -146,5 +159,34 @@ class Users extends \Aksara\Laboratory\Core
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_field('first_name, last_name', phrase('full_name'))
 		->render($this->_table);
+	}
+	
+	private function _filter()
+	{
+		$output										= '<option value="0">' . phrase('all_groups') . '</option>';
+		
+		$query										= $this->model->get_where
+		(
+			'app__groups',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($query)
+		{
+			foreach($query as $key => $val)
+			{
+				$output								.= '<option value="' . $val->group_id . '"' . ($val->group_id == service('request')->getGet('group') ? ' selected' : null) . '>' . $val->group_name . '</option>';
+			}
+		}
+		
+		return '
+			<select name="group" class="form-control input-sm bordered" placeholder="' . phrase('group') . '">
+				' . $output . '
+			</select>
+		';
 	}
 }
