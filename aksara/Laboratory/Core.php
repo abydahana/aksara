@@ -4437,14 +4437,15 @@ class Core extends Controller
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
-						foreach($original as $src => $label);
-						
-						$filesize					= get_filesize($this->_set_upload_path, $src);
-						$content					= '
-							<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
-								' . ($label ? $label : $src) . '
-							</a>
-						';
+						foreach($original as $src => $label)
+						{
+							$filesize				= get_filesize($this->_set_upload_path, $src);
+							$content				= '
+								<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
+									' . ($label ? $label : $src) . '
+								</a>
+							';
+						}
 					}
 				}
 				elseif(in_array('files', $type))
@@ -4949,15 +4950,17 @@ class Core extends Controller
 						
 						if($original)
 						{
-							foreach($original as $src => $label);
-							$filesize				= get_filesize($this->_set_upload_path, $src);
-							$content				= '
-								<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
-									<b>
-										' . truncate($label, 10) . '
-									</b>
-								</a>
-							';
+							foreach($original as $src => $label)
+							{
+								$filesize			= get_filesize($this->_set_upload_path, $src);
+								$content			= '
+									<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
+										<b>
+											' . truncate($label, 10) . '
+										</b>
+									</a>
+								';
+							}
 						}
 					}
 					elseif(in_array('images', $type) || in_array('files', $type))
@@ -8257,7 +8260,7 @@ class Core extends Controller
 						}
 						if(!in_array('wysiwyg', $type) && isset($prepare[$field]))
 						{
-							$prepare[$field]		= truncate($prepare[$field]);
+							$prepare[$field]		= (!is_json($prepare[$field]) ? truncate($prepare[$field]) : $prepare[$field]);
 						}
 						if(!in_array('to_slug', $type) && !in_array('password', $type) && !in_array('encryption', $type))
 						{
