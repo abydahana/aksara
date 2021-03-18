@@ -21,6 +21,8 @@ class Model
 	
 	private $_query;
 	
+	private $_called								= false;
+	
 	private $_distinct;
 	private $_select								= array();
 	private $_select_avg							= array();
