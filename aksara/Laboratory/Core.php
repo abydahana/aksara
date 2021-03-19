@@ -779,13 +779,60 @@ class Core extends Controller
 			
 			if(isset($this->_set_field[$key]))
 			{
-				$this->_set_field[$key]['field_type'] = ($this->_set_field[$key]['field_type'] ? array_merge($this->_set_field[$key]['field_type'], $val) : $val);
-				
-				$this->_set_field[$key]['parameter'] = (is_array($this->_set_field[$key]['parameter']) && $this->_set_field[$key]['parameter'] ? array_merge((is_array($this->_set_field[$key]['parameter']) ? $this->_set_field[$key]['parameter'] : array($this->_set_field[$key]['parameter'])), array($parameter)) : $parameter);
-				
-				$this->_set_field[$key]['extra_params'] = (is_array($this->_set_field[$key]['extra_params']) && $this->_set_field[$key]['extra_params'] ? array_merge((is_array($this->_set_field[$key]['extra_params']) ? $this->_set_field[$key]['extra_params'] : array($this->_set_field[$key]['extra_params'])), array($extra_params)) : $extra_params);
-				
-				$this->_set_field[$key]['another_params'] = (is_array($this->_set_field[$key]['another_params']) && $this->_set_field[$key]['another_params'] ? array_merge((is_array($this->_set_field[$key]['another_params']) ? $this->_set_field[$key]['another_params'] : array($this->_set_field[$key]['another_params'])), array($another_params)) : $another_params);
+				foreach($val as $f_key => $f_val)
+				{
+					if(isset($this->_set_field[$key]['field_type']))
+					{
+						if(is_array($this->_set_field[$key]['field_type']))
+						{
+							$this->_set_field[$key]['field_type'][]		= $f_val;
+						}
+					}
+					
+					if(isset($this->_set_field[$key]['parameter']))
+					{
+						if(is_array($this->_set_field[$key]['parameter']))
+						{
+							$this->_set_field[$key]['parameter']		= array_merge($this->_set_field[$key]['parameter'], array($params));
+						}
+						else
+						{
+							$this->_set_field[$key]['parameter']		= array_merge(array($this->_set_field[$key]['parameter']), array($params));
+						}
+					}
+					
+					if(isset($this->_set_field[$key]['extra_params']))
+					{
+						if(is_array($this->_set_field[$key]['extra_params']))
+						{
+							$this->_set_field[$key]['extra_params']		= array_merge($this->_set_field[$key]['extra_params'], array($extra_params));
+						}
+						else
+						{
+							$this->_set_field[$key]['extra_params']		= array_merge(array($this->_set_field[$key]['extra_params']), array($extra_params));
+						}
+					}
+					
+					if(isset($this->_set_field[$key]['another_params']))
+					{
+						if(is_array($this->_set_field[$key]['another_params']))
+						{
+							$this->_set_field[$key]['another_params']	= array_merge($this->_set_field[$key]['another_params'], array($another_params));
+						}
+						else
+						{
+							$this->_set_field[$key]['another_params']	= array_merge(array($this->_set_field[$key]['another_params']), array($another_params));
+						}
+					}
+					
+					if(isset($this->_set_field[$key]['skip']))
+					{
+						if(is_array($this->_set_field[$key]['skip']))
+						{
+							$this->_set_field[$key]['skip'][]			= $skip;
+						}
+					}
+				}
 			}
 			else
 			{
@@ -795,7 +842,7 @@ class Core extends Controller
 					'parameter'						=> $parameter,
 					'extra_params'					=> $extra_params,
 					'another_params'				=> $another_params,
-					'skip_unit'						=> $skip,
+					'skip'							=> $skip,
 					'order'							=> $order
 				);
 			}
@@ -2385,7 +2432,7 @@ class Core extends Controller
 						'image'						=> (isset($select['image']) ? $select['image'] : (isset($select[3]) ? $select[3] : null))
 					);
 					$where							= $field['another_params'];
-					$join							= $field['skip_unit'];
+					$join							= $field['skip'];
 					$order							= $field['order'];
 					$keyword						= service('request')->getPost('q');
 					
@@ -3402,7 +3449,7 @@ class Core extends Controller
 				$original							= $params['original'];
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
-				$skip_unit							= (isset($this->_set_field[$field]['skip_unit']) ? $this->_set_field[$field]['skip_unit'] : null);
+				$skip								= (isset($this->_set_field[$field]['skip']) ? $this->_set_field[$field]['skip'] : null);
 				$hidden								= $params['hidden'];
 				$alias								= (isset($this->_merge_label[$field]) ? $this->_merge_label[$field] : (isset($this->_set_alias[$field]) ? $this->_set_alias[$field] : ucwords(str_replace('_', ' ', $field))));
 				$read_only							= (in_array('readonly', $type) ? ' readonly' : (in_array('disabled', $type) ? ' disabled' : null));
@@ -4127,7 +4174,7 @@ class Core extends Controller
 								}
 							}
 							
-							if($skip_unit)
+							if($skip)
 							{
 								if(is_array($parameter))
 								{

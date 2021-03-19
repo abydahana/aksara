@@ -144,11 +144,11 @@ if(isset($results->extra_action->toolbar))
 					{
 						foreach($results->table_data as $key => $val)
 						{
-							$extra_option			= null;
-							$extra_dropdown			= null;
-							$reading				= true;
-							$updating				= true;
-							$deleting				= true;
+							$extra_option				= null;
+							$extra_dropdown				= null;
+							$reading					= true;
+							$updating					= true;
+							$deleting					= true;
 							
 							if(isset($results->extra_action->option[$key]))
 							{
@@ -200,7 +200,7 @@ if(isset($results->extra_action->toolbar))
 								}
 							}
 							
-							$columns				= null;
+							$columns					= null;
 							
 							foreach($val as $field => $params)
 							{
@@ -210,30 +210,30 @@ if(isset($results->extra_action->toolbar))
 									
 									if(isset($results->unset_read->$field) && is_array($results->unset_read->$field) && in_array($params->original, $results->unset_read->$field))
 									{
-										$reading	= false;
+										$reading		= false;
 									}
 									
 									if(isset($results->unset_update->$field) && is_array($results->unset_update->$field) && in_array($params->original, $results->unset_update->$field))
 									{
-										$updating	= false;
+										$updating		= false;
 									}
 									
 									if(isset($results->unset_delete->$field) && is_array($results->unset_delete->$field) && in_array($params->original, $results->unset_delete->$field))
 									{
-										$deleting	= false;
+										$deleting		= false;
 									}
 								}
 								
 								if($params->hidden) continue;
 								
-								$columns			.= '
+								$columns				.= '
 									<td id="__c_' . $field . '">
 										' . $params->content . '
 									</td>
 								';
 							}
 							
-							$options				= (!isset($results->unset_action) || !in_array('delete', $results->unset_action) ? '
+							$options					= (!isset($results->unset_action) || !in_array('delete', $results->unset_action) ? '
 								<td>
 									' . ($deleting ? '<input type="checkbox" name="bulk_delete[]" class="checker-children" value="' . htmlspecialchars(json_encode($results->query_string[$key])) . '" />' : '') . '
 								</td>
