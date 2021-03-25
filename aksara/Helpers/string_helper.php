@@ -29,6 +29,7 @@ if(!function_exists('truncate'))
 		$string										= preg_replace('/<iframe.*?\/iframe>/i','', $string);
 		$string										= preg_replace('/<embed.*?\/embed>/i','', $string);
 		$string										= preg_replace('/<object.*?\/object>/i','', $string);
+		$string										= strip_tags($string);
 		$string										= str_replace('&nbsp;', ' ', $string);
 		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', $string));
 		

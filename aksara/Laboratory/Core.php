@@ -4076,7 +4076,7 @@ class Core extends Controller
 				}
 				elseif(in_array('textarea', $type))
 				{
-					$content						= '<textarea name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1"' . (in_array('autocomplete', $type) ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
+					$content						= '<textarea name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1"' . (in_array('autocomplete', $type) ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : htmlspecialchars($original)) . '</textarea>';
 				}
 				elseif(in_array('price_format', $type))
 				{
@@ -4125,7 +4125,7 @@ class Core extends Controller
 				}
 				elseif(in_array('hidden', $type))
 				{
-					$content						= '<input type="hidden" name="' . $field . '" value="' . ($default_value ? $default_value : $original) . $read_only . '" />';
+					$content						= '<input type="hidden" name="' . $field . '" value="' . ($default_value ? $default_value : htmlspecialchars($original)) . $read_only . '" />';
 				}
 				elseif(in_array('custom_format', $type))
 				{
@@ -4262,7 +4262,7 @@ class Core extends Controller
 				}
 				else
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" value="' . ($default_value ? $default_value : $original) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '"' . (in_array('autocomplete', $type) && $extra_params ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . ' />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" value="' . ($default_value ? $default_value : htmlspecialchars($original)) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '"' . (in_array('autocomplete', $type) && $extra_params ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . ' />';
 				}
 				
 				$fields[$field]						= array
@@ -8305,10 +8305,7 @@ class Core extends Controller
 						{
 							$prepare[$field]		= (is_array(service('request')->getPost($field)) ? json_encode(service('request')->getPost($field)) : service('request')->getPost($field));
 						}
-						if(!in_array('wysiwyg', $type) && isset($prepare[$field]))
-						{
-							$prepare[$field]		= (!is_json($prepare[$field]) ? truncate($prepare[$field]) : $prepare[$field]);
-						}
+						
 						if(!in_array('to_slug', $type) && !in_array('password', $type) && !in_array('encryption', $type))
 						{
 							if(isset($_POST[$field]) && null == $_POST[$field])
