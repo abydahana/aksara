@@ -1811,8 +1811,7 @@ class Model
 	 */
 	private function _run_query($result_type = null, $parameter = 'object')
 	{
-		$builder									= $this->db->table($this->_table);
-		
+		// check if request use a plain query
 		if($this->_query)
 		{
 			$output									= $this->db->query($this->_query)->$result_type($parameter);
@@ -1821,6 +1820,9 @@ class Model
 			
 			return $output;
 		}
+		
+		// otherwise create a builder class
+		$builder									= $this->db->table($this->_table);
 		
 		if($this->_select)
 		{
