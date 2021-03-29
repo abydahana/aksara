@@ -20,6 +20,7 @@ class Model
 	private $_field_data;
 	
 	private $_query;
+	private $_query_params;
 	
 	private $_called								= false;
 	
@@ -240,7 +241,7 @@ class Model
 	/**
 	 * Run the SQL command string
 	 */
-	public function query($query = null)
+	public function query($query = null, $params = array())
 	{
 		// convert multiple line to single line
 		$query										= preg_replace('/[\r\n]*/', '', $query);
@@ -258,6 +259,7 @@ class Model
 		}
 		
 		$this->_query								= $query;
+		$this->_query_params						= $params;
 		
 		return $this;
 	}
@@ -1814,7 +1816,7 @@ class Model
 		// check if request use a plain query
 		if($this->_query)
 		{
-			$output									= $this->db->query($this->_query)->$result_type($parameter);
+			$output									= $this->db->query($this->_query, $this->_query_params)->$result_type($parameter);
 			
 			$this->_reset_property();
 			
