@@ -4181,11 +4181,11 @@ class Core extends Controller
 									$this->model->where($parameter);
 								}
 								
-								$last_insert		= $this->model->select_max($field)->order_by($field, 'desc')->get($this->_from, 1)->row($field);
+								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_from, 1)->row($field);
 							}
 							else
 							{
-								$last_insert		= $this->model->select_max($field)->order_by($field, 'desc')->get_where($this->_from, $where, 1)->row($field);
+								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_from, $where, 1)->row($field);
 							}
 							
 							$last_insert			= explode('/', $last_insert);
