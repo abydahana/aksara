@@ -231,6 +231,21 @@
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="text-muted d-block" for="default_map_tile_input">
+								<?php echo $results->form_data->default_map_tile->label; ?>
+								<?php echo ($results->form_data->default_map_tile->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $results->form_data->default_map_tile->tooltip . '"></i>' : null); ?>
+								<?php echo ($results->form_data->default_map_tile->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+							</label>
+							<div class="input-group">
+								<?php echo $results->form_data->default_map_tile->content; ?>
+								<div class="input-group-append">
+									<a href="//wiki.openstreetmap.org/wiki/Tile_servers" class="btn btn-secondary" target="_blank">
+										<?php echo phrase('reference'); ?>
+									</a>
+								</div>
+							</div>
+						</div>
 						<hr />
 						<div class="row">
 							<div class="col-md-5">

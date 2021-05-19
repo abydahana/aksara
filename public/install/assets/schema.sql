@@ -264,6 +264,7 @@ CREATE TABLE `app__settings` (
   `google_analytics_key` varchar(32) NOT NULL,
   `openlayers_search_provider` varchar(10) NOT NULL,
   `openlayers_search_key` varchar(128) NOT NULL,
+  `default_map_tile` varchar(255) NOT NULL,
   `disqus_site_domain` varchar(128) NOT NULL,
   `facebook_app_id` varchar(22) NOT NULL,
   `facebook_app_secret` varchar(512) NOT NULL,

@@ -105,6 +105,20 @@ class Settings extends \Aksara\Laboratory\Core
 			),
 			'<br />'
 		)
+		->set_attribute
+		(
+			array
+			(
+				'default_map_tile'					=> 'placeholder="E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"'
+			)
+		)
+		->set_tooltip
+		(
+			array
+			(
+				'default_map_tile'					=> phrase('you_can_use_any_xyz_tile_source_as_default_map_tiles')
+			)
+		)
 		->set_relation
 		(
 			'app_language',
@@ -143,6 +157,7 @@ class Settings extends \Aksara\Laboratory\Core
 				'openlayers_search_provider'		=> 'in_list[openlayers,google,osm]',
 				'openlayers_search_key'				=> ($required_api_key ? $required_api_key . 'alpha_dash|max_length[128]' : null),
 				'maps_provider'						=> 'in_list[disabled,google,openlayers]',
+				'default_map_tile'					=> 'valid_url',
 				'google_analytics_key'				=> ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
 				'disqus_site_domain'				=> (service('request')->getPost('disqus_site_domain') ? 'valid_url|max_length[128]' : null),
 				

@@ -122,6 +122,7 @@ class Assets extends \Aksara\Laboratory\Core
 				language: "' . htmlspecialchars(get_userdata('language')) . '",
 				openlayers_search_provider: "' . htmlspecialchars(get_setting('openlayers_search_provider')) . '",
 				openlayers_search_key: "' . htmlspecialchars(get_setting('openlayers_search_key')) . '",
+				default_map_tile: "' . get_setting('default_map_tile') . '",
 				map_center: ' . (json_decode(get_setting('office_map')) ? get_setting('office_map') : '{}') . ',
 				google_auth: ' . (get_setting('google_client_id') && get_setting('google_client_secret') ? 'true' : 'false') . ',
 				facebook_auth: ' . (get_setting('facebook_app_id') && get_setting('facebook_app_secret') ? 'true' : 'false') . ',
