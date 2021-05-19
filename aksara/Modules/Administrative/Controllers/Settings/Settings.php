@@ -27,6 +27,7 @@ class Settings extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		$default_map_tile							= null;
 		$required_api_key							= null;
 		$required_analytic_key						= null;
 		$required_facebook_app_id					= null;
@@ -39,6 +40,11 @@ class Settings extends \Aksara\Laboratory\Core
 		if(service('request')->getPost('openlayers_search_provider') && in_array(service('request')->getPost('openlayers_search_provider'), array('google', 'osm')))
 		{
 			$required_api_key						= 'required|';
+		}
+		
+		if(service('request')->getPost('default_map_tile'))
+		{
+			$default_map_tile						= 'valid_url';
 		}
 		
 		if(service('request')->getPost('google_analytics_key'))
@@ -157,7 +163,7 @@ class Settings extends \Aksara\Laboratory\Core
 				'openlayers_search_provider'		=> 'in_list[openlayers,google,osm]',
 				'openlayers_search_key'				=> ($required_api_key ? $required_api_key . 'alpha_dash|max_length[128]' : null),
 				'maps_provider'						=> 'in_list[disabled,google,openlayers]',
-				'default_map_tile'					=> 'valid_url',
+				'default_map_tile'					=> $default_map_tile,
 				'google_analytics_key'				=> ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
 				'disqus_site_domain'				=> (service('request')->getPost('disqus_site_domain') ? 'valid_url|max_length[128]' : null),
 				
