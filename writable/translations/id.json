@@ -87,6 +87,7 @@
   "categories": "Kategori",
   "category": "Kategori",
   "changelog": "Catatan Perubahan",
+  "changes_will_not_saved_in_demo_mode": "Perubahan tidak akan disimpan dalam mode demonstrasi!",
   "characters": "Karakter",
   "check_activity_logs": "Periksa Catatan Aktifitas",
   "check_again": "Periksa Lagi",

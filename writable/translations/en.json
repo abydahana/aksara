@@ -87,6 +87,7 @@
   "categories": "Categories",
   "category": "Category",
   "changelog": "Changelog",
+  "changes_will_not_saved_in_demo_mode": "Changes will not saved in demo mode!",
   "characters": "Characters",
   "check_activity_logs": "Check Activity Logs",
   "check_again": "Check Again",
