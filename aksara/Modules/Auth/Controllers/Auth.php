@@ -309,7 +309,7 @@ class Auth extends \Aksara\Laboratory\Core
 	{
 		if(DEMO_MODE)
 		{
-			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), current_page());
+			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), current_page('../'));
 		}
 		
 		if($session)
