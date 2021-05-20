@@ -19,6 +19,12 @@ class Router
 		$this->_request								= \Config\Services::request();
 		$this->_uri_string							= trim(uri_string(), '/');
 		
+		if($this->_uri_string && method_exists($this->_request, 'setPath'))
+		{
+			// set path without trailing slash
+			$this->_request->setPath($this->_uri_string);
+		}
+		
 		$find_duplicate								= array_reverse(explode('/', $this->_uri_string));
 		$is_duplicate								= (isset($find_duplicate[0]) && isset($find_duplicate[1]) && $find_duplicate[0] == $find_duplicate[1] ? true : false);
 		
