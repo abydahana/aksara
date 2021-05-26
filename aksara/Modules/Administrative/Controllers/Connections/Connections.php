@@ -129,7 +129,7 @@ class Connections extends \Aksara\Laboratory\Core
 		)
 		->row();
 		
-		if(!$row)
+		if(!$query)
 		{
 			return throw_exception(404, phrase('the_database_connection_is_not_found'));
 		}
