@@ -72,6 +72,14 @@ class Model
 	
 	public function database_config($driver = null, $hostname = null, $port = null, $username = null, $password = null, $database = null)
 	{
+		if(!$driver)
+		{
+			// no config provided, use default connection instead
+			$this->db								= \Config\Database::connect();
+			
+			return false;
+		}
+		
 		// check if "default" connection (from app__connections) is selected
 		if('default' == $driver && !$this->_called)
 		{

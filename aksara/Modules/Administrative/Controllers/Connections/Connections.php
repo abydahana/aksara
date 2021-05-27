@@ -146,7 +146,7 @@ class Connections extends \Aksara\Laboratory\Core
 		
 		$this->connector							= $this->model->database_config($connection);
 		
-		if($this->connector['code'])
+		if(is_array($this->connector) && isset($this->connector['code']))
 		{
 			return throw_exception(403, $this->connector['message']);
 		}
