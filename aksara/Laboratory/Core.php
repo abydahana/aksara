@@ -8523,7 +8523,7 @@ class Core extends Controller
 		
 		$prepare									= array
 		(
-			'ip_address'							=> service('request')->getIPAddress(),
+			'ip_address'							=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
 			'browser'								=> $user_agent,
 			'platform'								=> $this->agent->getPlatform(),
 			'timestamp'								=> date('Y-m-d H:i:s')
