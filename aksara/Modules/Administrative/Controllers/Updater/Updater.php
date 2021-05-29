@@ -72,7 +72,8 @@ class Updater extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'timeout'							=> 5
+				'timeout'							=> 5,
+				'http_errors'						=> false
 			)
 		);
 		
@@ -125,7 +126,8 @@ class Updater extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'timeout'							=> 5
+				'timeout'							=> 5,
+				'http_errors'						=> false
 			)
 		);
 		

@@ -65,7 +65,8 @@ class Addons extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'timeout'						=> 5
+					'timeout'						=> 5,
+					'http_errors'					=> false
 				)
 			);
 			
@@ -139,7 +140,8 @@ class Addons extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'timeout'						=> 5
+					'timeout'						=> 5,
+					'http_errors'					=> false
 				)
 			);
 			
@@ -313,7 +315,8 @@ class Addons extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'timeout'							=> 5
+				'timeout'							=> 5,
+				'http_errors'						=> false
 			)
 		);
 		
