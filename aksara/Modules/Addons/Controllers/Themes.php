@@ -71,7 +71,7 @@ class Themes extends \Aksara\Laboratory\Core
 	{
 		if(DEMO_MODE)
 		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 		}
 		
 	}
@@ -100,7 +100,7 @@ class Themes extends \Aksara\Laboratory\Core
 		{
 			if(DEMO_MODE)
 			{
-				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 			}
 			elseif(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
 			{
@@ -199,7 +199,7 @@ class Themes extends \Aksara\Laboratory\Core
 		{
 			if(DEMO_MODE)
 			{
-				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 			}
 			
 			/* check if theme property is exists */

@@ -38,7 +38,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 	{
 		if(DEMO_MODE)
 		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 		}
 		
 		$error										= false;
