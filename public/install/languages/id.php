@@ -166,5 +166,6 @@ return array
 	'image_width_dimension' => 'Dimensi lebar gambar',
 	'original' => 'Asli',
 	'thumbnail' => 'Thumbnail',
-	'icon' => 'Ikon',
+	'icon' => 'Ikon',,
+	'zip_archiver' => 'Zip Archiver'
 );

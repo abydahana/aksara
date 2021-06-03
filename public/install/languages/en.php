@@ -168,4 +168,5 @@ return array
 	'original' => 'Original',
 	'thumbnail' => 'Thumbnail',
 	'icon' => 'Icon',
+	'zip_archiver' => 'Zip Archiver'
 );

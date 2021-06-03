@@ -80,7 +80,7 @@
 							' . phrase('rewrite_module') . '
 						</label>
 						<p>
-							' . (!$mod_rewrite ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!$mod_rewrite ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
 						</p>
 					</div>
 				</div>
@@ -92,7 +92,17 @@
 							' . phrase('internationalization') . ' (intl)
 						</label>
 						<p>
-							' . (!in_array('intl', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!in_array('intl', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
+						</p>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="d-block mb-0">
+							' . phrase('zip_archiver') . '
+						</label>
+						<p>
+							' . (!class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('disabled') . '</b>' : '<b class="text-success">' . phrase('enabled') . '</b>') . '
 						</p>
 					</div>
 				</div>
@@ -104,7 +114,7 @@
 							' . phrase('multibyte_string') . ' (mbstring)
 						</label>
 						<p>
-							' . (!in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
 						</p>
 					</div>
 				</div>
@@ -114,7 +124,7 @@
 							' . phrase('php_gd') . '
 						</label>
 						<p>
-							' . (!in_array('gd', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!in_array('gd', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
 						</p>
 					</div>
 				</div>
@@ -126,7 +136,7 @@
 							' . phrase('json') . '
 						</label>
 						<p>
-							' . (!in_array('json', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!in_array('json', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
 						</p>
 					</div>
 				</div>
@@ -136,7 +146,7 @@
 							' . phrase('xml') . '
 						</label>
 						<p>
-							' . (!in_array('xml', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') . '</b>' : '<b class="text-success">' . phrase('on') . '</b>') . '
+							' . (!in_array('xml', $extension) ? '<b class="text-danger">' . phrase('off') . '</b>, ' . phrase('turn_it_on') : '<b class="text-success">' . phrase('on') . '</b>') . '
 						</p>
 					</div>
 				</div>
