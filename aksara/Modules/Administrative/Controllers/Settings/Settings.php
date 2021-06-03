@@ -209,6 +209,7 @@ class Settings extends \Aksara\Laboratory\Core
 				'maps_provider'						=> phrase('maps_provider'),
 				'openlayers_search_provider'		=> phrase('openlayers_search_provider'),
 				'openlayers_search_key'				=> phrase('openlayers_search_key'),
+				'default_map_tile'					=> phrase('default_map_tile'),
 				'google_analytics_key'				=> phrase('google_analytics_key'),
 				'disqus_site_domain'				=> phrase('disqus_site_domain'),
 				
