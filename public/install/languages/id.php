@@ -26,6 +26,7 @@ return array
 	'username' => 'Nama Pengguna',
 	'password' => 'Kata Sandi',
 	'confirm_password' => 'Konfirmasi Sandi',
+	'available' => 'Tersedia',
 	
 	// Index
 	'checking_requirements' => 'Pemeriksaan Kebutuhan',

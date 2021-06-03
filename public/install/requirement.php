@@ -102,7 +102,7 @@
 							' . phrase('zip_archiver') . '
 						</label>
 						<p>
-							' . (!class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('disabled') . '</b>' : '<b class="text-success">' . phrase('enabled') . '</b>') . '
+							' . (!class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('disabled') . '</b>' : '<b class="text-success">' . phrase('available') . '</b>') . '
 						</p>
 					</div>
 				</div>

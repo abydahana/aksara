@@ -26,6 +26,7 @@ return array
 	'username' => 'Username',
 	'password' => 'Password',
 	'confirm_password' => 'Confirm Password',
+	'available' => 'Available',
 	
 	// Index
 	'checking_requirements' => 'Checking Requirements',
