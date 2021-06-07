@@ -41,16 +41,16 @@ class Facebook
 	
 	public function validate()
 	{
-		if(service('request')->getGet('code') && !get_userdata('facebook_access_token'))
+		if(service('request')->getGet('code') && !get_userdata('access_token'))
 		{
-			set_userdata('facebook_access_token', (string) $this->helper->getAccessToken());
+			set_userdata('access_token', (string) $this->helper->getAccessToken());
 			$oAuth2Client							= $this->client->getOAuth2Client();
-			$longLivedAccessToken					= $oAuth2Client->getLongLivedAccessToken(get_userdata('facebook_access_token'));
+			$longLivedAccessToken					= $oAuth2Client->getLongLivedAccessToken(get_userdata('access_token'));
 			
-			set_userdata('facebook_access_token', (string) $longLivedAccessToken);
+			set_userdata('access_token', (string) $longLivedAccessToken);
 		}
 		
-		$this->client->setDefaultAccessToken(get_userdata('facebook_access_token'));
+		$this->client->setDefaultAccessToken(get_userdata('access_token'));
 		
 		$user										= $this->client->get('/me?fields=name,first_name,last_name,email,picture');
 		$user										= $user->getGraphNode()->asArray();

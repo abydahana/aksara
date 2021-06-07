@@ -203,25 +203,11 @@ class Auth extends \Aksara\Laboratory\Core
 			$this->google->revokeToken();
 		}
 		
-		// get the session id
-		if(get_userdata('access_token') && session_id() !== get_userdata('access_token'))
-		{
-			$session_id								= array
-			(
-				session_id(),
-				get_userdata('access_token')
-			);
-		}
-		else
-		{
-			$session_id								= array(session_id());
-		}
-		
 		// destroy session
 		service('session')->destroy();
 		
 		// remove session from database
-		$this->model->where_in('id', array_filter($session_id))->delete('app__sessions');
+		$this->model->where('id', session_id())->delete('app__sessions');
 		
 		return throw_exception(301, phrase('you_were_logged_out'), base_url(), true);
 	}
