@@ -131,18 +131,11 @@ class Document
 		{
 			// use mPDF instead
 			// online doc can be found in https://mpdf.github.io/
-			$output									= $this->_mpdf($html, $filename, 'attach', $this->_params);
+			$output									= $this->_mpdf($html, $filename, ('embed' == $method ? 'attach' : 'download'), $this->_params);
 			
-			if($method == 'embed')
-			{
-				service('response')->setContentType('application/pdf');
-				
-				return service('response')->setBody($output)->send();
-			}
-			else
-			{
-				return $output;
-			}
+			service('response')->setContentType('application/pdf');
+			
+			return service('response')->setBody($output)->send();
 		}
 	}
 	
