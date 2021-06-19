@@ -4659,13 +4659,7 @@ class Core extends Controller
 				{
 					if($original != '0000-00-00 00:00:00')
 					{
-						$timestamp					= $original;
-						
-						if(strlen($timestamp) !== 10)
-						{
-							$timestamp				= strtotime($original);
-						}
-						
+						$timestamp					= strtotime($original);
 						$month						= date('F', $timestamp);
 						$month						= phrase($month);
 						$content					= date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ',' . date('H:i:s', $timestamp);
