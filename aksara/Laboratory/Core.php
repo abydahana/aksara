@@ -3302,6 +3302,7 @@ class Core extends Controller
 		$items										= service('request')->getPost('items');
 		$where										= null;
 		$affected_rows								= 0;
+		$ignored_rows								= 0;
 		
 		if(is_array($items) && sizeof($items) > 0)
 		{
@@ -3318,6 +3319,27 @@ class Core extends Controller
 			{
 				/* unset the field parameter that not exist in database table */
 				$val								= array_intersect_key(json_decode($val, true), $field_exists);
+				$ignore								= false;
+				
+				if($this->_unset_delete)
+				{
+					foreach($this->_unset_delete as $_key => $_val)
+					{
+						if(isset($val[$_key]) && in_array($val[$_key], $_val))
+						{
+							$ignore					= true;
+							
+							break;
+						}
+					}
+				}
+				
+				if($ignore)
+				{
+					$ignored_rows++;
+					
+					continue;
+				}
 				
 				/* get old data to prepare file deletion */
 				$query								= $this->model->get_where($table, $val, 1)->result();
