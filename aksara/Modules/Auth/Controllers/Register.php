@@ -153,6 +153,7 @@ class Register extends \Aksara\Laboratory\Core
 		$prepare									= array
 		(
 			'first_name'							=> service('request')->getPost('first_name'),
+			'last_name'								=> service('request')->getPost('last_name'),
 			'username'								=> service('request')->getPost('username'),
 			'email'									=> service('request')->getPost('email'),
 			'phone'									=> service('request')->getPost('phone'),
