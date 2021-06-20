@@ -4688,7 +4688,7 @@ class Core extends Controller
 					}
 					else
 					{
-						$content					= $original;
+						$content					= '&nbsp;';
 					}
 				}
 				elseif(in_array('date', $type) || in_array('datepicker', $type))
@@ -5053,20 +5053,14 @@ class Core extends Controller
 					{
 						if($original != '0000-00-00 00:00:00')
 						{
-							$timestamp				= $original;
-							
-							if(strlen($timestamp) !== 10)
-							{
-								$timestamp			= strtotime($original);
-							}
-							
+							$timestamp				= strtotime($original);
 							$month					= date('F', $timestamp);
 							$month					= phrase($month);
 							$content				= '<span data-toggle="tooltip" title="' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y - H:i:s', $timestamp) . '">' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . '</span>';
 						}
 						else
 						{
-							$content				= '<span data-toggle="tooltip" title="' . $original . '">' . $original . '</span>';
+							$content				= '&nbsp;';
 						}
 					}
 					elseif(in_array('date', $type) || in_array('datepicker', $type))
