@@ -452,31 +452,38 @@ class Auth extends \Aksara\Laboratory\Core
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
 		$host										= get_setting('smtp_host');
-		
-		if(!$host)
-		{
-			return false;
-		}
+		$username									= get_setting('smtp_username');
+		$password									= (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
+		$sender_email								= (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : service('request')->getServer('SERVER_ADMIN'));
+		$sender_name								= (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
 		
 		$this->email								= \Config\Services::email();
 		
-		$config['userAgent']       					= 'Aksara';
-		$config['protocol']							= 'smtp';
-		$config['SMTPCrypto']						= 'ssl';
-		$config['SMTPHost']							= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-		$config['SMTPPort']							= get_setting('smtp_port');
-		$config['SMTPUser']							= get_setting('smtp_username');
-		$config['SMTPPass']							= (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-		$config['SMTPTimeout']						= 5;
+		if($host && $username && $password)
+		{
+			$config['userAgent']       				= 'Aksara';
+			$config['protocol']						= 'smtp';
+			$config['SMTPCrypto']					= 'ssl';
+			$config['SMTPTimeout']					= 5;
+			$config['SMTPHost']						= (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
+			$config['SMTPPort']						= get_setting('smtp_port');
+			$config['SMTPUser']						= $username;
+			$config['SMTPPass']						= $password;
+		}
+		else
+		{
+			$config['protocol']						= 'mail';
+		}
+		
 		$config['charset']							= 'utf-8';
 		$config['newline']							= "\r\n";
 		$config['mailType']							= 'html'; // text or html
 		$config['wordWrap']							= true;
 		$config['validation']						= true; // bool whether to validate email or not
 		
-		$this->email->initialize($config);		
+		$this->email->initialize($config);	
 		
-		$this->email->setFrom(get_setting('smtp_email_masking'), get_setting('smtp_sender_masking'));
+		$this->email->setFrom($sender_email, $sender_name);
 		$this->email->setTo($session->email);
 		
 		$this->email->setSubject(phrase('welcome_to') . ' ' . get_setting('app_name'));
@@ -515,6 +522,11 @@ class Auth extends \Aksara\Laboratory\Core
 				</body>
 			</html>
 		');
+		
+		if(!$this->email->send())
+		{
+			// return throw_exception(400, array('message' => $this->email->printDebugger()));
+		}
 	}
 	
 	/**

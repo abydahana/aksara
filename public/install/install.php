@@ -255,6 +255,7 @@
 					office_map,
 					frontend_registration,
 					default_membership_group,
+					auto_active_registration,
 					username_changes,
 					openlayers_search_provider,
 					action_sound
@@ -275,6 +276,7 @@
 					"[]",
 					1,
 					3,
+					1,
 					1,
 					"openlayers",
 					1
