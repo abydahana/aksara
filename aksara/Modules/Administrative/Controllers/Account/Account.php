@@ -96,7 +96,6 @@ class Account extends \Aksara\Laboratory\Core
 				'username'							=> $username_required . 'alpha_dash|unique[app__users.username.user_id.' . get_userdata('user_id') . ']',
 				'bio'								=> 'string',
 				'address'							=> 'string',
-				'country'							=> 'required',
 				'language_id'						=> 'required'
 			)
 		)
