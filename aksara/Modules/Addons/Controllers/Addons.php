@@ -51,7 +51,7 @@ class Addons extends \Aksara\Laboratory\Core
 				'error'								=> phrase('the_curl_module_is_not_enabled')
 			);
 		}
-		elseif(!@fsockopen('www.aksaracms.com', 80))
+		elseif(!@fsockopen('www.aksaracms.com', 443))
 		{
 			return array
 			(
@@ -126,7 +126,7 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(403, phrase('the_curl_module_is_not_enabled'), go_to());
 		}
-		elseif(!@fsockopen('www.aksaracms.com', 80))
+		elseif(!@fsockopen('www.aksaracms.com', 443))
 		{
 			return array
 			(
@@ -273,7 +273,7 @@ class Addons extends \Aksara\Laboratory\Core
 				'error'								=> phrase('the_curl_module_is_not_enabled')
 			);
 		}
-		elseif(!@fsockopen('www.aksaracms.com', 80))
+		elseif(!@fsockopen('www.aksaracms.com', 443))
 		{
 			return array
 			(

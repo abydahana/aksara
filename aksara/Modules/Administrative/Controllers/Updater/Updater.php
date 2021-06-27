@@ -63,7 +63,7 @@ class Updater extends \Aksara\Laboratory\Core
 	 */
 	public static function ping_upstream($changelog = false)
 	{
-		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 80))
+		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 443))
 		{
 			return false;
 		}
@@ -117,7 +117,7 @@ class Updater extends \Aksara\Laboratory\Core
 			$this->_validate_form();
 		}
 		
-		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 80))
+		if(!function_exists('curl_init') || !function_exists('curl_exec') || !@fsockopen('www.aksaracms.com', 443))
 		{
 			return false;
 		}
