@@ -38,7 +38,7 @@ class Activities extends \Aksara\Laboratory\Core
 		->unset_view('id, user_id')
 		->add_action('toolbar', 'truncate', phrase('clear_logs'), 'btn-primary --open-delete-confirm', 'mdi mdi-delete-empty')
 		->set_field('timestamp', 'current_timestamp')
-		->set_field('first_name', 'hyperlink', 'administrative/users/read', array('user_id' => 'user_id'))
+		->set_field('first_name', 'hyperlink', 'user', array('user_id' => 'user_id'), true)
 		->set_field('path', 'custom_format', '<a href="' . base_url('{path}') . '" class="--xhr" data-toggle="tooltip" title="{path}"><b><i class="mdi mdi-open-in-new"></i> ' . phrase('click_to_open') . '</b></a>')
 		->unset_action('create, update')
 		->column_order('first_name')

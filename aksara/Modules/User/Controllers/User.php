@@ -15,6 +15,25 @@ class User extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		if(service('request')->getGet('user_id'))
+		{
+			$query									= $this->model->get_where
+			(
+				$this->_table,
+				array
+				(
+					'user_id'						=> service('request')->getGet('user_id')
+				),
+				1
+			)
+			->row('username');
+			
+			if($query)
+			{
+				return throw_exception(301, null, current_page($query, array('user_id' => null)), true);
+			}
+		}
 	}
 	
 	public function index($username = null)
