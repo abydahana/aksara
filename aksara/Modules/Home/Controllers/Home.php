@@ -11,7 +11,7 @@
  */
 class Home extends \Aksara\Laboratory\Core
 {
-	public function index($partial_error = null)
+	public function index()
 	{
 		$this->set_title(phrase('welcome_to') . ' ' . get_setting('app_name'))
 		->set_description(get_setting('app_description'))
@@ -20,7 +20,7 @@ class Home extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'error'								=> ($partial_error ? true : false),
+				'error'								=> $this->_validate(),
 				'permission'						=> array
 				(
 					'uploads'						=> (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
@@ -30,5 +30,28 @@ class Home extends \Aksara\Laboratory\Core
 		)
 		
 		->render();
+	}
+	
+	/**
+	 * this validation indicates the installation whether success or not
+	 */
+	private function _validate()
+	{
+		$query										= $this->model->get_where
+		(
+			'blogs',
+			array
+			(
+			),
+			1
+		)
+		->row();
+		
+		if($query)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }
