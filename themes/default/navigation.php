@@ -35,7 +35,7 @@
 		<span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarExpand">
-		<div class="p-3 user-bg-masking d-lg-none d-xl-none" onclick="component.profile($(this))" data-translations="<?php echo htmlspecialchars(json_encode($translations)); ?>">
+		<div class="p-3 user-bg-masking d-lg-none d-xl-none">
 			<div class="row">
 				<div class="col-3">
 					<img src="<?php echo get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded" />
@@ -54,10 +54,15 @@
 							if(get_userdata('is_logged'))
 							{
 								echo '
-									<button type="button" class="btn btn-outline-primary btn-xs">
+									<a href="' . base_url('xhr/partial/account') . '" class="btn btn-outline-primary btn-xs d-lg-none d-xl-none --modal --force-xs">
 										<i class="mdi mdi-cogs"></i>
 										' . phrase('account') . '
-									</button>
+									</a>
+									<a href="' . base_url('xhr/partial/language') . '" class="btn btn-xs float-right d-lg-none d-xl-none --modal --force-xs">
+										<i class="mdi mdi-translate"></i>
+										' . phrase('language') . '
+										<i class="mdi mdi-chevron-down"></i>
+									</a>
 								';
 							}
 							else
@@ -66,6 +71,11 @@
 									<a href="' . base_url('auth') . '" class="--xhr btn btn-outline-primary btn-xs d-lg-none d-xl-none">
 										<i class="mdi mdi-login"></i>
 										' . phrase('sign_in') . '
+									</a>
+									<a href="' . base_url('xhr/partial/language') . '" class="btn btn-xs float-right d-lg-none d-xl-none --modal --force-xs">
+										<i class="mdi mdi-translate"></i>
+										' . phrase('language') . '
+										<i class="mdi mdi-chevron-down"></i>
 									</a>
 								';
 							}

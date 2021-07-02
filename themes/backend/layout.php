@@ -1,15 +1,3 @@
-<?php
-	$translations								= array();
-	$languages									= get_languages();
-	
-	if($languages)
-	{
-		foreach($languages as $key => $val)
-		{
-			$translations[$val->code]			= $val->language;
-		}
-	}
-?>
 <!DOCTYPE html>
 <html lang="en"<?php echo (in_array(get_userdata('language'), array('ar')) ? ' dir="rtl"' : null); ?>>
 	<head>
@@ -33,15 +21,19 @@
 		<?php include_once('breadcrumb.php'); ?>
 		
 		<div id="sidebar-wrapper" class="aksara-sidebar sidebar-menu">
-			<div class="p-3 user-bg-masking hide-on-collapse" onclick="component.profile($(this))" data-translations="<?php echo htmlspecialchars(json_encode($translations)); ?>" data-guidelines-url="<?php echo base_url('pages/guidelines', array('backend' => 1)); ?>">
+			<div class="p-3 user-bg-masking hide-on-collapse">
 				<div class="row">
 					<div class="col-3 col-sm-2 col-lg-4">
-						<img src="<?php echo get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded" />
+						<a href="<?php echo base_url('user'); ?>">
+							<img src="<?php echo get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded" />
+						</a>
 					</div>
 					<div class="col-9 col-sm-10 col-lg-8 pl-0">
-						<h6 class="mb-0 text-break-word mb-0">
-							<?php echo get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>
-						</h6>
+						<a href="<?php echo base_url('user'); ?>">
+							<h6 class="mb-0 text-break-word mb-0">
+								<?php echo get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>
+							</h6>
+						</a>
 						<p class="text-sm">
 							<i class="mdi mdi-circle text-success"></i>
 							
@@ -50,10 +42,15 @@
 							?>
 						</p>
 						<p class="d-lg-none d-xl-none mb-0">
-							<button type="button" class="btn btn-outline-primary btn-xs">
+							<a href="<?php echo base_url('xhr/partial/account'); ?>" class="btn btn-outline-primary btn-xs --modal --force-xs">
 								<i class="mdi mdi-cogs"></i>
 								<?php echo phrase('account'); ?>
-							</button>
+							</a>
+							<a href="<?php echo base_url('xhr/partial/language'); ?>" class="btn btn-xs float-right --modal --force-xs">
+								<i class="mdi mdi-translate"></i>
+								<?php echo phrase('language'); ?>
+								<i class="mdi mdi-chevron-down"></i>
+							</a>
 						</p>
 					</div>
 				</div>
