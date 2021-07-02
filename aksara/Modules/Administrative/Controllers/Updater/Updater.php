@@ -695,7 +695,7 @@ class Updater extends \Aksara\Laboratory\Core
 		foreach($data as $key => $val)
 		{
 			// in order to keep the file in writable and skipping update the updater script
-			if(in_array($path, array('themes/', 'themes\\', 'writable/', 'writable\\'))) continue;
+			if(in_array($path, array('writable/', 'writable\\'))) continue;
 			
 			if(is_array($val))
 			{
