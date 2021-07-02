@@ -35,7 +35,7 @@
 						<div class="col-6">
 							<button type="submit" class="btn btn-primary btn-block">
 								<i class="mdi mdi-check"></i> 
-								<?php echo phrase('sign_in'); ?>
+								<?php echo phrase('reset_password'); ?>
 							</button>
 						</div>
 					</div>
