@@ -54,9 +54,6 @@
 				</p>
 			</div>
 			<div class="container-fluid pt-3 pb-3">
-				<h6 class="mb-3">
-					' . phrase('changelog') . '
-				</h6>
 				<div class="row">
 					<div class="col-md-8">
 						' . $changelog . '
@@ -67,6 +64,12 @@
 					<i class="mdi mdi-update"></i>
 					' . phrase('update_now') . '
 				</a>
+				' . (isset($updater->server_version) ? '
+				<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark ml-3">
+					<i class="mdi mdi-hammer"></i>
+					' . phrase('manual_update') . '
+				</a>
+				' : null) . '
 			</div>
 		';
 	}

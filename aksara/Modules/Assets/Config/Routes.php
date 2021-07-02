@@ -1,4 +1,4 @@
-<?php namespace Aksara\Modules\Assets\Config;
+<?php
 /**
  * Extra route of current module
  *
