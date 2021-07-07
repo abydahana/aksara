@@ -1898,8 +1898,8 @@ ol.guide li::before
 	transform: translateZ(0);
 	border-radius: inherit; /* inherit from parent (rounded buttons etc) */
 	pointer-events: none; /* allow user interaction */
-          animation: ripple-shadow 0.4s forwards;
-  -webkit-animation: ripple-shadow 0.4s forwards
+	animation: ripple-shadow 0.4s forwards;
+	-webkit-animation: ripple-shadow 0.4s forwards
 }
 
 .rippleWave
@@ -1910,8 +1910,8 @@ ol.guide li::before
 	transform: scale(0.7); -webkit-transform: scale(0.7);
 	background: rgba(255,255,255, 1);
 	opacity: 0.45;
-	animation: ripple 2s forwards;
-	-webkit-animation: ripple 2s forwards
+	animation: ripple 1s forwards;
+	-webkit-animation: ripple 1s forwards
 }
 
 @keyframes ripple-shadow

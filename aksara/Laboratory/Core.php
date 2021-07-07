@@ -4389,6 +4389,7 @@ class Core extends Controller
 				$original							= $params['original'];
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
+				$another_params						= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 				$hidden								= $params['hidden'];
 				$alias								= (isset($this->_merge_label[$field]) ? $this->_merge_label[$field] : (isset($this->_set_alias[$field]) ? $this->_set_alias[$field] : ucwords(str_replace('_', ' ', $field))));
 				$read_only							= (in_array('readonly', $type) ? ' readonly' : (in_array('disabled', $type) ? ' disabled' : null));
@@ -4875,7 +4876,7 @@ class Core extends Controller
 						if(!$skip)
 						{
 							$content				= '
-								<a href="' . base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+								<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 									<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 										<i class="mdi mdi-open-in-new"></i>' . $content . '
 									</b>
@@ -5306,7 +5307,7 @@ class Core extends Controller
 							if(!$skip)
 							{
 								$content			= '
-									<a href="' . base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+									<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 										<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 											<i class="mdi mdi-open-in-new"></i>' . $content . '
 										</b>
