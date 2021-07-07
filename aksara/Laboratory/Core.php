@@ -4837,6 +4837,64 @@ class Core extends Controller
 					}
 				}
 				
+				if(in_array('hyperlink', $type))
+				{
+					if(isset($extra_params) && is_array($extra_params))
+					{
+						$hyperlink_params			= array_search('hyperlink', $type);
+						$skip						= false;
+						$uri						= array('per_page' => null, 'order' => null, 'column' => null, 'sort' => null, 'q' => null);
+						
+						if(isset($extra_params[$hyperlink_params]) && is_array($extra_params[$hyperlink_params]))
+						{
+							foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
+							{
+								$uri[$url_key]		= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+							}
+						}
+						else
+						{
+							foreach($extra_params as $url_key => $url_val)
+							{
+								$uri[$url_key]		= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+							}
+						}
+						
+						if(is_array($another_params))
+						{
+							foreach($another_params as $key_except => $val_except)
+							{
+								if(isset($val[$key_except]['original']) && $val[$key_except]['original'] != $val_except)
+								{
+									$skip			= true;
+								}
+							}
+							$another_params			= null;
+						}
+						
+						if(!$skip)
+						{
+							$content				= '
+								<a href="' . base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+									<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
+										<i class="mdi mdi-open-in-new"></i>' . $content . '
+									</b>
+								</a>
+							';
+						}
+					}
+					else
+					{
+						$content					= '
+							<a href="' . $this->_set_field[$field]['parameter'] . '" class="--xhr" style="display:block">
+								<b>
+									<i class="mdi mdi-open-in-new"></i>' . $content . '
+								</b>
+							</a>
+						';
+					}
+				}
+				
 				$fields[$field]						= array
 				(
 					'type'							=> $type,
