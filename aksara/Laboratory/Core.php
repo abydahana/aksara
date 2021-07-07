@@ -5282,14 +5282,14 @@ class Core extends Controller
 							{
 								foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
 								{
-									$uri[$url_key]	= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : '');
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
 								}
 							}
 							else
 							{
 								foreach($extra_params as $url_key => $url_val)
 								{
-									$uri[$url_key]	= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : '');
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
 								}
 							}
 							
@@ -5297,7 +5297,7 @@ class Core extends Controller
 							{
 								foreach($another_params as $key_except => $val_except)
 								{
-									if(isset($serialized[$key_except]['original']) && $serialized[$key_except]['original'] != $val_except)
+									if(isset($val[$key_except]['original']) && $val[$key_except]['original'] != $val_except)
 									{
 										$skip		= true;
 									}
