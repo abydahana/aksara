@@ -4789,6 +4789,10 @@ class Core extends Controller
 						$content					= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 					}
 				}
+				elseif(in_array('textarea', $type))
+				{
+					$content						= preg_replace('/\n/', '<br />', preg_replace('/(\s{4})\s+/','$1', $content));
+				}
 				elseif(in_array('email', $type))
 				{
 					$content						= '<a href="mailto:' . $content . '">' . $content . '</a>';
@@ -5238,6 +5242,10 @@ class Core extends Controller
 						{
 							$content				= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 						}
+					}
+					elseif(in_array('textarea', $type))
+					{
+						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', $content));
 					}
 					elseif(in_array('email', $type))
 					{
