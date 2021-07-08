@@ -46,8 +46,8 @@
 			foreach($spotlight as $key => $val)
 			{
 				$posts								.= '
-					<div class="item">
-						<div class="card border-0 shadow mr-3 mb-5 ml-3">
+					<div class="swiper-slide">
+						<div class="card border-0 shadow mb-5">
 							<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
 								<div class="relative rounded-top" style="background:url(' . get_image('blogs', $val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 									<div class="clip gradient-top rounded-top"></div>
@@ -80,10 +80,12 @@
 				<p class="text-center text-md-left">
 					' . phrase('an_article_spotlight_you_may_want_to_know') . '
 				</p>
-				<div class="row">
-					<div class="owl-carousel owl-theme" data-nav="1" data-md-items="3" data-lg-items="3">
+				<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="3" data-autoplay="1" data-space-between="30">
+					<div class="swiper-wrapper">
 						' . $posts . '
 					</div>
+					<div class="swiper-button-next"></div>
+					<div class="swiper-button-prev"></div>
 				</div>
 			';
 		?>
@@ -100,8 +102,8 @@
 				foreach($val->posts as $_key => $_val)
 				{
 					$posts							.= '
-						<div class="item">
-							<div class="card border-0 shadow mr-3 mb-5 ml-3">
+						<div class="swiper-slide">
+							<div class="card border-0 shadow mb-5">
 								<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">
 									<div class="relative rounded-top" style="background:url(' . get_image('blogs', $_val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 										<div class="clip gradient-top rounded-top"></div>
@@ -136,10 +138,12 @@
 					<p class="text-center text-md-left">
 						' . $val->category_description . '
 					</p>
-					<div class="row">
-						<div class="owl-carousel owl-theme" data-nav="1" data-md-items="3" data-lg-items="4">
+					<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="4" data-autoplay="1" data-space-between="30">
+						<div class="swiper-wrapper">
 							' . $posts . '
 						</div>
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
 					</div>
 				';
 			}
