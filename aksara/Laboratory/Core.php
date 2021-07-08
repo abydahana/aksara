@@ -1841,7 +1841,15 @@ class Core extends Controller
 		{
 			foreach($params['where'] as $key => $val)
 			{
-				if(stripos(trim($key), ' NOT IN') !== false)
+				if(is_numeric($key) && stripos(trim($val), ' NOT IN') !== false)
+				{
+					$this->model->where($val, null, true);
+				}
+				elseif(is_numeric($key) && stripos(trim($val), ' IN') !== false)
+				{
+					$this->model->where($val, null, true);
+				}
+				elseif(stripos(trim($key), ' NOT IN') !== false)
 				{
 					$this->model->where_not_in(str_ireplace(' NOT IN', null, $key), $val);
 				}
