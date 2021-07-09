@@ -474,7 +474,7 @@ CREATE TABLE IF NOT EXISTS `app__rest_api` (
 CREATE TABLE `app__sessions` (
   `id` varchar(128) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
-  `timestamp` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
