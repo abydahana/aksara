@@ -470,12 +470,12 @@ CREATE TABLE IF NOT EXISTS `app__rest_api` (
 --
 -- Table structure for table `app__sessions`
 --
-
-CREATE TABLE `app__sessions` (
+CREATE TABLE IF NOT EXISTS `app__sessions` (
   `id` varchar(128) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  `data` blob NOT NULL
+  `data` blob NOT NULL,
+  KEY `app__sessions_timestamp` (`timestamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

@@ -53,6 +53,12 @@ class Seeder
 			$this->_modify_activity_log_table();
 		}
 		
+		if($this->db->fieldExists('module', 'app__sessions'))
+		{
+			// modify app__sessions table
+			$this->_modify_session_table();
+		}
+		
 		if($this->db->fieldExists('module', 'app__groups_privileges'))
 		{
 			// modify app__groups table
@@ -233,6 +239,34 @@ class Seeder
 		
 		$dbforge->modifyColumn('app__activity_logs', $column);
 		$dbforge->dropColumn('app__activity_logs', 'module,submodule,controller');
+	}
+	
+	private function _modify_session_table()
+	{
+		$fields										= $this->db->getFieldData('app__sessions');
+		
+		if($fields)
+		{
+			foreach($fields as $key => $val)
+			{
+				if($val->name == 'timestamp' && $val->type != 'timestamp')
+				{
+					$dbforge						= \Config\Database::forge();
+					
+					$column							= array
+					(
+						$val->name					=> array
+						(
+							'type'					=> 'TIMESTAMP',
+							'default'				=> 'CURRENT_TIMESTAMP '
+						)
+					);
+					
+					$dbforge->dropColumn('app__sessions', 'timestamp');
+					$dbforge->addColumn('app__sessions', $column);
+				}
+			}
+		}
 	}
 	
 	private function _modify_group_table()
