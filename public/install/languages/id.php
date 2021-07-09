@@ -16,6 +16,8 @@ return array
 	'you_need_to_update_your_php_version' => 'Anda perlu memperbarui PHP ke versi yang lebih tinggi. Versi minimum yang dibutuhkan adalah PHP 7.3',
 	'please_run' => 'Silakan jalankan',
 	'from' => 'dari',
+	'click_here' => 'Klik di sini',
+	'to_download_the_composer_if_it_is_not_yet_installed_in_your_web_server' => 'untuk mengunduh Composer apabila belum terpasang pada web server Anda.',
 	'to_fetch_the_required_repository_before_we_start_the_installation_wizard' => 'untuk mendapatkan aset yang diperlukan sebelum kita lanjutkan ke tahap instalasi.',
 	'whoops' => 'Galat!',
 	'back' => 'Kembali',
@@ -167,6 +169,6 @@ return array
 	'image_width_dimension' => 'Dimensi lebar gambar',
 	'original' => 'Asli',
 	'thumbnail' => 'Thumbnail',
-	'icon' => 'Ikon',,
+	'icon' => 'Ikon',
 	'zip_archiver' => 'Zip Archiver'
 );
