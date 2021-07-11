@@ -119,7 +119,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	 */
 	public function unique($value = null, $params = null, $data = array()) : bool
 	{
-		$params										= explode('.', $params);
+		$params										= explode('.', str_replace(',', '.', $params));
 		
 		if($params)
 		{
