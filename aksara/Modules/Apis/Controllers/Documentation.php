@@ -52,8 +52,8 @@ class Documentation extends \Aksara\Laboratory\Core
 			array
 			(
 				'group_id'							=> 0,
-				'group_name'						=> 'Public',
-				'group_description'					=> 'blaaidad adh',
+				'group_name'						=> phrase('public'),
+				'group_description'					=> null,
 				'group_privileges'					=> json_encode
 				(
 					array
@@ -144,9 +144,9 @@ class Documentation extends \Aksara\Laboratory\Core
 		
 		$exception									= array
 		(
-			'status'								=> 'HTTP Status Code',
-			'message'								=> 'Exception message',
-			'target'								=> 'Redirect URL'
+			'status'								=> phrase('http_status_code'),
+			'message'								=> phrase('exception_message'),
+			'target'								=> phrase('redirect_url')
 		);
 		
 		$curl										= \Config\Services::curlrequest
@@ -208,7 +208,7 @@ class Documentation extends \Aksara\Laboratory\Core
 					{
 						if(!$_val->required) continue;
 						
-						$error['message'][$_key]	= 'Validation message';
+						$error['message'][$_key]	= phrase('validation_message');
 					}
 					
 					$error['status']				= 400;
@@ -227,15 +227,15 @@ class Documentation extends \Aksara\Laboratory\Core
 		
 		if(isset($output['export']))
 		{
-			$output['export']['response'][$s]	= 'Binary file';
+			$output['export']['response'][$s]		= phrase('binary_file');
 		}
 		if(isset($output['print']))
 		{
-			$output['print']['response'][$s]		= 'HTML file';
+			$output['print']['response'][$s]		= phrase('html_file');
 		}
 		if(isset($output['pdf']))
 		{
-			$output['pdf']['response'][$s]			= 'Binary file';
+			$output['pdf']['response'][$s]			= phrase('binary_file');
 		}
 		
 		return make_json

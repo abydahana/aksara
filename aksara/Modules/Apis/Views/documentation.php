@@ -81,10 +81,10 @@
 								<thead>
 									<tr>
 										<th>
-											Group Name
+											' . phrase('group_name') . '
 										</th>
 										<th>
-											Privileges
+											' . phrase('privileges') . '
 										</th>
 									</tr>
 								</thead>
@@ -109,7 +109,7 @@
 				
 				echo '
 					<h4 class="mt-3 mb-3">
-						Request Method
+						' . phrase('request_method') . '
 					</h4>
 				';
 				
@@ -133,23 +133,23 @@
 								</div>
 							</div>
 							<h5 class="mt-3 mb-3">
-								Header
+								' . phrase('header') . '
 							</h5>
 							<div class="table-responsive">
 								<table class="table table-bordered table-sm">
 									<thead>
 										<tr>
 											<th>
-												Field
+												' . phrase('field') . '
 											</th>
 											<th>
-												Type
+												' . phrase('type') . '
 											</th>
 											<th>
-												Description
+												' . phrase('description') . '
 											</th>
 											<th width="100" class="text-center">
-												Required
+												' . phrase('required') . '
 											</th>
 										</tr>
 									</thead>
@@ -164,11 +164,11 @@
 												String
 											</td>
 											<td>
-												The valid API key that been added in API Services.
+												' . phrase('the_valid_api_key_that_been_added_in_api_services') . '
 											</td>
 											<td class="text-center">
 												<span class="badge badge-danger">
-													Required
+													' . phrase('required') . '
 												</span>
 											</td>
 										</tr>
@@ -183,11 +183,11 @@
 												String
 											</td>
 											<td>
-												The token that given from authentication callback (handshake).
+												' . phrase('the_token_that_given_from_authentication_response') . '
 											</td>
 											<td class="text-center">
 												<span class="badge badge-danger">
-													Required
+													' . phrase('required') . '
 												</span>
 											</td>
 										</tr>
@@ -202,23 +202,23 @@
 							</div>
 							<div class="--query-' . $val . ' d-none">
 								<h5 class="mt-3 mb-3">
-									Query String
+									' . phrase('query_string') . '
 								</h5>
 								<div class="table-responsive">
 									<table class="table table-bordered table-sm">
 										<thead>
 											<tr>
 												<th>
-													Field
+													' . phrase('field') . '
 												</th>
 												<th>
-													Type
+													' . phrase('type') . '
 												</th>
 												<th>
-													Description
+													' . phrase('description') . '
 												</th>
 												<th width="100" class="text-center">
-													Required
+													' . phrase('required') . '
 												</th>
 											</tr>
 										</thead>
@@ -229,23 +229,23 @@
 							</div>
 							<div class="--parameter-' . $val . ' d-none">
 								<h5 class="mt-3 mb-3">
-									Parameter
+									' . phrase('parameter') . '
 								</h5>
 								<div class="table-responsive">
 									<table class="table table-bordered table-sm">
 										<thead>
 											<tr>
 												<th>
-													Field
+													' . phrase('field') . '
 												</th>
 												<th>
-													Type
+													' . phrase('type') . '
 												</th>
 												<th>
-													Description
+													' . phrase('description') . '
 												</th>
 												<th width="100" class="text-center">
-													Required
+													' . phrase('required') . '
 												</th>
 											</tr>
 										</thead>
@@ -256,13 +256,13 @@
 							</div>
 							<div class="--response-success-' . $val . ' d-none">
 								<h5 class="mt-3 mb-3">
-									Success Response
+									' . phrase('success_response') . '
 								</h5>
 								<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
 							</div>
 							<div class="--response-error-' . $val . ' d-none">
 								<h5 class="mt-3 mb-3">
-									Error Response
+									' . phrase('error_response') . '
 								</h5>
 								<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
 							</div>
@@ -329,7 +329,7 @@
 								$('.--query-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _val + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge badge-danger">Required</span></td></tr>').appendTo('.--query-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _val + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge badge-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
 						})
 					}
 					
@@ -342,7 +342,7 @@
 								$('.--parameter-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge badge-danger">Required</span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge badge-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
 						})
 					}
 					
