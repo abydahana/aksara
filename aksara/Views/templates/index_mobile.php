@@ -230,7 +230,7 @@
 				}
 				
 				echo '
-					<div class="row bg-light pt-3 pb-3">
+					<div class="row bg-light pt-' . (!$key ? '3' : '0') . ' pb-3">
 						<div class="col-12">
 							<div class="border rounded overflow-hidden">
 								<ul class="list-group list-group-flush">
