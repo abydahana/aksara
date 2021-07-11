@@ -474,8 +474,7 @@ CREATE TABLE IF NOT EXISTS `app__sessions` (
   `id` varchar(128) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  `data` blob NOT NULL,
-  KEY `app__sessions_timestamp` (`timestamp`)
+  `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -886,7 +885,6 @@ ALTER TABLE `app__rest_api`
 -- Indexes for table `app__sessions`
 --
 ALTER TABLE `app__sessions`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `app__sessions_timestamp` (`timestamp`);
 
 --

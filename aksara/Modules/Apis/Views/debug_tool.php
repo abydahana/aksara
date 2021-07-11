@@ -1,6 +1,6 @@
 <div class="container-fluid pt-3 pb-3">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--api-debug">
-		<div class="row border-bottom">
+		<div class="row border-bottom --apply-increase-one">
 			<div class="col-md-10">
 				<div class="input-group mb-3">
 					<select name="method" class="form-control" style="max-width:100px">
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		<div style="margin-right:-15px; margin-left:-15px">
-			<nav style="margin-top:-1px; margin-right:-1px; margin-left:-1px">
+			<nav class="--apply-increase-two" style="margin-top:-1px; margin-right:-1px; margin-left:-1px">
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
 					<a class="nav-item nav-link rounded-0" data-toggle="tab" href="#params-headers" role="tab">
 						<?php echo phrase('request_headers'); ?>
@@ -95,7 +95,9 @@
 					</button>
 				</div>
 				<div class="tab-pane show active" id="results-pretty" role="tabpanel">
-					<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
+					<div class="pane-wrapper border-top">
+						<pre class="rounded-0 bg-white mt-0 mb-0 language-javascript"><code>{}</code></pre>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -198,7 +200,24 @@
 				
 				$('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send'),
 				$('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4)),
-				Prism.highlightAll()
+				Prism.highlightAll();
+				
+				if(UA !== 'mobile')
+				{
+					$('.pane-wrapper').mCustomScrollbar
+					({
+						autoHideScrollbar: true,
+						axis: 'y',
+						scrollInertia: 170,
+						mouseWheelPixels: 170,
+						setHeight: $(window).outerHeight(true) - (($('.navbar').length ? $('.navbar').outerHeight(true) : 0) + ($('.alias-table-header').length ? $('.alias-table-header').outerHeight(true) : 0) + ($('.--apply-increase-one').length ? $('.--apply-increase-one').outerHeight(true) : 0) + ($('.--apply-increase-two').length ? $('.--apply-increase-two').outerHeight(true) : 0) + 65),
+						advanced:
+						{
+							updateOnContentResize: true
+						},
+						autoHideScrollbar: false
+					})
+				}
 			})
 		})
 	})

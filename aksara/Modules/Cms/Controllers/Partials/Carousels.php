@@ -57,7 +57,7 @@ class Carousels extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'title'								=> 'required',
+				'carousel_title'					=> 'required',
 				'language_id'						=> 'required',
 				'status'							=> 'boolean'
 			)

@@ -47,7 +47,7 @@
 			{
 				$posts								.= '
 					<div class="swiper-slide">
-						<div class="card border-0 shadow mb-5">
+						<div class="card border-0 shadow-sm mb-5">
 							<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
 								<div class="relative rounded-top" style="background:url(' . get_image('blogs', $val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 									<div class="clip gradient-top rounded-top"></div>
@@ -80,12 +80,10 @@
 				<p class="text-center text-md-left">
 					' . phrase('an_article_spotlight_you_may_want_to_know') . '
 				</p>
-				<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="3" data-autoplay="1" data-space-between="30">
+				<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="3" data-autoplay="1" data-space-between="30" data-navigation="1">
 					<div class="swiper-wrapper">
 						' . $posts . '
 					</div>
-					<div class="swiper-button-next"></div>
-					<div class="swiper-button-prev"></div>
 				</div>
 			';
 		?>
@@ -103,7 +101,7 @@
 				{
 					$posts							.= '
 						<div class="swiper-slide">
-							<div class="card border-0 shadow mb-5">
+							<div class="card border-0 shadow-sm mb-5">
 								<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">
 									<div class="relative rounded-top" style="background:url(' . get_image('blogs', $_val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 										<div class="clip gradient-top rounded-top"></div>
@@ -138,12 +136,10 @@
 					<p class="text-center text-md-left">
 						' . $val->category_description . '
 					</p>
-					<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="4" data-autoplay="1" data-space-between="30">
+					<div class="swiper-container swiper" data-sm-items="1" data-md-items="2" data-lg-items="4" data-autoplay="1" data-space-between="30" data-navigation="1">
 						<div class="swiper-wrapper">
 							' . $posts . '
 						</div>
-						<div class="swiper-button-next"></div>
-						<div class="swiper-button-prev"></div>
 					</div>
 				';
 			}

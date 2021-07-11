@@ -69,6 +69,16 @@ class Menus extends \Aksara\Laboratory\Core
 			)
 		)
 		
+		->set_validation
+		(
+			array
+			(
+				'menu_label'						=> 'required',
+				'menu_placement'					=> 'required|in_list[header,sidebar]',
+				'status'							=> 'boolean'
+			)
+		)
+		
 		->render($this->_table);
 	}
 	

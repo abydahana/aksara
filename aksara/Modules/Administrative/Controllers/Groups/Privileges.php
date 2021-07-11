@@ -44,15 +44,15 @@ class Privileges extends \Aksara\Laboratory\Core
 		->unset_field('id, last_generated')
 		->set_field('privileges', 'custom_format', $this->_privileges())
 		->set_field('last_generated', 'current_timestamp')
+		->order_by('module')
 		->set_validation
 		(
 			array
 			(
-				'module_alias'						=> 'required',
-				'module_slug'						=> 'required'
+				'path'								=> 'required',
+				'privileges'						=> 'required'
 			)
 		)
-		->order_by('module')
 		->set_alias
 		(
 			array

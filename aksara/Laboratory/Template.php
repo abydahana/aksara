@@ -1164,6 +1164,13 @@ class Template
 							'label'					=> 'Debug Tool',
 							'slug'					=> 'apis/debug_tool',
 							'icon'					=> 'mdi mdi-android-debug-bridge'
+						),
+						array
+						(
+							'id'					=> 0,
+							'label'					=> 'Documentation',
+							'slug'					=> 'apis/documentation',
+							'icon'					=> 'mdi mdi mdi-book-open-page-variant'
 						)
 					)
 				)

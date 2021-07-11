@@ -55,7 +55,7 @@ class Faqs extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'title'								=> 'required',
+				'faq_title'							=> 'required',
 				'language_id'						=> 'required',
 				'status'							=> 'boolean'
 			)

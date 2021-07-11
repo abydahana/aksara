@@ -109,7 +109,7 @@
 									' . $_val->question . '
 								</a>
 							</div>
-							<div id="collapse_' . $_key . '" class="collapse" aria-labelledby="heading_' . $_key . '" data-parent="#accordionExample">
+							<div id="collapse_' . $_key . '" class="collapse' . (!$key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-parent="#accordionExample">
 								<div class="card-body">
 									' . $_val->answer . '
 								</div>

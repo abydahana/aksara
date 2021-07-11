@@ -263,15 +263,17 @@ class Core extends Controller
 			// handshake betwiin REST client and Aksara
 			$this->_handshake(service('request')->getHeaderLine('X-API-KEY'));
 		}
+		else
+		{
+			// push log
+			$this->_push_log();
+		}
 		
 		// set upload path
 		$this->set_upload_path();
 		
 		// set user language
 		$this->_set_language(get_userdata('language_id'));
-		
-		// push log
-		$this->_push_log();
 		
 		//print_r(service('router')->getMatchedRoute());exit;
 	}
@@ -2268,7 +2270,7 @@ class Core extends Controller
 			if(in_array($this->_method, array('read', 'update', 'delete', 'export', 'print', 'pdf')))
 			{
 				/* set limit of modification action */
-				if(in_array($this->_method, array('read', 'update', 'delete')))
+				if(in_array($this->_method, array('read', 'update', 'delete')) || ($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN'))))
 				{
 					$this->_limit					= 1;
 				}
@@ -2629,7 +2631,11 @@ class Core extends Controller
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			
-			if($this->_method == 'create')
+			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			{
+				$this->_query						= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_from))), ''));
+			}
+			elseif($this->_method == 'create')
 			{
 				$this->_query						= array(array_flip($this->model->list_fields($this->_from)));
 			}
@@ -2779,35 +2785,73 @@ class Core extends Controller
 		/**
 		 * Prepare the output
 		 */
-		$this->_output								= array
-		(
-			'_token'								=> sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')),
-			'method'								=> $this->_method,
-			'breadcrumb'							=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query),
-			'current_page'							=> current_page(null, service('request')->getGet()),
-			'meta'									=> array
-			(
-				'description'						=> $this->_set_description,
-				'icon'								=> $this->_set_icon,
-				'title'								=> $this->_set_title,
-				'modal_size'						=> $this->_modal_size
-			),
-			'results'								=> $this->_results,
-			'total'									=> $this->_total,
-			'pagination'							=> array
-			(
-				'offset'							=> $this->_offset,
-				'per_page'							=> $this->_limit,
-				'total_rows'						=> $this->_total,
-				'url'								=> current_page(null, array('per_page' => null))
-			),
-			'query_string'							=> service('request')->getGet(),
-			'elapsed_time'							=> service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time')
-		);
-		
-		if(isset($this->_set_template['read']) || isset($this->_set_template['form']))
+		if($this->_api_request)
 		{
-			$this->_output['modal_html']			= true;
+			$results								= (isset($this->_results['table_data']) ? $this->_results['table_data'] : (isset($this->_results['form_data']) ? $this->_results['form_data'] : $this->_results));
+			
+			if(!$results && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			{
+				$results							= array();
+			}
+			elseif($results && 'index' == $this->_method && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			{
+				$this->_total						= sizeof($results);
+			}
+			
+			$this->_output							= array
+			(
+				'method'							=> $this->_method,
+				'query_string'						=> $this->_set_primary,
+				'results'							=> $results
+			);
+			
+			if(in_array($this->_method, array('index')))
+			{
+				$this->_output['total']				= ($this->_total ? $this->_total : 0);
+			}
+			
+			if($this->_set_output)
+			{
+				$this->_output						= array_merge($this->_output, $this->_set_output);
+			}
+			
+			if(service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			{
+				return make_json($this->_output);
+			}
+		}
+		else
+		{
+			$this->_output							= array
+			(
+				'_token'							=> sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')),
+				'method'							=> $this->_method,
+				'breadcrumb'						=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query),
+				'current_page'						=> current_page(null, service('request')->getGet()),
+				'meta'								=> array
+				(
+					'description'					=> $this->_set_description,
+					'icon'							=> $this->_set_icon,
+					'title'							=> $this->_set_title,
+					'modal_size'					=> $this->_modal_size
+				),
+				'results'							=> $this->_results,
+				'total'								=> $this->_total,
+				'pagination'						=> array
+				(
+					'offset'						=> $this->_offset,
+					'per_page'						=> $this->_limit,
+					'total_rows'					=> $this->_total,
+					'url'							=> current_page(null, array('per_page' => null))
+				),
+				'query_string'						=> service('request')->getGet(),
+				'elapsed_time'						=> service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time')
+			);
+			
+			if(isset($this->_set_template['read']) || isset($this->_set_template['form']))
+			{
+				$this->_output['modal_html']			= true;
+			}
 		}
 		
 		/**
@@ -2905,7 +2949,7 @@ class Core extends Controller
 					return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), $this->_redirect_back);
 				}
 			}
-			elseif($this->_api_request && 'POST' == env('REQUEST_METHOD'))
+			elseif($this->_api_request && 'POST' == env('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || method_exists($this, $this->_form_callback)))
 			{
 				/**
 				 * Indicate the method is requested through API
@@ -2941,9 +2985,13 @@ class Core extends Controller
 					}
 					else
 					{
-						if(in_array($this->_method, array('create', 'read', 'update')) || ($this->_api_request && !$this->_output->total))
+						if(in_array($this->_method, array('create', 'read', 'update')))
 						{
 							unset($this->_output->total, $this->_output->pagination);
+						}
+						elseif($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != env('REQUEST_METHOD'))
+						{
+							unset($this->_output->pagination);
 						}
 						
 						if(isset($this->_output->pagination))
@@ -2962,7 +3010,7 @@ class Core extends Controller
 							/**
 							 * Indicate the method is requested through API
 							 */
-							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 						}
 						
 						return make_json
@@ -3014,7 +3062,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if($table && $this->model->table_exists($table))
@@ -3065,7 +3113,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if($table && $this->model->table_exists($table))
@@ -3178,7 +3226,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* check if app on demo mode */
@@ -3297,7 +3345,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* check if app on demo mode */
@@ -3421,12 +3469,12 @@ class Core extends Controller
 	 */
 	public function render_form($data = array())
 	{
-		if($this->_api_request && 'POST' != env('REQUEST_METHOD'))
+		if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != env('REQUEST_METHOD'))
 		{
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable'));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if(!$data && !$this->_insert_on_update_fail && 'autocomplete' != service('request')->getPost('method'))
@@ -4307,6 +4355,13 @@ class Core extends Controller
 					'prepend'						=> (isset($this->_field_prepend[$field]) ? $this->_field_prepend[$field] : null),
 					'append'						=> (isset($this->_field_append[$field]) ? $this->_field_append[$field] : null)
 				);
+				
+				if($this->_api_request)
+				{
+					unset($fields[$field]['tooltip'], $fields[$field]['original'], $fields[$field]['content'], $fields[$field]['position'], $fields[$field]['append'], $fields[$field]['prepend']);
+					
+					$fields[$field]['value']		= (service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? $original : null);
+				}
 			}
 		}
 		
@@ -4404,6 +4459,7 @@ class Core extends Controller
 				$read_only							= (in_array('readonly', $type) ? ' readonly' : (in_array('disabled', $type) ? ' disabled' : null));
 				$extra_class						= (isset($this->_add_class[$field]) ? ' ' . $this->_add_class[$field] : null);
 				$validation							= (isset($this->_set_validation[$field]) ? explode('|', $this->_set_validation[$field]) : array());
+				$required							= (in_array('required', $validation) ? 1 : 0);
 				$position							= (isset($this->_field_position[$field]) ? $this->_field_position[$field] : 1);
 				
 				/**
@@ -4911,12 +4967,20 @@ class Core extends Controller
 				
 				$fields[$field]						= array
 				(
+					'required'						=> $required,
 					'type'							=> $type,
 					'label'							=> $alias,
 					'content'						=> $content,
 					'original'						=> $original,
 					'position'						=> $position
 				);
+				
+				if($this->_api_request)
+				{
+					unset($fields[$field]['required'], $fields[$field]['content'], $fields[$field]['original'], $fields[$field]['position']);
+					
+					$fields[$field]['value']		= (service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? null : $original);
+				}
 			}
 		}
 		
@@ -5350,11 +5414,19 @@ class Core extends Controller
 					$fields[$field]					= array
 					(
 						'label'						=> (isset($this->_merge_label[$field]) ? $this->_merge_label[$field] : (isset($this->_set_alias[$field]) ? $this->_set_alias[$field] : ucwords(str_replace('_', ' ', $field)))),
+						'primary'					=> ($primary ? true : false),
+						'hidden'					=> $hidden,
 						'content'					=> $content,
-						'original'					=> $original,
-						'primary'					=> ($primary ? $original : null),
-						'hidden'					=> $hidden
+						'original'					=> $original
 					);
+					
+					if($this->_api_request)
+					{
+						unset($fields[$field]['content'], $fields[$field]['original']);
+						
+						$fields[$field]['type']		= $type;
+						$fields[$field]['value']	= (service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? 'mixed' : $original);
+					}
 					
 					/**
 					 * save primary key to be generated as token
@@ -5377,6 +5449,11 @@ class Core extends Controller
 				}
 				
 				$query_string[]						= $uri_parameter;
+				
+				if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+				{
+					break;
+				}
 			}
 		}
 		
@@ -8014,6 +8091,11 @@ class Core extends Controller
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
+		if('update' == $this->_method && !$this->_where && !$this->_insert_on_update_fail)
+		{
+			return throw_exception(404, phrase('the_data_you_want_to_update_is_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
+		}
+		
 		/* serialize the fields */
 		$serialized									= $this->serialize($data);
 		
@@ -8023,9 +8105,6 @@ class Core extends Controller
 			
 			foreach($serialized[0] as $key => $val)
 			{
-				/* check if field is manageable through API */
-				if($this->_api_request_parameter && !in_array($key, $this->_api_request_parameter)) continue;
-				
 				$type								= $val['type'];
 				
 				if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($key, $this->_unset_field)) || (in_array($key, $this->_unset_field) && !isset($this->_set_default[$key])) || in_array('disabled', $type)) continue;
@@ -8145,9 +8224,6 @@ class Core extends Controller
 				
 				foreach($serialized[0] as $field => $value)
 				{
-					/* check if field is manageable through API */
-					if($this->_api_request_parameter && !in_array($field, $this->_api_request_parameter)) continue;
-					
 					$type							= $value['type'];
 					
 					/* skip field because it were disable */
@@ -8421,7 +8497,7 @@ class Core extends Controller
 				}
 				else
 				{
-					return throw_exception(500, phrase('the_method_you_requested_is_not_allowed') . ': <b>(' . ($this->_set_method ? $this->_set_method : $this->_method) . ')</b>', $this->_redirect_back);
+					return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 		}
@@ -8498,6 +8574,16 @@ class Core extends Controller
 			1
 		)
 		->row();
+		
+		if(!$api_service && $api_key == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+		{
+			$api_service							= (object) array
+			(
+				'ip_range'							=> null,
+				'method'							=> json_encode(array(env('REQUEST_METHOD'))),
+				'status'							=> 1
+			);
+		}
 		
 		if(!$api_service)
 		{

@@ -95,7 +95,12 @@ class Connections extends \Aksara\Laboratory\Core
 			array
 			(
 				'year'								=> 'required',
-				'name'								=> 'required'
+				'name'								=> 'required',
+				'year'								=> 'required',
+				'database_driver'					=> 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3]',
+				'hostname'							=> 'required',
+				'username'							=> 'required',
+				'database_name'						=> 'required'
 			)
 		)
 		->set_alias

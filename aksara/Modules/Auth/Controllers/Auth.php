@@ -184,7 +184,7 @@ class Auth extends \Aksara\Laboratory\Core
 				}
 			}
 			
-			return throw_exception(400, array('password' => phrase('username_or_email_and_password_did_not_match') . '<hr class="mt-0 mb-1" /><a href="' . current_page('forgot') . '" class="--xhr"><b>' . phrase('click_here') . '</b></a> ' . phrase('to_reset_your_password')));
+			return throw_exception(400, array('password' => phrase('username_or_email_and_password_did_not_match')));
 		}
 	}
 	
