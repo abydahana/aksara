@@ -72,7 +72,7 @@
 							<div class="row">
 								<div class="col-3 col-sm-3">
 									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr">
-										<img id="og-image" src="' . get_image('blogs', $val->featured_image, 'thumb') . '" class="img-fluid rounded" />
+										<img id="og-image" src="' . get_image('blogs', $val->featured_image, 'thumb') . '" class="img-fluid rounded-more" />
 									</a>
 								</div>
 								<div class="col-9 col-sm-9">

@@ -150,12 +150,16 @@
 											' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
 											<div class="row no-gutters">
 												<div class="col-3 col-sm-2">
-													<img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded" />
+													<a href="' . base_url('user/' . $val->username) . '" target="_blank">
+														<img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded" />
+													</a>
 												</div>
 												<div class="col-9 col-sm-10 pl-3">
-													<b>
-														' . $val->first_name . ' ' . $val->last_name . '
-													</b>
+													<a href="' . base_url('user/' . $val->username) . '" target="_blank">
+														<b>
+															' . $val->first_name . ' ' . $val->last_name . '
+														</b>
+													</a>
 													<p class="mb-0 text-sm text-muted">
 														' . $val->group_name . '
 													</p>

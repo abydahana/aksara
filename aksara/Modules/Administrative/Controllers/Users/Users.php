@@ -184,7 +184,7 @@ class Users extends \Aksara\Laboratory\Core
 		}
 		
 		return '
-			<select name="group" class="form-control input-sm bordered" placeholder="' . phrase('group') . '">
+			<select name="group" class="form-control form-control-sm bordered" placeholder="' . phrase('group') . '">
 				' . $output . '
 			</select>
 		';

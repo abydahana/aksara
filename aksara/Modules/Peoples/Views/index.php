@@ -20,7 +20,7 @@
 			{
 				$output						.= '
 					<div class="col-6 col-md-4 col-lg-3">
-						<div class="card border-0 shadow mb-3">
+						<div class="card border-0 rounded-more shadow mb-3">
 							<a href="' . go_to($val->people_slug) . '" class="--xhr">
 								<img src="' . get_image('peoples', $val->photo, 'thumb') . '" class="card-img-top" alt="' . $val->first_name . ' '  . $val->last_name . '" width="100%" />
 							</a>
