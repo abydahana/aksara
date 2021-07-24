@@ -55,8 +55,7 @@ h5,
 h6
 {
 	margin-bottom: 0;
-	font-weight: 500;
-	line-height: 1.5
+	font-weight: 500
 }
 
 .tooltip
@@ -396,33 +395,25 @@ a:hover,
 	box-shadow: none
 }
 
-.rounded
-{
-	overflow: hidden
-}
-
 .rounded-more
 {
-	border-radius: 1rem!important;
-	-webkit-border-radius: 1rem!important;
-	-moz-border-radius: 1rem!important;
-	overflow: hidden
+	border-radius: 2rem!important;
+	-webkit-border-radius: 2rem!important;
+	-moz-border-radius: 2rem!important
 }
 
 .rounded-more .card-header:first-child
 {
-	border-radius: 1rem 1rem 0 0!important;
-	-webkit-border-radius: 1rem 1rem 0 0!important;
-	-moz-border-radius: 1rem 1rem 0 0!important;
-	overflow: hidden
+	border-radius: 2rem 2rem 0 0!important;
+	-webkit-border-radius: 2rem 2rem 0 0!important;
+	-moz-border-radius: 2rem 2rem 0 0!important
 }
 
 .rounded-more .card-footer:last-child
 {
-	border-radius: 0 0 1rem 1rem!important;
-	-webkit-border-radius: 0 0 1rem 1rem!important;
-	-moz-border-radius: 0 0 1rem 1rem!important;
-	overflow: hidden
+	border-radius: 0 0 2rem 2rem!important;
+	-webkit-border-radius: 0 0 2rem 2rem!important;
+	-moz-border-radius: 0 0 2rem 2rem!important
 }
 
 .modal-content
@@ -857,12 +848,6 @@ input::-webkit-inner-spin-button
 .select2-dropdown.select2-lg .select2-results__options::-webkit-scrollbar-track
 {
 	height: 1rem
-}
-
-.select2-dropdown-sm .select2-results__option
-{
-	padding: 0 8px;
-	font-size: 14px
 }
 
 input[type=checkbox],

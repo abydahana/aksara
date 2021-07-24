@@ -86,7 +86,7 @@ class Template
 		
 		// strip view folder if parent current module matches with parent module
 		$base_view									= str_replace('/Views/' . $parent_module . '/', '/Views/', $base_view);
-		$base_view									= str_replace('/' . $current_module . '/' . $current_module . '/', '/' . $current_module . '/', $base_view);
+		$base_view									= str_replace('/Views/' . $current_module . '/' . $current_module . '/', '/Views/' . $current_module . '/', $base_view);
 		
 		if(strtolower($current_module) == $view)
 		{
