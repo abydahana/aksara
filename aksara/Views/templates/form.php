@@ -46,7 +46,7 @@
 				$col								.= '
 					<div class="' . (isset($results->field_size->$val) ? $results->field_size->$val : 'col') . '">
 						<div class="form-group">
-							<label class="text-muted d-block mb-0" for="' . $val . '_input">
+							<label class="text-muted d-block" for="' . $val . '_input">
 								' . $results->form_data->$val->label . '
 								' . ($results->form_data->$val->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $results->form_data->$val->tooltip . '"></i>' : null) . '
 								' . ($results->form_data->$val->required ? '<b class="text-danger"> *</b>' : null) . '
@@ -120,7 +120,7 @@
 			
 			$output									= '
 				<div class="form-group">
-					<label class="text-muted d-block mb-0" for="' . $field . '_input">
+					<label class="text-muted d-block" for="' . $field . '_input">
 						' . $params->label . '
 						' . ($params->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $params->tooltip . '"></i>' : null) . '
 						' . ($params->required ? '<b class="text-danger"> *</b>' : null) . '

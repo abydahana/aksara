@@ -96,7 +96,7 @@ class Privileges extends \Aksara\Laboratory\Core
 					<div class="col-md-6 privilege mt-1">
 						' . (in_array($this->_method, array('create', 'update')) ? '
 							<div class="input-group input-group-sm">
-								<input type="text" name="privileges[]" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="' . $val . '" />
+								<input type="text" name="privileges[]" class="form-control input-sm bordered" placeholder="' . phrase('example') . ': create" value="' . $val . '" />
 								<div class="input-group-append">
 									<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
 										<i class="mdi mdi-window-close"></i>
@@ -118,7 +118,7 @@ class Privileges extends \Aksara\Laboratory\Core
 			$output									.= '
 				<div class="col-md-6 privilege mt-1">
 					<div class="input-group input-group-sm">
-						<input type="text" name="privileges[]" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
+						<input type="text" name="privileges[]" class="form-control input-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
 						<div class="input-group-append">
 							<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
 								<i class="mdi mdi-window-close"></i>
@@ -132,7 +132,7 @@ class Privileges extends \Aksara\Laboratory\Core
 			<div class="row">
 				<div class="col-md-6 privilege mt-1" style="display:none">
 					<div class="input-group input-group-sm">
-						<input type="text" name="" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
+						<input type="text" name="" class="form-control input-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
 						<div class="input-group-append">
 							<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
 								<i class="mdi mdi-window-close"></i>
