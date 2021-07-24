@@ -208,7 +208,7 @@ class Blogs extends \Aksara\Laboratory\Core
 		}
 		
 		return '
-			<select name="category" class="form-control form-control-sm bordered" placeholder="' . phrase('category') . '">
+			<select name="category" class="form-control input-sm bordered" placeholder="' . phrase('category') . '">
 				' . $output . '
 			</select>
 		';

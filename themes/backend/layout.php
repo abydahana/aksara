@@ -62,7 +62,7 @@
 		
 		<div id="content-placeholder">
 			<div class="container-fluid d-none d-md-none d-lg-block d-xl-block">
-				<div class="row alias-table-header border-bottom">
+				<div class="row alias-table-header pt-1 border-bottom">
 					<div class="col-8">
 						<h5 class="text-truncate">
 							<i class="<?php echo $meta->icon; ?>" id="will-be-replace-with-icon"></i>
