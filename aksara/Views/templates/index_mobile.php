@@ -162,7 +162,7 @@
 				{
 					if($params->hidden) continue;
 					$columns						.= '
-						<li class="list-group-item pt-2 pb-1">
+						<li class="list-group-item border-0 pt-' . (!$row ? '1' : '0') . ' pb-1">
 							<div class="row">
 								<label class="col-4 text-muted">
 									' . $params->label . '
@@ -217,7 +217,7 @@
 						if($_key == 3) break;
 						
 						$item_option				.= '
-							<a href="' . $_val['url'] . '" class="text-truncate pt-0 pb-0 ' . $_val['class'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
+							<a href="' . $_val['url'] . '" class="text-truncate pt-1 pb-1 ' . $_val['class'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
 								<i class="' . $_val['icon'] . '"></i>
 								<span class="d-block text-sm">
 									' . $_val['label'] . '
@@ -230,18 +230,18 @@
 				}
 				
 				echo '
-					<div class="row bg-light pt-' . (!$key ? '3' : '0') . ' pb-3">
+					<div class="row pb-3">
 						<div class="col-12">
-							<div class="border rounded overflow-hidden">
+							<div class="pt-3 pb-2 shadow" style="margin-left:-15px; margin-right:-15px">
 								<ul class="list-group list-group-flush">
 									' . $columns . '
 								</ul>
-								<div class="btn-group d-flex bg-light border-top">
+								<div class="btn-group d-flex bg-white border-top">
 								
 									' . $item_option . '
 									
 									' . ($extra_option ? '
-									<a href="" class="btn --open-item-option pt-0 pb-0" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '">
+									<a href="" class="btn --open-item-option pt-1 pb-1" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '">
 										<i class="mdi mdi-dots-horizontal-circle-outline"></i>
 										<span class="d-block text-sm">
 											' . phrase('more') . '

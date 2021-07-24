@@ -134,7 +134,7 @@ class Model
 		if(!$this->db->connect())
 		{
 			// connection couldn't be made, throw error
-			return $this->db->error();
+			return throw_exception(403, $this->db->error()['message']);
 		}
 		
 		return $this;
@@ -1812,6 +1812,16 @@ class Model
 		$this->db->transRollback();
 		
 		return $this;
+	}
+	
+	/**
+	 * Error
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function error()
+	{
+		return $this->db->error();
 	}
 	
 	/**

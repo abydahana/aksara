@@ -101,11 +101,11 @@
 					/* show featured image */
 					if($results[0]->featured_image)
 					{
-						echo '<a href="' . get_image('blogs', $results[0]->featured_image) . '" target="_blank"><img id="og-image" src="' . get_image('blogs', $results[0]->featured_image) . '" class="img-fluid rounded" width="100%" /></a>';
+						echo '<a href="' . get_image('blogs', $results[0]->featured_image) . '" target="_blank"><img id="og-image" src="' . get_image('blogs', $results[0]->featured_image) . '" class="img-fluid rounded-more" width="100%" /></a>';
 					}
 					
 					/* show post content */
-					echo preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $output);
+					echo preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded-more"', $output);
 				}
 				else
 				{

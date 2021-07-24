@@ -42,7 +42,7 @@
 				
 				echo '
 					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card shadow border-0">
+						<div class="card shadow border-0 rounded-more mb3">
 							<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
 								<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
 									<div class="clip gradient-top rounded-top"></div>
