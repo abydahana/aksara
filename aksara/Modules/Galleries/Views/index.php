@@ -44,7 +44,7 @@
 						}
 						
 						echo '
-							<div class="rounded mb-5" style="overflow:hidden">
+							<div class="rounded-more shadow-sm mb-5">
 								<div class="row no-gutters">
 									<div class="col-' . (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)) . ' text-center d-flex align-items-center" style="background:url(' . get_image('galleries', $album_cover) . ') center center no-repeat; background-size:cover; min-height:320px">
 										<div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">

@@ -47,7 +47,7 @@
 			{
 				$posts								.= '
 					<div class="swiper-slide">
-						<div class="card border-0 shadow-sm mb-5">
+						<div class="card border-0 rounded-more shadow-sm mb-5">
 							<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
 								<div class="relative rounded-top" style="background:url(' . get_image('blogs', $val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 									<div class="clip gradient-top rounded-top"></div>
@@ -101,7 +101,7 @@
 				{
 					$posts							.= '
 						<div class="swiper-slide">
-							<div class="card border-0 shadow-sm mb-5">
+							<div class="card border-0 rounded-more shadow-sm mb-5">
 								<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">
 									<div class="relative rounded-top" style="background:url(' . get_image('blogs', $_val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
 										<div class="clip gradient-top rounded-top"></div>
