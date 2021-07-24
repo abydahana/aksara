@@ -175,6 +175,7 @@ class Core extends Controller
 	private $_insert_on_update_fail					= false;
 	
 	public $_method									= null;
+	public $_parent_module							= null;
 	public $_insert_id								= 0;
 	
 	public function __construct()
@@ -351,14 +352,14 @@ class Core extends Controller
 	
 	/**
 	 * parent_module
-	 * Assign the parent module of current class
+	 * Tell the parent module of current requested class
 	 *
 	 * @access		public
-	 * @return		exception
+	 * @return 		mixed
 	 */
 	public function parent_module($module = null)
 	{
-		$this->_module								= $module;
+		$this->_parent_module						= $module;
 		
 		return $this;
 	}
@@ -526,18 +527,7 @@ class Core extends Controller
 	 */
 	public function set_title($magic_string = null, $placeholder = null)
 	{
-		if(is_array($magic_string))
-		{
-			foreach($magic_string as $key => $val)
-			{
-				$this->_set_title[$key]				= $val;
-			}
-		}
-		else
-		{
-			$this->_set_title						= $magic_string;
-		}
-		
+		$this->_set_title							= $magic_string;
 		$this->_set_title_placeholder				= $placeholder;
 		
 		return $this;
@@ -2041,6 +2031,7 @@ class Core extends Controller
 	 */
 	public function set_autocomplete($field = null, $selected_value = null, $formatting = null, $where = array(), $join = array(), $order_by = array(), $group_by = null, $limit = null)
 	{
+		service('request')->getPost('method', '--skip--autocomplete');
 		$value										= (isset($formatting['value']) ? $formatting['value'] : (isset($formatting[0]) ? $formatting[0] : null));
 		$label										= (isset($formatting['label']) ? $formatting['label'] : (isset($formatting[1]) ? $formatting[1] : null));
 		$description								= (isset($formatting['description']) ? $formatting['description'] : (isset($formatting[2]) ? $formatting[2] : null));
@@ -2089,12 +2080,12 @@ class Core extends Controller
 		$this->_unset_column[]						= $field;
 		$this->_unset_view[]						= $field;
 		
-		if(!in_array($this->_method, array('create', 'update', 'delete')) || ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('origin')))
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
 		{
 			$this->_join[$relation_table]			= array
 			(
 				'condition'							=> $relation_table . '.' . $relation_key . ' = {primary_table}. ' . $field,
-				'type'								=> ''
+				'type'								=> null
 			);
 			
 			if($join)
@@ -2104,7 +2095,7 @@ class Core extends Controller
 					$this->_join[$val[0]]			= array
 					(
 						'condition'					=> $val[1],
-						'type'						=> (isset($val[2]) ? $val[2] : '')
+						'type'						=> (isset($val[2]) ? $val[2] : null)
 					);
 				}
 			}
@@ -2488,9 +2479,7 @@ class Core extends Controller
 					{
 						foreach($join as $key => $val)
 						{
-							if(!isset($val[0]) || !isset($val[1])) continue;
-							
-							$this->model->join($val[0], $val[1]);
+							$this->model->join($val);
 						}
 					}
 					
@@ -2610,7 +2599,7 @@ class Core extends Controller
 						}
 					}
 				}
-				
+					
 				/* return the callback as autocomplete results */
 				return make_json
 				(
@@ -2694,16 +2683,13 @@ class Core extends Controller
 				}
 			}
 			
-			if(!is_array($title))
-			{
-				$title								= trim($title);
-			}
+			$title									= trim($title);
 			
 			/* if method is create */
 			if('create' == $this->_method)
 			{
 				$this->_set_icon					= 'mdi mdi-plus';
-				$this->_set_title					= (isset($this->_set_title['create']) ? $this->_set_title['create'] : phrase('add_new_data'));
+				$this->_set_title					= phrase('add_new_data');
 				$this->_set_description				= (isset($this->_set_description['create']) ? $this->_set_description['create'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('please_fill_all_required_field_below_to_add_new_data') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
@@ -2713,7 +2699,7 @@ class Core extends Controller
 			elseif('read' == $this->_method)
 			{
 				$this->_set_icon					= 'mdi mdi-magnify-plus';
-				$this->_set_title					= (isset($this->_set_title['read']) ? $this->_set_title['read'] : phrase('showing_data'));
+				$this->_set_title					= phrase('showing_data');
 				$this->_set_description				= (isset($this->_set_description['read']) ? $this->_set_description['read'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
 				$this->_view						= (isset($this->_set_template['read']) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
 				$this->_results						= ('table' == service('request')->getPost('show_in') ? $this->render_table($this->_query) : $this->render_read($this->_query));
@@ -2734,7 +2720,7 @@ class Core extends Controller
 			elseif('update' == $this->_method)
 			{
 				$this->_set_icon					= 'mdi mdi-square-edit-outline';
-				$this->_set_title					= (isset($this->_set_title['update']) ? $this->_set_title['update'] : phrase('update_data'));
+				$this->_set_title					= phrase('update_data');
 				$this->_set_description				= (isset($this->_set_description['update']) ? $this->_set_description['update'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
@@ -3099,16 +3085,6 @@ class Core extends Controller
 			}
 			else
 			{
-				/* otherwise, the item is cannot be deleted */
-				$error								= $this->model->error();
-				
-				if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
-				{
-					/* for administrator */
-					return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
-				}
-				
-				/* for user */
 				return throw_exception(500, phrase('unable_to_submit_your_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (insert)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
@@ -3191,16 +3167,6 @@ class Core extends Controller
 					}
 					else
 					{
-						/* otherwise, the item is cannot be deleted */
-						$error						= $this->model->error();
-						
-						if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
-						{
-							/* for administrator */
-							return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
-						}
-						
-						/* for user */
 						return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 					}
 				}
@@ -3348,15 +3314,6 @@ class Core extends Controller
 				else
 				{
 					/* otherwise, the item is cannot be deleted */
-					$error							= $this->model->error();
-					
-					if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
-					{
-						/* for administrator */
-						return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
-					}
-					
-					/* for user */
 					return throw_exception(500, phrase('unable_to_remove_the_selected_data') . '. ' . phrase('please_try_again_or_contact_the_system_administrator') . '. ' . phrase('error_code') . ': <b>500 (delete)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
