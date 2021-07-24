@@ -140,7 +140,7 @@
 					{
 						$output						.= '
 							<div class="col-6 col-md-4' . ($key > 2 ? ' d-md-none' : null) . '">
-								<div class="card border-0 rounded-more shadow-sm mb-3">
+								<div class="card border-0 shadow-sm mb-3">
 									<a href="' . go_to('../' . $val->people_slug) . '" class="--xhr">
 										<img src="' . get_image('peoples', $val->photo, 'thumb') . '" class="card-img-top" alt="' . $val->first_name . ' '  . $val->last_name . '" width="100%" />
 									</a>

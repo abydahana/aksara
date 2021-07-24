@@ -26,7 +26,6 @@ if($total > 0 && isset($results->table_data))
 			</tr>
 		';
 	}
-	
 	echo '
 		<html>
 			<head>
@@ -264,9 +263,6 @@ if($total > 0 && isset($results->table_data))
 					</table>
 				</htmlpagefooter>
 				' : null) . '
-				<script type="text/javascript">
-					window.print()
-				</script>
 			</body>
 		</html>
 	';
@@ -288,7 +284,6 @@ elseif($total > 0 && isset($results->form_data))
 			</tr>
 		';
 	}
-	
 	echo '
 		<html>
 			<head>
@@ -434,9 +429,6 @@ elseif($total > 0 && isset($results->form_data))
 					</table>
 				</htmlpagefooter>
 				' : null) . '
-				<script type="text/javascript">
-					window.print()
-				</script>
 			</body>
 		</html>
 	';
