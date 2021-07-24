@@ -27,8 +27,8 @@
 				
 				$col								.= '
 					<div class="' . (isset($results->field_size->$val) ? $results->field_size->$val : 'col') . '">
-						<div class="form-group border-bottom">
-							<label class="text-muted d-block" for="' . $val . '_label">
+						<div class="form-group">
+							<label class="text-muted d-block mb-0" for="' . $val . '_label">
 								' . $results->form_data->$val->label . '
 							</label>
 							<p id="' . $val . '_label" class="text-break-word">
@@ -82,8 +82,8 @@
 			if(in_array($field, $merged)) continue;
 			
 			$output									= '
-				<div class="form-group border-bottom">
-					<label class="text-muted d-block" for="' . $field . '_label">
+				<div class="form-group">
+					<label class="text-muted d-block mb-0" for="' . $field . '_label">
 						' . $params->label . '
 					</label>
 					<p class="text-break-word">
