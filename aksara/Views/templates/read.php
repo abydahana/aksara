@@ -135,7 +135,7 @@
 	
 	<?php echo ('modal' == service('request')->getPost('prefer') ? $meta->description : null); ?>
 	
-	<?php echo $map; ?>
+	<?php echo ($map ? $map : '<br />'); ?>
 	
 	<div class="row">
 		<div class="column col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? 12 : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
