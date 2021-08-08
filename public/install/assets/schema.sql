@@ -885,7 +885,7 @@ ALTER TABLE `app__rest_api`
 -- Indexes for table `app__sessions`
 --
 ALTER TABLE `app__sessions`
-  ADD KEY `app__sessions_timestamp` (`timestamp`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `app__settings`

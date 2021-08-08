@@ -116,6 +116,7 @@ class Assets extends \Aksara\Laboratory\Core
 				document_extension_allowed: ' . (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : '[]') . ',
 				image_extension_allowed: ' . (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : '[]') . ', 
 				app_name: "' . htmlspecialchars(get_setting('app_name')) . '",
+				app_logo: "' . htmlspecialchars(get_image('settings', get_setting('app_logo'))) . '",
 				app_icon: "' . htmlspecialchars(get_image('settings', get_setting('app_icon'), 'icon')) . '",
 				content_wrapper: "#content-wrapper",
 				registration_enabled: ' . (int) get_setting('frontend_registration') . ',

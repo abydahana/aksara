@@ -1822,9 +1822,7 @@ ol.guide li::before
 .ol-geocoder.gcd-txt-container
 {
 	top: 1rem!important;
-	left: auto!important;
 	padding: 0 1rem!important;
-	max-width: 320px
 }
 
 .ol-geocoder.gcd-txt-container *,

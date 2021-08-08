@@ -73,7 +73,7 @@ class Documentation extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'group_privileges'				=> '"' . $slug . '"'
+					'group_privileges'				=> '"' . str_replace('/', '\/', $slug) . '"'
 				)
 			)
 			->get_where
