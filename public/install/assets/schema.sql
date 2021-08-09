@@ -661,19 +661,6 @@ INSERT INTO `blogs__categories` (`category_id`, `category_title`, `category_slug
 -- --------------------------------------------------------
 
 --
--- Table structure for table `countries`
---
-
-CREATE TABLE `countries` (
-  `id` int(11) NOT NULL,
-  `code` varchar(8) NOT NULL,
-  `country` varchar(32) NOT NULL,
-  `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `galleries`
 --
 
@@ -950,12 +937,6 @@ ALTER TABLE `blogs__categories`
   ADD KEY `language_id` (`language_id`);
 
 --
--- Indexes for table `countries`
---
-ALTER TABLE `countries`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `galleries`
 --
 ALTER TABLE `galleries`
@@ -1077,12 +1058,6 @@ ALTER TABLE `blogs`
 --
 ALTER TABLE `blogs__categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `countries`
---
-ALTER TABLE `countries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `galleries`
