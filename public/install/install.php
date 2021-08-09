@@ -1,6 +1,8 @@
 <?php
 	session_start();
 	
+	set_time_limit((60 * 5)); // 5 minutes
+	
 	require_once 'includes/function.php';
 	
 	if(version_compare(PHP_VERSION, '7.3', '<'))
@@ -34,8 +36,6 @@
 			exit;
 		}
 	}
-	
-	error_reporting(0);
 	
 	header('Content-Type: application/json');
 	
