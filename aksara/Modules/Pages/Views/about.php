@@ -189,10 +189,6 @@
 			OpenLayers
 		</a>
 		&middot;
-		<a href="//github.com/OwlCarousel2" target="_blank">
-			Owl Carousel
-		</a>
-		&middot;
 		<a href="//popper.js.org" target="_blank">
 			Popper
 		</a>
@@ -215,6 +211,10 @@
 		&middot;
 		<a href="//summernote.org" target="_blank">
 			Summernote
+		</a>
+		&middot;
+		<a href="//swiperjs.com" target="_blank">
+			SwiperJS
 		</a>
 		&middot;
 		<a href="javascript:void(0)">
