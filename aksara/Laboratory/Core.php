@@ -4218,7 +4218,7 @@ class Core extends Controller
 						<label class="d-block">
 							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == $original || 1 == $original || 'create' == $this->_method ? ' checked' : null) . $read_only . ' />
 							&nbsp;
-							' . phrase('check_to_activate') . '
+							' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
 							&nbsp;
 						</label>
 					';
@@ -4383,7 +4383,7 @@ class Core extends Controller
 				}
 				else
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" value="' . ($default_value ? $default_value : htmlspecialchars($original)) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '"' . (in_array('autocomplete', $type) && $extra_params ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . ' />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" value="' . ($default_value ? $default_value : htmlspecialchars($original)) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : null) . '"' . (in_array('autocomplete', $type) && $extra_params ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . ' />';
 				}
 				
 				$fields[$field]						= array
@@ -4962,14 +4962,14 @@ class Core extends Controller
 						{
 							foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
 							{
-								$uri[$url_key]		= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : '');
+								$uri[$url_key]		= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : $url_val);
 							}
 						}
 						else
 						{
 							foreach($extra_params as $url_key => $url_val)
 							{
-								$uri[$url_key]		= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : '');
+								$uri[$url_key]		= (isset($serialized[$url_val]['original']) ? $serialized[$url_val]['original'] : $url_val);
 							}
 						}
 						
@@ -5405,14 +5405,14 @@ class Core extends Controller
 							{
 								foreach($extra_params[$hyperlink_params] as $url_key => $url_val)
 								{
-									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : $url_val);
 								}
 							}
 							else
 							{
 								foreach($extra_params as $url_key => $url_val)
 								{
-									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : '');
+									$uri[$url_key]	= (isset($val[$url_val]['original']) ? $val[$url_val]['original'] : $url_val);
 								}
 							}
 							
@@ -6933,7 +6933,7 @@ class Core extends Controller
 		/**
 		 * Push select to forge
 		 */
-		$this->_forge_select						= $this->model->list_fields($this->_from);
+		$forge_select								= array();
 		
 		/**
 		 * Execute when method is not update or delete
@@ -6977,16 +6977,22 @@ class Core extends Controller
 					
 					$field							= (stripos($field, ' ') !== false ? substr($field, strripos($field, ' ') + 1) : $field);
 					
-					if($table && $field && in_array($field, $this->_forge_select))
+					if($table && $field && in_array($field, $forge_select))
 					{
 						/**
 						 * Format column of select
 						 */
-						if($table != $table)
+						if($table != $this->_from && $this->model->field_exists($field, $table))
 						{
-							$val					= $table . '.' . $field . ' AS ' . $table . '_' . $field;
+							$val					= $table . '.' . $field . ' AS ' . $field;
+						}
+						else
+						{
+							continue;
 						}
 					}
+					
+					$forge_select[]					= $field;
 				}
 				
 				$this->model->select($val);

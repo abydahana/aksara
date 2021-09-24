@@ -73,6 +73,13 @@ class Documentation extends \Aksara\Laboratory\Core
 			(
 				array
 				(
+					'group_privileges'				=> '"' . $slug . '"'
+				)
+			)
+			->or_like
+			(
+				array
+				(
 					'group_privileges'				=> '"' . str_replace('/', '\/', $slug) . '"'
 				)
 			)
