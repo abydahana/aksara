@@ -51,7 +51,7 @@ class Permission
 				session_destroy();
 			}
 			
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), base_url());
+			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), base_url());
 		}
 		
 		$privileges									= $this->model->select

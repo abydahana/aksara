@@ -43,7 +43,7 @@
 									<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-left d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
 										<div class="pt-5 w-100">
 											<h1 class="font-weight-bold mb-3 text-light">
-												' . (isset($_val->title) ? $_val->title : phrase('title_was_not_set')) . '
+												' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
 											</h1>
 											<p class="text-light mb-5">
 												' . (isset($_val->description) ? truncate($_val->description, 260) : phrase('description_was_not_set')) . '
@@ -204,7 +204,7 @@
 							' . phrase('page_not_found') . '
 						</h2>
 						<p class="lead text-center mb-5">
-							' . phrase('the_page_you_requested_was_not_found_or_it_is_already_removed') . '
+							' . phrase('the_page_you_requested_does_not_exist') . '
 						</p>
 						<div class="text-center mt-5">
 							<a href="' . base_url() . '" class="btn btn-outline-primary rounded-pill --xhr">

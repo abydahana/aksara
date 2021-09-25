@@ -16,11 +16,11 @@ class Account extends \Aksara\Laboratory\Core
 		
 		if('modal' != service('request')->getPost('prefer'))
 		{
-			return throw_exception(404, phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'));
+			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'));
 		}
 		elseif(!get_userdata('user_id'))
 		{
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), base_url());
+			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), base_url());
 		}
 	}
 	

@@ -41,7 +41,7 @@
 					<label class="d-block font-weight-bold" for="email_input">
 						<?php echo phrase('email_address'); ?>
 					</label>
-					<input type="email" name="email" class="form-control font-weight-light" id="email_input" placeholder="<?php echo phrase('type_your_email_address'); ?>" autocomplete="off" maxlength="128" />
+					<input type="email" name="email" class="form-control font-weight-light" id="email_input" placeholder="<?php echo phrase('enter_your_email_address'); ?>" autocomplete="off" maxlength="128" />
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
@@ -74,7 +74,7 @@
 					<div class="col-md-6">
 						<div class="form-group mb-4">
 							<label class="d-block" for="captcha_input">
-								<?php echo phrase('type_the_shown_characters_below'); ?>
+								<?php echo phrase('enter_shown_characters'); ?>
 							</label>
 							<div class="input-group">
 								<div class="input-group-prepend">

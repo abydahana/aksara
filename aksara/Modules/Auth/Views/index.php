@@ -12,7 +12,7 @@
 							</div>
 							<div class="form-group pb-2">
 								<p class="text-center text-muted">
-									<?php echo phrase('use_your_account_information_to_start_session'); ?>
+									<?php echo phrase('please_enter_your_account_information_to_sign_in'); ?>
 								</p>
 							</div>
 							<div class="form-group">
@@ -96,7 +96,7 @@
 							<p class="lead text-center">
 								<a href="<?php echo base_url('auth/google'); ?>" class="btn btn-outline-danger btn-block text-left">
 									<i class="mdi mdi-google"></i>
-									<?php echo phrase('sign_with_google'); ?>
+									<?php echo phrase('sign_in_with_google'); ?>
 								</a>
 							</p>
 							<?php } ?>
@@ -104,7 +104,7 @@
 							<p class="lead text-center">
 								<a href="<?php echo base_url('auth/facebook'); ?>" class="btn btn-outline-primary btn-block text-left">
 									<i class="mdi mdi-facebook"></i>
-									<?php echo phrase('sign_with_facebook'); ?>
+									<?php echo phrase('sign_in_with_facebook'); ?>
 								</a>
 							</p>
 							<?php } ?>

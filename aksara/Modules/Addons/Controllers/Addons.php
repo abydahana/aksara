@@ -31,7 +31,7 @@ class Addons extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title(phrase('add_on_market'))
+		$this->set_title(phrase('addons_market'))
 		->set_icon('mdi mdi-cart')
 		
 		->render();
@@ -55,7 +55,7 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			return array
 			(
-				'error'								=> phrase('cannot_connect_to_the_aksara_market')
+				'error'								=> phrase('unable_to_connect_to_the_aksara_market')
 			);
 		}
 		
@@ -130,7 +130,7 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			return array
 			(
-				'error'								=> phrase('cannot_connect_to_the_aksara_market')
+				'error'								=> phrase('unable_to_connect_to_the_aksara_market')
 			);
 		}
 		
@@ -230,7 +230,7 @@ class Addons extends \Aksara\Laboratory\Core
 						
 						if(!$query)
 						{
-							return throw_exception(404, phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_current_workspace_does_not_appear_to_be_writable'), go_to('ftp'));
+							return throw_exception(404, phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_server_does_not_appear_to_be_writable'), go_to('ftp'));
 						}
 						
 						/* configuration found, decrypt password */
@@ -241,7 +241,7 @@ class Addons extends \Aksara\Laboratory\Core
 						
 						if(!$connection || !@ftp_login($connection, $query->username, $query->password))
 						{
-							return throw_exception(403, phrase('unable_to_connect_to_ftp_using_the_provided_configuration'));
+							return throw_exception(403, phrase('unable_to_connect_to_the_ftp_using_provided_configuration'));
 						}
 						
 						$zip->extractTo(ROOTPATH . $path);
@@ -277,7 +277,7 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			return array
 			(
-				'error'								=> phrase('cannot_connect_to_the_aksara_market')
+				'error'								=> phrase('unable_to_connect_to_the_aksara_market')
 			);
 		}
 		

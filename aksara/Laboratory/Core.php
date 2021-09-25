@@ -242,7 +242,7 @@ class Core extends Controller
 			if($this->_set_permission && $query_string && $token != generate_token($query_string))
 			{
 				// token is missmatch, throw an exception
-				return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), base_url());
+				return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), base_url());
 			}
 		}
 		
@@ -386,17 +386,17 @@ class Core extends Controller
 		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			// user isn't signed in
-			return throw_exception(301, phrase('session_has_been_expired'), base_url(), true);
+			return throw_exception(301, phrase('your_session_has_been_expired'), base_url(), true);
 		}
 		elseif(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id')))
 		{
 			// user been signed in but blocked by group privilege
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
+			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
 		}
 		elseif($permissive_user && !in_array(get_userdata('group_id'), $permissive_user))
 		{
 			// user been signed in but blocked by group privilege
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
+			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
 		}
 	}
 	
@@ -2271,7 +2271,7 @@ class Core extends Controller
 			/* check again if the primary key is still unavailable */
 			if(!$this->_set_primary)
 			{
-				$this->set_description('<div class="alert-danger pt-2 pr-3 pb-2 pl-3 text-sm" style="margin-left:-15px; margin-right:-15px"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refer_to') . ' <code>set_primary()</code>). ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div>');
+				$this->set_description('<div class="alert-danger pt-2 pr-3 pb-2 pl-3 text-sm" style="margin-left:-15px; margin-right:-15px"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>). ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div>');
 				$this->unset_action('read, update, delete, export, print, pdf');
 			}
 			
@@ -2704,7 +2704,7 @@ class Core extends Controller
 			{
 				$this->_set_icon					= 'mdi mdi-plus';
 				$this->_set_title					= (isset($this->_set_title['create']) ? $this->_set_title['create'] : phrase('add_new_data'));
-				$this->_set_description				= (isset($this->_set_description['create']) ? $this->_set_description['create'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-1rem; margin-right:-1rem">' . phrase('please_fill_all_required_field_below_to_add_new_data') . '</div>');
+				$this->_set_description				= (isset($this->_set_description['create']) ? $this->_set_description['create'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-1rem; margin-right:-1rem">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
 			}
@@ -2769,7 +2769,7 @@ class Core extends Controller
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
-				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
+				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
@@ -2781,7 +2781,7 @@ class Core extends Controller
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
-				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('title_was_not_set') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
+				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
@@ -2790,7 +2790,7 @@ class Core extends Controller
 		else
 		{
 			$this->_set_icon						= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-file-document-outline');
-			$this->_set_title						= ($this->_set_title ? $this->_set_title : phrase('title_was_not_set'));
+			$this->_set_title						= ($this->_set_title ? $this->_set_title : phrase('untitled'));
 			$this->_set_description					= (isset($this->_set_description['index']) ? $this->_set_description['index'] : null);
 			$this->_view							= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 			$this->_results							= $this->_query;
@@ -2960,7 +2960,7 @@ class Core extends Controller
 				else
 				{
 					/* token isn't valid, throw exception */
-					return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), $this->_redirect_back);
+					return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
 				}
 			}
 			elseif($this->_api_request && 'POST' == env('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || method_exists($this, $this->_form_callback)))
@@ -3224,7 +3224,7 @@ class Core extends Controller
 				}
 				else
 				{
-					return throw_exception(404, phrase('the_data_you_want_to_update_is_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
+					return throw_exception(404, phrase('the_data_you_want_to_update_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 		}
@@ -3276,7 +3276,7 @@ class Core extends Controller
 		if(!$where)
 		{
 			/* otherwise, redirect to previous page */
-			return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(404, phrase('the_data_you_want_to_delete_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* check if delete have a callback message */
@@ -3363,7 +3363,7 @@ class Core extends Controller
 			else
 			{
 				/* no item found */
-				return throw_exception(404, phrase('the_data_you_want_to_remove_were_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
+				return throw_exception(404, phrase('the_data_you_want_to_delete_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		else
@@ -3498,7 +3498,7 @@ class Core extends Controller
 		}
 		else
 		{
-			return throw_exception(403, phrase('cannot_remove_the_selected_data'), (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('unable_to_remove_the_selected_data'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
 	
@@ -3522,7 +3522,7 @@ class Core extends Controller
 		
 		if(!$data && !$this->_insert_on_update_fail && 'autocomplete' != service('request')->getPost('method'))
 		{
-			return throw_exception(404, phrase('the_data_you_requested_does_not_exists_or_it_has_been_removed'), $this->_redirect_back);
+			return throw_exception(404, phrase('the_data_you_requested_does_not_exist_or_has_been_removed'), $this->_redirect_back);
 		}
 		
 		$serialized									= $this->serialize($data);
@@ -4193,7 +4193,7 @@ class Core extends Controller
 				}
 				elseif(in_array('wysiwyg', $type))
 				{
-					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="wysiwyg" data-upload-path="' . $this->_set_upload_path . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('type_the_content_here')) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1" spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
+					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="wysiwyg" data-upload-path="' . $this->_set_upload_path . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('enter_the_content_here')) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1" spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
 				}
 				elseif(in_array('textarea', $type))
 				{
@@ -4225,14 +4225,14 @@ class Core extends Controller
 				}
 				elseif(in_array('email', $type))
 				{
-					$content						= '<input type="email" name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('type_the_valid_email') . '" value="' . ($default_value ? $default_value : $original) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' />';
+					$content						= '<input type="email" name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('enter_your_email') . '" value="' . ($default_value ? $default_value : $original) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' />';
 				}
 				elseif(in_array('password', $type))
 				{
 					$content						= '
 						<div class="row">
 							<div class="col">
-								<input type="password" name="' . $field . '" class="form-control" placeholder="' . ('update' == $this->_method ? phrase('leave_blank_to_ignore') : phrase('type_a_strong_password')) . '" autocomplete="new-password" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' />
+								<input type="password" name="' . $field . '" class="form-control" placeholder="' . ('update' == $this->_method ? phrase('leave_blank_to_ignore') : phrase('enter_your_password')) . '" autocomplete="new-password" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' />
 							</div>
 							<div class="col">
 								<input type="password" name="' . $field . '_confirmation" class="form-control" placeholder="' . $alias . ' ' . phrase('confirmation') . '" autocomplete="new-password" id="' . $field . '_confirmation_input" maxlength="' . $max_length . '"' . $read_only . ' />
@@ -4349,7 +4349,7 @@ class Core extends Controller
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
-							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '" data-apply-coordinate-to="#' . $field . '_input" data-apply-address-to=".map-address-listener"' . (!$read_only ? ' data-draggable="1"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('drag_marker_to_update_location') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
+							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '" data-apply-coordinate-to="#' . $field . '_input" data-apply-address-to=".map-address-listener"' . (!$read_only ? ' data-draggable="1"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('drag_marker_to_update_the_location') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
 							<input type="hidden" name="' . $field . '" id="' . $field . '_input" value="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '"' . $read_only . ' />
 						</div>
 					';
@@ -4449,7 +4449,7 @@ class Core extends Controller
 	{
 		if(!$data)
 		{
-			return throw_exception(404, phrase('the_data_you_requested_does_not_exists_or_it_has_been_removed'), $this->_redirect_back);
+			return throw_exception(404, phrase('the_data_you_requested_does_not_exist_or_has_been_removed'), $this->_redirect_back);
 		}
 		
 		$serialized									= $this->serialize($data);
@@ -8142,7 +8142,7 @@ class Core extends Controller
 		
 		if('update' == $this->_method && !$this->_where && !$this->_insert_on_update_fail)
 		{
-			return throw_exception(404, phrase('the_data_you_want_to_update_is_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(404, phrase('the_data_you_want_to_update_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		/* serialize the fields */
@@ -8636,7 +8636,7 @@ class Core extends Controller
 		
 		if(!$api_service)
 		{
-			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_source_or_already_expired'));
+			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_module_or_already_expired'));
 		}
 		elseif(!$api_service->status)
 		{

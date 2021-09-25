@@ -265,7 +265,7 @@ class Themes extends \Aksara\Laboratory\Core
 			else
 			{
 				/* theme property is not found */
-				return throw_exception(404, phrase('a_theme_without_package_cannot_be_removed_from_theme_manager'), current_page('../'));
+				return throw_exception(403, phrase('a_theme_without_package_manifest_cannot_be_removed_from_the_theme_manager'), current_page('../'));
 			}
 		}
 		

@@ -172,7 +172,7 @@
 													String
 												</td>
 												<td>
-													' . phrase('the_valid_api_key_that_been_added_in_api_services') . '
+													' . phrase('valid_api_key_added_in_api_service') . '
 												</td>
 												<td class="text-center">
 													<span class="badge badge-danger">
@@ -334,7 +334,7 @@
 											String
 										</td>
 										<td>
-											' . phrase('the_valid_api_key_that_been_added_in_api_services') . '
+											' . phrase('valid_api_key_added_in_api_service') . '
 										</td>
 										<td class="text-center">
 											<span class="badge badge-danger">

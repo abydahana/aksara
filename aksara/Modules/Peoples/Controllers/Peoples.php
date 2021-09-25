@@ -20,8 +20,8 @@ class Peoples extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title(phrase('people_behind_this'))
-		->set_description(phrase('meet_the_people_behind_this'))
+		$this->set_title(phrase('the_people_behind_us'))
+		->set_description(phrase('meet_the_the_people_behind_us'))
 		->set_icon('mdi mdi-account-group-outline')
 		->where('status', 1)
 		

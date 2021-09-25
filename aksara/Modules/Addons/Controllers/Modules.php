@@ -88,7 +88,7 @@ class Modules extends \Aksara\Laboratory\Core
 		/* check if module is exists */
 		if(service('request')->uri->getSegment(4) && !is_dir(ROOTPATH . 'modules/' . service('request')->uri->getSegment(4)))
 		{
-			return throw_exception(404, phrase('the_theme_you_would_to_delete_is_not_exists_or_already_removed'), curent_page('../'));
+			return throw_exception(404, phrase('the_module_you_would_to_delete_is_not_exists_or_already_removed'), curent_page('../'));
 		}
 		
 		/* delete confirmation */
@@ -161,7 +161,7 @@ class Modules extends \Aksara\Laboratory\Core
 				
 				if(service('request')->getPost('module') == get_setting($type))
 				{
-					return throw_exception(403, phrase('unable_to_delete_the_theme_that_are_in_use'), current_page('../'));
+					return throw_exception(403, phrase('unable_to_delete_the_module_that_are_in_use'), current_page('../'));
 				}
 				
 				/* delete module */
@@ -202,17 +202,17 @@ class Modules extends \Aksara\Laboratory\Core
 					}
 					
 					/* uh oh! still unable to delete module */
-					return throw_exception(403, phrase('unable_to_delete_the_selected_theme_due_to_folder_permission'), current_page('../'));
+					return throw_exception(403, phrase('unable_to_delete_the_selected_module_due_to_folder_permission'), current_page('../'));
 				}
 			}
 			else
 			{
 				/* module property is not found */
-				return throw_exception(404, phrase('a_theme_without_package_cannot_be_removed_from_theme_manager'), current_page('../'));
+				return throw_exception(403, phrase('a_module_without_package_manifest_cannot_be_removed_from_the_module_manager'), current_page('../'));
 			}
 		}
 		
-		return throw_exception(301, phrase('the_selected_theme_was_successfully_removed'), current_page('../'));
+		return throw_exception(301, phrase('the_selected_module_was_successfully_removed'), current_page('../'));
 	}
 	
 	/**

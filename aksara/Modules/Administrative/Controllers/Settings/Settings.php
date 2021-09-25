@@ -203,7 +203,7 @@ class Settings extends \Aksara\Laboratory\Core
 				'default_membership_group'			=> phrase('default_membership_group'),
 				'auto_active_registration'			=> phrase('auto_active_registration'),
 				'username_changes'					=> phrase('enable_username_changes'),
-				'frontend_registration'				=> phrase('enable_front_end_registration'),
+				'frontend_registration'				=> phrase('enable_public_registration'),
 				
 				/* APIS */
 				'maps_provider'						=> phrase('maps_provider'),

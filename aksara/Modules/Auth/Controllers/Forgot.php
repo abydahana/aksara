@@ -196,7 +196,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		
 		if(!$query)
 		{
-			return throw_exception(404, phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'), base_url());
+			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'), base_url());
 		}
 		
 		$this->set_title(phrase('reset_password'))
@@ -321,10 +321,10 @@ class Forgot extends \Aksara\Laboratory\Core
 						' . phrase('hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
 					</p>
 					<p>
-						' . phrase('your_password_has_been_reset_successfully') . ' ' . phrase('now_you_can_sign_in_to_our_website_with_your_new_password') . '
+						' . phrase('you_have_successfully_reset_your_password') . ' ' . phrase('now_you_can_sign_in_to_our_website_with_your_new_password') . '
 					</p>
 					<p>
-						' . phrase('please_contact_us_directly_if_you_still_cannot_signing_in') . '
+						' . phrase('please_contact_us_directly_if_you_still_unable_to_signing_in') . '
 					</p>
 					<br />
 					<br />
@@ -355,6 +355,6 @@ class Forgot extends \Aksara\Laboratory\Core
 			)
 		);
 		
-		return throw_exception(301, phrase('your_password_has_been_reset_successfully'), base_url('auth', array('hash' => null)));
+		return throw_exception(301, phrase('you_have_successfully_reset_your_password'), base_url('auth', array('hash' => null)));
 	}
 }

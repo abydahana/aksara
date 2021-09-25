@@ -53,7 +53,7 @@ class Auth extends \Aksara\Laboratory\Core
 		
 		$this->set_title(phrase('dashboard_access'))
 		->set_icon('mdi mdi-lock-open-outline')
-		->set_description(phrase('use_your_account_information_to_start_session'))
+		->set_description(phrase('please_enter_your_account_information_to_sign_in'))
 		
 		->set_output
 		(
@@ -75,7 +75,7 @@ class Auth extends \Aksara\Laboratory\Core
 	{
 		if(!$this->valid_token(service('request')->getPost('_token')))
 		{
-			return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), current_page());
+			return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), current_page());
 		}
 		
 		/* check if system apply one device login */
@@ -184,7 +184,7 @@ class Auth extends \Aksara\Laboratory\Core
 				}
 			}
 			
-			return throw_exception(400, array('password' => phrase('username_or_email_and_password_did_not_match')));
+			return throw_exception(400, array('password' => phrase('username_or_email_and_password_combination_did_not_match')));
 		}
 	}
 	
@@ -503,10 +503,10 @@ class Auth extends \Aksara\Laboratory\Core
 						' . phrase('hi') . ', <b>' . $session->first_name . ' ' . $session->last_name . '</b>
 					</p>
 					<p>
-						' . phrase('you_are_successfully_registered_to_our_website') . ' ' . phrase('now_you_can_sign_in_to_our_website_using_your_' . $session->oauth_provider . '_account') . ' ' . phrase('be_sure_to_set_your_password_and_username_so_you_can_sign_in_using_your_email_or_username_in_next_time') . '
+						' . phrase('you_are_successfully_registered_to_our_website') . ' ' . phrase('now_you_can_sign_in_to_our_website_using_your_' . $session->oauth_provider . '_account') . ' ' . phrase('make_sure_to_set_your_password_and_username_to_secure_your_account') . '
 					</p>
 					<p>
-						' . phrase('please_contact_us_directly_if_you_still_cannot_signing_in') . '
+						' . phrase('please_contact_us_directly_if_you_still_unable_to_signing_in') . '
 					</p>
 					<br />
 					<br />

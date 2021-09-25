@@ -47,7 +47,7 @@ echo '
 					' . phrase('page_not_found') . '
 				</h2>
 				<p class="lead text-center mb-5">
-					' . phrase('the_page_you_requested_was_not_found_or_it_is_already_removed') . '
+					' . phrase('the_page_you_requested_does_not_exist') . '
 				</p>
 				<div class="text-center mt-5">
 					<a href="' . base_url() . '" class="btn btn-outline-primary rounded-pill --xhr">

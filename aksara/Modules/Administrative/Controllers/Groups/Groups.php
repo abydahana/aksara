@@ -31,7 +31,7 @@ class Groups extends \Aksara\Laboratory\Core
 		->set_description
 		('
 			<div class="alert-info pr-3 pl-3" style="margin-left:-15px; margin-right:-15px">
-				' . phrase('the_privileges_listed_below_is_created_automatically_from') . '
+				' . phrase('the_listed_privileges_below_is_created_automatically_from') . '
 				&nbsp;
 				<a href="' . go_to('privileges', array('per_page' => null)) . '" class="badge badge-secondary --xhr">
 					<i class="mdi mdi-arrow-right"></i>

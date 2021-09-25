@@ -20,7 +20,7 @@ class Testimonials extends \Aksara\Laboratory\Core
 	public function index()
 	{
 		$this->set_title(phrase('testimonials'))
-		->set_description(phrase('what_they_said_about_us'))
+		->set_description(phrase('what_they_say_about_us'))
 		->set_icon('mdi mdi-bullhorn-outline')
 		->order_by('timestamp', 'desc')
 		->where('status', 1)

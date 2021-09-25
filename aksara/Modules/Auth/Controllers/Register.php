@@ -111,7 +111,7 @@ class Register extends \Aksara\Laboratory\Core
 		
 		$this->set_title(phrase('register_an_account'))
 		->set_icon('mdi mdi-account-plus')
-		->set_description(phrase('fill_all_the_required_field_below_to_take_a_new_account'))
+		->set_description(phrase('fill_all_the_required_fields_below_to_register_your_account''))
 		->form_callback('_validate_form')
 		
 		->render();
@@ -128,7 +128,7 @@ class Register extends \Aksara\Laboratory\Core
 		}
 		elseif(!$this->valid_token(service('request')->getPost('_token')))
 		{
-			return throw_exception(403, phrase('the_token_you_submitted_has_expired_or_you_are_trying_to_bypass_it_from_the_restricted_resource'), current_page());
+			return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), current_page());
 		}
 		
 		/* load additional library and helper */
@@ -278,7 +278,7 @@ class Register extends \Aksara\Laboratory\Core
 		}
 		else
 		{
-			return throw_exception(404, phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'), base_url());
+			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'), base_url());
 		}
 	}
 	
@@ -353,7 +353,7 @@ class Register extends \Aksara\Laboratory\Core
 						' . phrase('hi') . ', <b>' . $first_name . ' ' . $last_name . '</b>
 					</p>
 					<p>
-						' . phrase('you_are_recently_registered_your_account_using_this_email_on_our_website') . ' ' . phrase('you_need_to_activate_your_account_before_you_can_signing_in') . '
+						' . phrase('you_are_recently_register_your_account_using_this_email_on_our_website') . ' ' . phrase('your_account_need_to_be_activated') . '
 					</p>
 					<p>
 						<a href="' . current_page('activate', array('hash' => $token)) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
@@ -423,7 +423,7 @@ class Register extends \Aksara\Laboratory\Core
 		$this->email->setFrom($sender_email, $sender_name);
 		$this->email->setTo($email);
 		
-		$this->email->setSubject(phrase('account_registration_successfully'));
+		$this->email->setSubject(phrase('account_registered'));
 		$this->email->setMessage
 		('
 			<!DOCTYPE html>
@@ -432,7 +432,7 @@ class Register extends \Aksara\Laboratory\Core
 					<meta name="viewport" content="width=device-width" />
 					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 					<title>
-						' . phrase('account_registration_successfully') . '
+						' . phrase('account_registered') . '
 					</title>
 				</head>
 				<body>

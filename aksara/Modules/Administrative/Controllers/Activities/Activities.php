@@ -71,11 +71,11 @@ class Activities extends \Aksara\Laboratory\Core
 		
 		if($this->model->truncate($this->_table))
 		{
-			return throw_exception(301, phrase('log_activities_was_successfully_cleared'), go_to(null, array('per_page' => null)));
+			return throw_exception(301, phrase('the_log_activities_was_successfully_cleaned'), go_to(null, array('per_page' => null)));
 		}
 		else
 		{
-			return throw_exception(500, phrase('unable_to_clear_activity_logs'), go_to());
+			return throw_exception(500, phrase('unable_to_clear_the_activity_logs'), go_to());
 		}
 	}
 }

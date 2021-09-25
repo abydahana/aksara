@@ -112,7 +112,7 @@
 					echo '
 						<div class="alert alert-warning">
 							<i class="mdi mdi-alert-outline"></i>
-							' . phrase('the_post_you_requested_does_not_exists') . '
+							' . phrase('the_post_you_requested_does_not_exist') . '
 						</div>
 					';
 				}

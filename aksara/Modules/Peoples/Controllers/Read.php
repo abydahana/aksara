@@ -25,7 +25,7 @@ class Read extends \Aksara\Laboratory\Core
 			$slug									= service('request')->getGet('people_slug');
 		}
 		
-		$this->set_title('{first_name} {last_name}', phrase('people_not_found'))
+		$this->set_title('{first_name} {last_name}', phrase('the_people_you_are_looking_for_was_not_found'))
 		->set_description('{biography}')
 		->set_icon('mdi mdi-account-outline')
 		->set_output

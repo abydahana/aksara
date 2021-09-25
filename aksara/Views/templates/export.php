@@ -253,7 +253,7 @@ if($total > 0 && isset($results->table_data))
 							<tr>
 								<td class="text-muted text-sm">
 									<i>
-										' . phrase('document_has_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
+										' . phrase('the_document_was_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
 									</i>
 								</td>
 								<td class="text-muted text-sm text-right">
@@ -423,7 +423,7 @@ elseif($total > 0 && isset($results->form_data))
 							<tr>
 								<td class="text-muted text-sm">
 									<i>
-										' . phrase('document_has_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
+										' . phrase('the_document_was_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
 									</i>
 								</td>
 								<td class="text-muted text-sm text-right">

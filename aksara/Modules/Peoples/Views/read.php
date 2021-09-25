@@ -110,10 +110,10 @@
 						<div class="row mb-5">
 							<div class="col-md-6 offset-md-3">
 								<h2 class="text-center">
-									' . phrase('people_not_found') . '
+									' . phrase('the_people_you_are_looking_for_was_not_found') . '
 								</h2>
 								<p class="lead text-center mb-5">
-									' . phrase('the_people_you_requested_was_not_found_or_it_is_already_removed') . '
+									' . phrase('the_people_you_requested_does_not_exist') . '
 								</p>
 								<div class="text-center mt-5">
 									<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">

@@ -206,7 +206,7 @@ class Updater extends \Aksara\Laboratory\Core
 					<i class="mdi mdi-arrow-up-circle-outline mdi-5x text-success"></i>
 					<br />
 					<h5>
-						' . phrase('your_core_system_was_successfully_updated') . '
+						' . phrase('your_core_system_has_been_successfully_updated') . '
 					</h5>
 				</div>
 				<div class="alert alert-warning text-sm border-0 rounded-0 row">
@@ -217,7 +217,7 @@ class Updater extends \Aksara\Laboratory\Core
 					</div>
 				</div>
 				<p class="text-center">
-					' . phrase('you_will_be_notified_if_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
+					' . phrase('you_will_be_notified_when_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_are_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
 				</p>
 				<p class="text-center lead">
 					<i class="mdi mdi-heart text-danger"></i>
@@ -275,7 +275,7 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		
 		// show maintenance page
-		file_put_contents(FCPATH . 'index.html', '<!DOCTYPE html><html><head><title>' . phrase('under_maintenance') . '</title><meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1"></head><body align="center"><h1>' . phrase('under_maintenance') . '</h1><hr /><p>' . phrase('we_are_currently_working_to_update_the_system') . ' ' . phrase('please_come_back_in_a_few_minutes') . '</p></body></html>', FILE_APPEND | LOCK_EX);
+		file_put_contents(FCPATH . 'index.html', '<!DOCTYPE html><html><head><title>' . phrase('under_maintenance') . '</title><meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1"></head><body align="center"><h1>' . phrase('under_maintenance') . '</h1><hr /><p>' . phrase('we_are_currently_working_for_update_the_system') . ' ' . phrase('please_come_back_in_a_few_minutes') . '</p></body></html>', FILE_APPEND | LOCK_EX);
 		
 		// collection found
 		$backup_name								= '_BACKUP-' . sha1(time()) . '.zip';
@@ -375,11 +375,11 @@ class Updater extends \Aksara\Laboratory\Core
 				<i class="mdi mdi-lan-disconnect mdi-5x text-muted"></i>
 				<br />
 				<h5>
-					' . phrase('unable_to_connect_to_ftp') . '
+					' . phrase('unable_to_connect_to_the_ftp') . '
 				</h5>
 			</div>
 			<p class="text-center">
-				' . phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_current_workspace_does_not_appear_to_be_writable') . '
+				' . phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_server_does_not_appear_to_be_writable') . '
 			</p>
 			<hr class="row" />
 			<form action="' . current_page() . '" class="--validate-form">
@@ -474,7 +474,7 @@ class Updater extends \Aksara\Laboratory\Core
 			if(service('request')->getPost('ftp_hostname'))
 			{
 				// throw validation error
-				return throw_exception(400, array('ftp_hostname' => phrase('unable_to_connect_to_ftp_using_the_provided_configuration')));
+				return throw_exception(400, array('ftp_hostname' => phrase('unable_to_connect_to_the_ftp_using_provided_configuration')));
 			}
 			else
 			{
@@ -506,7 +506,7 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		
 		// show maintenance page
-		$contents									= '<!DOCTYPE html><html><head><title>' . phrase('under_maintenance') . '</title><meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1"></head><body align="center"><h1>' . phrase('under_maintenance') . '</h1><hr /><p>' . phrase('we_are_currently_working_to_update_the_system') . ' ' . phrase('please_come_back_in_a_few_minutes') . '</p></body></html>';
+		$contents									= '<!DOCTYPE html><html><head><title>' . phrase('under_maintenance') . '</title><meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1"></head><body align="center"><h1>' . phrase('under_maintenance') . '</h1><hr /><p>' . phrase('we_are_currently_working_for_update_the_system') . ' ' . phrase('please_come_back_in_a_few_minutes') . '</p></body></html>';
 		$tmp_file									= fopen('php://temp', 'r+');
 		
 		fwrite($tmp_file, $contents);

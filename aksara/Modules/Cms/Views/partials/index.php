@@ -31,7 +31,7 @@
 								<?php echo phrase('carousels'); ?>
 							</h5>
 							<p class="card-text">
-								<?php echo phrase('manage_carousel_slideshow'); ?>
+								<?php echo phrase('manage_carousel'); ?>
 							</p>
 						</div>
 					</div>

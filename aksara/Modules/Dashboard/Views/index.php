@@ -139,7 +139,7 @@
 						<div class="card">
 							<div class="card-header bg-white border-0">
 								<h5 class="card-title mb-0">
-									<?php echo phrase('recent_signed_users'); ?>
+									<?php echo phrase('recent_sign_in'); ?>
 								</h5>
 							</div>
 							<div class="card-body p-3">
@@ -342,7 +342,7 @@
 						'<p>' +
 							'<?php echo phrase('a_newer_version_of_aksara_is_available'); ?> ' +
 							'<?php echo phrase('click_the_button_below_to_update_your_core_system_directly'); ?> ' +
-							'<?php echo phrase('your_created_modules_and_themes_will_not_be_replaced'); ?>' +
+							'<?php echo phrase('your_created_module_and_theme_will_not_be_overwritten'); ?>' +
 						'</p>' +
 						'<hr />' +
 						'<a href="<?php echo base_url('administrative/updater'); ?>" class="btn btn-sm btn-success --xhr">' +

@@ -20,7 +20,7 @@ class License extends \Aksara\Laboratory\Core
 	{
 		$this->set_title(phrase('end_user_license_agreement'))
 		->set_icon('mdi mdi-certificate')
-		->set_description(phrase('include_the_term_of_service'))
+		->set_description(phrase('including_the_term_of_service'))
 		
 		->render();
 	}

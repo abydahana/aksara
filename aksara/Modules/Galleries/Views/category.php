@@ -59,7 +59,7 @@
 								' . phrase('album_not_found') . '
 							</h2>
 							<p class="lead text-center mb-5">
-								' . phrase('the_album_you_requested_was_not_found_or_it_is_already_removed') . '
+								' . phrase('the_album_you_requested_was_not_found_or_its_already_removed') . '
 							</p>
 							<div class="text-center mt-5">
 								<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">

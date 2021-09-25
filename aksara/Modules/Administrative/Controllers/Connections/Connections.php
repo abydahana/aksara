@@ -24,7 +24,7 @@ class Connections extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title(phrase('third_party_connections'))
+		$this->set_title(phrase('third_party_connection'))
 		->set_icon('mdi mdi-power-plug')
 		->unset_column('hostname, port, username, password, database_name')
 		

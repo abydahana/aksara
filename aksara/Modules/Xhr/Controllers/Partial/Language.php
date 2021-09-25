@@ -16,7 +16,7 @@ class Language extends \Aksara\Laboratory\Core
 		
 		if('modal' != service('request')->getPost('prefer'))
 		{
-			return throw_exception(404, phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'));
+			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'));
 		}
 	}
 	

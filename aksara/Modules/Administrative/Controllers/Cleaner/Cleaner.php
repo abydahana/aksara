@@ -25,7 +25,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title(phrase('garbage_session_cleaner'))
+		$this->set_title(phrase('session_garbage_cleaner'))
 		->set_icon('mdi mdi-trash-can')
 		
 		->render();
@@ -129,11 +129,11 @@ class Cleaner extends \Aksara\Laboratory\Core
 					<i class="mdi mdi-delete-empty mdi-5x text-success"></i>
 					<br />
 					<h5>
-						' . phrase('garbage_cleaned_successfully') . '
+						' . phrase('the_session_garbage_was_successfully_cleaned') . '
 					</h5>
 				</div>
 				<p class="text-center">
-					' . phrase('below_is_the_detailed_information_of_cleaned_garbage') . '
+					' . phrase('below_is_the_detailed_information_about_the_cleaned_garbage') . '
 				</p>
 				<div class="row">
 					<div class="col-6 text-right">
@@ -178,6 +178,6 @@ class Cleaner extends \Aksara\Laboratory\Core
 		}
 		
 		// no garbage found
-		return throw_exception(301, phrase('there_is_no_garbage_session_available_in_this_time'), go_to());
+		return throw_exception(301, phrase('there_are_no_session_garbage_available_right_now'), go_to());
 	}
 }

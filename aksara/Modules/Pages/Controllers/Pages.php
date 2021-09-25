@@ -80,7 +80,7 @@ class Pages extends \Aksara\Laboratory\Core
 	public function not_found()
 	{
 		$this->set_title(phrase('page_not_found'))
-		->set_description(phrase('the_page_you_requested_was_not_found_or_it_is_already_removed'))
+		->set_description(phrase('the_page_you_requested_does_not_exist'))
 		->set_output
 		(
 			array

@@ -133,10 +133,10 @@ class Translate extends \Aksara\Laboratory\Core
 		
 		if($error)
 		{
-			return throw_exception(403, phrase('cannot_delete_the_phrase_because_translation_path_is_not_writable'), current_page('../'));
+			return throw_exception(403, phrase('unable_to_delete_the_phrase_due_the_translation_path_is_not_writable'), current_page('../'));
 		}
 		
-		return throw_exception(301, phrase('selected_phrase_was_successfully_removed'), current_page('../'));
+		return throw_exception(301, phrase('the_selected_phrase_was_successfully_removed'), current_page('../'));
 	}
 	
 	public function validate_translation()

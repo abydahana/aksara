@@ -25,7 +25,7 @@
 					</p>
 					<p class="text-muted mb-5">
 						<em>
-							' . phrase('this_announcement_is_effective_until') . ' <b>' . $val->end_date . '</b>
+							' . phrase('this_announcement_will_be_effective_until') . ' <b>' . $val->end_date . '</b>
 						</em>
 					</p>
 					<a href="' . current_page('../') . '" class="btn btn-outline-primary rounded-pill --xhr">
@@ -51,7 +51,7 @@
 								' . phrase('announcement_not_found') . '
 							</h2>
 							<p class="lead text-center mb-5">
-								' . phrase('the_announcement_you_requested_was_not_found_or_it_is_already_removed') . '
+								' . phrase('the_announcement_you_requested_was_not_found_or_its_already_removed') . '
 							</p>
 							<div class="text-center mt-5">
 								<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">

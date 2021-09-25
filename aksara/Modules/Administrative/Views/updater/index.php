@@ -50,7 +50,7 @@
 				<p class="mb-0">
 					' . phrase('a_newer_version_of_aksara_is_available') . '
 					' . phrase('click_the_button_below_to_update_your_core_system_directly') . '
-					' . phrase('your_created_modules_and_themes_will_not_be_replaced') . '
+					' . phrase('your_created_module_and_theme_will_not_be_overwritten') . '
 				</p>
 			</div>
 			<div class="container-fluid pt-3 pb-3">

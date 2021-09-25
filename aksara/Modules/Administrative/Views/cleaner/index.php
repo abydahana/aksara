@@ -5,7 +5,7 @@
 	<div class="alert alert-warning">
 		<p>
 			<b>
-				<?php echo phrase('you_are_about_to_cleaning_up_unused_garbage_session'); ?>
+				<?php echo phrase('you_are_about_to_cleaning_up_unused_session_garbage'); ?>
 			</b>
 			<br />
 			<?php echo phrase('all_inactive_session_within'); ?> <b><?php echo $hour . ' ' . ($hour > 1 ? phrase('hours') : phrase('hour')); ?></b> <?php echo phrase('will_be_removed'); ?>
