@@ -2248,6 +2248,18 @@ class Core extends Controller
 			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), $this->_redirect_back);
 		}
 		
+		/* check before action */
+		if('update' == $this->_method && method_exists($this, 'before_update'))
+		{
+			/* before update */
+			$this->before_update();
+		}
+		elseif('delete' == $this->_method && method_exists($this, 'before_delete'))
+		{
+			/* before delete */
+			$this->before_delete();
+		}
+		
 		$this->template								= new Template($this->_set_theme, $this->_api_request);
 		
 		/* check if given table is exists in database */
