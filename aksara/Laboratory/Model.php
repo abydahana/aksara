@@ -420,7 +420,7 @@ class Model
 		{
 			if(isset($condition['condition']))
 			{
-				$this->_join_table[$table]			= $condition;
+				$this->_join[$table]				= $condition;
 			}
 			else
 			{

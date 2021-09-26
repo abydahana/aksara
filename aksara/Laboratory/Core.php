@@ -1736,7 +1736,8 @@ class Core extends Controller
 			$this->_join[$relation_table]			= array
 			(
 				'condition'							=> ($condition ? $condition : $relation_table . '.' . $relation_key . ' = {primary_table}.' . $field),
-				'type'								=> 'LEFT'
+				'type'								=> 'LEFT',
+				'escape'							=> true
 			);
 			
 			if($join)
@@ -1746,7 +1747,8 @@ class Core extends Controller
 					$this->_join[$val[0]]			= array
 					(
 						'condition'					=> $val[1],
-						'type'						=> (isset($val[2]) ? $val[2] : 'LEFT')
+						'type'						=> (isset($val[2]) ? $val[2] : 'LEFT'),
+						'escape'					=> true
 					);
 				}
 			}
@@ -2094,7 +2096,8 @@ class Core extends Controller
 			$this->_join[$relation_table]			= array
 			(
 				'condition'							=> $relation_table . '.' . $relation_key . ' = {primary_table}. ' . $field,
-				'type'								=> ''
+				'type'								=> '',
+				'escape'							=> true
 			);
 			
 			if($join)
@@ -2104,7 +2107,8 @@ class Core extends Controller
 					$this->_join[$val[0]]			= array
 					(
 						'condition'					=> $val[1],
-						'type'						=> (isset($val[2]) ? $val[2] : '')
+						'type'						=> (isset($val[2]) ? $val[2] : ''),
+						'escape'					=> true
 					);
 				}
 			}
@@ -5978,7 +5982,7 @@ class Core extends Controller
 				(
 					'condition'						=> $val,
 					'type'							=> $type,
-					'escape'						=> true
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -8015,7 +8019,7 @@ class Core extends Controller
 				{
 					$this->_compiled_table[]		= $table;
 					
-					$this->model->join($table, str_replace('{primary_table}', $this->_from, $params['condition']), $params['type']);
+					$this->model->join($table, str_replace('{primary_table}', $this->_from, $params['condition']), $params['type'], $params['escape']);
 				}
 			}
 		
