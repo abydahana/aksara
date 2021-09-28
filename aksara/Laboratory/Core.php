@@ -229,24 +229,6 @@ class Core extends Controller
 		}
 		
 		/**
-		 * Token checker
-		 */
-		if(service('request')->getGet())
-		{
-			$token									= service('request')->getGet('aksara');
-			$query_string							= service('request')->getGet();
-			
-			unset($query_string['aksara']);
-			
-			// validate token
-			if($this->_set_permission && $query_string && $token != generate_token($query_string))
-			{
-				// token is missmatch, throw an exception
-				return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), base_url());
-			}
-		}
-		
-		/**
 		 * Preview theme
 		 */
 		if('preview-theme' == service('request')->getGet('aksara_mode') && sha1(service('request')->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == service('request')->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . service('request')->getGet('aksara_theme')))
@@ -656,13 +638,13 @@ class Core extends Controller
 	{
 		$query_string								= service('request')->getGet();
 		
-		if($parameter)
-		{
-			$parameter								= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
-		}
-		
 		if('toolbar' == $placement)
 		{
+			if($parameter)
+			{
+				$parameter							= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
+			}
+			
 			$this->_extra_toolbar[]					= array
 			(
 				'url'								=> $url,
@@ -687,6 +669,11 @@ class Core extends Controller
 		}
 		elseif('submit' == $placement)
 		{
+			if($parameter)
+			{
+				$parameter							= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
+			}
+			
 			$this->_extra_submit[]					= array
 			(
 				'url'								=> $url,
@@ -2246,6 +2233,22 @@ class Core extends Controller
 	 */
 	public function render($table = null, $view = null)
 	{
+		/**
+		 * Token checker
+		 */
+		if(service('request')->getGet())
+		{
+			$token									= service('request')->getGet('aksara');
+			$query_string							= service('request')->getGet();
+			
+			// validate token
+			if($this->_set_permission && $query_string && $token != generate_token($query_string))
+			{
+				// token is missmatch, throw an exception
+				return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), base_url());
+			}
+		}
+		
 		/* validate the restricted action */
 		if(in_array($this->_method, $this->_unset_action))
 		{
@@ -2613,9 +2616,9 @@ class Core extends Controller
 							{
 								$autocomplete_item	= array
 								(
-									'value'			=> truncate($value['content'], 32),
+									'value'			=> truncate($value['content'], 32, false, ''),
 									'label'			=> truncate($value['content'], 32),
-									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32)))
+									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32, false, '')))
 								);
 							}
 						}
@@ -5502,8 +5505,6 @@ class Core extends Controller
 				
 				if($primary_key)
 				{
-					unset($uri_parameter['aksara']);
-					
 					$uri_parameter					= array_merge(array('aksara' => generate_token(array_filter(array_merge($uri_parameter, $primary_key)))), $uri_parameter, $primary_key);
 				}
 				
@@ -5537,8 +5538,6 @@ class Core extends Controller
 		if($search_columns)
 		{
 			$qs										= service('request')->getGet();
-			
-			unset($qs['aksara']);
 			
 			foreach($search_columns as $key => $val)
 			{

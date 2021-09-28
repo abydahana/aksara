@@ -17,6 +17,11 @@ if(!function_exists('generate_token'))
 	 */
 	function generate_token($data = null)
 	{
+		if(isset($data['aksara']))
+		{
+			unset($data['aksara']);
+		}
+		
 		if(is_array($data))
 		{
 			$data									= http_build_query($data);
