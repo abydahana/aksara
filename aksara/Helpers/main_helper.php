@@ -15,7 +15,7 @@ if(!function_exists('generate_token'))
 	/**
 	 * Generate security token to validate the query string values
 	 */
-	function generate_token($data = null)
+	function generate_token($data = array())
 	{
 		if(isset($data['aksara']))
 		{

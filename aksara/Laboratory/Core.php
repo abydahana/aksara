@@ -5505,6 +5505,11 @@ class Core extends Controller
 				
 				if($primary_key)
 				{
+					if(isset($uri_parameter['aksara']))
+					{
+						unset($uri_parameter['aksara']);
+					}
+					
 					$uri_parameter					= array_merge(array('aksara' => generate_token(array_filter(array_merge($uri_parameter, $primary_key)))), $uri_parameter, $primary_key);
 				}
 				
