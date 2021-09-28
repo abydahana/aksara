@@ -150,12 +150,12 @@
 											' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
 											<div class="row no-gutters">
 												<div class="col-3 col-sm-2">
-													<a href="' . base_url('user/' . $val->username) . '" target="_blank">
+													<a href="' . base_url('user', array('user_id' => $val->user_id)) . '" target="_blank">
 														<img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded" />
 													</a>
 												</div>
 												<div class="col-9 col-sm-10 pl-3">
-													<a href="' . base_url('user/' . $val->username) . '" target="_blank">
+													<a href="' . base_url('user', array('user_id' => $val->user_id)) . '" target="_blank">
 														<b>
 															' . $val->first_name . ' ' . $val->last_name . '
 														</b>
@@ -206,28 +206,36 @@
 						<?php echo aksara('date_modified'); ?>
 					</p>
 				</div>
-				<div class="form-group border-bottom">
-					<label class="d-block text-muted mb-0">
-						<?php echo phrase('uploaded_file'); ?>
-					</label>
-					<p class="uploaded-file">
-						0
-					</p>
-				</div>
-				<div class="form-group border-bottom">
-					<label class="d-block text-muted mb-0">
-						<?php echo phrase('system_language'); ?>
-					</label>
-					<p>
-						<?php echo (isset($system_language) ? $system_language : null); ?>
-					</p>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group border-bottom">
+							<label class="d-block text-muted mb-0">
+								<?php echo phrase('system_language'); ?>
+							</label>
+							<p>
+								<?php echo (isset($system_language) ? $system_language : null); ?>
+							</p>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group border-bottom">
+							<label class="d-block text-muted mb-0">
+								<?php echo phrase('membership'); ?>
+							</label>
+							<p>
+								<?php echo (get_setting('frontend_registration') ? '<span class="badge badge-success">' . phrase('enabled') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+							</p>
+						</div>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="d-block text-muted mb-0">
-						<?php echo phrase('membership'); ?>
+						<?php echo phrase('uploaded_file'); ?>
 					</label>
 					<p>
-						<?php echo (get_setting('frontend_registration') ? '<span class="badge badge-success">' . phrase('enabled') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+						<a href="<?php echo base_url('cms/partials/media'); ?>" class="--xhr uploaded-file">
+							0
+						</a>
 					</p>
 				</div>
 			</div>
@@ -335,7 +343,7 @@
 			{
 				$('.updater-placeholder').html
 				(
-					'<div class="alert alert-info text-sm rounded-0 border-0 p-3 mb-0">' +
+					'<div class="alert alert-info rounded-0 border-0 p-3 mb-0">' +
 						'<h5>' +
 							'<?php echo phrase('update_available'); ?>' +
 						'</h5>' +
@@ -345,7 +353,7 @@
 							'<?php echo phrase('your_created_module_and_theme_will_not_be_overwritten'); ?>' +
 						'</p>' +
 						'<hr />' +
-						'<a href="<?php echo base_url('administrative/updater'); ?>" class="btn btn-sm btn-success --xhr">' +
+						'<a href="<?php echo base_url('administrative/updater'); ?>" class="btn btn-sm btn-success rounded-pill --xhr">' +
 							'<i class="mdi mdi-update"></i>' +
 							'<?php echo phrase('update_now'); ?>' +
 						'</a>' +

@@ -123,7 +123,7 @@
 						'<div class="col-sm-6 col-md-4 col-lg-3">' +
 							'<div class="card shadow border-0 rounded-more mb-3">' +
 								'<a href="' + val.detail_url + '" class="--modal">' +
-									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.src + ') center center no-repeat; background-size: cover; height: 256px">' +
+									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.thumbnail + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
 										(val.type == 'backend' ? '<span class="badge badge-warning float-right mt-3 mr-3"><?php echo phrase('back_end'); ?></span>' : '<span class="badge badge-success float-right mt-3 mr-3"><?php echo phrase('front_end'); ?></span>') +
 										'<div class="absolute w-100 text-center bottom p-3">' +
@@ -160,7 +160,7 @@
 						'<div class="col-sm-6 col-md-4 col-lg-3">' +
 							'<div class="card shadow border-0 mb-3">' +
 								'<a href="' + val.detail_url + '" class="--modal">' +
-									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.src + ') center center no-repeat; background-size: cover; height: 256px">' +
+									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.thumbnail + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
 										'<span class="badge badge-danger float-right mt-3 mr-3"><?php echo phrase('module'); ?></span>' +
 										'<div class="absolute w-100 text-center bottom p-3">' +

@@ -31,9 +31,9 @@
 		<?php
 			foreach($installed as $key => $val)
 			{
-				if(file_exists(ROOTPATH . 'themes/' . $val->folder . '/' . $val->screenshot[0]->src))
+				if(file_exists(ROOTPATH . 'themes/' . $val->folder . '/' . $val->screenshot[0]->thumbnail))
 				{
-					$screenshot						= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->src);
+					$screenshot						= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->thumbnail);
 				}
 				else
 				{

@@ -5,9 +5,9 @@
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
+			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->thumbnail))
 			{
-				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->src);
+				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->thumbnail);
 			}
 			else
 			{
@@ -16,7 +16,7 @@
 			
 			$carousel								.= '
 				<div class="carousel-item rounded' . (!$key ? ' active' : null) . '">
-					<a href="' . $screenshot . '" target="_blank">
+					<a href="' . $val->original . '" target="_blank">
 						<img src="' . $screenshot . '" class="d-block rounded w-100" alt="' . $val->alt . '">
 					</a>
 				</div>
@@ -50,45 +50,46 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<h5 class="font-weight-light">
+			<h5>
 				<?php echo $detail->name; ?>
 				<?php echo ($detail->type == 'backend' ? '<span class="badge badge-warning float-right">' . phrase('back_end') . '</span>' : '<span class="badge badge-success float-right">' . phrase('front_end') . '</span>'); ?>
 			</h5>
-			<hr />
+			<hr class="mt-1 mb-1" />
 			<div class="row">
 				<div class="col-4">
-					<label class="text-muted d-block">
+					<label class="mb-0">
 						<?php echo phrase('author'); ?>
 					</label>
 				</div>
 				<div class="col-8">
-					<p>
+					<label class="mb-0">
 						<?php echo (isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>'); ?>
-					</p>
+					</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-4">
-					<label class="text-muted d-block">
+					<label class="mb-0">
 						<?php echo phrase('version'); ?>
 					</label>
 				</div>
 				<div class="col-8">
-					<p>
+					<label class="mb-0">
 						<?php echo $detail->version; ?>
-					</p>
+					</label>
 				</div>
 			</div>
-			<p class="mb-0">
+			<hr class="mt-1" />
+			<div class="mb-0">
 				<?php echo nl2br($detail->description); ?>
-			</p>
+			</div>
 		</div>
 	</div>
 	<hr class="row" />
 	<div class="row">
 		<div class="col-md-3">
 			<?php if(($detail->type == 'backend' && $detail->folder == get_setting('backend_theme')) || ($detail->type == 'frontend' && $detail->folder == get_setting('frontend_theme'))) { ?>
-			<a href="<?php echo current_page('../customize'); ?>" class="btn btn-warning btn-block btn-sm --xhr">
+			<a href="<?php echo current_page('../customize', array('theme' => $detail->folder)); ?>" class="btn btn-warning btn-block btn-sm --xhr">
 				<i class="mdi mdi-cogs"></i>
 				<?php echo phrase('customize'); ?>
 			</a>
@@ -99,9 +100,7 @@
 			</a>
 			<?php } ?>
 		</div>
-		<div class="col-md-3">
-		</div>
-		<div class="col-md-3">
+		<div class="col-md-3 offset-md-3">
 			<a href="<?php echo base_url(('backend' == $detail->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $detail->folder, 'integrity_check' => $detail->integrity)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
 				<i class="mdi mdi-magnify"></i>
 				<?php echo phrase('preview'); ?>

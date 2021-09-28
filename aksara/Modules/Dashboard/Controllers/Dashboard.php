@@ -153,6 +153,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 	{
 		$query										= $this->model->select
 		('
+			app__users.user_id,
 			app__users.username,
 			app__users.first_name,
 			app__users.last_name,

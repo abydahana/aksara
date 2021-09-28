@@ -116,6 +116,19 @@ class Cleaner extends \Aksara\Laboratory\Core
 			$session_cleaned						= $this->model->affected_rows();
 		}
 		
+		$error_log									= directory_map(WRITEPATH . 'logs');
+		
+		if($error_log)
+		{
+			foreach($error_log as $key => $val)
+			{
+				if(!is_array($val) && pathinfo($val, PATHINFO_EXTENSION) != 'html')
+				{
+					@unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $val);
+				}
+			}
+		}
+		
 		if($error)
 		{
 			// throw with error

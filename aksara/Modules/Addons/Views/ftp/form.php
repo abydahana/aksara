@@ -50,19 +50,31 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="text-muted d-block" for="username_input">
-						<?php echo $results->form_data->username->label; ?>
-						<?php echo ($results->form_data->username->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
-					</label>
-					<?php echo $results->form_data->username->content; ?>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="text-muted d-block" for="username_input">
+								<?php echo $results->form_data->username->label; ?>
+								<?php echo ($results->form_data->username->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+							</label>
+							<?php echo $results->form_data->username->content; ?>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="text-muted d-block" for="password_input">
+								<?php echo $results->form_data->password->label; ?>
+								<?php echo ($results->form_data->password->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+							</label>
+							<?php echo $results->form_data->password->content; ?>
+						</div>
+					</div>
 				</div>
 				<div class="form-group">
-					<label class="text-muted d-block" for="password_input">
-						<?php echo $results->form_data->password->label; ?>
-						<?php echo ($results->form_data->password->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+					<label class="text-muted d-block">
+						<input type="checkbox" name="checking" value="1" />
+						<?php echo phrase('check_connection_while_submitting'); ?>
 					</label>
-					<?php echo $results->form_data->password->content; ?>
 				</div>
 				<div class="--validation-callback mb-0"></div>
 			</div>

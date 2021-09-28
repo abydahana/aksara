@@ -149,33 +149,13 @@ class Media extends \Aksara\Laboratory\Core
 			$directory								= (strpos($filename, DIRECTORY_SEPARATOR) !== false ? substr($filename, 0, strpos($filename, DIRECTORY_SEPARATOR)) : null);
 		}
 		
-		if(in_array($extension, array('png', 'jpg', 'jpeg', 'gif', 'bmp')))
+		if(in_array($extension, array('png', 'jpg', 'jpeg', 'gif')))
 		{
 			return get_image($directory, $filename);
 		}
-		elseif(in_array($extension, array('json')))
-		{
-			return get_image('_extension', 'json.png');
-		}
-		elseif(in_array($extension, array('xls', 'xlsx')))
-		{
-			return get_image('_extension', 'xls.png');
-		}
-		elseif(in_array($extension, array('csv')))
-		{
-			return get_image('_extension', 'csv.png');
-		}
-		elseif(in_array($extension, array('doc', 'docx')))
-		{
-			return get_image('_extension', 'doc.png');
-		}
-		elseif(in_array($extension, array('pdf')))
-		{
-			return get_image('_extension', 'pdf.png');
-		}
 		else
 		{
-			return get_image('_extension', 'unknown.png');
+			return get_image('_extension', $extension . '.png');
 		}
 	}
 }

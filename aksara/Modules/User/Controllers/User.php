@@ -18,7 +18,11 @@ class User extends \Aksara\Laboratory\Core
 		
 		if(service('request')->getGet('user_id'))
 		{
-			$query									= $this->model->get_where
+			$query									= $this->model->select
+			('
+				username
+			')
+			->get_where
 			(
 				$this->_table,
 				array
@@ -36,11 +40,19 @@ class User extends \Aksara\Laboratory\Core
 		}
 	}
 	
-	public function index($username = null)
+	public function index($username = '', $tab = null)
 	{
-		if(!$username)
+		if($username)
 		{
-			$username								= get_userdata('username');
+			$this->where('username', $username);
+		}
+		elseif(service('request')->getGet('user_id') > 0)
+		{
+			$this->where('user_id', service('request')->getGet('user_id'));
+		}
+		else
+		{
+			$this->where('user_id', get_userdata('user_id'));
 		}
 		
 		$this->set_title('{first_name} {last_name}', phrase('user_not_found'))
@@ -67,14 +79,6 @@ class User extends \Aksara\Laboratory\Core
 					8
 				)
 				->result()
-			)
-		)
-		
-		->where
-		(
-			array
-			(
-				'username'							=> $username
 			)
 		)
 		->limit(1)

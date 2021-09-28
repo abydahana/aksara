@@ -27,6 +27,11 @@ class Ftp extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		if(1 == service('request')->getPost('checking'))
+		{
+			$this->_connection_check();
+		}
+		
 		$this->set_title(phrase('ftp_configuration'))
 		->set_icon('mdi mdi-console-network')
 		->unset_field('site_id')
@@ -63,6 +68,7 @@ class Ftp extends \Aksara\Laboratory\Core
 			)
 		)
 		->merge_field('hostname, port')
+		->merge_field('username, password')
 		->field_size
 		(
 			array
@@ -74,7 +80,7 @@ class Ftp extends \Aksara\Laboratory\Core
 		->render($this->_table);
 	}
 	
-	public function before_update()
+	private function _connection_check()
 	{
 		$connection									= @ftp_connect(service('request')->getPost('hostname'), service('request')->getPost('port'), 10);
 		

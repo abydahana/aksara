@@ -103,7 +103,7 @@
 					if(!isset($_val->question) || !$_val->answer) continue;
 					
 					$output							.= '
-					  <div class="card">
+						<div class="card">
 							<div class="card-header" id="heading_' . $_key . '">
 								<a href="#" class="d-block font-weight-bold" data-toggle="collapse" data-target="#collapse_' . $_key . '" aria-expanded="' . (!$_key ? 'true' : 'false') . '" aria-controls="collapse_' . $_key . '">
 									' . $_val->question . '

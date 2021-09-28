@@ -1,6 +1,6 @@
-<div class="container-fluid pt-3 pb-3">
+<div class="container-fluid">
 	<div class="row">
-		<div class="col-lg-8">
+		<div class="col-lg-8 pt-3 pb-3 bg-white border-right" style="margin-right:-1px">
 			<div class="row">
 				<?php
 					if($results->directory && !isset($key))
@@ -55,47 +55,56 @@
 				?>
 			</div>
 		</div>
-		<div class="col-lg-4">
+		<div class="col-lg-4 pt-3 pb-3 full-height bg-white border-left" style="margin-left:-1px">
 			<?php
 				if($results->description)
 				{
 					echo '
-						<div class="mb-5">
-							<a href="' . base_url($results->description->server_path) . '" target="_blank">
-								<img src="' . $results->description->icon . '" class="img-fluid rounded" alt="..." />
-							</a>
-						</div>
 						<div class="form-group">
-							<label class="d-block text-muted">
+							<label class="d-block text-muted mb-0">
 								' . phrase('filename') . '
 							</label>
 							<label class="d-block text-break-word">
-								' . $results->description->name . '
+								<a href="' . base_url($results->description->server_path) . '" target="_blank">
+									' . $results->description->name . '
+								</a>
 							</label>
 						</div>
-						<div class="form-group">
-							<label class="d-block text-muted">
-								' . phrase('mime_type') . '
-							</label>
-							<label class="d-block text-break-word">
-								' . $results->description->mime_type . '
-							</label>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="d-block text-muted mb-0">
+										' . phrase('mime_type') . '
+									</label>
+									<label class="d-block text-break-word">
+										' . $results->description->mime_type . '
+									</label>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="d-block text-muted mb-0">
+										' . phrase('size') . '
+									</label>
+									<label class="d-block text-break-word">
+										' . get_filesize(service('request')->getGet('directory'), $results->description->name) . '
+									</label>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
-							<label class="d-block text-muted">
-								' . phrase('size') . '
-							</label>
-							<label class="d-block text-break-word">
-								' . $results->description->size . '
-							</label>
-						</div>
-						<div class="form-group">
-							<label class="d-block text-muted">
+							<label class="d-block text-muted mb-0">
 								' . phrase('date_modified') . '
 							</label>
 							<label class="d-block text-break-word">
 								' . date('Y-m-d H:i:s', $results->description->date) . '
 							</label>
+						</div>
+						<div class="form-group">
+							<a href="' . base_url($results->description->server_path) . '" class="btn btn-primary btn-block rounded-pill" target="_blank">
+								<i class="mdi mdi-download"></i>
+								' . phrase('download') . '
+							</a>
 						</div>
 					';
 				}
