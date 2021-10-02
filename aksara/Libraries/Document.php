@@ -121,7 +121,7 @@ class Document
 			// online doc can be found in https://xxx.xx/
 			return $this->_excel($html, $filename, $method, $this->_params);
 		}
-		elseif('doc' == strtolower($method))
+		else if('doc' == strtolower($method))
 		{
 			// use doc generator
 			// online doc can be found in https://xxx.xx/
@@ -150,7 +150,7 @@ class Document
 			$this->_params['page-width']			= $widthHeight[0];
 			$this->_params['page-height']			= $widthHeight[1];
 		}
-		elseif('landscape' == strtolower($height))
+		else if('landscape' == strtolower($height))
 		{
 			// the page size and orientation is sets with initial, ex: A4, landscape
 			$this->_params['page-size']				= $width;
@@ -177,7 +177,7 @@ class Document
 			$this->_params['margin-bottom']			= $top;
 			$this->_params['margin-left']			= $top;
 		}
-		elseif($top && $right && !$bottom && !$left)
+		else if($top && $right && !$bottom && !$left)
 		{
 			// margin-top and bottom is equal, also margin-right and left
 			$this->_params['margin-top']			= $top;
@@ -185,7 +185,7 @@ class Document
 			$this->_params['margin-bottom']			= $top;
 			$this->_params['margin-left']			= $right;
 		}
-		elseif($top && $right && $bottom && !$left)
+		else if($top && $right && $bottom && !$left)
 		{
 			// only left margin is equal to the right margin
 			$this->_params['margin-top']			= $top;
@@ -270,7 +270,7 @@ class Document
 			// attach to email
 			return $pdf->Output($filename . '.pdf', 'S');
 		}
-		elseif($method == 'download')
+		else if($method == 'download')
 		{
 			// download results
 			return $pdf->Output($filename . '.pdf', 'D');

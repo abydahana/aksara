@@ -924,11 +924,11 @@ class simple_html_dom_node
 			if($c > 128)
 			{
 				if(($c >= 254)) return false;
-				elseif($c >= 252) $bits=6;
-				elseif($c >= 248) $bits=5;
-				elseif($c >= 240) $bits=4;
-				elseif($c >= 224) $bits=3;
-				elseif($c >= 192) $bits=2;
+				else if($c >= 252) $bits=6;
+				else if($c >= 248) $bits=5;
+				else if($c >= 240) $bits=4;
+				else if($c >= 224) $bits=3;
+				else if($c >= 192) $bits=2;
 				else return false;
 				if(($i+$bits) > $len) return false;
 				while($bits > 1)

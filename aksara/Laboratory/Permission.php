@@ -300,11 +300,11 @@ class Permission
 		{
 			$user_agent								= $this->agent->getBrowser() . ' ' . $this->agent->getVersion();
 		}
-		elseif($this->agent->isRobot())
+		else if($this->agent->isRobot())
 		{
 			$user_agent								= $this->agent->getRobot();
 		}
-		elseif($this->agent->isMobile())
+		else if($this->agent->isMobile())
 		{
 			$user_agent								= $this->agent->getMobile();
 		}

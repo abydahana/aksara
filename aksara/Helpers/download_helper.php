@@ -78,7 +78,7 @@ if ( ! function_exists('force_download'))
 		{
 			return;
 		}
-		elseif ($data === NULL)
+		else if ($data === NULL)
 		{
 			if ( ! @is_file($filename) OR ($filesize = @filesize($filename)) === FALSE)
 			{
@@ -109,35 +109,35 @@ if ( ! function_exists('force_download'))
 				 */
 				return;
 			}
-			elseif('css' == $extension)
+			else if('css' == $extension)
 			{
 				$mime		= 'text/css';
 			}
-			elseif('js' == $extension)
+			else if('js' == $extension)
 			{
 				$mime		= 'application/javascript';
 			}
-			elseif('png' == $extension)
+			else if('png' == $extension)
 			{
 				$mime		= 'image/png';
 			}
-			elseif('jpg' == $extension || 'jpeg' == $extension)
+			else if('jpg' == $extension || 'jpeg' == $extension)
 			{
 				$mime		= 'image/jpeg';
 			}
-			elseif('gif' == $extension)
+			else if('gif' == $extension)
 			{
 				$mime		= 'image/gif';
 			}
-			elseif('svg' == $extension)
+			else if('svg' == $extension)
 			{
 				$mime		= 'image/svg+xml';
 			}
-			elseif('bmp' == $extension)
+			else if('bmp' == $extension)
 			{
 				$mime		= 'image/bmp';
 			}
-			elseif('webp' == $extension)
+			else if('webp' == $extension)
 			{
 				$mime		= 'image/webp';
 			}

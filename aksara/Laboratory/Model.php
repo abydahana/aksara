@@ -1,4 +1,5 @@
-<?php namespace Aksara\Laboratory;
+<?php
+namespace Aksara\Laboratory;
 /**
  * CRUD Model
  * The global model that linked to the core, make crud easier
@@ -111,7 +112,7 @@ class Model
 				);
 			}
 		}
-		elseif($driver && $hostname && $username && $database)
+		else if($driver && $hostname && $username && $database)
 		{
 			$driver									= array
 			(
@@ -130,11 +131,15 @@ class Model
 		// initialize parameter to new connection
 		$this->db									= \Config\Database::connect($parameter);
 		
-		// check if connection successfully made
-		if(!$this->db->connect())
+		try
+		{
+			// check if connection successfully made
+			$this->db->connect();
+		}
+		catch(\Throwable $e)
 		{
 			// connection couldn't be made, throw error
-			return throw_exception(403, $this->db->error()['message']);
+			return throw_exception(403, $e->getMessage());
 		}
 		
 		return $this;
@@ -1470,6 +1475,25 @@ class Model
 	{
 		$set										= array_merge($this->_set, $set);
 		
+		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
+		{
+			$metadata								= $this->db->getFieldData($table);
+			
+			if($metadata)
+			{
+				$found								= false;
+				
+				foreach($metadata as $key => $val)
+				{
+					if($val->type == 'int' && $val->primary_key && !$found)
+					{
+						$set[$val->name]			= ($this->db->table($table)->selectMax($val->name)->get()->getRow($val->name) + 1);
+						$found						= true;
+					}
+				}
+			}
+		}
+		
 		return $this->db->table($table)->insert($set);
 	}
 	
@@ -1481,6 +1505,44 @@ class Model
 	public function insert_batch($table = null, $set = array(), $batch_size = 1, $escape = true)
 	{
 		$set										= array_merge($this->_set, $set);
+		
+		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
+		{
+			$auto_increment							= 0;
+			$metadata								= $this->db->getFieldData($table);
+			
+			if($metadata)
+			{
+				$found								= false;
+				
+				foreach($metadata as $key => $val)
+				{
+					if($val->type == 'int' && $val->primary_key && !$found)
+					{
+						$primary					= $val->name;
+						$auto_increment				= ($this->db->table($table)->selectMax($val->name)->get()->getRow($val->name) + 1);
+						$found						= true;
+					}
+				}
+			}
+			
+			$new_set								= array();
+			
+			foreach($set as $key => $val)
+			{
+				foreach($val as $_key => $_val)
+				{
+					$_val[$primary_key]				= $auto_increment;
+					$val							= $_val;
+					
+					$auto_increment++;
+				}
+				
+				$new_set[]							= $val;
+			}
+			
+			$set									= $new_set;
+		}
 		
 		return $this->db->table($table)->insertBatch($set, $escape, $batch_size);
 	}
@@ -1502,7 +1564,7 @@ class Model
 			}
 		}
 		
-		return $this->db->table($table)->update($set, $where, $limit);
+		return $this->db->table($table)->update($set, $where, (DB_DRIVER != 'SQLite3' ? $limit : null));
 	}
 	
 	/**

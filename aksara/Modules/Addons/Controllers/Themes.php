@@ -102,7 +102,7 @@ class Themes extends \Aksara\Laboratory\Core
 			{
 				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 			}
-			elseif(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
+			else if(!is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json'))
 			{
 				return throw_exception(400, array('colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is_not_writable')));
 			}
@@ -149,7 +149,7 @@ class Themes extends \Aksara\Laboratory\Core
 		}
 		
 		/* delete confirmation */
-		elseif($this->_primary && $this->_primary != service('request')->getPost('theme'))
+		else if($this->_primary && $this->_primary != service('request')->getPost('theme'))
 		{
 			$html									= '
 				<div class="p-3">

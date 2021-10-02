@@ -42,7 +42,7 @@ if (!function_exists('base_url'))
 		{
 			$params									= array_merge($request->getGet(), $params);
 		}
-		elseif('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . $request->getServer('encryption.key') . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir('../themes/' . $request->getGet('aksara_theme')))
+		else if('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . $request->getServer('encryption.key') . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir('../themes/' . $request->getGet('aksara_theme')))
 		{
 			$params									= $request->getGet();
 		}
@@ -263,7 +263,7 @@ if ( ! function_exists('redirect_to'))
 		{
 			$method = 'refresh';
 		}
-		elseif ($method !== 'refresh' && (empty($code) OR ! is_numeric($code)))
+		else if ($method !== 'refresh' && (empty($code) OR ! is_numeric($code)))
 		{
 			if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1')
 			{

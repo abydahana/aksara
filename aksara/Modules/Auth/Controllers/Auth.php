@@ -40,12 +40,12 @@ class Auth extends \Aksara\Laboratory\Core
 				return throw_exception(301, phrase('you_were_logged_in'), base_url('dashboard'), true);
 			}
 		}
-		elseif(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
+		else if(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
 		{
 			/* google login authentication */
 			return $this->google_auth();
 		}
-		elseif(service('request')->getGet('code') && service('request')->getGet('state') && get_userdata('FBRLH_state'))
+		else if(service('request')->getGet('code') && service('request')->getGet('state') && get_userdata('FBRLH_state'))
 		{
 			/* facebook login authentication */
 			return $this->facebook_auth();
@@ -125,7 +125,7 @@ class Auth extends \Aksara\Laboratory\Core
 			{
 				return throw_exception(404, phrase('your_account_is_temporary_disabled_or_not_yet_activated'));
 			}
-			elseif($execute && password_verify($password . ENCRYPTION_KEY, $execute->password))
+			else if($execute && password_verify($password . ENCRYPTION_KEY, $execute->password))
 			{
 				/* update the last login timestamp */
 				$this->model->update

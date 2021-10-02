@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid bg-light">
 	<?php
 		$prefix_action								= array();
 		
@@ -230,25 +230,23 @@
 				}
 				
 				echo '
-					<div class="row pb-3">
-						<div class="col-12">
-							<div class="pt-3 pb-2 shadow" style="margin-left:-15px; margin-right:-15px">
-								<ul class="list-group list-group-flush">
-									' . $columns . '
-								</ul>
-								<div class="btn-group d-flex bg-white border-top">
+					<div class="' . (!$key ? 'pt-3' : 'pt-0') . '" style="margin-right:-15px; margin-left:-15px">
+						<div class="mb-3">
+							<ul class="list-group list-group-flush">
+								' . $columns . '
+							</ul>
+							<div class="btn-group d-flex bg-white border-top">
+							
+								' . $item_option . '
 								
-									' . $item_option . '
-									
-									' . ($extra_option ? '
-									<a href="" class="btn --open-item-option pt-1 pb-1" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '">
-										<i class="mdi mdi-dots-horizontal-circle-outline"></i>
-										<span class="d-block text-sm">
-											' . phrase('more') . '
-										</span>
-									</a>
-									' : null) . '
-								</div>
+								' . ($extra_option ? '
+								<a href="" class="btn --open-item-option pt-1 pb-1" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '">
+									<i class="mdi mdi-dots-horizontal-circle-outline"></i>
+									<span class="d-block text-sm">
+										' . phrase('more') . '
+									</span>
+								</a>
+								' : null) . '
 							</div>
 						</div>
 					</div>
@@ -258,12 +256,14 @@
 		else
 		{
 			echo '
-				<div class="text-center">
-					<i class="mdi mdi-text mdi-5x text-muted"></i>
+				<div class="text-center full-height d-flex align-items-center justify-content-center">
+					<div>
+					<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
 					<br />
 					<p class="lead text-muted">
 						' . phrase('no_matching_record_were_found') . '
 					</p>
+					</div>
 				</div>
 			';
 		}

@@ -88,7 +88,7 @@ class Ftp extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(400, array('hostname' => phrase('unable_to_connect_to_the_ftp_using_provided_configuration')));
 		}
-		elseif(!@ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password')))
+		else if(!@ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password')))
 		{
 			return throw_exception(400, array('username' => phrase('unable_to_login_to_ftp_using_the_provided_configuration')));
 		}

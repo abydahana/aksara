@@ -271,7 +271,7 @@ if($total > 0 && isset($results->table_data))
 		</html>
 	';
 }
-elseif($total > 0 && isset($results->form_data))
+else if($total > 0 && isset($results->form_data))
 {
 	$fields											= null;
 	foreach($results->form_data as $field => $params)

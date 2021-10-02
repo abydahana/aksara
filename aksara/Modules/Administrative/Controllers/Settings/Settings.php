@@ -56,7 +56,7 @@ class Settings extends \Aksara\Laboratory\Core
 		{
 			$required_facebook_app_secret			= 'required';
 		}
-		elseif(service('request')->getPost('facebook_app_secret'))
+		else if(service('request')->getPost('facebook_app_secret'))
 		{
 			$required_facebook_app_id				= 'required';
 		}
@@ -65,7 +65,7 @@ class Settings extends \Aksara\Laboratory\Core
 		{
 			$required_google_client_secret			= 'required';
 		}
-		elseif(service('request')->getPost('google_client_secret'))
+		else if(service('request')->getPost('google_client_secret'))
 		{
 			$required_google_client_id				= 'required';
 		}

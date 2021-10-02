@@ -133,7 +133,7 @@ if(!function_exists('json_fixer'))
 		{
 			return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
 		}
-		elseif(is_array($data))
+		else if(is_array($data))
 		{
 			$output									= array();
 			

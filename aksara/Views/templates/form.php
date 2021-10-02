@@ -86,7 +86,7 @@
 				
 				$column_4							.= '<div class="row">' . $col . '</div>';
 			}
-			elseif(3 == $params->position)
+			else if(3 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
@@ -95,7 +95,7 @@
 				
 				$column_3							.= '<div class="row">' . $col . '</div>';
 			}
-			elseif(2 == $params->position)
+			else if(2 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
@@ -156,7 +156,7 @@
 				
 				$column_4							.= $output;
 			}
-			elseif(3 == $params->position)
+			else if(3 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
@@ -165,7 +165,7 @@
 				
 				$column_3							.= $output;
 			}
-			elseif(2 == $params->position)
+			else if(2 == $params->position)
 			{
 				if(isset($results->set_heading->$field))
 				{
@@ -216,7 +216,7 @@
 							</div>
 						';
 					}
-					elseif(3 == $results->column_total)
+					else if(3 == $results->column_total)
 					{
 						echo '
 							<div class="row">
@@ -232,7 +232,7 @@
 							</div>
 						';
 					}
-					elseif(2 == $results->column_total)
+					else if(2 == $results->column_total)
 					{
 						echo '
 							<div class="row">

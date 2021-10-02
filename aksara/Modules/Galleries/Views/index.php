@@ -34,7 +34,7 @@
 								{
 									$album_cover	= $src;
 								}
-								elseif($num > 1)
+								else if($num > 1)
 								{
 									$image_thumb	.= '<a href="' . go_to(array($val->gallery_slug, $src)) . '" class="--modal"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
 								}

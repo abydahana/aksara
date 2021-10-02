@@ -112,23 +112,23 @@ class Dashboard extends \Aksara\Laboratory\Core
 				{
 					$browsers['chrome']++;
 				}
-				elseif(stripos($val->browser, 'firefox') !== false)
+				else if(stripos($val->browser, 'firefox') !== false)
 				{
 					$browsers['firefox']++;
 				}
-				elseif(stripos($val->browser, 'safari') !== false)
+				else if(stripos($val->browser, 'safari') !== false)
 				{
 					$browsers['safari']++;
 				}
-				elseif(stripos($val->browser, 'edge') !== false)
+				else if(stripos($val->browser, 'edge') !== false)
 				{
 					$browsers['edge']++;
 				}
-				elseif(stripos($val->browser, 'opera') !== false)
+				else if(stripos($val->browser, 'opera') !== false)
 				{
 					$browsers['opera']++;
 				}
-				elseif(stripos($val->browser, 'explorer') !== false)
+				else if(stripos($val->browser, 'explorer') !== false)
 				{
 					$browsers['explorer']++;
 				}

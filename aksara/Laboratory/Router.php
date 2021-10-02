@@ -67,7 +67,7 @@ class Router
 			}
 			
 			// check if second file is exists
-			elseif(file_exists('../' . $second_file))
+			else if(file_exists('../' . $second_file))
 			{
 				// file exists, apply to route
 				$namespace							= str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));
@@ -157,7 +157,7 @@ class Router
 						
 						$this->_found				= true;
 					}
-					elseif($module. '/' . $method == $this->_uri_string && '../' . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/')))
+					else if($module. '/' . $method == $this->_uri_string && '../' . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/')))
 					{
 						$x							= substr_count($namespace . $val, '\\');
 						$this->_collection[$x]		= $namespace . $val;

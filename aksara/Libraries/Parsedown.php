@@ -1195,7 +1195,7 @@ class Parsedown
         {
             $emphasis = 'strong';
         }
-        elseif (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches))
+        else if (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches))
         {
             $emphasis = 'em';
         }
@@ -1511,7 +1511,7 @@ class Parsedown
         }
         // very strongly consider an alternative if you're writing an
         // extension
-        elseif (isset($Element['rawHtml']))
+        else if (isset($Element['rawHtml']))
         {
             $text = $Element['rawHtml'];
             $allowRawHtmlInSafeMode = isset($Element['allowRawHtmlInSafeMode']) && $Element['allowRawHtmlInSafeMode'];
@@ -1531,7 +1531,7 @@ class Parsedown
             {
                 $markup .= $this->{$Element['handler']}($text, $Element['nonNestables']);
             }
-            elseif (!$permitRawHtml)
+            else if (!$permitRawHtml)
             {
                 $markup .= self::escape($text, true);
             }
@@ -1619,7 +1619,7 @@ class Parsedown
                     unset($Element['attributes'][$att]);
                 }
                 # dump onevent attribute
-                elseif (self::striAtStart($att, 'on'))
+                else if (self::striAtStart($att, 'on'))
                 {
                     unset($Element['attributes'][$att]);
                 }

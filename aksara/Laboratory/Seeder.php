@@ -317,7 +317,7 @@ class Seeder
 				{
 					$path							= $val->module . '/' . $val->submodule . '/' . $val->controller;
 				}
-				elseif($val->module != $val->submodule)
+				else if($val->module != $val->submodule)
 				{
 					$path							= $val->module . '/' . $val->submodule;
 				}
@@ -366,7 +366,7 @@ class Seeder
 				{
 					$module							= $a . '/' . $b . '/' . $c;
 				}
-				elseif($a != $b)
+				else if($a != $b)
 				{
 					$module							= $a . '/' . $b;
 				}

@@ -33,7 +33,7 @@ if(!function_exists('get_image'))
 			$placeholder							= UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png';
 			$file									= UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/' . $name;
 		}
-		elseif($dimension == 'icon')
+		else if($dimension == 'icon')
 		{
 			$placeholder							= UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png';
 			$file									= UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/' . $name;

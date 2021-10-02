@@ -84,7 +84,7 @@ class Media extends \Aksara\Laboratory\Core
 			$description['icon']					= $this->_get_icon($directory, $filename);
 			$description['mime_type']				= $file->getMimeType();
 		}
-		elseif(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory))
+		else if(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory))
 		{
 			//$description							= get_dir_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory);
 		}

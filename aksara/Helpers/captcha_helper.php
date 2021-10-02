@@ -239,7 +239,7 @@ if ( ! function_exists('create_captcha'))
 			$img_filename = $now.'.jpg';
 			imagejpeg($im, $img_path.$img_filename);
 		}
-		elseif (function_exists('imagepng'))
+		else if (function_exists('imagepng'))
 		{
 			$img_filename = $now.'.png';
 			imagepng($im, $img_path.$img_filename);

@@ -170,7 +170,7 @@ if(!function_exists('load_comment_plugin'))
 		}
 		
 		// facebook comment plugin
-		elseif(get_setting('facebook_app_id'))
+		else if(get_setting('facebook_app_id'))
 		{
 			return '
 				<div class="fb-comments-container mt-5 mb-5">
@@ -207,7 +207,7 @@ if(!function_exists('throw_exception'))
 					/* success */
 					service('session')->setFlashdata('success', $data);
 				}
-				elseif(in_array($code, array(403, 404)))
+				else if(in_array($code, array(403, 404)))
 				{
 					/* warning */
 					service('session')->setFlashdata('warning', $data);

@@ -101,7 +101,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 				$error								= phrase('the_session_save_path_is_not_writable');
 			}
 		}
-		elseif(stripos($session_driver, 'database') !== false)
+		else if(stripos($session_driver, 'database') !== false)
 		{
 			// database session handler
 			$query									= $this->model->delete
@@ -134,7 +134,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 			// throw with error
 			return throw_exception(403, $error, go_to());
 		}
-		elseif($logs_cleaned > 0 || $session_cleaned > 0)
+		else if($logs_cleaned > 0 || $session_cleaned > 0)
 		{
 			// throw with amount of cleaned garbage
 			$html									= '

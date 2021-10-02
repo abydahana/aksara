@@ -121,37 +121,37 @@ class Groups extends \Aksara\Laboratory\Core
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-primary';
 					}
-					elseif('create' == $privilege)
+					else if('create' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-success';
 					}
-					elseif('read' == $privilege)
+					else if('read' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-info';
 					}
-					elseif('update' == $privilege)
+					else if('update' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-warning';
 					}
-					elseif('delete' == $privilege)
+					else if('delete' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-danger';
 					}
-					elseif('export' == $privilege)
+					else if('export' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-success';
 					}
-					elseif('print' == $privilege)
+					else if('print' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-warning';
 					}
-					elseif('pdf' == $privilege)
+					else if('pdf' == $privilege)
 					{
 						$label						= phrase($privilege);
 						$badge_color				= 'badge-danger';

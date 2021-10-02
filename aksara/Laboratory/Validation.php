@@ -245,13 +245,13 @@ class Validation extends \CodeIgniter\Validation\Rules
 		}
 		
 		/* check field existence */
-		elseif(!$this->model->field_exists($field, $table))
+		else if(!$this->model->field_exists($field, $table))
 		{
 			$this->form_validation->setError('relation_checker', phrase('the_field_for_this_relation_table_does_not_exist'));
 		}
 		
 		/* check if relation data is exists */
-		elseif(!$this->model->select($field)->get_where($table, array($field => $value))->row($field))
+		else if(!$this->model->select($field)->get_where($table, array($field => $value))->row($field))
 		{
 			$this->form_validation->setError('relation_checker', phrase('the_selected_data_for_this_relation_does_not_exist'));
 		}
@@ -386,21 +386,21 @@ class Validation extends \CodeIgniter\Validation\Rules
 			
 			return false;
 		}
-		elseif(!in_array($source->getMimeType(), $valid_mime))
+		else if(!in_array($source->getMimeType(), $valid_mime))
 		{
 			// mime is invalid
 			$this->_upload_error					= phrase('the_selected_file_format_is_not_allowed_to_upload');
 			
 			return false;
 		}
-		elseif($source->getSizeByUnit('kb') > MAX_UPLOAD_SIZE)
+		else if($source->getSizeByUnit('kb') > MAX_UPLOAD_SIZE)
 		{
 			// size is exceeded the maximum allocation
 			$this->_upload_error					= phrase('the_selected_file_size_exceeds_the_maximum_allocation');
 			
 			return false;
 		}
-		elseif(!is_dir(UPLOAD_PATH) || !is_writable(UPLOAD_PATH))
+		else if(!is_dir(UPLOAD_PATH) || !is_writable(UPLOAD_PATH))
 		{
 			// upload directory is unwritable
 			$this->_upload_error					= phrase('the_upload_folder_is_not_writable');

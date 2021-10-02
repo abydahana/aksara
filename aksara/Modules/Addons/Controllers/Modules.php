@@ -92,7 +92,7 @@ class Modules extends \Aksara\Laboratory\Core
 		}
 		
 		/* delete confirmation */
-		elseif(service('request')->uri->getSegment(4) && service('request')->uri->getSegment(4) != service('request')->getPost('module'))
+		else if(service('request')->uri->getSegment(4) && service('request')->uri->getSegment(4) != service('request')->getPost('module'))
 		{
 			$html									= '
 				<div class="p-3">

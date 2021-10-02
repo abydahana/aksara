@@ -67,7 +67,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(400, array('username' => phrase('the_username_or_email_you_entered_does_not_registered')));
 		}
-		elseif(!$query->status)
+		else if(!$query->status)
 		{
 			return throw_exception(400, array('username' => phrase('your_account_is_temporary_disabled_or_not_yet_activated')));
 		}
@@ -248,7 +248,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(400, array('password' => phrase('your_password_has_been_reset_recently')));
 		}
-		elseif(!$query->status)
+		else if(!$query->status)
 		{
 			return throw_exception(400, array('password' => phrase('your_account_is_temporary_disabled_or_not_yet_activated')));
 		}

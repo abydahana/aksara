@@ -22,7 +22,7 @@ class Register extends \Aksara\Laboratory\Core
 			return throw_exception(301, phrase('you_have_been_signed_in'), base_url('dashboard'), true);
 		}
 		/* check if registration is opened */
-		elseif(!get_setting('frontend_registration'))
+		else if(!get_setting('frontend_registration'))
 		{
 			return throw_exception(403, phrase('the_registration_is_temporary_disabled'), base_url('auth'));
 		}
@@ -126,7 +126,7 @@ class Register extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), current_page());
 		}
-		elseif(!$this->valid_token(service('request')->getPost('_token')))
+		else if(!$this->valid_token(service('request')->getPost('_token')))
 		{
 			return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), current_page());
 		}

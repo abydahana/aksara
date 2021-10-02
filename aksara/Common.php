@@ -26,11 +26,11 @@ if(! function_exists('aksara'))
 		{
 			return $version;
 		}
-		elseif('built_version' == $parameter)
+		else if('built_version' == $parameter)
 		{
 			return $version . \CodeIgniter\CodeIgniter::CI_VERSION;
 		}
-		elseif('date_modified' == $parameter)
+		else if('date_modified' == $parameter)
 		{
 			return date('F d Y H:i:s', $modified);
 		}
@@ -205,7 +205,7 @@ if(! function_exists('phrase'))
 				/* put content into file */
 				file_put_contents($translation_file, json_encode(array()));
 			}
-			elseif(is_writable(WRITEPATH . 'translations'))
+			else if(is_writable(WRITEPATH . 'translations'))
 			{
 				/* put content into file */
 				file_put_contents($translation_file, json_encode(array()));

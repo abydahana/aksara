@@ -3,6 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="robots" content="noindex">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="msapplication-navbutton-color" content="#007bff" />
+	<meta name="theme-color" content="#007bff" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="#007bff" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 
 	<title>Site Under Maintenance!</title>
 

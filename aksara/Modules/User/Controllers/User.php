@@ -46,7 +46,7 @@ class User extends \Aksara\Laboratory\Core
 		{
 			$this->where('username', $username);
 		}
-		elseif(service('request')->getGet('user_id') > 0)
+		else if(service('request')->getGet('user_id') > 0)
 		{
 			$this->where('user_id', service('request')->getGet('user_id'));
 		}
