@@ -38,7 +38,7 @@ class Miscellaneous
 	/**
 	 * shortlink generator
 	 */
-	public function shortlink_generator($params = null, $slug = null)
+	public function shortlink_generator($params = null, $slug = null, $session = array())
 	{
 		if(!$params) return false;
 		
@@ -70,7 +70,8 @@ class Miscellaneous
 				array
 				(
 					'hash'							=> $hash,
-					'url'							=> $params
+					'url'							=> $params,
+					'session'						=> json_encode($session)
 				)
 			);
 		}
