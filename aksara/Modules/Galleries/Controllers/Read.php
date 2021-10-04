@@ -60,7 +60,6 @@ class Read extends \Aksara\Laboratory\Core
 			)
 		)
 		->limit(1)
-		->modal_size('modal-lg')
 		
 		->render($this->_table);
 	}

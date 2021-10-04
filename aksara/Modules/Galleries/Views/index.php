@@ -1,4 +1,4 @@
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="jumbotron jumbotron-fluid bg-light gradient">
 	<div class="container">
 		<div class="text-center text-md-left">
 			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-3 pb-3">
 	<div class="row">
 		<div class="col-md-10 offset-md-1">
 			<?php
@@ -36,7 +36,7 @@
 								}
 								else if($num > 1)
 								{
-									$image_thumb	.= '<a href="' . go_to(array($val->gallery_slug, $src)) . '" class="--modal"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
+									$image_thumb	.= '<a href="' . go_to(array($val->gallery_slug, $src)) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
 								}
 								
 								$num++;
@@ -58,7 +58,7 @@
 												' . truncate($val->gallery_description, 160) . '
 											</p>
 											<p class="text-light">
-												' . (count($images) > 4 ? '<a href="' . go_to($val->gallery_slug) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-folder-multiple-image"></i> ' . phrase('show_all') . '</a>' : '<a href="' . go_to(array($val->gallery_slug, $album_cover)) . '" class="btn btn-outline-light rounded-pill --modal"><i class="mdi mdi-magnify"></i> ' . phrase('show') . '</a>') . '
+												' . (count($images) > 4 ? '<a href="' . go_to($val->gallery_slug) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-folder-multiple-image"></i> ' . phrase('show_all') . '</a>' : '<a href="' . go_to(array($val->gallery_slug, $album_cover)) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-magnify"></i> ' . phrase('show') . '</a>') . '
 											</p>
 										</div>
 									</div>
@@ -78,7 +78,7 @@
 		</div>
 	</div>
 </div>
-<div class="container">
+<div class="container pt-3 pb-3">
 	<div class="row">
 		<div class="col-md-10 offset-md-1">
 			<?php echo $template->pagination; ?>

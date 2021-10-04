@@ -21,7 +21,7 @@ class Galleries extends \Aksara\Laboratory\Core
 		->set_description(phrase('our_gallery_activities'))
 		->set_icon('mdi mdi-folder-multiple-image')
 		->set_primary('gallery_slug')
-		->order_by('gallery_title', 'RANDOM')
+		->order_by('gallery_id', 'DESC')
 		->where('status', 1)
 		
 		->render('galleries');
