@@ -1,5 +1,5 @@
 <?php if($results) { ?>
-<div class="jumbotron jumbotron-fluid bg-light relative">
+<div class="jumbotron jumbotron-fluid bg-dark gradient relative">
 	<div class="container">
 		<br />
 		<br />

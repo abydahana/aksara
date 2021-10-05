@@ -1,4 +1,4 @@
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="jumbotron jumbotron-fluid bg-light gradient">
 	<div class="container">
 		<div class="text-center text-md-left">
 			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-3 pb-3">
 	<div class="row">
 		<div class="col-md-10 offset-1">
 			<?php

@@ -28,7 +28,7 @@
 		display: none
 	}
 </style>
-<div class="row no-gutters">
+<div class="row no-gutters bg-light">
 	<div class="col-lg-8">
 		<div class="sticky-top" style="top:15px">
 			<div class="photo-view">
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-4 p-3">
+	<div class="col-lg-4 p-3 bg-white">
 		<div class="sticky-top" style="top:15px">
 			<div class="row mb-3">
 				<div class="col-3 col-md-2 pr-0">

@@ -38,9 +38,9 @@
 	</div>
 </div>
 
-<div class="container pb-5">
+<div class="container">
 	<div class="row">
-		<div class="col-md-8 pb-5">
+		<div class="col-md-8 pt-3 pb-3">
 		
 			<?php
 				if($results)
@@ -119,7 +119,7 @@
 			?>
 		
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 pt-3 pb-3">
 			<div class="sticky-top">
 				<!-- placeholder -->
 			</div>

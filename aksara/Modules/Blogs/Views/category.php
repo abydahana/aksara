@@ -38,9 +38,9 @@
 	</div>
 </div>
 
-<div class="container pb-5">
+<div class="container">
 	<div class="row">
-		<div class="col-md-8 pb-5">
+		<div class="col-md-8 pt-3 pb-3">
 		
 			<?php
 				if($results)
@@ -119,7 +119,7 @@
 			?>
 		
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 pt-3 pb-3">
 			<div class="sticky-top">
 				<h5 class="mb-3">
 					<?php echo phrase('other_categories'); ?>
@@ -136,9 +136,9 @@
 									</div>
 									<div class="col">
 										<a href="' . go_to('../' . $val->category_slug) . '" class="--xhr">
-											<h5>
+											<h6>
 												' . $val->category_title . '
-											</h5>
+											</h6>
 											<p class="text-muted mb-0">
 												' . number_format($val->total_data) . ' ' . ($val->total_data > 1 ? phrase('articles') : phrase('article')) . '
 											</p>

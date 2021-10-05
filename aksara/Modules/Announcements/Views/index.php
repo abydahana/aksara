@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-3 pb-3">
 	<?php
 		if($results)
 		{
@@ -39,7 +39,7 @@
 		else
 		{
 			echo '
-				<div class="text-muted">
+				<div class="alert alert-warning">
 					<i class="mdi mdi-information"></i>
 					' . phrase('no_announcement_is_available') . '
 				</div>
