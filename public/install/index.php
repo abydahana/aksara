@@ -1,4 +1,12 @@
 <?php
+if(version_compare(PHP_VERSION, '7.3', '<'))
+{
+	exit('You need to update your PHP version to 7.3 or newer!');
+}
+else if(!is_dir(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'vendor'))
+{
+	exit('Please run "<code>composer install</code>" from "<code>' . dirname(dirname(__DIR__)) . '</code>" to fetch the required dependencies before we start the installation wizard.<br /><a href="//getcomposer.org"><b>Click here</b></a> to download the composer if it\'s not yet installed in your web server');
+}
 
 define('ENVIRONMENT', 'development');
 
