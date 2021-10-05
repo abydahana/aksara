@@ -63,65 +63,52 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '22',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'user_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '22',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'path' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'method' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'browser' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'platform' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'ip_address' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '22',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -137,89 +124,73 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'announcement_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'content' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'placement' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'start_date' => array
 				(
 					'type' => 'date',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'end_date' => array
 				(
 					'type' => 'date',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -236,81 +207,64 @@ class Migration extends BaseController
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => '4',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'description' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'database_driver' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'hostname' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'port' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'database_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -326,33 +280,28 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'code' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '8',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'country' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -367,41 +316,34 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'hostname' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'port' => array
 				(
 					'type' => 'int',
 					'constraint' => '5',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '512',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -416,41 +358,34 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'group_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'group_description' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'mediumtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'group_privileges' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -465,25 +400,20 @@ class Migration extends BaseController
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'privileges' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'last_generated' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -498,49 +428,41 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'language' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'description' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'tinytext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'code' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'locale' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -556,57 +478,49 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'menu_placement' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '22',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'menu_label' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'menu_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'serialized_data' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'group_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => false,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -623,65 +537,52 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'api_key' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'method' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'tinytext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'ip_range' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'valid_until' => array
 				(
 					'type' => 'date',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'int',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -696,33 +597,26 @@ class Migration extends BaseController
 				(
 					'type' => 'varchar',
 					'constraint' => '128',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'ip_address' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '45',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'timestamp' => array
 				(
 					'type' => 'timestamp',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'data' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre')) ? 'bytea' : (in_array($this->db->DBDriver, array('SQLSRV')) ? 'binary' : 'blob')),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -737,305 +631,239 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'app_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'app_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'app_logo' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'app_icon' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'frontend_theme' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'backend_theme' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'app_language' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'office_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'office_phone' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'office_email' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'office_fax' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'office_address' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'office_map' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'one_device_login' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'username_changes' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'frontend_registration' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'default_membership_group' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'auto_active_registration' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'google_analytics_key' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'openlayers_search_provider' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '10',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'openlayers_search_key' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '128',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'default_map_tile' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'disqus_site_domain' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '128',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'facebook_app_id' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '22',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'facebook_app_secret' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '512',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'google_client_id' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'google_client_secret' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '512',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'twitter_username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'instagram_username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'whatsapp_number' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '16',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'smtp_email_masking' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'smtp_sender_masking' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'smtp_host' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'smtp_port' => array
 				(
 					'type' => 'int',
 					'constraint' => '5',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'smtp_username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'smtp_password' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '512',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'action_sound' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1051,25 +879,20 @@ class Migration extends BaseController
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'url' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'session' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -1084,145 +907,116 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'email' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'first_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'gender' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'bio' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'photo' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'address' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'phone' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '16',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'postal_code' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '10',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'country' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'group_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'registered_date' => array
 				(
 					'type' => 'date',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'last_login' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1240,17 +1034,15 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'hash' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -1265,33 +1057,28 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'sub_level_1' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'visible_menu' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'access_year' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => '4',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -1306,33 +1093,27 @@ class Migration extends BaseController
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'browser' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'platform' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -1348,25 +1129,22 @@ class Migration extends BaseController
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => '4',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => true,
+					'null' => false
 				),
 				'default' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1381,113 +1159,92 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'post_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'post_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'post_excerpt' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'post_content' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'post_category' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'post_tags' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'author' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'headline' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'featured_image' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1505,57 +1262,48 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'category_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'category_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'auto_increment' => false,
+					'null' => false
 				),
 				'category_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'category_image' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1572,97 +1320,78 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'gallery_images' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'gallery_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'gallery_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'null' => false
 				),
 				'gallery_description' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'gallery_attributes' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'gallery_tags' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'featured' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'author' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1679,49 +1408,39 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'sender_full_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'sender_email' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'subject' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'messages' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 			)
 		);
@@ -1736,33 +1455,28 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'service_provider' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'null' => false
 				),
 				'access_token' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1778,97 +1492,80 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'page_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'page_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 1,
-					'null' => 0
+					'null' => false
 				),
 				'page_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'page_content' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'carousel_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'faq_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'author' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1886,65 +1583,53 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'carousel_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'carousel_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'carousel_content' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -1960,65 +1645,53 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'faq_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'faq_description' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'faq_content' => array
 				(
 					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -2034,105 +1707,82 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'first_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'people_slug' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'position' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'email' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'mobile' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '16',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'instagram' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'facebook' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'twitter' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'biography' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'photo' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '256',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);
@@ -2147,73 +1797,59 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 1,
-					'null' => 0
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'photo' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'first_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'testimonial_title' => array
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'testimonial_content' => array
 				(
 					'type' => 'text',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'timestamp' => array
 				(
 					'type' => 'timestamp',
 					'constraint' => '',
-					'unsigned' => 0,
-					'auto_increment' => 0,
-					'null' => 0
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => 1,
-					'auto_increment' => 0,
-					'null' => 0
+					'unsigned' => true,
+					'null' => false
 				),
 			)
 		);

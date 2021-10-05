@@ -300,7 +300,7 @@ class Install extends BaseController
 	public function run()
 	{
 		$error										= false;
-		$config_source								= file_get_contents('Assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
+		$config_source								= file_get_contents('assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 		$config_source								= str_replace
 		(
 			array
@@ -439,7 +439,7 @@ class Install extends BaseController
 				{
 					$zip							= new \ZipArchive();
 					
-					if($zip->open('Assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
+					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
 						try
 						{
