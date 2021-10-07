@@ -77,25 +77,25 @@ class Migration extends BaseController
 				'path' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'method' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'browser' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'platform' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'ip_address' => array
@@ -131,13 +131,13 @@ class Migration extends BaseController
 				'title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'announcement_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'auto_increment' => false,
 					'null' => false
 				),
@@ -213,13 +213,13 @@ class Migration extends BaseController
 				'name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'description' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'database_driver' => array
@@ -232,31 +232,31 @@ class Migration extends BaseController
 				'hostname' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'port' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'database_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'status' => array
@@ -399,7 +399,7 @@ class Migration extends BaseController
 				'path' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'auto_increment' => true,
 					'null' => false
 				),
@@ -467,7 +467,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('id', true, true);
-		$this->forge->addKey('code', false, false);
+		$this->forge->addKey('code', false, true);
 		$this->forge->createTable('app__languages');
 		
 		$this->forge->addField
@@ -638,7 +638,7 @@ class Migration extends BaseController
 				'app_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'app_description' => array
@@ -650,13 +650,13 @@ class Migration extends BaseController
 				'app_logo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'app_icon' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'frontend_theme' => array
@@ -1166,13 +1166,13 @@ class Migration extends BaseController
 				'post_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'post_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'post_excerpt' => array
@@ -1229,7 +1229,7 @@ class Migration extends BaseController
 				'featured_image' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'language_id' => array
@@ -1288,7 +1288,7 @@ class Migration extends BaseController
 				'category_image' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'language_id' => array
@@ -1333,13 +1333,13 @@ class Migration extends BaseController
 				'gallery_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'gallery_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'gallery_description' => array
@@ -1499,13 +1499,13 @@ class Migration extends BaseController
 				'page_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'page_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'page_description' => array
@@ -1726,13 +1726,13 @@ class Migration extends BaseController
 				'people_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'position' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'email' => array
@@ -1774,7 +1774,7 @@ class Migration extends BaseController
 				'photo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '256',
+					'constraint' => '255',
 					'null' => false
 				),
 				'status' => array

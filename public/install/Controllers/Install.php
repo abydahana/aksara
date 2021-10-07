@@ -6,9 +6,9 @@ class Install extends BaseController
 {
 	public function __construct()
 	{
-		if(file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
+		if(file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php') && (!isset($_SERVER['PATH_INFO'])  || (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] != '/run')))
 		{
-			die(header('Location:' . str_replace('/install', null, base_url())));
+			exit(header('Location:' . str_replace('/install', null, base_url())));
 		}
 		
 		helper('language');
@@ -41,6 +41,11 @@ class Install extends BaseController
 	
 	public function requirement()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		if(service('request')->getPost('_token'))
 		{
 			service('validation')->setRule('agree', phrase('agreement'), 'required');
@@ -81,6 +86,11 @@ class Install extends BaseController
 	
 	public function database()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		if(service('request')->getPost('_token'))
 		{
 		}
@@ -104,6 +114,11 @@ class Install extends BaseController
 	
 	public function security()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		if(service('request')->getPost('_token'))
 		{
 			service('validation')->setRule('database_driver', phrase('database_driver'), 'required');
@@ -189,6 +204,11 @@ class Install extends BaseController
 	
 	public function system()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		if(service('request')->getPost('_token'))
 		{
 			service('validation')->setRule('encryption', phrase('encryption_key'), 'required|regex_match[/^[^\'\\\"]*$/]');
@@ -245,6 +265,11 @@ class Install extends BaseController
 	
 	public function finalizing()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		service('validation')->setRule('installation_mode', phrase('installation_mode'), 'in_list[0,1]');
 		service('validation')->setRule('timezone', phrase('timezone'), 'required|timezone');
 		service('validation')->setRule('site_title', phrase('site_title'), 'required');
@@ -299,6 +324,11 @@ class Install extends BaseController
 	
 	public function run()
 	{
+		if(!service('request')->isAJAX())
+		{
+			exit(header('Location:' . base_url()));
+		}
+		
 		$error										= false;
 		$config_source								= file_get_contents('assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 		$config_source								= str_replace

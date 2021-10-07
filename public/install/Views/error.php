@@ -1,4 +1,4 @@
-<form action="<?php echo base_url('finalizing'); ?>" method="POST" class="--validate-form">
+<form action="<?php echo base_url('run'); ?>" method="POST" class="--validate-form">
 	<h4>
 		<?php echo phrase('the_installer_was_interrupted'); ?>
 	</h4>
@@ -20,9 +20,9 @@
 		</b>
 	</p>
 	<p class="text-break-word">
-		<?php echo phrase('please_download_the_configuration_file_below_and_upload_or_paste_it_manually_under_the_following_folder') . ': <code>' . ROOTPATH . '</code>'; ?>
+		<?php echo phrase('please_download_the_configuration_file_below_and_upload_or_paste_it_manually_under_the_following_folder') . ' <code>' . substr(ROOTPATH, 0, strrpos(ROOTPATH, '/public')) . '</code>'; ?>
 		<br />
-		<a href="<?php echo base_url(null, array('download' => 1)); ?>" target="_blank" class="btn btn-success btn-sm">
+		<a href="<?php echo base_url('run'); ?>?download=1" target="_blank" class="btn btn-success btn-sm">
 			<i class="mdi mdi-download"></i>
 			<?php echo phrase('download_configuration'); ?>
 		</a>
@@ -40,7 +40,7 @@
 			</a>
 		</div>
 		<div class="col-sm-6 text-right">
-			<input type="hidden" name="reload" value="true" />
+			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
 			<button type="submit" class="btn btn-primary btn-block">
 				<i class="mdi mdi-reload"></i>
 				<?php echo phrase('refresh'); ?>
