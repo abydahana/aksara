@@ -269,7 +269,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('year', true, true);
-		$this->forge->addKey('database_driver', false, true);
+		$this->forge->addKey('database_driver', false, false);
 		$this->forge->createTable('app__connections');
 		
 		$this->forge->addField
@@ -525,8 +525,8 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('menu_id', true, true);
-		$this->forge->addKey('menu_placement', false, true);
-		$this->forge->addKey('group_id', false, true);
+		$this->forge->addKey('menu_placement', false, false);
+		$this->forge->addKey('group_id', false, false);
 		$this->forge->createTable('app__menus');
 		
 		$this->forge->addField
@@ -868,7 +868,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('id', true, true);
-		$this->forge->addKey('app_language', false, true);
+		$this->forge->addKey('app_language', false, false);
 		$this->forge->createTable('app__settings');
 		
 		$this->forge->addField
@@ -1481,7 +1481,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
-		$this->forge->addKey('service_provider', false, true);
+		$this->forge->addKey('service_provider', false, false);
 		$this->forge->createTable('oauth__login');
 		
 		$this->forge->addField
