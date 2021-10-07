@@ -56,7 +56,7 @@ class Paths
      *
      * @var string
      */
-    public $writableDirectory = __DIR__ . '/../../../vendor/codeigniter4/framework/writable';
+    public $writableDirectory = __DIR__ . '/../../../writable';
 
     /**
      * ---------------------------------------------------------------
