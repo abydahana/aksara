@@ -151,7 +151,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'start_date' => array
@@ -189,7 +188,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -263,7 +261,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -300,7 +297,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -384,7 +380,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -461,7 +456,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -519,7 +513,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -581,7 +574,6 @@ class Migration extends BaseController
 				(
 					'type' => 'int',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -718,21 +710,18 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'username_changes' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'frontend_registration' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'default_membership_group' => array
@@ -746,7 +735,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'google_analytics_key' => array
@@ -862,7 +850,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -945,7 +932,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'bio' => array
@@ -1015,7 +1001,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1136,14 +1121,12 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1223,7 +1206,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'featured_image' => array
@@ -1243,7 +1225,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1303,7 +1284,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1377,7 +1357,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 				'author' => array
@@ -1391,7 +1370,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1476,7 +1454,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1565,7 +1542,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1629,7 +1605,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1691,7 +1666,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1782,7 +1756,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
@@ -1849,7 +1822,6 @@ class Migration extends BaseController
 				(
 					'type' => 'tinyint',
 					'constraint' => '1',
-					'unsigned' => true,
 					'null' => false
 				),
 			)
