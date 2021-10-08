@@ -526,7 +526,7 @@ class Migration extends BaseController
 		);
 		$this->forge->addKey('menu_id', true, true);
 		$this->forge->addKey('menu_placement', false, false);
-		$this->forge->addKey('group_id', false, false);
+		$this->forge->addKey('group_id', false, true);
 		$this->forge->createTable('app__menus');
 		
 		$this->forge->addField
@@ -1249,6 +1249,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('post_id', true, true);
+		$this->forge->addKey('post_slug', false, true);
 		$this->forge->addKey('author', false, false);
 		$this->forge->addKey('post_category', false, false);
 		$this->forge->addKey('language_id', false, false);
@@ -1570,7 +1571,7 @@ class Migration extends BaseController
 			)
 		);
 		$this->forge->addKey('page_id', true, true);
-		$this->forge->addKey('page_slug', true, true);
+		$this->forge->addKey('page_slug', false, true);
 		$this->forge->addKey('author', false, false);
 		$this->forge->addKey('language_id', false, false);
 		$this->forge->createTable('pages');

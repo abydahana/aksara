@@ -13,6 +13,17 @@
 			</div>
 		';
 	}
+	else if(in_array(get_userdata('group_id'), array(1)) && is_dir(FCPATH . 'install/'))
+	{
+		echo '
+			<div class="alert alert-warning pr-3 pl-3 rounded-0 mb-0">
+				<h5>
+					' . phrase('notice') . '
+				</h5>
+				' . phrase('please_remove_or_rename_the_following_folder_to_secure_your_application') . ' <code>' . FCPATH . 'install</code>
+			</div>
+		';
+	}
 ?>
 <div class="updater-placeholder"></div>
 <div class="container-fluid">
