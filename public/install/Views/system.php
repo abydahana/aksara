@@ -40,25 +40,33 @@
 			</div>
 		</div>
 	</div>
-	<br />
+	<hr />
 	<h5>
 		<?php echo phrase('site_settings'); ?>
 	</h5>
-	<div class="form-group">
-		<label class="d-block mb-0">
-			<?php echo phrase('site_title'); ?>
-			<b class="text-danger">*</b>
-		</label>
-		<input type="text" name="site_title" class="form-control form-control-sm" placeholder="<?php echo phrase('enter_the_site_title'); ?>" value="<?php echo session()->get('site_title'); ?>" />
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label class="d-block mb-0">
+					<?php echo phrase('site_title'); ?>
+					<b class="text-danger">*</b>
+				</label>
+				<input type="text" name="site_title" class="form-control form-control-sm" placeholder="<?php echo phrase('enter_the_site_title'); ?>" value="<?php echo session()->get('site_title'); ?>" />
+			</div>
+		</div>
 	</div>
-	<div class="form-group">
-		<label class="d-block mb-0">
-			<?php echo phrase('site_description'); ?>
-			<b class="text-danger">*</b>
-		</label>
-		<textarea name="site_description" class="form-control form-control-sm" placeholder="<?php echo phrase('enter_the_site_description'); ?>"><?php echo session()->get('site_description'); ?></textarea>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label class="d-block mb-0">
+					<?php echo phrase('site_description'); ?>
+					<b class="text-danger">*</b>
+				</label>
+				<textarea name="site_description" class="form-control form-control-sm" placeholder="<?php echo phrase('enter_the_site_description'); ?>" rows="1"><?php echo session()->get('site_description'); ?></textarea>
+			</div>
+		</div>
 	</div>
-	<br/>
+	<hr/>
 	<h5>
 		<?php echo phrase('upload_setting'); ?>
 	</h5>
@@ -93,7 +101,7 @@
 			</div>
 		</div>
 	</div>
-	<br/>
+	<hr/>
 	<h5>
 		<?php echo phrase('image_width_dimension'); ?> (px)
 	</h5>

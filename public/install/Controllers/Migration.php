@@ -5,19 +5,19 @@ namespace App\Controllers;
 class Migration extends BaseController
 {
 	private $db;
-	private $data;
+	private $installation_mode;
 	private $_delete_table;
 	
-	public function __construct($db = null, $data = false, $delete_table = array())
+	public function __construct($db = null, $installation_mode = false, $delete_table = array())
 	{
 		if($db)
 		{
 			$this->db								= $db;
 		}
 		
-		if($data)
+		if($installation_mode)
 		{
-			$this->data								= $data;
+			$this->installation_mode				= $installation_mode;
 		}
 		
 		if($delete_table)
@@ -372,7 +372,7 @@ class Migration extends BaseController
 				),
 				'group_privileges' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -400,7 +400,7 @@ class Migration extends BaseController
 				),
 				'privileges' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -497,7 +497,7 @@ class Migration extends BaseController
 				),
 				'serialized_data' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -519,7 +519,7 @@ class Migration extends BaseController
 		);
 		$this->forge->addKey('menu_id', true, true);
 		$this->forge->addKey('menu_placement', false, false);
-		$this->forge->addKey('group_id', false, true);
+		$this->forge->addKey('group_id', false, false);
 		$this->forge->createTable('app__menus');
 		
 		$this->forge->addField
@@ -1166,7 +1166,7 @@ class Migration extends BaseController
 				),
 				'post_content' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1307,7 +1307,7 @@ class Migration extends BaseController
 				),
 				'gallery_images' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1325,19 +1325,19 @@ class Migration extends BaseController
 				),
 				'gallery_description' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
 				'gallery_attributes' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
 				'gallery_tags' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1494,7 +1494,7 @@ class Migration extends BaseController
 				),
 				'page_content' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1578,7 +1578,7 @@ class Migration extends BaseController
 				),
 				'carousel_content' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1639,7 +1639,7 @@ class Migration extends BaseController
 				),
 				'faq_content' => array
 				(
-					'type' =>(in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'constraint' => '',
 					'null' => false
 				),
@@ -1880,7 +1880,7 @@ class Migration extends BaseController
 		$this->db->table('app__menus')->insert(json_decode('{"menu_id":"1","menu_placement":"header","menu_label":"Header Menu","menu_description":"Menu for navigation header (front end)","serialized_data":"[{\"order\":0,\"children\":[]},{\"id\":\"1\",\"icon\":\"mdi mdi-home\",\"label\":\"Home\",\"slug\":\"home\",\"newtab\":\"0\",\"order\":1,\"children\":[]},{\"id\":\"3\",\"icon\":\"mdi mdi-newspaper\",\"label\":\"News\",\"slug\":\"blogs\",\"newtab\":\"0\",\"order\":3,\"children\":[]},{\"id\":\"4\",\"icon\":\"mdi mdi-map-clock-outline\",\"label\":\"Galleries\",\"slug\":\"galleries\",\"newtab\":\"0\",\"order\":4,\"children\":[]}]","group_id":"0","status":"1"}', true));
 		$this->db->table('app__users')->insert(json_decode('{"user_id":"1","email":"' . $session['email'] . '","password":"' . password_hash($session['password'] . $session['encryption'], PASSWORD_DEFAULT) . '","username":"' . $session['username'] . '","first_name":"' . $session['first_name'] . '","last_name":"' . $session['last_name'] . '","gender":"0","bio":"","photo":"","address":"","phone":"","postal_code":"","language_id":"' . $session['language'] . '","country":"0","group_id":"1","registered_date":"' . date('Y-m-d') . '","last_login":"' . date('Y-m-d H:i:s') . '","status":"1"}', true));
 		
-		if($this->data)
+		if(1 == $this->installation_mode) // indicates the sample data were requested
 		{
 			$this->db->table('app__countries')->insert(json_decode('{"id":"1","code":"AF","country":"Afghanistan","status":"1"}', true));
 			$this->db->table('app__countries')->insert(json_decode('{"id":"2","code":"AL","country":"Albania","status":"1"}', true));
