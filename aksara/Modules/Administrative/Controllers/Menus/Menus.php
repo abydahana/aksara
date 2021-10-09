@@ -79,6 +79,8 @@ class Menus extends \Aksara\Laboratory\Core
 			)
 		)
 		
+		->modal_size('modal-lg')
+		
 		->render($this->_table);
 	}
 	
