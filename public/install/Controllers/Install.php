@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @copyright		(c) 2021 - Aksara Laboratory
+ * @since			version 4.2.8
+ */
 
 namespace App\Controllers;
 
@@ -445,10 +452,10 @@ class Install extends BaseController
 					}
 				}
 				
-				$migration							= new \App\Controllers\Migration($this->db, session()->get('installation_mode'), $delete_table);
-				
                 try
 				{
+					$migration						= new \App\Libraries\Migration($this->db, session()->get('installation_mode'), $delete_table);
+					
 					// migrate the database
 					$migration->migrate(session()->get());
                 }

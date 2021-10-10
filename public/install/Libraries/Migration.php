@@ -1,8 +1,15 @@
 <?php
+/**
+ * @author			Aby Dahana
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @copyright		(c) 2021 - Aksara Laboratory
+ * @since			version 4.2.8
+ */
 
-namespace App\Controllers;
+namespace App\Libraries;
 
-class Migration extends BaseController
+class Migration
 {
 	private $db;
 	private $installation_mode;
@@ -149,8 +156,9 @@ class Migration extends BaseController
 				),
 				'placement' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'start_date' => array
@@ -186,8 +194,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -259,8 +268,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -295,8 +305,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -378,8 +389,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -454,8 +466,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -511,8 +524,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -708,20 +722,23 @@ class Migration extends BaseController
 				),
 				'one_device_login' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'username_changes' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'frontend_registration' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'default_membership_group' => array
@@ -733,8 +750,9 @@ class Migration extends BaseController
 				),
 				'auto_active_registration' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'google_analytics_key' => array
@@ -848,8 +866,9 @@ class Migration extends BaseController
 				),
 				'action_sound' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -930,8 +949,9 @@ class Migration extends BaseController
 				),
 				'gender' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'bio' => array
@@ -999,8 +1019,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1102,8 +1123,7 @@ class Migration extends BaseController
 				),
 			)
 		);
-		$this->forge->addKey('ip_address', true, false);
-		$this->forge->addKey('timestamp', false, false);
+		$this->forge->addKey('ip_address', false, false);
 		$this->forge->createTable('app__visitor_logs');
 		
 		$this->forge->addField
@@ -1119,14 +1139,16 @@ class Migration extends BaseController
 				),
 				'default' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1204,8 +1226,9 @@ class Migration extends BaseController
 				),
 				'headline' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'featured_image' => array
@@ -1223,8 +1246,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1282,8 +1306,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1355,8 +1380,9 @@ class Migration extends BaseController
 				),
 				'featured' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 				'author' => array
@@ -1368,8 +1394,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1452,8 +1479,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1540,8 +1568,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1603,8 +1632,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1664,8 +1694,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1754,8 +1785,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
@@ -1820,8 +1852,9 @@ class Migration extends BaseController
 				),
 				'status' => array
 				(
-					'type' => 'tinyint',
+					'type' => 'ENUM(\'0\',\'1\')',
 					'constraint' => '1',
+					'default' => '0',
 					'null' => false
 				),
 			)
