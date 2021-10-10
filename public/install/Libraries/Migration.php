@@ -156,7 +156,7 @@ class Migration
 				),
 				'placement' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -194,7 +194,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -268,7 +268,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -305,7 +305,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -389,7 +389,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -466,7 +466,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -524,7 +524,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -722,21 +722,21 @@ class Migration
 				),
 				'one_device_login' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'username_changes' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'frontend_registration' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -750,7 +750,7 @@ class Migration
 				),
 				'auto_active_registration' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -866,7 +866,7 @@ class Migration
 				),
 				'action_sound' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -949,7 +949,7 @@ class Migration
 				),
 				'gender' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1019,7 +1019,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1139,14 +1139,14 @@ class Migration
 				),
 				'default' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1226,7 +1226,7 @@ class Migration
 				),
 				'headline' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1246,7 +1246,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1306,7 +1306,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1380,7 +1380,7 @@ class Migration
 				),
 				'featured' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1394,7 +1394,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1479,7 +1479,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1568,7 +1568,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1632,7 +1632,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1694,7 +1694,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1785,7 +1785,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1852,7 +1852,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => 'ENUM(\'0\',\'1\')',
+					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
