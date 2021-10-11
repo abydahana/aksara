@@ -384,3 +384,38 @@ if(!function_exists('reset_sort'))
 		return array_values($resource);
 	}
 }
+
+if(!function_exists('number2alpha'))
+{
+	/*
+	 * Convert an integer to a string of uppercase letters (A-Z, AA-ZZ, AAA-ZZZ, etc.)
+	 */
+	function number2alpha($number = 0, $suffix = null)
+	{
+		for($alpha = ''; $number >= 0; $number = intval($number / 26) - 1)
+		{
+			$alpha									= chr($number % 26 + 0x41) . $alpha;
+		}
+		
+		return $alpha . $suffix;
+	}
+}
+
+if(!function_exists('number2alpha'))
+{
+	/*
+	 * Convert a string of uppercase letters to an integer.
+	 */
+	function alpha2number($alpa = null, $suffix = null)
+	{
+		$length										= strlen($alpha);
+		$number										= 0;
+		
+		for($i = 0; $i < $l; $i++)
+		{
+			$number									= $number * 26 + ord($alpha[$i]) - 0x40;
+		}
+		
+		return ($number - 1) . $suffix;
+	}
+}
