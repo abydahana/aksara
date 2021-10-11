@@ -9,7 +9,7 @@
 
 namespace App\Libraries;
 
-class Migration
+class Migration_1
 {
 	private $db;
 	private $installation_mode;
@@ -156,7 +156,7 @@ class Migration
 				),
 				'placement' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -194,7 +194,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -268,7 +268,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -305,7 +305,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -389,7 +389,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -466,7 +466,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -524,7 +524,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -722,21 +722,21 @@ class Migration
 				),
 				'one_device_login' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'username_changes' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'frontend_registration' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -750,7 +750,7 @@ class Migration
 				),
 				'auto_active_registration' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -866,7 +866,7 @@ class Migration
 				),
 				'action_sound' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -949,7 +949,7 @@ class Migration
 				),
 				'gender' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1019,7 +1019,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1139,14 +1139,14 @@ class Migration
 				),
 				'default' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1226,7 +1226,7 @@ class Migration
 				),
 				'headline' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1246,7 +1246,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1306,7 +1306,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1380,7 +1380,7 @@ class Migration
 				),
 				'featured' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1394,7 +1394,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1479,7 +1479,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1568,7 +1568,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1632,7 +1632,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1694,7 +1694,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1785,7 +1785,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1852,7 +1852,7 @@ class Migration
 				),
 				'status' => array
 				(
-					'type' => (!in_array($this->db->DBDriver, array('SQLSRV')) ? 'ENUM(\'0\',\'1\')' : 'tinyint'),
+					'type' => 'tinyint',
 					'constraint' => '1',
 					'default' => '0',
 					'null' => false
@@ -1864,7 +1864,7 @@ class Migration
 		$this->forge->createTable('testimonials');
 		
 		
-		$this->db->table('app__settings')->insert(json_decode('{"id":"1","app_name":"' . $session['site_title'] . '","app_description":"' . $session['site_description'] . '","app_logo":"logo.png","app_icon":"logo.png","frontend_theme":"default","backend_theme":"backend","app_language":"' . $session['language'] . '","office_name":"Aksara Laboratory","office_phone":"+6281381614558","office_email":"info@example.com","office_fax":"","office_address":"2nd Floor Example Tower Building, Some Road Name, Any Region","office_map":"[]","one_device_login":"0","username_changes":"1","frontend_registration":"1","default_membership_group":"3","auto_active_registration":"1","google_analytics_key":"","openlayers_search_provider":"openlayers","openlayers_search_key":"","default_map_tile":"","disqus_site_domain":"","facebook_app_id":"","facebook_app_secret":"","google_client_id":"","google_client_secret":"","twitter_username":"","instagram_username":"","whatsapp_number":"","smtp_email_masking":"","smtp_sender_masking":"","smtp_host":"","smtp_port":"0","smtp_username":"","smtp_password":"","action_sound":"1"}', true));
+		$this->db->table('app__settings')->insert(json_decode('{"id":"1","app_name":"' . htmlspecialchars(trim($session['site_title'])) . '","app_description":"' . htmlspecialchars(trim($session['site_description'])) . '","app_logo":"logo.png","app_icon":"logo.png","frontend_theme":"default","backend_theme":"backend","app_language":"' . htmlspecialchars(trim($session['language'])) . '","office_name":"Aksara Laboratory","office_phone":"+6281381614558","office_email":"info@example.com","office_fax":"","office_address":"2nd Floor Example Tower Building, Some Road Name, Any Region","office_map":"[]","one_device_login":"0","username_changes":"1","frontend_registration":"1","default_membership_group":"3","auto_active_registration":"1","google_analytics_key":"","openlayers_search_provider":"openlayers","openlayers_search_key":"","default_map_tile":"","disqus_site_domain":"","facebook_app_id":"","facebook_app_secret":"","google_client_id":"","google_client_secret":"","twitter_username":"","instagram_username":"","whatsapp_number":"","smtp_email_masking":"","smtp_sender_masking":"","smtp_host":"","smtp_port":"0","smtp_username":"","smtp_password":"","action_sound":"1"}', true));
 		$this->db->table('app__groups')->insert(json_decode('{"group_id":"1","group_name":"Global Administrator","group_description":"Super User","group_privileges":"{\"addons\":[\"index\",\"detail\",\"install\"],\"addons\/ftp\":[\"index\"],\"addons\/modules\":[\"index\",\"detail\",\"delete\"],\"addons\/themes\":[\"index\",\"detail\",\"customize\",\"delete\"],\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"administrative\/activities\":[\"index\",\"read\",\"truncate\",\"delete\",\"pdf\",\"print\"],\"administrative\/cleaner\":[\"index\",\"clean\"],\"administrative\/countries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/connections\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/adjust_privileges\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/privileges\":[\"index\",\"create\",\"update\",\"read\",\"delete\"],\"administrative\/menus\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/settings\":[\"index\",\"update\"],\"administrative\/translations\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/translations\/synchronize\":[\"index\"],\"administrative\/translations\/translate\":[\"index\",\"delete_phrase\"],\"administrative\/updater\":[\"index\",\"update\"],\"administrative\/users\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/users\/privileges\":[\"index\",\"update\"],\"administrative\/years\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"apis\":[\"index\"],\"apis\/debug_tool\":[\"index\"],\"apis\/documentation\":[\"index\"],\"apis\/services\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\":[\"index\"],\"cms\/blogs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/blogs\/categories\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/galleries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/pages\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\":[\"index\"],\"cms\/partials\/announcements\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/carousels\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/faqs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/inquiries\":[\"index\",\"read\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/media\":[\"index\"],\"cms\/partials\/testimonials\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/peoples\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
 		$this->db->table('app__groups')->insert(json_decode('{"group_id":"2","group_name":"Technical","group_description":"Group user for technical support","group_privileges":"{\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"apis\":[\"index\"],\"apis\/debug_tool\":[\"index\"],\"apis\/services\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\":[\"index\"],\"cms\/blogs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/blogs\/categories\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/galleries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/pages\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\":[\"index\"],\"cms\/partials\/announcements\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/carousels\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/faqs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/inquiries\":[\"index\",\"read\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/media\":[\"index\"],\"cms\/partials\/testimonial\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/peoples\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
 		$this->db->table('app__groups')->insert(json_decode('{"group_id":"3","group_name":"Subscriber","group_description":"Group user for subscriber","group_privileges":"{\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
