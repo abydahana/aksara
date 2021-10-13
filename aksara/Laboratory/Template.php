@@ -742,7 +742,7 @@ class Template
 			
 			$output									= '
 				<div class="row">
-					<div class="col-sm-6 text-sm-center text-md-left">
+					<div class="col-sm-6 text-sm-left">
 						<label class="text-muted mb-0 pt-1">
 							<small class="result-for">
 								<i class="mdi mdi-information-outline"></i>
