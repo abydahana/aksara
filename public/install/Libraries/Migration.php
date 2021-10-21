@@ -9,7 +9,7 @@
 
 namespace App\Libraries;
 
-class Migration_1
+class Migration
 {
 	private $db;
 	private $installation_mode;

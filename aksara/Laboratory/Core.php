@@ -2430,7 +2430,16 @@ class Core extends Controller
 									$like_val				= substr($like_val, 0, stripos($like_val, ' AS '));
 								}
 								
-								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $this->_set_field[service('request')->getPost('origin')]['parameter']))
+								if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
+								{
+									$table					= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+								}
+								else
+								{
+									$table					= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+								}
+								
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $table))
 								{
 									$this->_order_by_bm[]	= '(CASE WHEN ' . $like_val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $like_val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
 								}
@@ -2464,7 +2473,7 @@ class Core extends Controller
 				{
 					/* set the relation table, field and keyword */
 					$field							= $this->_set_field[service('request')->getPost('origin')];
-					$table							= $field['parameter'];
+					$table							= (is_array($field['parameter']) ? $field['parameter'][0] : $field['parameter']);
 					$select							= (!is_array($field['extra_params']) ? array_map('trim', explode(',', $field['extra_params'])) : $field['extra_params']);
 					$select							= array
 					(
