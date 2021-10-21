@@ -1,4 +1,4 @@
-<form action="<?php echo base_url('security'); ?>" method="POST" class="--validate-form">
+<form action="<?php echo site_url('security'); ?>" method="POST" class="--validate-form">
 	<h4>
 		<?php echo phrase('database_configuration'); ?>
 	</h4>
@@ -80,7 +80,7 @@
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-sm-6">
-			<a href="<?php echo base_url('requirement'); ?>" class="btn btn-light btn-block --xhr">
+			<a href="<?php echo site_url('requirement'); ?>" class="btn btn-light btn-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<?php echo phrase('back'); ?>
 			</a>

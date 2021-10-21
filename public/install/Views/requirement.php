@@ -6,7 +6,7 @@
 		$error										= true;
 	}
 ?>
-<form action="<?php echo base_url('database'); ?>" method="POST" class="--validate-form">
+<form action="<?php echo site_url('database'); ?>" method="POST" class="--validate-form">
 	<h4>
 		<?php echo phrase('awesome'); ?>
 	</h4>
@@ -108,12 +108,12 @@
 			</div>
 		</div>
 	</div>
-	<?php echo ($error ? '<div class="alert alert-warning failure"><b>' . phrase('whoops') . '</b> ' . phrase('some_requirement_are_not_yet_fulfilled') . ' ' . phrase('please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation') : null); ?>
+	<?php echo ($error ? '<div class="alert alert-warning failure"><b>' . phrase('whoops') . '</b> ' . phrase('some_requirement_are_not_yet_fulfilled') . ' ' . phrase('please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation') . '</div>' : null); ?>
 	<hr class="row" />
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-md-6">
-			<?php echo ($error ? '<a href="' . base_url('requirement') . '" class="btn btn-light btn-block --xhr"><i class="mdi mdi-check"></i> ' . phrase('refresh') . '</a>' : '&nbsp;'); ?>
+			<?php echo ($error ? '<a href="' . site_url('requirement') . '" class="btn btn-light btn-block --xhr"><i class="mdi mdi-check"></i> ' . phrase('refresh') . '</a>' : '&nbsp;'); ?>
 		</div>
 		<div class="col-md-6 text-right">
 			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />

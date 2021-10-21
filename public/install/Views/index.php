@@ -68,7 +68,7 @@
 								</div>
 								<div class="col-md-8 pt-3 pb-3">
 									<div class="sticky-top step-content" style="top:15px">
-										<form action="<?php echo base_url('requirement'); ?>" method="POST" class="--validate-form">
+										<form action="<?php echo site_url('requirement'); ?>" method="POST" class="--validate-form">
 											<div class="row">
 												<div class="col-7">
 													<h4>

@@ -1,4 +1,4 @@
-<form action="<?php echo base_url('run'); ?>" method="POST" class="--validate-form">
+<form action="<?php echo site_url('run'); ?>" method="POST" class="--validate-form">
 	<h4>
 		<?php echo phrase('the_installer_was_interrupted'); ?>
 	</h4>
@@ -22,7 +22,7 @@
 	<p class="text-break-word">
 		<?php echo phrase('please_download_the_configuration_file_below_and_upload_or_paste_it_manually_under_the_following_folder') . ' <code>' . substr(ROOTPATH, 0, strrpos(ROOTPATH, '/public')) . '</code>'; ?>
 		<br />
-		<a href="<?php echo base_url('run'); ?>?download=1" target="_blank" class="btn btn-success btn-sm">
+		<a href="<?php echo site_url('run'); ?>?download=1" target="_blank" class="btn btn-success btn-sm">
 			<i class="mdi mdi-download"></i>
 			<?php echo phrase('download_configuration'); ?>
 		</a>
@@ -34,7 +34,7 @@
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-sm-6">
-			<a href="<?php echo base_url('system'); ?>" class="btn btn-light btn-block --xhr">
+			<a href="<?php echo site_url('system'); ?>" class="btn btn-light btn-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<?php echo phrase('back'); ?>
 			</a>
