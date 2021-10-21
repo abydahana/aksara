@@ -113,7 +113,7 @@
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-md-6">
-			<?php echo ($error ? '<a href="' . site_url('requirement') . '" class="btn btn-light btn-block --xhr"><i class="mdi mdi-check"></i> ' . phrase('refresh') . '</a>' : '&nbsp;'); ?>
+			<?php echo ($error ? '<a href="' . site_url('requirement') . '" class="btn btn-light btn-block --xhr"><i class="mdi mdi-reload"></i> ' . phrase('refresh') . '</a>' : '&nbsp;'); ?>
 		</div>
 		<div class="col-md-6 text-right">
 			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
