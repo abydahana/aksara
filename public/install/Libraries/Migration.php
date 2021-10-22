@@ -55,7 +55,7 @@ class Migration
 				
 				foreach($this->_delete_table as $key => $val)
 				{
-					$this->forge->dropTable($val, false, false);
+					$this->forge->dropTable($val, false, true);
 				}
 				
 				$this->db->enableForeignKeyChecks();
@@ -407,7 +407,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'privileges' => array
@@ -603,7 +602,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '128',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'ip_address' => array
@@ -885,7 +883,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '64',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'url' => array
@@ -1099,7 +1096,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'timestamp' => array
