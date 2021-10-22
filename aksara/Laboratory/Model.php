@@ -1564,7 +1564,7 @@ class Model
 			}
 		}
 		
-		return $this->db->table($table)->update($set, $where, (DB_DRIVER != 'SQLite3' ? $limit : null));
+		return $this->db->table($table)->update($set, $where, (!in_array(DB_DRIVER, array('Postgre', 'SQLite3')) ? $limit : null));
 	}
 	
 	/**
