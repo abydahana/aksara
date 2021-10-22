@@ -145,7 +145,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '255',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'content' => array
@@ -214,7 +213,6 @@ class Migration
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => '4',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'name' => array
@@ -233,7 +231,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'hostname' => array
@@ -337,7 +334,6 @@ class Migration
 				(
 					'type' => 'int',
 					'constraint' => '5',
-					'unsigned' => true,
 					'null' => false
 				),
 				'username' => array
@@ -454,7 +450,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'locale' => array
@@ -492,7 +487,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '22',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'menu_label' => array
@@ -518,7 +512,6 @@ class Migration
 					'type' => 'int',
 					'constraint' => '11',
 					'unsigned' => true,
-					'auto_increment' => false,
 					'null' => false
 				),
 				'status' => array
@@ -743,7 +736,6 @@ class Migration
 				(
 					'type' => 'int',
 					'constraint' => '11',
-					'unsigned' => true,
 					'null' => false
 				),
 				'auto_active_registration' => array
@@ -847,7 +839,6 @@ class Migration
 				(
 					'type' => 'int',
 					'constraint' => '5',
-					'unsigned' => true,
 					'null' => false
 				),
 				'smtp_username' => array
@@ -1102,7 +1093,6 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'browser' => array
@@ -1130,7 +1120,6 @@ class Migration
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => '4',
-					'auto_increment' => true,
 					'null' => false
 				),
 				'default' => array
@@ -1278,7 +1267,6 @@ class Migration
 				(
 					'type' => 'varchar',
 					'constraint' => '32',
-					'auto_increment' => false,
 					'null' => false
 				),
 				'category_description' => array
