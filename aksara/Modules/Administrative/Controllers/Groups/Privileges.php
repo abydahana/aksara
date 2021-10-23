@@ -20,6 +20,8 @@ class Privileges extends \Aksara\Laboratory\Core
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		$this->set_primary('path');
 	}
 	
 	public function index()

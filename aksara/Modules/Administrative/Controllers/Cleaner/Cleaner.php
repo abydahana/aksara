@@ -46,14 +46,16 @@ class Cleaner extends \Aksara\Laboratory\Core
 		/**
 		 * Clean visitor log garbage that exceed 7 days
 		 */
-		$garbage_visitors							= $this->model->delete
-		(
-			'app__visitor_logs',
-			array
-			(
-				'timestamp < '						=> date('Y-m-d H:i:s', strtotime('-7 days'))
-			)
-		);
+		if('Postgre' == DB_DRIVER)
+		{
+			$this->model->where('extract(epoch from timestamp) < ', strtotime('-7 day'));
+		}
+		else
+		{
+			$this->model->where('timestamp < ', date('Y-m-d H:i:s', strtotime('-7 days')));
+		}
+		
+		$garbage_visitors							= $this->model->delete('app__visitor_logs');
 		
 		$logs_cleaned								= $this->model->affected_rows();
 		
@@ -104,14 +106,16 @@ class Cleaner extends \Aksara\Laboratory\Core
 		else if(stripos($session_driver, 'database') !== false)
 		{
 			// database session handler
-			$query									= $this->model->delete
-			(
-				$session_path,
-				array
-				(
-					'timestamp < '					=> (time() - $session_expiration)
-				)
-			);
+			if('Postgre' == DB_DRIVER)
+			{
+				$this->model->where('extract(epoch from timestamp) < ', (time() - $session_expiration));
+			}
+			else
+			{
+				$this->model->where('timestamp < ', (time() - $session_expiration));
+			}
+			
+			$query									= $this->model->delete($session_path);
 			
 			$session_cleaned						= $this->model->affected_rows();
 		}

@@ -2280,7 +2280,7 @@ class Core extends Controller
 			{
 				foreach($this->_field_data as $key => $val)
 				{
-					if(isset($val['primary_key']) && $val['primary_key'] === 1)
+					if((isset($val['primary_key']) && $val['primary_key'] === 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') !== false))
 					{
 						$this->_set_primary[]		= $val['name'];
 					}
