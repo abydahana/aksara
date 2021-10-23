@@ -20,7 +20,7 @@
 				<h5>
 					' . phrase('notice') . '
 				</h5>
-				' . phrase('please_remove_or_rename_the_following_folder_to_secure_your_application') . ' <code>' . FCPATH . 'install</code>
+				' . phrase('please_remove_or_rename_the_following_directory_to_secure_your_application') . ' <code>' . FCPATH . 'install</code>
 			</div>
 		';
 	}

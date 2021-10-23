@@ -65,7 +65,7 @@ class User extends \Aksara\Laboratory\Core
 				'suggestions'						=> $this->model->select
 				('
 					username,
-					CONCAT(first_name, " ", last_name) AS full_name
+					CONCAT(first_name, \' \', last_name) AS full_name
 				')
 				->order_by('username', 'RANDOM')
 				->get_where
