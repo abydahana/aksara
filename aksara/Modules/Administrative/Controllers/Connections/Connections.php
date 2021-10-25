@@ -20,6 +20,8 @@ class Connections extends \Aksara\Laboratory\Core
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		$this->set_primary('year');
 	}
 	
 	public function index()
