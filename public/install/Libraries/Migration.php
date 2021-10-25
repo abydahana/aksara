@@ -115,6 +115,7 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 			)
@@ -164,24 +165,28 @@ class Migration
 				(
 					'type' => 'date',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'end_date' => array
 				(
 					'type' => 'date',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'created_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'language_id' => array
@@ -415,6 +420,7 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 			)
@@ -574,6 +580,7 @@ class Migration
 				(
 					'type' => 'date',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'status' => array
@@ -997,12 +1004,14 @@ class Migration
 				(
 					'type' => 'date',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'last_login' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => '00-00-00 00:00',
 					'null' => false
 				),
 				'status' => array
@@ -1093,6 +1102,7 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'browser' => array
@@ -1194,11 +1204,13 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
+					'default' => 'NOW()',
 					'constraint' => '',
 					'null' => false
 				),
@@ -1354,11 +1366,13 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
+					'default' => 'NOW()',
 					'constraint' => '',
 					'null' => false
 				),
@@ -1430,6 +1444,7 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 			)
@@ -1528,12 +1543,14 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'author' => array
@@ -1599,12 +1616,14 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'language_id' => array
@@ -1661,12 +1680,14 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'updated_timestamp' => array
 				(
 					'type' => 'datetime',
 					'constraint' => '',
+					'default' => 'NOW()',
 					'null' => false
 				),
 				'language_id' => array

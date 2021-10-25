@@ -69,7 +69,7 @@
 					$link_right						.= '
 						<li>
 							<a href="' . go_to($val->username) . '" class="--xhr">
-								' . $val->full_name . '
+								' . $val->first_name . ' ' . $val->last_name . '
 							</a>
 						</li>
 					';
@@ -79,7 +79,7 @@
 					$link_left						.= '
 						<li>
 							<a href="' . go_to($val->username) . '" class="--xhr">
-								' . $val->full_name . '
+								' . $val->first_name . ' ' . $val->last_name . '
 							</a>
 						</li>
 					';

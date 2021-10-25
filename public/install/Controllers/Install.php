@@ -472,7 +472,7 @@ class Install extends BaseController
 					);
                 }
 				
-				if(session()->get('installation_mode'))
+				if(1 == session()->get('installation_mode'))
 				{
 					$zip							= new \ZipArchive();
 					
