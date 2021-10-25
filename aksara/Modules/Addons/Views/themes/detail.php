@@ -5,9 +5,9 @@
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->thumbnail))
+			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
 			{
-				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->thumbnail);
+				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->src);
 			}
 			else
 			{
@@ -16,7 +16,7 @@
 			
 			$carousel								.= '
 				<div class="carousel-item rounded' . (!$key ? ' active' : null) . '">
-					<a href="' . $val->original . '" target="_blank">
+					<a href="' . $screenshot . '" target="_blank">
 						<img src="' . $screenshot . '" class="d-block rounded w-100" alt="' . $val->alt . '">
 					</a>
 				</div>
