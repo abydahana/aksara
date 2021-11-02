@@ -8211,7 +8211,7 @@ class Core extends Controller
 			{
 				$type								= $val['type'];
 				
-				if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($key, $this->_unset_field)) || (in_array($key, $this->_unset_field) && !isset($this->_set_default[$key])) || in_array('disabled', $type)) continue;
+				if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($key, $this->_unset_field)) || (in_array($key, $this->_unset_field) && !isset($this->_set_default[$key])) || (in_array('disabled', $type) && !isset($this->_set_default[$field]))) continue;
 				
 				if(in_array('image', $type))
 				{
