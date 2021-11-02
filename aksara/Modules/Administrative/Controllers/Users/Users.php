@@ -39,6 +39,11 @@ class Users extends \Aksara\Laboratory\Core
 			);
 		}
 		
+		if(in_array($this->_method, array('create')))
+		{
+			$this->set_validation('password', 'required|min_length[6]');
+		}
+		
 		$this->set_title(phrase('manage_users'))
 		->set_icon('mdi mdi-account-group-outline')
 		
@@ -110,10 +115,10 @@ class Users extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'username'							=> 'required|alpha_numeric|unique[app__users.username.user_id.' . service('request')->getGet('user_id') . ']',
-				'email'								=> 'required|valid_email|unique[app__users.email.user_id.' . service('request')->getGet('user_id') . ']',
 				'first_name'						=> 'required|string|max_length[32]',
 				'last_name'							=> 'string|max_length[32]',
+				'username'							=> 'required|alpha_numeric|unique[app__users.username.user_id.' . service('request')->getGet('user_id') . ']',
+				'email'								=> 'required|valid_email|unique[app__users.email.user_id.' . service('request')->getGet('user_id') . ']',
 				'language_id'						=> 'required',
 				'group_id'							=> 'required',
 				'status'							=> 'boolean'

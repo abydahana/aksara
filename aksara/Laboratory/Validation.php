@@ -144,6 +144,8 @@ class Validation extends \CodeIgniter\Validation\Rules
 			
 			foreach($sliced as $key => $val)
 			{
+				if(!$val) continue;
+				
 				if(!$num)
 				{
 					$this->model->where($key . ' != ', $val);

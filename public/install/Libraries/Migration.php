@@ -1011,7 +1011,6 @@ class Migration
 				(
 					'type' => 'datetime',
 					'constraint' => '',
-					'default' => '00-00-00 00:00',
 					'null' => false
 				),
 				'status' => array

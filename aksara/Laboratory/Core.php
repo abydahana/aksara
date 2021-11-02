@@ -6027,10 +6027,21 @@ class Core extends Controller
 		{
 			foreach($field as $key => $val)
 			{
+				if(is_numeric($key))
+				{
+					$key							= $val;
+					$val							= null;
+					$escape							= false;
+				}
+				else
+				{
+					$escape							= true;
+				}
+				
 				$this->_where[$key]					= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
+					'escape'						=> $escape,
 					'case_sensitive'				=> false
 				);
 			}
@@ -6059,10 +6070,21 @@ class Core extends Controller
 		{
 			foreach($field as $key => $val)
 			{
+				if(is_numeric($key))
+				{
+					$key							= $val;
+					$val							= null;
+					$escape							= false;
+				}
+				else
+				{
+					$escape							= true;
+				}
+				
 				$this->_or_where[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
+					'escape'						=> $escape,
 					'case_sensitive'				=> false
 				);
 			}
@@ -7135,9 +7157,9 @@ class Core extends Controller
 							}
 						}
 					}
-					else if(!$val)
+					elseif(!array_filter($val))
 					{
-						$this->model->where($key);
+						$this->model->where($key, null, false);
 					}
 				}
 			}

@@ -471,7 +471,7 @@ class Model
 				$this->_where[$field]				= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
+					'escape'						=> (!$value ? false : $escape),
 					'case_sensitive'				=> $case_sensitive
 				);
 			}
@@ -483,7 +483,7 @@ class Model
 				$this->_where[$key]					= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
+					'escape'						=> (!$val ? false : true),
 					'case_sensitive'				=> false
 				);
 			}
@@ -510,7 +510,7 @@ class Model
 				$this->_or_where[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
+					'escape'						=> (!$value ? false : $escape),
 					'case_sensitive'				=> $case_sensitive
 				);
 			}
@@ -522,7 +522,7 @@ class Model
 				$this->_or_where[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
+					'escape'						=> (!$val ? false : true),
 					'case_sensitive'				=> false
 				);
 			}
