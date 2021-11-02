@@ -4096,19 +4096,19 @@ class Core extends Controller
 										&nbsp;
 										' . $label . '
 										&nbsp;
+										' . $extra_params . '
 									</label>
-									' . $extra_params . '
 								';
 							}
 							else if(in_array('radio', $type))
 							{
 								$options			.= '
-									<label>
+									<label class="' . $extra_class . '">
 										<input type="radio" name="' . $field . '" value="' . $value . '"' . ($default_value == $value || $value == $original ? ' checked' : null) . $read_only . ' />
 										' . $label . '
 										&nbsp;
+										' . $extra_params . '
 									</label>
-									' . $extra_params . '
 								';
 							}
 						}
