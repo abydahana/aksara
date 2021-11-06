@@ -152,7 +152,7 @@ class Assets extends \Aksara\Laboratory\Core
 			return file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . get_userdata('language') . '.json');
 		}
 		
-		return '[]';
+		return '{}';
 	}
 	
 	private function _get_active_years()

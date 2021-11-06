@@ -331,7 +331,7 @@ class Install extends BaseController
 	
 	public function run()
 	{
-		if(!service('request')->isAJAX())
+		if(!service('request')->isAJAX() && !service('request')->getGet('download'))
 		{
 			exit(header('Location:' . base_url()));
 		}
@@ -391,7 +391,7 @@ class Install extends BaseController
 				{
 					file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
 				}
-				catch(\Exception $e)
+				catch(\Throwable $e)
 				{
 					return $this->response->setJSON
 					(
@@ -482,7 +482,7 @@ class Install extends BaseController
 						{
 							$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'modules');
 						}
-						catch(\Exception $e)
+						catch(\Throwable $e)
 						{
 							$error					= true;
 						}
@@ -497,6 +497,11 @@ class Install extends BaseController
 		else if(1 == service('request')->getGet('download'))
 		{
 			return service('response')->download('config.php', $config_source);
+		}
+		
+		if($error)
+		{
+			@unlink(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php');
 		}
 		
 		$output										= array

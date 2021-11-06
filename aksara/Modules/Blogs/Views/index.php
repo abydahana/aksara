@@ -1,19 +1,5 @@
 <div class="leading pt-5 pb-5 mb-5 bg-light relative" style="background: url(<?php echo get_image('blogs', 'cover.jpg'); ?>) center center no-repeat; background-size: cover">
 	<div class="clip gradient-top"></div>
-	<div class="area" >
-		<ul class="circles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul>
-    </div>
 	<div class="container pt-5 pb-5">
 		<div class="row">
 			<div class="col-md-8 offset-md-2">
@@ -28,7 +14,7 @@
 		<div class="row">
 			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
 				<form action="<?php echo base_url('blogs/search', array('per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
-					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post'); ?>" />
+					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0 rounded-pill" placeholder="<?php echo phrase('search_post'); ?>" />
 					<button type="submit" class="btn btn-lg float-right absolute top right">
 						<i class="mdi mdi-magnify font-weight-bold"></i>
 					</button>

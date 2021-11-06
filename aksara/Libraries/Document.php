@@ -296,6 +296,7 @@ class Document
 		// get only style element
 		$styles										= $dom->getElementsByTagName('style');
 		$css										= null;
+		
 		foreach($styles as $style)
 		{
 			$css									= $dom->saveHTML($style);
@@ -304,6 +305,7 @@ class Document
 		// get only table element
 		$tables										= $dom->getElementsByTagName('table');
 		$output										= null;
+		
 		foreach($tables as $table)
 		{
 			if($table->getAttribute('class') !== 'table') continue;
@@ -313,23 +315,27 @@ class Document
 		
 		$output										= '<!DOCTYPE html><head><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
 		
-		header('Content-type: application/vnd.ms-excel');
+		$reader										= new \PhpOffice\PhpSpreadsheet\Reader\Html();
+		$spreadsheet								= $reader->loadFromString($output);
+		$writer										= \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+		
 		header('Content-Transfer-Encoding: binary');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
-		header('Content-Disposition: attachment; filename=' . $filename . '.xls');
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment; filename="' . str_replace('"', null, $filename) . '.xls"');
 		
-		echo $output;
+		$writer->save('php://output');
 	}
 	
 	private function _word($html = null, $filename = null, $method = 'embed', $params = array())
 	{
 		$html										= preg_replace('/<htmlpagefooter[^>].*?<\/htmlpagefooter>/s', null, $html);
 		
-		header('Content-Type: application/vnd.ms-word');
 		header('Content-Transfer-Encoding: binary');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
+		header('Content-Type: application/vnd.ms-word');
 		header('Content-Disposition: attachment; filename=' . $filename . '.doc');
 		
 		echo $html;

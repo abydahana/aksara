@@ -65,6 +65,9 @@
 					</a>
 				</div>
 				<div class="col-9 col-md-10">
+					<a href="<?php echo current_page('../../'); ?>" class="float-right font-weight-bold --xhr">
+						<i class="mdi mdi-window-close"></i>
+					</a>
 					<a href="<?php echo base_url('user/' . $results[0]->username); ?>" class="--xhr">
 						<b class="mb-0">
 							<?php echo $results[0]->first_name . ' ' . $results[0]->last_name; ?>
