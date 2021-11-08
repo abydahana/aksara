@@ -85,7 +85,8 @@
 		})
 		.done(function(response)
 		{
-			if(!response || typeof response[0] === 'undefined')
+			console.log(response);
+			if(!response)
 			{
 				$('.addon-listing').html
 				(

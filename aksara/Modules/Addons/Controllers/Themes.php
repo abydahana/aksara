@@ -19,6 +19,8 @@ class Themes extends \Aksara\Laboratory\Core
 		$this->set_permission(1);
 		$this->set_theme('backend');
 		
+		helper('filesystem');
+		
 		$this->_primary								= service('request')->getGet('item');
 	}
 	
@@ -42,7 +44,7 @@ class Themes extends \Aksara\Laboratory\Core
 	 */
 	public function detail()
 	{
-		$package									= json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->_primary . '/package.json'));
+		$package									= json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
 		
 		if($package)
 		{
@@ -77,16 +79,16 @@ class Themes extends \Aksara\Laboratory\Core
 	}
 	
 	/**
-	 * Customize module
+	 * Customize theme
 	 */
 	public function customize()
 	{
-		if(!file_exists(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'))
+		if(!file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getGet('theme') . DIRECTORY_SEPARATOR . 'package.json'))
 		{
 			return throw_exception(404, phrase('no_theme_package_manifest_were_found'), current_page('../'));
 		}
 		
-		$package									= json_decode(file_get_contents(ROOTPATH . 'themes/' . service('request')->getGet('theme') . '/package.json'));
+		$package									= json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getGet('theme') . DIRECTORY_SEPARATOR . 'package.json'));
 		
 		if(!$package)
 		{
@@ -132,6 +134,115 @@ class Themes extends \Aksara\Laboratory\Core
 		)
 		->modal_size('modal-lg')
 		
+		->render();
+	}
+	
+	/**
+	 * Import theme
+	 */
+	public function import()
+	{
+		if(DEMO_MODE)
+		{
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
+		}
+		
+		if($this->valid_token(service('request')->getPost('_token')))
+		{
+			$this->form_validation->setRule('file', phrase('theme_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip|ext_in[file,zip]');
+			
+			if($this->form_validation->run(service('request')->getPost()) === false)
+			{
+				return throw_exception(400, $this->form_validation->getErrors());
+			}
+			else if(empty($_FILES['file']['tmp_name']))
+			{
+				return throw_exception(400, array('file' => phrase('no_theme_package_were_chosen')));
+			}
+			else if(!class_exists('ZipArchive'))
+			{
+				return throw_exception(400, array('file' => phrase('no_zip_extension_found_on_your_web_server_configuration')));
+			}
+			
+			$zip									= new \ZipArchive();
+			$unzip									= $zip->open($_FILES['file']['tmp_name']);
+			$tmp_path								= sys_get_temp_dir() . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+			
+			if($unzip === true)
+			{
+				if(!is_dir($tmp_path) && !mkdir($tmp_path, 0755, true))
+				{
+					return throw_exception(400, array('file' => phrase('unable_to_extract_theme_package')));
+				}
+				
+				$zip->extractTo($tmp_path);
+				$zip->close();
+				
+				$files								= directory_map($tmp_path);
+				
+				if(!$files)
+				{
+					$this->_rmdir($tmp_path);
+					
+					return throw_exception(400, array('file' => phrase('unable_to_extract_your_theme_package')));
+				}
+				
+				$valid_package						= false;
+				
+				foreach($files as $key => $val)
+				{
+					if(!is_array($val)) continue;
+					
+					foreach($val as $_key => $_val)
+					{
+						if('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val))
+						{
+							$package				= json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+							
+							if(!$package || !isset($package->name) || !isset($package->description) || !isset($package->version) || !isset($package->author) || !isset($package->compatibility) || !isset($package->type) || !in_array($package->type, array('frontend', 'backend')))
+							{
+								$this->_rmdir($tmp_path);
+								
+								return throw_exception(400, array('file' => phrase('the_package_manifest_was_invalid')));
+							}
+							else if(!in_array(aksara('version'), $package->compatibility))
+							{
+								$this->_rmdir($tmp_path);
+								
+								return throw_exception(400, array('file' => phrase('the_package_is_not_compatible_with_your_current_aksara_version')));
+							}
+							
+							$valid_package			= true;
+						}
+					}
+				}
+				
+				$this->_rmdir($tmp_path);
+				
+				if(!$valid_package)
+				{
+					return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_theme_package')));
+				}
+				
+				$extract							= $zip->extractTo(ROOTPATH . 'themes');
+				
+				$zip->close();
+				
+				if($extract)
+				{
+					return throw_exception(301, phrase('your_theme_package_was_successfully_imported'), current_page('../'));
+				}
+				else
+				{
+					return throw_exception(400, array('file' => phrase('your_themes_folder_seems_cannot_be_writable')));
+				}
+			}
+			
+			return throw_exception(400, array('file' => phrase('unable_to_extract_the_theme_package')));
+		}
+		
+		$this->set_title(phrase('theme_importer'))
+		->set_icon('mdi mdi-import')
 		->render();
 	}
 	
@@ -218,54 +329,15 @@ class Themes extends \Aksara\Laboratory\Core
 				
 				if(service('request')->getPost('theme') == get_setting($type))
 				{
-					return throw_exception(403, phrase('unable_to_delete_the_theme_that_are_in_use'), current_page('../'));
+					return throw_exception(400, array('theme' => phrase('unable_to_delete_the_theme_that_are_in_use')));
 				}
 				
-				/* delete theme */
-				helper('filesystem');
-				
-				if(!delete_files(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'), true) || (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme')) && !@rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'))))
-				{
-					/* Unable to delete theme. Get FTP configuration */
-					$site_id						= get_setting('id');
-					
-					$query							= $this->model->get_where
-					(
-						'app__ftp',
-						array
-						(
-							'site_id'				=> $site_id
-						),
-						1
-					)
-					->row();
-					
-					if($query)
-					{
-						/* configuration found, decrypt password */
-						$query->password			= service('encrypter')->decrypt(base64_decode($query->password));
-						
-						/* trying to delete module using ftp instead */
-						$connection					= @ftp_connect($query->hostname, $query->port, 10);
-						
-						if($connection && @ftp_login($connection, $query->username, $query->password))
-						{
-							/* yay! FTP is connected, try to delete theme */
-							$this->_ftp_rmdir($connection, ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
-							
-							/* close FTP connection */
-							ftp_close($connection);
-						}
-					}
-					
-					/* uh oh! still unable to delete theme */
-					return throw_exception(403, phrase('unable_to_delete_the_selected_theme_due_to_folder_permission'), current_page('../'));
-				}
+				$this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
 			}
 			else
 			{
 				/* theme property is not found */
-				return throw_exception(403, phrase('a_theme_without_package_manifest_cannot_be_removed_from_the_theme_manager'), current_page('../'));
+				return throw_exception(400, array('theme' => phrase('a_theme_without_package_manifest_cannot_be_removed_from_the_theme_manager')));
 			}
 		}
 		
@@ -277,9 +349,6 @@ class Themes extends \Aksara\Laboratory\Core
 	 */
 	private function _installed()
 	{
-		/* load required helper */
-		helper('filesystem');
-		
 		$data										= directory_map(ROOTPATH . 'themes');
 		
 		if(!$data) return false;
@@ -294,7 +363,7 @@ class Themes extends \Aksara\Laboratory\Core
 				{
 					if($_val != 'package.json') continue;
 					
-					$package						= json_decode(file_get_contents(ROOTPATH . 'themes/' . $key . $_val));
+					$package						= json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $key . $_val));
 					
 					if($package)
 					{
@@ -311,10 +380,62 @@ class Themes extends \Aksara\Laboratory\Core
 	}
 	
 	/**
+	 * Remove directory recursivelly using
+	 */
+	private function _rmdir($directory = null)
+	{
+		if(is_dir($directory))
+		{
+			/* migration error, delete module */
+			if(!delete_files($directory, true))
+			{
+				/* Unable to delete module. Get FTP configuration */
+				$site_id							= get_setting('id');
+				
+				$query								= $this->model->get_where
+				(
+					'app__ftp',
+					array
+					(
+						'site_id'					=> $site_id
+					),
+					1
+				)
+				->row();
+				
+				if($query)
+				{
+					/* configuration found, decrypt password */
+					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
+					
+					/* trying to delete module using ftp instead */
+					$connection						= @ftp_connect($query->hostname, $query->port, 10);
+					
+					if($connection && @ftp_login($connection, $query->username, $query->password))
+					{
+						/* yay! FTP is connected, try to delete module */
+						$this->_ftp_rmdir($connection, $directory);
+						
+						/* close FTP connection */
+						ftp_close($connection);
+					}
+				}
+			}
+			
+			@rmdir($directory);
+		}
+	}
+	
+	/**
 	 * Remove directory and its files using FTP
 	 */
-	private function _ftp_rmdir($connection = null, $directory)
+	private function _ftp_rmdir($connection = null, $directory = null)
 	{
+		if(!$directory)
+		{
+			return false;
+		}
+		
 		$lists										= ftp_mlsd($connection, $directory);
 		
 		unset($lists[0]);

@@ -1,11 +1,11 @@
 <?php
 	$carousel										= null;
 	
-	if($detail->screenshot)
+	if(isset($detail->screenshot) && $detail->screenshot)
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
+			if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
 			{
 				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->src);
 			}
@@ -32,7 +32,7 @@
 					<div class="carousel-inner">
 						<?php echo $carousel; ?>
 					</div>
-					<?php if(sizeof($detail->screenshot) > 1) { ?>
+					<?php if(isset($detail->screenshot) && sizeof($detail->screenshot) > 1) { ?>
 						<a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-slide="prev">
 							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 							<span class="sr-only">
@@ -52,7 +52,6 @@
 		<div class="col-md-6">
 			<h5>
 				<?php echo $detail->name; ?>
-				<?php echo ($detail->type == 'backend' ? '<span class="badge badge-dark float-right">' . phrase('back_end') . '</span>' : '<span class="badge badge-success float-right">' . phrase('front_end') . '</span>'); ?>
 			</h5>
 			<hr class="mt-1 mb-1" />
 			<div class="row">
@@ -88,17 +87,6 @@
 	<hr class="row" />
 	<div class="row">
 		<div class="col-md-3">
-			<?php if(($detail->type == 'backend' && $detail->folder == get_setting('backend_theme')) || ($detail->type == 'frontend' && $detail->folder == get_setting('frontend_theme'))) { ?>
-			<a href="<?php echo current_page('../customize', array('theme' => $detail->folder)); ?>" class="btn btn-dark btn-block btn-sm --xhr">
-				<i class="mdi mdi-cogs"></i>
-				<?php echo phrase('customize'); ?>
-			</a>
-			<?php } else { ?>
-			<a href="<?php echo current_page('../activate'); ?>" class="btn btn-success btn-block btn-sm --xhr">
-				<i class="mdi mdi-check"></i>
-				<?php echo phrase('activate'); ?>
-			</a>
-			<?php } ?>
 		</div>
 		<div class="col-md-3 offset-md-3">
 			<a href="<?php echo base_url(('backend' == $detail->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $detail->folder, 'integrity_check' => $detail->integrity)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
@@ -109,7 +97,7 @@
 		<div class="col-md-3">
 			<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-block btn-sm --modal">
 				<i class="mdi mdi-window-close"></i>
-				<?php echo phrase('delete'); ?>
+				<?php echo phrase('uninstall'); ?>
 			</a>
 		</div>
 	</div>

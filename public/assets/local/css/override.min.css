@@ -795,6 +795,7 @@ input::-webkit-inner-spin-button
 }
 
 .form-control:focus,
+.custom-file-input:focus~.custom-file-label,
 .select2-container--default.select2-container--focus .select2-selection,
 .select2-container--default.select2-container--open .select2-selection,
 .select2-container--default .select2-dropdown,

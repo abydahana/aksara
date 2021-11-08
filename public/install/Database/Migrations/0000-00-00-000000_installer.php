@@ -1,4 +1,4 @@
-<?php
+<?php namespace App\Database\Migrations;
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,60 +6,32 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  * @since			version 4.2.8
  */
+use CodeIgniter\Database\Migration;
 
-namespace App\Libraries;
-
-class Migration
+class Installer extends Migration
 {
-	private $db;
-	private $installation_mode;
-	private $_delete_table;
-	
-	public function __construct($db = null, $installation_mode = false, $delete_table = array())
-	{
-		if($db)
-		{
-			$this->db								= $db;
-		}
-		
-		if($installation_mode)
-		{
-			$this->installation_mode				= $installation_mode;
-		}
-		
-		if($delete_table)
-		{
-			$this->_delete_table					= $delete_table;
-		}
-	}
-	
-    public function migrate($session = array())
+    public function up()
     {
-		$session['language']						= (isset($session['language']) ? ('id' == $session['language'] ? 2 : 1) : 1);
-		
-		$this->forge								= \Config\Database::forge($this->db);
-		
-		if($this->_delete_table)
+		if($this->db->DBDriver == 'SQLSRV')
 		{
-			if($this->db->DBDriver == 'SQLSRV')
+			$this->db->query
+			('
+				EXEC sp_MSforeachtable "declare @name nvarchar(max); set @name = parsename(\'?\', 1); exec sp_MSdropconstraints @name";
+				EXEC sp_MSforeachtable "drop table ?";
+			');
+		}
+		else
+		{
+			$this->db->disableForeignKeyChecks();
+			
+			foreach($this->db->listTables() as $key => $val)
 			{
-				$this->db->query
-				('
-					EXEC sp_MSforeachtable "declare @name nvarchar(max); set @name = parsename(\'?\', 1); exec sp_MSdropconstraints @name";
-					EXEC sp_MSforeachtable "drop table ?";
-				');
-			}
-			else
-			{
-				$this->db->disableForeignKeyChecks();
+				if('migrations' == $val) continue;
 				
-				foreach($this->_delete_table as $key => $val)
-				{
-					$this->forge->dropTable($val, false, true);
-				}
-				
-				$this->db->enableForeignKeyChecks();
+				$this->forge->dropTable($val, true);
 			}
+			
+			$this->db->enableForeignKeyChecks();
 		}
 		
 		$this->forge->addField
@@ -68,47 +40,47 @@ class Migration
 			(
 				'id' => array
 				(
-					'type' => 'int',
-					'constraint' => '22',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
 				),
 				'user_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '22',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'null' => false
 				),
 				'path' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'method' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'browser' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'platform' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'ip_address' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '22',
+					'constraint' => 22,
 					'null' => false
 				),
 				'timestamp' => array
@@ -128,8 +100,8 @@ class Migration
 			(
 				'announcement_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -137,25 +109,24 @@ class Migration
 				'title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'announcement_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'content' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'placement' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -182,14 +153,14 @@ class Migration
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -207,61 +178,61 @@ class Migration
 				'year' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
-					'constraint' => '4',
+					'constraint' => 4,
 					'null' => false
 				),
 				'name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'description' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'database_driver' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'hostname' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'port' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'database_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -278,7 +249,7 @@ class Migration
 				'id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -286,19 +257,19 @@ class Migration
 				'code' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '8',
+					'constraint' => 8,
 					'null' => false
 				),
 				'country' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -314,7 +285,7 @@ class Migration
 				'site_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -322,25 +293,25 @@ class Migration
 				'hostname' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'port' => array
 				(
 					'type' => 'int',
-					'constraint' => '5',
+					'constraint' => 5,
 					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '512',
+					'constraint' => 512,
 					'null' => false
 				),
 			)
@@ -355,7 +326,7 @@ class Migration
 				'group_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -363,25 +334,23 @@ class Migration
 				'group_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'group_description' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'mediumtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'group_privileges' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -397,13 +366,12 @@ class Migration
 				'path' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'privileges' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'last_generated' => array
@@ -423,7 +391,7 @@ class Migration
 				'id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -431,31 +399,30 @@ class Migration
 				'language' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'description' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'tinytext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'code' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'locale' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -472,7 +439,7 @@ class Migration
 				'menu_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -480,38 +447,36 @@ class Migration
 				'menu_placement' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '22',
+					'constraint' => 22,
 					'null' => false
 				),
 				'menu_label' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'menu_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'serialized_data' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'group_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -529,7 +494,7 @@ class Migration
 				'id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -537,31 +502,28 @@ class Migration
 				'title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'api_key' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'method' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'tinytext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'ip_range' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'valid_until' => array
@@ -572,7 +534,7 @@ class Migration
 				'status' => array
 				(
 					'type' => 'int',
-					'constraint' => '1',
+					'constraint' => 1,
 					'null' => false
 				),
 			)
@@ -587,13 +549,13 @@ class Migration
 				'id' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '128',
+					'constraint' => 128,
 					'null' => false
 				),
 				'ip_address' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '45',
+					'constraint' => 45,
 					'null' => false
 				),
 				'timestamp' => array
@@ -604,7 +566,6 @@ class Migration
 				'data' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre')) ? 'bytea' : (in_array($this->db->DBDriver, array('SQLSRV')) ? 'binary' : 'blob')),
-					'constraint' => '',
 					'null' => false
 				),
 			)
@@ -619,7 +580,7 @@ class Migration
 				'id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -627,228 +588,225 @@ class Migration
 				'app_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'app_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'app_logo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'app_icon' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'frontend_theme' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'backend_theme' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'app_language' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'office_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'office_phone' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'office_email' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'office_fax' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'office_address' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'office_map' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'one_device_login' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'username_changes' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'frontend_registration' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'default_membership_group' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'null' => false
 				),
 				'auto_active_registration' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'google_analytics_key' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'openlayers_search_provider' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '10',
+					'constraint' => 10,
 					'null' => false
 				),
 				'openlayers_search_key' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '128',
+					'constraint' => 128,
 					'null' => false
 				),
 				'default_map_tile' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'disqus_site_domain' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '128',
+					'constraint' => 128,
 					'null' => false
 				),
 				'facebook_app_id' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '22',
+					'constraint' => 22,
 					'null' => false
 				),
 				'facebook_app_secret' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '512',
+					'constraint' => 512,
 					'null' => false
 				),
 				'google_client_id' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'google_client_secret' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '512',
+					'constraint' => 512,
 					'null' => false
 				),
 				'twitter_username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'instagram_username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'whatsapp_number' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '16',
+					'constraint' => 16,
 					'null' => false
 				),
 				'smtp_email_masking' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'smtp_sender_masking' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'smtp_host' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'smtp_port' => array
 				(
 					'type' => 'int',
-					'constraint' => '5',
+					'constraint' => 5,
 					'null' => false
 				),
 				'smtp_username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 32,
 					'null' => false
 				),
 				'smtp_password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '512',
+					'constraint' => 512,
 					'null' => false
 				),
 				'action_sound' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -865,19 +823,17 @@ class Migration
 				'hash' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'url' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'session' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 			)
@@ -891,8 +847,8 @@ class Migration
 			(
 				'user_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -900,88 +856,86 @@ class Migration
 				'email' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'first_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'gender' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'bio' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'photo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'address' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'phone' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '16',
+					'constraint' => 16,
 					'null' => false
 				),
 				'postal_code' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '10',
+					'constraint' => 10,
 					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'country' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'group_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
@@ -998,13 +952,14 @@ class Migration
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
+		$this->forge->addKey('username', false, true);
 		$this->forge->addKey('email', false, true);
 		$this->forge->addKey('language_id', false, false);
 		$this->forge->addKey('group_id', false, false);
@@ -1016,8 +971,8 @@ class Migration
 			(
 				'user_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1025,7 +980,7 @@ class Migration
 				'hash' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 			)
@@ -1039,8 +994,8 @@ class Migration
 			(
 				'user_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1048,20 +1003,19 @@ class Migration
 				'sub_level_1' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'visible_menu' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'access_year' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
-					'constraint' => '4',
+					'constraint' => 4,
 					'null' => false
 				),
 			)
@@ -1076,7 +1030,7 @@ class Migration
 				'ip_address' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'timestamp' => array
@@ -1087,13 +1041,13 @@ class Migration
 				'browser' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'platform' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 			)
@@ -1108,20 +1062,20 @@ class Migration
 				'year' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
-					'constraint' => '4',
+					'constraint' => 4,
 					'null' => false
 				),
 				'default' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1136,8 +1090,8 @@ class Migration
 			(
 				'post_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1145,38 +1099,35 @@ class Migration
 				'post_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'post_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'post_excerpt' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'post_content' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'post_category' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'post_tags' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'created_timestamp' => array
@@ -1191,35 +1142,35 @@ class Migration
 				),
 				'author' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'null' => false
 				),
 				'headline' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'featured_image' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1239,7 +1190,7 @@ class Migration
 				'category_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1247,38 +1198,37 @@ class Migration
 				'category_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'category_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'category_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'category_image' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1295,8 +1245,8 @@ class Migration
 			(
 				'gallery_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1304,37 +1254,33 @@ class Migration
 				'gallery_images' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'gallery_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'gallery_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'gallery_description' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'gallery_attributes' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'gallery_tags' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'created_timestamp' => array
@@ -1350,21 +1296,21 @@ class Migration
 				'featured' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
 				'author' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1381,8 +1327,8 @@ class Migration
 			(
 				'id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1390,25 +1336,24 @@ class Migration
 				'sender_full_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'sender_email' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'subject' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'messages' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'timestamp' => array
@@ -1427,8 +1372,8 @@ class Migration
 			(
 				'user_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1436,19 +1381,19 @@ class Migration
 				'service_provider' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'access_token' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1464,8 +1409,8 @@ class Migration
 			(
 				'page_id' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1473,38 +1418,36 @@ class Migration
 				'page_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'page_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'page_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'page_content' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'carousel_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'faq_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
@@ -1520,22 +1463,22 @@ class Migration
 				),
 				'author' => array
 				(
-					'type' => 'int',
-					'constraint' => '11',
+					'type' => 'bigint',
+					'constraint' => 22,
 					'unsigned' => true,
 					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1554,7 +1497,7 @@ class Migration
 				'carousel_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1562,19 +1505,17 @@ class Migration
 				'carousel_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'carousel_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'carousel_content' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'created_timestamp' => array
@@ -1590,14 +1531,14 @@ class Migration
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1614,7 +1555,7 @@ class Migration
 				'faq_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1622,19 +1563,17 @@ class Migration
 				'faq_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'faq_description' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'faq_content' => array
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
-					'constraint' => '',
 					'null' => false
 				),
 				'created_timestamp' => array
@@ -1650,14 +1589,14 @@ class Migration
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1674,7 +1613,7 @@ class Migration
 				'people_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1682,73 +1621,72 @@ class Migration
 				'first_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'people_slug' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'position' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'email' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'mobile' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '16',
+					'constraint' => 16,
 					'null' => false
 				),
 				'instagram' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'facebook' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'twitter' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '64',
+					'constraint' => 64,
 					'null' => false
 				),
 				'biography' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'photo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1764,7 +1702,7 @@ class Migration
 				'testimonial_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -1772,31 +1710,30 @@ class Migration
 				'photo' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'first_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'last_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '32',
+					'constraint' => 32,
 					'null' => false
 				),
 				'testimonial_title' => array
 				(
 					'type' => 'varchar',
-					'constraint' => '255',
+					'constraint' => 255,
 					'null' => false
 				),
 				'testimonial_content' => array
 				(
 					'type' => 'text',
-					'constraint' => '',
 					'null' => false
 				),
 				'timestamp' => array
@@ -1807,14 +1744,14 @@ class Migration
 				'language_id' => array
 				(
 					'type' => 'int',
-					'constraint' => '11',
+					'constraint' => 11,
 					'unsigned' => true,
 					'null' => false
 				),
 				'status' => array
 				(
 					'type' => 'tinyint',
-					'constraint' => '1',
+					'constraint' => 1,
 					'default' => '0',
 					'null' => false
 				),
@@ -1825,14 +1762,14 @@ class Migration
 		$this->forge->createTable('testimonials');
 		
 		
-		$this->db->table('app__settings')->insert(json_decode('{"id":"1","app_name":"' . htmlspecialchars(trim($session['site_title'])) . '","app_description":"' . htmlspecialchars(trim($session['site_description'])) . '","app_logo":"logo.png","app_icon":"logo.png","frontend_theme":"default","backend_theme":"backend","app_language":"' . htmlspecialchars(trim($session['language'])) . '","office_name":"Aksara Laboratory","office_phone":"+6281381614558","office_email":"info@example.com","office_fax":"","office_address":"2nd Floor Example Tower Building, Some Road Name, Any Region","office_map":"[]","one_device_login":"0","username_changes":"1","frontend_registration":"1","default_membership_group":"3","auto_active_registration":"1","google_analytics_key":"","openlayers_search_provider":"openlayers","openlayers_search_key":"","default_map_tile":"","disqus_site_domain":"","facebook_app_id":"","facebook_app_secret":"","google_client_id":"","google_client_secret":"","twitter_username":"","instagram_username":"","whatsapp_number":"","smtp_email_masking":"","smtp_sender_masking":"","smtp_host":"","smtp_port":"0","smtp_username":"","smtp_password":"","action_sound":"1"}', true));
-		$this->db->table('app__groups')->insert(json_decode('{"group_id":"1","group_name":"Global Administrator","group_description":"Super User","group_privileges":"{\"addons\":[\"index\",\"detail\",\"install\"],\"addons\/ftp\":[\"index\"],\"addons\/modules\":[\"index\",\"detail\",\"delete\"],\"addons\/themes\":[\"index\",\"detail\",\"customize\",\"delete\"],\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"administrative\/activities\":[\"index\",\"read\",\"truncate\",\"delete\",\"pdf\",\"print\"],\"administrative\/cleaner\":[\"index\",\"clean\"],\"administrative\/countries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/connections\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/adjust_privileges\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/privileges\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/menus\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/settings\":[\"index\",\"update\"],\"administrative\/translations\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/translations\/synchronize\":[\"index\"],\"administrative\/translations\/translate\":[\"index\",\"delete_phrase\"],\"administrative\/updater\":[\"index\",\"update\"],\"administrative\/users\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/users\/privileges\":[\"index\",\"update\"],\"administrative\/years\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"apis\":[\"index\"],\"apis\/debug_tool\":[\"index\"],\"apis\/documentation\":[\"index\"],\"apis\/services\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\":[\"index\"],\"cms\/blogs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/blogs\/categories\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/galleries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/pages\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\":[\"index\"],\"cms\/partials\/announcements\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/carousels\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/faqs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/inquiries\":[\"index\",\"read\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/media\":[\"index\"],\"cms\/partials\/testimonials\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/peoples\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
+		$this->db->table('app__settings')->insert(json_decode('{"id":"1","app_name":"' . htmlspecialchars(trim(session()->get('site_title'))) . '","app_description":"' . htmlspecialchars(trim(session()->get('site_description'))) . '","app_logo":"logo.png","app_icon":"logo.png","frontend_theme":"default","backend_theme":"backend","app_language":"' . htmlspecialchars(trim((session()->get('language') == 'id' ? 2 : 1))) . '","office_name":"Aksara Laboratory","office_phone":"+6281381614558","office_email":"info@example.com","office_fax":"","office_address":"2nd Floor Example Tower Building, Some Road Name, Any Region","office_map":"[]","one_device_login":"0","username_changes":"1","frontend_registration":"1","default_membership_group":"3","auto_active_registration":"1","google_analytics_key":"","openlayers_search_provider":"openlayers","openlayers_search_key":"","default_map_tile":"","disqus_site_domain":"","facebook_app_id":"","facebook_app_secret":"","google_client_id":"","google_client_secret":"","twitter_username":"","instagram_username":"","whatsapp_number":"","smtp_email_masking":"","smtp_sender_masking":"","smtp_host":"","smtp_port":"0","smtp_username":"","smtp_password":"","action_sound":"1"}', true));
+		$this->db->table('app__groups')->insert(json_decode('{"group_id":"1","group_name":"Global Administrator","group_description":"Super User","group_privileges":"{\"addons\":[\"index\",\"detail\",\"install\"],\"addons\/ftp\":[\"index\"],\"addons\/modules\":[\"index\",\"detail\",\"import\",\"activate\",\"delete\"],\"addons\/themes\":[\"index\",\"detail\",\"customize\",\"import\",\"activate\",\"delete\"],\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"administrative\/activities\":[\"index\",\"read\",\"truncate\",\"delete\",\"pdf\",\"print\"],\"administrative\/cleaner\":[\"index\",\"clean\"],\"administrative\/countries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/connections\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/adjust_privileges\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/groups\/privileges\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/menus\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/settings\":[\"index\",\"update\"],\"administrative\/translations\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/translations\/synchronize\":[\"index\"],\"administrative\/translations\/translate\":[\"index\",\"delete_phrase\"],\"administrative\/updater\":[\"index\",\"update\"],\"administrative\/users\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"administrative\/users\/privileges\":[\"index\",\"update\"],\"administrative\/years\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"apis\":[\"index\"],\"apis\/debug_tool\":[\"index\"],\"apis\/documentation\":[\"index\"],\"apis\/services\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\":[\"index\"],\"cms\/blogs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/blogs\/categories\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/galleries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/pages\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\":[\"index\"],\"cms\/partials\/announcements\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/carousels\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/faqs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/inquiries\":[\"index\",\"read\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/media\":[\"index\"],\"cms\/partials\/testimonials\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/peoples\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
 		$this->db->table('app__groups')->insert(json_decode('{"group_id":"2","group_name":"Technical","group_description":"Group user for technical support","group_privileges":"{\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"apis\":[\"index\"],\"apis\/debug_tool\":[\"index\"],\"apis\/services\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\":[\"index\"],\"cms\/blogs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/blogs\/categories\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/galleries\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/pages\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\":[\"index\"],\"cms\/partials\/announcements\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/carousels\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/faqs\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/inquiries\":[\"index\",\"read\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/partials\/media\":[\"index\"],\"cms\/partials\/testimonial\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"cms\/peoples\":[\"index\",\"create\",\"read\",\"update\",\"delete\",\"export\",\"print\",\"pdf\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
 		$this->db->table('app__groups')->insert(json_decode('{"group_id":"3","group_name":"Subscriber","group_description":"Group user for subscriber","group_privileges":"{\"administrative\":[\"index\"],\"administrative\/account\":[\"index\",\"update\"],\"dashboard\":[\"index\"]}","status":"1"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons","privileges":"[\"index\",\"detail\",\"install\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/ftp","privileges":"[\"index\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
-		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/modules","privileges":"[\"index\",\"detail\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
-		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/themes","privileges":"[\"index\",\"detail\",\"customize\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
+		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/modules","privileges":"[\"index\",\"detail\",\"import\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
+		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/themes","privileges":"[\"index\",\"detail\",\"activate\",\"customize\","import\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative","privileges":"[\"index\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative\/account","privileges":"[\"index\",\"update\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative\/activities","privileges":"[\"index\",\"read\",\"truncate\",\"delete\",\"pdf\",\"print\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
@@ -1872,9 +1809,9 @@ class Migration
 		$this->db->table('app__languages')->insert(json_decode('{"id":"1","language":"Default (English)","description":"Default language","code":"en","locale":"en-US,en_US,en_US.UTF8,en-us,en,english","status":"1"}', true));
 		$this->db->table('app__languages')->insert(json_decode('{"id":"2","language":"Bahasa Indonesia","description":"Terjemahan bahasa Indonesia","code":"id","locale":"id-ID,id_ID,id_ID.UTF8,id-id,id,indonesian","status":"1"}', true));
 		$this->db->table('app__menus')->insert(json_decode('{"menu_id":"1","menu_placement":"header","menu_label":"Header Menu","menu_description":"Menu for navigation header (front end)","serialized_data":"[{\"order\":0,\"children\":[]},{\"id\":\"1\",\"icon\":\"mdi mdi-home\",\"label\":\"Home\",\"slug\":\"home\",\"newtab\":\"0\",\"order\":1,\"children\":[]},{\"id\":\"3\",\"icon\":\"mdi mdi-newspaper\",\"label\":\"News\",\"slug\":\"blogs\",\"newtab\":\"0\",\"order\":3,\"children\":[]},{\"id\":\"4\",\"icon\":\"mdi mdi-map-clock-outline\",\"label\":\"Galleries\",\"slug\":\"galleries\",\"newtab\":\"0\",\"order\":4,\"children\":[]}]","group_id":"0","status":"1"}', true));
-		$this->db->table('app__users')->insert(json_decode('{"user_id":"1","email":"' . $session['email'] . '","password":"' . password_hash($session['password'] . $session['encryption'], PASSWORD_DEFAULT) . '","username":"' . $session['username'] . '","first_name":"' . $session['first_name'] . '","last_name":"' . $session['last_name'] . '","gender":"0","bio":"","photo":"","address":"","phone":"","postal_code":"","language_id":"' . $session['language'] . '","country":"0","group_id":"1","registered_date":"' . date('Y-m-d') . '","last_login":"' . date('Y-m-d H:i:s') . '","status":"1"}', true));
+		$this->db->table('app__users')->insert(json_decode('{"user_id":"1","email":"' . session()->get('email') . '","password":"' . password_hash(session()->get('password') . session()->get('encryption'), PASSWORD_DEFAULT) . '","username":"' . session()->get('username') . '","first_name":"' . session()->get('first_name') . '","last_name":"' . session()->get('last_name') . '","gender":"0","bio":"","photo":"","address":"","phone":"","postal_code":"","language_id":"' . (session()->get('language') == 'id' ? 2 : 1) . '","country":"0","group_id":"1","registered_date":"' . date('Y-m-d') . '","last_login":"' . date('Y-m-d H:i:s') . '","status":"1"}', true));
 		
-		if(1 == $this->installation_mode) // indicates the sample data were requested
+		if(1 == session()->get('installation_mode')) // indicates the sample data were requested
 		{
 			$this->db->table('app__countries')->insert(json_decode('{"id":"1","code":"AF","country":"Afghanistan","status":"1"}', true));
 			$this->db->table('app__countries')->insert(json_decode('{"id":"2","code":"AL","country":"Albania","status":"1"}', true));
@@ -2168,4 +2105,29 @@ class Migration
 			$this->db->query('ALTER TABLE ' . $this->db->escapeIdentifiers('testimonials') . ' ADD CONSTRAINT ' . $this->db->escapeIdentifiers('testimonials_ibfk_1') . ' FOREIGN KEY (' . $this->db->escapeIdentifiers('language_id') . ') REFERENCES ' . $this->db->escapeIdentifiers('app__languages') . ' (' . $this->db->escapeIdentifiers('id') . ')' . (in_array($this->db->DBDriver, array('SQLSRV')) ? ' ON DELETE NO ACTION ON UPDATE NO ACTION' : ' ON DELETE RESTRICT ON UPDATE CASCADE') . ';');
 		}
     }
+	
+	public function down()
+	{
+		if($this->db->DBDriver == 'SQLSRV')
+		{
+			$this->db->query
+			('
+				EXEC sp_MSforeachtable "declare @name nvarchar(max); set @name = parsename(\'?\', 1); exec sp_MSdropconstraints @name";
+				EXEC sp_MSforeachtable "drop table ?";
+			');
+		}
+		else
+		{
+			$this->db->disableForeignKeyChecks();
+			
+			foreach($this->db->listTables() as $key => $val)
+			{
+				if('migrations' == $val) continue;
+				
+				$this->forge->dropTable($val, true);
+			}
+			
+			$this->db->enableForeignKeyChecks();
+		}
+	}
 }

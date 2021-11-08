@@ -385,41 +385,16 @@ class Install extends BaseController
 		
 		if(service('request')->getPost('_token'))
 		{
-			if(!file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
-			{
-				try
-				{
-					file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
-				}
-				catch(\Throwable $e)
-				{
-					return $this->response->setJSON
-					(
-						array
-						(
-							'status'				=> 200,
-							'active'				=> '.finalizing',
-							'passed'				=> '.system',
-							'html'					=> view('error')
-						)
-					);
-				}
-			}
-			
-			$config									= array
-			(
-				'DSN'								=> session()->get('database_dsn'),
-				'DBDriver'							=> session()->get('database_driver'),
-				'hostname'							=> session()->get('database_hostname'),
-				'port'								=> session()->get('database_port'),
-				'username'							=> session()->get('database_username'),
-				'password'							=> session()->get('database_password'),
-				'database'							=> session()->get('database_initial'),
-				'DBDebug'							=> true
-			);
+			$_SERVER['database.default.DSN']		= session()->get('database_dsn');
+			$_SERVER['database.default.DBDriver']	= session()->get('database_driver');
+			$_SERVER['database.default.hostname']	= session()->get('database_hostname');
+			$_SERVER['database.default.port']		= session()->get('database_port');
+			$_SERVER['database.default.username']	= session()->get('database_username');
+			$_SERVER['database.default.password']	= session()->get('database_password');
+			$_SERVER['database.default.database']	= session()->get('database_initial');
 			
 			// initialize parameter to new connection
-			$this->db								= \Config\Database::connect($config);
+			$this->db								= \Config\Database::connect();
 			
 			try
 			{
@@ -441,27 +416,20 @@ class Install extends BaseController
 			
 			if($this->db)
 			{
-				$table_list							= $this->db->listTables();
-				$delete_table						= array();
-				
-				if($table_list)
-				{
-					foreach($table_list as $key => $val)
-					{
-						$delete_table[]				= $val;
-					}
-				}
-				
                 try
 				{
-					$migration						= new \App\Libraries\Migration($this->db, session()->get('installation_mode'), $delete_table);
+					// run the installer migration
+					$migration						= \Config\Services::migrations();
 					
-					// migrate the database
-					$migration->migrate(session()->get());
+					// migrate the database schema
+					if($migration->latest())
+					{
+						$this->db->table(config('migrations')->table)->truncate();
+					}
                 }
 				catch(\Throwable $e)
 				{
-					// connection couldn't be made, throw error
+					// migration couldn't be executed, throw error
 					return $this->response->setJSON
 					(
 						array
@@ -471,6 +439,29 @@ class Install extends BaseController
 						)
 					);
                 }
+				
+				// check if configuration file is exists
+				if(!file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
+				{
+					try
+					{
+						// try to writing configuration file
+						file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
+					}
+					catch(\Throwable $e)
+					{
+						return $this->response->setJSON
+						(
+							array
+							(
+								'status'			=> 200,
+								'active'			=> '.finalizing',
+								'passed'			=> '.system',
+								'html'				=> view('error')
+							)
+						);
+					}
+				}
 				
 				if(1 == session()->get('installation_mode'))
 				{

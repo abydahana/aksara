@@ -764,14 +764,13 @@ class Template
 										<option value="200"' . (200 == $data->per_page ? ' selected' : null) . '>200</option>
 										<option value="500"' . (500 == $data->per_page ? ' selected' : null) . '>500</option>
 									</select>
-									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '"' . ($data->total_rows <= $data->per_page ? ' disabled' : null) . ' />
+									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
 									<div class="input-group-append">
-										<button type="submit" class="btn btn-sm btn-primary"' . ($data->total_rows <= $data->per_page ? ' disabled' : null) . '>
+										<button type="submit" class="btn btn-sm btn-primary">
 											' . phrase('go') . '
 										</button>
 									</div>
 								</div>
-								<input type="hidden" name="token" value="' . sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
 							</form>
 						</nav>
 					</div>
@@ -784,6 +783,8 @@ class Template
 			$html									= $dom->str_get_html($output);
 			$output									= array
 			(
+				'url'								=> current_page(null, array('per_page' => null)),
+				'per_page'							=> $data->per_page,
 				'last_page'							=> $last_page,
 				'text'								=> phrase('showing') . ' ' . ($data->offset ? number_format($data->offset) : number_format(($data->total_rows > 0 ? 1 : 0))) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries_found') : phrase('entry_found'))
 			);

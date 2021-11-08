@@ -210,7 +210,7 @@ class Permission
 	{
 		if(!service('request')->isAJAX())
 		{
-			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'));
+			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), $redirect);
 		}
 	}
 	

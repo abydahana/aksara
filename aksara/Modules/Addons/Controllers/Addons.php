@@ -10,8 +10,6 @@
  */
 class Addons extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'app__menus';
-	
 	public function __construct()
 	{
 		parent::__construct();
@@ -20,6 +18,8 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		helper('filesystem');
 		
 		$this->_primary								= service('request')->getGet('item');
 		
@@ -46,17 +46,11 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if(!function_exists('curl_init') || !function_exists('curl_exec'))
 		{
-			$package								= array
-			(
-				'error'								=> phrase('the_curl_module_is_not_enabled')
-			);
+			return throw_exception(403, phrase('the_curl_module_is_not_enabled'), current_page('../'));
 		}
 		else if(!@fsockopen('www.aksaracms.com', 443))
 		{
-			return array
-			(
-				'error'								=> phrase('unable_to_connect_to_the_aksara_market')
-			);
+			return throw_exception(403, phrase('unable_to_connect_to_the_aksara_market'), current_page('../'));
 		}
 		
 		if(!$package)
@@ -96,14 +90,11 @@ class Addons extends \Aksara\Laboratory\Core
 			
 			if($response->getStatusCode() !== 200)
 			{
-				$package							= array
-				(
-					'error'							=> $response->getReason()
-				);
+				return throw_exception(403, $response->getReason(), current_page('../'));
 			}
 		}
 		
-		$this->set_title((isset($package->name) ? $package->name : 'Item not found'))
+		$this->set_title((isset($package->name) ? $package->name : phrase('item_not_found')))
 		->set_icon('mdi ' . (service('request')->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
 		->set_output
 		(
@@ -175,40 +166,142 @@ class Addons extends \Aksara\Laboratory\Core
 				return throw_exception(403, $response->getReason(), go_to());
 			}
 			
+			if('theme' == service('request')->getGet('type'))
+			{
+				$type								= 'theme';
+				$path								= 'themes';
+			}
+			else
+			{
+				$type								= 'module';
+				$path								= 'modules';
+			}
+			
 			if($package)
 			{
 				// get update package from remote server
 				$addon_file							= file_get_contents($package->repository);
 				
-				// create update package to system temporary, it's must be writable by default
-				$tmp_file							= tempnam(sys_get_temp_dir(), sha1($package->repository));
-				
-				// put update package
-				file_put_contents($tmp_file, $addon_file);
-				
 				$zip								= new \ZipArchive();
-				$unzip								= $zip->open($tmp_file);
-				
-				// remove update package from system temporary
-				if(file_exists($tmp_file))
-				{
-					@unlink($tmp_file);
-				}
+				$unzip								= $zip->open($addon_file);
+				$tmp_path							= WRITEPATH . 'addons' . DIRECTORY_SEPARATOR . sha1($package->repository);
 				
 				if($unzip === true)
 				{
-					if('theme' == service('request')->getGet('type'))
+					$zip->extractTo($tmp_path);
+					
+					$files							= directory_map($tmp_path);
+					
+					if(!$files)
 					{
-						$path						= 'themes';
+						$zip->close();
+						
+						return throw_exception(400, array('file' => phrase('unable_to_extract_the_selected_' . $type . '_package')));
 					}
-					else
+					
+					$valid_package					= false;
+					$package_path					= null;
+					$extract						= false;
+					
+					foreach($files as $key => $val)
 					{
-						$path						= 'modules';
+						if(!$package_path)
+						{
+							$package_path			= str_replace('\\', null, $key);
+						}
+						
+						if(!is_array($val)) continue;
+						
+						foreach($val as $_key => $_val)
+						{
+							if('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val))
+							{
+								$package			= json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+								
+								if(!$package || !isset($package->name) || !isset($package->description) || !isset($package->version) || !isset($package->author) || !isset($package->compatibility) || !isset($package->type) || !in_array($package->type, array('module', 'backend', 'frontend')))
+								{
+									$this->_rmdir($tmp_path);
+									
+									$zip->close();
+									
+									return throw_exception(400, array('file' => phrase('the_package_manifest_was_invalid')));
+								}
+								else if(!in_array(aksara('version'), $package->compatibility))
+								{
+									$this->_rmdir($tmp_path);
+									
+									$zip->close();
+									
+									return throw_exception(400, array('file' => phrase('the_' . $type . '_package_is_not_compatible_with_your_current_aksara_version')));
+								}
+								
+								$valid_package		= true;
+							}
+						}
+					}
+					
+					$this->_rmdir($tmp_path);
+					
+					if(!$valid_package)
+					{
+						$zip->close();
+						
+						return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_module_package')));
+					}
+					
+					if(is_dir(ROOTPATH . $type . $package_path))
+					{
+						$zip->close();
+						
+						if(!service('request')->getPost('upgrade'))
+						{
+							$html					= '
+								<div class="p-3">
+									<form action="' . current_page() . '" method="POST" class="--validate-form">
+										<div class="text-center">
+											' . phrase('the_' . $type . '_package_with_same_structure_is_already_installed') . ' ' . phrase('do_you_want_to_upgrade_' . $type . '_instead') . '
+										</div>
+										<hr class="row" />
+										<div class="--validation-callback mb-0"></div>
+										<div class="row">
+											<div class="col-6">
+												<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+													<i class="mdi mdi-window-close"></i>
+													' . phrase('cancel') . '
+												</a>
+											</div>
+											<div class="col-6">
+												<input type="hidden" name="upgrade" value="1" />
+												<button type="submit" class="btn btn-danger btn-block">
+													<i class="mdi mdi-check"></i>
+													' . phrase('continue') . '
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							';
+							
+							return make_json
+							(
+								array
+								(
+									'status'		=> 200,
+									'meta'			=> array
+									(
+										'title'		=> phrase('action_warning'),
+										'icon'		=> 'mdi mdi-alert-outline',
+										'popup'		=> true
+									),
+									'html'			=> $html
+								)
+							);
+						}
 					}
 					
 					if(is_writable(ROOTPATH . $path))
 					{
-						$zip->extractTo(ROOTPATH . $path);
+						$extract					= $zip->extractTo(ROOTPATH . $path);
 						
 						$zip->close();
 					}
@@ -244,18 +337,47 @@ class Addons extends \Aksara\Laboratory\Core
 							return throw_exception(403, phrase('unable_to_connect_to_the_ftp_using_provided_configuration'));
 						}
 						
-						$zip->extractTo(ROOTPATH . $path);
+						$extract					= $zip->extractTo(ROOTPATH . $path);
 						
 						$zip->close();
 					}
 					
-					return throw_exception(301, phrase('the_' . service('request')->getGet('type') . '_was_successfully_installed'));
+					if($extract && is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path))
+					{
+						if('module' == $type)
+						{
+							try
+							{
+								// push module namespace to filelocator
+								$loader				= \CodeIgniter\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+								
+								// run install migration
+								$migration			= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
+								
+								// trying to run the migration
+								$migration->latest();
+							}
+							catch(\Throwable $e)
+							{
+								/* migration error, delete module */
+								$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+								
+								return throw_exception(400, array('checkbox' => $e->getMessage()));
+							}
+						}
+						
+						return throw_exception(301, phrase('your_' . $type . '_package_was_successfully_imported'), current_page('../'));
+					}
+					else
+					{
+						return throw_exception(400, array('file' => phrase('your_' . $type . '_folder_seems_cannot_be_writable')));
+					}
 				}
 				
-				return throw_exception(403, phrase('unable_to_install_the_' . service('request')->getGet('type')));
+				return throw_exception(403, phrase('unable_to_install_the_' . $type));
 			}
 			
-			return throw_exception(404, phrase('the_' . service('request')->getGet('type') . '_you_would_to_install_is_not_available'));
+			return throw_exception(404, phrase('the_' . $type . '_you_would_to_install_is_not_available'));
 		}
 		
 		return throw_exception(404, phrase('your_web_server_need_to_connected_to_the_internet_to_install_the_addons'));
@@ -268,23 +390,27 @@ class Addons extends \Aksara\Laboratory\Core
 	{
 		if(!function_exists('curl_init') || !function_exists('curl_exec'))
 		{
-			return array
+			return make_json
 			(
-				'error'								=> phrase('the_curl_module_is_not_enabled')
+				array
+				(
+					'error'							=> phrase('the_curl_module_is_not_enabled')
+				)
 			);
 		}
 		else if(!@fsockopen('www.aksaracms.com', 443))
 		{
-			return array
+			return make_json
 			(
-				'error'								=> phrase('unable_to_connect_to_the_aksara_market')
+				array
+				(
+					'error'							=> phrase('unable_to_connect_to_the_aksara_market')
+				)
 			);
 		}
 		
-		helper('filesystem');
-		
 		$themes										= directory_map(ROOTPATH . 'themes', 1);
-		$ignored_themes								= array();
+		$installed_themes							= array();
 		
 		if($themes)
 		{
@@ -292,13 +418,13 @@ class Addons extends \Aksara\Laboratory\Core
 			{
 				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
 				{
-					$ignored_themes[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
+					$installed_themes[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
 				}
 			}
 		}
 		
 		$modules									= directory_map(ROOTPATH . 'modules', 1);
-		$ignored_modules							= array();
+		$installed_modules							= array();
 		
 		if($modules)
 		{
@@ -306,7 +432,7 @@ class Addons extends \Aksara\Laboratory\Core
 			{
 				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
 				{
-					$ignored_modules[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
+					$installed_modules[]			= str_replace(DIRECTORY_SEPARATOR, null, $val);
 				}
 			}
 		}
@@ -336,8 +462,6 @@ class Addons extends \Aksara\Laboratory\Core
 				'form_params'						=> array
 				(
 					'version'						=> aksara('version'),
-					'ignored_themes'				=> $ignored_themes,
-					'ignored_modules'				=> $ignored_modules,
 					'order'							=> service('request')->getPost('order'),
 					'keyword'						=> service('request')->getPost('keyword')
 				)
@@ -348,9 +472,12 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if($response->getStatusCode() !== 200)
 		{
-			return array
+			return make_json
 			(
-				'error'								=> $response->getReason()
+				array
+				(
+					'error'							=> $response->getReason()
+				)
 			);
 		}
 		
@@ -364,5 +491,87 @@ class Addons extends \Aksara\Laboratory\Core
 		}
 		
 		return make_json($package);
+	}
+	
+	/**
+	 * Remove directory recursivelly using
+	 */
+	private function _rmdir($directory = null)
+	{
+		if(is_dir($directory))
+		{
+			/* migration error, delete module */
+			if(!delete_files($directory, true))
+			{
+				/* Unable to delete module. Get FTP configuration */
+				$site_id							= get_setting('id');
+				
+				$query								= $this->model->get_where
+				(
+					'app__ftp',
+					array
+					(
+						'site_id'					=> $site_id
+					),
+					1
+				)
+				->row();
+				
+				if($query)
+				{
+					/* configuration found, decrypt password */
+					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
+					
+					/* trying to delete module using ftp instead */
+					$connection						= @ftp_connect($query->hostname, $query->port, 10);
+					
+					if($connection && @ftp_login($connection, $query->username, $query->password))
+					{
+						/* yay! FTP is connected, try to delete module */
+						$this->_ftp_rmdir($connection, $directory);
+						
+						/* close FTP connection */
+						ftp_close($connection);
+					}
+				}
+			}
+			
+			@rmdir($directory);
+		}
+	}
+	
+	/**
+	 * Remove directory and its files using FTP
+	 */
+	private function _ftp_rmdir($connection = null, $directory = null)
+	{
+		if(!$directory)
+		{
+			return false;
+		}
+		
+		$lists										= ftp_mlsd($connection, $directory);
+		
+		unset($lists[0]);
+		unset($lists[1]);
+
+		foreach($lists as $list)
+		{
+			$full									= $directory . DIRECTORY_SEPARATOR . $list['name'];
+			
+			if($list['type'] == 'dir')
+			{
+				// directory found, reinitialize
+				$this->_ftp_rmdir($connection, $full);
+			}
+			else
+			{
+				// delete file
+				ftp_delete($connection, $full);
+			}
+		}
+		
+		// delete directory
+		ftp_rmdir($connection, $directory);
 	}
 }

@@ -175,7 +175,7 @@ return array
 	'in_pixel' => 'In pixel',
 	'zip_archiver' => 'Zip Archiver',
 	'your_application_is_ready_to_install_using_the_provided_configurations' => 'Your application is ready to install using the provided configuration.',
-	'agreements' => 'persetujuan lisensi',
+	'agreement' => 'license agreement',
 	'database_initial' => 'Database Initial',
 	'email' => 'Email',
 	'password_confirmation' => 'Password Confirmation',
