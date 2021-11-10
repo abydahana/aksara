@@ -63,7 +63,7 @@ function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '
 			}
 		}
 	}
-	elseif(isset($geojson->lat) && isset($geojson->lng))
+	else if(isset($geojson->lat) && isset($geojson->lng))
 	{
 		$markers									.= '&markers=scale:1';
 		$markers									.= '|' . $geojson->lat . ',' . $geojson->lng;

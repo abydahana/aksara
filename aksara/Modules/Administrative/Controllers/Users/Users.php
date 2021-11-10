@@ -52,12 +52,12 @@ class Users extends \Aksara\Laboratory\Core
 		/* add extra option button */
 		//->add_action('option', 'privileges', phrase('individual_privileges'), 'btn-success --xhr', 'mdi mdi-account-check-outline', array('user_id' => 'user_id'))
 		
-		->unset_column('user_id, password, phone, gender, bio, address, country, country_name, language, postal_code, registered_date')
+		->unset_column('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')
 		->unset_field('user_id, last_login, is_logged, registered_date')
 		->unset_view('user_id, password')
 		->column_order('photo, username, first_name, email, group_name')
 		->field_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language_id, group_id, status')
-		->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, country_name, language_id, group_id, group_name, status, last_login')
+		->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language_id, group_id, group_name, status, last_login')
 		->set_field
 		( 
 			array
@@ -93,9 +93,9 @@ class Users extends \Aksara\Laboratory\Core
 		)
 		->set_relation
 		(
-			'country',
+			'country_id',
 			'app__countries.id',
-			'{app__countries.country AS country_name}',
+			'{app__countries.country}',
 			array
 			(
 				'app__countries.status'				=> 1
@@ -132,8 +132,7 @@ class Users extends \Aksara\Laboratory\Core
 				'postal_code'						=> 2,
 				'address'							=> 2,
 				'phone'								=> 2,
-				'country'							=> 2,
-				'country_name'						=> 2,
+				'country_id'						=> 2,
 				'language_id'						=> 2,
 				'group_id'							=> 2,
 				'group_name'						=> 2,
@@ -155,8 +154,10 @@ class Users extends \Aksara\Laboratory\Core
 				'bio'								=> phrase('bio'),
 				'address'							=> phrase('address'),
 				'postal_code'						=> phrase('postal_code'),
+				'country_id'						=> phrase('country'),
 				'country'							=> phrase('country'),
 				'language_id'						=> phrase('language'),
+				'language'							=> phrase('language'),
 				'group_id'							=> phrase('group'),
 				'group_name'						=> phrase('group')
 			)

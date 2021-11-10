@@ -5,7 +5,7 @@ if(version_compare(PHP_VERSION, '7.3', '<'))
 }
 else if(!is_dir(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'vendor'))
 {
-	exit('<center>Please run "<code style="color:green">composer install</code>" from "<code style="color:red">' . dirname(dirname(__DIR__)) . '</code>" to fetch the required dependencies before we start the installation wizard.<br /><a href="//getcomposer.org/download" target="_blank"><b>Click here</b></a> to download the composer if it\'s not yet installed in your web server.</center>');
+	exit('<center>Please run "<code style="color:green">composer install</code>" from "<code style="color:red">' . dirname(dirname(__DIR__)) . '</code>" to fetch the required dependencies before we start the installation wizard.<br /><a href="//getcomposer.org/download" target="_blank"><b>Click here</b></a> to download the composer if it\'s not yet installed on your web server.</center>');
 }
 else if(!in_array('intl', array_map('strtolower', get_loaded_extensions())))
 {

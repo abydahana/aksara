@@ -1,6 +1,6 @@
 <?php namespace Aksara\Modules\Assets\Controllers;
 /**
- * Test Aksara module
+ * Assets controller
  *
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -110,9 +110,9 @@ class Assets extends \Aksara\Laboratory\Core
 		$output										= '
 			var config =
 			{
-				base_url: "' . htmlspecialchars(base_url()) . '",
-				asset_url: "' . htmlspecialchars(base_url('assets')) . '/",
-				is_logged: ' . (get_userdata('is_logged') ? 1 : 0) . ',
+				base_url: "' . htmlspecialchars(preg_replace('/\?.*/', '', base_url())) . '",
+				asset_url: "' . htmlspecialchars(preg_replace('/\?.*/', '', base_url('assets'))) . '/",
+				is_logged: ' . (get_userdata('is_logged') ? 1 : '0') . ',
 				document_extension_allowed: ' . (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : '[]') . ',
 				image_extension_allowed: ' . (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : '[]') . ', 
 				app_name: "' . htmlspecialchars(get_setting('app_name')) . '",

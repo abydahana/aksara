@@ -63,9 +63,21 @@ class Modules extends \Aksara\Laboratory\Core
 				'detail'							=> $package
 			)
 		)
-		->modal_size('modal-lg')
+		->modal_size('modal-xl')
 		
 		->render();
+	}
+	
+	/**
+	 * Activate module
+	 */
+	public function activate()
+	{
+		if(DEMO_MODE)
+		{
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
+		}
+		
 	}
 	
 	/**
@@ -97,7 +109,7 @@ class Modules extends \Aksara\Laboratory\Core
 			
 			$zip									= new \ZipArchive();
 			$unzip									= $zip->open($_FILES['file']['tmp_name']);
-			$tmp_path								= WRITEPATH . 'addons' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+			$tmp_path								= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
 			
 			if($unzip === true)
 			{
@@ -167,11 +179,11 @@ class Modules extends \Aksara\Laboratory\Core
 					return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_module_package')));
 				}
 				
-				if(is_dir(ROOTPATH . 'modules' . $package_path) && !service('request')->getPost('upgrade'))
+				if(is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && !service('request')->getPost('upgrade'))
 				{
 					$zip->close();
 					
-					return throw_exception(400, array('module' => phrase('the_module_package_with_same_structure_is_already_installed')));
+					return throw_exception(400, array('module' => phrase('this_module_package_with_same_structure_is_already_installed')));
 				}
 				
 				if(is_writable(ROOTPATH . 'modules'))
@@ -198,7 +210,7 @@ class Modules extends \Aksara\Laboratory\Core
 					
 					if(!$query)
 					{
-						return throw_exception(404, phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_server_does_not_appear_to_be_writable'), go_to('ftp'));
+						return throw_exception(404, phrase('you_need_to_set_up_an_ftp_connection_to_update_your_core_system_due_the_server_does_not_appear_to_be_writable'), go_to('../../ftp'));
 					}
 					
 					/* configuration found, decrypt password */
@@ -209,7 +221,7 @@ class Modules extends \Aksara\Laboratory\Core
 					
 					if(!$connection || !@ftp_login($connection, $query->username, $query->password))
 					{
-						return throw_exception(403, phrase('unable_to_connect_to_the_ftp_using_provided_configuration'));
+						return throw_exception(403, phrase('unable_to_connect_to_the_ftp_using_the_provided_configuration'));
 					}
 					
 					$extract						= $zip->extractTo(ROOTPATH . 'modules');
@@ -235,7 +247,7 @@ class Modules extends \Aksara\Laboratory\Core
 						/* migration error, delete module */
 						$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 						
-						return throw_exception(400, array('checkbox' => $e->getMessage()));
+						return throw_exception(400, array('file' => $e->getMessage()));
 					}
 					
 					return throw_exception(301, phrase('your_module_package_was_successfully_imported'), current_page('../'));
@@ -347,7 +359,7 @@ class Modules extends \Aksara\Laboratory\Core
 						$migration					= \Config\Services::migrations()->setNameSpace($query->namespace);
 						
 						// trying to run the migration
-						$migration->regress($query->batch);
+						$migration->regress(($query->batch - 1));
 					}
 				}
 				catch(\Throwable $e)
@@ -395,7 +407,7 @@ class Modules extends \Aksara\Laboratory\Core
 					
 					if($package)
 					{
-						$package->folder			= str_replace(array('/', '\\'), array(null, null), $key);
+						$package->folder			= str_replace(DIRECTORY_SEPARATOR, null, $key);
 						$package->integrity			= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 						
 						$output[]					= $package;
@@ -414,10 +426,10 @@ class Modules extends \Aksara\Laboratory\Core
 	{
 		if(is_dir($directory))
 		{
-			/* migration error, delete module */
+			/* migration error, delete directory */
 			if(!delete_files($directory, true))
 			{
-				/* Unable to delete module. Get FTP configuration */
+				/* Unable to delete directory. Get FTP configuration */
 				$site_id							= get_setting('id');
 				
 				$query								= $this->model->get_where
@@ -436,12 +448,12 @@ class Modules extends \Aksara\Laboratory\Core
 					/* configuration found, decrypt password */
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
-					/* trying to delete module using ftp instead */
+					/* trying to delete directory using ftp instead */
 					$connection						= @ftp_connect($query->hostname, $query->port, 10);
 					
 					if($connection && @ftp_login($connection, $query->username, $query->password))
 					{
-						/* yay! FTP is connected, try to delete module */
+						/* yay! FTP is connected, try to delete directory */
 						$this->_ftp_rmdir($connection, $directory);
 						
 						/* close FTP connection */

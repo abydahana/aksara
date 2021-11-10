@@ -184,7 +184,7 @@ class Addons extends \Aksara\Laboratory\Core
 				
 				$zip								= new \ZipArchive();
 				$unzip								= $zip->open($addon_file);
-				$tmp_path							= WRITEPATH . 'addons' . DIRECTORY_SEPARATOR . sha1($package->repository);
+				$tmp_path							= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($package->repository);
 				
 				if($unzip === true)
 				{
@@ -362,7 +362,7 @@ class Addons extends \Aksara\Laboratory\Core
 								/* migration error, delete module */
 								$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 								
-								return throw_exception(400, array('checkbox' => $e->getMessage()));
+								return throw_exception(400, array('upgrade' => $e->getMessage()));
 							}
 						}
 						
@@ -500,10 +500,10 @@ class Addons extends \Aksara\Laboratory\Core
 	{
 		if(is_dir($directory))
 		{
-			/* migration error, delete module */
+			/* migration error, delete directory */
 			if(!delete_files($directory, true))
 			{
-				/* Unable to delete module. Get FTP configuration */
+				/* Unable to delete directory. Get FTP configuration */
 				$site_id							= get_setting('id');
 				
 				$query								= $this->model->get_where
@@ -522,12 +522,12 @@ class Addons extends \Aksara\Laboratory\Core
 					/* configuration found, decrypt password */
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
-					/* trying to delete module using ftp instead */
+					/* trying to delete directory using ftp instead */
 					$connection						= @ftp_connect($query->hostname, $query->port, 10);
 					
 					if($connection && @ftp_login($connection, $query->username, $query->password))
 					{
-						/* yay! FTP is connected, try to delete module */
+						/* yay! FTP is connected, try to delete directory */
 						$this->_ftp_rmdir($connection, $directory);
 						
 						/* close FTP connection */

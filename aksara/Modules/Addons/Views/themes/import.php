@@ -48,19 +48,27 @@
 					</li>
 				</ul>
 				<div class="--validation-callback"></div>
-				<div class="input-group">
-					<div class="custom-file">
-						<input type="file" name="file" class="custom-file-input" />
-						<label class="custom-file-label">
-							<?php echo phrase('choose_file'); ?> (zip)
-						</label>
+				<div class="form-group">
+					<div class="input-group">
+						<div class="custom-file">
+							<input type="file" name="file" class="custom-file-input" />
+							<label class="custom-file-label">
+								<?php echo phrase('choose_file'); ?> (zip)
+							</label>
+						</div>
+						<div class="input-group-append">
+							<button type="submit" class="btn btn-primary">
+								<i class="mdi mdi-import"></i>
+								<?php echo phrase('import'); ?>
+							</button>
+						</div>
 					</div>
-					<div class="input-group-append">
-						<button type="submit" class="btn btn-primary">
-							<i class="mdi mdi-import"></i>
-							<?php echo phrase('import'); ?>
-						</button>
-					</div>
+				</div>
+				<div class="form-group">
+					<label>
+						<input type="checkbox" name="upgrade" value="1" />
+						<?php echo phrase('upgrade_existing_theme'); ?>
+					</label>
 				</div>
 			</form>
 		</div>

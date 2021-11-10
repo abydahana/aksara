@@ -37,44 +37,57 @@
 	</div>
 	<div class="row">
 		<?php
-			foreach($installed as $key => $val)
+			if($installed)
 			{
-				if(isset($val->screenshot[0]->thumbnail) && file_exists('../themes/' . $val->folder . '/' . $val->screenshot[0]->thumbnail))
+				foreach($installed as $key => $val)
 				{
-					$screenshot						= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->thumbnail);
-				}
-				else
-				{
-					$screenshot						= get_image(null, 'placeholder_thumb.png');
-				}
-				
-				echo '
-					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card shadow border-0 rounded-more mb3">
-							<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
-								<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
-									<div class="clip gradient-top rounded-top"></div>
-									<div class="absolute bottom p-3">
-										<h5 class="text-light" data-toggle="tooltip" title="' . $val->name . '">
-											' . truncate($val->name, 80) . '
-										</h5>
+					if(isset($val->screenshot[0]->thumbnail) && file_exists('../modules/' . $val->folder . '/' . $val->screenshot[0]->thumbnail))
+					{
+						$screenshot					= base_url('modules/' . $val->folder . '/' . $val->screenshot[0]->thumbnail);
+					}
+					else
+					{
+						$screenshot					= get_image(null, 'placeholder_thumb.png');
+					}
+					
+					echo '
+						<div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="card shadow border-0 rounded-more mb3">
+								<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
+									<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
+										<div class="clip gradient-top rounded-top"></div>
+										<div class="absolute bottom p-3">
+											<h5 class="text-light" data-toggle="tooltip" title="' . $val->name . '">
+												' . truncate($val->name, 80) . '
+											</h5>
+										</div>
 									</div>
-								</div>
-							</a>
-							<div class="card-body p-3">
-								<div class="row">
-									<div class="col-6">
-										<a href="' . current_page('activate', array('item' => $val->folder)) . '" class="btn btn-outline-primary btn-block btn-xs --modal" target="_blank">
-											' . phrase('activate') . '
-										</a>
-									</div>
-									<div class="col-6">
-										<a href="' . current_page('delete', array('item' => $val->folder)) . '" class="btn btn-danger btn-block btn-xs --modal">
-											' . phrase('uninstall') . '
-										</a>
+								</a>
+								<div class="card-body p-3">
+									<div class="row">
+										<div class="col-6">
+											<a href="' . current_page('activate', array('item' => $val->folder)) . '" class="btn btn-outline-primary btn-block btn-xs --modal" target="_blank">
+												' . phrase('activate') . '
+											</a>
+										</div>
+										<div class="col-6">
+											<a href="' . current_page('delete', array('item' => $val->folder)) . '" class="btn btn-danger btn-block btn-xs --modal">
+												' . phrase('uninstall') . '
+											</a>
+										</div>
 									</div>
 								</div>
 							</div>
+						</div>
+					';
+				}
+			}
+			else
+			{
+				echo '
+					<div class="col-sm-12">
+						<div class="alert alert-warning">
+							' . phrase('no_module_installed_yet') . '
 						</div>
 					</div>
 				';

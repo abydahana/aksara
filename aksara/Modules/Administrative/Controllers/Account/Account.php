@@ -76,7 +76,7 @@ class Account extends \Aksara\Laboratory\Core
 		)
 		->set_relation
 		(
-			'country',
+			'country_id',
 			'app__countries.id',
 			'{app__countries.country AS country_name}',
 			array
@@ -85,7 +85,7 @@ class Account extends \Aksara\Laboratory\Core
 			)
 		)
 		->merge_field('first_name, last_name')
-		->merge_field('country, language_id')
+		->merge_field('country_id, language_id')
 		->set_validation
 		(
 			array
@@ -112,7 +112,7 @@ class Account extends \Aksara\Laboratory\Core
 				'password'							=> phrase('password'),
 				'address'							=> phrase('address'),
 				'postal_code'						=> phrase('postal_code'),
-				'country'							=> phrase('country'),
+				'country_id'						=> phrase('country'),
 				'language_id'						=> phrase('language'),
 				'bio'								=> phrase('biography')
 			)

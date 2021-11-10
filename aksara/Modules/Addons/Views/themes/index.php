@@ -37,54 +37,67 @@
 	</div>
 	<div class="row">
 		<?php
-			foreach($installed as $key => $val)
+			if($installed)
 			{
-				if(file_exists(ROOTPATH . 'themes/' . $val->folder . '/' . $val->screenshot[0]->src))
+				foreach($installed as $key => $val)
 				{
-					$screenshot						= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->src);
-				}
-				else
-				{
-					$screenshot						= get_image(null, 'placeholder_thumb.png');
-				}
-				
-				echo '
-					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card shadow border-0 rounded-more mb-3">
-							<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
-								<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
-									<div class="clip gradient-top rounded-top"></div>
-									' . ($val->type == 'backend' ? '<span class="badge badge-dark float-right mt-3 mr-3">' . phrase('back_end') . '</span>' : '<span class="badge badge-success float-right mt-3 mr-3">' . phrase('front_end') . '</span>') . '
-									<div class="absolute bottom p-3">
-										<h5 class="text-light" data-toggle="tooltip" title="' . $val->name . '">
-											' . truncate($val->name, 80) . '
-										</h5>
+					if(file_exists(ROOTPATH . 'themes/' . $val->folder . '/' . $val->screenshot[0]->src))
+					{
+						$screenshot					= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->src);
+					}
+					else
+					{
+						$screenshot					= get_image(null, 'placeholder_thumb.png');
+					}
+					
+					echo '
+						<div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="card shadow border-0 rounded-more mb-3">
+								<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
+									<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
+										<div class="clip gradient-top rounded-top"></div>
+										' . ($val->type == 'backend' ? '<span class="badge badge-dark float-right mt-3 mr-3">' . phrase('back_end') . '</span>' : '<span class="badge badge-success float-right mt-3 mr-3">' . phrase('front_end') . '</span>') . '
+										<div class="absolute bottom p-3">
+											<h5 class="text-light" data-toggle="tooltip" title="' . $val->name . '">
+												' . truncate($val->name, 80) . '
+											</h5>
+										</div>
 									</div>
-								</div>
-							</a>
-							<div class="card-body p-3">
-								<div class="row">
-									<div class="col-6">
-										' . (($val->type == 'backend' && $val->folder == get_setting('backend_theme')) || ($val->type == 'frontend' && $val->folder == get_setting('frontend_theme')) ? '
-										<a href="' . current_page('customize', array('theme' => $val->folder)) . '" class="btn btn-dark btn-block btn-xs --xhr">
-											<i class="mdi mdi-cogs"></i>
-											' . phrase('customize') . '
-										</a>
-										' : '
-										<a href="' . current_page('activate', array('theme' => $val->folder)) . '" class="btn btn-success btn-block btn-xs --xhr">
-											<i class="mdi mdi-check"></i>
-											' . phrase('activate') . '
-										</a>
-										') . '
-									</div>
-									<div class="col-6">
-										<a href="' . base_url(('backend' == $val->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $val->folder, 'integrity_check' => $val->integrity)) . '" class="btn btn-outline-primary btn-block btn-xs" target="_blank">
-											<i class="mdi mdi-magnify"></i>
-											' . phrase('preview') . '
-										</a>
+								</a>
+								<div class="card-body p-3">
+									<div class="row">
+										<div class="col-6">
+											' . (($val->type == 'backend' && $val->folder == get_setting('backend_theme')) || ($val->type == 'frontend' && $val->folder == get_setting('frontend_theme')) ? '
+											<a href="' . current_page('customize', array('item' => $val->folder)) . '" class="btn btn-dark btn-block btn-xs --modal">
+												<i class="mdi mdi-cogs"></i>
+												' . phrase('customize') . '
+											</a>
+											' : '
+											<a href="' . current_page('activate', array('item' => $val->folder)) . '" class="btn btn-success btn-block btn-xs --modal">
+												<i class="mdi mdi-check"></i>
+												' . phrase('activate') . '
+											</a>
+											') . '
+										</div>
+										<div class="col-6">
+											<a href="' . base_url(('backend' == $val->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $val->folder, 'integrity_check' => $val->integrity)) . '" class="btn btn-outline-primary btn-block btn-xs" target="_blank">
+												<i class="mdi mdi-magnify"></i>
+												' . phrase('preview') . '
+											</a>
+										</div>
 									</div>
 								</div>
 							</div>
+						</div>
+					';
+				}
+			}
+			else
+			{
+				echo '
+					<div class="col-sm-12">
+						<div class="alert alert-warning">
+							' . phrase('no_theme_installed_yet') . '
 						</div>
 					</div>
 				';

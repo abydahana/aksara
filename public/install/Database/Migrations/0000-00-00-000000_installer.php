@@ -26,9 +26,9 @@ class Installer extends Migration
 			
 			foreach($this->db->listTables() as $key => $val)
 			{
-				if('migrations' == $val) continue;
+				if('migrations' == $val || !$this->db->tableExists($val)) continue;
 				
-				$this->forge->dropTable($val, true);
+				$this->forge->dropTable($val, true, true);
 			}
 			
 			$this->db->enableForeignKeyChecks();
@@ -249,7 +249,7 @@ class Installer extends Migration
 				'id' => array
 				(
 					'type' => 'int',
-					'constraint' => 11,
+					'constraint' => 5,
 					'unsigned' => true,
 					'auto_increment' => true,
 					'null' => false
@@ -853,6 +853,27 @@ class Installer extends Migration
 					'auto_increment' => true,
 					'null' => false
 				),
+				'group_id' => array
+				(
+					'type' => 'int',
+					'constraint' => 11,
+					'unsigned' => true,
+					'null' => false
+				),
+				'language_id' => array
+				(
+					'type' => 'int',
+					'constraint' => 11,
+					'unsigned' => true,
+					'null' => false
+				),
+				'country_id' => array
+				(
+					'type' => 'int',
+					'constraint' => 5,
+					'unsigned' => true,
+					'null' => false
+				),
 				'email' => array
 				(
 					'type' => 'varchar',
@@ -918,27 +939,6 @@ class Installer extends Migration
 					'constraint' => 10,
 					'null' => false
 				),
-				'language_id' => array
-				(
-					'type' => 'int',
-					'constraint' => 11,
-					'unsigned' => true,
-					'null' => false
-				),
-				'country' => array
-				(
-					'type' => 'int',
-					'constraint' => 11,
-					'unsigned' => true,
-					'null' => false
-				),
-				'group_id' => array
-				(
-					'type' => 'int',
-					'constraint' => 11,
-					'unsigned' => true,
-					'null' => false
-				),
 				'registered_date' => array
 				(
 					'type' => 'date',
@@ -959,10 +959,10 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
+		$this->forge->addKey('group_id', false, false);
+		$this->forge->addKey('language_id', false, false);
 		$this->forge->addKey('username', false, true);
 		$this->forge->addKey('email', false, true);
-		$this->forge->addKey('language_id', false, false);
-		$this->forge->addKey('group_id', false, false);
 		$this->forge->createTable('app__users');
 		
 		$this->forge->addField
@@ -1769,7 +1769,7 @@ class Installer extends Migration
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons","privileges":"[\"index\",\"detail\",\"install\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/ftp","privileges":"[\"index\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/modules","privileges":"[\"index\",\"detail\",\"import\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
-		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/themes","privileges":"[\"index\",\"detail\",\"activate\",\"customize\","import\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
+		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"addons\/themes","privileges":"[\"index\",\"detail\",\"activate\",\"customize\",\"import\",\"delete\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative","privileges":"[\"index\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative\/account","privileges":"[\"index\",\"update\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative\/activities","privileges":"[\"index\",\"read\",\"truncate\",\"delete\",\"pdf\",\"print\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
@@ -1809,7 +1809,7 @@ class Installer extends Migration
 		$this->db->table('app__languages')->insert(json_decode('{"id":"1","language":"Default (English)","description":"Default language","code":"en","locale":"en-US,en_US,en_US.UTF8,en-us,en,english","status":"1"}', true));
 		$this->db->table('app__languages')->insert(json_decode('{"id":"2","language":"Bahasa Indonesia","description":"Terjemahan bahasa Indonesia","code":"id","locale":"id-ID,id_ID,id_ID.UTF8,id-id,id,indonesian","status":"1"}', true));
 		$this->db->table('app__menus')->insert(json_decode('{"menu_id":"1","menu_placement":"header","menu_label":"Header Menu","menu_description":"Menu for navigation header (front end)","serialized_data":"[{\"order\":0,\"children\":[]},{\"id\":\"1\",\"icon\":\"mdi mdi-home\",\"label\":\"Home\",\"slug\":\"home\",\"newtab\":\"0\",\"order\":1,\"children\":[]},{\"id\":\"3\",\"icon\":\"mdi mdi-newspaper\",\"label\":\"News\",\"slug\":\"blogs\",\"newtab\":\"0\",\"order\":3,\"children\":[]},{\"id\":\"4\",\"icon\":\"mdi mdi-map-clock-outline\",\"label\":\"Galleries\",\"slug\":\"galleries\",\"newtab\":\"0\",\"order\":4,\"children\":[]}]","group_id":"0","status":"1"}', true));
-		$this->db->table('app__users')->insert(json_decode('{"user_id":"1","email":"' . session()->get('email') . '","password":"' . password_hash(session()->get('password') . session()->get('encryption'), PASSWORD_DEFAULT) . '","username":"' . session()->get('username') . '","first_name":"' . session()->get('first_name') . '","last_name":"' . session()->get('last_name') . '","gender":"0","bio":"","photo":"","address":"","phone":"","postal_code":"","language_id":"' . (session()->get('language') == 'id' ? 2 : 1) . '","country":"0","group_id":"1","registered_date":"' . date('Y-m-d') . '","last_login":"' . date('Y-m-d H:i:s') . '","status":"1"}', true));
+		$this->db->table('app__users')->insert(json_decode('{"user_id":"1","email":"' . session()->get('email') . '","password":"' . password_hash(session()->get('password') . session()->get('encryption'), PASSWORD_DEFAULT) . '","username":"' . session()->get('username') . '","first_name":"' . session()->get('first_name') . '","last_name":"' . session()->get('last_name') . '","gender":"0","bio":"","photo":"","address":"","phone":"","postal_code":"","language_id":"' . (session()->get('language') == 'id' ? 2 : 1) . '","country_id":"0","group_id":"1","registered_date":"' . date('Y-m-d') . '","last_login":"' . date('Y-m-d H:i:s') . '","status":"1"}', true));
 		
 		if(1 == session()->get('installation_mode')) // indicates the sample data were requested
 		{

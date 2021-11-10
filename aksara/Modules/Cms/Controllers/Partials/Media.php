@@ -125,12 +125,22 @@ class Media extends \Aksara\Laboratory\Core
 						if(stripos($val, 'placeholder') !== false) continue;
 						
 						$file						= new \CodeIgniter\Files\File(UPLOAD_PATH . ($directory ? DIRECTORY_SEPARATOR . $directory : null) . DIRECTORY_SEPARATOR . $val);
+						$mime						= $file->getMimeType();
+						
+						if('css' == strtolower(pathinfo($val, PATHINFO_EXTENSION)))
+						{
+							$mime					= 'text/css';
+						}
+						else if('js' == strtolower(pathinfo($val, PATHINFO_EXTENSION)))
+						{
+							$mime					= 'text/javascript';
+						}
 						
 						$this->_files[]				= array
 						(
 							'source'				=> $val,
 							'label'					=> $val,
-							'type'					=> $file->getMimeType(),
+							'type'					=> $mime,
 							'icon'					=> $this->_get_icon($directory, $val)
 						);
 					}

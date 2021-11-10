@@ -1,19 +1,5 @@
 <div class="leading pt-5 pb-5 mb-5 bg-light relative" style="background: url(<?php echo (isset($category->category_image) && $category->category_image != 'placeholder.png' ? get_image('blogs', $category->category_image) : get_image('blogs', 'cover.jpg')); ?>) center center no-repeat; background-size: cover">
 	<div class="clip gradient-top"></div>
-	<div class="area" >
-		<ul class="circles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul>
-    </div>
 	<div class="container pt-5 pb-5">
 		<div class="row">
 			<div class="col-md-8 offset-md-2">

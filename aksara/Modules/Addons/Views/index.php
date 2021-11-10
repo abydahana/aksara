@@ -85,8 +85,7 @@
 		})
 		.done(function(response)
 		{
-			console.log(response);
-			if(!response)
+			if(!response || Object.keys(response).length === 0)
 			{
 				$('.addon-listing').html
 				(

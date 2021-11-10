@@ -45,7 +45,7 @@ class Core extends Controller
 	private $_set_messages							= array();
 	private $_view									= 'index';
 	private $_set_template							= array();
-	private $_set_theme								= 'default';
+	private $_set_theme								= null;
 	private $_set_upload_path						= null;
 	private $_upload_data							= array();
 	private $_upload_error							= array();
@@ -163,7 +163,7 @@ class Core extends Controller
 	private $_or_group_start;
 	private $_not_group_start;
 	private $_or_not_group_start;
-	private $_group_by;
+	private $_group_by								= array();
 	private $_order_by								= array();
 	private $_order_by_bm							= array();
 	private $_limit									= 25;
@@ -535,7 +535,17 @@ class Core extends Controller
 	 */
 	public function set_icon($icon = null)
 	{
-		$this->_set_icon							= $icon;
+		if(is_array($icon))
+		{
+			foreach($icon as $key => $val)
+			{
+				$this->_set_icon[$key]				= $val;
+			}
+		}
+		else
+		{
+			$this->_set_icon						= $icon;
+		}
 		
 		return $this;
 	}
@@ -2415,6 +2425,7 @@ class Core extends Controller
 							{
 								$like_val					= str_ireplace(' AS ', ' ', $like_val);
 								$like_val					= (stripos($like_val, ' ') !== false ? substr($like_val, strripos($like_val, ' ') + 1) : $like_val);
+								$v							= $like_val;
 								
 								if($this->_like)
 								{
@@ -2430,13 +2441,16 @@ class Core extends Controller
 									$like_val				= substr($like_val, 0, stripos($like_val, ' AS '));
 								}
 								
-								if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
 								{
-									$table					= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
-								}
-								else
-								{
-									$table					= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+									if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
+									{
+										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+									}
+									else
+									{
+										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+									}
 								}
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $table))
@@ -2539,6 +2553,8 @@ class Core extends Controller
 					{
 						$this->model->order_by($order);
 					}
+					
+					$this->model->group_by($select['value']);
 					
 					/* run query */
 					$query							= $this->model->get($table, 50)->result_array();
@@ -2690,8 +2706,8 @@ class Core extends Controller
 			}
 			
 			/* try to convert the magic string and replace with result */
-			$title									= $this->_set_title;
-			$description							= (isset($this->_set_description['index']) ? $this->_set_description['index'] : null);
+			$title									= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : null));
+			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (!is_array($this->_set_description) ? $this->_set_description : null));
 			
 			if($title && isset($this->_query[0]))
 			{
@@ -2734,9 +2750,9 @@ class Core extends Controller
 			/* if method is create */
 			if('create' == $this->_method)
 			{
-				$this->_set_icon					= 'mdi mdi-plus';
-				$this->_set_title					= (isset($this->_set_title['create']) ? $this->_set_title['create'] : phrase('add_new_data'));
-				$this->_set_description				= (isset($this->_set_description['create']) ? $this->_set_description['create'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-1rem; margin-right:-1rem">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
+				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('add_new_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
 			}
@@ -2744,10 +2760,10 @@ class Core extends Controller
 			/* if method is read */
 			else if('read' == $this->_method)
 			{
-				$this->_set_icon					= 'mdi mdi-magnify-plus';
-				$this->_set_title					= (isset($this->_set_title['read']) ? $this->_set_title['read'] : phrase('showing_data'));
-				$this->_set_description				= (isset($this->_set_description['read']) ? $this->_set_description['read'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-1rem; margin-right:-1rem">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
-				$this->_view						= (isset($this->_set_template['read']) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
+				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('showing_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
+				$this->_view						= (isset($this->_set_template[$this->_method]) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
 				$this->_results						= ('table' == service('request')->getPost('show_in') ? $this->render_table($this->_query) : $this->render_read($this->_query));
 				
 				if('table' == service('request')->getPost('show_in') && isset($this->_results['table_data'][0]))
@@ -2765,9 +2781,9 @@ class Core extends Controller
 			/* if method is update */
 			else if('update' == $this->_method)
 			{
-				$this->_set_icon					= 'mdi mdi-square-edit-outline';
-				$this->_set_title					= (isset($this->_set_title['update']) ? $this->_set_title['update'] : phrase('update_data'));
-				$this->_set_description				= (isset($this->_set_description['update']) ? $this->_set_description['update'] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-1rem; margin-right:-1rem">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
+				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('update_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert-info pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
 			}
@@ -2800,7 +2816,7 @@ class Core extends Controller
 			{
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
-				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
+				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
@@ -2812,7 +2828,7 @@ class Core extends Controller
 			{
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
-				$this->_set_icon					= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-table');
+				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= ($description ? $description : null);
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
@@ -2821,8 +2837,8 @@ class Core extends Controller
 		}
 		else
 		{
-			$this->_set_icon						= ($this->_set_icon ? $this->_set_icon : 'mdi mdi-file-document-outline');
-			$this->_set_title						= ($this->_set_title ? $this->_set_title : phrase('untitled'));
+			$this->_set_icon						= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-file-document-outline'));
+			$this->_set_title						= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) && $this->_set_title ? $this->_set_title : phrase('untitled')));
 			$this->_set_description					= (isset($this->_set_description['index']) ? $this->_set_description['index'] : null);
 			$this->_view							= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 			$this->_results							= $this->_query;
@@ -6998,7 +7014,7 @@ class Core extends Controller
 			/**
 			 * Validate the select column to check if column is exist in table
 			 */
-			$already_selected						= array();
+			$compiled_select						= array();
 			
 			foreach($this->_select as $key => $val)
 			{
@@ -7007,12 +7023,12 @@ class Core extends Controller
 				 */
 				$field								= (strpos($val, '.') !== false ? explode('.', $val) : array('anonymous', $val));
 				
-				if(in_array($field[1], $already_selected))
+				if(in_array($field[1], $compiled_select))
 				{
 					continue;
 				}
 				
-				$already_selected[]					= $field[1];
+				$compiled_select[]					= $field[1];
 				
 				/**
 				 * Check if selected column is use alias
@@ -7157,7 +7173,7 @@ class Core extends Controller
 							}
 						}
 					}
-					elseif(!array_filter($val))
+					else if(!array_filter($val))
 					{
 						$this->model->where($key, null, false);
 					}

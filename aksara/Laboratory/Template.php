@@ -20,6 +20,23 @@ class Template
 		
 		$this->_api_request							= $_api_request;
 		$this->_theme								= $theme;
+		
+		if(!$this->_theme)
+		{
+			// throwback the default theme from site configuration
+			$site_id								= get_setting('id');
+			
+			$this->_theme							= $this->model->select('frontend_theme')->get_where
+			(
+				'app__settings',
+				array
+				(
+					'id'							=> $site_id
+				),
+				1
+			)
+			->row('frontend_theme');
+		}
 	}
 	
 	public function get_theme()

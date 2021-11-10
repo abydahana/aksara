@@ -38,13 +38,9 @@ if (!function_exists('base_url'))
 			$params									= array();
 		}
 		
-		if($params)
+		if($params || ('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir('../themes/' . $request->getGet('aksara_theme'))))
 		{
 			$params									= array_merge($request->getGet(), $params);
-		}
-		else if('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . $request->getServer('encryption.key') . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir('../themes/' . $request->getGet('aksara_theme')))
-		{
-			$params									= $request->getGet();
 		}
 		
 		if(is_array($params) && sizeof($params) > 0)
