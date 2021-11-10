@@ -38,16 +38,16 @@ return array
 	'finalizing' => 'Tahap Akhir',
 	'hello_there' => 'Halo...',
 	'thank_you_for_choosing_aksara' => 'Terima kasih telah memilih <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a>!',
-	'before_we_start_the_installation_please_take_a_moment_to_read_this_few_notes' => 'Sebelum kita mulai instalasi, harap luangkan waktu sejenak untuk membaca catatan kecil ini.',
-	'you_could_check_the_agreement_box_and_skip_reading_as_usual' => 'Anda bisa saja menandai kotak "<b>Persetujuan</b>" dan melewati catatan ini seperti biasa. Namun kami meyakini masih ada "<b>Kutu Buku</b>" yang menyempatkan untuk membaca catatan ini kalimat demi kalimat.',
+	'before_we_start_the_installation_please_take_a_moment_to_read_this_few_notes' => 'Sebelum memulai instalasi, harap luangkan waktu sejenak untuk membaca catatan kecil ini.',
+	'you_could_check_the_agreement_box_and_skip_reading_as_usual' => 'Anda bisa saja menandai kotak "<b>Persetujuan</b>" dan melewati catatan ini seperti biasanya. Namun kami meyakini masih ada "<b>Kutu Buku</b>" yang menyempatkan diri untuk membaca catatan ini kalimat demi kalimat.',
 	
 	'article_1' => '<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> hanyalah sebuah alat untuk membantu Anda dalam membangun suatu ekosistem sesuai kebutuhan Anda. Namun sesuatu yang Anda bangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> seharusnya tetap melampirkan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> sebagai sesuatu yang berperan di dalamnya;',
 	
-	'article_2' => 'Anda bebas mendistribusikan ulang suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;',
+	'article_2' => 'Anda bebas mendistribusikan ulang (baik dijual atau digratiskan) suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;',
 	
-	'article_3' => 'Jangan pernah mengecewakan orang-orang yang mempunyai kreatifitas tinggi dan membagikan apa yang dibuatnya kepada Anda secara gratis, atau Anda akan menemukan karya berikutnya mereka jual dengan harga yang tidak dapat Anda jangkau.',
+	'article_3' => 'Jangan pernah mengecewakan orang-orang yang mempunyai kreatifitas tinggi dan membagikan apa yang kembangkannya kepada Anda secara gratis, atau Anda akan menemukan karya berikutnya mereka jual dengan harga yang tidak dapat Anda jangkau.',
 	
-	'three_notes_should_be_enough' => 'Tiga catatan saja mestinya sudah cukup.',
+	'three_notes_should_be_enough' => 'Tiga catatan semestinya sudah cukup.',
 	'i_look_forward_to_your_support' => 'Kami selalu menantikan dukungan dari Anda.',
 	'the_fool' => 'Si bodoh',
 	'pretend_to_agree' => 'Pura-pura setuju',
