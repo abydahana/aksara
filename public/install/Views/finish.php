@@ -38,7 +38,7 @@
 			<?php echo phrase('we_also_collect_donations_from_people_like_you_to_support_our_research'); ?>
 		</p>
 		<p>
-			<?php echo phrase('regardless_of_the_amount_will_very_useful'); ?>
+			<?php echo phrase('regardless_of_the_amount_will_be_very_useful'); ?>
 		</p>
 		<p>
 			<?php echo phrase('cheers'); ?>,
@@ -55,7 +55,7 @@
 		&nbsp;
 	</div>
 	<div class="col-sm-6">
-		<a href="<?php echo ($error ? '../home/partial_error' : '../xhr/boot'); ?>" class="btn btn-warning btn-block font-weight-bold">
+		<a href="../xhr/boot" class="btn btn-warning btn-block font-weight-bold">
 			<i class="mdi mdi-rocket"></i>
 			<?php echo phrase('launch_your_site'); ?>
 		</a>
