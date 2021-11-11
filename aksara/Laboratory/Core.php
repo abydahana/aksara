@@ -6028,15 +6028,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_where[$field]					= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6057,8 +6056,7 @@ class Core extends Controller
 				$this->_where[$key]					= array
 				(
 					'value'							=> $val,
-					'escape'						=> $escape,
-					'case_sensitive'				=> false
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -6071,15 +6069,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_where[$field]				= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6100,8 +6097,7 @@ class Core extends Controller
 				$this->_or_where[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> $escape,
-					'case_sensitive'				=> false
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -6114,15 +6110,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_where_in[$field]				= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6132,8 +6127,7 @@ class Core extends Controller
 				$this->_where_in[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6146,15 +6140,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_where_in[$field]				= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6164,8 +6157,7 @@ class Core extends Controller
 				$this->_or_where_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6178,15 +6170,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_where_not_in[$field]			= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6196,8 +6187,7 @@ class Core extends Controller
 				$this->_where_not_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6210,15 +6200,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_where_not_in[$field]			= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6228,8 +6217,7 @@ class Core extends Controller
 				$this->_or_where_not_in[$key]		= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6242,7 +6230,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6251,7 +6239,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6263,7 +6251,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6276,7 +6264,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6285,7 +6273,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6297,7 +6285,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6310,7 +6298,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6319,7 +6307,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6331,7 +6319,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6344,7 +6332,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6353,7 +6341,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6365,7 +6353,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6378,15 +6366,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_having[$field]					= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6396,8 +6383,7 @@ class Core extends Controller
 				$this->_having[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6410,15 +6396,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_having[$field]				= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6428,8 +6413,7 @@ class Core extends Controller
 				$this->_or_having[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6442,15 +6426,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_having_in[$field]				= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6460,8 +6443,7 @@ class Core extends Controller
 				$this->_having_in[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6474,15 +6456,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_having_in[$field]			= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6492,8 +6473,7 @@ class Core extends Controller
 				$this->_or_having_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6506,15 +6486,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_having_not_in[$field]			= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6524,8 +6503,7 @@ class Core extends Controller
 				$this->_having_not_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6538,15 +6516,14 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
 			$this->_or_having_not_in[$field]		= array
 			(
 				'value'								=> $value,
-				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'escape'							=> $escape
 			);
 		}
 		else
@@ -6556,8 +6533,7 @@ class Core extends Controller
 				$this->_or_having_not_in[$key]		= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -6570,7 +6546,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6579,7 +6555,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6591,7 +6567,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6604,7 +6580,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6613,7 +6589,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6625,7 +6601,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6638,7 +6614,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6647,7 +6623,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6659,7 +6635,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -6672,7 +6648,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -6681,7 +6657,7 @@ class Core extends Controller
 				'match'								=> $match,
 				'side'								=> $side,
 				'escape'							=> $escape,
-				'case_sensitive'					=> $case_sensitive
+				'case_insensitive'					=> $case_insensitive
 			);
 		}
 		else
@@ -6693,7 +6669,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
