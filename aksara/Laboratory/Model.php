@@ -458,7 +458,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -471,8 +471,7 @@ class Model
 				$this->_where[$field]				= array
 				(
 					'value'							=> $value,
-					'escape'						=> (!$value ? false : $escape),
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> (!$value ? false : $escape)
 				);
 			}
 		}
@@ -483,8 +482,7 @@ class Model
 				$this->_where[$key]					= array
 				(
 					'value'							=> $val,
-					'escape'						=> (!$val ? false : true),
-					'case_sensitive'				=> false
+					'escape'						=> (!$val ? false : true)
 				);
 			}
 		}
@@ -497,7 +495,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -510,8 +508,7 @@ class Model
 				$this->_or_where[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> (!$value ? false : $escape),
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> (!$value ? false : $escape)
 				);
 			}
 		}
@@ -522,8 +519,7 @@ class Model
 				$this->_or_where[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> (!$val ? false : true),
-					'case_sensitive'				=> false
+					'escape'						=> (!$val ? false : true)
 				);
 			}
 		}
@@ -536,7 +532,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -549,8 +545,7 @@ class Model
 				$this->_where_in[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -561,8 +556,7 @@ class Model
 				$this->_where_in[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -575,7 +569,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -588,8 +582,7 @@ class Model
 				$this->_or_where_in[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -600,8 +593,7 @@ class Model
 				$this->_or_where_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -614,7 +606,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function where_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -627,8 +619,7 @@ class Model
 				$this->_where_not_in[$field]		= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -639,8 +630,7 @@ class Model
 				$this->_where_not_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -653,7 +643,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_where_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -666,8 +656,7 @@ class Model
 				$this->_or_where_not_in[$field]		= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -678,8 +667,7 @@ class Model
 				$this->_or_where_not_in[$key]		= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -692,7 +680,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -707,7 +695,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -720,7 +708,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -733,7 +721,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -748,7 +736,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -761,7 +749,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -774,7 +762,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -789,7 +777,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -802,7 +790,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -815,7 +803,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -830,7 +818,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -843,7 +831,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -856,7 +844,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -869,8 +857,7 @@ class Model
 				$this->_having[$field]				= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -881,8 +868,7 @@ class Model
 				$this->_having[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -895,7 +881,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -908,8 +894,7 @@ class Model
 				$this->_or_having[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -920,8 +905,7 @@ class Model
 				$this->_or_having[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -934,7 +918,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -947,8 +931,7 @@ class Model
 				$this->_having_in[$field]			= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -959,8 +942,7 @@ class Model
 				$this->_having_in[$key]				= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -973,7 +955,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -986,8 +968,7 @@ class Model
 				$this->_or_having_in[$field]		= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -998,8 +979,7 @@ class Model
 				$this->_or_having_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -1012,7 +992,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function having_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -1025,8 +1005,7 @@ class Model
 				$this->_having_not_in[$field]		= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -1037,8 +1016,7 @@ class Model
 				$this->_having_not_in[$key]			= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -1051,7 +1029,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_not_in($field = '', $value = '', $escape = true, $case_sensitive = false)
+	public function or_having_not_in($field = '', $value = '', $escape = true)
 	{
 		if(!is_array($field))
 		{
@@ -1064,8 +1042,7 @@ class Model
 				$this->_or_having_not_in[$field]	= array
 				(
 					'value'							=> $value,
-					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'escape'						=> $escape
 				);
 			}
 		}
@@ -1076,8 +1053,7 @@ class Model
 				$this->_or_having_not_in[$key]		= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -1090,7 +1066,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -1105,7 +1081,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -1118,7 +1094,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -1131,7 +1107,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -1146,7 +1122,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -1159,7 +1135,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -1172,7 +1148,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -1187,7 +1163,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -1200,7 +1176,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -1213,7 +1189,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_sensitive = false)
+	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
 	{
 		if(!is_array($field))
 		{
@@ -1228,7 +1204,7 @@ class Model
 					'match'							=> $match,
 					'side'							=> $side,
 					'escape'						=> $escape,
-					'case_sensitive'				=> $case_sensitive
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -1241,7 +1217,7 @@ class Model
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_sensitive'				=> false
+					'case_insensitive'				=> true
 				);
 			}
 		}
@@ -1610,8 +1586,7 @@ class Model
 				$this->_where[$key]					= array
 				(
 					'value'							=> $val,
-					'escape'						=> true,
-					'case_sensitive'				=> false
+					'escape'						=> true
 				);
 			}
 		}
@@ -1741,8 +1716,7 @@ class Model
 			$this->_where[$key]						= array
 			(
 				'value'								=> (isset($val['value']) ? $val['value'] : $val),
-				'escape'							=> (isset($val['escape']) ? $val['escape'] : true),
-				'case_sensitive'					=> (isset($val['case_sensitive']) ? $val['case_sensitive'] : false)
+				'escape'							=> (isset($val['escape']) ? $val['escape'] : true)
 			);
 		}
 		
@@ -1962,7 +1936,7 @@ class Model
 			// run where command
 			foreach($this->_where as $key => $val)
 			{
-				$builder->where($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->where($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -1971,7 +1945,7 @@ class Model
 			// run or where command
 			foreach($this->_or_where as $key => $val)
 			{
-				$builder->orWhere($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->orWhere($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -1980,7 +1954,7 @@ class Model
 			// run where in command
 			foreach($this->_where_in as $key => $val)
 			{
-				$builder->whereIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->whereIn($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -1989,7 +1963,7 @@ class Model
 			// run or where in command
 			foreach($this->_or_where_in as $key => $val)
 			{
-				$builder->orWhereIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->orWhereIn($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -1998,7 +1972,7 @@ class Model
 			// run where not in command
 			foreach($this->_where_not_in as $key => $val)
 			{
-				$builder->whereNotIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->whereNotIn($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -2007,7 +1981,7 @@ class Model
 			// run or where not in command
 			foreach($this->_or_where_not_in as $key => $val)
 			{
-				$builder->orWhereNotIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->orWhereNotIn($key, $val['value'], $val['escape']);
 			}
 		}
 		
@@ -2018,7 +1992,7 @@ class Model
 			// run like command
 			foreach($this->_like as $key => $val)
 			{
-				$builder->like($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+				$builder->like($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 			}
 			
 			if($this->_or_like)
@@ -2026,7 +2000,7 @@ class Model
 				// run or like command
 				foreach($this->_or_like as $key => $val)
 				{
-					$builder->orLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+					$builder->orLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 				}
 			}
 			
@@ -2040,7 +2014,7 @@ class Model
 			// run not like command
 			foreach($this->_not_like as $key => $val)
 			{
-				$builder->notLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+				$builder->notLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 			}
 			
 			if($this->_or_not_like)
@@ -2048,7 +2022,7 @@ class Model
 				// run or not like command
 				foreach($this->_or_not_like as $key => $val)
 				{
-					$builder->orNotLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+					$builder->orNotLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 				}
 			}
 			
@@ -2062,7 +2036,7 @@ class Model
 			// run having command
 			foreach($this->_having as $key => $val)
 			{
-				$builder->having($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->having($key, $val['value'], $val['escape']);
 			}
 			
 			if($this->_or_having)
@@ -2070,7 +2044,7 @@ class Model
 				// run or having command
 				foreach($this->_or_having as $key => $val)
 				{
-					$builder->having($key, $val['value'], $val['escape'], $val['case_sensitive']);
+					$builder->having($key, $val['value'], $val['escape']);
 				}
 			}
 			
@@ -2084,7 +2058,7 @@ class Model
 			// run having in command
 			foreach($this->_having_in as $key => $val)
 			{
-				$builder->havingIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->havingIn($key, $val['value'], $val['escape']);
 			}
 			
 			if($this->_or_having_in)
@@ -2092,7 +2066,7 @@ class Model
 				// run or having in command
 				foreach($this->_or_having_in as $key => $val)
 				{
-					$builder->orHavingIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+					$builder->orHavingIn($key, $val['value'], $val['escape']);
 				}
 			}
 			
@@ -2106,7 +2080,7 @@ class Model
 			// run having not in command
 			foreach($this->_having_not_in as $key => $val)
 			{
-				$builder->havingNotIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+				$builder->havingNotIn($key, $val['value'], $val['escape']);
 			}
 			
 			if($this->_or_having_not_in)
@@ -2114,7 +2088,7 @@ class Model
 				// run or having not in command
 				foreach($this->_or_having_not_in as $key => $val)
 				{
-					$builder->orHavingNotIn($key, $val['value'], $val['escape'], $val['case_sensitive']);
+					$builder->orHavingNotIn($key, $val['value'], $val['escape']);
 				}
 			}
 			
@@ -2128,7 +2102,7 @@ class Model
 			// run having like command
 			foreach($this->_having_like as $key => $val)
 			{
-				$builder->havingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+				$builder->havingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 			}
 			
 			if($this->_or_having_like)
@@ -2136,7 +2110,7 @@ class Model
 				// run or having like command
 				foreach($this->_or_having_like as $key => $val)
 				{
-					$builder->orHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+					$builder->orHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 				}
 			}
 			
@@ -2150,7 +2124,7 @@ class Model
 			// run not having like command
 			foreach($this->_not_having_like as $key => $val)
 			{
-				$builder->notHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+				$builder->notHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 			}
 			
 			if($this->_or_not_having_like)
@@ -2158,7 +2132,7 @@ class Model
 				// run or not having like command
 				foreach($this->_or_not_having_like as $key => $val)
 				{
-					$builder->orNotHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_sensitive']);
+					$builder->orNotHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
 				}
 			}
 			
