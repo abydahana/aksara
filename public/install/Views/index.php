@@ -40,25 +40,25 @@
 												<?php echo phrase('checking_requirements'); ?>
 											</b>
 										</p>
-										<hr />
+										<hr class="row" />
 										<p class="step database">
 											<b>
 												<?php echo phrase('database_configuration'); ?>
 											</b>
 										</p>
-										<hr />
+										<hr class="row" />
 										<p class="step security">
 											<b>
 												<?php echo phrase('security_configuration'); ?>
 											</b>
 										</p>
-										<hr />
+										<hr class="row" />
 										<p class="step system">
 											<b>
 												<?php echo phrase('system_configuration'); ?>
 											</b>
 										</p>
-										<hr />
+										<hr class="row" />
 										<p class="step final">
 											<b>
 												<?php echo phrase('finalizing'); ?>

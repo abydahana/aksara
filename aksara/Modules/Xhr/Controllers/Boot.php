@@ -18,7 +18,7 @@ class Boot extends \Aksara\Laboratory\Core
 			phrase($val);
 		}
 		
-		return throw_exception(301, phrase('the_aksara_service_has_ben_successfully_started'), base_url(), true);
+		return throw_exception(301, phrase('the_aksara_service_has_been_successfully_started'), base_url(), true);
 	}
 	
 	private function _phrases()

@@ -403,7 +403,7 @@ class Install extends BaseController
 			}
 			catch(\Throwable $e)
 			{
-				// connection couldn't be made, throw error
+				// unable to connect to the database
 				return $this->response->setJSON
 				(
 					array
@@ -414,22 +414,26 @@ class Install extends BaseController
 				);
 			}
 			
-			if($this->db)
+			// check if basic installation is selected
+			if(1 == session()->get('installation_mode'))
 			{
-                try
+				try
 				{
-					// run the installer migration
-					$migration						= \Config\Services::migrations();
+					// try unzip the sample modules
+					$zip							= new \ZipArchive();
 					
-					// migrate the database schema
-					if($migration->latest())
+					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
-						$this->db->table(config('migrations')->table)->truncate();
+						// extract sample modules to modules path
+						$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'modules');
 					}
-                }
+					
+					// close current opened zip file
+					$zip->close();
+				}
 				catch(\Throwable $e)
 				{
-					// migration couldn't be executed, throw error
+					// unable to extract the sample module
 					return $this->response->setJSON
 					(
 						array
@@ -438,51 +442,73 @@ class Install extends BaseController
 							'message'				=> $e->getMessage()
 						)
 					);
-                }
-				
-				// check if configuration file is exists
-				if(!file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
+				}
+			}
+			
+			// database migrations and seeder
+			try
+			{
+				// check if migration has been run previously
+				if($this->db->tableExists(config('migrations')->table))
 				{
-					try
-					{
-						// try to writing configuration file
-						file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
-					}
-					catch(\Throwable $e)
-					{
-						return $this->response->setJSON
-						(
-							array
-							(
-								'status'			=> 200,
-								'active'			=> '.finalizing',
-								'passed'			=> '.system',
-								'html'				=> view('error')
-							)
-						);
-					}
+					// truncate the migrations table
+					$this->db->table(config('migrations')->table)->truncate();
 				}
 				
-				if(1 == session()->get('installation_mode'))
+				// run the installer migration
+				$migration							= \Config\Services::migrations();
+				
+				// migrate the database schema
+				if($migration->latest())
 				{
-					$zip							= new \ZipArchive();
+					// call seeder
+					$seeder							= \Config\Database::seeder();
 					
-					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
+					// run seeder
+					$seeder->call('MainSeeder');
+					
+					// check if basic installation is selected
+					if(1 == session()->get('installation_mode'))
 					{
-						try
-						{
-							$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'modules');
-						}
-						catch(\Throwable $e)
-						{
-							$error					= true;
-						}
+						// run seeder to insert sample data
+						$seeder->call('DummySeeder');
 					}
 				}
 			}
-			else
+			catch(\Throwable $e)
 			{
-				$error								= true;
+				// migration couldn't be executed, throw error
+				return $this->response->setJSON
+				(
+					array
+					(
+						'status'					=> 403,
+						'message'					=> $e->getMessage()
+					)
+				);
+			}
+			
+			// check if configuration file is exists
+			if(!file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
+			{
+				try
+				{
+					// try to writing configuration file
+					file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
+				}
+				catch(\Throwable $e)
+				{
+					return $this->response->setJSON
+					(
+						array
+						(
+							'status'				=> 200,
+							'active'				=> '.finalizing',
+							'passed'				=> '.system',
+							'html'					=> view('error')
+						)
+					);
+				}
 			}
 		}
 		else if(1 == service('request')->getGet('download'))
@@ -490,24 +516,14 @@ class Install extends BaseController
 			return service('response')->download('config.php', $config_source);
 		}
 		
-		if($error)
-		{
-			@unlink(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php');
-		}
-		
-		$output										= array
-		(
-			'error'									=> $error
-		);
-		
 		return $this->response->setJSON
 		(
 			array
 			(
 				'status'							=> 200,
 				'active'							=> '.install',
-				'passed'							=> '.finalizing',
-				'html'								=> view('finish', $output)
+				'passed'							=> '.final',
+				'html'								=> view('finish')
 			)
 		);
 	}

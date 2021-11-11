@@ -102,7 +102,7 @@ return array
 	'follow_our_updates_to_get_our_other_works_if_you_find_this_useful' => 'Follow our updates to get our other works if you find this useful.',
 	'just_to_remind_you' => 'Just to remind you,',
 	'we_also_collect_donations_from_people_like_you_to_support_our_research' => 'we also collect donations from people like you to support our research.',
-	'regardless_of_the_amount_will_very_useful' => 'Regardless of the amount will very useful.',
+	'regardless_of_the_amount_will_be_very_useful' => 'Regardless of the amount will be very useful.',
 	'cheers' => 'Cheers',
 	'launch_your_site' => 'Launch Your Site',
 	'revalidate_configuration' => 'Revalidate Configuration',
