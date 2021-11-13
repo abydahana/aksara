@@ -165,7 +165,7 @@ class Core extends Controller
 	private $_or_not_group_start;
 	private $_group_by								= array();
 	private $_order_by								= array();
-	private $_order_by_bm							= array();
+	private $_order_bm								= array();
 	private $_limit									= 25;
 	private $_offset								= 0;
 	private $_set									= array();
@@ -2122,112 +2122,6 @@ class Core extends Controller
 	 */
 	private function _autocomplete_input($params = array(), $selected = null)
 	{
-		/*
-		$keyword									= service('request')->getPost('q');
-		$like										= $params['formatting']['label'];
-		$like										.= $params['formatting']['description'];
-		preg_match_all('#\{(.*?)\}#', $like, $matches_like);
-		$like										= $matches_like[1];
-		
-		$this->model->select(array_unique($params['select']));
-		
-		if($selected)
-		{
-			$this->model->where($params['relation_table'] . '.' . $params['relation_key'], $selected);
-		}
-		else
-		{
-			foreach($like as $key => $val)
-			{
-				$val								= explode(' ', $val)[0];
-				if($key > 0)
-				{
-					$this->model->or_like($val, str_replace(' ', '%', $keyword), false);
-				}
-				else
-				{
-					$this->model->like($val, str_replace(' ', '%', $keyword), false);
-				}
-			}
-		}
-		
-		if($params['where'])
-		{
-			$this->model->where($params['where']);
-		}
-		
-		if($params['order_by'])
-		{
-			$this->model->order_by($params['order_by']);
-		}
-		
-		if($params['group_by'])
-		{
-			$this->model->group_by($params['group_by']);
-		}
-		
-		if($params['limit'])
-		{
-			$this->model->limit($params['limit']);
-		}
-		
-		if($params['join'])
-		{
-			foreach($params['join'] as $key => $val)
-			{
-				if(is_array($val) && isset($val[0]) && isset($val[1]))
-				{
-					$this->model->join($val[0], $val[1]);
-				}
-			}
-		}
-		
-		$query										= $this->model->get($params['relation_table'], ($selected ? 1 : 50))->result();
-		$output										= array();
-		
-		if($query)
-		{
-			foreach($query as $key => $val)
-			{
-				$value								= $params['formatting']['value'];
-				$label								= str_ireplace(' AS ', ' ', $params['formatting']['label']);
-				$description						= $params['formatting']['description'];
-				$image								= $params['formatting']['image'];
-				
-				foreach($params['select'] as $magic => $replace)
-				{
-					$replace						= str_ireplace(' AS ', ' ', $replace);
-					
-					if(isset($replace_me[$replace]))
-					{
-						$replacement				= $replace_me[$replace];
-					}
-					else
-					{
-						$replacement				= (stripos($replace, '.') !== false ? substr($replace, strripos($replace, '.') + 1) : $replace);
-						$replacement				= (stripos($replacement, ' ') !== false ? substr($replacement, strripos($replacement, ' ') + 1) : $replacement);
-					}
-					
-					if(isset($val->$replacement))
-					{
-						$value						= str_replace('{' . $replace . '}', $val->$replacement, $value);
-						$label						= str_replace('{' . $replace . '}', $val->$replacement, $label);
-						$description				= str_replace('{' . $replace . '}', $val->$replacement, $description);
-						$image						= str_replace('{' . $replace . '}', $val->$replacement, $image);
-					}
-				}
-				
-				$output[]							= array
-				(
-					'value'							=> $value,
-					'label'							=> preg_replace('/\s+/', ' ', $label),
-					'description'					=> preg_replace('/\s+/', ' ', $description),
-					'image'							=> $image
-				);
-			}
-		}
-		*/
-		
 		return '<input type="text" name="' . $params['primary_key'] . '" class="form-control' . (isset($this->_add_class[$params['primary_key']]) ? ' ' . $this->_add_class[$params['primary_key']] : null) . '" value="' . ($selected && isset($output[0]['label']) ? $output[0]['label'] : null) . '" role="autocomplete" id="' . $params['primary_key'] . '_input"' . (isset($this->_set_field[$params['primary_key']]['field_type']) && in_array('disabled', $this->_set_field[$params['primary_key']]['field_type']) ? ' disabled' : null) . ' spellcheck="false" /><input type="hidden" name="' . $params['primary_key'] . '" id="' . $params['primary_key'] . '_input_value" value="' . ('update' == $this->_method && isset($output[0]['value']) ? $output[0]['value'] : 0) . '" spellcheck="false" />';
 		
 	}
@@ -2290,7 +2184,7 @@ class Core extends Controller
 			{
 				foreach($this->_field_data as $key => $val)
 				{
-					if((isset($val['primary_key']) && $val['primary_key'] == 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') != false))
+					if((isset($val['primary_key']) && $val['primary_key'] == 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') !== false))
 					{
 						$this->_set_primary[]		= $val['name'];
 					}
@@ -2405,57 +2299,56 @@ class Core extends Controller
 						
 						if($columns)
 						{
-							foreach($columns as $like_key => $like_val)
+							foreach($columns as $key => $val)
 							{
-								$v					= $like_val;
 								if($this->_like)
 								{
-									$this->_or_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								else
 								{
-									$this->_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 							}
 						}
 						
 						if($this->_select)
 						{
-							foreach($this->_select as $like_key => $like_val)
+							foreach($this->_select as $key => $val)
 							{
-								$like_val					= str_ireplace(' AS ', ' ', $like_val);
-								$like_val					= (stripos($like_val, ' ') !== false ? substr($like_val, strripos($like_val, ' ') + 1) : $like_val);
-								$v							= $like_val;
+								$val				= str_ireplace(' AS ', ' ', $val);
+								$val				= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
 								
 								if($this->_like)
 								{
-									$this->_or_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								else
 								{
-									$this->_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								
-								if(stripos($like_val, ' AS ') !== false)
+								if(stripos($val, ' AS ') !== false)
 								{
-									$like_val				= substr($like_val, 0, stripos($like_val, ' AS '));
+									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
 								{
 									if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
 									{
-										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+										$table		= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
 									}
 									else
 									{
-										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+										$table		= $this->_set_field[service('request')->getPost('origin')]['parameter'];
 									}
 								}
 								
-								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $table))
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($val, $table))
 								{
-									$this->_order_by_bm[]	= '(CASE WHEN ' . $like_val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $like_val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
+									// order by best match
+									$this->_order_bm[]		= '(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
 								}
 							}
 						}
@@ -2541,9 +2434,9 @@ class Core extends Controller
 					}
 					
 					/* order by best match */
-					if($this->_order_by_bm)
+					if($this->_order_bm)
 					{
-						foreach($this->_order_by_bm as $key => $val)
+						foreach($this->_order_bm as $key => $val)
 						{
 							$this->model->order_by($val);
 						}
@@ -2590,8 +2483,7 @@ class Core extends Controller
 					/* loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead */
 					foreach($this->_select as $key => $val)
 					{
-						$val						= str_ireplace(' AS ', ' ', $val);
-						$val						= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
+						$val						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
 						
 						/* if there's LIKE */
 						if($this->_like)
@@ -2610,6 +2502,9 @@ class Core extends Controller
 					$query							= $this->_run_query($this->_from);
 					$this->_query					= $query['results'];
 					
+					/* populate added item */
+					$added_item						= array();
+					
 					/* serialize results */
 					$serialized						= $this->serialize($this->_query);
 					
@@ -2620,6 +2515,7 @@ class Core extends Controller
 						{
 							/* set the default column order */
 							$column_order			= array();
+							
 							foreach($this->_column_order as $order_key => $order_val)
 							{
 								/* if array key exists */
@@ -2641,13 +2537,15 @@ class Core extends Controller
 							if(strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false || in_array($field, $this->_unset_column)) continue;
 							
 							/* everything's looks good, throw into autocomplete result */
-							if(!$autocomplete_item && $value['original'])
+							if(!$autocomplete_item && $value['original'] && !in_array($value['content'], $added_item))
 							{
+								$added_item[]		= $value['content'];
+								
 								$autocomplete_item	= array
 								(
 									'value'			=> truncate($value['content'], 32, false, ''),
 									'label'			=> truncate($value['content'], 32),
-									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32, false, '')))
+									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32, '')))
 								);
 							}
 						}
@@ -6230,7 +6128,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6251,7 +6149,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6264,7 +6162,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6285,7 +6183,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6298,7 +6196,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6319,7 +6217,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6332,7 +6230,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6353,7 +6251,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6546,7 +6444,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6567,7 +6465,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6580,7 +6478,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6601,7 +6499,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6614,7 +6512,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6635,7 +6533,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6648,7 +6546,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6669,7 +6567,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}

@@ -92,7 +92,7 @@ class Modules extends \Aksara\Laboratory\Core
 		
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
-			$this->form_validation->setRule('file', phrase('module_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip|ext_in[file,zip]');
+			$this->form_validation->setRule('file', phrase('module_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 			
 			if($this->form_validation->run(service('request')->getPost()) === false)
 			{

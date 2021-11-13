@@ -44,36 +44,38 @@
 			}
 			
 			echo '
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="alert alert-info rounded-more">
-							<h5>
-								' . phrase('update_available') . '
-							</h5>
-							<p class="mb-0">
-								' . phrase('a_newer_version_of_aksara_is_available') . '
-								' . phrase('click_the_button_below_to_update_your_core_system_directly') . '
-								' . phrase('your_created_module_and_theme_will_not_be_overwritten') . '
-							</p>
+				<form action="' . current_page() . '" method="POST" class="--validate-form">
+					<div class="row">
+						<div class="col-lg-8">
+							<div class="alert alert-info rounded-more">
+								<h5>
+									' . phrase('update_available') . '
+								</h5>
+								<p class="mb-0">
+									' . phrase('a_newer_version_of_aksara_is_available') . '
+									' . phrase('click_the_button_below_to_update_your_core_system_directly') . '
+									' . phrase('your_created_module_and_theme_will_not_be_overwritten') . '
+								</p>
+							</div>
+							' . $changelog . '
 						</div>
-						' . $changelog . '
 					</div>
-				</div>
-				<hr class="row" />
-				<div class="row">
-					<div class="col-lg-8">
-						<a href="' . base_url('administrative/updater/update') . '" class="btn btn-success rounded-pill --xhr show-progress">
-							<i class="mdi mdi-update"></i>
-							' . phrase('update_now') . '
-						</a>
-						' . (isset($updater->server_version) ? '
-						<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ml-3">
-							<i class="mdi mdi-hammer"></i>
-							' . phrase('manual_update') . '
-						</a>
-						' : null) . '
+					<hr class="row" />
+					<div class="row">
+						<div class="col-lg-8">
+							<button type="submit" class="btn btn-success rounded-pill">
+								<i class="mdi mdi-update"></i>
+								' . phrase('update_now') . '
+							</button>
+							' . (isset($updater->server_version) ? '
+							<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ml-3">
+								<i class="mdi mdi-hammer"></i>
+								' . phrase('manual_update') . '
+							</a>
+							' : null) . '
+						</div>
 					</div>
-				</div>
+				</form>
 			';
 		}
 		else

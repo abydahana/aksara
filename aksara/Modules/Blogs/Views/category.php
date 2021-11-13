@@ -14,7 +14,7 @@
 		<div class="row">
 			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
 				<form action="<?php echo base_url('blogs/search', array('category' => (service('request')->uri->getTotalSegments() > 1 ? service('request')->uri->getSegment(2) : null), 'per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
-					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post_under') . ' ' . $meta->title; ?>" />
+					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0 rounded-pill" placeholder="<?php echo phrase('search_post_under') . ' ' . $meta->title; ?>" />
 					<button type="submit" class="btn btn-lg float-right absolute top right">
 						<i class="mdi mdi-magnify font-weight-bold"></i>
 					</button>

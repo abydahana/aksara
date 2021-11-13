@@ -17,20 +17,6 @@
 					$carousel_items					.= '
 						<div class="carousel-item full-height bg-dark gradient d-flex align-items-center' . ($_key == 0 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
 							<div class="absolute top right bottom left" style="background:rgba(0, 0, 0, .75)"></div>
-							<div class="area">
-								<ul class="circles">
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-									<li></li>
-								</ul>
-							</div>
 							<div class="carousel-caption container-fluid" style="position:inherit">
 								<div class="row">
 									' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
@@ -109,7 +95,7 @@
 									' . $_val->question . '
 								</a>
 							</div>
-							<div id="collapse_' . $_key . '" class="collapse' . (!$key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-parent="#accordionExample">
+							<div id="collapse_' . $_key . '" class="collapse' . (!$_key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-parent="#accordionExample">
 								<div class="card-body">
 									' . $_val->answer . '
 								</div>

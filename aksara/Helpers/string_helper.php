@@ -17,10 +17,9 @@ if(!function_exists('truncate'))
 	 *
 	 * @params		string		$string
 	 * @params		int			$limit
-	 * @params		string		$break
 	 * @params		string		$pad
 	 */
-	function truncate($string = null, $limit = 0, $break = '.', $pad = '...')
+	function truncate($string = null, $limit = 0, $pad = '...')
 	{
 		$string										= preg_replace('/<script.*?\/script>/i','', $string);
 		$string										= preg_replace('/<noscript.*?\/noscript>/i','', $string);

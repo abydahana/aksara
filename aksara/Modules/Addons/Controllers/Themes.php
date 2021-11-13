@@ -204,7 +204,7 @@ class Themes extends \Aksara\Laboratory\Core
 			
 			if(file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json', json_encode($package)))
 			{
-				return throw_exception(301, phrase('the_theme_was_successfully_customized'), current_page());
+				return throw_exception(301, phrase('the_theme_was_successfully_customized'), current_page('../', array('item' => null)));
 			}
 			
 			return throw_exception(400, array('colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is_not_writable')));
@@ -237,7 +237,7 @@ class Themes extends \Aksara\Laboratory\Core
 		
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
-			$this->form_validation->setRule('file', phrase('theme_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip|ext_in[file,zip]');
+			$this->form_validation->setRule('file', phrase('theme_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 			
 			if($this->form_validation->run(service('request')->getPost()) === false)
 			{

@@ -28,7 +28,7 @@
 		<div class="row">
 			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
 				<form action="<?php echo base_url('blogs/search', array('category_id' => null, 'per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form">
-					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
+					<input type="text" name="q" class="form-control form-control-lg pt-4 pr-4 pb-4 pl-4 border-0 rounded-pill" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
 					<button type="submit" class="btn btn-lg float-right absolute top right">
 						<i class="mdi mdi-magnify font-weight-bold"></i>
 					</button>
@@ -71,7 +71,7 @@
 						echo '
 							<div class="row">
 								<div class="col-3 col-sm-3">
-									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr">
+									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug), array('q' => null)) . '" class="--xhr">
 										<img id="og-image" src="' . get_image('blogs', $val->featured_image, 'thumb') . '" class="img-fluid rounded-more" />
 									</a>
 								</div>
@@ -86,13 +86,13 @@
 											<i class="mdi mdi-clock-outline"></i> ' . time_ago($val->updated_timestamp) . '
 										</span>
 									</div>
-									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr">
+									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug), array('q' => null)) . '" class="--xhr">
 										<h5>
 											' . $val->post_title . '
 										</h5>
 									</a>
 									<p class="mb-0">
-										<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr text-muted">
+										<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug), array('q' => null)) . '" class="--xhr text-muted">
 											' . truncate($val->post_excerpt, 128) . '
 										</a>
 									</p>
