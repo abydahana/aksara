@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Peoples\Controllers;
+<?php
+
+namespace Aksara\Modules\Peoples\Controllers;
+
 /**
  * Peoples > Read
  * Show the selected people details
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Read extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'peoples';
@@ -16,6 +20,8 @@ class Read extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index($slug = null)

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Shortlink\Controllers;
+<?php
+
+namespace Aksara\Modules\Shortlink\Controllers;
+
 /**
  * Shortlink
  *
@@ -8,6 +11,7 @@
  * @since			version 4.2.5
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Shortlink extends \Aksara\Laboratory\Core
 {
 	public function __construct()

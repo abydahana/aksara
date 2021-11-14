@@ -14,7 +14,7 @@
 		
 		<?php echo aksara_header(); ?>
 		
-		<?php echo asset_loader('css/styles.css'); /* separate with comma to load more asset */ ?>
+		<?php echo asset_loader(array('css/styles.css')); ?>
 	</head>
 	<body>
 		
@@ -34,6 +34,6 @@
 		
 		<?php echo aksara_footer(); ?>
 		
-		<?php echo asset_loader('js/scripts.js'); /* separate with comma to load more asset */ ?>
+		<?php echo asset_loader(array('js/scripts.js')); ?>
 	</body>
 </html>

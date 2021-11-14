@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Dashboard\Controllers;
+<?php
+
+namespace Aksara\Modules\Dashboard\Controllers;
+
 /**
  * Dashboard
  * Dashboard module, can be override to the /modules/ path. Also applied for other module
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Dashboard extends \Aksara\Laboratory\Core
 {
 	public function __construct()

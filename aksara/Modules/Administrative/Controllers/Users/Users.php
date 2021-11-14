@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Users;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Users;
+
 /**
  * Administrative > Users
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Users extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__users';
@@ -56,8 +60,8 @@ class Users extends \Aksara\Laboratory\Core
 		->unset_field('user_id, last_login, is_logged, registered_date')
 		->unset_view('user_id, password')
 		->column_order('photo, username, first_name, email, group_name')
-		->field_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language_id, group_id, status')
-		->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language_id, group_id, group_name, status, last_login')
+		->field_order('photo, first_name, username, email, password, bio, phone, address, country, language_id, group_id, status')
+		->view_order('photo, first_name, username, email, password, bio, phone, address, country, country_name, language_id, group_id, group_name, status, last_login')
 		->set_field
 		( 
 			array
@@ -133,7 +137,9 @@ class Users extends \Aksara\Laboratory\Core
 				'address'							=> 2,
 				'phone'								=> 2,
 				'country_id'						=> 2,
+				'country_name'						=> 2,
 				'language_id'						=> 2,
+				'language'							=> 2,
 				'group_id'							=> 2,
 				'group_name'						=> 2,
 				'pin'								=> 2,

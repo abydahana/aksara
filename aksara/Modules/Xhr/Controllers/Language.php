@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Xhr\Controllers;
+<?php
+
+namespace Aksara\Modules\Xhr\Controllers;
+
 /**
  * XHR > Language
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Language extends \Aksara\Laboratory\Core
 {
 	public function __construct()

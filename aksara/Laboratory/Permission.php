@@ -1,4 +1,7 @@
-<?php namespace Aksara\Laboratory;
+<?php
+
+namespace Aksara\Laboratory;
+
 /**
  * Permission library
  * Handle the permission of user role
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Permission
 {
 	public function __construct()

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Libraries;
+<?php
+
+namespace Aksara\Libraries;
+
 /**
  * Facebook Login Library
  *
@@ -9,7 +12,6 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
-// Include required libraries
 use Facebook\Facebook as BaseFacebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Xhr\Controllers;
+<?php
+
+namespace Aksara\Modules\Xhr\Controllers;
+
 /**
  * XHR > Boot
  * Some basic generator
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Boot extends \Aksara\Laboratory\Core
 {
 	public function index()

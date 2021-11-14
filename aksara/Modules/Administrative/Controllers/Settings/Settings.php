@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Settings;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Settings;
+
 /**
  * Administrative > Settings
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Settings extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__settings';
@@ -20,6 +24,8 @@ class Settings extends \Aksara\Laboratory\Core
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		$this->searchable(false);
 		
 		$this->set_method('update');
 		$this->set_upload_path('settings');

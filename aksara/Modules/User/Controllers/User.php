@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\User\Controllers;
+<?php
+
+namespace Aksara\Modules\User\Controllers;
+
 /**
  * User
  *
@@ -8,6 +11,7 @@
  * @since			version 4.1.22
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class User extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__users';
@@ -15,6 +19,8 @@ class User extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 		
 		if(service('request')->getGet('user_id'))
 		{

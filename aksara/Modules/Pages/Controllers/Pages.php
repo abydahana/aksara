@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Pages\Controllers;
+<?php
+
+namespace Aksara\Modules\Pages\Controllers;
+
 /**
  * Pages
  * Render the frontend page. Also to be used as default routes.
@@ -9,9 +12,17 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Pages extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages';
+	
+	public function __construct()
+	{
+		parent::__construct();
+		
+		$this->searchable(false);
+	}
 	
 	public function index($slug = null)
 	{

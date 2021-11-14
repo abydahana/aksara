@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Partials;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Partials;
+
 /**
  * CMS > Partials > FAQ
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Faqs extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages__faqs';
@@ -74,6 +78,8 @@ class Faqs extends \Aksara\Laboratory\Core
 				'status'							=> phrase('status')
 			)
 		)
+		
+		->modal_size('modal-lg')
 		
 		->render($this->_table);
 	}

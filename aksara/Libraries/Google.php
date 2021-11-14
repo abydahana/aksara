@@ -1,4 +1,7 @@
-<?php namespace Aksara\Libraries;
+<?php
+
+namespace Aksara\Libraries;
+
 /**
  * Google Login Library
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Google
 {
 	public function __construct()

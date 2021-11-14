@@ -9,6 +9,7 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
+$routes->add('blogs/read', '\Aksara\Modules\Blogs\Controllers\Read::index');
 $routes->add('blogs/search', '\Aksara\Modules\Blogs\Controllers\Search::index');
 $routes->add('blogs/tags', '\Aksara\Modules\Blogs\Controllers\Tags::index');
 $routes->add('blogs/(:any)/(:any)', '\Aksara\Modules\Blogs\Controllers\Read::index/$1/$2');

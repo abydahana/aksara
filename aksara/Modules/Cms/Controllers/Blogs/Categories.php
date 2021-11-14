@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Blogs;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Blogs;
+
 /**
  * CMS > Blogs > Categories
  * Manage the blog categories
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Categories extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'blogs__categories';

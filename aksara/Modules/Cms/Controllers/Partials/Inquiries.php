@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Partials;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Partials;
+
 /**
  * CMS > Partials > Inquiries
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Inquiries extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'inquiries';

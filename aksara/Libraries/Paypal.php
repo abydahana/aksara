@@ -1,4 +1,7 @@
-<?php namespace Aksara\Libraries;
+<?php
+
+namespace Aksara\Libraries;
+
 /**
  * PayPal Library
  * A connector to integrate payment within PayPal
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Paypal
 {
 	public function __construct($params = array())

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Xhr\Controllers\Partial;
+<?php
+
+namespace Aksara\Modules\Xhr\Controllers\Partial;
+
 /**
  * XHR > Partial
  *
@@ -8,6 +11,7 @@
  * @since			version 4.2.8
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Partial extends \Aksara\Laboratory\Core
 {
 	public function __construct()

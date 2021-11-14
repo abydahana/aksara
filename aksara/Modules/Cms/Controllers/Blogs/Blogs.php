@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Blogs;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Blogs;
+
 /**
  * CMS > Blogs
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Blogs extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'blogs';
@@ -94,10 +98,10 @@ class Blogs extends \Aksara\Laboratory\Core
 			)
 		)
 		->set_field('post_slug', 'to_slug', 'post_title')
-		->set_field('post_title', 'hyperlink', 'blogs/category/post', array('post_slug' => 'post_slug'), true)
+		->set_field('post_title', 'hyperlink', 'blogs/read', array('post_slug' => 'post_slug'), true)
 		->set_field('category_title', 'hyperlink', 'cms/blogs', array('category' => 'post_category'))
 		
-		->add_action('option', '../../blogs/category/post', phrase('view_post'), 'btn-success', 'mdi mdi-eye', array('post_slug' => 'post_slug'), true)
+		->add_action('option', '../../blogs/read', phrase('view_post'), 'btn-success', 'mdi mdi-eye', array('post_slug' => 'post_slug'), true)
 		
 		->set_validation
 		(

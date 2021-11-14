@@ -1,4 +1,7 @@
-<?php namespace Aksara\Laboratory;
+<?php
+
+namespace Aksara\Laboratory;
+
 /**
  * Aksara!
  *
@@ -17,9 +20,10 @@
  * @since			version 4.0.0
  * @copyright		(c) 2020-2021 Aksara Laboratory
  * -------------------------------------------------------------------
- * Sometimes you need a fool to complete a complicated job :)
+ * You sometimes need a fool to get your complicated work done :)
  * -------------------------------------------------------------------
  */
+
 use CodeIgniter\Controller;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Model;
@@ -165,7 +169,7 @@ class Core extends Controller
 	private $_or_not_group_start;
 	private $_group_by								= array();
 	private $_order_by								= array();
-	private $_order_by_bm							= array();
+	private $_order_bm								= array();
 	private $_limit									= 25;
 	private $_offset								= 0;
 	private $_set									= array();
@@ -173,6 +177,7 @@ class Core extends Controller
 	
 	private $_total									= 0;
 	private $_insert_on_update_fail					= false;
+	private $_searchable							= true;
 	
 	public $_method									= null;
 	public $_insert_id								= 0;
@@ -631,6 +636,26 @@ class Core extends Controller
 	public function add_filter($filter = null)
 	{
 		$this->_add_filter							= $filter;
+		
+		return $this;
+	}
+	
+	/**
+	 * searchable
+	 * The system will autosearch when the query string contain "q" on
+	 * the query string (typically when you give a table name th the
+	 * render() method. This method prevent system to search even the
+	 * "q" parameter is present.
+	 *
+	 * @access		public
+	 * @return		string
+	 */
+	public function searchable($active = true)
+	{
+		if(!$active)
+		{
+			$this->_searchable						= false;
+		}
 		
 		return $this;
 	}
@@ -2122,112 +2147,6 @@ class Core extends Controller
 	 */
 	private function _autocomplete_input($params = array(), $selected = null)
 	{
-		/*
-		$keyword									= service('request')->getPost('q');
-		$like										= $params['formatting']['label'];
-		$like										.= $params['formatting']['description'];
-		preg_match_all('#\{(.*?)\}#', $like, $matches_like);
-		$like										= $matches_like[1];
-		
-		$this->model->select(array_unique($params['select']));
-		
-		if($selected)
-		{
-			$this->model->where($params['relation_table'] . '.' . $params['relation_key'], $selected);
-		}
-		else
-		{
-			foreach($like as $key => $val)
-			{
-				$val								= explode(' ', $val)[0];
-				if($key > 0)
-				{
-					$this->model->or_like($val, str_replace(' ', '%', $keyword), false);
-				}
-				else
-				{
-					$this->model->like($val, str_replace(' ', '%', $keyword), false);
-				}
-			}
-		}
-		
-		if($params['where'])
-		{
-			$this->model->where($params['where']);
-		}
-		
-		if($params['order_by'])
-		{
-			$this->model->order_by($params['order_by']);
-		}
-		
-		if($params['group_by'])
-		{
-			$this->model->group_by($params['group_by']);
-		}
-		
-		if($params['limit'])
-		{
-			$this->model->limit($params['limit']);
-		}
-		
-		if($params['join'])
-		{
-			foreach($params['join'] as $key => $val)
-			{
-				if(is_array($val) && isset($val[0]) && isset($val[1]))
-				{
-					$this->model->join($val[0], $val[1]);
-				}
-			}
-		}
-		
-		$query										= $this->model->get($params['relation_table'], ($selected ? 1 : 50))->result();
-		$output										= array();
-		
-		if($query)
-		{
-			foreach($query as $key => $val)
-			{
-				$value								= $params['formatting']['value'];
-				$label								= str_ireplace(' AS ', ' ', $params['formatting']['label']);
-				$description						= $params['formatting']['description'];
-				$image								= $params['formatting']['image'];
-				
-				foreach($params['select'] as $magic => $replace)
-				{
-					$replace						= str_ireplace(' AS ', ' ', $replace);
-					
-					if(isset($replace_me[$replace]))
-					{
-						$replacement				= $replace_me[$replace];
-					}
-					else
-					{
-						$replacement				= (stripos($replace, '.') !== false ? substr($replace, strripos($replace, '.') + 1) : $replace);
-						$replacement				= (stripos($replacement, ' ') !== false ? substr($replacement, strripos($replacement, ' ') + 1) : $replacement);
-					}
-					
-					if(isset($val->$replacement))
-					{
-						$value						= str_replace('{' . $replace . '}', $val->$replacement, $value);
-						$label						= str_replace('{' . $replace . '}', $val->$replacement, $label);
-						$description				= str_replace('{' . $replace . '}', $val->$replacement, $description);
-						$image						= str_replace('{' . $replace . '}', $val->$replacement, $image);
-					}
-				}
-				
-				$output[]							= array
-				(
-					'value'							=> $value,
-					'label'							=> preg_replace('/\s+/', ' ', $label),
-					'description'					=> preg_replace('/\s+/', ' ', $description),
-					'image'							=> $image
-				);
-			}
-		}
-		*/
-		
 		return '<input type="text" name="' . $params['primary_key'] . '" class="form-control' . (isset($this->_add_class[$params['primary_key']]) ? ' ' . $this->_add_class[$params['primary_key']] : null) . '" value="' . ($selected && isset($output[0]['label']) ? $output[0]['label'] : null) . '" role="autocomplete" id="' . $params['primary_key'] . '_input"' . (isset($this->_set_field[$params['primary_key']]['field_type']) && in_array('disabled', $this->_set_field[$params['primary_key']]['field_type']) ? ' disabled' : null) . ' spellcheck="false" /><input type="hidden" name="' . $params['primary_key'] . '" id="' . $params['primary_key'] . '_input_value" value="' . ('update' == $this->_method && isset($output[0]['value']) ? $output[0]['value'] : 0) . '" spellcheck="false" />';
 		
 	}
@@ -2290,7 +2209,7 @@ class Core extends Controller
 			{
 				foreach($this->_field_data as $key => $val)
 				{
-					if((isset($val['primary_key']) && $val['primary_key'] == 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') != false))
+					if((isset($val['primary_key']) && $val['primary_key'] == 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') !== false))
 					{
 						$this->_set_primary[]		= $val['name'];
 					}
@@ -2388,7 +2307,7 @@ class Core extends Controller
 			{
 				$this->_offset						= (is_numeric(service('request')->getGet('per_page')) ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
 				
-				if((!$this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q')))
+				if((!$this->_like && $this->_searchable && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
 				{
 					$column							= service('request')->getGet('column');
 					
@@ -2405,57 +2324,56 @@ class Core extends Controller
 						
 						if($columns)
 						{
-							foreach($columns as $like_key => $like_val)
+							foreach($columns as $key => $val)
 							{
-								$v					= $like_val;
 								if($this->_like)
 								{
-									$this->_or_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								else
 								{
-									$this->_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 							}
 						}
 						
 						if($this->_select)
 						{
-							foreach($this->_select as $like_key => $like_val)
+							foreach($this->_select as $key => $val)
 							{
-								$like_val					= str_ireplace(' AS ', ' ', $like_val);
-								$like_val					= (stripos($like_val, ' ') !== false ? substr($like_val, strripos($like_val, ' ') + 1) : $like_val);
-								$v							= $like_val;
+								$val				= str_ireplace(' AS ', ' ', $val);
+								$val				= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
 								
 								if($this->_like)
 								{
-									$this->_or_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								else
 								{
-									$this->_like[$v]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
 								}
 								
-								if(stripos($like_val, ' AS ') !== false)
+								if(stripos($val, ' AS ') !== false)
 								{
-									$like_val				= substr($like_val, 0, stripos($like_val, ' AS '));
+									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
 								{
 									if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
 									{
-										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+										$table		= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
 									}
 									else
 									{
-										$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+										$table		= $this->_set_field[service('request')->getPost('origin')]['parameter'];
 									}
 								}
 								
-								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($like_val, $table))
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($val, $table))
 								{
-									$this->_order_by_bm[]	= '(CASE WHEN ' . $like_val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $like_val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
+									// order by best match
+									$this->_order_bm[]		= '(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
 								}
 							}
 						}
@@ -2541,9 +2459,9 @@ class Core extends Controller
 					}
 					
 					/* order by best match */
-					if($this->_order_by_bm)
+					if($this->_order_bm)
 					{
-						foreach($this->_order_by_bm as $key => $val)
+						foreach($this->_order_bm as $key => $val)
 						{
 							$this->model->order_by($val);
 						}
@@ -2590,8 +2508,7 @@ class Core extends Controller
 					/* loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead */
 					foreach($this->_select as $key => $val)
 					{
-						$val						= str_ireplace(' AS ', ' ', $val);
-						$val						= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
+						$val						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
 						
 						/* if there's LIKE */
 						if($this->_like)
@@ -2610,6 +2527,9 @@ class Core extends Controller
 					$query							= $this->_run_query($this->_from);
 					$this->_query					= $query['results'];
 					
+					/* populate added item */
+					$added_item						= array();
+					
 					/* serialize results */
 					$serialized						= $this->serialize($this->_query);
 					
@@ -2620,6 +2540,7 @@ class Core extends Controller
 						{
 							/* set the default column order */
 							$column_order			= array();
+							
 							foreach($this->_column_order as $order_key => $order_val)
 							{
 								/* if array key exists */
@@ -2641,13 +2562,15 @@ class Core extends Controller
 							if(strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false || in_array($field, $this->_unset_column)) continue;
 							
 							/* everything's looks good, throw into autocomplete result */
-							if(!$autocomplete_item && $value['original'])
+							if(!$autocomplete_item && $value['original'] && !in_array($value['content'], $added_item))
 							{
+								$added_item[]		= $value['content'];
+								
 								$autocomplete_item	= array
 								(
 									'value'			=> truncate($value['content'], 32, false, ''),
 									'label'			=> truncate($value['content'], 32),
-									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32, false, '')))
+									'target'		=> current_page(null, array('per_page' => null, 'q' => truncate($value['content'], 32, '')))
 								);
 							}
 						}
@@ -2811,26 +2734,14 @@ class Core extends Controller
 				$this->_results						= ($single_print ? $this->render_read($this->_query) : $this->render_table($this->_query));
 			}
 			
-			/* if other method is exists */
-			else if(method_exists($this, $this->_method))
-			{
-				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
-				
-				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
-				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
-				$this->_set_description				= ($description ? $description : null);
-				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
-			}
-			
 			/* otherwise */
 			else
 			{
-				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_mobile', 'templates/error')) ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_grid', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
-				$this->_set_description				= ($description ? $description : null);
+				$this->_set_description				= ($description ? $description : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
 			}
@@ -3121,6 +3032,9 @@ class Core extends Controller
 	{
 		if($this->_api_request && 'POST' != env('REQUEST_METHOD'))
 		{
+			// unlink the files
+			$this->_unlink_files();
+			
 			/**
 			 * Indicate the method is requested through API
 			 */
@@ -3136,7 +3050,33 @@ class Core extends Controller
 			
 			if($this->model->insert($table, $data))
 			{
-				$this->_insert_id					= $this->model->insert_id();
+				$auto_increment						= false;
+				$primary							= 0;
+				
+				if(DB_DRIVER == 'Postgre')
+				{
+					$field_data						= $this->model->field_data($table);
+					
+					foreach($field_data as $key => $val)
+					{
+						if(isset($this->_set_default[$val->name]))
+						{
+							$primary				= $this->_set_default[$val->name];
+						}
+						
+						if((isset($field_data->primary_key) && $field_data->primary_key === 1) || (isset($field_data->default) && stripos($field_data->default, 'nextval(') !== false))
+						{
+							$auto_increment			= true;
+						}
+						
+						if($primary && $auto_increment)
+						{
+							break;
+						}
+					}
+				}
+				
+				$this->_insert_id					= ($auto_increment ? $this->model->insert_id() : 0);
 				
 				if(method_exists($this, 'after_insert'))
 				{
@@ -3147,6 +3087,9 @@ class Core extends Controller
 			}
 			else
 			{
+				// unlink the files
+				$this->_unlink_files();
+				
 				/* otherwise, the item is cannot be deleted */
 				$error								= $this->model->error();
 				
@@ -3162,6 +3105,9 @@ class Core extends Controller
 		}
 		else
 		{
+			// unlink the files
+			$this->_unlink_files();
+			
 			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
@@ -3178,10 +3124,13 @@ class Core extends Controller
 	 * @param		string		$callback
 	 * @return		mixed
 	 */
-	public function update_data($table = null, $data = array(), $where = array(), $redirect = null, $callback = null)
+	public function update_data($table = null, $data = array(), $where = array())
 	{
 		if($this->_api_request && 'POST' != env('REQUEST_METHOD'))
 		{
+			// unlink the files
+			$this->_unlink_files();
+			
 			/**
 			 * Indicate the method is requested through API
 			 */
@@ -3192,11 +3141,6 @@ class Core extends Controller
 		{
 			if(is_array($where) && sizeof($where) > 0 && $this->model->get_where($table, $where, 1)->num_rows() > 0)
 			{
-				if($redirect)
-				{
-					$this->_redirect_back			= $redirect;
-				}
-				
 				if(method_exists($this, 'before_update'))
 				{
 					$this->before_update();
@@ -3207,21 +3151,8 @@ class Core extends Controller
 					/* check if file is updated */
 					if($this->_old_files && sizeof($this->_old_files) > 0)
 					{
-						foreach($this->_old_files as $alt => $src)
-						{
-							if($src != 'placeholder.png')
-							{
-								/* delete old file */
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
-							}
-						}
-					}
-					
-					if($callback && method_exists($this, $callback))
-					{
-						$this->$callback();
+						// unlink the files
+						$this->_unlink_files($this->_old_files);
 					}
 					
 					if(method_exists($this, 'after_update'))
@@ -3233,59 +3164,40 @@ class Core extends Controller
 				}
 				else
 				{
-					if($callback && method_exists($this, $callback))
+					// unlink the files
+					$this->_unlink_files();
+					
+					/* otherwise, the item is cannot be deleted */
+					$error							= $this->model->error();
+					
+					if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
 					{
-						$this->$callback();
+						/* for administrator */
+						return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
 					}
-					else
-					{
-						/* otherwise, the item is cannot be deleted */
-						$error						= $this->model->error();
-						
-						if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
-						{
-							/* for administrator */
-							return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
-						}
-						
-						/* for user */
-						return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', (!$this->_api_request ? $this->_redirect_back : null));
-					}
+					
+					/* for user */
+					return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 			else if($this->_insert_on_update_fail)
 			{
-				if($callback && method_exists($this, $callback))
-				{
-					$this->$callback();
-				}
-				else
-				{
-					$this->insert_data($table, $data);
-				}
+				$this->insert_data($table, $data);
 			}
 			else
 			{
-				if($callback && method_exists($this, $callback))
-				{
-					$this->$callback();
-				}
-				else
-				{
-					return throw_exception(404, phrase('the_data_you_want_to_update_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
-				}
+				// unlink the files
+				$this->_unlink_files();
+				
+				return throw_exception(404, phrase('the_data_you_want_to_update_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		else
 		{
-			if($callback && method_exists($this, $callback))
-			{
-				$this->$callback();
-			}
-			else
-			{
-				return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
-			}
+			// unlink the files
+			$this->_unlink_files();
+			
+			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		return false;
@@ -3358,30 +3270,15 @@ class Core extends Controller
 					{
 						foreach($val as $field => $params)
 						{
-							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']))
+							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']) || in_array('image', $params['type']))
 							{
 								$files				= json_decode($params['original']);
 								
 								if($files)
 								{
-									foreach($files as $src => $alt)
-									{
-										if($src != 'placeholder.png')
-										{
-											/* delete file */
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
-										}
-									}
+									// unlink the files
+									$this->_unlink_files($files);
 								}
-							}
-							else if(in_array('image', $params['type']) && 'placeholder.png' != $params['original'])
-							{
-								/* delete file */
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $params['type']);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $params['type']);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $params['type']);
 							}
 						}
 					}
@@ -3500,30 +3397,15 @@ class Core extends Controller
 					{
 						foreach($_val as $field => $params)
 						{
-							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']))
+							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']) || in_array('image', $params['type']))
 							{
 								$files				= json_decode($params['original']);
 								
 								if($files)
 								{
-									foreach($files as $src => $alt)
-									{
-										if($src != 'placeholder.png')
-										{
-											/* delete file */
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
-											@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
-										}
-									}
+									// unlink the files
+									$this->_unlink_files($files);
 								}
-							}
-							else if(in_array('image', $params['type']) && 'placeholder.png' != $params['original'])
-							{
-								/* delete file */
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $params['type']);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $params['type']);
-								@unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $params['type']);
 							}
 						}
 					}
@@ -5749,7 +5631,7 @@ class Core extends Controller
 					$content						= ($this->_data ? (in_array($key, $this->_translate_field) ? phrase($content) : $content) : null);
 					$original						= ($this->_data ? $content : null);
 					
-					if(in_array($key, $this->_set_primary) || (isset($field_data[$key]['primary_key']) && $field_data[$key]['primary_key'] === 1))
+					if(in_array($key, $this->_set_primary) || (isset($field_data[$key]['primary_key']) && $field_data[$key]['primary_key'] === 1) || (isset($field_data[$key]['default']) && stripos($field_data[$key]['default'], 'nextval(') !== false))
 					{
 						if(!in_array($key, $this->_set_primary))
 						{
@@ -6230,7 +6112,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6251,7 +6133,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6264,7 +6146,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6285,7 +6167,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6298,7 +6180,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6319,7 +6201,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6332,7 +6214,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6353,7 +6235,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6546,7 +6428,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6567,7 +6449,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6580,7 +6462,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6601,7 +6483,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6614,7 +6496,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6635,7 +6517,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -6648,7 +6530,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = true)
+	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
 		if(!is_array($field))
 		{
@@ -6669,7 +6551,7 @@ class Core extends Controller
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> true,
-					'case_insensitive'				=> true
+					'case_insensitive'				=> $case_insensitive
 				);
 			}
 		}
@@ -8310,6 +8192,9 @@ class Core extends Controller
 			
 			if($validation && $this->form_validation->run(service('request')->getPost()) === false)
 			{
+				// unlink the files
+				$this->_unlink_files();
+				
 				return throw_exception(400, $this->form_validation->getErrors());
 			}
 			else
@@ -8323,7 +8208,7 @@ class Core extends Controller
 					$type							= $value['type'];
 					
 					/* skip field because it were disable */
-					if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($field, $this->_unset_field)) || (in_array($field, $this->_unset_field) && !isset($this->_set_default[$field])) || in_array('disabled', $type)) continue;
+					if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($field, $this->_unset_field)) || (in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) && !in_array('to_slug', $type))) || in_array('disabled', $type)) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
@@ -8345,18 +8230,18 @@ class Core extends Controller
 						{
 							if(isset($this->_upload_data[$field]) && is_array($this->_upload_data[$field]))
 							{
-								$this->_old_files[]					= $this->model->select($field)->get_where($this->_from, $this->_where, 1)->row($field);
+								$this->_old_files[]		= $this->model->select($field)->get_where($this->_from, $this->_where, 1)->row($field);
 								
 								foreach($this->_upload_data[$field] as $src)
 								{
-									$prepare[$field]				= $src;
+									$prepare[$field]	= $src;
 								}
 							}
 							else
 							{
 								if('create' == $this->_method)
 								{
-									$prepare[$field]				= 'placeholder.png';
+									$prepare[$field]	= 'placeholder.png';
 								}
 								else
 								{
@@ -8366,84 +8251,84 @@ class Core extends Controller
 						}
 						else if(in_array('images', $type) || in_array('file', $type) || in_array('files', $type))
 						{
-							$old_num								= 0;
-							$uploaded								= array();
-							$file_lists								= service('request')->getPost('fileuploader-list-' . $field);
-							$file_lists								= json_decode($file_lists, true);
-							$old_files								= json_decode($value['content'], true);
+							$old_num				= 0;
+							$uploaded				= array();
+							$file_lists				= service('request')->getPost('fileuploader-list-' . $field);
+							$file_lists				= json_decode($file_lists, true);
+							$old_files				= json_decode($value['content'], true);
 							
 							if(service('request')->getPost($field . '_label'))
 							{
-								$label_array						= service('request')->getPost($field . '_label');
+								$labels				= service('request')->getPost($field . '_label');
 							}
 							else
 							{
-								$label_array						= array();
+								$labels				= array();
 							}
 							
 							if(!is_array($old_files))
 							{
-								$old_files							= array();
+								$old_files			= array();
 							}
 							
 							if($old_files)
 							{
-								$new_files							= array();
+								$new_files			= array();
 								
 								if(is_array($file_lists) && sizeof($file_lists) > 0)
 								{
 									foreach($file_lists as $file => $src)
 									{
-										$src						= basename($src);
-										$new_files[]				= $src;
+										$src			= basename($src);
+										$new_files[]	= $src;
 									}
 								}
 								
-								foreach($old_files as $file => $src)
+								foreach($old_files as $src => $alt)
 								{
 									if(in_array($file, $new_files))
 									{
-										$label						= (in_array('file', $type) ? $label_array : (isset($label_array[$old_num]) ? $label_array[$old_num] : $src));
-										$uploaded[$file]			= $label;
+										$label			= (in_array('file', $type) ? $labels : (isset($labels[$old_num]) ? $labels[$old_num] : $alt));
+										$uploaded[$src]	= $label;
 										$old_num++;
 									}
 									else
 									{
-										$this->_old_files[]			= $file;
+										$this->_old_files[]	= $file;
 									}
 								}
 								
-								$prepare[$field]					= json_encode($uploaded);
+								$prepare[$field]	= json_encode($uploaded);
 							}
 							
 							if(isset($this->_upload_data[$field]) && is_array($this->_upload_data[$field]))
 							{
 								foreach($this->_upload_data[$field] as $file => $src)
 								{
-									$num							= ($file + $old_num);
-									$label							= (in_array('file', $type) ? $label_array : (isset($label_array[$num]) ? $label_array[$num] : $src));
-									$uploaded[$src]					= $label;
+									$num			= ($file + $old_num);
+									$label			= (in_array('file', $type) ? $labels : (isset($labels[$num]) ? $labels[$num] : $src));
+									$uploaded[$src]	= $label;
 								}
 								
-								$prepare[$field]					= json_encode($uploaded);
+								$prepare[$field]	= json_encode($uploaded);
 							}
 						}
 						else if(in_array('carousels', $type))
 						{
-							$carousels								= service('request')->getPost($field);
-							$items									= array();
-							$uploaded								= array();
+							$carousels				= service('request')->getPost($field);
+							$items					= array();
+							$uploaded				= array();
 							
 							if($carousels && isset($carousels['title']) && sizeof($carousels['title']) > 0)
 							{
 								foreach($carousels['title'] as $key => $val)
 								{
-									$items[$key]					= array
+									$items[$key]	= array
 									(
-										'title'						=> $val,
-										'description'				=> (isset($carousels['description'][$key]) ? $carousels['description'][$key] : ''),
-										'link'						=> (isset($carousels['link'][$key]) ? $carousels['link'][$key] : ''),
-										'label'						=> (isset($carousels['label'][$key]) ? $carousels['label'][$key] : '')
+										'title'		=> $val,
+										'description'	=> (isset($carousels['description'][$key]) ? $carousels['description'][$key] : ''),
+										'link'		=> (isset($carousels['link'][$key]) ? $carousels['link'][$key] : ''),
+										'label'		=> (isset($carousels['label'][$key]) ? $carousels['label'][$key] : '')
 									);
 									
 									if(isset($this->_upload_data[$field]['background'][$key]) && $this->_upload_data[$field]['background'][$key])
@@ -8466,7 +8351,7 @@ class Core extends Controller
 								}
 							}
 							
-							$prepare[$field]						= json_encode($items);
+							$prepare[$field]		= json_encode($items);
 						}
 						else if(in_array('faqs', $type))
 						{
@@ -8496,7 +8381,7 @@ class Core extends Controller
 							{
 								foreach($attributes['label'] as $key => $val)
 								{
-									$items[]	= array
+									$items[]		= array
 									(
 										'label'		=> $val,
 										'value'		=> (isset($attributes['value'][$key]) ? $attributes['value'][$key] : null)
@@ -8593,6 +8478,9 @@ class Core extends Controller
 				}
 				else
 				{
+					// unlink the files
+					$this->_unlink_files();
+					
 					return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
@@ -8600,6 +8488,112 @@ class Core extends Controller
 		else
 		{
 			return throw_exception(404, phrase('no_data_can_be_executed'), (!$this->_api_request ? $this->_redirect_back : null));
+		}
+	}
+	
+	/**
+	 * Unlink the uploaded data if error persist
+	 */
+	private function _unlink_files($upload_data = array())
+	{
+		if(!$upload_data)
+		{
+			$upload_data							= (get_userdata('_upload_data') ? get_userdata('_upload_data') : array());
+		}
+		
+		if($upload_data)
+		{
+			foreach($upload_data as $key => $val)
+			{
+				if(is_array($val))
+				{
+					foreach($val as $file => $src)
+					{
+						if('placeholder.png' == $src) continue;
+						
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+						
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+						
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+					}
+				}
+				else if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $val) && 'placeholder.png' != $val)
+				{
+					try
+					{
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+						
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+						
+						if(is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src))
+						{
+							try
+							{
+								unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
+							}
+							catch(\Throwable $e)
+							{
+								// some exception
+							}
+						}
+					}
+					catch(\Throwable $e)
+					{
+						continue;
+					}
+				}
+			}
 		}
 	}
 	

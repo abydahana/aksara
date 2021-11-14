@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Addons\Controllers;
+<?php
+
+namespace Aksara\Modules\Addons\Controllers;
+
 /**
  * Addons > FTP Configuration
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Ftp extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__ftp';
@@ -20,6 +24,8 @@ class Ftp extends \Aksara\Laboratory\Core
 		
 		$this->set_permission(1);
 		$this->set_theme('backend');
+		
+		$this->searchable(false);
 		
 		$this->set_method('update');
 		$this->insert_on_update_fail();

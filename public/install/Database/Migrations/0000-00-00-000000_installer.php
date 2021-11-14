@@ -1,4 +1,7 @@
-<?php namespace App\Database\Migrations;
+<?php
+
+namespace App\Database\Migrations;
+
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,6 +9,7 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  * @since			version 4.2.8
  */
+
 use CodeIgniter\Database\Migration;
 
 class Installer extends Migration

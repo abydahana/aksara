@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Assets\Controllers;
+<?php
+
+namespace Aksara\Modules\Assets\Controllers;
+
 /**
  * Assets controller
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Assets extends \Aksara\Laboratory\Core
 {
 	private $_rtl									= false;

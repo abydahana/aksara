@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Blogs\Controllers;
+<?php
+
+namespace Aksara\Modules\Blogs\Controllers;
+
 /**
  * Blogs > Tags
  *
@@ -8,9 +11,8 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
-use Aksara\Laboratory\Core;
 
-class Tags extends Core
+class Tags extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Galleries\Controllers;
+<?php
+
+namespace Aksara\Modules\Galleries\Controllers;
+
 /**
  * Galleries
  *
@@ -8,8 +11,11 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Galleries extends \Aksara\Laboratory\Core
 {
+	private $_table									= 'galleries';
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -24,6 +30,6 @@ class Galleries extends \Aksara\Laboratory\Core
 		->order_by('gallery_id', 'DESC')
 		->where('status', 1)
 		
-		->render('galleries');
+		->render($this->_table);
 	}
 }

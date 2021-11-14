@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Activities;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Activities;
+
 /**
  * Administrative > Activities
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 ini_set('memory_limit', -1);
 
 class Activities extends \Aksara\Laboratory\Core

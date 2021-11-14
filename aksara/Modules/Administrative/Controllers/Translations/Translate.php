@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Translations;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Translations;
+
 /**
  * Administrative > Translations > Translate
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Translate extends \Aksara\Laboratory\Core
 {
 	public function __construct()

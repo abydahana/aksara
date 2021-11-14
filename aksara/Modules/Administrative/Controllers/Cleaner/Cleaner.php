@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Cleaner;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Cleaner;
+
 /**
  * Administrative > Cleaner
  * This module is used to clean everything that not used anymore by
@@ -10,6 +13,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Cleaner extends \Aksara\Laboratory\Core
 {
 	public function __construct()
@@ -21,6 +25,8 @@ class Cleaner extends \Aksara\Laboratory\Core
 		$this->set_permission(1);
 		
 		$this->set_theme('backend');
+		
+		$this->searchable(false);
 	}
 	
 	public function index()

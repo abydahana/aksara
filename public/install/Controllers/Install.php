@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Controllers;
+
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,8 +9,6 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  * @since			version 4.2.8
  */
-
-namespace App\Controllers;
 
 class Install extends BaseController
 {

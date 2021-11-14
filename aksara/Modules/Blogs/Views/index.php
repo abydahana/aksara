@@ -34,16 +34,19 @@
 				$posts								.= '
 					<div class="swiper-slide">
 						<div class="card border-0 rounded-more shadow-sm mb-5">
-							<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
-								<div class="relative rounded-top" style="background:url(' . get_image('blogs', $val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
+							<div class="relative rounded-top" style="background:url(' . get_image('blogs', $val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
+								<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
 									<div class="clip gradient-top rounded-top"></div>
 									<div class="absolute bottom p-3">
 										<h5 class="text-light" data-toggle="tooltip" title="' . $val->post_title . '">
 											' . truncate($val->post_title, 80) . '
 										</h5>
 									</div>
-								</div>
-							</a>
+								</a>
+								<a href="' . base_url(array('blogs', $val->category_slug)) . '" class="--xhr badge badge-primary absolute right">
+									' . $val->category_title . '
+								</a>
+							</div>
 							<div class="card-body">
 								<p class="card-text">
 									<a href="' . base_url(array('blogs', $val->category_slug, $val->post_slug)) . '" class="--xhr d-block">
@@ -88,16 +91,16 @@
 					$posts							.= '
 						<div class="swiper-slide">
 							<div class="card border-0 rounded-more shadow-sm mb-5">
-								<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">
-									<div class="relative rounded-top" style="background:url(' . get_image('blogs', $_val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
+								<div class="relative rounded-top" style="background:url(' . get_image('blogs', $_val->featured_image, 'thumb') . ') center center no-repeat; background-size: cover; height: 256px">
+									<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">
 										<div class="clip gradient-top rounded-top"></div>
 										<div class="absolute bottom p-3">
-											<b class="text-light" data-toggle="tooltip" title="' . $_val->post_title . '">
+											<b class="text-light">
 												' . truncate($_val->post_title, 80) . '
 											</b>
 										</div>
-									</div>
-								</a>
+									</a>
+								</div>
 								<div class="card-body">
 									<p class="card-text">
 										<a href="' . base_url(array('blogs', $val->category_slug, $_val->post_slug)) . '" class="--xhr d-block">

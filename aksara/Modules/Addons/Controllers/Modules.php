@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Addons\Controllers;
+<?php
+
+namespace Aksara\Modules\Addons\Controllers;
+
 /**
  * Addons > Modules Manager
  *
@@ -8,10 +11,9 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Modules extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'app__menus';
-	
 	public function __construct()
 	{
 		parent::__construct();
@@ -92,7 +94,7 @@ class Modules extends \Aksara\Laboratory\Core
 		
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
-			$this->form_validation->setRule('file', phrase('module_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip|ext_in[file,zip]');
+			$this->form_validation->setRule('file', phrase('module_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 			
 			if($this->form_validation->run(service('request')->getPost()) === false)
 			{
@@ -110,6 +112,7 @@ class Modules extends \Aksara\Laboratory\Core
 			$zip									= new \ZipArchive();
 			$unzip									= $zip->open($_FILES['file']['tmp_name']);
 			$tmp_path								= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+			$package								= new \stdClass();
 			
 			if($unzip === true)
 			{
@@ -129,6 +132,7 @@ class Modules extends \Aksara\Laboratory\Core
 					return throw_exception(400, array('file' => phrase('unable_to_extract_your_module_package')));
 				}
 				
+				$package							= array();
 				$valid_package						= false;
 				$package_path						= null;
 				$extract							= false;
@@ -240,7 +244,10 @@ class Modules extends \Aksara\Laboratory\Core
 						$migration					= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
 						
 						// trying to run the migration
-						$migration->latest();
+						if($migration->latest())
+						{
+							//
+						}
 					}
 					catch(\Throwable $e)
 					{
@@ -248,6 +255,208 @@ class Modules extends \Aksara\Laboratory\Core
 						$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 						
 						return throw_exception(400, array('file' => $e->getMessage()));
+					}
+					
+					// run additional command to assign the menus or permissions
+					if(isset($package->menu) && is_array($package->menu))
+					{
+						// assign the available menus
+						foreach($package->menu as $key => $val)
+						{
+							// check if theme property contain valid menu
+							if(!isset($val->placement) || !in_array($val->placement, array('header', 'sidebar')) || !isset($val->group) || !isset($val->link) || !is_array($val->link) || !$val->link) continue;
+							
+							// check if given group is on valid array
+							if(!is_array($val->group))
+							{
+								// otherwise, convert group as array
+								$val->group			= array($val->group);
+							}
+							
+							// populate given links as array with adding the unique id
+							$links					= str_replace('"label":"', '"id":"' . sha1($package_path) . '","label":"', json_encode($val->link));
+							$links					= json_decode($links, true);
+							
+							// check if links is available or continue
+							if(!$links) continue;
+							
+							// loops the given group
+							foreach($val->group as $_key => $_val)
+							{
+								// make the line is equal :)
+								$place				= 'menu_placement';
+								
+								// get the existing menu from the database
+								$existing			= $this->model->get_where
+								(
+									'app__menus',
+									array
+									(
+										$place		=> $val->placement,
+										'group_id'	=> $_val
+									),
+									1
+								)
+								->row();
+								
+								// populate the link obtained
+								$serialized			= (isset($existing->serialized_data) ? $existing->serialized_data : '[]');
+								$serialized			= ($serialized ? json_decode($serialized, true) : array());
+								
+								// check if obtained links is populated
+								if($serialized)
+								{
+									// merge the old link with new one
+									$links			= array_merge($serialized, $links);
+								}
+								
+								if($existing)
+								{
+									// make the line is equal :)
+									$sd				= 'serialized_data';
+									$id				= 'menu_id';
+									
+									// update the menu to the database
+									$this->model->update
+									(
+										'app__menus',
+										array
+										(
+											$sd		=> json_encode($links)
+										),
+										array
+										(
+											$id		=> $existing->menu_id
+										)
+									);
+								}
+								else
+								{
+									// make the line is equal :)
+									$mp				= 'menu_placement';
+									$ml				= 'menu_label';
+									$md				= 'menu_description';
+									$sd				= 'serialized_data';
+									$gi				= 'group_id';
+									$st				= 'status';
+									
+									// insert the menu to the database
+									$this->model->insert
+									(
+										'app__menus',
+										array
+										(
+											$mp		=> $val->placement,
+											$ml		=> phrase('generated_menu'),
+											$md		=> phrase('generated_menu_from_module_installation'),
+											$sd		=> json_encode($links),
+											$gi		=> $_val,
+											$st		=> 1
+										)
+									);
+								}
+							}
+						}
+					}
+					
+					if(isset($package->permission) && is_object($package->permission))
+					{
+						foreach($package->permission as $key => $val)
+						{
+							// check the value is in correct format or continue
+							if(!is_object($val)) continue;
+							
+							// loops the given permission
+							foreach($val as $_key => $_val)
+							{
+								// get the privileges from the database
+								$privileges			= $this->model->get_where
+								(
+									'app__groups_privileges',
+									array
+									(
+										'path'		=> $_key
+									),
+									1
+								)
+								->row('privileges');
+								
+								// check if query has results
+								if($privileges)
+								{
+									// make the line is equal :)
+									$gp				= 'privileges';
+									$lg				= 'last_generated';
+									
+									// update the existing privileges
+									$this->model->update
+									(
+										'app__groups_privileges',
+										array
+										(
+											$gp		=> json_encode(array_merge(json_decode($privileges, true), json_decode(json_encode($_val), true))),
+											$lg		=> date('Y-m-d H:i:s')
+										),
+										array
+										(
+											'path'	=> $_key
+										)
+									);
+								}
+								else
+								{
+									// make the line is equal :)
+									$gp				= 'privileges';
+									$lg				= 'last_generated';
+									
+									// otherwise, insert a new one
+									$this->model->insert
+									(
+										'app__groups_privileges',
+										array
+										(
+											'path'	=> $_key,
+											$gp		=> json_encode($_val),
+											$lg		=> date('Y-m-d H:i:s')
+										)
+									);
+								}
+							}
+							
+							// get the existing group privileges
+							$group_privileges		= $this->model->get_where
+							(
+								'app__groups',
+								array
+								(
+									'group_id'		=> $key
+								),
+								1
+							)
+							->row('group_privileges');
+							
+							// check if group privileges has result
+							if($group_privileges)
+							{
+								// make the line is equal :)
+								$gp					= 'group_privileges';
+								$gi					= 'group_id';
+								
+								// update the group privileges obtained
+								$this->model->update
+								(
+									'app__groups',
+									array
+									(
+										$gp			=> json_encode(array_merge(json_decode($group_privileges, true), json_decode(json_encode($val), true)))
+									),
+									array
+									(
+										$gi			=> $key
+									)
+								);
+							}
+						}
 					}
 					
 					return throw_exception(301, phrase('your_module_package_was_successfully_imported'), current_page('../'));
@@ -337,20 +546,20 @@ class Modules extends \Aksara\Laboratory\Core
 			/* check if module property is exists */
 			if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json'))
 			{
-				try
-				{
-					$query							= $this->model->order_by('id', 'DESC')->get_where
+				$query								= $this->model->order_by('id', 'DESC')->get_where
+				(
+					config('migrations')->table,
+					array
 					(
-						config('migrations')->table,
-						array
-						(
-							'namespace'				=> 'Modules\\' . service('request')->getPost('module')
-						),
-						1
-					)
-					->row();
-					
-					if($query)
+						'namespace'					=> 'Modules\\' . service('request')->getPost('module')
+					),
+					1
+				)
+				->row();
+				
+				if($query)
+				{
+					try
 					{
 						// push module namespace to filelocator
 						$loader						= \CodeIgniter\Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
@@ -361,10 +570,129 @@ class Modules extends \Aksara\Laboratory\Core
 						// trying to run the migration
 						$migration->regress(($query->batch - 1));
 					}
+					catch(\Throwable $e)
+					{
+						return throw_exception(400, array('module' => $e->getMessage()));
+					}
 				}
-				catch(\Throwable $e)
+				
+				/**
+				 * prepare to remove unused privileges
+				 */
+				$package							= file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json');
+				$package							= json_decode($package);
+				
+				/**
+				 * prepare to update the menu that ever linked to uninstalled module before
+				 */
+				$query								= $this->model->get_where
+				(
+					'app__menus',
+					array
+					(
+					)
+				)
+				->result();
+				
+				// check if query has result
+				if($query)
 				{
-					return throw_exception(400, array('module' => $e->getMessage()));
+					// query has result, loops the menus
+					foreach($query as $key => $val)
+					{
+						// populate the menu as array
+						$menus						= json_decode($val->serialized_data, true);
+						
+						// check if menus not empty
+						if($menus)
+						{
+							// loops the menu to update links
+							foreach($menus as $_key => $_val)
+							{
+								// check if the link id related to uninstalled module
+								if(isset($_val['id']) && $_val['id'] == sha1(service('request')->getPost('module')))
+								{
+									// link relate to uninstalled module, unset it
+									unset($menus[$_key]);
+								}
+							}
+						}
+						
+						// update the menu structure
+						$this->model->update
+						(
+							'app__menus',
+							array
+							(
+								'serialized_data'	=> json_encode($menus)
+							),
+							array
+							(
+								'menu_id'			=> $val->menu_id
+							)
+						);
+					}
+				}
+				
+				// check if package property is exists
+				if(isset($package->permission) && is_object($package->permission))
+				{
+					// package property exist, loops the permissions
+					foreach($package->permission as $key => $val)
+					{
+						// get the privileges from the database
+						$privileges					= $this->model->get_where
+						(
+							'app__groups',
+							array
+							(
+								'group_id'			=> $key
+							),
+							1
+						)
+						->row('group_privileges');
+						
+						// populate the privileges
+						$privileges					= json_decode($privileges, true);
+						
+						// check if privileges from database and module property is not empty
+						if($privileges && $val)
+						{
+							// loops to unset the unused privileges
+							foreach($val as $_key => $_val)
+							{
+								// unset unused privileges from group
+								unset($privileges[$_key]);
+								
+								// remove unused privileges
+								$this->model->delete
+								(
+									'app__groups_privileges',
+									array
+									(
+										'path'		=> $_key
+									)
+								);
+							}
+							
+							// make the line is equal :)
+							$pvlg					= 'group_privileges';
+							
+							// update the privilege with new one
+							$this->model->update
+							(
+								'app__groups',
+								array
+								(
+									$pvlg			=> json_encode($privileges)
+								),
+								array
+								(
+									'group_id'		=> $key
+								)
+							);
+						}
+					}
 				}
 				
 				/* delete module */

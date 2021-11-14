@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Home\Controllers;
+<?php
+
+namespace Aksara\Modules\Home\Controllers;
+
 /**
  * Home
  * The default landing page of default routes
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Home extends \Aksara\Laboratory\Core
 {
 	public function index()

@@ -1,4 +1,6 @@
-<?php namespace Aksara\Libraries;
+<?php
+
+namespace Aksara\Libraries;
 
 #
 #

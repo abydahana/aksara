@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Blogs\Controllers;
+<?php
+
+namespace Aksara\Modules\Blogs\Controllers;
+
 /**
  * Blogs > Read
  *
@@ -8,40 +11,44 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
-use Aksara\Laboratory\Core;
 
-class Read extends Core
+class Read extends \Aksara\Laboratory\Core
 {
+	private $_table									= 'blogs';
+	
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index($category = null, $slug = null)
 	{
-		if(service('request')->getGet('post_slug'))
+		if(!$slug)
 		{
 			$slug									= service('request')->getGet('post_slug');
-			$category								= $this->model->select
-			('
-				blogs__categories.category_slug
-			')
-			->join
-			(
-				'blogs__categories',
-				'blogs__categories.category_id = blogs.post_category'
-			)
-			->get_where
-			(
-				'blogs',
-				array
-				(
-					'blogs.post_slug'			=> $slug
-				),
-				1
-			)
-			->row('category_slug');
 		}
+		
+		$category									= $this->model->select
+		('
+			blogs__categories.category_slug
+		')
+		->join
+		(
+			'blogs__categories',
+			'blogs__categories.category_id = blogs.post_category'
+		)
+		->get_where
+		(
+			'blogs',
+			array
+			(
+				'blogs.post_slug'					=> service('request')->getGet('post_slug')
+			),
+			1
+		)
+		->row('category_slug');
 		
 		$this->set_title('{post_title}', phrase('no_post_were_found'))
 		->set_icon('mdi mdi-newspaper')
@@ -63,16 +70,16 @@ class Read extends Core
 					'blogs',
 					'blogs.post_category = blogs__categories.category_id'
 				)
-				->where
+				->order_by('total_data', 'DESC')
+				->group_by('category_id, category_slug, category_title, category_description, category_image')
+				->get_where
 				(
+					'blogs__categories',
 					array
 					(
 						'blogs.status'				=> 1
 					)
 				)
-				->order_by('total_data', 'DESC')
-				->group_by('category_id, category_slug, category_title, category_description, category_image')
-				->get('blogs__categories')
 				->result(),
 				
 				'similar'							=> $this->model->select
@@ -89,18 +96,18 @@ class Read extends Core
 					'blogs__categories',
 					'blogs__categories.category_id = blogs.post_category'
 				)
-				->where
+				->order_by('blogs.updated_timestamp', 'DESC')
+				->limit(10)
+				->get_where
 				(
+					'blogs',
 					array
 					(
 						'blogs__categories.category_slug'	=> $category,
-						'blogs.post_slug !='		=> $slug,
+						'blogs.post_slug != '		=> $slug,
 						'blogs.status'				=> 1
 					)
 				)
-				->order_by('blogs.updated_timestamp', 'DESC')
-				->limit(10)
-				->get('blogs')
 				->result()
 			)
 		)
@@ -141,6 +148,6 @@ class Read extends Core
 		)
 		->limit(1)
 		
-		->render('blogs');
+		->render($this->_table);
 	}
 }
