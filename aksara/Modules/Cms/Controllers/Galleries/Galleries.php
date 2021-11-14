@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Galleries;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Galleries;
+
 /**
  * CMS > Galleries
  * Manage galleries
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Galleries extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'galleries';

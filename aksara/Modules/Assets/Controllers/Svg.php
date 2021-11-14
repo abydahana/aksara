@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Assets\Controllers;
+<?php
+
+namespace Aksara\Modules\Assets\Controllers;
+
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,6 +9,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Svg extends \Aksara\Laboratory\Core
 {
 	public function __construct()

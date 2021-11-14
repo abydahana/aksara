@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Auth\Controllers;
+<?php
+
+namespace Aksara\Modules\Auth\Controllers;
+
 /**
  * Auth
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Auth extends \Aksara\Laboratory\Core
 {
 	public function __construct()

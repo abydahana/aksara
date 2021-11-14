@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Blogs\Controllers;
+<?php
+
+namespace Aksara\Modules\Blogs\Controllers;
+
 /**
  * Blogs > Category
  *
@@ -8,11 +11,14 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Category extends \Aksara\Laboratory\Core
 {
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index($slug = null)
@@ -55,7 +61,7 @@ class Category extends \Aksara\Laboratory\Core
 				(
 					array
 					(
-						'blogs__categories.category_slug!='	=> $slug,
+						'blogs__categories.category_slug !='=> $slug,
 						'blogs__categories.status'			=> 1,
 						'blogs.status'						=> 1
 					)

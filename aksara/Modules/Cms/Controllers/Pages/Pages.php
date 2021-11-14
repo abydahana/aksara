@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Pages;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Pages;
+
 /**
  * CMS > Pages
  * Manage frontend pages
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Pages extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'pages';

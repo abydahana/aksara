@@ -1,4 +1,4 @@
-<?php namespace Aksara\Database\Seeds;
+<?php
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,6 +6,9 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  * @since			version 4.2.8
  */
+
+namespace Aksara\Database\Seeds;
+
 use CodeIgniter\Database\Seeder;
 
 class Updater extends Seeder

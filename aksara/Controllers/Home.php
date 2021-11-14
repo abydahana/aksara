@@ -1,4 +1,6 @@
-<?php namespace Aksara\Controllers;
+<?php
+
+namespace Aksara\Controllers;
 
 class Home extends BaseController
 {

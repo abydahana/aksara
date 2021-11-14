@@ -1,4 +1,7 @@
-<?php namespace Aksara\Libraries;
+<?php
+
+namespace Aksara\Libraries;
+
 /**
  * The PDF Library
  * This class is used to generate PDF's file

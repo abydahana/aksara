@@ -1,4 +1,7 @@
-<?php namespace Aksara\Laboratory;
+<?php
+
+namespace Aksara\Laboratory;
+
 /**
  * Template
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Template
 {
 	private $_api_request;

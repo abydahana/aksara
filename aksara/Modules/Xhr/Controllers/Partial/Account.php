@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Xhr\Controllers\Partial;
+<?php
+
+namespace Aksara\Modules\Xhr\Controllers\Partial;
+
 /**
  * XHR > Partial > Account
  *
@@ -8,6 +11,7 @@
  * @since			version 4.2.8
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Account extends \Aksara\Laboratory\Core
 {
 	public function __construct()

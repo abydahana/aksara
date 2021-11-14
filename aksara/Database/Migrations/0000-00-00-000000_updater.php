@@ -1,4 +1,4 @@
-<?php namespace Aksara\Database\Migrations;
+<?php
 /**
  * @author			Aby Dahana
  * @profile			abydahana.github.io
@@ -6,6 +6,9 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  * @since			version 4.2.8
  */
+
+namespace Aksara\Database\Migrations;
+
 use CodeIgniter\Database\Migration;
 
 class Updater extends Migration

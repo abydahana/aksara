@@ -60,7 +60,7 @@ define('DB_DATABASE', '%DB_DATABASE%');
 /**
  * Upload config
  */
-define('UPLOAD_PATH', 'uploads');
+define('UPLOAD_PATH', 'uploads'); // NO TRAILING SLASH
 define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%);
 define('DOCUMENT_FORMAT_ALLOWED', '%DOCUMENT_EXTENSION%');
 define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');

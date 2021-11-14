@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers;
+
 /**
  * CMS
  * Landing page for Content Management Module.
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Cms extends \Aksara\Laboratory\Core
 {
 	public function __construct()

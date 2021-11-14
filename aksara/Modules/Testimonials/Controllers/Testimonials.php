@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Testimonials\Controllers;
+<?php
+
+namespace Aksara\Modules\Testimonials\Controllers;
+
 /**
  * Testimonials
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Testimonials extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'testimonials';
@@ -15,6 +19,8 @@ class Testimonials extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index()

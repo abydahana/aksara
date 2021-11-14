@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Themes\Controllers;
+<?php
+
+namespace Aksara\Modules\Themes\Controllers;
+
 /**
  * Test Aksara module
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Themes extends \Aksara\Laboratory\Core
 {
 	public function __construct()

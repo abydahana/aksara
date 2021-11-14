@@ -1,5 +1,7 @@
 <?php
+
 namespace Aksara\Laboratory;
+
 /**
  * CRUD Model
  * The global model that linked to the core, make crud easier
@@ -10,6 +12,7 @@ namespace Aksara\Laboratory;
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Model
 {
 	private $db;
@@ -1936,6 +1939,36 @@ class Model
 			// run where command
 			foreach($this->_where as $key => $val)
 			{
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				{
+					// type casting for PostgreSQL
+					if(in_array(gettype($val['value']), array('integer')))
+					{
+						$cast_type					= 'INTEGER';
+						$val['value']				= (int) $val['value'];
+					}
+					else if(in_array(gettype($val['value']), array('double')))
+					{
+						$cast_type					= 'DOUBLE';
+						$val['value']				= (double) $val['value'];
+					}
+					else if(in_array(gettype($val['value']), array('float')))
+					{
+						$cast_type					= 'FLOAT';
+						$val['value']				= (float) $val['value'];
+					}
+					else if(!is_array(gettype($val['value'])))
+					{
+						$cast_type					= 'TEXT';
+						$val['value']				= (string) $val['value'];
+					}
+					
+					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
+					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
+					$key							= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					$val['case_insensitive']		= true;
+				}
+				
 				$builder->where($key, $val['value'], $val['escape']);
 			}
 		}
@@ -1945,6 +1978,36 @@ class Model
 			// run or where command
 			foreach($this->_or_where as $key => $val)
 			{
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				{
+					// type casting for PostgreSQL
+					if(in_array(gettype($val['value']), array('integer')))
+					{
+						$cast_type					= 'INTEGER';
+						$val['value']				= (int) $val['value'];
+					}
+					else if(in_array(gettype($val['value']), array('double')))
+					{
+						$cast_type					= 'DOUBLE';
+						$val['value']				= (double) $val['value'];
+					}
+					else if(in_array(gettype($val['value']), array('float')))
+					{
+						$cast_type					= 'FLOAT';
+						$val['value']				= (float) $val['value'];
+					}
+					else if(!is_array(gettype($val['value'])))
+					{
+						$cast_type					= 'TEXT';
+						$val['value']				= (string) $val['value'];
+					}
+					
+					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
+					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
+					$key							= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					$val['case_insensitive']		= true;
+				}
+				
 				$builder->orWhere($key, $val['value'], $val['escape']);
 			}
 		}
@@ -1992,9 +2055,11 @@ class Model
 			// run like command
 			foreach($this->_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre')
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 				{
+					// type casting for PostgreSQL
 					$key							= 'CAST(' . $key . ' AS TEXT)';
+					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
 				
@@ -2006,9 +2071,11 @@ class Model
 				// run or like command
 				foreach($this->_or_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre')
+					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 					{
+						// type casting for PostgreSQL
 						$key						= 'CAST(' . $key . ' AS TEXT)';
+						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
 					
@@ -2026,9 +2093,11 @@ class Model
 			// run not like command
 			foreach($this->_not_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre')
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 				{
+					// type casting for PostgreSQL
 					$key							= 'CAST(' . $key . ' AS TEXT)';
+					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
 				
@@ -2040,9 +2109,11 @@ class Model
 				// run or not like command
 				foreach($this->_or_not_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre')
+					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 					{
+						// type casting for PostgreSQL
 						$key						= 'CAST(' . $key . ' AS TEXT)';
+						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
 					
@@ -2126,9 +2197,11 @@ class Model
 			// run having like command
 			foreach($this->_having_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre')
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 				{
+					// type casting for PostgreSQL
 					$key							= 'CAST(' . $key . ' AS TEXT)';
+					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
 				
@@ -2140,9 +2213,11 @@ class Model
 				// run or having like command
 				foreach($this->_or_having_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre')
+					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 					{
+						// type casting for PostgreSQL
 						$key						= 'CAST(' . $key . ' AS TEXT)';
+						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
 					
@@ -2160,9 +2235,11 @@ class Model
 			// run not having like command
 			foreach($this->_not_having_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre')
+				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 				{
+					// type casting for PostgreSQL
 					$key							= 'CAST(' . $key . ' AS TEXT)';
+					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
 				
@@ -2174,9 +2251,11 @@ class Model
 				// run or not having like command
 				foreach($this->_or_not_having_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre')
+					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
 					{
+						// type casting for PostgreSQL
 						$key						= 'CAST(' . $key . ' AS TEXT)';
+						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
 					

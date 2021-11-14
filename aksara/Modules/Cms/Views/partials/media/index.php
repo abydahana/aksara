@@ -59,6 +59,17 @@
 			<?php
 				if($results->description)
 				{
+					if(in_array($results->description->mime_type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif')))
+					{
+						echo '
+							<div class="form-group text-center">
+								<a href="' . base_url($results->description->server_path) . '" target="_blank">
+									<img src="' . base_url($results->description->server_path) . '" class="img-fluid rounded-more" alt="" />
+								</a>
+							</div>
+						';
+					}
+					
 					echo '
 						<div class="form-group">
 							<label class="d-block text-muted mb-0">

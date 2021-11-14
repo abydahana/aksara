@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Groups;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Groups;
+
 /**
  * Administrative > Groups
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Groups extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__groups';

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Updater;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Updater;
+
 /**
  * Administrative > Updater
  * This module is used to update Aksara.
@@ -9,6 +12,7 @@
  * @since			version 4.1.22
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Updater extends \Aksara\Laboratory\Core
 {
 	public function __construct()

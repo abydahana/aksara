@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Announcements\Controllers;
+<?php
+
+namespace Aksara\Modules\Announcements\Controllers;
+
 /**
  * Announcements
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Announcements extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'app__announcements';
@@ -15,6 +19,8 @@ class Announcements extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index()

@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Addons\Controllers;
+<?php
+
+namespace Aksara\Modules\Addons\Controllers;
+
 /**
  * Addons > Themes Manager
  *
@@ -8,6 +11,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Themes extends \Aksara\Laboratory\Core
 {
 	public function __construct()
@@ -463,6 +467,32 @@ class Themes extends \Aksara\Laboratory\Core
 			/* check if theme property is exists */
 			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'))
 			{
+				$package							= json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'));
+				
+				if(!isset($package->type) || !in_array($package->type, array('backend', 'frontend')))
+				{
+					return throw_exception(400, array('theme' => phrase('unable_to_uninstall_theme_with_invalid_package')));
+				}
+				
+				// get the site id
+				$site_id							= get_setting('id');
+				
+				$active_theme						= $this->model->get_where
+				(
+					'app__settings',
+					array
+					(
+						'id'						=> $site_id
+					),
+					1
+				)
+				->row($package->type . '_theme');
+				
+				if(service('request')->getPost('theme') == $active_theme)
+				{
+					return throw_exception(400, array('theme' => phrase('unable_to_uninstall_the_theme_that_is_in_use')));
+				}
+				
 				/* delete theme */
 				$this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
 			}

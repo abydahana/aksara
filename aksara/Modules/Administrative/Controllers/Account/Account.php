@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Administrative\Controllers\Account;
+<?php
+
+namespace Aksara\Modules\Administrative\Controllers\Account;
+
 /**
  * Administrative > Account
  *
@@ -8,8 +11,11 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Account extends \Aksara\Laboratory\Core
 {
+	private $_table									= 'app__users';
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -18,6 +24,8 @@ class Account extends \Aksara\Laboratory\Core
 		
 		$this->set_permission();
 		$this->set_theme('backend');
+		
+		$this->searchable(false);
 		
 		$this->set_method('update');
 	}
@@ -118,7 +126,7 @@ class Account extends \Aksara\Laboratory\Core
 			)
 		)
 		
-		->render('app__users');
+		->render($this->_table);
 	}
 	
 	public function after_update()

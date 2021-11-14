@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Cms\Controllers\Peoples;
+<?php
+
+namespace Aksara\Modules\Cms\Controllers\Peoples;
+
 /**
  * CMS > Peoples
  * Manage peoples that will be shown in the frontpage
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Peoples extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'peoples';

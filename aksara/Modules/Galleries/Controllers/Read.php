@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Galleries\Controllers;
+<?php
+
+namespace Aksara\Modules\Galleries\Controllers;
+
 /**
  * Galleries > Read
  * Show the individual photo from the gallery
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Read extends \Aksara\Laboratory\Core
 {
 	private $_table									= 'galleries';
@@ -16,6 +20,8 @@ class Read extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
 	}
 	
 	public function index($category = null, $slug = null)

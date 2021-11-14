@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Pages\Controllers;
+<?php
+
+namespace Aksara\Modules\Pages\Controllers;
+
 /**
  * Pages > License
  * End user license agreement
@@ -9,6 +12,7 @@
  * @since			version 4.0.0
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class License extends \Aksara\Laboratory\Core
 {
 	public function __construct()

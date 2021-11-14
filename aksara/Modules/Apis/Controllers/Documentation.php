@@ -1,4 +1,7 @@
-<?php namespace Aksara\Modules\Apis\Controllers;
+<?php
+
+namespace Aksara\Modules\Apis\Controllers;
+
 /**
  * APIs > Documentation
  *
@@ -8,6 +11,7 @@
  * @since			version 4.2.8
  * @copyright		(c) 2021 - Aksara Laboratory
  */
+
 class Documentation extends \Aksara\Laboratory\Core
 {
 	private $_collection							= array();
