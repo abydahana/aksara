@@ -46,6 +46,7 @@ class Ftp extends \Aksara\Laboratory\Core
 			array
 			(
 				'port'								=> 'numeric',
+				'username'							=> 'encryption',
 				'password'							=> 'encryption'
 			)
 		)
