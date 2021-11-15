@@ -58,13 +58,13 @@ class Installer extends Migration
 				'platform' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 255,
+					'constraint' => 64,
 					'null' => false
 				),
 				'ip_address' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 22,
+					'constraint' => 45,
 					'null' => false
 				),
 				'timestamp' => array
@@ -191,26 +191,26 @@ class Installer extends Migration
 				),
 				'port' => array
 				(
-					'type' => 'varchar',
-					'constraint' => 255,
+					'type' => 'int',
+					'constraint' => 5,
 					'null' => false
 				),
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 255,
+					'constraint' => 512,
 					'null' => false
 				),
 				'password' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 255,
+					'constraint' => 512,
 					'null' => false
 				),
 				'database_name' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 255,
+					'constraint' => 64,
 					'null' => false
 				),
 				'status' => array
@@ -271,7 +271,6 @@ class Installer extends Migration
 					'type' => 'int',
 					'constraint' => 11,
 					'unsigned' => true,
-					'auto_increment' => true,
 					'null' => false
 				),
 				'hostname' => array
@@ -289,7 +288,7 @@ class Installer extends Migration
 				'username' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 64,
+					'constraint' => 512,
 					'null' => false
 				),
 				'password' => array
@@ -958,7 +957,6 @@ class Installer extends Migration
 					'type' => 'bigint',
 					'constraint' => 22,
 					'unsigned' => true,
-					'auto_increment' => true,
 					'null' => false
 				),
 				'hash' => array
@@ -981,7 +979,6 @@ class Installer extends Migration
 					'type' => 'bigint',
 					'constraint' => 22,
 					'unsigned' => true,
-					'auto_increment' => true,
 					'null' => false
 				),
 				'sub_level_1' => array
@@ -1014,7 +1011,7 @@ class Installer extends Migration
 				'ip_address' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 32,
+					'constraint' => 45,
 					'null' => false
 				),
 				'timestamp' => array
@@ -1031,7 +1028,7 @@ class Installer extends Migration
 				'platform' => array
 				(
 					'type' => 'varchar',
-					'constraint' => 32,
+					'constraint' => 64,
 					'null' => false
 				),
 			)
@@ -1359,7 +1356,6 @@ class Installer extends Migration
 					'type' => 'bigint',
 					'constraint' => 22,
 					'unsigned' => true,
-					'auto_increment' => true,
 					'null' => false
 				),
 				'service_provider' => array

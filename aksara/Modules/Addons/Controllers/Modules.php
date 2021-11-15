@@ -218,6 +218,7 @@ class Modules extends \Aksara\Laboratory\Core
 					}
 					
 					/* configuration found, decrypt password */
+					$query->username				= service('encrypter')->decrypt(base64_decode($query->username));
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
 					// try to connect to FTP
@@ -774,6 +775,7 @@ class Modules extends \Aksara\Laboratory\Core
 				if($query)
 				{
 					/* configuration found, decrypt password */
+					$query->username				= service('encrypter')->decrypt(base64_decode($query->username));
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
 					/* trying to delete directory using ftp instead */
