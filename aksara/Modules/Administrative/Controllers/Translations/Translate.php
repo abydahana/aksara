@@ -127,7 +127,7 @@ class Translate extends \Aksara\Laboratory\Core
 				unset($phrase[$delete_key]);
 				
 				/* try to add language file */
-				if(!is_writable(WRITEPATH . 'translations') || !file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase)))
+				if(!is_writable(WRITEPATH . 'translations') || !file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)))
 				{
 					/* failed to write file, throw an error exception */
 					$error++;
