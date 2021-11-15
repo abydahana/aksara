@@ -1007,6 +1007,11 @@ textarea
 	color: #495057!important;
 	cursor: text
 }
+
+.note-editor .note-editing-area
+{
+	cursor: text
+}
 /* end summernote tweaks */
 
 /* mcustomscrollbar tweaks */

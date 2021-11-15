@@ -22,6 +22,7 @@ class Category extends \Aksara\Laboratory\Core
 		parent::__construct();
 		
 		$this->searchable(false);
+		$this->limit(10);
 		
 		$this->_primary								= service('request')->getGet('gallery_id');
 	}

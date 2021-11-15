@@ -15,35 +15,37 @@
 				{
 					$navigation						.= '<li data-target="#carouselExampleIndicators" data-slide-to="' . $_key . '"' . ($_key == 0 ? ' class="active"' : '') . '></li>';
 					$carousel_items					.= '
-						<div class="carousel-item full-height bg-dark gradient d-flex align-items-center' . ($_key == 0 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
-							<div class="absolute top right bottom left" style="background:rgba(0, 0, 0, .75)"></div>
-							<div class="carousel-caption container-fluid" style="position:inherit">
-								<div class="row">
-									' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
-									<div class="col-lg-4 offset-lg-1 text-center text-lg-left d-none d-md-block">
-										<div class="pt-5 w-100">
-											<img src="' . get_image('carousels', $_val->thumbnail) . '" class="img-fluid rounded" />
-										</div>
-									</div>
-									' : null) . '
-									<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-left d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
-										<div class="pt-5 w-100">
-											<h1 class="font-weight-bold mb-3 text-light">
-												' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
-											</h1>
-											<p class="text-light mb-5">
-												' . (isset($_val->description) ? truncate($_val->description, 260) : phrase('description_was_not_set')) . '
-											</p>
-											' . (isset($_val->link) && $_val->link ? '
-											<div class="row">
-												<div class="col-sm-6 offset-sm-3 col-md-12 offset-md-0">
-													<a href="' . $_val->link . '" class="btn btn-outline-light btn-lg rounded-pill" data-animation="animated bounceInLeft" style="border-width:2px">
-														' . (isset($_val->label) && $_val->label ? $_val->label : phrase('read_more')) . '
-														<i class="mdi mdi-chevron-right"></i>
-													</a>
-												</div>
+						<div class="carousel-item bg-dark gradient' . ($_key == 0 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
+							<div class="full-height d-flex align-items-center">
+								<div class="clip gradient-top"></div>
+								<div class="carousel-caption container" style="position:inherit">
+									<div class="row">
+										' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
+										<div class="col-lg-4 offset-lg-1 text-center text-lg-left d-none d-md-block">
+											<div class="pt-5 w-100">
+												<img src="' . get_image('carousels', 'placeholder.png') . '" class="img-fluid rounded" />
 											</div>
-											' : null) . '
+										</div>
+										' : null) . '
+										<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-left d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
+											<div class="pt-5 w-100">
+												<h1 class="font-weight-bold mb-3 text-light">
+													' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
+												</h1>
+												<p class="text-light mb-5">
+													' . (isset($_val->description) ? truncate($_val->description, 260) : phrase('description_was_not_set')) . '
+												</p>
+												' . (isset($_val->link) && $_val->link ? '
+												<div class="row">
+													<div class="col-sm-6 offset-sm-3 col-md-12 offset-md-0">
+														<a href="' . $_val->link . '" class="btn btn-outline-light btn-lg rounded-pill" data-animation="animated bounceInLeft" style="border-width:2px">
+															' . (isset($_val->label) && $_val->label ? $_val->label : phrase('read_more')) . '
+															<i class="mdi mdi-chevron-right"></i>
+														</a>
+													</div>
+												</div>
+												' : null) . '
+											</div>
 										</div>
 									</div>
 								</div>
@@ -53,7 +55,7 @@
 				}
 				
 				echo '
-					<div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
+					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 						' . (sizeof($carousels) > 1 ? '
 						<ol class="carousel-indicators">
 							' . $navigation . '
@@ -112,7 +114,7 @@
 			}
 			
 			echo '
-				<div class="jumbotron jumbotron-fluid bg-transparent">
+				<div class="jumbotron jumbotron-fluid bg-light gradient">
 					<div class="container">
 						<div class="text-center text-sm-left">
 							<h3 class="mb-0' . (!$meta->description ? ' mt-3' : null) . '">

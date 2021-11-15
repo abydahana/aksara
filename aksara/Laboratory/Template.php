@@ -779,11 +779,11 @@ class Template
 								' . $query_string . '
 								<div class="input-group">
 									<select name="limit" class="form-control form-control-sm">
-										<option value="25"' . (!$data->per_page ? ' selected' : null) . '>25</option>
-										<option value="50"' . (50 == $data->per_page ? ' selected' : null) . '>50</option>
-										<option value="100"' . (100 == $data->per_page ? ' selected' : null) . '>100</option>
-										<option value="200"' . (200 == $data->per_page ? ' selected' : null) . '>200</option>
-										<option value="500"' . (500 == $data->per_page ? ' selected' : null) . '>500</option>
+										<option value="' . $data->per_page . '"' . (!$data->per_page ? ' selected' : null) . '>' . $data->per_page . '</option>
+										<option value="' . ($data->per_page * 2) . '"' . (($data->per_page * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 2) . '</option>
+										<option value="' . ($data->per_page * 4) . '"' . (($data->per_page * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 4) . '</option>
+										<option value="' . ($data->per_page * 8) . '"' . (($data->per_page * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 8) . '</option>
+										<option value="' . ($data->per_page * 20) . '"' . (($data->per_page * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 20) . '</option>
 									</select>
 									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
 									<div class="input-group-append">

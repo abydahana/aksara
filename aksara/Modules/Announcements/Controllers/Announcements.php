@@ -21,6 +21,7 @@ class Announcements extends \Aksara\Laboratory\Core
 		parent::__construct();
 		
 		$this->searchable(false);
+		$this->limit(10);
 	}
 	
 	public function index()

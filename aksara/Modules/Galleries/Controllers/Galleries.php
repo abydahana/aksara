@@ -19,6 +19,9 @@ class Galleries extends \Aksara\Laboratory\Core
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->searchable(false);
+		$this->limit(10);
 	}
 	
 	public function index()

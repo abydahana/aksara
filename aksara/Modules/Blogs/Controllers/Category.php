@@ -19,6 +19,7 @@ class Category extends \Aksara\Laboratory\Core
 		parent::__construct();
 		
 		$this->searchable(false);
+		$this->limit(24);
 	}
 	
 	public function index($slug = null)
