@@ -7,7 +7,7 @@ if(isset($results->extra_action->toolbar))
 	foreach($results->extra_action->toolbar as $key => $val)
 	{
 		$extra_toolbar								.= '
-			<a href="' . go_to($val->url, $val->parameter) . '" class="btn btn-sm ' . ($val->class ? $val->class : 'btn-default ajax') . '"' . (isset($val->new_tab) && $val->new_tab == true ? ' target="_blank"' : null) . '>
+			<a href="' . go_to($val->url, $val->parameter) . '" class="btn btn-sm ' . ($val->class ? $val->class : 'btn-dark --xhr') . '"' . (isset($val->new_tab) && $val->new_tab == true ? ' target="_blank"' : null) . '>
 				<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
 				' . $val->label . '
 			</a>
@@ -16,89 +16,91 @@ if(isset($results->extra_action->toolbar))
 }
 ?>
 <div class="container-fluid">
-	<div class="row pt-1 pb-1 alias-table-toolbar border-bottom">
-		<div class="col">
-			<div class="btn-group btn-group-sm">
-				<?php if(!isset($results->unset_action) || !in_array('create', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('create'); ?>" class="btn btn-primary --btn-create <?php echo (isset($modal_html) ? '--modal' : '--open-modal-form'); ?>">
-						<i class="mdi mdi-plus"></i>
-						<span class="hidden-xs hidden-sm">
-							<?php echo phrase('create'); ?>
-						</span>
-					</a>
-				<?php } ?>
-				<?php echo (isset($extra_toolbar) ? $extra_toolbar : null); ?>
-				<?php if(!isset($results->unset_action) || !in_array('export', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('export'); ?>" class="btn btn-success --btn-export" target="_blank">
-						<i class="mdi mdi-file-excel"></i>
-						<span class="hidden-xs hidden-sm">
-							<?php echo phrase('export'); ?>
-						</span>
-					</a>
-				<?php } ?>
-				<?php if(!isset($results->unset_action) || !in_array('print', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('print'); ?>" class="btn btn-warning --btn-print" target="_blank">
-						<i class="mdi mdi-printer"></i>
-						<span class="hidden-xs hidden-sm">
-							<?php echo phrase('print'); ?>
-						</span>
-					</a>
-				<?php } ?>
-				<?php if(!isset($results->unset_action) || !in_array('pdf', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('pdf'); ?>" class="btn btn-info --btn-pdf" target="_blank">
-						<i class="mdi mdi-file-pdf"></i>
-						<span class="hidden-xs hidden-sm">
-							<?php echo phrase('pdf'); ?>
-						</span>
-					</a>
-				<?php } ?>
-				<?php if(!isset($results->unset_action) || !in_array('delete', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger disabled d-none --open-delete-confirm" data-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
-						<i class="mdi mdi-trash-can-outline"></i>
-					</a>
-				<?php } ?>
-			</div>
-		</div>
-		<div class="col<?php echo (!isset($results->filter) || !$results->filter ? '-4' : null); ?>">
-			<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
-				<?php
-					if(service('request')->getGet())
-					{
-						foreach(service('request')->getGet() as $key => $val)
-						{
-							if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
-							
-							echo '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
-						}
-					}
-				?>
-				<div class="input-group input-group-sm">
-					
-					<?php echo (isset($results->filter) ? $results->filter : null); ?>
-					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo service('request')->getGet('q'); ?>" role="autocomplete" />
-					<select name="column" class="form-control">
-						<option value="all"><?php echo phrase('all_columns'); ?></option>
-						<?php
-							if(isset($results->columns))
-							{
-								foreach($results->columns as $key => $val)
-								{
-									echo '
-										<option value="' . $val->field . '"' . ($val->field == service('request')->getGet('column') ? ' selected' : null) . '>
-											' . $val->label . '
-										</option>
-									';
-								}
-							}
-						?>
-					</select>
-					<span class="input-group-append">
-						<button type="submit" class="btn btn-primary">
-							<i class="mdi mdi-magnify"></i>
-						</button>
-					</span>
+	<div class="pt-1 pb-1 alias-table-toolbar border-bottom">
+		<div class="row">
+			<div class="col">
+				<div class="btn-group btn-group-sm">
+					<?php if(!isset($results->unset_action) || !in_array('create', $results->unset_action)) { ?>
+						<a href="<?php echo go_to('create'); ?>" class="btn btn-primary --btn-create <?php echo (isset($modal_html) ? '--modal' : '--open-modal-form'); ?>">
+							<i class="mdi mdi-plus"></i>
+							<span class="hidden-xs hidden-sm">
+								<?php echo phrase('create'); ?>
+							</span>
+						</a>
+					<?php } ?>
+					<?php echo (isset($extra_toolbar) ? $extra_toolbar : null); ?>
+					<?php if(!isset($results->unset_action) || !in_array('export', $results->unset_action)) { ?>
+						<a href="<?php echo go_to('export'); ?>" class="btn btn-success --btn-export" target="_blank">
+							<i class="mdi mdi-file-excel"></i>
+							<span class="hidden-xs hidden-sm">
+								<?php echo phrase('export'); ?>
+							</span>
+						</a>
+					<?php } ?>
+					<?php if(!isset($results->unset_action) || !in_array('print', $results->unset_action)) { ?>
+						<a href="<?php echo go_to('print'); ?>" class="btn btn-warning --btn-print" target="_blank">
+							<i class="mdi mdi-printer"></i>
+							<span class="hidden-xs hidden-sm">
+								<?php echo phrase('print'); ?>
+							</span>
+						</a>
+					<?php } ?>
+					<?php if(!isset($results->unset_action) || !in_array('pdf', $results->unset_action)) { ?>
+						<a href="<?php echo go_to('pdf'); ?>" class="btn btn-info --btn-pdf" target="_blank">
+							<i class="mdi mdi-file-pdf"></i>
+							<span class="hidden-xs hidden-sm">
+								<?php echo phrase('pdf'); ?>
+							</span>
+						</a>
+					<?php } ?>
+					<?php if(!isset($results->unset_action) || !in_array('delete', $results->unset_action)) { ?>
+						<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger disabled d-none --open-delete-confirm" data-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
+							<i class="mdi mdi-trash-can-outline"></i>
+						</a>
+					<?php } ?>
 				</div>
-			</form>
+			</div>
+			<div class="col<?php echo (!isset($results->filter) || !$results->filter ? '-4' : null); ?>">
+				<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
+					<?php
+						if(service('request')->getGet())
+						{
+							foreach(service('request')->getGet() as $key => $val)
+							{
+								if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+								
+								echo '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
+							}
+						}
+					?>
+					<div class="input-group input-group-sm">
+						
+						<?php echo (isset($results->filter) ? $results->filter : null); ?>
+						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo service('request')->getGet('q'); ?>" role="autocomplete" />
+						<select name="column" class="form-control">
+							<option value="all"><?php echo phrase('all_columns'); ?></option>
+							<?php
+								if(isset($results->columns))
+								{
+									foreach($results->columns as $key => $val)
+									{
+										echo '
+											<option value="' . $val->field . '"' . ($val->field == service('request')->getGet('column') ? ' selected' : null) . '>
+												' . $val->label . '
+											</option>
+										';
+									}
+								}
+							?>
+						</select>
+						<span class="input-group-append">
+							<button type="submit" class="btn btn-primary">
+								<i class="mdi mdi-magnify"></i>
+							</button>
+						</span>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 	<div class="table-responsive alias-table-index">
@@ -296,10 +298,8 @@ if(isset($results->extra_action->toolbar))
 			</tbody>
 		</table>
 	</div>
-	<div class="row alias-pagination border-top pt-2 pb-2">
-		<div class="col-12">
+	<div class="alias-pagination border-top pt-2 pb-2">
 		<?php echo $template->pagination; ?>
-		</div>
 	</div>
 </div>
 <script type="text/javascript">

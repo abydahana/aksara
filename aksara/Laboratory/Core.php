@@ -50,6 +50,7 @@ class Core extends Controller
 	private $_view									= 'index';
 	private $_set_template							= array();
 	private $_set_theme								= null;
+	private $_grid_view								= array();
 	private $_set_upload_path						= null;
 	private $_upload_data							= array();
 	private $_upload_error							= array();
@@ -621,6 +622,28 @@ class Core extends Controller
 			'icon'									=> $icon,
 			'class'									=> $class,
 			'target'								=> $target
+		);
+		
+		return $this;
+	}
+	
+	/**
+	 * grid_view
+	 * Switch the view as grid
+	 *
+	 * @access		public
+	 * @thumbnail	string
+	 * @title		string
+	 * @description	string
+	 * @return		string
+	 */
+	public function grid_view($thumbnail = null)
+	{
+		$_SERVER['GRID_VIEW']						= true;
+		
+		$this->_grid_view							= array
+		(
+			'thumbnail'								=> $thumbnail
 		);
 		
 		return $this;
@@ -5393,6 +5416,11 @@ class Core extends Controller
 						'original'					=> $original
 					);
 					
+					if($this->_grid_view)
+					{
+						$fields[$field]['type']		= $type;
+					}
+					
 					if($this->_api_request)
 					{
 						unset($fields[$field]['content'], $fields[$field]['original']);
@@ -5583,6 +5611,12 @@ class Core extends Controller
 			),
 			'columns'								=> $columns
 		);
+		
+		if($this->_grid_view)
+		{
+			$output['grid']							= $this->_grid_view;
+			$output['grid']['path']					= $this->_set_upload_path;
+		}
 		
 		return $output;
 	}

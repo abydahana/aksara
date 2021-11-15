@@ -115,7 +115,7 @@ class Template
 		}
 		
 		/* add suffix to view to detect if mobile or modal template is sets */
-		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : null));
+		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_SERVER['GRID_VIEW']) && $_SERVER['GRID_VIEW'] ? '_grid' : null)));
 		
 		// generate theme view
 		$theme_view									= '../themes/' . $this->_theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
@@ -763,7 +763,7 @@ class Template
 			
 			$output									= '
 				<div class="row">
-					<div class="col-sm-6 text-sm-left">
+					<div class="col-sm-6 text-center text-sm-left">
 						<label class="text-muted mb-0 pt-1">
 							<small class="result-for">
 								<i class="mdi mdi-information-outline"></i>

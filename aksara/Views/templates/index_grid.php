@@ -1,103 +1,76 @@
-<div class="container-fluid pt-3 pb-3 bg-light">
+<?php
+$extra_toolbar										= null;
+$primary											= array();
+
+if(isset($results->extra_action->toolbar))
+{
+	foreach($results->extra_action->toolbar as $key => $val)
+	{
+		$extra_toolbar								.= '
+			<a href="' . go_to($val->url, $val->parameter) . '" class="btn btn-sm ' . ($val->class ? $val->class : 'btn-dark --xhr') . ' rounded-pill"' . (isset($val->new_tab) && $val->new_tab == true ? ' target="_blank"' : null) . '>
+				<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
+				' . $val->label . '
+			</a>
+		';
+	}
+}
+?>
+<div class="container-fluid pt-3 pb-3">
+	<div class="alias-table-toolbar">
+		<div class="row">
+			<div class="col-md-10 text-center text-md-left mb-3">
+				<?php if(!isset($results->unset_action) || !in_array('create', $results->unset_action)) { ?>
+					<a href="<?php echo go_to('create'); ?>" class="btn btn-primary btn-sm rounded-pill --btn-create <?php echo (isset($modal_html) ? '--modal' : '--open-modal-form'); ?>">
+						<i class="mdi mdi-plus"></i>
+						<span class="hidden-xs hidden-sm">
+							<?php echo phrase('create'); ?>
+						</span>
+					</a>
+				<?php } ?>
+				<?php echo (isset($extra_toolbar) ? $extra_toolbar : null); ?>
+				<?php if(!isset($results->unset_action) || !in_array('export', $results->unset_action)) { ?>
+					<a href="<?php echo go_to('export'); ?>" class="btn btn-success btn-sm rounded-pill --btn-export" target="_blank">
+						<i class="mdi mdi-file-excel"></i>
+						<span class="hidden-xs hidden-sm">
+							<?php echo phrase('export'); ?>
+						</span>
+					</a>
+				<?php } ?>
+				<?php if(!isset($results->unset_action) || !in_array('print', $results->unset_action)) { ?>
+					<a href="<?php echo go_to('print'); ?>" class="btn btn-warning btn-sm rounded-pill --btn-print" target="_blank">
+						<i class="mdi mdi-printer"></i>
+						<span class="hidden-xs hidden-sm">
+							<?php echo phrase('print'); ?>
+						</span>
+					</a>
+				<?php } ?>
+				<?php if(!isset($results->unset_action) || !in_array('pdf', $results->unset_action)) { ?>
+					<a href="<?php echo go_to('pdf'); ?>" class="btn btn-info btn-sm rounded-pill --btn-pdf" target="_blank">
+						<i class="mdi mdi-file-pdf"></i>
+						<span class="hidden-xs hidden-sm">
+							<?php echo phrase('pdf'); ?>
+						</span>
+					</a>
+				<?php } ?>
+				<?php if(!isset($results->unset_action) || !in_array('delete', $results->unset_action)) { ?>
+					<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger btn-sm rounded-pill disabled d-none --open-delete-confirm" data-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
+						<i class="mdi mdi-trash-can-outline"></i>
+					</a>
+				<?php } ?>
+			</div>
+			<div class="col-md-2 mb-3">
+				<a href="javascript:void(0)" class="btn btn-success btn-sm btn-block rounded-pill"data-toggle="modal" data-target="#searchModal">
+					<i class="mdi mdi-magnify"></i>
+					<?php echo phrase('search'); ?>
+				</a>
+			</div>
+		</div>
+	</div>
 	<?php
-		$prefix_action								= array();
-		
-		if(!isset($results->unset_action) || !in_array('create', $results->unset_action))
-		{
-			$prefix_action							= array
-			(
-				array
-				(
-					'url'							=> go_to('create'),
-					'label'							=> phrase('create'),
-					'class'							=> '',
-					'icon'							=> 'mdi mdi-plus',
-					'parameter'						=> array
-					(
-					),
-					'new_tab'						=> false,
-					'locally'						=> true
-				)
-			);
-		}
-		
-		if($prefix_action && isset($results->extra_action))
-		{
-			$results->extra_action->toolbar			= json_decode
-			(
-				json_encode
-				(
-					array_merge
-					(
-						$prefix_action,
-						
-						(array) $results->extra_action->toolbar,
-						
-						array
-						(
-							array
-							(
-								'url'				=> go_to(null, array('per_page' => null)),
-								'label'				=> phrase('search'),
-								'class'				=> '',
-								'icon'				=> 'mdi mdi-magnify',
-								'parameter'			=> array
-								(
-								),
-								'new_tab'			=> false,
-								'locally'			=> true,
-								'modal'				=> '#searchModal'
-							),
-							array
-							(
-								'url'				=> current_page(),
-								'label'				=> phrase('refresh'),
-								'class'				=> '',
-								'icon'				=> 'mdi mdi-refresh',
-								'parameter'			=> array
-								(
-								),
-								'new_tab'			=> false,
-								'locally'			=> true
-							)
-						)
-					)
-				)
-			);
-		}
-		
-		$extra_bottom_toolbar						= null;
-		$extra_toolbar								= null;
-		
-		if(isset($results->extra_action->toolbar))
-		{
-			foreach($results->extra_action->toolbar as $key => $val)
-			{
-				if($key <= 4)
-				{
-					$extra_bottom_toolbar			.= '
-						<a href="' . (isset($val->locally) ? $val->url : go_to($val->url)) . '" class="btn text-dark text-truncate ' . ($val->class ? str_replace('btn', 'btn-ignore', $val->class) : 'btn-default' . (!isset($val->modal) ? ' --xhr' : null)) . '"' . ($val->new_tab ? ' target="_blank"' : (isset($val->modal) ? ' data-toggle="modal" data-target="' . $val->modal . '"' : null)) . '>
-							<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
-							' . $val->label . '
-						</a>
-					';
-				}
-				else
-				{
-					$extra_toolbar					.= '
-						<a href="' . go_to($val->url) . '" class="list-group-item list-group-item-action text-truncate ' . ($val->class ? str_replace('btn', 'btn-ignore', $val->class) : 'btn-default' . (!isset($val->modal) ? ' --xhr' : null)) . '"' . ($val->new_tab ? ' target="_blank"' : (isset($val->modal) ? ' data-toggle="modal" data-target="' . $val->modal . '"' : null)) . '>
-							<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
-							' . $val->label . '
-						</a>
-					';
-				}
-			}
-		}
-		
 		/**
 		 * Table data
 		 */
-		if(isset($results->table_data) && $total)
+		if(!isset($results->table_data) && $total)
 		{
 			$grid									= null;
 			
@@ -112,13 +85,11 @@
 				if(isset($results->extra_action->option[$key]))
 				{
 					$num							= 0;
-					
 					foreach($results->extra_action->option[$key] as $_key => $_val)
 					{
 						if(isset($_val->new_tab->restrict))
 						{
 							$id						= key((array) $_val->new_tab->restrict);
-							
 							if(in_array($val->$id->original, $_val->new_tab->restrict->$id)) continue;
 						}
 						
@@ -215,7 +186,7 @@
 					$extra_option[]					= array
 					(
 						'url'						=> go_to('read', $results->query_string[$key]),
-						'class'						=> 'btn --xhr',
+						'class'						=> 'btn --modal',
 						'icon'						=> 'mdi mdi-magnify',
 						'label'						=> phrase('view'),
 						'new_tab'					=> false
@@ -227,7 +198,7 @@
 					$extra_option[]					= array
 					(
 						'url'						=> go_to('update', $results->query_string[$key]),
-						'class'						=> 'btn --xhr',
+						'class'						=> 'btn --modal',
 						'icon'						=> 'mdi mdi-square-edit-outline',
 						'label'						=> phrase('update'),
 						'new_tab'					=> false
@@ -253,11 +224,8 @@
 						if($_key == 3) break;
 						
 						$item_option				.= '
-							<a href="' . $_val['url'] . '" class="text-truncate pt-1 pb-1 ' . $_val['class'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
+							<a href="' . $_val['url'] . '" class="text-truncate pt-2 pb-2 ' . $_val['class'] . '" data-toggle="tooltip" title="' . $_val['label'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
 								<i class="' . $_val['icon'] . '"></i>
-								<span class="d-block text-sm">
-									' . $_val['label'] . '
-								</span>
 							</a>
 						';
 						
@@ -298,11 +266,8 @@
 									' . $item_option . '
 									
 									' . ($extra_option ? '
-									<a href="javascript:void(0)" class="btn --open-item-option pt-1 pb-1" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-toggle="tooltip" title="' . phrase('more') . '">
+									<a href="" class="btn --open-item-option pt-2 pb-2" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-toggle="tooltip" title="' . phrase('more') . '">
 										<i class="mdi mdi-dots-horizontal-circle-outline"></i>
-										<span class="d-block text-sm">
-											' . phrase('more') . '
-										</span>
 									</a>
 									' : null) . '
 								</div>
@@ -340,46 +305,9 @@
 		/**
 		 * Pagination
 		 */
-		echo ($pagination->total_rows > 0 ? '<div class="alias-pagination"><div class="pt-3">' . $template->pagination . '</div></div>' : null);
+		echo ($pagination->total_rows > 0 ? '<div class="alias-pagination"><div class="row"><div class="col-12 pt-3">' . $template->pagination . '</div></div></div>' : null);
 	?>
-	<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->
-	<!-- bottom toolbar -->
-	<div class="btn-group btn-group-sm opt-btn">
-	
-		<?php echo $extra_bottom_toolbar; ?>
-		
-		<?php if($extra_toolbar) { ?>
-			<a href="javascript:void(0)" class="btn text-dark text-truncate" data-toggle="modal" data-target="#toolbarModal">
-				<i class="mdi mdi-dots-horizontal-circle-outline"></i>
-				<?php echo phrase('more'); ?>
-			</a>
-		<?php } ?>
-	</div>
 </div>
-
-<?php if($extra_toolbar) { ?>
-<!-- extra toolbar -->
-<div class="modal --prevent-remove" id="toolbarModal" tabindex="-1" role="dialog" aria-labelledby="toolbarModalCenterTitle" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="toolbarModalCenterTitle">
-					<i class="mdi mdi-dots-horizontal-circle-outline"></i>
-					<?php echo phrase('more'); ?>
-				</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="<?php echo phrase('close'); ?>">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="list-group list-group-flush">
-					<?php echo $extra_toolbar; ?>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<?php } ?>
 
 <!-- search modal -->
 <div class="modal --prevent-remove" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalCenterTitle" aria-hidden="true">
