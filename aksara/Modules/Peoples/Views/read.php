@@ -11,13 +11,13 @@
 
 <div class="container">
 	<div class="row">
-		<?php
-			if($results)
-			{
-				foreach($results as $key => $val)
+		<div class="col-md-8 offset-md-2">
+			<?php
+				if($results)
 				{
-					echo '
-						<div class="col-md-8 offset-md-2">
+					foreach($results as $key => $val)
+					{
+						echo '
 							<div class="text-center" style="margin-top:-150px">
 								<a href="' . get_image('peoples', $val->photo) . '" target="_blank">
 									<img src="' . get_image('peoples', $val->photo, 'thumb') . '" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="' . $val->first_name . ' ' . $val->last_name . '" />
@@ -69,7 +69,7 @@
 								<div class="row">
 									' . ($val->instagram ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->instagram . '" class="btn btn-outline-danger btn-block mb-3" target="_blank">
+											<a href="' . $val->instagram . '" class="btn btn-outline-danger btn-block rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-instagram"></i>
 												Instagram
 											</a>
@@ -77,7 +77,7 @@
 									' : '') . '
 									' . ($val->facebook ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->facebook . '" class="btn btn-outline-primary btn-block mb-3" target="_blank">
+											<a href="' . $val->facebook . '" class="btn btn-outline-primary btn-block rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-facebook"></i>
 												Facebook
 											</a>
@@ -85,7 +85,7 @@
 									' : '') . '
 									' . ($val->twitter ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->twitter . '" class="btn btn-outline-info btn-block mb-3" target="_blank">
+											<a href="' . $val->twitter . '" class="btn btn-outline-info btn-block rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-twitter"></i>
 												Twitter
 											</a>
@@ -93,40 +93,39 @@
 									' : '') . '
 								</div>
 							</div>
-						</div>
-					';
+						';
+					}
 				}
-			}
-			else
-			{
-				echo '
-					<div class="container pt-5">
-						<div class="text-center pt-5 pb-5">
-							<h1 class="text-muted">
-								404
-							</h1>
-							<i class="mdi mdi-account-off-outline mdi-5x text-muted"></i>
-						</div>
-						<div class="row mb-5">
-							<div class="col-md-6 offset-md-3">
-								<h2 class="text-center">
-									' . phrase('the_people_you_are_looking_for_was_not_found') . '
-								</h2>
-								<p class="lead text-center mb-5">
-									' . phrase('the_people_you_requested_does_not_exist') . '
-								</p>
-								<div class="text-center mt-5">
-									<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">
-										<i class="mdi mdi-arrow-left"></i>
-										' . phrase('back_to_peoples') . '
-									</a>
+				else
+				{
+					echo '
+						<div class="pt-5 pb-5">
+							<div class="text-center" style="margin-top:-150px">
+								<div class="rounded-circle bg-danger d-flex align-items-center justify-content-center" style="border:5px solid #fff; width:128px; height:128px; margin:0 auto">
+									<i class="mdi mdi-account-off-outline mdi-5x text-light"></i>
+								</div>
+							</div>
+							<div class="row mb-5">
+								<div class="col-md-8 offset-md-2">
+									<h2 class="text-center">
+										' . phrase('the_people_you_are_looking_for_was_not_found') . '
+									</h2>
+									<p class="lead text-center mb-5">
+										' . phrase('the_people_you_requested_does_not_exist') . '
+									</p>
+									<div class="text-center mt-5">
+										<a href="' . go_to('../') . '" class="btn btn-outline-primary rounded-pill --xhr">
+											<i class="mdi mdi-arrow-left"></i>
+											' . phrase('back_to_peoples') . '
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				';
-			}
-		?>
+					';
+				}
+			?>
+		</div>
 	</div>
 </div>
 <div class="container mt-5">

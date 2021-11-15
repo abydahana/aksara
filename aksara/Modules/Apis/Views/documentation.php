@@ -266,13 +266,13 @@
 									<h5 class="mt-3">
 										' . phrase('success_response') . '
 									</h5>
-									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
+									<pre class="language-javascript rounded mt-0"><code>{}</code></pre>
 								</div>
 								<div class="--response-error-' . $val . ' d-none">
 									<h5 class="mt-3">
 										' . phrase('error_response') . '
 									</h5>
-									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
+									<pre class="language-javascript rounded mt-0"><code>{}</code></pre>
 								</div>
 								<br />
 								<br />
@@ -435,7 +435,6 @@
 		})
 		.done(function(response, status, error)
 		{
-			console.log(response),
 			$('.--spinner').remove();
 			
 			if(response.results)

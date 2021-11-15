@@ -1,4 +1,4 @@
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="jumbotron jumbotron-fluid bg-light gradient">
 	<div class="container">
 		<div class="text-center text-md-left">
 			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
@@ -16,6 +16,7 @@
 		if($results)
 		{
 			$output							= null;
+			
 			foreach($results as $key => $val)
 			{
 				$output						.= '
@@ -44,6 +45,17 @@
 			echo '
 				<div class="row form-group">
 					' . $output . '
+				</div>
+			';
+			
+			echo $template->pagination;
+		}
+		else
+		{
+			echo '
+				<div class="alert alert-warning">
+					<i class="mdi mdi-information"></i>
+					' . phrase('no_people_is_available') . '
 				</div>
 			';
 		}

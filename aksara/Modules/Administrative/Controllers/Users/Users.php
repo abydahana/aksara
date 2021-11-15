@@ -60,8 +60,8 @@ class Users extends \Aksara\Laboratory\Core
 		->unset_field('user_id, last_login, is_logged, registered_date')
 		->unset_view('user_id, password')
 		->column_order('photo, username, first_name, email, group_name')
-		->field_order('photo, first_name, username, email, password, bio, phone, address, country, language_id, group_id, status')
-		->view_order('photo, first_name, username, email, password, bio, phone, address, country, country_name, language_id, group_id, group_name, status, last_login')
+		->field_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
+		->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language, group_name, status, last_login')
 		->set_field
 		( 
 			array

@@ -1,45 +1,62 @@
-/* PrismJS 1.23.0
-https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript+markup-templating+php+plsql+sql */
-/**
- * prism.js default theme for JavaScript, CSS and HTML
- * Based on dabblet (http://dabblet.com)
- * @author Lea Verou
+/*
+ * Z-Toch
+ * by Zeel Codder
+ * https://github.com/zeel-codder
+ *
  */
-
 code[class*="language-"],
 pre[class*="language-"] {
-	color: black;
-	background: none;
-	text-shadow: 0 1px white;
-	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-	font-size: 1em;
+	color: #f5e84e;
+	font-family: monospace;
 	text-align: left;
 	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;
 	word-wrap: normal;
-	line-height: 1.5;
-
 	-moz-tab-size: 4;
 	-o-tab-size: 4;
 	tab-size: 4;
-
 	-webkit-hyphens: none;
 	-moz-hyphens: none;
 	-ms-hyphens: none;
 	hyphens: none;
+	line-height: 25px;
+	font-size: 16px;
+	margin: 5px 0;
 }
 
-pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
-code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
-	text-shadow: none;
-	background: #b3d4fc;
+pre[class*="language-"] * {
+	font-family: monospace;
 }
 
-pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
-code[class*="language-"]::selection, code[class*="language-"] ::selection {
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	color: white;
+	background: #0a143c;
+	padding: 22px;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: 0.5em 0;
+	overflow: auto;
+}
+
+pre[class*="language-"]::-moz-selection,
+pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection,
+code[class*="language-"] ::-moz-selection {
 	text-shadow: none;
-	background: #b3d4fc;
+	background: rgba(29, 59, 83, 0.99);
+}
+
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: rgba(29, 59, 83, 0.99);
 }
 
 @media print {
@@ -49,96 +66,95 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 	}
 }
 
-/* Code blocks */
-pre[class*="language-"] {
-	padding: 1em;
-	margin: .5em 0;
-	overflow: auto;
-}
-
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
-	background: #f5f2f0;
-	border-radius: .2rem
-}
-
-/* Inline code */
 :not(pre) > code[class*="language-"] {
-	padding: .1em;
-	border-radius: .3em;
+	padding: 0.1em;
+	border-radius: 0.3em;
 	white-space: normal;
 }
 
 .token.comment,
 .token.prolog,
-.token.doctype,
 .token.cdata {
-	color: slategray;
+	color: rgb(99, 119, 119);
+	font-style: italic;
 }
 
 .token.punctuation {
-	color: #999;
+	color: rgb(199, 146, 234);
 }
 
-.token.namespace {
-	opacity: .7;
+.namespace {
+	color: rgb(178, 204, 214);
 }
 
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
 .token.deleted {
-	color: #905;
+	color: rgba(239, 83, 80, 0.56);
+	font-style: italic;
+}
+
+.token.symbol,
+.token.property {
+	color: rgb(128, 203, 196);
+}
+
+.token.tag,
+.token.operator,
+.token.keyword {
+	color: rgb(127, 219, 202);
+}
+
+.token.boolean {
+	color: rgb(255, 88, 116);
+}
+
+.token.number {
+	color: rgb(247, 140, 108);
+}
+
+.token.constant,
+.token.function,
+.token.builtin,
+.token.char {
+	color: rgb(255, 81, 73);
 }
 
 .token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-	color: #690;
+.token.doctype {
+	color: rgb(199, 146, 234);
+	font-style: italic;
 }
 
-.token.operator,
-.token.entity,
+.token.attr-name,
+.token.inserted {
+	color: rgb(173, 219, 103);
+	font-style: italic;
+}
+
+.token.string,
 .token.url,
+.token.entity,
 .language-css .token.string,
 .style .token.string {
-	color: #9a6e3a;
-	/* This background color was intended by the author of this theme. */
-	background: hsla(0, 0%, 100%, .5);
+	color: rgb(173, 219, 103);
 }
 
+.token.class-name,
 .token.atrule,
-.token.attr-value,
-.token.keyword {
-	color: #07a;
+.token.attr-value {
+	color: rgb(255, 203, 139);
 }
 
-.token.function,
-.token.class-name {
-	color: #DD4A68;
+.token.class-name-fully-qualified
+{
+	text-decoration: underline
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-	color: #e90;
+	color: rgb(214, 222, 235);
 }
 
-.token.important,
-.token.bold {
-	font-weight: bold;
-}
 .token.italic {
 	font-style: italic;
 }
-
-.token.entity {
-	cursor: help;
-}
-

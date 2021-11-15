@@ -22,6 +22,7 @@ class Peoples extends \Aksara\Laboratory\Core
 		parent::__construct();
 		
 		$this->searchable(false);
+		$this->limit(12);
 	}
 	
 	public function index()

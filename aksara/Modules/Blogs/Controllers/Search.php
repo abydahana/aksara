@@ -18,6 +18,8 @@ class Search extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
+		$this->limit(24);
+		
 		$this->_keywords							= htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 	}
 	
