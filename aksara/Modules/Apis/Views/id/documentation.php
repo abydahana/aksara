@@ -266,13 +266,13 @@
 									<h5 class="mt-3">
 										' . phrase('success_response') . '
 									</h5>
-									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
+									<pre class="mt-0 mb-0 language-json"><code>{}</code></pre>
 								</div>
 								<div class="--response-error-' . $val . ' d-none">
-									<h5 class="mt-3 mb-3">
+									<h5 class="mt-3">
 										' . phrase('error_response') . '
 									</h5>
-									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
+									<pre class="mt-0 mb-0 language-json"><code>{}</code></pre>
 								</div>
 								<br />
 								<br />
@@ -284,26 +284,26 @@
 				{
 					echo '
 						<h4 class="mb-3">
-							Introduction
+							Pengenalan Fitur
 						</h4>
 						<p>
-							<a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a> built with capability to deliver the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> output without building the another controller to produce the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request and response. The concept and workflow of <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> implementation just same as you accessing the application built with <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>, that you open now.
+							<a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a> telah dilengkapi dengan kemampuan untuk membuat output <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> sekaligus tanpa Anda perlu menambahkan backend atau modul khusus untuk pengelolaan <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a>. Konsep pada implementasi <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> selaras dengan fitur-fitur pada backoffice <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a> yang sedang Anda buka saat ini.
 						</p>
 						<p>
-							You no longer need to think about complicated things that burden your work. All the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request will be deliver through the authentication (handshake), permission checks, including the validation that you have defined for each module that you have or will build.
+							Anda tidak perlu lagi memikirkan hal-hal rumit yang membebani pekerjaan Anda. Seluruh permintaan <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> akan melalui proses otorisasi dan pengecekan hak akses, termasuk pada validasi yang telah Anda tentukan pada tiap modul yang telah atau akan Anda bangun.
 						</p>
 						<p>
-							It\'s that easy? Yes, becaus it\'s <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>!
+							Semudah itukah? Ya, karena ini <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>!
 						</p>
 						<hr />
 						<h4 class="mb-3">
-							Getting Started
+							Mulai Dari Mana?
 						</h4>
 						<p>
-							To be able to use the API request feature, you need to first add an API key from the <a href="' . go_to('../services') . '" class="--xhr"><b>API Services Management</b></a> menu. Specify the request method that can be used, the allowed IP range and also the expiration date for the generated API key.
+							Untuk dapat menggunakan fitur permintaan API, Anda perlu menambahkan kunci API terlebih dahulu dari menu <a href="' . go_to('../services') . '" class="--xhr"><b>Pengelola Layanan API</b></a>. Tentukan metode permintaan yang dapat digunakan, kisaran IP yang diizinkan dan juga tanggal kadaluwarsa untuk kunci API yang dibuat.
 						</p>
 						<p>
-							Use the generated API key to a specific client in the HEADER property when making a request.
+							Sematkan kunci API yang telah dibuat yang dikhususkan untuk klien tertentu pada property HEADER saat melakukan permintaan.
 						</p>
 						<div class="table-responsive">
 							<table class="table table-bordered table-sm">
@@ -346,7 +346,7 @@
 							</table>
 						</div>
 						<p>
-							For modules that require permission as specified for specific user groups, add the <code>X-ACCESS-TOKEN</code> parameter to the client HEADER and set the value with the token obtained from the authentication request.
+							Untuk modul yang memerlukan hak akses sebagaimana telah dikhususkan untuk grup pengguna tertentu, tambahkan parameter <code>X-ACCESS-TOKEN</code> yang didapatkan dari respon permintaan otentikasi pada permintaan HEADER.
 						</p>
 						<div class="table-responsive">
 							<table class="table table-bordered table-sm">
@@ -389,7 +389,7 @@
 							</table>
 						</div>
 						<p>
-							The authentication process can be POST to <code>' . base_url('auth') . '</code> by add <code>X-API-KEY</code> on the client HEADER, including the form data (form-data) to send the <code>username</code> and <code>password</code> of the user.
+							Proses otentikasi dilakukan pada dengan melakukan POST ke <code>' . base_url('auth') . '</code> serta menyematkan <code>X-API-KEY</code> pada HEADER, berikut data formulir (form-data) dengan parameter <code>username</code> dan <code>password</code> sesuai kredensial pengguna.
 						</p>
 					';
 				}
