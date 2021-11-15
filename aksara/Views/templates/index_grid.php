@@ -15,10 +15,10 @@ if(isset($results->extra_action->toolbar))
 	}
 }
 ?>
-<div class="container-fluid pt-3 pb-3">
-	<div class="alias-table-toolbar">
+<div class="alias-table-toolbar">
+	<div class="container-fluid pt-3 pb-3">
 		<div class="row">
-			<div class="col-md-10 text-center text-md-left mb-3">
+			<div class="col-md-10 text-center text-md-left">
 				<?php if(!isset($results->unset_action) || !in_array('create', $results->unset_action)) { ?>
 					<a href="<?php echo go_to('create'); ?>" class="btn btn-primary btn-sm rounded-pill --btn-create <?php echo (isset($modal_html) ? '--modal' : '--open-modal-form'); ?>">
 						<i class="mdi mdi-plus"></i>
@@ -58,7 +58,7 @@ if(isset($results->extra_action->toolbar))
 					</a>
 				<?php } ?>
 			</div>
-			<div class="col-md-2 mb-3">
+			<div class="col-md-2">
 				<a href="javascript:void(0)" class="btn btn-success btn-sm btn-block rounded-pill"data-toggle="modal" data-target="#searchModal">
 					<i class="mdi mdi-magnify"></i>
 					<?php echo phrase('search'); ?>
@@ -66,247 +66,245 @@ if(isset($results->extra_action->toolbar))
 			</div>
 		</div>
 	</div>
-	<?php
-		/**
-		 * Table data
-		 */
-		if(!isset($results->table_data) && $total)
-		{
-			$grid									= null;
-			
-			foreach($results->table_data as $key => $val)
+</div>
+<div class="alias-grid-container">
+	<div class="container-fluid">
+		<?php
+			/**
+			 * Table data
+			 */
+			if(isset($results->table_data) && $total)
 			{
-				$item_option						= null;
-				$extra_option						= array();
-				$reading							= true;
-				$updating							= true;
-				$deleting							= true;
+				$grid								= null;
 				
-				if(isset($results->extra_action->option[$key]))
+				foreach($results->table_data as $key => $val)
 				{
-					$num							= 0;
-					foreach($results->extra_action->option[$key] as $_key => $_val)
-					{
-						if(isset($_val->new_tab->restrict))
-						{
-							$id						= key((array) $_val->new_tab->restrict);
-							if(in_array($val->$id->original, $_val->new_tab->restrict->$id)) continue;
-						}
-						
-						$extra_option[]				= array
-						(
-							'url'					=> go_to($_val->url, $_val->parameter),
-							'class'					=> 'btn ' . str_replace('btn', 'btn-ignore', $_val->class),
-							'icon'					=> $_val->icon,
-							'label'					=> $_val->label,
-							'new_tab'				=> $_val->new_tab
-						);
-					}
-				}
-				
-				$primary_key						= array();
-				$hash								= null;
-				$columns							= null;
-				$slideshow							= null;
-				$slideshow_count					= 0;
-				
-				foreach($val as $field => $params)
-				{
-					if(isset($params->token))
-					{
-						$hash						= $params->token;
-					}
+					$item_option					= null;
+					$extra_option					= array();
+					$reading						= true;
+					$updating						= true;
+					$deleting						= true;
 					
-					if($params->primary)
+					if(isset($results->extra_action->option[$key]))
 					{
-						$primary_key[$field]		= $params->primary;
-						
-						if(isset($results->unset_read->$field) && is_array($results->unset_read->$field) && in_array($params->original, $results->unset_read->$field))
+						$num						= 0;
+						foreach($results->extra_action->option[$key] as $_key => $_val)
 						{
-							$reading				= false;
-						}
-						
-						if(isset($results->unset_update->$field) && is_array($results->unset_update->$field) && in_array($params->original, $results->unset_update->$field))
-						{
-							$updating				= false;
-						}
-						
-						if(isset($results->unset_delete->$field) && is_array($results->unset_delete->$field) && in_array($params->original, $results->unset_delete->$field))
-						{
-							$deleting				= false;
-						}
-					}
-					
-					if($params->hidden) continue;
-					
-					if(isset($results->grid->thumbnail) && $field == $results->grid->thumbnail && array_intersect($params->type, array('image', 'images')))
-					{
-						$images						= json_decode($params->original);
-						
-						if($images)
-						{
-							$num					= 0;
-							
-							foreach($images as $src => $alt)
+							if(isset($_val->new_tab->restrict))
 							{
-								if($num == 3) break;
-								
-								$slideshow			.= '
-									<div class="carousel-item rounded' . (!$num ? ' active' : null) . '">
-										<a href="' . get_image($results->grid->path, $src, 'thumb') . '" target="_blank">
-											<div class="clip gradient-top rounded-top"></div>
-											<img src="' . get_image($results->grid->path, $src, 'thumb') . '" class="d-block rounded w-100" alt="' . $alt . '">
-										</a>
-										<div class="carousel-caption">
-											<p>
-												' . $alt . '
-											</p>
-										</div>
-									</div>
-								';
-								
-								$num++;
+								$id					= key((array) $_val->new_tab->restrict);
+								if(in_array($val->$id->original, $_val->new_tab->restrict->$id)) continue;
+							}
+							
+							$extra_option[]			= array
+							(
+								'url'				=> go_to($_val->url, $_val->parameter),
+								'class'				=> 'btn ' . str_replace('btn', 'btn-ignore', $_val->class),
+								'icon'				=> $_val->icon,
+								'label'				=> $_val->label,
+								'new_tab'			=> $_val->new_tab
+							);
+						}
+					}
+					
+					$primary_key					= array();
+					$hash							= null;
+					$columns						= null;
+					$slideshow						= null;
+					$slideshow_count				= 0;
+					
+					foreach($val as $field => $params)
+					{
+						if(isset($params->token))
+						{
+							$hash					= $params->token;
+						}
+						
+						if($params->primary)
+						{
+							$primary_key[$field]	= $params->primary;
+							
+							if(isset($results->unset_read->$field) && is_array($results->unset_read->$field) && in_array($params->original, $results->unset_read->$field))
+							{
+								$reading			= false;
+							}
+							
+							if(isset($results->unset_update->$field) && is_array($results->unset_update->$field) && in_array($params->original, $results->unset_update->$field))
+							{
+								$updating			= false;
+							}
+							
+							if(isset($results->unset_delete->$field) && is_array($results->unset_delete->$field) && in_array($params->original, $results->unset_delete->$field))
+							{
+								$deleting			= false;
 							}
 						}
 						
-						$slideshow_count			= $num;
-					}
-					else
-					{
-						$columns					.= '
-							<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '">
-								' . $params->content . '
-							</li>
-						';
-					}
-				}
-				
-				if($reading && !in_array('read', $results->unset_action))
-				{
-					$extra_option[]					= array
-					(
-						'url'						=> go_to('read', $results->query_string[$key]),
-						'class'						=> 'btn --modal',
-						'icon'						=> 'mdi mdi-magnify',
-						'label'						=> phrase('view'),
-						'new_tab'					=> false
-					);
-				}
-				
-				if($updating && !in_array('update', $results->unset_action))
-				{
-					$extra_option[]					= array
-					(
-						'url'						=> go_to('update', $results->query_string[$key]),
-						'class'						=> 'btn --modal',
-						'icon'						=> 'mdi mdi-square-edit-outline',
-						'label'						=> phrase('update'),
-						'new_tab'					=> false
-					);
-				}
-				
-				if($deleting && !in_array('delete', $results->unset_action))
-				{
-					$extra_option[]					= array
-					(
-						'url'						=> go_to('delete', $results->query_string[$key]),
-						'class'						=> 'btn --open-delete-confirm',
-						'icon'						=> 'mdi mdi-trash-can-outline',
-						'label'						=> phrase('delete'),
-						'new_tab'					=> false
-					);
-				}
-				
-				if($extra_option)
-				{
-					foreach($extra_option as $_key => $_val)
-					{
-						if($_key == 3) break;
+						if($params->hidden) continue;
 						
-						$item_option				.= '
-							<a href="' . $_val['url'] . '" class="text-truncate pt-2 pb-2 ' . $_val['class'] . '" data-toggle="tooltip" title="' . $_val['label'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
-								<i class="' . $_val['icon'] . '"></i>
-							</a>
-						';
-						
-						unset($extra_option[$_key]);
-					}
-				}
-				
-				$grid								.= '
-					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card shadow-sm rounded-more border-0 mb-3">
-							' . ($slideshow ? '
-							<div id="slideshow_' . $key . '" class="carousel slide" data-ride="carousel">
-								<div class="carousel-inner">
-									' . $slideshow . '
-								</div>
-								' . ($slideshow_count > 1 ? '
-								<a class="carousel-control-prev gradient-right" href="#slideshow_' . $key . '" role="button" data-slide="prev">
-									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-									<span class="sr-only">
-										' . phrase('previous') . '
-									</span>
-								</a>
-								<a class="carousel-control-next gradient-left" href="#slideshow_' . $key . '" role="button" data-slide="next">
-									<span class="carousel-control-next-icon" aria-hidden="true"></span>
-									<span class="sr-only">
-										' . phrase('next') . '
-									</span>
-								</a>
-								' : null) . '
-							</div>
-							' : null) . '
-							<div class="card-body pr-0 pb-0 pl-0">
-								<ul class="list-group list-group-flush">
-									' . $columns . '
-								</ul>
-								<div class="btn-group d-flex bg-white border-top">
+						if(isset($results->grid->thumbnail) && $field == $results->grid->thumbnail && array_intersect($params->type, array('image', 'images')))
+						{
+							$images					= json_decode($params->original);
+							
+							if($images)
+							{
+								$num				= 0;
 								
-									' . $item_option . '
+								foreach($images as $src => $alt)
+								{
+									if($num == 3) break;
 									
-									' . ($extra_option ? '
-									<a href="" class="btn --open-item-option pt-2 pb-2" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-toggle="tooltip" title="' . phrase('more') . '">
-										<i class="mdi mdi-dots-horizontal-circle-outline"></i>
+									$slideshow		.= '
+										<div class="carousel-item rounded' . (!$num ? ' active' : null) . '">
+											<a href="' . get_image($results->grid->path, $src, 'thumb') . '" target="_blank">
+												<div class="clip gradient-top rounded-top"></div>
+												<img src="' . get_image($results->grid->path, $src, 'thumb') . '" class="d-block rounded w-100" alt="' . $alt . '">
+											</a>
+											<div class="carousel-caption">
+												<p>
+													' . $alt . '
+												</p>
+											</div>
+										</div>
+									';
+									
+									$num++;
+								}
+							}
+							
+							$slideshow_count		= $num;
+						}
+						else
+						{
+							$columns				.= '
+								<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '">
+									' . $params->content . '
+								</li>
+							';
+						}
+					}
+					
+					if($reading && !in_array('read', $results->unset_action))
+					{
+						$extra_option[]				= array
+						(
+							'url'					=> go_to('read', $results->query_string[$key]),
+							'class'					=> 'btn --modal',
+							'icon'					=> 'mdi mdi-magnify',
+							'label'					=> phrase('view'),
+							'new_tab'				=> false
+						);
+					}
+					
+					if($updating && !in_array('update', $results->unset_action))
+					{
+						$extra_option[]				= array
+						(
+							'url'					=> go_to('update', $results->query_string[$key]),
+							'class'					=> 'btn --modal',
+							'icon'					=> 'mdi mdi-square-edit-outline',
+							'label'					=> phrase('update'),
+							'new_tab'				=> false
+						);
+					}
+					
+					if($deleting && !in_array('delete', $results->unset_action))
+					{
+						$extra_option[]				= array
+						(
+							'url'					=> go_to('delete', $results->query_string[$key]),
+							'class'					=> 'btn --open-delete-confirm',
+							'icon'					=> 'mdi mdi-trash-can-outline',
+							'label'					=> phrase('delete'),
+							'new_tab'				=> false
+						);
+					}
+					
+					if($extra_option)
+					{
+						foreach($extra_option as $_key => $_val)
+						{
+							if($_key == 3) break;
+							
+							$item_option			.= '
+								<a href="' . $_val['url'] . '" class="text-truncate pt-2 pb-2 ' . $_val['class'] . '" data-toggle="tooltip" title="' . $_val['label'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
+									<i class="' . $_val['icon'] . '"></i>
+								</a>
+							';
+							
+							unset($extra_option[$_key]);
+						}
+					}
+					
+					$grid							.= '
+						<div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="card shadow-sm rounded-more border-0 mb-3">
+								' . ($slideshow ? '
+								<div id="slideshow_' . $key . '" class="carousel slide" data-ride="carousel">
+									<div class="carousel-inner">
+										' . $slideshow . '
+									</div>
+									' . ($slideshow_count > 1 ? '
+									<a class="carousel-control-prev gradient-right" href="#slideshow_' . $key . '" role="button" data-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="sr-only">
+											' . phrase('previous') . '
+										</span>
+									</a>
+									<a class="carousel-control-next gradient-left" href="#slideshow_' . $key . '" role="button" data-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="sr-only">
+											' . phrase('next') . '
+										</span>
 									</a>
 									' : null) . '
 								</div>
+								' : null) . '
+								<div class="card-body pr-0 pb-0 pl-0">
+									<ul class="list-group list-group-flush">
+										' . $columns . '
+									</ul>
+									<div class="btn-group d-flex bg-white border-top">
+									
+										' . $item_option . '
+										
+										' . ($extra_option ? '
+										<a href="" class="btn --open-item-option pt-2 pb-2" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-toggle="tooltip" title="' . phrase('more') . '">
+											<i class="mdi mdi-dots-horizontal-circle-outline"></i>
+										</a>
+										' : null) . '
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
-				';
-			}
-			
-			echo '
-				<div class="alias-table-index">
+					';
+				}
+				
+				echo '
 					<div class="row">
 						' . $grid . '
 					</div>
-				</div>
-			';
-		}
-		else
-		{
-			echo '
-				<div class="alias-table-index">
-					<div class="text-center full-height d-flex align-items-center justify-content-center">
-						<div>
-							<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-							<br />
-							<p class="lead text-muted">
-								' . phrase('no_matching_record_were_found') . '
-							</p>
-						</div>
+				';
+			}
+			else
+			{
+				echo '
+					<div class="text-center pt-5 pb-5">
+						<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+						<br />
+						<p class="lead text-muted">
+							' . phrase('no_matching_record_were_found') . '
+						</p>
 					</div>
-				</div>
-			';
-		}
-		
-		/**
-		 * Pagination
-		 */
-		echo ($pagination->total_rows > 0 ? '<div class="alias-pagination"><div class="row"><div class="col-12 pt-3">' . $template->pagination . '</div></div></div>' : null);
-	?>
+				';
+			}
+		?>
+	</div>
+</div>
+<div class="alias-pagination">
+	<div class="container-fluid pt-3 pb-3">
+		<?php echo $template->pagination; ?>
+	</div>
 </div>
 
 <!-- search modal -->
