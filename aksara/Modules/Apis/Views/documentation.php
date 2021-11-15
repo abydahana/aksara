@@ -62,7 +62,7 @@
 							{
 								foreach($extract_privileges->$active as $_key => $_val)
 								{
-									$method				.= '<a href="#--method-' . $_val . '"><span class="badge badge-success"><i class="mdi mdi-check"></i> ' . phrase($_val) . '</span></a>&nbsp;';
+									$method				.= '<a href="#--method-' . $_val . '"><span class="badge badge-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
 								}
 							}
 							
@@ -269,7 +269,7 @@
 									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
 								</div>
 								<div class="--response-error-' . $val . ' d-none">
-									<h5 class="mt-3 mb-3">
+									<h5 class="mt-3">
 										' . phrase('error_response') . '
 									</h5>
 									<pre class="rounded-0 border-top border-bottom mt-0 mb-0 language-json"><code>{}</code></pre>
