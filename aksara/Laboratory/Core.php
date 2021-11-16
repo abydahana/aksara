@@ -2773,7 +2773,7 @@ class Core extends Controller
 		{
 			$this->_set_icon						= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-file-document-outline'));
 			$this->_set_title						= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) && $this->_set_title ? $this->_set_title : phrase('untitled')));
-			$this->_set_description					= ($description ? $description : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+			$this->_set_description					= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 			$this->_view							= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 			$this->_results							= $this->_query;
 		}
