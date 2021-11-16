@@ -2,7 +2,7 @@
 	<div role="map" class="bg-light" data-coordinate="<?php echo htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
 
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="jumbotron jumbotron-fluid bg-light gradient">
 	<div class="container">
 		<div class="text-center text-md-left">
 			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
@@ -25,7 +25,7 @@
 				<?php echo get_setting('office_name'); ?>
 			</h3>
 			<div class="form-group">
-				<label class="text-muted d-block">
+				<label class="text-muted d-block mb-0">
 					<?php echo phrase('address'); ?>
 				</label>
 				<p class="lead">
@@ -33,7 +33,7 @@
 				</p>
 			</div>
 			<div class="form-group">
-				<label class="text-muted d-block">
+				<label class="text-muted d-block mb-0">
 					<?php echo phrase('email'); ?>
 				</label>
 				<p class="lead">
@@ -45,7 +45,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="text-muted d-block">
+						<label class="text-muted d-block mb-0">
 							<?php echo phrase('phone'); ?>
 						</label>
 						<p class="lead">
@@ -57,7 +57,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="text-muted d-block">
+						<label class="text-muted d-block mb-0">
 							<?php echo phrase('whatsapp'); ?>
 						</label>
 						<p class="lead">
@@ -71,7 +71,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="text-muted d-block">
+						<label class="text-muted d-block mb-0">
 							<?php echo phrase('twitter'); ?>
 						</label>
 						<p class="lead">
@@ -83,7 +83,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="text-muted d-block">
+						<label class="text-muted d-block mb-0">
 							<?php echo phrase('instagram'); ?>
 						</label>
 						<p class="lead">
@@ -96,7 +96,7 @@
 			</div>
 		</div>
 		<div class="col-lg-6">
-			<div class="card rounded-0 shadow">
+			<div class="card border-0 rounded-more shadow">
 				<div class="card-body">
 					<h3 class="mb-3">
 						<?php echo phrase('direct_inquiry'); ?>
