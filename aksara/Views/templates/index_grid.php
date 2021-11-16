@@ -152,6 +152,8 @@ if(isset($results->extra_action->toolbar))
 								
 								foreach($images as $src => $alt)
 								{
+									if(!in_array(strtolower(pathinfo($src, PATHINFO_EXTENSION)), array('jpg', 'jpeg', 'png', 'gif'))) continue;
+									
 									if($num == 3) break;
 									
 									$slideshow		.= '
