@@ -28,7 +28,7 @@ class Contact extends \Aksara\Laboratory\Core
 		
 		$this->set_title(phrase('contact_us'))
 		->set_icon('mdi mdi-phone-classic')
-		->set_description(phrase('including_the_credits_of_external_resources'))
+		->set_description(phrase('submit_your_inquiry_or_question_to_us'))
 		
 		->render();
 	}
@@ -108,7 +108,7 @@ class Contact extends \Aksara\Laboratory\Core
 			
 			if(!$this->email->send())
 			{
-				return throw_exception(400, array('message' => $this->email->printDebugger()));
+				return throw_exception(400, array('message' => $this->email->printDebugger('header')));
 			}
 		}
 		
