@@ -38,8 +38,6 @@ class Forgot extends \Aksara\Laboratory\Core
 	
 	public function _validate_form()
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		$this->form_validation->setRule('username', phrase('username_or_email'), 'required');
 		
 		if($this->form_validation->run(service('request')->getPost()) === false)
@@ -160,7 +158,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		
 		if(!$this->email->send())
 		{
-			return throw_exception(400, array('message' => $this->email->printDebugger()));
+			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 		
 		$this->model->delete
@@ -214,8 +212,6 @@ class Forgot extends \Aksara\Laboratory\Core
 	
 	public function _reset_password()
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		$this->form_validation->setRule('password', phrase('new_password'), 'required');
 		$this->form_validation->setRule('confirm_password', phrase('password_confirmation'), 'required|matches[password]');
 		
@@ -347,7 +343,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		
 		if(!$this->email->send())
 		{
-			return throw_exception(400, array('message' => $this->email->printDebugger()));
+			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 		
 		$this->model->delete

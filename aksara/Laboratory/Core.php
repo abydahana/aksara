@@ -3252,9 +3252,6 @@ class Core extends Controller
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* hide the system error and show in the exception instead */
-		error_reporting(0);
-		
 		/* make sure the delete action have where as condition */
 		if(!$where)
 		{

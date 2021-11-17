@@ -288,8 +288,6 @@ class Register extends \Aksara\Laboratory\Core
 	
 	private function _send_activation_email($user_id = 0, $email = null, $first_name = null, $last_name = null)
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		$token										= sha1($email . time());
 		
 		$this->model->insert
@@ -381,14 +379,12 @@ class Register extends \Aksara\Laboratory\Core
 		
 		if(!$this->email->send())
 		{
-			// return throw_exception(400, array('message' => $this->email->printDebugger()));
+			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 	}
 	
 	private function _send_welcome_email($email = null, $username = null, $first_name = null, $last_name = null)
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
@@ -467,7 +463,7 @@ class Register extends \Aksara\Laboratory\Core
 		
 		if(!$this->email->send())
 		{
-			// return throw_exception(400, array('message' => $this->email->printDebugger()));
+			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 	}
 }
