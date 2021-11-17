@@ -44,8 +44,8 @@
 						}
 						
 						$output						.= '
-							<div class="mt-5 mb-5">
-								' . str_replace('MsoNormalTable', 'table table-bordered', preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-justify article">', preg_replace('/style[^>]*/', '', $val->post_content)))) . '
+							<div class="mt-5 mb-5 text-break-word">
+								' . str_replace('MsoNormalTable', 'table table-bordered', preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-justify article text-break-word">', preg_replace('/style[^>]*/', '', $val->post_content)))) . '
 							</div>
 							<p class="mb-5">
 								' . $tags . '

@@ -148,7 +148,11 @@ class Modules extends \Aksara\Laboratory\Core
 					
 					foreach($val as $_key => $_val)
 					{
-						if('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val))
+						if(strpos($_key, ' ') !== false)
+						{
+							break;
+						}
+						else if('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val))
 						{
 							$package				= json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
 							
