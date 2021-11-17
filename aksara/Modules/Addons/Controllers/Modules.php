@@ -491,30 +491,28 @@ class Modules extends \Aksara\Laboratory\Core
 		if(!service('request')->getPost('module'))
 		{
 			$html									= '
-				<div class="p-3">
-					<form action="' . current_page() . '" method="POST" class="--validate-form">
-						<div class="text-center">
-							' . phrase('are_you_sure_want_to_delete_this_module') . '
+				<form action="' . current_page() . '" method="POST" class="--validate-form">
+					<div class="text-center">
+						' . phrase('are_you_sure_want_to_delete_this_module') . '
+					</div>
+					<hr class="row" />
+					<div class="--validation-callback mb-0"></div>
+					<div class="row">
+						<div class="col-6">
+							<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+								<i class="mdi mdi-window-close"></i>
+								' . phrase('cancel') . '
+							</a>
 						</div>
-						<hr class="row" />
-						<div class="--validation-callback mb-0"></div>
-						<div class="row">
-							<div class="col-6">
-								<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
-									<i class="mdi mdi-window-close"></i>
-									' . phrase('cancel') . '
-								</a>
-							</div>
-							<div class="col-6">
-								<input type="hidden" name="module" value="' . $this->_primary . '" />
-								<button type="submit" class="btn btn-danger btn-block">
-									<i class="mdi mdi-check"></i>
-									' . phrase('continue') . '
-								</button>
-							</div>
+						<div class="col-6">
+							<input type="hidden" name="module" value="' . $this->_primary . '" />
+							<button type="submit" class="btn btn-danger btn-block">
+								<i class="mdi mdi-check"></i>
+								' . phrase('continue') . '
+							</button>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			';
 			
 			return make_json
