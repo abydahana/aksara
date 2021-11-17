@@ -8242,7 +8242,7 @@ class Core extends Controller
 					$type							= $value['type'];
 					
 					/* skip field because it were disable */
-					if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($field, $this->_unset_field)) || (in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) && !in_array('to_slug', $type))) || in_array('disabled', $type)) continue;
+					if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($field, $this->_unset_field)) || (in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) && !array_intersect(array('to_slug', 'current_timestamp'), $type))) || in_array('disabled', $type)) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
