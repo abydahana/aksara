@@ -453,8 +453,6 @@ class Auth extends \Aksara\Laboratory\Core
 	
 	private function _send_welcome_email($session)
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
 		 */
@@ -532,7 +530,7 @@ class Auth extends \Aksara\Laboratory\Core
 		
 		if(!$this->email->send())
 		{
-			// return throw_exception(400, array('message' => $this->email->printDebugger()));
+			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 	}
 	

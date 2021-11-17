@@ -35,8 +35,6 @@ class Contact extends \Aksara\Laboratory\Core
 	
 	public function _send_message()
 	{
-		error_reporting(0); // prevent the PHP throw errors before exception
-		
 		$this->form_validation->setRule('full_name', phrase('full_name'), 'required');
 		$this->form_validation->setRule('email', phrase('email'), 'required|valid_email');
 		$this->form_validation->setRule('subject', phrase('subject'), 'required');
@@ -108,7 +106,7 @@ class Contact extends \Aksara\Laboratory\Core
 			
 			if(!$this->email->send())
 			{
-				return throw_exception(400, array('message' => $this->email->printDebugger('header')));
+				//return throw_exception(400, array('message' => $this->email->printDebugger('header')));
 			}
 		}
 		
