@@ -114,7 +114,7 @@
 			<div class="row">
 				<div class="col-sm-4">
 					<?php if(($detail->type == 'backend' && $detail->folder == get_setting('backend_theme')) || ($detail->type == 'frontend' && $detail->folder == get_setting('frontend_theme'))) { ?>
-					<a href="<?php echo current_page('../customize', array('theme' => $detail->folder)); ?>" class="btn btn-dark btn-block btn-sm --xhr">
+					<a href="<?php echo current_page('../customize', array('theme' => $detail->folder)); ?>" class="btn btn-dark btn-block btn-sm --modal">
 						<i class="mdi mdi-cogs"></i>
 						<?php echo phrase('customize'); ?>
 					</a>

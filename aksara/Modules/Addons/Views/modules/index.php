@@ -41,9 +41,9 @@
 			{
 				foreach($installed as $key => $val)
 				{
-					if(isset($val->screenshot[0]->thumbnail) && file_exists('../modules/' . $val->folder . '/' . $val->screenshot[0]->thumbnail))
+					if(isset($val->screenshot[0]->src) && file_exists('../modules/' . $val->folder . '/' . $val->screenshot[0]->src))
 					{
-						$screenshot					= base_url('modules/' . $val->folder . '/' . $val->screenshot[0]->thumbnail);
+						$screenshot					= base_url('modules/' . $val->folder . '/' . $val->screenshot[0]->src);
 					}
 					else
 					{
@@ -67,7 +67,7 @@
 									<div class="row">
 										<div class="col-6">
 											<a href="' . current_page('activate', array('item' => $val->folder)) . '" class="btn btn-outline-primary btn-block btn-xs --modal" target="_blank">
-												' . phrase('activate') . '
+												' . phrase('up_to_date') . '
 											</a>
 										</div>
 										<div class="col-6">

@@ -172,9 +172,20 @@ if(isset($results->extra_action->toolbar))
 									
 									$num++;
 								}
+								
+								$slideshow_count	= $num;
 							}
-							
-							$slideshow_count		= $num;
+							else
+							{
+								$slideshow			= '
+									<div class="carousel-item rounded active">
+										<a href="' . get_image($results->grid->path, $params->original, 'thumb') . '" target="_blank">
+											<div class="clip gradient-top rounded-top"></div>
+											<img src="' . get_image($results->grid->path, $params->original, 'thumb') . '" class="d-block rounded w-100" alt="...">
+										</a>
+									</div>
+								';
+							}
 						}
 						else
 						{
@@ -240,7 +251,7 @@ if(isset($results->extra_action->toolbar))
 					
 					$grid							.= '
 						<div class="col-sm-6 col-md-4 col-lg-3">
-							<div class="card shadow-sm rounded-more border-0 mb-3">
+							<div class="card shadow-sm rounded-more border-0 overflow-hidden mb-3">
 								' . ($slideshow ? '
 								<div id="slideshow_' . $key . '" class="carousel slide" data-ride="carousel">
 									<div class="carousel-inner">

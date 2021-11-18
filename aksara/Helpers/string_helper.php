@@ -152,7 +152,7 @@ if(!function_exists('json_fixer'))
 
 if(!function_exists('time_ago'))
 {
-	function time_ago($datetime = null, $full = false)
+	function time_ago($datetime = null, $full = false, $short = false)
 	{
 		$now										= new \DateTime;
 		$ago										= new \DateTime($datetime);
@@ -189,6 +189,6 @@ if(!function_exists('time_ago'))
 			$string								= array_slice($string, 0, 1);
 		}
 		
-		return $string ? implode(', ', $string) . ' ' . phrase('ago') : phrase('just_now');
+		return ($string ? implode(', ', $string) . ' ' . (!$short ? phrase('ago') : null) : phrase('just_now'));
 	}
 }

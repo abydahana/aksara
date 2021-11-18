@@ -8,7 +8,7 @@
 		{
 			if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
 			{
-				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->src);
+				$screenshot							= base_url('modules/' . $detail->folder . '/' . $val->src);
 			}
 			else
 			{
@@ -112,9 +112,9 @@
 		<div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
 			<div class="row">
 				<div class="col-sm-6">
-					<a href="<?php echo base_url(('backend' == $detail->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $detail->folder, 'integrity_check' => $detail->integrity)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
-						<i class="mdi mdi-magnify"></i>
-						<?php echo phrase('preview'); ?>
+					<a href="<?php echo current_page('../update', array('item' => $detail->folder)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
+						<i class="mdi mdi-auto-fix"></i>
+						<?php echo phrase('update'); ?>
 					</a>
 				</div>
 				<div class="col-sm-6">
