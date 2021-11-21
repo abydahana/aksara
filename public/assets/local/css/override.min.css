@@ -702,7 +702,10 @@ a:hover,
 {
 	position: relative;
 	overflow: hidden;
-	padding: 0
+	padding: 0;
+	border: 2px dashed #ced4da;
+	background: #f9fcff;
+	min-height: 38px
 }
 
 .btn.btn-file>input[type=file]
@@ -722,6 +725,28 @@ a:hover,
 	display: block
 }
 
+.fileupload-new
+{
+	min-height: 36px
+}
+
+.fileuploader-item.row
+{
+	margin-right: 0;
+	margin-left: 0
+}
+
+.fileuploader-item.row .col-2,
+.fileuploader-item.row .col-10
+{
+	padding: 0
+}
+
+.fileuploader-item.row .col-2
+{
+	padding-right: 1rem
+}
+
 button:focus,
 .btn:focus,
 button:active,
@@ -732,30 +757,6 @@ button:visited,
 	outline: none;
 	box-shadow: none
 }
-/*
-label+.form-control:not([disabled]),
-label+.form-control:not([read-only])
-{
-	border: 0;
-	border-bottom: 1px solid #ddd;
-	border-radius: 0;
-	padding-left: 0;
-	padding-right: 0
-}
-
-label+.form-control:not([disabled]):not([read-only]):focus
-{
-	box-shadow: none;
-	border-bottom: 2px solid #80bdff
-}
-
-label+.form-control:disabled,
-label+.form-control:read-only
-{
-	padding: .375rem .75rem;
-	border-radius: .25rem
-}
-*/
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button
@@ -802,6 +803,17 @@ input::-webkit-inner-spin-button
 .select2-container--default .select2-dropdown.select2-dropdown--above
 {
 	box-shadow: none!important
+}
+
+.custom-file-label
+{
+	border: 2px dashed #ced4da;
+	background: #f9fcff
+}
+
+.custom-file-label::after
+{
+	height: auto
 }
 
 .select2-results .select2-results__option[role=group] ul li.select2-results__option
@@ -976,43 +988,64 @@ textarea
  * End of additional tweaks
  */
 
-
 /* summernote tweaks */
-.card-body textarea[role=wysiwyg],
-.card-body .note-editor
+.note-modal .modal-dialog .modal-content
 {
-	border: none;
-	border-radius: 0
+	border: 1px solid rgba(0,0,0,.15)
 }
 
-.card-body .note-editor.card
+.note-editor.note-frame .note-editing-area .note-editable,
+.note-editor.note-airframe .note-editing-area .note-editable
 {
-	margin: -.5rem
+	padding: .375rem .75rem!important;
+	color: #495057
 }
 
-.note-form-label
+.note-editing-area
 {
-	display: block;
-	color: #a8a8a8;
-	cursor: pointer
+	cursor: text
 }
 
-.note-editor.note-frame .note-statusbar
+.note-popover .popover-content,
+.note-editor .note-toolbar
+{
+	padding: .25rem .75rem!important;
+	background: transparent!important
+}
+
+.note-popover .popover-content>.note-btn-group,
+.note-editor .note-toolbar>.note-btn-group
+{
+	margin-top: 0!important
+}
+
+.note-btn-group .note-btn
+{
+	padding: .15rem .5rem!important;
+	font-size: 12px!important
+}
+
+.note-statusbar
 {
 	display: none
 }
 
-.note-editor.note-frame .note-editing-area .note-editable
+.note-modal .modal-dialog
 {
-	color: #495057!important;
-	cursor: text
+	box-shadow: none!important
 }
 
-.note-editor .note-editing-area
+.note-form-label
 {
-	cursor: text
+	margin-bottom: 0!important
 }
-/* end summernote tweaks */
+
+.form-control-file,
+.form-control-range
+{
+	font-size: 12px!important
+}
+/* end of summernote */
 
 /* mcustomscrollbar tweaks */
 .mCSB_container_wrapper
@@ -1333,9 +1366,17 @@ blink
 	bottom: 0
 }
 
-.sidebar-menu .nav-item.active > a.nav-link
+.sidebar-menu .nav-item.active.is-parent > a.nav-link
 {
-	color: #777
+	background: rgba(0,0,0,.07)
+}
+
+.sidebar-menu .nav-item.active:not(.is-parent) > a.nav-link
+{
+	background: -moz-linear-gradient(left, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+	background: -webkit-linear-gradient(left, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+	background: linear-gradient(to right, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+	color: #fff
 }
 
 .sidebar-menu a.nav-link

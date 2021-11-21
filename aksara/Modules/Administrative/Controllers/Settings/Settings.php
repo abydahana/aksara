@@ -96,6 +96,8 @@ class Settings extends \Aksara\Laboratory\Core
 				'office_address'					=> 'textarea',
 				'office_map'						=> 'coordinate',
 				'one_device_login'					=> 'boolean',
+				'login_attempt'						=> 'number_format',
+				'blocking_time'						=> 'number_format',
 				'username_changes'					=> 'boolean',
 				'frontend_registration'				=> 'boolean',
 				'auto_active_registration'			=> 'boolean',
@@ -164,6 +166,8 @@ class Settings extends \Aksara\Laboratory\Core
 				'frontend_registration'				=> 'boolean',
 				'auto_active_registration'			=> 'boolean',
 				'one_device_login'					=> 'boolean',
+				'login_attempt'						=> 'numeric|max_length[5]',
+				'blocking_time'						=> 'numeric|max_length[5]',
 				
 				/* APIS */
 				'openlayers_search_provider'		=> 'in_list[openlayers,google,osm]',
@@ -182,7 +186,7 @@ class Settings extends \Aksara\Laboratory\Core
 				/* NOTIFIER */
 				'action_sound'						=> 'boolean',
 				'smtp_email_masking'				=> $required_email_masking,
-				'smtp_port'							=> 'numeric'
+				'smtp_port'							=> 'numeric|max_length[5]'
 			)
 		)
 		->set_alias
@@ -206,6 +210,8 @@ class Settings extends \Aksara\Laboratory\Core
 				
 				/* MEMBERSHIP */
 				'one_device_login'					=> phrase('one_device_login'),
+				'login_attempt'						=> phrase('login_attempts'),
+				'blocking_time'						=> phrase('blocking_time'),
 				'default_membership_group'			=> phrase('default_membership_group'),
 				'auto_active_registration'			=> phrase('auto_active_registration'),
 				'username_changes'					=> phrase('enable_username_changes'),

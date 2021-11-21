@@ -1,0 +1,53 @@
+{
+	"name": "Module Name",
+	"description": "The sample module for Aksara (put your module description here)",
+	"version": "1.0",
+	"author": "Aby Dahana",
+	"website": "https://abydahana.github.io",
+	"demo_url": "https://demo.aksaracms.com",
+	"type": "module",
+	"compatibility": [
+		"4.2.8"
+	],
+	"attribution": {
+		"Label 1": "Value 1",
+		"Label 2": "Value 2"
+	},
+	"screenshot": [{
+		"src": "screenshot_1.jpg",
+		"alt": "Screenshot 1"
+	}, {
+		"src": "screenshot_2.jpg",
+		"alt": "Screenshot 2"
+	}],
+	"menu": [{
+		"placement": "header",
+		"group": ["0"],
+		"link": [{
+			"label": "Sample Module",
+			"slug": "sample",
+			"icon": "mdi mdi-plus"
+		}]
+	}, {
+		"placement": "sidebar",
+		"group": ["1","2"],
+		"link": [{
+			"label": "Sample",
+			"slug": "sample",
+			"icon": "mdi mdi-plus",
+			"children": [{
+				"label": "CRUD",
+				"slug": "sample/crud",
+				"icon": "mdi mdi-dropbox"
+			}]
+		}]
+	}],
+	"permission": {
+		"1": {
+			"sample/crud": ["index","create","read","update","delete","export","print","pdf"]
+		},
+		"2": {
+			"sample/crud": ["index","create","read","update","delete","export","print","pdf"]
+		}
+	}
+}

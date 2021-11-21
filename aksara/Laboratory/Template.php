@@ -835,7 +835,7 @@ class Template
 		return $view;
 	}
 	
-	private function _get_menu($placement = null, $additional_class = null, $menu = array(), $visible_menus = array(), $rendered = false)
+	private function _get_menu($placement = null, $additional_class = null, $menu = array(), $visible_menus = array(), $rendered = false, $level = 0)
 	{
 		if('frontend' == $this->get_theme_property('type'))
 		{
@@ -1215,7 +1215,6 @@ class Template
 			$is_children							= true;
 		}
 		
-		$initial									= service('request')->uri->getSegments();
 		$module										= strtolower(substr(service('router')->controllerName(), strrpos(service('router')->controllerName(), '/') + 1));
 		$menus										= null;
 		
@@ -1245,7 +1244,7 @@ class Template
 						' . phrase('main_navigation') . '
 					</span>
 				</li>
-				<li class="nav-item' . ('dashboard' == service('router')->controllerName() ? ' active' : '') . '">
+				<li class="nav-item' . ('dashboard' == service('uri')->getPath() ? ' active' : '') . '">
 					<a href="' . base_url('dashboard') . '" class="nav-link --xhr">
 						<i class="mdi mdi-monitor-dashboard"></i>
 						<span class="hide-on-collapse">
@@ -1282,9 +1281,8 @@ class Template
 						$children					= true;
 					}
 					
-					$slug							= explode('/', $field['slug']);
-					$slug							= end($slug);
-				
+					$slug							= $field['slug'];
+					
 					if(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $field['slug']))
 					{
 						$field['slug']				= $field['slug'] . '" target="_blank';
@@ -1295,7 +1293,7 @@ class Template
 					}
 					
 					$menus							.= '
-						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . (in_array($slug, $initial) ? ' active' : '') . '">
+						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . ($slug == service('uri')->getPath() ? ' active' : '') . '">
 							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : null) . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
 								' . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? '<i class="' . (isset($field['icon']) ? $field['icon'] : 'mdi mdi-circle-outline') . '"></i>' : null) . '
 								' . ($children && 'header' != $placement ? '<i class="mdi mdi-chevron-right float-right"></i>' : null) . '
@@ -1303,7 +1301,7 @@ class Template
 									' . ($field['label'] ? phrase($field['label'], true) : null) . '
 								</span>
 							</a>
-							' . ($children ? $this->_get_menu($placement, null, $field['children'], $visible_menus, true) : '') . '
+							' . ($children ? $this->_get_menu($placement, null, $field['children'], $visible_menus, true, ($level + 1)) : '') . '
 						</li>
 					';
 				}

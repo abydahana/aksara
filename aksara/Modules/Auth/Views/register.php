@@ -53,12 +53,12 @@
 						</div>
 					</div>
 					<div class="col-sm-6">
-						<div class="form-group mb-4" style="position: relative">
+						<div class="form-group relative mb-4">
 							<label class="d-block font-weight-bold" for="password_input">
 								<?php echo phrase('password'); ?>
 							</label>
 							<input type="password" name="password" class="form-control font-weight-light" id="password_input" placeholder="<?php echo phrase('minimum'); ?> 6 <?php echo phrase('characters'); ?>" maxlength="32" />
-							<i class="mdi mdi-eye-outline mdi-2x password-peek text-muted" style="position:absolute; right: 8px; bottom: 8px; background: #fff"></i>
+							<i class="mdi mdi-2x password-peek text-muted mdi-eye-outline absolute bottom right mb-1 mr-2" data-parent=".form-group" data-peek=".form-control" style="z-index:3"></i>
 						</div>
 					</div>
 				</div>
@@ -117,15 +117,3 @@
 		</div>
 	</form>
 </div>
-<script type="text/javascript">
-	$(document).ready(function()
-	{
-		$('body').off('click.password-peek touch.password-peek');
-		$('body').on('click.password-peek touch.password-peek', '.password-peek', function(e)
-		{
-			e.preventDefault(),
-			$(this).toggleClass('peek'),
-			($(this).hasClass('peek') ? $(this).removeClass('mdi-eye-outline').addClass('mdi-eye-off-outline').prev('input').attr('type', 'text') : $(this).removeClass('mdi-eye-off-outline').addClass('mdi-eye-outline').prev('input').attr('type', 'password'))
-		})
-	})
-</script>

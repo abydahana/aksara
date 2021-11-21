@@ -181,21 +181,27 @@ if(! function_exists('phrase'))
 		$phrase										= strtolower(preg_replace('!\s+!', '_', trim(preg_replace('/([^0-9a-z])/i', ' ', $phrase))));
 		
 		/* get locale by session */
-		$language_id								= (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+		$language									= get_userdata('language');
 		
-		$language									= $model->select
-		('
-			code
-		')
-		->get_where
-		(
-			'app__languages',
-			array
+		/* check if language session isn't available */
+		if(!$language)
+		{
+			$language_id							= (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+			
+			$language								= $model->select
+			('
+				code
+			')
+			->get_where
 			(
-				'id'								=> $language_id
+				'app__languages',
+				array
+				(
+					'id'							=> $language_id
+				)
 			)
-		)
-		->row('code');
+			->row('code');
+		}
 		
 		$translation_file							= WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
 		
