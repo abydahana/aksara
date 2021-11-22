@@ -105,6 +105,11 @@ if(!function_exists('make_json'))
 			$data->html								= $html;
 		}
 		
+		if(isset($data->status) && $data->status === 200)
+		{
+			$data->_token							= sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+		}
+		
 		$data										= json_fixer($data);
 		
 		$data										= preg_replace('/\t/', '', json_encode($data));

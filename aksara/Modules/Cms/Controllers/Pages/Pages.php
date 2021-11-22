@@ -139,6 +139,8 @@ class Pages extends \Aksara\Laboratory\Core
 		)
 		->modal_size('modal-xl')
 		
+		->order_by('updated_timestamp', 'DESC')
+		
 		->render($this->_table);
 	}
 }

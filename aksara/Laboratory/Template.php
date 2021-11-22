@@ -1245,7 +1245,7 @@ class Template
 					</span>
 				</li>
 				<li class="nav-item' . ('dashboard' == service('uri')->getPath() ? ' active' : '') . '">
-					<a href="' . base_url('dashboard') . '" class="nav-link --xhr">
+					<a href="' . base_url('dashboard') . '" class="nav-link --xhr" id="dashboard">
 						<i class="mdi mdi-monitor-dashboard"></i>
 						<span class="hide-on-collapse">
 							' . phrase('dashboard') . '
@@ -1294,7 +1294,7 @@ class Template
 					
 					$menus							.= '
 						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . ($slug == service('uri')->getPath() ? ' active' : '') . '">
-							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : null) . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
+							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : ' id="' . preg_replace('/[^a-zA-Z0-9]/', null, $field['slug']) . '"') . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
 								' . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? '<i class="' . (isset($field['icon']) ? $field['icon'] : 'mdi mdi-circle-outline') . '"></i>' : null) . '
 								' . ($children && 'header' != $placement ? '<i class="mdi mdi-chevron-right float-right"></i>' : null) . '
 								<span class="hide-on-collapse">

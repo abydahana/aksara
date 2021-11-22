@@ -46,6 +46,7 @@ class Users extends \Aksara\Laboratory\Core
 		if(in_array($this->_method, array('create')))
 		{
 			$this->set_validation('password', 'required|min_length[6]');
+			$this->set_default('registered_date', date('Y-m-d'));
 		}
 		
 		$this->set_title(phrase('manage_users'))
@@ -170,6 +171,9 @@ class Users extends \Aksara\Laboratory\Core
 		)
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_field('first_name, last_name', phrase('full_name'))
+		
+		->order_by('registered_date', 'DESC')
+		
 		->render($this->_table);
 	}
 	

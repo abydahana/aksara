@@ -989,6 +989,12 @@ textarea
  */
 
 /* summernote tweaks */
+.note-editor.note-airframe
+{
+	border: 1px solid rgba(0,0,0,.15)!important;
+	border-radius: .25rem
+}
+
 .note-modal .modal-dialog .modal-content
 {
 	border: 1px solid rgba(0,0,0,.15)

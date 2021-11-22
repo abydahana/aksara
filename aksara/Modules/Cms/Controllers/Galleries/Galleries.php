@@ -26,7 +26,7 @@ class Galleries extends \Aksara\Laboratory\Core
 		$this->set_permission(array(1, 2));
 		$this->set_theme('backend');
 		
-		$this->grid_view('gallery_images');
+		$this->grid_view('gallery_images', 'galleries', array('gallery_slug' => 'gallery_slug'), true);
 	}
 	
 	public function index()
@@ -113,6 +113,8 @@ class Galleries extends \Aksara\Laboratory\Core
 				'updated_timestamp'					=> phrase('updated')
 			)
 		)
+		
+		->order_by('updated_timestamp', 'DESC')
 		
 		->render($this->_table);
 	}

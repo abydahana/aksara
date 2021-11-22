@@ -393,11 +393,11 @@ class Core extends Controller
 		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			// user isn't signed in
-			return throw_exception(301, phrase('your_session_has_been_expired'), base_url(), true);
+			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()), true);
 		}
 		
 		// check if user permission is not allowed to access the module
-		else if(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id')))
+		else if(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect))
 		{
 			// user been signed in but blocked by group privilege
 			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
@@ -687,7 +687,7 @@ class Core extends Controller
 	 * @description	string
 	 * @return		string
 	 */
-	public function grid_view($thumbnail = null)
+	public function grid_view($thumbnail = null, $hyperlink = null, $parameter = array(), $new_tab = false)
 	{
 		// use grid view instead of data tables
 		$_SERVER['GRID_VIEW']						= true;
@@ -695,7 +695,10 @@ class Core extends Controller
 		// push thumbnail source to the grid view property
 		$this->_grid_view							= array
 		(
-			'thumbnail'								=> $thumbnail
+			'thumbnail'								=> $thumbnail,
+			'hyperlink'								=> $hyperlink,
+			'parameter'								=> $parameter,
+			'new_tab'								=> $new_tab
 		);
 		
 		return $this;
@@ -5003,7 +5006,7 @@ class Core extends Controller
 						if(!$skip)
 						{
 							$content				= '
-								<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+								<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : '//' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 									<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 										<i class="mdi mdi-open-in-new"></i>' . $content . '
 									</b>
@@ -5446,7 +5449,7 @@ class Core extends Controller
 							if(!$skip)
 							{
 								$content			= '
-									<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+									<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : '//' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 										<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 											<i class="mdi mdi-open-in-new"></i>' . $content . '
 										</b>
@@ -5481,6 +5484,18 @@ class Core extends Controller
 					if($this->_grid_view)
 					{
 						$fields[$field]['type']		= $type;
+					}
+					
+					if($this->_grid_view && $this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false) && $this->_grid_view['parameter'])
+					{
+						$grid_query					= array();
+						
+						foreach($this->_grid_view['parameter'] as $_key => $_val)
+						{
+							$grid_query[$_key]		= (isset($val[$_key]['original']) ? $val[$_key]['original'] : $_val);
+						}
+						
+						$this->_grid_view['url'][]	= base_url($this->_grid_view['hyperlink'], $grid_query);
 					}
 					
 					if($this->_api_request)
