@@ -36,9 +36,15 @@ class Privileges extends \Aksara\Laboratory\Core
 			app__users.last_name,
 			app__users.photo,
 			app__users.group_id,
+			app__groups.group_name,
 			' . $this->_table . '.sub_level_1,
 			' . $this->_table . '.access_year
 		')
+		->join
+		(
+			'app__groups',
+			'app__groups.group_id = app__users.group_id'
+		)
 		->join
 		(
 			$this->_table,
@@ -60,7 +66,7 @@ class Privileges extends \Aksara\Laboratory\Core
 		if(!$this->_user || in_array($this->_user->group_id, array(1)))
 		{
 			/* otherwise, throw the exception */
-			return throw_exception(404, phrase('you_are_not_allowed_to_modify_the_selected_user'), current_page('../'));
+			return throw_exception(404, phrase('you_are_not_allowed_to_modify_the_selected_user'), current_page('../', array('user_id' => null)));
 		}
 	}
 	
@@ -74,6 +80,7 @@ class Privileges extends \Aksara\Laboratory\Core
 			array
 			(
 				'userdata'							=> $this->_user,
+				'year'								=> $this->_year(),
 				'sub_level_1'						=> $this->_sub_level_1(),
 				'visible_menu'						=> $this->_visible_menu()
 			)
@@ -93,11 +100,47 @@ class Privileges extends \Aksara\Laboratory\Core
 	}
 	
 	/**
+	 * List the years if available
+	 */
+	private function _year()
+	{
+		$query										= $this->model->get_where
+		(
+			'app__years',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		return $query;
+	}
+	
+	/**
 	 * List the relation to sub level 1
+	 *
+	 * This is just a sample for sub level relation. You can change the table
+	 * for the sub level relation to your own table that will be used to
+	 * separate users based on their level
 	 */
 	private function _sub_level_1()
 	{
+		// remove below line when you has own sub level table
 		return array();
+		
+		// query to get the sub level data
+		$query										= $this->model->get_where
+		(
+			'sub_level_table',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		return $query;
 	}
 	
 	/**
@@ -110,8 +153,7 @@ class Privileges extends \Aksara\Laboratory\Core
 		$existing_menu								= json_decode($existing_menu);
 		
 		/* get sidebar menu by user group from the database */
-		$visible_menu								= $this->model
-		->select
+		$visible_menu								= $this->model->select
 		('
 			app__menus.serialized_data
 		')
@@ -198,6 +240,7 @@ class Privileges extends \Aksara\Laboratory\Core
 				</ul>
 			';
 		}
+		
 		return $items;
 	}
 }

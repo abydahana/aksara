@@ -11,9 +11,11 @@
 		{
 			$carousel								.= '
 				<div class="carousel-item text-center' . ($current == $key ? ' active' : null) . '">
-					<img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
-					<div class="carousel-caption d-none d-md-block text-shadow">
-						' . $val . '
+					<div class="full-height d-flex align-items-center justify-content-center bg-secondary">
+						<img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
+						<div class="carousel-caption d-none d-md-block text-shadow">
+							' . $val . '
+						</div>
 					</div>
 				</div>
 			';
@@ -65,7 +67,7 @@
 					</a>
 				</div>
 				<div class="col-9 col-md-10">
-					<a href="<?php echo current_page('../../'); ?>" class="float-right font-weight-bold --xhr">
+					<a href="<?php echo current_page('../../', array('gallery_slug' => null)); ?>" class="float-right font-weight-bold --xhr">
 						<i class="mdi mdi-window-close"></i>
 					</a>
 					<a href="<?php echo base_url('user/' . $results[0]->username); ?>" class="--xhr">

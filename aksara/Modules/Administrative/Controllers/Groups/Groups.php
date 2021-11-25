@@ -74,6 +74,7 @@ class Groups extends \Aksara\Laboratory\Core
 				'status'							=> phrase('status')
 			)
 		)
+		->modal_size('modal-lg')
 		->render($this->_table);
 	}
 	

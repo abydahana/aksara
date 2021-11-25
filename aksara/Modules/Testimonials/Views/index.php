@@ -21,9 +21,9 @@
 					foreach($results as $key => $val)
 					{
 						$items						.= '
-							<div class="row mb-3">
+							<div class="row mb-3 align-items-center">
 								<div class="col-3 col-md-3 pt-2">
-									<img src="' . get_image('testimonials', $val->photo, 'thumb') . '" class="img-fluid rounded">
+									<img src="' . get_image('testimonials', $val->photo, 'thumb') . '" class="img-fluid rounded-more">
 								</div>
 								<div class="col-9 col-md-9">
 									<h4 class="article font-weight-bold">

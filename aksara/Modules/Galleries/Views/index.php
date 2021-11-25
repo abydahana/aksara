@@ -65,7 +65,7 @@
 									' . (count($images) > 1 ? '
 									<div class="col-' . (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 3 : 6) . ' bg-dark d-flex align-items-center">
 										<div class="w-100">
-												' . $image_thumb . '
+											' . $image_thumb . '
 										</div>
 									</div>
 									' : '') . '

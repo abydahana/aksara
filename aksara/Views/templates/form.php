@@ -264,7 +264,7 @@
 					<em class="text-sm">(esc)</em>
 				</button>
 				<?php } else { ?>
-				<a href="<?php echo go_to(null, $results->query_string); ?>" class="btn btn-link --xhr">
+				<a href="<?php echo current_page('../', $results->query_string); ?>" class="btn btn-link --xhr">
 					<i class="mdi mdi-arrow-left"></i>
 					<?php echo phrase('back'); ?>
 				</a>

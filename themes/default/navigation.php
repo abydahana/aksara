@@ -136,7 +136,7 @@
 			</li>
 			<?php } else { ?>
 			<li class="nav-item d-none d-lg-block d-xl-block">
-				<a href="<?php echo base_url('auth'); ?>" class="nav-link nav-padding-left" onclick="component.login(this, event)">
+				<a href="<?php echo base_url('auth'); ?>" class="nav-link nav-padding-left --modal">
 					<i class="mdi mdi-login"></i>
 					<?php echo phrase('sign_in'); ?>
 				</a>

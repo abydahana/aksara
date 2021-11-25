@@ -5486,16 +5486,17 @@ class Core extends Controller
 						$fields[$field]['type']		= $type;
 					}
 					
-					if($this->_grid_view && $this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false) && $this->_grid_view['parameter'])
+					if($this->_grid_view && $this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false) && $this->_grid_view['parameter'] && !isset($this->_grid_view['url'][$key]))
 					{
 						$grid_query					= array();
+						$u							= 'url';
 						
 						foreach($this->_grid_view['parameter'] as $_key => $_val)
 						{
 							$grid_query[$_key]		= (isset($val[$_key]['original']) ? $val[$_key]['original'] : $_val);
 						}
 						
-						$this->_grid_view['url'][]	= base_url($this->_grid_view['hyperlink'], $grid_query);
+						$this->_grid_view[$u][$key]	= base_url($this->_grid_view['hyperlink'], $grid_query);
 					}
 					
 					if($this->_api_request)
@@ -8197,7 +8198,7 @@ class Core extends Controller
 				$type								= $val['type'];
 				
 				/* skip field when it's disabled and has no default value */
-				if((in_array($key, $this->_unset_field) && (!isset($this->_set_default[$key]) && !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$key]) && in_array('disabled', $type))) continue;
+				if((in_array($key, $this->_unset_field) && (!isset($this->_set_default[$key]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$key]) && in_array('disabled', $type))) continue;
 				
 				if(array_intersect(array('image'), $type))
 				{
