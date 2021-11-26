@@ -186,6 +186,8 @@ class Blogs extends \Aksara\Laboratory\Core
 			)
 		)
 		
+		->order_by('updated_timestamp', 'DESC')
+		
 		->render($this->_table);
 	}
 	

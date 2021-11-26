@@ -144,6 +144,16 @@ if(isset($results->extra_action->toolbar))
 						
 						if(isset($results->grid->thumbnail) && $field == $results->grid->thumbnail && array_intersect($params->type, array('image', 'images')))
 						{
+							$qs						= array();
+							
+							if($results->grid->parameter)
+							{
+								foreach($results->grid->parameter as $_key => $_val)
+								{
+									$qs[$_key]		= (isset($val->$_val->original) ? $val->$_val->original : $_val);
+								}
+							}
+							
 							$images					= json_decode($params->original);
 							
 							if($images)
@@ -158,7 +168,7 @@ if(isset($results->extra_action->toolbar))
 									
 									$slideshow		.= '
 										<div class="carousel-item rounded' . (!$num ? ' active' : null) . '">
-											<a href="' . get_image($results->grid->path, $src, 'thumb') . '" target="_blank">
+											<a href="' . (isset($results->grid->url[$key]) ? $results->grid->url[$key] : get_image($results->grid->path, $src, 'thumb')) . '"' . (isset($results->grid->url[$key]) && !$results->grid->new_tab ? ' class="--xhr"' : ' target="_blank"') . '>
 												<div class="clip gradient-top rounded-top"></div>
 												<img src="' . get_image($results->grid->path, $src, 'thumb') . '" class="d-block rounded w-100" alt="' . $alt . '">
 											</a>
@@ -172,9 +182,20 @@ if(isset($results->extra_action->toolbar))
 									
 									$num++;
 								}
+								
+								$slideshow_count	= $num;
 							}
-							
-							$slideshow_count		= $num;
+							else
+							{
+								$slideshow			= '
+									<div class="carousel-item rounded active">
+										<a href="' . (isset($results->grid->url[$key]) ? $results->grid->url[$key] : get_image($results->grid->path, $params->original, 'thumb')) . '"' . (isset($results->grid->url[$key]) && !$results->grid->new_tab ? ' class="--xhr"' : ' target="_blank"') . '>
+											<div class="clip gradient-top rounded-top"></div>
+											<img src="' . get_image($results->grid->path, $params->original, 'thumb') . '" class="d-block rounded w-100" alt="...">
+										</a>
+									</div>
+								';
+							}
 						}
 						else
 						{
@@ -240,7 +261,7 @@ if(isset($results->extra_action->toolbar))
 					
 					$grid							.= '
 						<div class="col-sm-6 col-md-4 col-lg-3">
-							<div class="card shadow-sm rounded-more border-0 mb-3">
+							<div class="card shadow-sm rounded-more border-0 overflow-hidden mb-3">
 								' . ($slideshow ? '
 								<div id="slideshow_' . $key . '" class="carousel slide" data-ride="carousel">
 									<div class="carousel-inner">

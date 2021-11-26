@@ -1,13 +1,13 @@
-<div class="container-fluid pt-5">
+<div class="container-fluid pt-5 pb-5">
 	<div class="row">
 		<div class="<?php echo (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
 			<div class="card-group">
 				<div class="card shadow">
 					<div class="card-body">
 						<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-							<div class="form-group pt-5 pb-3">
+							<div class="form-group">
 								<p class="text-center text-muted">
-									<i class="mdi mdi-lock-open-outline mdi-5x"></i>
+									<i class="mdi mdi-account-circle-outline mdi-5x text-muted"></i>
 								</p>
 							</div>
 							<div class="form-group pb-2">
@@ -25,7 +25,7 @@
 									<input type="text" name="username" class="form-control" id="username_input" placeholder="<?php echo phrase('enter_your_username_or_email'); ?>" />
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group relative">
 								<div class="input-group flex-nowrap">
 									<div class="input-group-prepend">
 										<span class="input-group-text" id="addon-wrapping">
@@ -34,6 +34,7 @@
 									</div>
 									<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_password'); ?>" autocomplete="new-password" />
 								</div>
+								<i class="mdi mdi-2x password-peek text-muted mdi-eye-outline absolute top right mt-2 mr-2" data-parent=".form-group" data-peek=".form-control" style="z-index:3"></i>
 							</div>
 							
 							<?php
@@ -65,21 +66,19 @@
 							
 							<div class="--validation-callback mb-0"></div>
 							
-							<div class="form-group">
-								<div class="row">
-									<div class="col-7">
-										<label class="mt-2">
-											<a href="<?php echo current_page('forgot'); ?>" class="--xhr">
-												<?php echo phrase('forgot_password'); ?>
-											</a>
-										</label>
-									</div>
-									<div class="col-5">
-										<button type="submit" class="btn btn-primary btn-block">
-											<i class="mdi mdi-check"></i> 
-											<?php echo phrase('sign_in'); ?>
-										</button>
-									</div>
+							<div class="row">
+								<div class="col-7">
+									<label class="mt-2">
+										<a href="<?php echo current_page('forgot'); ?>" class="--xhr">
+											<?php echo phrase('forgot_password'); ?>
+										</a>
+									</label>
+								</div>
+								<div class="col-5">
+									<button type="submit" class="btn btn-primary btn-block">
+										<i class="mdi mdi-check"></i> 
+										<?php echo phrase('sign_in'); ?>
+									</button>
 								</div>
 							</div>
 						</form>

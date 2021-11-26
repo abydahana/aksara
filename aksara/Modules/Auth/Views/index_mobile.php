@@ -11,8 +11,9 @@
 				<div class="form-group">
 					<input type="text" name="username" class="form-control" id="username_input" placeholder="<?php echo phrase('enter_your_username_or_email'); ?>" />
 				</div>
-				<div class="form-group">
+				<div class="form-group relative">
 					<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_password'); ?>" autocomplete="new-password" />
+					<i class="mdi mdi-2x password-peek text-muted mdi-eye-outline absolute top right mt-2 mr-2" data-parent=".form-group" data-peek=".form-control" style="z-index:3"></i>
 				</div>
 				<?php
 					if($years)

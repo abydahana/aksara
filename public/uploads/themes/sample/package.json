@@ -1,0 +1,25 @@
+{
+	"name": "Theme Name",
+	"description": "Another theme for Aksara (put your theme description here)",
+	"version": "1.0",
+	"author": "Aby Dahana",
+	"website": "https://abydahana.github.io",
+	"demo_url": "https://www.aksaracms.com",
+	"type": "frontend",
+	"compatibility":
+	[
+		"4.2.8"
+	],
+	"screenshot":
+	[
+		{
+			"src": "screenshot.png",
+			"alt": "Screenshot"
+		}
+	],
+	"attribution":
+	{
+		"Label 1": "Value 1",
+		"Label 2": "Value 2"
+	}
+}

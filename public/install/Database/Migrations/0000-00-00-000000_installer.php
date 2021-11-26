@@ -71,7 +71,7 @@ class Installer extends Migration
 				(
 					'type' => 'timestamp',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -147,7 +147,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('announcement_id', true, true);
@@ -219,7 +219,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('year', true, true);
@@ -256,7 +256,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -296,7 +296,7 @@ class Installer extends Migration
 					'type' => 'varchar',
 					'constraint' => 512,
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('site_id', true, true);
@@ -336,7 +336,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('group_id', true, true);
@@ -361,7 +361,7 @@ class Installer extends Migration
 				(
 					'type' => 'timestamp',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('path', true, true);
@@ -408,7 +408,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -462,7 +462,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('menu_id', true, true);
@@ -519,7 +519,7 @@ class Installer extends Migration
 					'type' => 'int',
 					'constraint' => 1,
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -550,7 +550,7 @@ class Installer extends Migration
 				(
 					'type' => (in_array($this->db->DBDriver, array('Postgre')) ? 'bytea' : (in_array($this->db->DBDriver, array('SQLSRV')) ? 'binary' : 'blob')),
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -644,20 +644,6 @@ class Installer extends Migration
 					'type' => 'text',
 					'null' => false
 				),
-				'one_device_login' => array
-				(
-					'type' => 'tinyint',
-					'constraint' => 1,
-					'default' => '0',
-					'null' => false
-				),
-				'username_changes' => array
-				(
-					'type' => 'tinyint',
-					'constraint' => 1,
-					'default' => '0',
-					'null' => false
-				),
 				'frontend_registration' => array
 				(
 					'type' => 'tinyint',
@@ -672,6 +658,32 @@ class Installer extends Migration
 					'null' => false
 				),
 				'auto_active_registration' => array
+				(
+					'type' => 'tinyint',
+					'constraint' => 1,
+					'default' => '0',
+					'null' => false
+				),
+				'username_changes' => array
+				(
+					'type' => 'tinyint',
+					'constraint' => 1,
+					'default' => '0',
+					'null' => false
+				),
+				'login_attempt' => array
+				(
+					'type' => 'int',
+					'constraint' => 5,
+					'default' => '0'
+				),
+				'blocking_time' => array
+				(
+					'type' => 'int',
+					'constraint' => 5,
+					'default' => '0'
+				),
+				'one_device_login' => array
 				(
 					'type' => 'tinyint',
 					'constraint' => 1,
@@ -792,7 +804,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -818,7 +830,7 @@ class Installer extends Migration
 				(
 					'type' => 'text',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('hash', true, true);
@@ -938,7 +950,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
@@ -947,6 +959,25 @@ class Installer extends Migration
 		$this->forge->addKey('username', false, true);
 		$this->forge->addKey('email', false, true);
 		$this->forge->createTable('app__users');
+		
+		$this->forge->addField
+		(
+			array
+			(
+				'ip_address' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 45,
+					'null' => false
+				),
+				'blocked_until' => array
+				(
+					'type' => 'timestamp'
+				)
+			)
+		);
+		$this->forge->addKey('ip_address', true, true);
+		$this->forge->createTable('app__users_blocked');
 		
 		$this->forge->addField
 		(
@@ -964,7 +995,7 @@ class Installer extends Migration
 					'type' => 'varchar',
 					'constraint' => 64,
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
@@ -998,7 +1029,7 @@ class Installer extends Migration
 					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'int' : 'year'),
 					'constraint' => 4,
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
@@ -1030,7 +1061,7 @@ class Installer extends Migration
 					'type' => 'varchar',
 					'constraint' => 64,
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('ip_address', false, false);
@@ -1059,7 +1090,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('year', true, true);
@@ -1154,7 +1185,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('post_id', true, true);
@@ -1212,7 +1243,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('category_id', true, true);
@@ -1294,7 +1325,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('gallery_id', true, true);
@@ -1341,7 +1372,7 @@ class Installer extends Migration
 				(
 					'type' => 'timestamp',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('id', true, true);
@@ -1376,7 +1407,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
@@ -1461,7 +1492,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('page_id', true, true);
@@ -1521,7 +1552,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('carousel_id', true, true);
@@ -1579,7 +1610,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('faq_id', true, true);
@@ -1669,7 +1700,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('people_id', true, true);
@@ -1734,7 +1765,7 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
-				),
+				)
 			)
 		);
 		$this->forge->addKey('testimonial_id', true, true);

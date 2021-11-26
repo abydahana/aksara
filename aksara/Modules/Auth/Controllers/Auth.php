@@ -21,6 +21,212 @@ class Auth extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		if($this->valid_token(service('request')->getPost('_token')))
+		{
+			/* apply login attempts limit (prevent bruteforce) */
+			if(get_userdata('_login_attempt') == get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
+			{
+				/* check if login attempts failed from the previous session */
+				$blocking_check						= $this->model->get_where
+				(
+					'app__users_blocked',
+					array
+					(
+						'ip_address'				=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+					),
+					1
+				)
+				->row();
+				
+				if($blocking_check)
+				{
+					/* update the blocked time of blacklisted client IP */
+					$this->model->update
+					(
+						'app__users_blocked',
+						array
+						(
+							'blocked_until'			=> date('Y-m-d H:i:s', get_userdata('_login_attempt_time'))
+						),
+						array
+						(
+							'ip_address'			=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+						)
+					);
+				}
+				else
+				{
+					/* blacklist the client IP */
+					$this->model->insert
+					(
+						'app__users_blocked',
+						array
+						(
+							'ip_address'			=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+							'blocked_until'			=> date('Y-m-d H:i:s', get_userdata('_login_attempt_time'))
+						)
+					);
+				}
+				
+				return throw_exception(400, array('username' => phrase('you_are_temporarily_blocked_due_to_frequent_failed_login_attempts')));
+			}
+			
+			/* check if system apply one device login */
+			if(get_setting('one_device_login'))
+			{
+				// under research
+			}
+			
+			$this->form_validation->setRule('username', phrase('username'), 'required');
+			$this->form_validation->setRule('password', phrase('password'), 'required');
+			
+			if(service('request')->getPost('year'))
+			{
+				$this->form_validation->setRule('year', phrase('year'), 'valid_year');
+			}
+			
+			/* run form validation */
+			if($this->form_validation->run(service('request')->getPost()) === false)
+			{
+				/* throw validation message */
+				return throw_exception(400, $this->form_validation->getErrors());
+			}
+			else
+			{
+				$username							= service('request')->getPost('username');
+				$password							= service('request')->getPost('password');
+				
+				$execute							= $this->model->select
+				('
+					user_id,
+					username,
+					password,
+					group_id,
+					language_id,
+					status
+				')
+				->where('username', $username)
+				->or_where('email', $username)
+				->get
+				(
+					'app__users',
+					1
+				)
+				->row();
+				
+				/* check if user is inactive */
+				if($execute && $execute->status != 1)
+				{
+					return throw_exception(404, phrase('your_account_is_temporary_disabled_or_not_yet_activated'));
+				}
+				else if($execute && password_verify($password . ENCRYPTION_KEY, $execute->password))
+				{
+					/* check if login attempts failed from the previous session */
+					$blocking_check					= $this->model->get_where
+					(
+						'app__users_blocked',
+						array
+						(
+							'ip_address'			=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+						),
+						1
+					)
+					->row();
+					
+					if($blocking_check)
+					{
+						/* check if blocking time is still available */
+						if(strtotime($blocking_check->blocked_until) >= time())
+						{
+							/* throw the blocking messages */
+							return throw_exception(400, array('username' => phrase('you_are_temporarily_blocked_due_to_frequent_failed_login_attempts')));
+						}
+						else
+						{
+							/* remove the record from blocking table */
+							$this->model->delete
+							(
+								'app__users_blocked',
+								array
+								(
+									'ip_address'	=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+								)
+							);
+						}
+					}
+					
+					/* update the last login timestamp */
+					$this->model->update
+					(
+						'app__users',
+						array
+						(
+							'last_login'			=> date('Y-m-d H:i:s')
+						),
+						array
+						(
+							'user_id'				=> $execute->user_id
+						),
+						1
+					);
+					
+					/* check session store */
+					if(1 == service('request')->getPost('remember_session'))
+					{
+						/* store session to the current device */
+					}
+					
+					/* set the user credential into session */
+					set_userdata
+					(
+						array
+						(
+							'is_logged'				=> true,
+							'user_id'				=> $execute->user_id,
+							'username'				=> $execute->username,
+							'group_id'				=> $execute->group_id,
+							'language_id'			=> $execute->language_id,
+							'year'					=> ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
+							'session_generated'		=> time()
+						)
+					);
+					
+					// check if request is made through API or not
+					if($this->_api_request)
+					{
+						// requested through API, provide the access token
+						return make_json
+						(
+							array
+							(
+								'status'			=> 200,
+								'message'			=> phrase('you_were_logged_in'),
+								'access_token'		=> session_id()
+							)
+						);
+					}
+					else
+					{
+						// requested through browser
+						return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_have_been_signed_in'), base_url('dashboard'), true);
+					}
+				}
+				
+				/* set the login attempts blocking */
+				set_userdata
+				(
+					array
+					(
+						'_login_attempt'			=> (get_userdata('_login_attempt') ? get_userdata('_login_attempt') : 0) + 1,
+						'_login_attempt_time'		=> strtotime('+' . get_setting('blocking_time') . ' minute')
+					)
+				);
+				
+				/* throw the validation messages */
+				return throw_exception(400, array('password' => phrase('username_or_email_and_password_combination_did_not_match')));
+			}
+		}
+		
 		/* check if use is already signed in */
 		if(get_userdata('is_logged'))
 		{
@@ -67,129 +273,9 @@ class Auth extends \Aksara\Laboratory\Core
 			)
 		)
 		
-		->form_callback('_validate_form')
+		->modal_size((get_setting('frontend_registration') ? 'modal-lg' : 'modal-md'))
 		
 		->render();
-	}
-	
-	/**
-	 * validate form
-	 */
-	public function _validate_form()
-	{
-		if(!$this->valid_token(service('request')->getPost('_token')))
-		{
-			return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), current_page());
-		}
-		
-		/* check if system apply one device login */
-		if(get_setting('one_device_login'))
-		{
-			// under research
-		}
-		
-		$this->form_validation->setRule('username', phrase('username'), 'required');
-		$this->form_validation->setRule('password', phrase('password'), 'required');
-		
-		if(service('request')->getPost('year'))
-		{
-			$this->form_validation->setRule('year', phrase('year'), 'valid_year');
-		}
-		
-		/* run form validation */
-		if($this->form_validation->run(service('request')->getPost()) === false)
-		{
-			return throw_exception(400, $this->form_validation->getErrors());
-		}
-		else
-		{
-			$username								= service('request')->getPost('username');
-			$password								= service('request')->getPost('password');
-			
-			$execute								= $this->model->select
-			('
-				user_id,
-				username,
-				password,
-				group_id,
-				language_id,
-				status
-			')
-			->where('username', $username)
-			->or_where('email', $username)
-			->get
-			(
-				'app__users',
-				1
-			)
-			->row();
-			
-			/* check if user is inactive */
-			if($execute && $execute->status != 1)
-			{
-				return throw_exception(404, phrase('your_account_is_temporary_disabled_or_not_yet_activated'));
-			}
-			else if($execute && password_verify($password . ENCRYPTION_KEY, $execute->password))
-			{
-				/* update the last login timestamp */
-				$this->model->update
-				(
-					'app__users',
-					array
-					(
-						'last_login'				=> date('Y-m-d H:i:s')
-					),
-					array
-					(
-						'user_id'					=> $execute->user_id
-					),
-					1
-				);
-				
-				/* check session store */
-				if(1 == service('request')->getPost('remember_session'))
-				{
-					/* store session to the current device */
-				}
-				
-				/* set the user credential into session */
-				set_userdata
-				(
-					array
-					(
-						'is_logged'					=> true,
-						'user_id'					=> $execute->user_id,
-						'username'					=> $execute->username,
-						'group_id'					=> $execute->group_id,
-						'language_id'				=> $execute->language_id,
-						'year'						=> ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
-						'session_generated'			=> time()
-					)
-				);
-				
-				// check if request is made through API or not
-				if($this->_api_request)
-				{
-					// requested through API, provide the access token
-					return make_json
-					(
-						array
-						(
-							'status'				=> 200,
-							'message'				=> phrase('you_were_logged_in'),
-							'access_token'			=> session_id()
-						)
-					);
-				}
-				else
-				{
-					// requested through browser
-					return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_have_been_signed_in'), base_url('dashboard'), true);
-				}
-			}
-			
-			return throw_exception(400, array('password' => phrase('username_or_email_and_password_combination_did_not_match')));
-		}
 	}
 	
 	/**

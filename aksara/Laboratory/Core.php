@@ -200,18 +200,28 @@ class Core extends Controller
 		// unset previous data
 		unset_userdata('_upload_data');
 		
+		// load model class
 		$this->model								= new Model();
+		
+		// load permission class
 		$this->permission							= new Permission();
+		
+		// load validation class
 		$this->form_validation						= \Config\Services::validation();
 		
+		// get matched router path
 		$path										= (isset(service('router')->getMatchedRoute()[0]) ? service('router')->getMatchedRoute()[0] : null);
 		
+		// get the request method
 		$this->_method								= service('router')->methodName();
+		
+		// get the module path
 		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', null, $path) : $path);
 		
+		// check if query string has limit
 		if(service('request')->getGet('limit'))
 		{
-			// set limit from query string parameter
+			// apply the limit for query builder
 			$this->_limit							= service('request')->getGet('limit');
 		}
 		
@@ -239,6 +249,7 @@ class Core extends Controller
 		 */
 		if('preview-theme' == service('request')->getGet('aksara_mode') && sha1(service('request')->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == service('request')->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . service('request')->getGet('aksara_theme')))
 		{
+			// set the temporary theme
 			$this->_set_theme						= service('request')->getGet('aksara_theme');
 		}
 		
@@ -261,8 +272,6 @@ class Core extends Controller
 		
 		// set user language
 		$this->_set_language(get_userdata('language_id'));
-		
-		//print_r(service('router')->getMatchedRoute());exit;
 	}
 	
 	/**
@@ -272,6 +281,7 @@ class Core extends Controller
 	 */
 	public function _remap($method = null, $segment_1 = null, $segment_2 = null, $segment_3 = null, $segment_4 = null, $segment_5 = null, $segment_6 = null)
 	{
+		// method checks to make sure it's not conflict with main class method
 		if(method_exists($this, $method) && !in_array($method, get_class_methods('\Aksara\Laboratory\Core')))
 		{
 			// check if method is defined in requested class
@@ -292,8 +302,10 @@ class Core extends Controller
 	 */
 	public function restrict_on_demo()
 	{
+		// check if demo mode is active
 		if(DEMO_MODE)
 		{
+			// set the restriction property
 			$this->_restrict_on_demo				= true;
 		}
 		
@@ -308,12 +320,15 @@ class Core extends Controller
 	 */
 	public function database_config($driver = array(), $hostname = null, $port = null, $username = null, $password = null, $database = null)
 	{
+		// check if the parameter is sets with array
 		if(is_array($driver) && isset($driver['driver']) && isset($driver['hostname']) && isset($driver['port']) && isset($driver['username']) && isset($driver['password']) && isset($driver['database']))
 		{
+			// use the array parameter as config
 			$this->model->database_config($driver['driver'], $driver['hostname'], $driver['port'], $driver['username'], $driver['password'], $driver['database']);
 		}
 		else
 		{
+			// use the strng parameter as config
 			$this->model->database_config($driver, $hostname, $port, $username, $password, $database);
 		}
 		
@@ -329,8 +344,10 @@ class Core extends Controller
 	 */
 	public function valid_token($token = null)
 	{
+		// match the token validation
 		if($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request)
 		{
+			// token match
 			return true;
 		}
 		
@@ -346,6 +363,7 @@ class Core extends Controller
 	 */
 	public function parent_module($module = null)
 	{
+		// sets parent module
 		$this->_module								= $module;
 		
 		return $this;
@@ -371,16 +389,21 @@ class Core extends Controller
 			$permissive_user						= array_map('trim', explode(',', $permissive_user));
 		}
 		
+		// check if permissions is sets and make sure the user is signed in or requested from restful
 		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			// user isn't signed in
-			return throw_exception(301, phrase('your_session_has_been_expired'), base_url(), true);
+			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()));
 		}
-		else if(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id')))
+		
+		// check if user permission is not allowed to access the module
+		else if(!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect))
 		{
 			// user been signed in but blocked by group privilege
 			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), ($redirect ? $redirect : $this->_redirect_back));
 		}
+		
+		// check if user group is permissive to the given parameter
 		else if($permissive_user && !in_array(get_userdata('group_id'), $permissive_user))
 		{
 			// user been signed in but blocked by group privilege
@@ -398,6 +421,7 @@ class Core extends Controller
 	 */
 	public function set_method($method = 'index')
 	{
+		// set the method property
 		$this->_method								= $method;
 		$this->_set_method							= $method;
 		
@@ -413,8 +437,10 @@ class Core extends Controller
 	 */
 	public function set_theme($theme = 'frontend')
 	{
+		// validate the theme parameter to match with predefined config
 		if(!in_array($theme, array('frontend', 'backend'))) return false;
 		
+		// get site id before run query to prevent nested queue
 		$site_id									= get_setting('id');
 		
 		$query										= $this->model->select($theme . '_theme')->get_where
@@ -428,6 +454,7 @@ class Core extends Controller
 		)
 		->row($theme . '_theme');
 		
+		// set the theme with matched configuration
 		$this->_set_theme							= $query;
 		
 		return $this;
@@ -443,14 +470,17 @@ class Core extends Controller
 	 */
 	public function set_template($params = array(), $value = null)
 	{
+		// make sure the parameter is array, otherwise convert it
 		if(!is_array($params))
 		{
+			// convert parameters as array
 			$params									= array
 			(
 				$params								=> $value
 			);
 		}
 		
+		// set the template renderer
 		$this->_set_template						= array_merge($this->_set_template, $params);
 		
 		return $this;
@@ -465,8 +495,10 @@ class Core extends Controller
 	 */
 	public function set_breadcrumb($params = array(), $value = null)
 	{
+		// check if parameters isn't in array format
 		if(!is_array($params))
 		{
+			// push the parameter to breadcrumb property
 			$this->_set_breadcrumb[$params]			= array
 			(
 				'label'								=> $value,
@@ -475,8 +507,10 @@ class Core extends Controller
 		}
 		else
 		{
+			// loops the parameters
 			foreach($params as $key => $val)
 			{
+				// push the parameter to breadcrumb property
 				$this->_set_breadcrumb[$key]		= array
 				(
 					'label'							=> $val,
@@ -514,18 +548,23 @@ class Core extends Controller
 	 */
 	public function set_title($magic_string = null, $placeholder = null)
 	{
+		// check if the magic string is in array format
 		if(is_array($magic_string))
 		{
+			// loops the magic string
 			foreach($magic_string as $key => $val)
 			{
+				// pair the magic string to the title property
 				$this->_set_title[$key]				= $val;
 			}
 		}
 		else
 		{
+			// set the title property with magic string
 			$this->_set_title						= $magic_string;
 		}
 		
+		// set the title placeholder if only the magic string doesn't have any result
 		$this->_set_title_placeholder				= $placeholder;
 		
 		return $this;
@@ -541,15 +580,19 @@ class Core extends Controller
 	 */
 	public function set_icon($icon = null)
 	{
+		// check if icon parameter is in array format
 		if(is_array($icon))
 		{
+			// loops the icon parameter
 			foreach($icon as $key => $val)
 			{
+				// push parameter to the icon property
 				$this->_set_icon[$key]				= $val;
 			}
 		}
 		else
 		{
+			// set the icon using individual parameter
 			$this->_set_icon						= $icon;
 		}
 		
@@ -566,12 +609,15 @@ class Core extends Controller
 	 */
 	public function set_description($params = array(), $value = 'index')
 	{
+		// check if parameters is in array format
 		if(is_array($params))
 		{
+			// merge the description to the older one
 			$this->_set_description					= array_merge($this->_set_description, $params);
 		}
 		else
 		{
+			// push the new key of description
 			$this->_set_description[$value]			= $params;
 		}
 		
@@ -590,8 +636,10 @@ class Core extends Controller
 	 */
 	public function set_messages($params = array(), $code = null, $messages = null)
 	{
+		// check if parameter is not in array format
 		if(!is_array($params))
 		{
+			// set the parameter
 			$placement								= $params;
 			$params									= array();
 			$params[$placement]						= array
@@ -601,6 +649,7 @@ class Core extends Controller
 			);
 		}
 		
+		// merge the parameter with the older one
 		$this->_set_messages						= array_merge($this->_set_messages, $params);
 		
 		return $this;
@@ -615,6 +664,7 @@ class Core extends Controller
 	 */
 	public function set_button($button = null, $value = null, $label = null, $icon = null, $class = null, $target = null)
 	{
+		// push the button properties
 		$this->_set_button[$button]					= array
 		(
 			'href'									=> $value,
@@ -637,13 +687,18 @@ class Core extends Controller
 	 * @description	string
 	 * @return		string
 	 */
-	public function grid_view($thumbnail = null)
+	public function grid_view($thumbnail = null, $hyperlink = null, $parameter = array(), $new_tab = false)
 	{
+		// use grid view instead of data tables
 		$_SERVER['GRID_VIEW']						= true;
 		
+		// push thumbnail source to the grid view property
 		$this->_grid_view							= array
 		(
-			'thumbnail'								=> $thumbnail
+			'thumbnail'								=> $thumbnail,
+			'hyperlink'								=> $hyperlink,
+			'parameter'								=> $parameter,
+			'new_tab'								=> $new_tab
 		);
 		
 		return $this;
@@ -658,6 +713,7 @@ class Core extends Controller
 	 */
 	public function add_filter($filter = null)
 	{
+		// push the parameter to filters property
 		$this->_add_filter							= $filter;
 		
 		return $this;
@@ -675,8 +731,10 @@ class Core extends Controller
 	 */
 	public function searchable($active = true)
 	{
+		// the search discovery is active by default, check if it's being turned off
 		if(!$active)
 		{
+			// set the parameter to search property
 			$this->_searchable						= false;
 		}
 		
@@ -694,15 +752,20 @@ class Core extends Controller
 	 */
 	public function add_action($placement = 'option', $url = null, $label = null, $class = null, $icon = null, $parameter = array(), $new_tab = false)
 	{
+		// get query string
 		$query_string								= service('request')->getGet();
 		
+		// toolbar placement
 		if('toolbar' == $placement)
 		{
+			// check if the parameter has property
 			if($parameter)
 			{
+				// merge the parameter to current query string
 				$parameter							= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
 			}
 			
+			// push the parameter to the toolbar property
 			$this->_extra_toolbar[]					= array
 			(
 				'url'								=> $url,
@@ -713,8 +776,11 @@ class Core extends Controller
 				'new_tab'							=> $new_tab
 			);
 		}
+		
+		// dropdown placement
 		else if('dropdown' == $placement)
 		{
+			// push the parameter to the dropdown property
 			$this->_extra_dropdown[]				= array
 			(
 				'url'								=> $url,
@@ -725,13 +791,18 @@ class Core extends Controller
 				'new_tab'							=> $new_tab
 			);
 		}
+		
+		// extra bottom button under the form
 		else if('submit' == $placement)
 		{
+			// check if the parameter has property
 			if($parameter)
 			{
+				// merge the parameter to current query string
 				$parameter							= array_merge(array('aksara' => generate_token(array_filter(array_merge($query_string, $parameter)))), $query_string, $parameter);
 			}
 			
+			// push the parameter to the button property
 			$this->_extra_submit[]					= array
 			(
 				'url'								=> $url,
@@ -742,8 +813,11 @@ class Core extends Controller
 				'new_tab'							=> $new_tab
 			);
 		}
+		
+		// otherwise
 		else
 		{
+			// push the parameter as option (dropdown) links
 			$this->_extra_option[]					= array
 			(
 				'url'								=> $url,
@@ -767,12 +841,14 @@ class Core extends Controller
 	 */
 	public function unset_action($params = array())
 	{
+		// check if parameter isn't in array format
 		if(!is_array($params))
 		{
 			// shorthand possibility, separate with commas
 			$params									= array_map('trim', explode(',', $params));
 		}
 		
+		// merge the parameter to the older one
 		$this->_unset_action						= array_merge($this->_unset_action, $params);
 		
 		return $this;
@@ -789,6 +865,7 @@ class Core extends Controller
 	 */
 	public function add_class($params = array(), $value = null)
 	{
+		// check if parameter isn't in array format
 		if(!is_array($params))
 		{
 			// shorthand possibility, separate with commas
@@ -798,6 +875,7 @@ class Core extends Controller
 			);
 		}
 		
+		// merge the parameter to the older one
 		$this->_add_class							= array_merge($this->_add_class, $params);
 		
 		return $this;
@@ -814,30 +892,40 @@ class Core extends Controller
 	 */
 	public function set_field($params = array(), $type = array(), $parameter = null, $extra_params = null, $another_params = null, $skip = false, $order = null)
 	{
+		// check if parameter isn't an array format
 		if(!is_array($type))
 		{
+			// convert the comma separated string as array
 			$type									= array_map('trim', explode(',', $type));
 		}
 		
+		// check if parameter isn't an array format
 		if(!is_array($params))
 		{
+			// convert parameter as array
 			$params									= array
 			(
 				$params								=> $type
 			);
 		}
 		
+		// loops the parameters
 		foreach($params as $key => $val)
 		{
+			// check if value isn't an array
 			if(!is_array($val))
 			{
+				// convert the comma separated string as array
 				$val								= array_map('trim', explode(',', $val));
 			}
 			
+			// check if key is exist in the field sets
 			if(isset($this->_set_field[$key]))
 			{
+				// loops the value
 				foreach($val as $f_key => $f_val)
 				{
+					// check if the field type exist in the field sets
 					if(isset($this->_set_field[$key]['field_type']))
 					{
 						if(is_array($this->_set_field[$key]['field_type']))
@@ -846,6 +934,7 @@ class Core extends Controller
 						}
 					}
 					
+					// check if the field parameter exist in the field sets
 					if(isset($this->_set_field[$key]['parameter']))
 					{
 						if(is_array($this->_set_field[$key]['parameter']))
@@ -858,6 +947,7 @@ class Core extends Controller
 						}
 					}
 					
+					// check if the field extra parameter exist in the field sets
 					if(isset($this->_set_field[$key]['extra_params']))
 					{
 						if(is_array($this->_set_field[$key]['extra_params']))
@@ -870,6 +960,7 @@ class Core extends Controller
 						}
 					}
 					
+					// check if the another parameter of field exist in the field sets
 					if(isset($this->_set_field[$key]['another_params']))
 					{
 						if(is_array($this->_set_field[$key]['another_params']))
@@ -882,6 +973,7 @@ class Core extends Controller
 						}
 					}
 					
+					// check if the skip command exist in the field sets
 					if(isset($this->_set_field[$key]['skip']))
 					{
 						if(is_array($this->_set_field[$key]['skip']))
@@ -1197,6 +1289,7 @@ class Core extends Controller
 	 */
 	public function set_upload_path($path = null)
 	{
+		// validate the given parameter is valid path name
 		if($path && preg_match('/^[a-z0-9\-\.\_\/]*$/', $path))
 		{
 			$this->_set_upload_path					= strtolower($path);
@@ -1402,8 +1495,8 @@ class Core extends Controller
 	
 	/**
 	 * field_size
-	 * Add the custom column size, it works when using bootstrap
-	 * framework that can be applied to column grid size
+	 * Add the custom field size, it works when using bootstrap
+	 * framework that can be applied to field grid size
 	 *
 	 * NOTE: It's case sensitive!
 	 *
@@ -1482,17 +1575,20 @@ class Core extends Controller
 	 */
 	public function merge_content($magic_string = null, $alias = null, $callback = null)
 	{
+		// get the fields from the magic string
 		preg_match_all('#\{(.*?)\}#', $magic_string, $matches);
 		
 		$matches									= $matches[1];
 		$field										= (isset($matches[0]) ? $matches[0] : null);
 		
+		// check if the current method isn't matches with the restricted one
 		if(!in_array($this->_method, array('create', 'update')))
 		{
 			$this->_set_alias[$field]				= ($alias && !is_array($alias) ? $alias : ucwords(str_replace('_', ' ', $field)));
 			$this->_merge_label[$field]				= ($alias && !is_array($alias) ? $alias : ucwords(str_replace('_', ' ', $field)));
 		}
 		
+		// sets the new key to merge property
 		$this->_merge_content[$field]				= array
 		(
 			'column'								=> $matches,
@@ -1500,11 +1596,15 @@ class Core extends Controller
 			'callback'								=> ($callback ? str_replace('callback_', '', $callback) : null)
 		);
 		
+		// check if matches key is available from given magic string
 		if($matches)
 		{
+			// loops the keys
 			foreach($matches as $key => $val)
 			{
+				// skip the null key
 				if($key == 0) continue;
+				
 				$this->_unset_column[]				= $val;
 				$this->_unset_view[]				= $val;
 			}
@@ -1657,6 +1757,7 @@ class Core extends Controller
 	{
 		$as_field									= $field;
 		
+		// extract the fields from the given magic string
 		preg_match_all('#\{(.*?)\}#', $formatting, $matches);
 		
 		$select										= $matches[1];
@@ -3290,7 +3391,7 @@ class Core extends Controller
 					{
 						foreach($val as $field => $params)
 						{
-							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']) || in_array('image', $params['type']))
+							if(array_intersect(array('image', 'images', 'file', 'files'), $params['type']))
 							{
 								$files				= json_decode($params['original']);
 								
@@ -3417,7 +3518,7 @@ class Core extends Controller
 					{
 						foreach($_val as $field => $params)
 						{
-							if(in_array('file', $params['type']) || in_array('files', $params['type']) || in_array('images', $params['type']) || in_array('image', $params['type']))
+							if(array_intersect(array('image', 'images', 'file', 'files'), $params['type']))
 							{
 								$files				= json_decode($params['original']);
 								
@@ -3539,9 +3640,9 @@ class Core extends Controller
 					$primary_key[$field]			= null;
 				}
 				
-				if($hidden || in_array('current_timestamp', $type)) continue;
+				if($hidden || array_intersect(array('current_timestamp'), $type)) continue;
 				
-				if(isset($this->_set_relation[$field]) && !in_array('custom_format', $type))
+				if(isset($this->_set_relation[$field]) && !array_intersect(array('custom_format'), $type))
 				{
 					$content						= $this->_get_relation($this->_set_relation[$field], $original);
 				}
@@ -3549,20 +3650,20 @@ class Core extends Controller
 				{
 					$content						= $this->_autocomplete_input($this->_set_autocomplete[$field], $original);
 				}
-				else if(in_array('image', $type))
+				else if(array_intersect(array('image'), $type))
 				{
 					$content						= '
 						<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-							<span class="btn btn-light btn-file">
-								<input type="file" name="' . $field . '" accept="image/*" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
+							<span class="btn btn-file btn-block">
+								<input type="file" name="' . $field . '" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 								<div class="fileupload-new text-center">
-									<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, ($original ? $original : $parameter), 'thumb') . '" alt="' . ($original ? $original : $parameter) . '" />
+									<img class="img-fluid upload_preview" src="' . get_image($this->_set_upload_path, ($original ? $original : $parameter), 'thumb') . '" alt="' . ($original ? $original : $parameter) . '" />
 								</div>
 							</span>
 						</div>
 					';
 				}
-				else if(in_array('file', $type))
+				else if(array_intersect(array('images', 'file', 'files'), $type))
 				{
 					$files							= array();
 					
@@ -3574,6 +3675,7 @@ class Core extends Controller
 						{
 							foreach($original as $src => $label)
 							{
+								$icon				= (in_array('images', $type) ? get_image($this->_set_upload_path, $src, 'icon') : null);
 								$url				= get_file($this->_set_upload_path, $src);
 								$filesize			= get_filesize($this->_set_upload_path, $src);
 								$filesize			= str_replace(array('kb', 'mb', 'gb', 'b', '.'), '', strtolower($filesize));
@@ -3582,51 +3684,17 @@ class Core extends Controller
 									'name'			=> $label,
 									'file'			=> $src,
 									'size'			=> $filesize,
-									'data'			=> array
-									(
-										'url'		=> $url
-									)
+									'url'			=> $url,
+									'icon'			=> $icon
 								);
 							}
 						}
 					}
 					
 					$files							= htmlspecialchars(json_encode($files));
-					$content						= '<input type="file" name="' . $field . '" role="uploader" id="' . $field . '_input" data-fileuploader-files="' . $files . '" />';
+					$content						= '<div class="input-group uploader-input"><div class="custom-file"><input type="file" class="custom-file-input" data-name="' . (array_intersect(array('images', 'files'), $type) ? $field . '[]' : $field) . '" role="uploader" id="' . $field . '_input" data-fileuploader-files="' . $files . '" accept="' . (in_array('images', $type) ? implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) : implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))))) . '"' . (array_intersect(array('images', 'files'), $type) ? ' multiple' : null) . ' /><label class="custom-file-label" for="' . $field . '_input">' . phrase('choose_file') . '</label></div></div>';
 				}
-				else if(in_array('images', $type) || in_array('files', $type))
-				{
-					$files							= array();
-					
-					if('update' == $this->_method)
-					{
-						$original					= json_decode($original, true);
-						
-						if(is_array($original) && sizeof($original) > 0)
-						{
-							foreach($original as $src => $label)
-							{
-								$url				= get_file($this->_set_upload_path, $src);
-								$filesize			= get_filesize($this->_set_upload_path, $src);
-								$filesize			= str_replace(array('kb', 'mb', 'gb', 'b', '.'), '', strtolower($filesize));
-								$files[]			= array
-								(
-									'name'			=> $label,
-									'file'			=> $src,
-									'size'			=> $filesize,
-									'data'			=> array
-									(
-										'url'		=> $url
-									)
-								);
-							}
-						}
-					}
-					
-					$files							= htmlspecialchars(json_encode($files));
-					$content						= '<input type="file" name="' . $field . '" class="multiple' . (in_array('images', $type) ? ' images' : null) . '" role="uploader" id="' . $field . '_input" data-fileuploader-files="' . $files . '" />';
-				}
-				else if(in_array('attributes', $type))
+				else if(array_intersect(array('attributes'), $type))
 				{
 					$original						= json_decode($original, true);
 					$items							= null;
@@ -3705,7 +3773,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('carousels', $type))
+				else if(array_intersect(array('carousels'), $type))
 				{
 					$original						= json_decode($original, true);
 					$items							= null;
@@ -3725,8 +3793,8 @@ class Core extends Controller
 														' . phrase('background') . '
 													</label>
 													<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-														<span class="btn btn-light btn-file btn-block">
-															<input type="file" name="' . $field . '[background][]" accept="image/*" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
+														<span class="btn btn-file btn-block">
+															<input type="file" name="' . $field . '[background][' . $carousel . ']" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 															<div class="fileupload-new text-center">
 																<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, (isset($item['background']) ? $item['background'] : 'placeholder.png'), 'thumb') . '" alt="..." />
 															</div>
@@ -3740,8 +3808,8 @@ class Core extends Controller
 														' . phrase('thumbnail') . '
 													</label>
 													<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-														<span class="btn btn-light btn-file btn-block">
-															<input type="file" name="' . $field . '[thumbnail][]" accept="image/*" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
+														<span class="btn btn-file btn-block">
+															<input type="file" name="' . $field . '[thumbnail][' . $carousel . ']" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 															<div class="fileupload-new text-center">
 																<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, (isset($item['thumbnail']) ? $item['thumbnail'] : 'placeholder.png'), 'thumb') . '" alt="..." />
 															</div>
@@ -3751,38 +3819,38 @@ class Core extends Controller
 											</div>
 										</div>
 										<div class="form-group">
-											<input type="text" name="' . $field . '[title][]" class="form-control" placeholder="' . phrase('title') . '" value="' . (isset($item['title']) ? $item['title'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
+											<input type="text" name="' . $field . '[title][' . $carousel . ']" class="form-control" placeholder="' . phrase('title') . '" value="' . (isset($item['title']) ? $item['title'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 										</div>
 										<div class="form-group">
-											<textarea name="' . $field . '[description][]" class="form-control" placeholder="' . phrase('description') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '>' . (isset($item['description']) ? $item['description'] : null) . '</textarea>
+											<textarea name="' . $field . '[description][' . $carousel . ']" class="form-control" placeholder="' . phrase('description') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '>' . (isset($item['description']) ? $item['description'] : null) . '</textarea>
 										</div>
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
-													<input type="text" name="' . $field . '[link][]" class="form-control" placeholder="' . phrase('target_url') . '" value="' . (isset($item['link']) ? $item['link'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
+													<input type="text" name="' . $field . '[link][' . $carousel . ']" class="form-control" placeholder="' . phrase('target_url') . '" value="' . (isset($item['link']) ? $item['link'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="form-group">
-													<input type="text" name="' . $field . '[label][]" class="form-control" placeholder="' . phrase('button_label') . '" value="' . (isset($item['label']) ? $item['label'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
+													<input type="text" name="' . $field . '[label][' . $carousel . ']" class="form-control" placeholder="' . phrase('button_label') . '" value="' . (isset($item['label']) ? $item['label'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 												</div>
 											</div>
 										</div>
 									</div>
-									<div class="card-footer">
-										<input type="hidden" name="' . $field . '[default_background][]" value="' . (isset($item['background']) ? $item['background'] : null) . '"' . $read_only . ' />
-										<input type="hidden" name="' . $field . '[default_thumbnail][]" value="' . (isset($item['thumbnail']) ? $item['thumbnail'] : null) . '"' . $read_only . ' />
-										<div class="btn-group btn-group-xs">
+									<div class="card-footer pt-1 pb-1">
+										<input type="hidden" name="' . $field . '[default_background][' . $carousel . ']" value="' . (isset($item['background']) ? $item['background'] : null) . '"' . $read_only . ' />
+										<input type="hidden" name="' . $field . '[default_thumbnail][' . $carousel . ']" value="' . (isset($item['thumbnail']) ? $item['thumbnail'] : null) . '"' . $read_only . ' />
+										<div class="btn-group btn-group-sm">
 											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
 												<i class="mdi mdi-arrow-collapse-up"></i>
 											</a>
 											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
-												<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
-											</a>
 										</div>
+										<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-right"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
+											<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+										</a>
 									</div>
 								</div>
 							';
@@ -3800,8 +3868,8 @@ class Core extends Controller
 													' . phrase('background') . '
 												</label>
 												<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-													<span class="btn btn-light btn-file btn-block">
-														<input type="file" name="' . $field . '[background][]" accept="image/*" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
+													<span class="btn btn-file btn-block">
+														<input type="file" name="' . $field . '[background][]" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 														<div class="fileupload-new text-center">
 															<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" alt="" />
 														</div>
@@ -3815,8 +3883,8 @@ class Core extends Controller
 													' . phrase('thumbnail') . '
 												</label>
 												<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-													<span class="btn btn-light btn-file btn-block">
-														<input type="file" name="' . $field . '[thumbnail][]" accept="image/*" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
+													<span class="btn btn-file btn-block">
+														<input type="file" name="' . $field . '[thumbnail][]" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 														<div class="fileupload-new text-center">
 															<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" alt="" />
 														</div>
@@ -3844,26 +3912,26 @@ class Core extends Controller
 										</div>
 									</div>
 								</div>
-								<div class="card-footer">
-									<div class="btn-group btn-group-xs">
+								<div class="card-footer pt-1 pb-1">
+									<div class="btn-group btn-group-sm">
 										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
 											<i class="mdi mdi-arrow-collapse-up"></i>
 										</a>
 										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
 											<i class="mdi mdi-arrow-collapse-down"></i>
 										</a>
-										<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
-											<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
-										</a>
 									</div>
+									<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-right"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
+										<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+									</a>
 								</div>
 							</div>
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-secondary btn-sm"' . (!$read_only ? ' role="add-carousel"' : null) . ' data-field="' . $field . '" data-image-placeholder="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a></div>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-carousel"' : null) . ' data-field="' . $field . '" data-image-placeholder="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a></div>';
 				}
-				else if(in_array('faqs', $type))
+				else if(array_intersect(array('faqs'), $type))
 				{
 					$original						= json_decode($original, true);
 					$items							= null;
@@ -3886,7 +3954,7 @@ class Core extends Controller
 													<i class="mdi mdi-arrow-collapse-down"></i>
 												</a>
 												<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
-													<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+													<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
 												</a>
 											</div>
 										</div>
@@ -3913,7 +3981,7 @@ class Core extends Controller
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
 											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
-												<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+												<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
 											</a>
 										</div>
 									</div>
@@ -3925,9 +3993,9 @@ class Core extends Controller
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-secondary btn-sm"' . (!$read_only ? ' role="add-faq"' : null) . ' data-field="' . $field . '"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-faq"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
 				}
-				else if(in_array('steps', $type))
+				else if(array_intersect(array('steps'), $type))
 				{
 					$original						= json_decode($original, true);
 					$items							= null;
@@ -3947,7 +4015,7 @@ class Core extends Controller
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
 											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-step"' : null) . ' data-element=".card">
-												<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+												<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
 											</a>
 										</div>
 										<textarea name="' . $field . '[]" class="form-control" role="wysiwyg" placeholder="' . phrase('add_step') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '>' . $item . '</textarea>
@@ -3969,7 +4037,7 @@ class Core extends Controller
 											<i class="mdi mdi-arrow-collapse-down"></i>
 										</a>
 										<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-step"' : null) . ' data-element=".card">
-											<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+											<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
 										</a>
 									</div>
 									<textarea name="' . $field . '[]" class="form-control" role="wysiwyg" placeholder="' . phrase('add_step') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '></textarea>
@@ -3978,11 +4046,11 @@ class Core extends Controller
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-secondary btn-sm"' . (!$read_only ? ' role="add-step"' : null) . ' data-field="' . $field . '"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-step"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
 				}
-				else if(in_array('dropdown', $type) || in_array('checkbox', $type) || in_array('radio', $type))
+				else if(array_intersect(array('dropdown', 'checkbox', 'radio'), $type))
 				{
-					if(in_array('dropdown', $type))
+					if(array_intersect(array('dropdown'), $type))
 					{
 						$options					= '<option value="" readonly>' . phrase('please_choose') . '</option>';
 					}
@@ -3995,11 +4063,11 @@ class Core extends Controller
 					{
 						foreach($parameter as $value => $label)
 						{
-							if(in_array('dropdown', $type))
+							if(array_intersect(array('dropdown'), $type))
 							{
 								$options			.= '<option value="' . $value . '"' . ($default_value == $value || in_array($value, array($original, $extra_params)) ? ' selected' : null) . '>' . $label . '</option>';
 							}
-							else if(in_array('checkbox', $type))
+							else if(array_intersect(array('checkbox'), $type))
 							{
 								$checker			= json_decode($original, true);
 								
@@ -4018,7 +4086,7 @@ class Core extends Controller
 									</label>
 								';
 							}
-							else if(in_array('radio', $type))
+							else if(array_intersect(array('radio'), $type))
 							{
 								$options			.= '
 									<label class="' . $extra_class . '">
@@ -4032,7 +4100,7 @@ class Core extends Controller
 						}
 					}
 					
-					if(in_array('dropdown', $type))
+					if(array_intersect(array('dropdown'), $type))
 					{
 						$content					= '
 							<select name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('please_choose')) . '" id="' . $field . '_input"' . $read_only . '>
@@ -4047,11 +4115,11 @@ class Core extends Controller
 					
 					$content						= $content;
 				}
-				else if(in_array('tagsinput', $type))
+				else if(array_intersect(array('tagsinput'), $type))
 				{
 					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="tagsinput" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('separate_with_comma')) . '" id="' . $field . '_input"' . $read_only . ' spellcheck="false" rows="1">' . ($default_value ? $default_value : $original) . '</textarea>';
 				}
-				else if(in_array('hour', $type))
+				else if(array_intersect(array('hour'), $type))
 				{
 					$options						= '<option value="" readonly>' . phrase('please_choose') . '</option>';
 					
@@ -4066,7 +4134,7 @@ class Core extends Controller
 						</select>
 					';
 				}
-				else if(in_array('date_only', $type))
+				else if(array_intersect(array('date_only'), $type))
 				{
 					$options						= '<option value="" readonly>' . phrase('please_choose') . '</option>';
 					
@@ -4081,15 +4149,15 @@ class Core extends Controller
 						</select>
 					';
 				}
-				else if(in_array('date', $type) || in_array('datepicker', $type))
+				else if(array_intersect(array('date', 'datepicker'), $type))
 				{
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? $original : date('Y-m-d'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
 				}
-				else if(in_array('datetime', $type))
+				else if(array_intersect(array('datetime'), $type))
 				{
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetimepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value != '0000-00-00 00:00:00' ? $default_value : ($original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
 				}
-				else if(in_array('monthpicker', $type))
+				else if(array_intersect(array('monthpicker'), $type))
 				{
 					$month							= range(1, 12);
 					$options						= '<option value="" readonly>' . phrase('please_choose') . '</option>';
@@ -4107,7 +4175,7 @@ class Core extends Controller
 						</select>
 					';
 				}
-				else if(in_array('yearpicker', $type))
+				else if(array_intersect(array('yearpicker'), $type))
 				{
 					$year							= range(1970, date('Y'));
 					$options						= '<option value="" readonly>' . phrase('please_choose') . '</option>';
@@ -4123,7 +4191,7 @@ class Core extends Controller
 						</select>
 					';
 				}
-				else if(in_array('quarterly', $type))
+				else if(array_intersect(array('quarterly'), $type))
 				{
 					$year							= get_userdata('year');
 					
@@ -4137,35 +4205,35 @@ class Core extends Controller
 						</select>
 					';
 				}
-				else if(in_array('colorpicker', $type))
+				else if(array_intersect(array('colorpicker'), $type))
 				{
 					$content						= '<div class="input-group" role="colorpicker"><input type="text" name="' . $field . '" class="form-control" value="' . ($default_value ? $default_value : $original) . '"' . $read_only . ' /><div class="input-group-append" data-toggle="tooltip" title="' . phrase('pick_a_color') . '"><span class="input-group-text">&nbsp;&nbsp;&nbsp;</span></div></div>';
 				}
-				else if(in_array('wysiwyg', $type))
+				else if(array_intersect(array('wysiwyg'), $type))
 				{
 					$content						= '<textarea name="' . $field . '" class="form-control' . $extra_class . '" role="wysiwyg" data-upload-path="' . $this->_set_upload_path . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('enter_the_content_here')) . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1" spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : $original) . '</textarea>';
 				}
-				else if(in_array('textarea', $type))
+				else if(array_intersect(array('textarea'), $type))
 				{
 					$content						= '<textarea name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1"' . (in_array('autocomplete', $type) ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : htmlspecialchars($original)) . '</textarea>';
 				}
-				else if(in_array('price_format', $type))
+				else if(array_intersect(array('price_format'), $type))
 				{
 					$content						= '<input type="text" name="' . $field . '" min="0" class="form-control text-right' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" role="price" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
 				}
-				else if(in_array('number_format', $type) || in_array('percent_format', $type))
+				else if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'percent_format'), $type))
 				{
 					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . (is_numeric($default_value) ? number_format($default_value) : (is_numeric($original) ? number_format($original, (in_array('percent_format', $type) ? 2 : 0), '.', '') : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || in_array('percent_format', $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
 					
-					if(in_array('percent_format', $type))
+					if(array_intersect(array('percent_format'), $type))
 					{
 						$content					= '<div class="input-group">' . $content . '<div class="input-group-append"><span class="input-group-text">%</span></div></div>';
 					}
 				}
-				else if(in_array('boolean', $type))
+				else if(array_intersect(array('boolean'), $type))
 				{
 					$content						= '
-						<label class="d-block">
+						<label class="d-block pt-1">
 							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == $original || 1 == $original || 'create' == $this->_method ? ' checked' : null) . $read_only . ' />
 							&nbsp;
 							' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
@@ -4173,11 +4241,11 @@ class Core extends Controller
 						</label>
 					';
 				}
-				else if(in_array('email', $type))
+				else if(array_intersect(array('email'), $type))
 				{
 					$content						= '<input type="email" name="' . $field . '" class="form-control' . $extra_class . '" placeholder="' . phrase('enter_your_email') . '" value="' . ($default_value ? $default_value : $original) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' />';
 				}
-				else if(in_array('password', $type))
+				else if(array_intersect(array('password'), $type))
 				{
 					$content						= '
 						<div class="row">
@@ -4190,15 +4258,15 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('encryption', $type))
+				else if(array_intersect(array('encryption'), $type))
 				{
 					$content						= '<input type="password" name="' . $field . '" class="form-control' . $extra_class . '" value="" id="' . $field . '_input"' . ('update' == $this->_method ? ' placeholder="' . phrase('leave_blank_to_ignore') . '"' : null) . ' maxlength="' . $max_length . '"' . $read_only . ' />';
 				}
-				else if(in_array('hidden', $type))
+				else if(array_intersect(array('hidden'), $type))
 				{
 					$content						= '<input type="hidden" name="' . $field . '" value="' . ($default_value ? $default_value : htmlspecialchars($original)) . $read_only . '" />';
 				}
-				else if(in_array('custom_format', $type))
+				else if(array_intersect(array('custom_format'), $type))
 				{
 					$callback						= str_replace('callback_', null, $parameter);
 					
@@ -4224,7 +4292,7 @@ class Core extends Controller
 						}
 					}
 				}
-				else if(in_array('last_insert', $type))
+				else if(array_intersect(array('last_insert'), $type))
 				{
 					if(!$default_value)
 					{
@@ -4270,7 +4338,7 @@ class Core extends Controller
 							
 							$original				= ($last_insert > 0 ? $last_insert : 1);
 							
-							if(in_array('sprintf', $type))
+							if(array_intersect(array('sprintf'), $type))
 							{
 								$original			= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 							}
@@ -4282,7 +4350,7 @@ class Core extends Controller
 						}
 						else
 						{
-							if(in_array('sprintf', $type))
+							if(array_intersect(array('sprintf'), $type))
 							{
 								$original			= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 							}
@@ -4291,11 +4359,11 @@ class Core extends Controller
 					
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : $original) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
 				}
-				else if(in_array('to_slug', $type))
+				else if(array_intersect(array('to_slug'), $type))
 				{
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : $original) . '" placeholder="' . (!$read_only ? phrase('leave_blank_to_generate_automatically') : null) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
 				}
-				else if(in_array('coordinate', $type))
+				else if(array_intersect(array('coordinate'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4304,7 +4372,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('point', $type))
+				else if(array_intersect(array('point'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4313,7 +4381,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('polygon', $type))
+				else if(array_intersect(array('polygon'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4322,7 +4390,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('linestring', $type))
+				else if(array_intersect(array('linestring'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4498,7 +4566,7 @@ class Core extends Controller
 						$content					= $this->$callback($_calback);
 					}
 				}
-				else if(in_array('custom_format', $type))
+				else if(array_intersect(array('custom_format'), $type))
 				{
 					$callback						= str_replace('callback_', null, $parameter);
 					
@@ -4524,7 +4592,7 @@ class Core extends Controller
 						}
 					}
 				}
-				else if(in_array('image', $type))
+				else if(array_intersect(array('image'), $type))
 				{
 					$content						= '
 						<div class="text-center">
@@ -4534,7 +4602,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('images', $type))
+				else if(array_intersect(array('images'), $type))
 				{
 					$original						= json_decode($original, true);
 					$items							= null;
@@ -4559,7 +4627,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('file', $type))
+				else if(array_intersect(array('file'), $type))
 				{
 					$original						= json_decode($original, true);
 					
@@ -4576,7 +4644,7 @@ class Core extends Controller
 						}
 					}
 				}
-				else if(in_array('files', $type))
+				else if(array_intersect(array('files'), $type))
 				{
 					$images							= null;
 					$files							= null;
@@ -4619,7 +4687,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('attributes', $type))
+				else if(array_intersect(array('attributes'), $type))
 				{
 					$items							= null;
 					$original						= json_decode($original, true);
@@ -4646,7 +4714,7 @@ class Core extends Controller
 					
 					$content						= $items;
 				}
-				else if(in_array('carousels', $type))
+				else if(array_intersect(array('carousels'), $type))
 				{
 					$items							= null;
 					$original						= json_decode($original, true);
@@ -4689,7 +4757,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('faqs', $type))
+				else if(array_intersect(array('faqs'), $type))
 				{
 					$items							= null;
 					$original						= json_decode($original, true);
@@ -4721,7 +4789,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('tagsinput', $type))
+				else if(array_intersect(array('tagsinput'), $type))
 				{
 					$original						= array_map('trim', explode(',', $original));
 					$items							= null;
@@ -4736,7 +4804,7 @@ class Core extends Controller
 					
 					$content						= $items;
 				}
-				else if($original && (in_array('datetime', $type) || in_array('current_timestamp', $type)))
+				else if($original && array_intersect(array('datetime', 'current_timestamp'), $type))
 				{
 					if($original != '0000-00-00 00:00:00')
 					{
@@ -4750,7 +4818,7 @@ class Core extends Controller
 						$content					= '&nbsp;';
 					}
 				}
-				else if(in_array('date', $type) || in_array('datepicker', $type))
+				else if(array_intersect(array('date', 'datepicker'), $type))
 				{
 					if($original != '0000-00-00')
 					{
@@ -4764,33 +4832,33 @@ class Core extends Controller
 						$content					= $original;
 					}
 				}
-				else if(in_array('hour', $type))
+				else if(array_intersect(array('hour'), $type))
 				{
 					$content						= sprintf('%02d', (24 == $original ? '00' : $original)) . ':00';
 				}
-				else if(in_array('date_only', $type))
+				else if(array_intersect(array('date_only'), $type))
 				{
 					$content						= sprintf('%02d', $original);
 				}
-				else if(in_array('monthpicker', $type))
+				else if(array_intersect(array('monthpicker'), $type))
 				{
 					$month							= date('F', strtotime($content));
 					$month							= phrase($month);
 					$content						= $month . ' ' . date('Y', strtotime($content));
 				}
-				else if(in_array('quarterly', $type))
+				else if(array_intersect(array('quarterly'), $type))
 				{
 					$month							= date('m', strtotime($content));
 					$month							= phrase($month);
 					$content						= $month . ' ' . date('Y', strtotime($content));
 				}
-				else if(in_array('dropdown', $type) || in_array('checkbox', $type) || in_array('radio', $type))
+				else if(array_intersect(array('dropdown', 'checkbox', 'radio'), $type))
 				{
-					if(in_array('radio', $type) && isset($parameter[$original]))
+					if(array_intersect(array('radio'), $type) && isset($parameter[$original]))
 					{
 						$content					= $parameter[$original];
 					}
-					else if(in_array('checkbox', $type))
+					else if(array_intersect(array('checkbox'), $type))
 					{
 						$json						= json_decode($content, true);
 						
@@ -4831,34 +4899,34 @@ class Core extends Controller
 						}
 					}
 				}
-				else if(in_array('colorpicker', $type))
+				else if(array_intersect(array('colorpicker'), $type))
 				{
 					$content						= '<span class="badge" style="background:' . $original . '">' . $original . '</span>';
 				}
-				else if(in_array('boolean', $type))
+				else if(array_intersect(array('boolean'), $type))
 				{
 					$content						= ($content == 1 ? '<span class="badge badge-success">' . phrase('active') . '</span>' : '<span class="badge badge-danger">' . phrase('inactive') . '</span>');
 				}
-				else if(in_array('last_insert', $type))
+				else if(array_intersect(array('last_insert'), $type))
 				{
-					if(in_array('sprintf', $type))
+					if(array_intersect(array('sprintf'), $type))
 					{
 						$content					= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 					}
 				}
-				else if(in_array('textarea', $type))
+				else if(array_intersect(array('textarea'), $type))
 				{
 					$content						= preg_replace('/\n/', '<br />', preg_replace('/(\s{4})\s+/','$1', $content));
 				}
-				else if(in_array('email', $type))
+				else if(array_intersect(array('email'), $type))
 				{
 					$content						= '<a href="mailto:' . $content . '">' . $content . '</a>';
 				}
-				else if(in_array('password', $type) || in_array('encryption', $type))
+				else if(array_intersect(array('password', 'encryption'), $type))
 				{
 					$content						= '******';
 				}
-				else if(in_array('coordinate', $type))
+				else if(array_intersect(array('coordinate'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4866,7 +4934,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('point', $type))
+				else if(array_intersect(array('point'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4874,7 +4942,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('polygon', $type))
+				else if(array_intersect(array('polygon'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4882,7 +4950,7 @@ class Core extends Controller
 						</div>
 					';
 				}
-				else if(in_array('linestring', $type))
+				else if(array_intersect(array('linestring'), $type))
 				{
 					$content						= '
 						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
@@ -4900,7 +4968,7 @@ class Core extends Controller
 					}
 				}
 				
-				if(in_array('hyperlink', $type))
+				if(array_intersect(array('hyperlink'), $type))
 				{
 					if(isset($extra_params) && is_array($extra_params))
 					{
@@ -4938,7 +5006,7 @@ class Core extends Controller
 						if(!$skip)
 						{
 							$content				= '
-								<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+								<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : '//' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 									<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 										<i class="mdi mdi-open-in-new"></i>' . $content . '
 									</b>
@@ -5102,7 +5170,7 @@ class Core extends Controller
 							$content				= $this->$callback($_calback);
 						}
 					}
-					else if(in_array('custom_format', $type))
+					else if(array_intersect(array('custom_format'), $type))
 					{
 						$callback					= str_replace('callback_', null, $parameter);
 					
@@ -5128,7 +5196,7 @@ class Core extends Controller
 							}
 						}
 					}
-					else if(in_array('image', $type))
+					else if(array_intersect(array('image'), $type))
 					{
 						$content					= '
 							<a href="' . get_image($this->_set_upload_path, $original) . '" target="_blank">
@@ -5136,7 +5204,7 @@ class Core extends Controller
 							</a>
 						';
 					}
-					else if(in_array('file', $type))
+					else if(array_intersect(array('file'), $type))
 					{
 						$original					= json_decode($original);
 						
@@ -5155,30 +5223,30 @@ class Core extends Controller
 							}
 						}
 					}
-					else if(in_array('images', $type) || in_array('files', $type))
+					else if(array_intersect(array('images', 'files'), $type))
 					{
 						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						
 						if($content > 1)
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('images', $type) ? phrase('images') : phrase('files')) . '</span>';
+							$content				= '<span class="badge badge-info">' . $content . ' ' . (array_intersect(array('images'), $type) ? phrase('images') : phrase('files')) . '</span>';
 						}
 						else
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (in_array('image', $type) ? phrase('images') : phrase('file')) . '</span>';
+							$content				= '<span class="badge badge-info">' . $content . ' ' . (array_intersect(array('image'), $type) ? phrase('images') : phrase('file')) . '</span>';
 						}
 					}
-					else if(in_array('attributes', $type))
+					else if(array_intersect(array('attributes'), $type))
 					{
 						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('attributes') : phrase('attribute')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
 					}
-					else if(in_array('carousels', $type) || in_array('faqs', $type))
+					else if(array_intersect(array('carousels', 'faqs'), $type))
 					{
 						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('items') : phrase('item')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
 					}
-					else if($original && (in_array('datetime', $type) || in_array('current_timestamp', $type)))
+					else if($original && array_intersect(array('datetime', 'current_timestamp'), $type))
 					{
 						if($original != '0000-00-00 00:00:00')
 						{
@@ -5192,7 +5260,7 @@ class Core extends Controller
 							$content				= '&nbsp;';
 						}
 					}
-					else if(in_array('date', $type) || in_array('datepicker', $type))
+					else if(array_intersect(array('date', 'datepicker'), $type))
 					{
 						if($original != '0000-00-00')
 						{
@@ -5206,21 +5274,21 @@ class Core extends Controller
 							$content				= $original;
 						}
 					}
-					else if(in_array('hour', $type))
+					else if(array_intersect(array('hour'), $type))
 					{
 						$content					= sprintf('%02d', (24 == $original ? '00' : $original)) . ':00';
 					}
-					else if(in_array('date_only', $type))
+					else if(array_intersect(array('date_only'), $type))
 					{
 						$content					= sprintf('%02d', $original);
 					}
-					else if(in_array('monthpicker', $type))
+					else if(array_intersect(array('monthpicker'), $type))
 					{
 						$month						= date('F', strtotime($content));
 						$month						= phrase($month);
 						$content					= $month . ' ' . date('Y', strtotime($content));
 					}
-					else if(in_array('quarterly', $type))
+					else if(array_intersect(array('quarterly'), $type))
 					{
 						$month						= date('m', strtotime($content));
 						$month						= ($month);
@@ -5246,13 +5314,13 @@ class Core extends Controller
 							$content				= phrase('not_a_valid_quarter');
 						}
 					}
-					else if(in_array('dropdown', $type) || in_array('checkbox', $type) || in_array('radio', $type))
+					else if(array_intersect(array('dropdown', 'checkbox', 'radio'), $type))
 					{
-						if(in_array('radio', $type) && isset($parameter[$original]))
+						if(array_intersect(array('radio'), $type) && isset($parameter[$original]))
 						{
 							$content				= $parameter[$original];
 						}
-						else if(in_array('checkbox', $type))
+						else if(array_intersect(array('checkbox'), $type))
 						{
 							$json					= json_decode($content, true);
 							
@@ -5293,30 +5361,30 @@ class Core extends Controller
 							}
 						}
 					}
-					else if(in_array('colorpicker', $type))
+					else if(array_intersect(array('colorpicker'), $type))
 					{
 						$content					= '<span class="badge" style="background:' . $original . '">' . $original . '</span>';
 					}
-					else if(in_array('boolean', $type))
+					else if(array_intersect(array('boolean'), $type))
 					{
 						$content					= ($content == 1 ? '<span class="badge badge-success">' . phrase('active') . '</span>' : '<span class="badge badge-danger">' . phrase('inactive') . '</span>');
 					}
-					else if(in_array('last_insert', $type))
+					else if(array_intersect(array('last_insert'), $type))
 					{
-						if(in_array('sprintf', $type))
+						if(array_intersect(array('sprintf'), $type))
 						{
 							$content				= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
 						}
 					}
-					else if(in_array('textarea', $type))
+					else if(array_intersect(array('textarea'), $type))
 					{
 						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', $content));
 					}
-					else if(in_array('email', $type))
+					else if(array_intersect(array('email'), $type))
 					{
 						$content					= '<a href="mailto:' . $original . '">' . $content . '</a>';
 					}
-					else if(in_array('password', $type) || in_array('encryption', $type))
+					else if(array_intersect(array('password', 'encryption'), $type))
 					{
 						$content					= '******';
 					}
@@ -5327,15 +5395,15 @@ class Core extends Controller
 							$content				= (!in_array($field, $this->_unset_truncate) && in_array($this->_method, array('index')) ? truncate($content, 60) : $content);
 						}
 						
-						if(in_array('to_slug', $type))
+						if(array_intersect(array('to_slug'), $type))
 						{
 							$content				= $original;
 						}
 					}
 					
-					if(in_array('number_format', $type) || in_array('price_format', $type) || in_array('percent_format', $type))
+					if(array_intersect(array('number_format', 'price_format', 'percent_format'), $type))
 					{
-						if(in_array('price_format', $type) || in_array('percent_format', $type))
+						if(array_intersect(array('price_format', 'percent_format'), $type))
 						{
 							$parameter				= (strpos($content, '.00') !== false ? 0 : 2);
 						}
@@ -5343,7 +5411,7 @@ class Core extends Controller
 						$content					= '<p class="text-md-right m-0" style="padding-right:15px">' . (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content) . '</p>';
 					}
 					
-					if(in_array('hyperlink', $type))
+					if(array_intersect(array('hyperlink'), $type))
 					{
 						if(isset($extra_params) && is_array($extra_params))
 						{
@@ -5381,7 +5449,7 @@ class Core extends Controller
 							if(!$skip)
 							{
 								$content			= '
-									<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : 'http://' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
+									<a href="' . (isset($this->_set_field[$field]['parameter']) && $this->_set_field[$field]['parameter'] ? base_url((is_array($this->_set_field[$field]['parameter']) && sizeof($this->_set_field[$field]['parameter']) > 1 ? $this->_set_field[$field]['parameter'][$hyperlink_params] : $this->_set_field[$field]['parameter']), $uri) : '//' . str_replace(array('http://', 'https://'), array(null, null), $original)) . '"' . ('_blank' == $another_params ? ' target="_blank"' : ' class="' . ($another_params ? $another_params : '--xhr') . '"') . ' style="display:block">
 										<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
 											<i class="mdi mdi-open-in-new"></i>' . $content . '
 										</b>
@@ -5416,6 +5484,19 @@ class Core extends Controller
 					if($this->_grid_view)
 					{
 						$fields[$field]['type']		= $type;
+					}
+					
+					if($this->_grid_view && $this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false) && $this->_grid_view['parameter'] && !isset($this->_grid_view['url'][$key]))
+					{
+						$grid_query					= array();
+						$u							= 'url';
+						
+						foreach($this->_grid_view['parameter'] as $_key => $_val)
+						{
+							$grid_query[$_key]		= (isset($val[$_key]['original']) ? $val[$_key]['original'] : $_val);
+						}
+						
+						$this->_grid_view[$u][$key]	= base_url($this->_grid_view['hyperlink'], $grid_query);
 					}
 					
 					if($this->_api_request)
@@ -5480,6 +5561,11 @@ class Core extends Controller
 		{
 			$qs										= service('request')->getGet();
 			
+			if(isset($qs['aksara']))
+			{
+				unset($qs['aksara']);
+			}
+			
 			foreach($search_columns as $key => $val)
 			{
 				if(stripos($val, '.') !== false)
@@ -5505,7 +5591,7 @@ class Core extends Controller
 						'label'						=> (isset($this->_merge_label[$val]) ? $this->_merge_label[$val] : (isset($this->_set_alias[$val]) ? $this->_set_alias[$val] : ucwords(str_replace('_', ' ', $val)))),
 						'aksara'					=> generate_token(($qs ? array_merge($qs, array('order' => $val, 'sort' => get_userdata('sortOrder'))) : array('order' => $val, 'sort' => get_userdata('sortOrder')))),
 						'sort'						=> get_userdata('sortOrder'),
-						'align'						=> (isset($this->_set_field[$val]['field_type']) && (in_array('number_format', $this->_set_field[$val]['field_type']) || in_array('price_format', $this->_set_field[$val]['field_type']) || in_array('percent_format', $this->_set_field[$val]['field_type'])) ? 'right' : null)
+						'align'						=> (isset($this->_set_field[$val]['field_type']) && array_intersect(array('number_format', 'price_format', 'percent_format'), $this->_set_field[$val]['field_type']) ? 'right' : null)
 					);
 				}
 			}
@@ -5697,13 +5783,13 @@ class Core extends Controller
 						}
 					}
 					
-					if($content && (in_array('number_format', $type) || in_array('percent_format', $type) || in_array('price_format', $type)))
+					if($content && array_intersect(array('number_format', 'price_format', 'percent_format'), $type))
 					{
-						if(in_array('percent_format', $type))
+						if(array_intersect(array('percent_format'), $type))
 						{
 							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content) . '%';
 						}
-						else if(in_array('price_format', $type))
+						else if(array_intersect(array('price_format'), $type))
 						{
 							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content);
 						}
@@ -5713,7 +5799,7 @@ class Core extends Controller
 						}
 					}
 					
-					if($content && in_array('sprintf', $type))
+					if($content && array_intersect(array('sprintf'), $type))
 					{
 						$content					= sprintf(($parameter && !is_array($parameter) ? $parameter : '%02d'), $content);
 					}
@@ -8116,47 +8202,42 @@ class Core extends Controller
 			{
 				$type								= $val['type'];
 				
-				if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($key, $this->_unset_field)) || (in_array($key, $this->_unset_field) && !isset($this->_set_default[$key])) || (in_array('disabled', $type) && !isset($this->_set_default[$field]))) continue;
+				/* skip field when it's disabled and has no default value */
+				if((in_array($key, $this->_unset_field) && (!isset($this->_set_default[$key]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$key]) && in_array('disabled', $type))) continue;
 				
-				if(in_array('image', $type))
+				if(array_intersect(array('image'), $type))
 				{
 					$validation						= true;
 					
 					$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . '.image]');
 				}
-				else if(in_array('images', $type))
+				else if(array_intersect(array('images'), $type))
 				{
 					$validation						= true;
 					
 					$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . '.image]');
 				}
-				else if(in_array('file', $type))
-				{
-					$validation						= true;
-					
-					$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . ']');
-				}
-				else if(in_array('files', $type))
+				else if(array_intersect(array('file', 'files'), $type))
 				{
 					$validation						= true;
 					
 					$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . ']');
 				}
-				else if(in_array('carousels', $type))
+				else if(array_intersect(array('carousels'), $type))
 				{
 					$validation						= true;
 					
 					$this->form_validation->setRule($key . '.background.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . '.image]');
 					$this->form_validation->setRule($key . '.thumbnail.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'validate_upload[' . $key . '.image]');
 				}
-				else if(in_array('faqs', $type))
+				else if(array_intersect(array('faqs'), $type))
 				{
 					$validation						= true;
 					
 					$this->form_validation->setRule($key . '.question.*', phrase('question') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|required');
 					$this->form_validation->setRule($key . '.answer.*', phrase('answer') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|required');
 				}
-				else if(in_array('password', $type))
+				else if(array_intersect(array('password'), $type))
 				{
 					$validation						= true;
 					
@@ -8166,7 +8247,7 @@ class Core extends Controller
 						$this->form_validation->setRule($key . '_confirmation', phrase('confirmation') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ('create' == $this->_method ? 'required|matches[' . $key . ']' : 'matches[' . $key . ']'));
 					}
 				}
-				else if(in_array('encryption', $type) && $val['validation'])
+				else if(array_intersect(array('encryption'), $type) && $val['validation'])
 				{
 					$validation						= $val['validation'];
 					
@@ -8184,19 +8265,19 @@ class Core extends Controller
 				{
 					$validation_suffix				= null;
 					
-					if(in_array('yearpicker', $type))
+					if(array_intersect(array('yearpicker'), $type))
 					{
 						$validation_suffix			= '|valid_year';
 					}
-					else if(in_array('hour', $type))
+					else if(array_intersect(array('hour'), $type))
 					{
 						$validation_suffix			= '|numeric|max_length[2]';
 					}
-					else if(in_array('date_only', $type))
+					else if(array_intersect(array('date_only'), $type))
 					{
 						$validation_suffix			= '|numeric|max_length[2]';
 					}
-					else if(in_array('date', $type) || in_array('datepicker', $type))
+					else if(array_intersect(array('date', 'datepicker'), $type))
 					{
 						$validation_suffix			= '|valid_date';
 					}
@@ -8238,161 +8319,145 @@ class Core extends Controller
 				{
 					$type							= $value['type'];
 					
-					/* skip field because it were disable */
-					if(((in_array('image', $type) || in_array('images', $type) || in_array('file', $type) || in_array('files', $type)) && in_array($field, $this->_unset_field)) || (in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) && !array_intersect(array('to_slug', 'current_timestamp'), $type))) || in_array('disabled', $type)) continue;
+					/* skip field when it's disabled and has no default value */
+					if((in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$field]) && in_array('disabled', $type))) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
-						if(in_array('password', $type))
+						if(array_intersect(array('password'), $type))
 						{
+							// check if password changed
 							if(service('request')->getPost($field))
 							{
+								// store new password
 								$prepare[$field]	= password_hash(service('request')->getPost($field) . ENCRYPTION_KEY, PASSWORD_DEFAULT);
 							}
 						}
-						else if(in_array('encryption', $type))
+						else if(array_intersect(array('encryption'), $type))
 						{
+							// check if value changed
 							if(service('request')->getPost($field))
 							{
+								// store new encryption
 								$prepare[$field]	= base64_encode(service('encrypter')->encrypt(service('request')->getPost($field)));
 							}
 						}
-						else if(in_array('image', $type))
+						else if(array_intersect(array('image'), $type))
 						{
+							// set the default value
+							$source					= 'placeholder.png';
+							
+							// check if the uploaded file is valid
 							if(isset($this->_upload_data[$field]) && is_array($this->_upload_data[$field]))
 							{
-								$this->_old_files[]		= $this->model->select($field)->get_where($this->_from, $this->_where, 1)->row($field);
-								
-								foreach($this->_upload_data[$field] as $src)
+								// loop to get source from unknown array key
+								foreach($this->_upload_data[$field] as $key => $src)
 								{
-									$prepare[$field]	= $src;
+									// set new source
+									$source			= $src;
 								}
+								
+								// push to data preparation
+								$prepare[$field]	= $source;
 							}
 							else
 							{
-								if('create' == $this->_method)
+								// check if the method is not create
+								if('create' != $this->_method)
 								{
-									$prepare[$field]	= 'placeholder.png';
-								}
-								else
-								{
+									// unset the field for update preparation
 									unset($prepare[$field]);
 								}
 							}
 						}
-						else if(in_array('images', $type) || in_array('file', $type) || in_array('files', $type))
+						else if(array_intersect(array('images', 'file', 'files'), $type) && is_array(service('request')->getPost($field . '_label')))
 						{
-							$old_num				= 0;
-							$uploaded				= array();
-							$file_lists				= service('request')->getPost('fileuploader-list-' . $field);
-							$file_lists				= json_decode($file_lists, true);
-							$old_files				= json_decode($value['content'], true);
+							// reverse file attributes to match with newest upload data
+							$files					= array_reverse(service('request')->getPost($field . '_label'));
+							$uploaded				= (isset($this->_upload_data[$field]) ? array_reverse($this->_upload_data[$field]) : array());
 							
-							if(service('request')->getPost($field . '_label'))
+							// combine uploaded files to the old one
+							$uploaded				= array_combine(array_intersect_key($uploaded, $files), array_intersect_key($files, $uploaded));
+							
+							if($uploaded)
 							{
-								$labels				= service('request')->getPost($field . '_label');
-							}
-							else
-							{
-								$labels				= array();
+								// merge files
+								$files				= array_merge($uploaded, array_slice($files, sizeof($uploaded)));
 							}
 							
-							if(!is_array($old_files))
-							{
-								$old_files			= array();
-							}
-							
-							if($old_files)
-							{
-								$new_files			= array();
-								
-								if(is_array($file_lists) && sizeof($file_lists) > 0)
-								{
-									foreach($file_lists as $file => $src)
-									{
-										$src			= basename($src);
-										$new_files[]	= $src;
-									}
-								}
-								
-								foreach($old_files as $src => $alt)
-								{
-									if(in_array($file, $new_files))
-									{
-										$label			= (in_array('file', $type) ? $labels : (isset($labels[$old_num]) ? $labels[$old_num] : $alt));
-										$uploaded[$src]	= $label;
-										$old_num++;
-									}
-									else
-									{
-										$this->_old_files[]	= $file;
-									}
-								}
-								
-								$prepare[$field]	= json_encode($uploaded);
-							}
-							
-							if(isset($this->_upload_data[$field]) && is_array($this->_upload_data[$field]))
-							{
-								foreach($this->_upload_data[$field] as $file => $src)
-								{
-									$num			= ($file + $old_num);
-									$label			= (in_array('file', $type) ? $labels : (isset($labels[$num]) ? $labels[$num] : $src));
-									$uploaded[$src]	= $label;
-								}
-								
-								$prepare[$field]	= json_encode($uploaded);
-							}
+							// push the json encoded file to data preparation
+							$prepare[$field]		= json_encode(array_reverse($files));
 						}
-						else if(in_array('carousels', $type))
+						else if(array_intersect(array('carousels'), $type))
 						{
+							// get the submitted carousels
 							$carousels				= service('request')->getPost($field);
-							$items					= array();
-							$uploaded				= array();
 							
-							if($carousels && isset($carousels['title']) && sizeof($carousels['title']) > 0)
+							// check if submitted data is not supported
+							if(!$carousels || !isset($carousels['title']) || sizeof($carousels['title']) <= 0)
 							{
-								foreach($carousels['title'] as $key => $val)
+								// continue the loops to other fields
+								continue;
+							}
+							
+							// set the default value of variables and shorts the key to match ruler indent
+							$i						= array();
+							$b						= 'background';
+							$t						= 'thumbnail';
+							
+							// loop the submitted carousels data
+							foreach($carousels['title'] as $key => $val)
+							{
+								// push the carousel collection
+								$i[$key]			= array
+								(
+									'title'			=> $val,
+									'description'	=> (isset($carousels['description'][$key]) ? $carousels['description'][$key] : ''),
+									'link'			=> (isset($carousels['link'][$key]) ? $carousels['link'][$key] : ''),
+									'label'			=> (isset($carousels['label'][$key]) ? $carousels['label'][$key] : '')
+								);
+								
+								// check if the carousel has uploaded background
+								if(isset($this->_upload_data[$field][$b][$key]) && $this->_upload_data[$field][$b][$key])
 								{
-									$items[$key]	= array
-									(
-										'title'		=> $val,
-										'description'	=> (isset($carousels['description'][$key]) ? $carousels['description'][$key] : ''),
-										'link'		=> (isset($carousels['link'][$key]) ? $carousels['link'][$key] : ''),
-										'label'		=> (isset($carousels['label'][$key]) ? $carousels['label'][$key] : '')
-									);
-									
-									if(isset($this->_upload_data[$field]['background'][$key]) && $this->_upload_data[$field]['background'][$key])
-									{
-										$items[$key]['background']	= $this->_upload_data[$field]['background'][$key];
-									}
-									else
-									{
-										$items[$key]['background']	= (isset($carousels['default_background'][$key]) ? $carousels['default_background'][$key] : '');
-									}
-									
-									if(isset($this->_upload_data[$field]['thumbnail'][$key]) && $this->_upload_data[$field]['thumbnail'][$key])
-									{
-										$items[$key]['thumbnail']	= $this->_upload_data[$field]['thumbnail'][$key];
-									}
-									else
-									{
-										$items[$key]['thumbnail']	= (isset($carousels['default_thumbnail'][$key]) ? $carousels['default_thumbnail'][$key] : '');
-									}
+									// pair with newer uploaded background
+									$i[$key][$b]	= $this->_upload_data[$field][$b][$key];
+								}
+								else
+								{
+									// use default background instead
+									$i[$key][$b]	= (isset($carousels['default_background'][$key]) ? $carousels['default_background'][$key] : '');
+								}
+								
+								// check if carousel has uploaded thumbnail
+								if(isset($this->_upload_data[$field][$t][$key]) && $this->_upload_data[$field][$t][$key])
+								{
+									// pair with newer uploaded background
+									$i[$key][$t]	= $this->_upload_data[$field][$t][$key];
+								}
+								else
+								{
+									// use default thumbnail instead
+									$i[$key][$t]	= (isset($carousels['default_thumbnail'][$key]) ? $carousels['default_thumbnail'][$key] : '');
 								}
 							}
 							
-							$prepare[$field]		= json_encode($items);
+							// push the json encoded to data preparation
+							$prepare[$field]		= json_encode($i);
 						}
-						else if(in_array('faqs', $type))
+						else if(array_intersect(array('faqs'), $type))
 						{
+							// get the submitted faqs
 							$faqs					= service('request')->getPost($field);
 							$items					= array();
 							
+							// check if the faqs has correct value
 							if(isset($faqs['question']) && sizeof($faqs['question']) > 0)
 							{
+								// loops the submitted faqs
 								foreach($faqs['question'] as $key => $val)
 								{
+									// collects the faqs
 									$items[]		= array
 									(
 										'question'	=> $val,
@@ -8401,17 +8466,22 @@ class Core extends Controller
 								}
 							}
 							
+							// push the json encoded faqs to data preparation
 							$prepare[$field]		= json_encode(json_fixer($items));
 						}
-						else if(in_array('attributes', $type))
+						else if(array_intersect(array('attributes'), $type))
 						{
+							// get the submitted attributes
 							$attributes				= service('request')->getPost($field);
 							$items					= array();
 							
+							// check if the submitted attributes is in correct format
 							if($attributes && isset($attributes['label']) && sizeof($attributes['label']) > 0)
 							{
+								// loops the submitted attributes
 								foreach($attributes['label'] as $key => $val)
 								{
+									// collect the attributes
 									$items[]		= array
 									(
 										'label'		=> $val,
@@ -8420,68 +8490,85 @@ class Core extends Controller
 								}
 							}
 							
+							// push the json encoded attributes to data preparation
 							$prepare[$field]		= json_encode(json_fixer($items));
 						}
-						else if(in_array('boolean', $type))
+						else if(array_intersect(array('boolean'), $type))
 						{
+							// push the boolean field type to data preparation
 							$prepare[$field]		= service('request')->getPost($field);
 						}
-						else if(in_array('current_timestamp', $type))
+						else if(array_intersect(array('current_timestamp'), $type))
 						{
+							// push the current timestamp field type to data preparation
 							$prepare[$field]		= date('Y-m-d H:i:s');
 						}
-						else if(in_array('date', $type) || in_array('datepicker', $type))
+						else if(array_intersect(array('date', 'datepicker'), $type))
 						{
+							// push the date field type to data preparation
 							$prepare[$field]		= date('Y-m-d', strtotime(service('request')->getPost($field)));
 						}
-						else if(in_array('datetime', $type))
+						else if(array_intersect(array('datetime'), $type))
 						{
+							// push the submitted timestamp field type to data preparation
 							$prepare[$field]		= date('Y-m-d H:i:s', strtotime(service('request')->getPost($field)));
 						}
-						else if(in_array('monthpicker', $type))
+						else if(array_intersect(array('monthpicker'), $type))
 						{
+							// push the month field type to data preparation
 							$prepare[$field]		= get_userdata('year') . '-' . service('request')->getPost($field) . '-01';
 						}
-						else if(in_array('price_format', $type))
+						else if(array_intersect(array('price_format'), $type))
 						{
+							// push the price field type to data preparation
 							$value					= trim(service('request')->getPost($field));
 							$value					= str_replace(',', '', $value);
 							$prepare[$field]		= $value;
 						}
-						else if(in_array('number_format', $type))
+						else if(array_intersect(array('number_format'), $type))
 						{
+							// push the number format field type to data preparation
 							$value					= trim(service('request')->getPost($field));
 							$value					= str_replace(',', '', $value);
 							$prepare[$field]		= $value;
 						}
-						else if(in_array('to_slug', $type))
+						else if(array_intersect(array('to_slug'), $type))
 						{
+							// check if slug has its own post data
 							if(service('request')->getPost($field))
 							{
+								// use its own data as slug
 								$title				= service('request')->getPost($field);
 							}
 							else if(service('request')->getPost($value['parameter']))
 							{
+								// or match other field from given parameter
 								$title				= service('request')->getPost($value['parameter']);
 							}
 							else
 							{
+								// otherwise, use the time instead
 								$title				= time();
 							}
 							
+							// push the slug to the data preparation
 							$prepare[$field]		= format_slug($title);
 						}
-						else if(in_array('current_user', $type))
+						else if(array_intersect(array('current_user'), $type))
 						{
+							// push current user id to the data preparation
 							$prepare[$field]		= get_userdata('user_id');
 						}
 						else
 						{
+							// convert the submitted array data as encoded json, or use the original
 							$prepare[$field]		= (is_array(service('request')->getPost($field)) ? json_encode(service('request')->getPost($field)) : service('request')->getPost($field));
 						}
 						
-						if(!in_array('to_slug', $type) && !in_array('password', $type) && !in_array('encryption', $type))
+						// apply the formatter when not match any given parameter
+						if(!array_intersect(array('to_slug', 'password', 'encryption'), $type))
 						{
+							// use empty value instead of null when no data is submitted
 							if(isset($_POST[$field]) && null == $_POST[$field])
 							{
 								$prepare[$field]	= '';
@@ -8489,35 +8576,49 @@ class Core extends Controller
 						}
 					}
 					
+					// check if the field is sets to use the default value
 					if(isset($this->_set_default[$field]) && $this->_set_default[$field])
 					{
+						// push the default value to the data preparation
 						$prepare[$field]			= $this->_set_default[$field];
 					}
-					else if(in_array('boolean', $type) && !service('request')->getPost($field) && !in_array($field, $this->_unset_field))
+					
+					// or when it's a boolean and no value
+					else if(array_intersect(array('boolean'), $type) && !service('request')->getPost($field) && !in_array($field, $this->_unset_field))
 					{
+						// sets to "0" instead of null
 						$prepare[$field]			= 0;
 					}
 				}
 				
+				// if data preparation is ready and the method is create
 				if($prepare && in_array('create', array($this->_method, $this->_set_method)))
 				{
+					// insert new data
 					$this->insert_data($this->_from, $prepare);
 				}
+				
+				// if data preparation is ready and the method is update
 				else if($prepare && in_array('update', array($this->_method, $this->_set_method)))
 				{
+					// update the old data
 					$this->update_data($this->_from, $prepare, $this->_where);
 				}
+				
+				// otherwise
 				else
 				{
 					// unlink the files
 					$this->_unlink_files();
 					
+					// throw the exception messages
 					return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 		}
 		else
 		{
+			// no data are found
 			return throw_exception(404, phrase('no_data_can_be_executed'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
@@ -8877,11 +8978,6 @@ class Core extends Controller
 				1
 			)
 			->row('id');
-			
-			if(1 == get_userdata('user_id'))
-			{
-				echo $this->model->last_query();exit;
-			}
 			
 			$language_id							= ($language_id ? $language_id : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
 			

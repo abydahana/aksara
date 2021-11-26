@@ -311,6 +311,28 @@ class Updater extends Migration
 			)
 		);
 		
+		$this->forge->addColumn
+		(
+			'app__settings',
+			array
+			(
+				'login_attempt' => array
+				(
+					'type' => 'int',
+					'constraint' => 5,
+					'default' => 0,
+					'after' => 'username_changes',
+				),
+				'blocking_time' => array
+				(
+					'type' => 'int',
+					'constraint' => 5,
+					'default' => 0,
+					'after' => 'login_attempt'
+				)
+			)
+		);
+		
 		$this->forge->modifyColumn
 		(
 			'app__users',
@@ -715,6 +737,25 @@ class Updater extends Migration
 				)
 			)
 		);
+		
+		$this->forge->addField
+		(
+			array
+			(
+				'ip_address' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 45,
+					'null' => false
+				),
+				'blocked_until' => array
+				(
+					'type' => 'timestamp'
+				)
+			)
+		);
+		$this->forge->addKey('ip_address', true, true);
+		$this->forge->createTable('app__users_blocked');
     }
 	
 	public function down()

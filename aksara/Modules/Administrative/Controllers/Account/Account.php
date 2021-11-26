@@ -36,7 +36,7 @@ class Account extends \Aksara\Laboratory\Core
 		{
 			$username_required						= 'required|';
 			
-			$this->field_order('photo, first_name, last_name, email, username, password, phone, address, postal_code, country, language_id');
+			$this->field_order('photo, first_name, last_name, email, username, password, phone, address, postal_code, country_id, language_id');
 			$this->merge_field('email, username');
 		}
 		else
@@ -44,7 +44,7 @@ class Account extends \Aksara\Laboratory\Core
 			$username_required						= null;
 			
 			$this->unset_field('username');
-			$this->field_order('photo, first_name, last_name, email, phone, password, address, postal_code, country, language_id');
+			$this->field_order('photo, first_name, last_name, email, phone, password, address, postal_code, country_id, language_id');
 			$this->merge_field('email, phone');
 		}
 		

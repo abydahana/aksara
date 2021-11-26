@@ -250,7 +250,9 @@ if(!function_exists('throw_exception'))
 		);
 		
 		http_response_code($code);
+		
 		header('Content-Type: application/json');
+		
 		exit($output);
 	}
 }

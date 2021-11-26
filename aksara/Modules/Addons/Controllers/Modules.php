@@ -491,7 +491,7 @@ class Modules extends \Aksara\Laboratory\Core
 		if(!service('request')->getPost('module'))
 		{
 			$html									= '
-				<form action="' . current_page() . '" method="POST" class="--validate-form">
+				<form action="' . current_page() . '" method="POST" class="p-3 --validate-form">
 					<div class="text-center">
 						' . phrase('are_you_sure_want_to_delete_this_module') . '
 					</div>

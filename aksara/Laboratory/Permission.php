@@ -23,7 +23,7 @@ class Permission
 	/**
 	 * allow
 	 */
-	public function allow($path = null, $method = null, $user_id = 0)
+	public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
 	{
 		if(!$method)
 		{
@@ -55,7 +55,7 @@ class Permission
 				session_destroy();
 			}
 			
-			return throw_exception(403, phrase('you_do_not_have_a_sufficient_privileges_to_access_the_requested_page'), base_url());
+			return false;
 		}
 		
 		$privileges									= $this->model->select
@@ -103,7 +103,7 @@ class Permission
 	/**
 	 * restrict
 	 */
-	public function restrict($path = null, $method = null)
+	public function restrict($path = null, $method = null, $redirect = null)
 	{
 		if(!$method)
 		{
@@ -129,11 +129,11 @@ class Permission
 		
 		if(isset($privileges[$path]) && in_array($method, $privileges[$path]))
 		{
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_this_page'));
+			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_this_page'), ($redirect ? $redirect : base_url()));
 		}
 		else
 		{
-			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_this_page'));
+			return throw_exception(403, phrase('you_do_not_have_sufficient_privileges_to_access_this_page'), ($redirect ? $redirect : base_url()));
 		}
 	}
 	
@@ -214,7 +214,7 @@ class Permission
 	{
 		if(!service('request')->isAJAX())
 		{
-			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), $redirect);
+			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), ($redirect ? $redirect : base_url()));
 		}
 	}
 	

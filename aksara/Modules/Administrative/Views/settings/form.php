@@ -173,10 +173,9 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="text-muted d-block" for="default_membership_group_input">
-										<?php echo $results->form_data->auto_active_registration->label; ?>
-										<i class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="<?php echo phrase('activate_user_after_registration'); ?>"></i>
+										<?php echo $results->form_data->default_membership_group->label; ?>
 									</label>
-									<?php echo $results->form_data->auto_active_registration->content; ?>
+									<?php echo $results->form_data->default_membership_group->content; ?>
 								</div>
 							</div>
 						</div>
@@ -184,9 +183,10 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="text-muted d-block" for="default_membership_group_input">
-										<?php echo $results->form_data->default_membership_group->label; ?>
+										<?php echo $results->form_data->auto_active_registration->label; ?>
+										<i class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="<?php echo phrase('activate_user_after_registration'); ?>"></i>
 									</label>
-									<?php echo $results->form_data->default_membership_group->content; ?>
+									<?php echo $results->form_data->auto_active_registration->content; ?>
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -200,6 +200,36 @@
 						</div>
 						<hr />
 						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label class="text-muted d-block">
+										<?php echo $results->form_data->login_attempt->label; ?>
+									</label>
+									<div class="input-group">
+										<?php echo $results->form_data->login_attempt->content; ?>
+										<div class="input-group-append">
+											<span class="input-group-text">
+												<?php echo phrase('times'); ?>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label class="text-muted d-block">
+										<?php echo $results->form_data->blocking_time->label; ?>
+									</label>
+									<div class="input-group">
+										<?php echo $results->form_data->blocking_time->content; ?>
+										<div class="input-group-append">
+											<span class="input-group-text">
+												<?php echo phrase('minutes'); ?>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="text-muted d-block">

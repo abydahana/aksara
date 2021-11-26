@@ -46,6 +46,7 @@ class Users extends \Aksara\Laboratory\Core
 		if(in_array($this->_method, array('create')))
 		{
 			$this->set_validation('password', 'required|min_length[6]');
+			$this->set_default('registered_date', date('Y-m-d'));
 		}
 		
 		$this->set_title(phrase('manage_users'))
@@ -54,7 +55,7 @@ class Users extends \Aksara\Laboratory\Core
 		->set_primary('user_id, username')
 		
 		/* add extra option button */
-		//->add_action('option', 'privileges', phrase('individual_privileges'), 'btn-success --xhr', 'mdi mdi-account-check-outline', array('user_id' => 'user_id'))
+		->add_action('option', 'privileges', phrase('individual_privileges'), 'btn-success --xhr', 'mdi mdi-account-check-outline', array('user_id' => 'user_id'))
 		
 		->unset_column('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')
 		->unset_field('user_id, last_login, is_logged, registered_date')
@@ -170,6 +171,9 @@ class Users extends \Aksara\Laboratory\Core
 		)
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_field('first_name, last_name', phrase('full_name'))
+		
+		->order_by('registered_date', 'DESC')
+		
 		->render($this->_table);
 	}
 	

@@ -105,6 +105,11 @@ if(!function_exists('make_json'))
 			$data->html								= $html;
 		}
 		
+		if(isset($data->status) && $data->status === 200)
+		{
+			$data->_token							= sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+		}
+		
 		$data										= json_fixer($data);
 		
 		$data										= preg_replace('/\t/', '', json_encode($data));
@@ -152,7 +157,7 @@ if(!function_exists('json_fixer'))
 
 if(!function_exists('time_ago'))
 {
-	function time_ago($datetime = null, $full = false)
+	function time_ago($datetime = null, $full = false, $short = false)
 	{
 		$now										= new \DateTime;
 		$ago										= new \DateTime($datetime);
@@ -189,6 +194,6 @@ if(!function_exists('time_ago'))
 			$string								= array_slice($string, 0, 1);
 		}
 		
-		return $string ? implode(', ', $string) . ' ' . phrase('ago') : phrase('just_now');
+		return ($string ? implode(', ', $string) . ' ' . (!$short ? phrase('ago') : null) : phrase('just_now'));
 	}
 }

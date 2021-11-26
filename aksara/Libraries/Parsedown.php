@@ -66,7 +66,7 @@ class Parsedown
         return $this;
     }
 
-    protected $markupEscaped;
+    protected $markupEscaped = true;
 
     function setUrlsLinked($urlsLinked)
     {

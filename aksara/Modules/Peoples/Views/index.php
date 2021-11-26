@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-3 pb-3">
 	<?php
 		if($results)
 		{
@@ -27,9 +27,9 @@
 							</a>
 							<div class="card-body">
 								<a href="' . go_to($val->people_slug) . '" class="--xhr">
-									<h6 class="card-title text-center text-truncate">
+									<h5 class="card-title text-center text-truncate">
 										' . truncate($val->first_name, 22) . ' ' . truncate($val->last_name, 22) . '
-									</h6>
+									</h5>
 								</a>
 								<a href="' . go_to($val->people_slug) . '" class="--xhr">
 									<h6 class="card-subtitle font-weight-light text-center mb-2 text-muted text-truncate">

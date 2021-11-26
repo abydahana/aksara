@@ -302,7 +302,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 								'size'				=> $files['size'][$key][$_key]
 							);
 							
-							$this->_do_upload($filename, $field, $type, $key);
+							$this->_do_upload($filename, $field, $type, $key, $_key);
 						}
 					}
 					else
@@ -318,7 +318,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 							'size'					=> $files['size'][$key]
 						);
 						
-						$this->_do_upload($filename, $field, $type);
+						$this->_do_upload($filename, $field, $type, $key);
 					}
 				}
 			}
@@ -352,7 +352,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	 *
 	 * @access		private
 	 */
-	private function _do_upload($filename = null, $field = null, $type = null, $sub = null)
+	private function _do_upload($filename = null, $f = null, $type = null, $_key = null, $__key)
 	{
 		$source										= service('request')->getFile($filename);
 		
@@ -481,15 +481,15 @@ class Validation extends \CodeIgniter\Validation\Rules
 			$source->move(UPLOAD_PATH . '/' . $this->_set_upload_path, $filename);
 		}
 		
-		if($sub)
+		if($__key)
 		{
 			// collect uploaded data (has sub-name)
-			$this->_upload_data[$field][$sub][]		= $filename;
+			$this->_upload_data[$f][$_key][$__key]	= $filename;
 		}
 		else
 		{
 			// collect uploaded data (single name)
-			$this->_upload_data[$field][]			= $filename;
+			$this->_upload_data[$f][$_key]			= $filename;
 		}
 	}
 	

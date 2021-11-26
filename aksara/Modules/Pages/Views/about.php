@@ -54,7 +54,7 @@
 			</h6>
 			<div class="form-group">
 				<label class="d-block text-muted mb-0">
-					<a href="//abydahana.github.io" target="_blank">
+					<a href="//abydahana.github.io" class="font-weight-bold" target="_blank">
 						Aby Dahana
 						<i class="mdi mdi-open-in-new"></i>
 					</a>
@@ -67,7 +67,7 @@
 			</h6>
 			<div class="form-group">
 				<label class="d-block text-muted mb-0">
-					<a href="//ganjar.id" target="_blank">
+					<a href="//ganjar.id" class="font-weight-bold" target="_blank">
 						Ganjar Nugraha
 						<i class="mdi mdi-open-in-new"></i>
 					</a>
@@ -80,10 +80,6 @@
 		<?php echo phrase('dependencies'); ?>
 	</h6>
 	<div class="form-group">
-		<a href="//php.net" target="_blank">
-			PHP
-		</a>
-		&middot;
 		<a href="//codeigniter.com" target="_blank">
 			CodeIgniter
 		</a>
@@ -106,6 +102,14 @@
 		&middot;
 		<a href="//github.com/picqer/php-barcode-generator" target="_blank">
 			PHP Barcode
+		</a>
+		&middot;
+		<a href="//github.com/halaxa/json-machine" target="_blank">
+			JSON Machine
+		</a>
+		&middot;
+		<a href="//github.com/phpoffice/phpspreadsheet" target="_blank">
+			PHPSpreadSheet
 		</a>
 	</div>
 	<br />
@@ -141,16 +145,8 @@
 			Bootstrap Datepicker
 		</a>
 		&middot;
-		<a href="//blueimp.github.io/jQuery-File-Upload/" target="_blank">
-			FileUploader
-		</a>
-		&middot;
 		<a href="//highcharts.com" target="_blank">
 			HighCharts
-		</a>
-		&middot;
-		<a href="//infinite-scroll.com" target="_blank">
-			Infinite Scroll
 		</a>
 		&middot;
 		<a href="//jquery.com" target="_blank">
@@ -169,12 +165,8 @@
 			JSZip
 		</a>
 		&middot;
-		<a href="//github.com/tuupola/lazyload" target="_blank">
-			LazyLoad
-		</a>
-		&middot;
 		<a href="//materialdesignicons.com" target="_blank">
-			Materialdesignicons
+			Material Design Icons
 		</a>
 		&middot;
 		<a href="//manos.malihu.gr/jquery-custom-content-scroller/" target="_blank">
@@ -183,6 +175,10 @@
 		&middot;
 		<a href="//www.mediaelementjs.com/" target="_blank">
 			Mediaelementjs
+		</a>
+		&middot;
+		<a href="//github.com/moment/moment/" target="_blank">
+			MomentJS
 		</a>
 		&middot;
 		<a href="//openlayers.org" target="_blank">
