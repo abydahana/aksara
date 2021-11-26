@@ -393,7 +393,7 @@ class Core extends Controller
 		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			// user isn't signed in
-			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()), true);
+			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()));
 		}
 		
 		// check if user permission is not allowed to access the module
@@ -8315,7 +8315,7 @@ class Core extends Controller
 					$type							= $value['type'];
 					
 					/* skip field when it's disabled and has no default value */
-					if((in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) && !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$field]) && in_array('disabled', $type))) continue;
+					if((in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$field]) && in_array('disabled', $type))) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
