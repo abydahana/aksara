@@ -5561,6 +5561,11 @@ class Core extends Controller
 		{
 			$qs										= service('request')->getGet();
 			
+			if(isset($qs['aksara']))
+			{
+				unset($qs['aksara']);
+			}
+			
 			foreach($search_columns as $key => $val)
 			{
 				if(stripos($val, '.') !== false)
