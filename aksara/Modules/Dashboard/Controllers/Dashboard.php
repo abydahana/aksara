@@ -69,7 +69,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 			platform,
 			timestamp
 		')
-		->group_by('ip_address, browser, platform, timestamp, DATE(timestamp)')
+		->group_by('ip_address, browser, platform, timestamp, ' . (in_array(DB_DRIVER, array('Postgre', 'SQLSRV')) ? 'CAST(timestamp AS DATE)' : 'DATE(timestamp)'))
 		->get_where
 		(
 			'app__visitor_logs',

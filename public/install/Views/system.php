@@ -15,8 +15,8 @@
 					<b class="text-danger">*</b>
 				</label>
 				<select name="installation_mode" class="form-control form-control-sm">
-					<option value="1"<?php echo (session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('basic_with_sample'); ?></option>
-					<option value="0"<?php echo (!session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('developer_without_sample'); ?></option>
+					<option value="0"<?php echo (!session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('basic_with_sample'); ?></option>
+					<option value="1"<?php echo (session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('developer_without_sample'); ?></option>
 				</select>
 			</div>
 		</div>

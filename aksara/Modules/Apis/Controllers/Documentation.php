@@ -136,6 +136,7 @@ class Documentation extends \Aksara\Laboratory\Core
 		$method										= service('request')->getPost('method');
 		$title										= $slug;
 		$output										= array();
+		$session_id									= session_id();
 		$session									= get_userdata();
 		$restore_after								= false;
 		$s											= 'success';
@@ -160,34 +161,76 @@ class Documentation extends \Aksara\Laboratory\Core
 			'target'								=> phrase('redirect_url')
 		);
 		
+		// check the temporary session
+		$tmp_session								= $this->model->get_where
+		(
+			'app__sessions',
+			array
+			(
+				'id'								=> $session_id
+			)
+		)
+		->num_rows();
+		
+		if($tmp_session)
+		{
+			// temporary session exists, update it
+			$this->model->update
+			(
+				'app__sessions',
+				array
+				(
+					'ip_address'					=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+					'timestamp'						=> date('Y-m-d H:i:s'),
+					'data'							=> (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
+				),
+				array
+				(
+					'id'							=> $session_id
+				)
+			);
+		}
+		else
+		{
+			// store temporary session
+			$this->model->insert
+			(
+				'app__sessions',
+				array
+				(
+					'id'							=> $session_id,
+					'ip_address'					=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+					'timestamp'						=> date('Y-m-d H:i:s'),
+					'data'							=> (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
+				)
+			);
+		}
+		
+		// prepare the cURL
 		$curl										= \Config\Services::curlrequest
 		(
 			array
 			(
 				'timeout'							=> 5,
-				'http_errors'						=> false
+				'http_errors'						=> false,
+				'allow_redirects'					=> array
+				(
+					'max'							=> 2
+				),
+				'headers'							=> array
+				(
+					'X-API-KEY'						=> sha1(ENCRYPTION_KEY . $session_id),
+					'X-ACCESS-TOKEN'				=> $session_id
+				)
 			)
 		);
 		
 		foreach($method as $key => $val)
 		{
-			$request								= $curl->get
-			(
-				base_url($slug . ('index' != $val ? '/' . $val : null)),
-				array
-				(
-					'allow_redirects'				=> array
-					(
-						'max'						=> 2
-					),
-					'headers'						=> array
-					(
-						'X-API-KEY'					=> sha1(ENCRYPTION_KEY . session_id()),
-						'X-ACCESS-TOKEN'			=> session_id()
-					)
-				)
-			);
+			// make a request
+			$request								= $curl->get(base_url($slug . ('index' != $val ? '/' . $val : null)));
 			
+			// decode the response
 			$response								= json_decode($request->getBody());
 			
 			if(isset($response->results) && !in_array($response->method, array('index', 'read', 'delete', 'export', 'print', 'pdf')))
@@ -230,6 +273,16 @@ class Documentation extends \Aksara\Laboratory\Core
 				}
 			}
 		}
+		
+		// remove the temporary session
+		$this->model->delete
+		(
+			'app__sessions',
+			array
+			(
+				'id'								=> $session_id
+			)
+		);
 		
 		if($restore_after && isset($session['group_id']))
 		{

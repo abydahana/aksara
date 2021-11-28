@@ -255,6 +255,7 @@
 								<div class="form-group">
 									<label class="text-muted d-block" for="openlayers_search_key_input">
 										<?php echo $results->form_data->openlayers_search_key->label; ?>
+										<?php echo ($results->form_data->openlayers_search_key->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $results->form_data->openlayers_search_key->tooltip . '"></i>' : null); ?>
 										<?php echo ($results->form_data->openlayers_search_key->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
 									</label>
 									<?php echo $results->form_data->openlayers_search_key->content; ?>

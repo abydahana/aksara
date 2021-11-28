@@ -203,7 +203,7 @@
 						}
 						else if(response.status !== 200)
 						{
-							$('<div class="alert alert-warning failure"><b><?php echo phrase('whoops'); ?></b> ' + response.message + '</div>').prependTo('.--validate-form'),
+							$('.--validation-callback').html('<div class="alert alert-warning failure"><b><?php echo phrase('whoops'); ?></b> ' + response.message + '</div>'),
 							$('html, body').animate
 							({
 								scrollTop: $('.failure').offset().top - 60
@@ -217,7 +217,7 @@
 					.fail(function(response, status, error)
 					{
 						$(this).find('button[type=submit]').prop('disabled', false),
-						$('<div class="alert alert-danger failure"><b><?php echo phrase('whoops'); ?></b> ' + error + '</div>').prependTo('.--validate-form'),
+						$('.--validation-callback').html('<div class="alert alert-danger failure"><b><?php echo phrase('whoops'); ?></b> ' + error + '</div>'),
 						$('html, body').animate
 						({
 							scrollTop: $('.failure').offset().top - 60
@@ -270,7 +270,7 @@
 						}
 						else
 						{
-							$('<div class="alert alert-warning failure"><b><?php echo phrase('whoops'); ?></b> ' + response.message + '</div>').prependTo('.--validate-form'),
+							$('.--validation-callback').html('<div class="alert alert-warning failure"><b><?php echo phrase('whoops'); ?></b> ' + response.message + '</div>'),
 							$('html, body').animate
 							({
 								scrollTop: $('.failure').offset().top - 60
@@ -280,7 +280,7 @@
 					.fail(function(response, status, error)
 					{
 						$(this).find('button[type=submit]').prop('disabled', false),
-						$('<div class="alert alert-danger failure"><b><?php echo phrase('whoops'); ?></b> ' + error + '</div>').prependTo('.--validate-form'),
+						$('.--validation-callback').html('<div class="alert alert-warning failure"><b><?php echo phrase('whoops'); ?></b> ' + error + '</div>'),
 						$('html, body').animate
 						({
 							scrollTop: $('.failure').offset().top - 60

@@ -1,10 +1,24 @@
 <?php
+// check if configuration file already exists
 if(!file_exists('../config.php'))
 {
-	header('Location:install');
+	// find the root path of the app
+	$redirect = preg_replace('/\/\w+/', '../', (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : null));
+	
+	// check if app opened with path
+	if($redirect)
+	{
+		// trim last path
+		$redirect = substr_replace($redirect,'', strrpos($redirect, '../'), 3);
+	}
+	
+	// redirect to installation
+	header('Location:' . $redirect . 'install');
+	
 	exit;
 }
 
+// include the configuration file
 require_once '../config.php';
 
 // Valid PHP Version?

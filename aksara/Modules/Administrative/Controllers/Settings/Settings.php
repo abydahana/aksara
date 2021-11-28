@@ -123,6 +123,7 @@ class Settings extends \Aksara\Laboratory\Core
 		(
 			array
 			(
+				'openlayers_search_key'				=> 'placeholder="' . phrase('enter_your_api_key') . '"',
 				'default_map_tile'					=> 'placeholder="E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"'
 			)
 		)
@@ -130,6 +131,7 @@ class Settings extends \Aksara\Laboratory\Core
 		(
 			array
 			(
+				'openlayers_search_key'				=> phrase('the_api_key_is_required_when_you_using_google_as_search_provider'),
 				'default_map_tile'					=> phrase('you_can_use_any_xyz_tile_source_as_default_map_tiles')
 			)
 		)
