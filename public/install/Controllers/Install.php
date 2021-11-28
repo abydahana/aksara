@@ -416,7 +416,7 @@ class Install extends BaseController
 			}
 			
 			// check if basic installation is selected
-			if(1 == session()->get('installation_mode'))
+			if(!session()->get('installation_mode'))
 			{
 				try
 				{
@@ -469,7 +469,7 @@ class Install extends BaseController
 					$seeder->call('MainSeeder');
 					
 					// check if basic installation is selected
-					if(1 == session()->get('installation_mode'))
+					if(!session()->get('installation_mode'))
 					{
 						// run seeder to insert sample data
 						$seeder->call('DummySeeder');
@@ -511,6 +511,9 @@ class Install extends BaseController
 					);
 				}
 			}
+			
+			// destroy session
+			session()->destroy();
 		}
 		else if(1 == service('request')->getGet('download'))
 		{

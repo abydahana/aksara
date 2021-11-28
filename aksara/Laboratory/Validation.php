@@ -162,7 +162,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 				$num++;
 			}
 			
-			return $this->model->select($params[1])->get_where($params[0], array($params[1] => $value), 1)->num_rows() === 0;
+			return $this->model->select($params[1])->get_where($params[0], array($params[1] => $value))->num_rows() === 0;
 		}
 		
 		return false;

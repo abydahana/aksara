@@ -226,6 +226,19 @@ class Model
 	}
 	
 	/**
+	 * Get the table index data of selected table
+	 */
+	public function index_data($table = null)
+	{
+		if($table && $this->db->tableExists($table))
+		{
+			return $this->db->getIndexData($table);
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Get the affected rows
 	 */
 	public function affected_rows()
@@ -1456,18 +1469,20 @@ class Model
 		
 		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
 		{
-			$metadata								= $this->db->getFieldData($table);
+			$index_data								= $this->db->getIndexData($table);
 			
-			if($metadata)
+			// set the default primary if the table have any primary column
+			if($index_data)
 			{
-				$found								= false;
-				
-				foreach($metadata as $key => $val)
+				// loops to get the primary key
+				foreach($index_data as $key => $val)
 				{
-					if($val->type == 'int' && $val->primary_key && !$found)
+					// check if the field has primary key
+					if($val->type == 'PRIMARY')
 					{
-						$set[$val->name]			= ($this->db->table($table)->selectMax($val->name)->get()->getRow($val->name) + 1);
-						$found						= true;
+						$set[$val->fields[0]]		= ($this->db->table($table)->selectMax($val->fields[0])->get()->getRow($val->fields[0]) + 1);
+						
+						break;
 					}
 				}
 			}
@@ -1487,20 +1502,21 @@ class Model
 		
 		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
 		{
-			$auto_increment							= 0;
-			$metadata								= $this->db->getFieldData($table);
+			$index_data								= $this->db->getIndexData($table);
 			
-			if($metadata)
+			// set the default primary if the table have any primary column
+			if($index_data)
 			{
-				$found								= false;
-				
-				foreach($metadata as $key => $val)
+				// loops to get the primary key
+				foreach($index_data as $key => $val)
 				{
-					if($val->type == 'int' && $val->primary_key && !$found)
+					// check if the field has primary key
+					if($val->type == 'PRIMARY')
 					{
-						$primary					= $val->name;
-						$auto_increment				= ($this->db->table($table)->selectMax($val->name)->get()->getRow($val->name) + 1);
-						$found						= true;
+						$primary					= $val->fields[0];
+						$auto_increment				= ($this->db->table($table)->selectMax($val->fields[0])->get()->getRow($val->fields[0]) + 1);
+						
+						break;
 					}
 				}
 			}
@@ -1511,7 +1527,7 @@ class Model
 			{
 				foreach($val as $_key => $_val)
 				{
-					$_val[$primary_key]				= $auto_increment;
+					$_val[$primary]					= $auto_increment;
 					$val							= $_val;
 					
 					$auto_increment++;
@@ -1594,7 +1610,7 @@ class Model
 			}
 		}
 		
-		if($limit)
+		if($limit && !in_array(DB_DRIVER, array('Postgre')))
 		{
 			$this->_limit							= $limit;
 		}
@@ -1885,8 +1901,32 @@ class Model
 		
 		if($this->_select)
 		{
-			// run select command
-			$builder->select($this->_select);
+			if(in_array(DB_DRIVER, array('SQLSRV')))
+			{
+				// loops the selection to convert the datatype
+				foreach($this->_select as $key => $val)
+				{
+					// check if selection is wrapped with brackets
+					if(stripos($val, '(') && stripos($val, ')'))
+					{
+						// run select command
+						$builder->select($val, false);
+					}
+					else
+					{
+						// get the field name after dot
+						$alias						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : (stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val));
+						
+						// run select command
+						$builder->select('CONVERT(VARCHAR(MAX), ' . (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val) . ') AS ' . $alias);
+					}
+				}
+			}
+			else
+			{
+				// run select command
+				$builder->select($this->_select);
+			}
 		}
 		
 		if($this->_select_sum)
@@ -1939,7 +1979,7 @@ class Model
 			// run where command
 			foreach($this->_where as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
 					// type casting for PostgreSQL
 					if(in_array(gettype($val['value']), array('integer')))
@@ -1957,15 +1997,34 @@ class Model
 						$cast_type					= 'FLOAT';
 						$val['value']				= (float) $val['value'];
 					}
+					else if(\DateTime::createFromFormat('Y-m-d H:i:s', $val['value']))
+					{
+						$cast_type					= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
+						$val['value']				= $val['value'];
+					}
+					else if(\DateTime::createFromFormat('Y-m-d', $val['value']))
+					{
+						$cast_type					= 'DATE';
+						$val['value']				= $val['value'];
+					}
 					else if(!is_array(gettype($val['value'])))
 					{
-						$cast_type					= 'TEXT';
+						$cast_type					= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
 						$val['value']				= (string) $val['value'];
 					}
 					
 					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
 					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
-					$key							= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						$key						= 'CONVERT(' . $cast_type . ', ' . $field . ')' . ($field != $operand ? $operand : null);
+					}
+					else
+					{
+						$key						= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					}
+					
 					$val['case_insensitive']		= true;
 				}
 				
@@ -1978,7 +2037,7 @@ class Model
 			// run or where command
 			foreach($this->_or_where as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
 					// type casting for PostgreSQL
 					if(in_array(gettype($val['value']), array('integer')))
@@ -1996,15 +2055,34 @@ class Model
 						$cast_type					= 'FLOAT';
 						$val['value']				= (float) $val['value'];
 					}
+					else if(\DateTime::createFromFormat('Y-m-d H:i:s', $val['value']))
+					{
+						$cast_type					= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
+						$val['value']				= $val['value'];
+					}
+					else if(\DateTime::createFromFormat('Y-m-d', $val['value']))
+					{
+						$cast_type					= 'DATE';
+						$val['value']				= $val['value'];
+					}
 					else if(!is_array(gettype($val['value'])))
 					{
-						$cast_type					= 'TEXT';
+						$cast_type					= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
 						$val['value']				= (string) $val['value'];
 					}
 					
 					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
 					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
-					$key							= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						$key						= 'CONVERT(' . $cast_type . ', ' . $field . ')' . ($field != $operand ? $operand : null);
+					}
+					else
+					{
+						$key						= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
+					}
+					
 					$val['case_insensitive']		= true;
 				}
 				
@@ -2055,10 +2133,19 @@ class Model
 			// run like command
 			foreach($this->_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
-					// type casting for PostgreSQL
-					$key							= 'CAST(' . $key . ' AS TEXT)';
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						// type casting for SQL Server
+						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+					}
+					else
+					{
+						// type casting for PostgreSQL
+						$key						= 'CAST(' . $key . ' AS VARCHAR)';
+					}
+					
 					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
@@ -2071,10 +2158,19 @@ class Model
 				// run or like command
 				foreach($this->_or_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS TEXT)';
+						if(DB_DRIVER == 'SQLSRV')
+						{
+							// type casting for SQL Server
+							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+						}
+						else
+						{
+							// type casting for PostgreSQL
+							$key					= 'CAST(' . $key . ' AS VARCHAR)';
+						}
+						
 						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
@@ -2093,10 +2189,19 @@ class Model
 			// run not like command
 			foreach($this->_not_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
-					// type casting for PostgreSQL
-					$key							= 'CAST(' . $key . ' AS TEXT)';
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						// type casting for SQL Server
+						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+					}
+					else
+					{
+						// type casting for PostgreSQL
+						$key						= 'CAST(' . $key . ' AS VARCHAR)';
+					}
+					
 					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
@@ -2109,10 +2214,19 @@ class Model
 				// run or not like command
 				foreach($this->_or_not_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS TEXT)';
+						if(DB_DRIVER == 'SQLSRV')
+						{
+							// type casting for SQL Server
+							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+						}
+						else
+						{
+							// type casting for PostgreSQL
+							$key					= 'CAST(' . $key . ' AS VARCHAR)';
+						}
+						
 						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
@@ -2197,10 +2311,19 @@ class Model
 			// run having like command
 			foreach($this->_having_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
-					// type casting for PostgreSQL
-					$key							= 'CAST(' . $key . ' AS TEXT)';
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						// type casting for SQL Server
+						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+					}
+					else
+					{
+						// type casting for PostgreSQL
+						$key						= 'CAST(' . $key . ' AS VARCHAR)';
+					}
+					
 					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
@@ -2213,10 +2336,19 @@ class Model
 				// run or having like command
 				foreach($this->_or_having_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS TEXT)';
+						if(DB_DRIVER == 'SQLSRV')
+						{
+							// type casting for SQL Server
+							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+						}
+						else
+						{
+							// type casting for PostgreSQL
+							$key					= 'CAST(' . $key . ' AS VARCHAR)';
+						}
+						
 						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
@@ -2235,10 +2367,19 @@ class Model
 			// run not having like command
 			foreach($this->_not_having_like as $key => $val)
 			{
-				if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 				{
-					// type casting for PostgreSQL
-					$key							= 'CAST(' . $key . ' AS TEXT)';
+					if(DB_DRIVER == 'SQLSRV')
+					{
+						// type casting for SQL Server
+						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+					}
+					else
+					{
+						// type casting for PostgreSQL
+						$key						= 'CAST(' . $key . ' AS VARCHAR)';
+					}
+					
 					$val['match']					= (string) $val['match'];
 					$val['case_insensitive']		= true;
 				}
@@ -2251,10 +2392,19 @@ class Model
 				// run or not having like command
 				foreach($this->_or_not_having_like as $key => $val)
 				{
-					if(DB_DRIVER == 'Postgre' && !stripos($key, '(') && !stripos($key, ')'))
+					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS TEXT)';
+						if(DB_DRIVER == 'SQLSRV')
+						{
+							// type casting for SQL Server
+							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
+						}
+						else
+						{
+							// type casting for PostgreSQL
+							$key					= 'CAST(' . $key . ' AS VARCHAR)';
+						}
+						
 						$val['match']				= (string) $val['match'];
 						$val['case_insensitive']	= true;
 					}
@@ -2268,8 +2418,31 @@ class Model
 		
 		if($this->_group_by)
 		{
-			// run group by command
-			$builder->groupBy($this->_group_by);
+			if(in_array(DB_DRIVER, array('SQLSRV')))
+			{
+				// convert group as array
+				$this->_group_by					= array_map('trim', explode(',', $this->_group_by));
+				
+				// loops the group list
+				foreach($this->_group_by as $key => $val)
+				{
+					if(stripos($val, '(') && stripos($val, ')'))
+					{
+						// run group command
+						$builder->groupBy($val);
+					}
+					else
+					{
+						// run group command
+						$builder->groupBy('CONVERT(VARCHAR(MAX), ' . (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val) . ')');
+					}
+				}
+			}
+			else
+			{
+				// run group command
+				$builder->groupBy($this->_group_by);
+			}
 		}
 		
 		if($this->_limit)

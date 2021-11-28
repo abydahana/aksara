@@ -191,7 +191,7 @@ class Core extends Controller
 		// check if accessed from IE browser
 		if(strtolower(service('request')->getUserAgent()->getBrowser()) == 'internet explorer' && service('request')->getUserAgent()->getVersion() < 11)
 		{
-			/* throw compatibility mode */
+			// throw compatibility mode
 			die('The ' . service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion() . ' is no longer supported...');
 		}
 		
@@ -345,7 +345,7 @@ class Core extends Controller
 	public function valid_token($token = null)
 	{
 		// match the token validation
-		if($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request)
+		if(service('request')->getPost() && ($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request))
 		{
 			// token match
 			return true;
@@ -1869,13 +1869,13 @@ class Core extends Controller
 				{
 					$condition						.= ($condition ? ' AND ' : null) . $relation_table . '.' . $val . ' = {primary_table}.' . $val;
 					
-					/* apply validation */
+					// apply validation
 					$this->set_validation($val, 'relation_checker[' . $relation_table . '.' . $val . ']');
 				}
 			}
 			else
 			{
-				/* apply validation */
+				// apply validation
 				$this->set_validation($field, 'relation_checker[' . $relation_table . '.' . $relation_key . ']');
 			}
 			
@@ -2122,7 +2122,7 @@ class Core extends Controller
 					else
 					{
 						$primary_key				= $params['primary_key'];
-						$value						= $val->$primary_key;
+						$value						= (isset($val->$primary_key) ? $val->$primary_key : 0);
 					}
 					
 					if($value == $selected)
@@ -2302,45 +2302,52 @@ class Core extends Controller
 			}
 		}
 		
-		/* validate the restricted action */
+		// validate the restricted action
 		if(in_array($this->_method, $this->_unset_action))
 		{
 			return throw_exception(403, phrase('you_cannot_perform_the_requested_action'), $this->_redirect_back);
 		}
 		
-		/* check before action */
+		// check before action
 		if('update' == $this->_method && method_exists($this, 'before_update'))
 		{
-			/* before update */
+			// before update
 			$this->before_update();
 		}
 		else if('delete' == $this->_method && method_exists($this, 'before_delete'))
 		{
-			/* before delete */
+			// before delete
 			$this->before_delete();
 		}
 		
 		$this->template								= new Template($this->_set_theme, $this->_api_request);
 		
-		/* check if given table is exists in database */
+		// check if given table is exists in database
 		if($table && $this->model->table_exists($table))
 		{
 			$this->_from							= $table;
 			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_from)), true);
+			$this->_index_data						= $this->model->index_data($this->_from);
 			
-			/* set the default primary if the table have any primary column */
-			if(!$this->_set_primary)
+			// set the default primary if the table have any primary column
+			if(!$this->_set_primary && $this->_index_data)
 			{
-				foreach($this->_field_data as $key => $val)
+				// loops to get the primary key
+				foreach($this->_index_data as $key => $val)
 				{
-					if((isset($val['primary_key']) && $val['primary_key'] == 1) || (isset($val['default']) && stripos($val['default'], 'nextval(') !== false))
+					// check if the field has primary key
+					if($val->type == 'PRIMARY')
 					{
-						$this->_set_primary[]		= $val['name'];
+						// push primary key
+						$this->_set_primary			= array_merge($this->_set_primary, $val->fields);
 					}
 				}
+				
+				// make the array unique
+				$this->_set_primary					= array_unique($this->_set_primary);
 			}
 			
-			/* check again if the primary key is still unavailable */
+			// check again if the primary key is still unavailable
 			if(!$this->_set_primary)
 			{
 				if('backend' == $this->template->get_theme_property('type'))
@@ -2351,22 +2358,22 @@ class Core extends Controller
 				$this->unset_action('read, update, delete, export, print, pdf');
 			}
 			
-			/* check the requested method */
+			// check the requested method
 			if(in_array($this->_method, array('read', 'update', 'delete', 'export', 'print', 'pdf')))
 			{
-				/* set limit of modification action */
+				// set limit of modification action
 				if(in_array($this->_method, array('read', 'update', 'delete')) || ($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN'))))
 				{
 					$this->_limit					= 1;
 				}
 				
-				/* apply primary from where if it's were sets */
+				// apply primary from where if it's were sets
 				if(!$this->_set_primary && $this->_where)
 				{
 					$this->_set_primary				= array_keys($this->_where);
 				}
 				
-				/* check the additional primary key that been sets up */
+				// check the additional primary key that been sets up
 				if(is_array($this->_set_primary) && sizeof($this->_set_primary) > 0)
 				{
 					if($this->_where && !in_array($this->_set_method, array('read', 'update')))
@@ -2510,7 +2517,7 @@ class Core extends Controller
 				$this->_crud						= true;
 			}
 			
-			/* check if data is requested through autocomplete (jQuery plugin) */
+			// check if data is requested through autocomplete (jQuery plugin)
 			if(service('request')->isAJAX() && 'autocomplete' == service('request')->getPost('method'))
 			{
 				/**
@@ -2527,7 +2534,7 @@ class Core extends Controller
 				
 				if(isset($this->_set_field[service('request')->getPost('origin')]) && in_array('autocomplete', $this->_set_field[service('request')->getPost('origin')]['field_type']))
 				{
-					/* set the relation table, field and keyword */
+					// set the relation table, field and keyword
 					$field							= $this->_set_field[service('request')->getPost('origin')];
 					$table							= (is_array($field['parameter']) ? $field['parameter'][0] : $field['parameter']);
 					$select							= (!is_array($field['extra_params']) ? array_map('trim', explode(',', $field['extra_params'])) : $field['extra_params']);
@@ -2582,7 +2589,7 @@ class Core extends Controller
 						}
 					}
 					
-					/* order by best match */
+					// order by best match
 					if($this->_order_bm)
 					{
 						foreach($this->_order_bm as $key => $val)
@@ -2598,14 +2605,14 @@ class Core extends Controller
 					
 					$this->model->group_by($select['value']);
 					
-					/* run query */
+					// run query
 					$query							= $this->model->get($table, 50)->result_array();
 					
 					if($query)
 					{
 						foreach($query as $val)
 						{
-							/* list as value, label and description */
+							// list as value, label and description
 							list($v, $l, $d, $i)	= array_pad(array_values($val), 4, null);
 							$suggestions[]			= array
 							(
@@ -2625,67 +2632,67 @@ class Core extends Controller
 					 */
 					if(!$this->_select)
 					{
-						/* check the select list, if none, use the main table field instead */
+						// check the select list, if none, use the main table field instead
 						$this->_select				= preg_filter('/^/', $this->_from . '.', $this->model->list_fields($this->_from));
 					}
 					
-					/* loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead */
+					// loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead
 					foreach($this->_select as $key => $val)
 					{
 						$val						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
 						
-						/* if there's LIKE */
+						// if there's LIKE
 						if($this->_like)
 						{
-							/* use OR LIKE */
+							// use OR LIKE
 							$this->_or_like[$val]	= service('request')->getPost('q');
 						}
 						else
 						{
-							/* otherwise, set the LIKE */
+							// otherwise, set the LIKE
 							$this->_like[$val]		= service('request')->getPost('q');
 						}
 					}
 					
-					/* run query */
+					// run query
 					$query							= $this->_run_query($this->_from);
 					$this->_query					= $query['results'];
 					
-					/* populate added item */
+					// populate added item
 					$added_item						= array();
 					
-					/* serialize results */
+					// serialize results
 					$serialized						= $this->serialize($this->_query);
 					
 					foreach($serialized as $key => $val)
 					{
-						/* does column order is mandatory? let's just watch */
+						// does column order is mandatory? let's just watch
 						if(is_array($this->_column_order) && sizeof($this->_column_order) > 0)
 						{
-							/* set the default column order */
+							// set the default column order
 							$column_order			= array();
 							
 							foreach($this->_column_order as $order_key => $order_val)
 							{
-								/* if array key exists */
+								// if array key exists
 								if(array_key_exists($order_val, $val))
 								{
-									/* then push to column order grocery */
+									// then push to column order grocery
 									$column_order[]	= $order_val;
 								}
 							}
-							/* set the value */
+							// set the value
 							$val					= array_replace(array_flip($column_order), $val);
 						}
 						
 						$autocomplete_item			= array();
-						/* loop the result */
+						// loop the result
 						foreach($val as $field => $value)
 						{
-							/* check if the result value is not contain the search keyword or the field is unset from column (list table) */
+							// check if the result value is not contain the search keyword or the field is unset from column (list table)
 							if(strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false || in_array($field, $this->_unset_column)) continue;
 							
-							/* everything's looks good, throw into autocomplete result */
+							// everything's looks good, throw into autocomplete result
 							if(!$autocomplete_item && $value['original'] && !in_array($value['content'], $added_item))
 							{
 								$added_item[]		= $value['content'];
@@ -2706,7 +2713,7 @@ class Core extends Controller
 					}
 				}
 				
-				/* return the callback as autocomplete results */
+				// return the callback as autocomplete results
 				return make_json
 				(
 					array
@@ -2716,7 +2723,7 @@ class Core extends Controller
 				);
 			}
 			
-			/* check if data is requested through server side select (jQuery plugin) */
+			// check if data is requested through server side select (jQuery plugin)
 			else if(service('request')->isAJAX() && 'ajax_select' == service('request')->getPost('method') && isset($this->_set_relation[service('request')->getPost('source')]))
 			{
 				return $this->_get_relation($this->_set_relation[service('request')->getPost('source')]);
@@ -2729,7 +2736,7 @@ class Core extends Controller
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			
-			/* get the results from the database query */
+			// get the results from the database query
 			if(service('request')->getGet('order'))
 			{
 				$this->_order_by					= array();
@@ -2752,7 +2759,7 @@ class Core extends Controller
 				$this->_total						= $query['total'];
 			}
 			
-			/* try to convert the magic string and replace with result */
+			// try to convert the magic string and replace with result
 			$title									= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : null));
 			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 			
@@ -2794,7 +2801,7 @@ class Core extends Controller
 				$title								= trim($title);
 			}
 			
-			/* if method is create */
+			// if method is create
 			if('create' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
@@ -2804,7 +2811,7 @@ class Core extends Controller
 				$this->_results						= $this->render_form($this->_query);
 			}
 			
-			/* if method is read */
+			// if method is read
 			else if('read' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
@@ -2825,7 +2832,7 @@ class Core extends Controller
 				}
 			}
 			
-			/* if method is update */
+			// if method is update
 			else if('update' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
@@ -2835,7 +2842,7 @@ class Core extends Controller
 				$this->_results						= $this->render_form($this->_query);
 			}
 			
-			/* if method is export */
+			// if method is export
 			else if(in_array($this->_method, array('export', 'print', 'pdf')))
 			{
 				$query_string						= service('request')->getGet();
@@ -2858,7 +2865,7 @@ class Core extends Controller
 				$this->_results						= ($single_print ? $this->render_read($this->_query) : $this->render_table($this->_query));
 			}
 			
-			/* otherwise */
+			// otherwise
 			else
 			{
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_grid', 'templates/index_mobile', 'templates/error')) ? true : false);
@@ -2974,12 +2981,12 @@ class Core extends Controller
 			 */
 			if(1 == service('request')->getPost('batch'))
 			{
-				/* batch delete */
+				// batch delete
 				return $this->delete_batch($this->_from);
 			}
 			else if($this->_where)
 			{
-				/* single delete */
+				// single delete
 				return $this->delete_data($this->_from, $this->_where, $this->_limit);
 			}
 		}
@@ -3021,28 +3028,28 @@ class Core extends Controller
 				 * submitted through the form
 				 */
 				
-				/* validate sent token */
+				// validate sent token
 				$token_sent							= service('request')->getPost('_token');
 				
 				if($this->valid_token($token_sent))
 				{
-					/* token approved, check if validation use the custom callback */
+					// token approved, check if validation use the custom callback
 					if(method_exists($this, $this->_form_callback))
 					{
-						/* use callback as form validation */
+						// use callback as form validation
 						$_callback					= $this->_form_callback;
 						
 						return $this->$_callback();
 					}
 					else
 					{
-						/* or use the master validation instead */
+						// or use the master validation instead
 						return $this->validate_form($this->_query);
 					}
 				}
 				else
 				{
-					/* token isn't valid, throw exception */
+					// token isn't valid, throw exception
 					return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
 				}
 			}
@@ -3053,14 +3060,14 @@ class Core extends Controller
 				 */
 				if(method_exists($this, $this->_form_callback))
 				{
-					/* use callback as form validation */
+					// use callback as form validation
 					$_callback						= $this->_form_callback;
 					
 					return $this->$_callback();
 				}
 				else
 				{
-					/* or use the master validation instead */
+					// or use the master validation instead
 					return $this->validate_form($this->_query);
 				}
 			}
@@ -3122,7 +3129,7 @@ class Core extends Controller
 					unset($this->_output->total);
 				}
 				
-				/* Display to the browser */
+				// Display to the browser
 				return $this->template->build($this->_view, $this->_output, $this->_set_breadcrumb, $this->_from, $this->_language);
 			}
 		}
@@ -3214,16 +3221,16 @@ class Core extends Controller
 				// unlink the files
 				$this->_unlink_files();
 				
-				/* otherwise, the item is cannot be deleted */
+				// otherwise, the item is cannot be deleted
 				$error								= $this->model->error();
 				
 				if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
 				{
-					/* for administrator */
+					// for administrator
 					return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
 				}
 				
-				/* for user */
+				// for user
 				return throw_exception(500, phrase('unable_to_submit_your_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (insert)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
@@ -3272,7 +3279,7 @@ class Core extends Controller
 				
 				if($this->model->update($table, $data, $where, 1))
 				{
-					/* check if file is updated */
+					// check if file is updated
 					if($this->_old_files && sizeof($this->_old_files) > 0)
 					{
 						// unlink the files
@@ -3291,16 +3298,16 @@ class Core extends Controller
 					// unlink the files
 					$this->_unlink_files();
 					
-					/* otherwise, the item is cannot be deleted */
+					// otherwise, the item is cannot be deleted
 					$error							= $this->model->error();
 					
 					if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
 					{
-						/* for administrator */
+						// for administrator
 						return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
 					}
 					
-					/* for user */
+					// for user
 					return throw_exception(500, phrase('unable_to_update_data') . ' ' . phrase('please_try_again_or_contact_the_system_administrator') . ' ' . phrase('error_code') . ': <b>500 (update)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
@@ -3347,44 +3354,44 @@ class Core extends Controller
 			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* check if app on demo mode */
+		// check if app on demo mode
 		if($this->_restrict_on_demo)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* make sure the delete action have where as condition */
+		// make sure the delete action have where as condition
 		if(!$where)
 		{
-			/* otherwise, redirect to previous page */
+			// otherwise, redirect to previous page
 			return throw_exception(404, phrase('the_data_you_want_to_delete_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* check if delete have a callback message */
+		// check if delete have a callback message
 		if(isset($this->_set_messages['delete']) && $this->_set_messages['delete']['return'])
 		{
-			/* use the callback message */
+			// use the callback message
 			return throw_exception($this->_set_messages['delete']['code'], $this->_set_messages['delete']['messages'], $this->_redirect_back);
 		}
 		
-		/* check if targeted table is exists */
+		// check if targeted table is exists
 		if($table && $this->model->table_exists($table))
 		{
 			$query									= $this->model->get_where($table, $where, $limit)->result();
 			
-			/* check if the item is exists */
+			// check if the item is exists
 			if($query)
 			{
-				/* before delete callback */
+				// before delete callback
 				if(method_exists($this, 'before_delete'))
 				{
 					$this->before_delete();
 				}
 				
-				/* safe check for delete */
+				// safe check for delete
 				if($this->model->delete($table, $where, $limit))
 				{
-					/* prepare to delete file */
+					// prepare to delete file
 					$serialized						= $this->serialize($query);
 					
 					foreach($serialized as $key => $val)
@@ -3413,28 +3420,28 @@ class Core extends Controller
 				}
 				else
 				{
-					/* otherwise, the item is cannot be deleted */
+					// otherwise, the item is cannot be deleted
 					$error							= $this->model->error();
 					
 					if(in_array(get_userdata('group_id'), array(1)) && isset($error['message']))
 					{
-						/* for administrator */
+						// for administrator
 						return throw_exception(500, $error['message'], (!$this->_api_request ? $this->_redirect_back : null));
 					}
 					
-					/* for user */
+					// for user
 					return throw_exception(500, phrase('unable_to_remove_the_selected_data') . '. ' . phrase('please_try_again_or_contact_the_system_administrator') . '. ' . phrase('error_code') . ': <b>500 (delete)</b>', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 			else
 			{
-				/* no item found */
+				// no item found
 				return throw_exception(404, phrase('the_data_you_want_to_delete_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 			}
 		}
 		else
 		{
-			/* the targeted database table isn't exists */
+			// the targeted database table isn't exists
 			return throw_exception(404, phrase('the_selected_database_table_does_not_exists'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 	}
@@ -3457,13 +3464,13 @@ class Core extends Controller
 			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* check if app on demo mode */
+		// check if app on demo mode
 		if($this->_restrict_on_demo)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* get the checked items */
+		// get the checked items
 		$items										= service('request')->getPost('items');
 		$where										= null;
 		$affected_rows								= 0;
@@ -3471,18 +3478,18 @@ class Core extends Controller
 		
 		if(is_array($items) && sizeof($items) > 0)
 		{
-			/* before delete callback */
+			// before delete callback
 			if(method_exists($this, 'before_delete'))
 			{
 				$this->before_delete();
 			}
 			
-			/* safe check to make sure the given field parameter is exists in the database table */
+			// safe check to make sure the given field parameter is exists in the database table
 			$field_exists							= array_flip($this->model->list_fields($table));
 			
 			foreach($items as $key => $val)
 			{
-				/* unset the field parameter that not exist in database table */
+				// unset the field parameter that not exist in database table
 				$val								= array_intersect_key(json_decode($val, true), $field_exists);
 				$ignore								= false;
 				
@@ -3506,12 +3513,12 @@ class Core extends Controller
 					continue;
 				}
 				
-				/* get old data to prepare file deletion */
+				// get old data to prepare file deletion
 				$query								= $this->model->get_where($table, $val, 1)->result();
 				
 				if($query && $this->model->delete($table, $val))
 				{
-					/* prepare to delete file */
+					// prepare to delete file
 					$serialized						= $this->serialize($query);
 					
 					foreach($serialized as $_key => $_val)
@@ -3535,7 +3542,7 @@ class Core extends Controller
 				}
 			}
 			
-			/* after delete callback */
+			// after delete callback
 			if(method_exists($this, 'after_delete'))
 			{
 				$this->after_delete();
@@ -5734,6 +5741,26 @@ class Core extends Controller
 		
 		if($data)
 		{
+			$this->_index_data						= $this->model->index_data($this->_from);
+			
+			// set the default primary if the table have any primary column
+			if(!$this->_set_primary && $this->_index_data)
+			{
+				// loops to get the primary key
+				foreach($this->_index_data as $key => $val)
+				{
+					// check if the field has primary key
+					if($val->type == 'PRIMARY')
+					{
+						// push primary key
+						$this->_set_primary			= array_merge($this->_set_primary, $val->fields);
+					}
+				}
+				
+				// make the array unique
+				$this->_set_primary					= array_unique($this->_set_primary);
+			}
+			
 			$results								= array();
 			
 			foreach($data as $row => $array)
@@ -5747,14 +5774,6 @@ class Core extends Controller
 					$hidden							= false;
 					$content						= ($this->_data ? (in_array($key, $this->_translate_field) ? phrase($content) : $content) : null);
 					$original						= ($this->_data ? $content : null);
-					
-					if(in_array($key, $this->_set_primary) || (isset($field_data[$key]['primary_key']) && $field_data[$key]['primary_key'] === 1) || (isset($field_data[$key]['default']) && stripos($field_data[$key]['default'], 'nextval(') !== false))
-					{
-						if(!in_array($key, $this->_set_primary))
-						{
-							$this->_set_primary[]	= $key;
-						}
-					}
 					
 					if($this->_method == 'create')
 					{
@@ -8177,10 +8196,10 @@ class Core extends Controller
 	 */
 	public function validate_form($data = array())
 	{
-		/* unset previous upload data */
+		// unset previous upload data
 		unset_userdata('_upload_data');
 		
-		/* check if app on demo mode */
+		// check if app on demo mode
 		if($this->_restrict_on_demo)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), (!$this->_api_request ? $this->_redirect_back : null));
@@ -8191,7 +8210,7 @@ class Core extends Controller
 			return throw_exception(404, phrase('the_data_you_want_to_update_was_not_found'), (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
-		/* serialize the fields */
+		// serialize the fields
 		$serialized									= $this->serialize($data);
 		
 		if(service('request')->getPost() && is_array($serialized) && sizeof($serialized) > 0)
@@ -8202,7 +8221,7 @@ class Core extends Controller
 			{
 				$type								= $val['type'];
 				
-				/* skip field when it's disabled and has no default value */
+				// skip field when it's disabled and has no default value
 				if((in_array($key, $this->_unset_field) && (!isset($this->_set_default[$key]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$key]) && in_array('disabled', $type))) continue;
 				
 				if(array_intersect(array('image'), $type))
@@ -8319,7 +8338,7 @@ class Core extends Controller
 				{
 					$type							= $value['type'];
 					
-					/* skip field when it's disabled and has no default value */
+					// skip field when it's disabled and has no default value
 					if((in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$field]) && in_array('disabled', $type))) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
@@ -8745,7 +8764,7 @@ class Core extends Controller
 			
 			if(is_array($val))
 			{
-				/* if value is array, loop it once again */
+				// if value is array, loop it once again
 				$ab									= $this->_humanize_array($val, true);
 			}
 			else
@@ -8824,29 +8843,35 @@ class Core extends Controller
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
 		}
 		
-		$cookie										= $this->model->select
-		('
-			data
-		')
-		->get_where
-		(
-			'app__sessions',
-			array
-			(
-				'id'								=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
-				'timestamp >= '						=> strtotime('-1 days')
-			),
-			1
-		)
-		->row('data');
-		
-		if($cookie)
+		/**
+		 * Retrieve the temporary session
+		 */
+		if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
 		{
-			session_decode($cookie);
+			$cookie									= $this->model->select
+			('
+				data
+			')
+			->get_where
+			(
+				'app__sessions',
+				array
+				(
+					'id'							=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
+					'timestamp >= '					=> date('Y-m-d H:i:s', (time() - service('request')->config->sessionExpiration))
+				),
+				1
+			)
+			->row('data');
 			
-			$_SESSION['access_token']				= service('request')->getHeaderLine('X-ACCESS-TOKEN');
-			
-			set_userdata(array_filter($_SESSION));
+			if($cookie)
+			{
+				session_decode($cookie);
+				
+				$_SESSION['access_token']			= service('request')->getHeaderLine('X-ACCESS-TOKEN');
+				
+				set_userdata(array_filter($_SESSION));
+			}
 		}
 		
 		$this->_set_language(get_userdata('language_id'));
@@ -8923,13 +8948,21 @@ class Core extends Controller
 			'timestamp'								=> date('Y-m-d H:i:s')
 		);
 		
+		if(in_array(DB_DRIVER, array('Postgre', 'SQLSRV')))
+		{
+			$this->model->where('CAST(timestamp AS DATE)', date('Y-m-d'));
+		}
+		else
+		{
+			$this->model->where('DATE(timestamp)', date('Y-m-d'));
+		}
+		
 		$query										= $this->model->get_where
 		(
 			'app__visitor_logs',
 			array
 			(
-				'ip_address'						=> $prepare['ip_address'],
-				'DATE(timestamp)'					=> date('Y-m-d')
+				'ip_address'						=> $prepare['ip_address']
 			),
 			1
 		)
@@ -9001,7 +9034,7 @@ class Core extends Controller
 		
 		$this->_language							= $language_code;
 		
-		/* set default language */
+		// set default language
 		if(is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . $language_code))
 		{
 			set_userdata('language', $language_code);

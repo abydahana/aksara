@@ -93,7 +93,7 @@
 				</div>
 				<div class="tab-pane show active" id="results-pretty" role="tabpanel">
 					<div class="pane-wrapper border-top">
-						<pre class="rounded-0 bg-white mt-0 mb-0 language-javascript"><code>{}</code></pre>
+						<pre class="rounded-0 mt-0 mb-0 language-javascript"><code>{}</code></pre>
 					</div>
 				</div>
 			</div>

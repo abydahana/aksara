@@ -75,31 +75,35 @@ class Cleaner extends \Aksara\Laboratory\Core
 		$session_match_ip							= service('request')->config->sessionMatchIP;
 		$session_cleaned							= 0;
 		
-		$pattern									= sprintf('#\A%s' . ($session_match_ip ? '[0-9a-f]{32}' : '') . '\z#', preg_quote($session_name));
-		
 		if(stripos($session_driver, 'file') !== false)
 		{
 			// file session handler
-			if(is_writable(WRITEPATH . $session_path))
+			if(is_writable($session_path))
 			{
 				helper('filesystem');
 				
-				$session							= directory_map(WRITEPATH . $session_path);
+				$session							= directory_map($session_path);
 				
 				if($session)
 				{
 					foreach($session as $key => $val)
 					{
-						$modified_time				= filemtime(WRITEPATH . $session_path . DIRECTORY_SEPARATOR . $val);
+						$modified_time				= filemtime($session_path . DIRECTORY_SEPARATOR . $val);
 						
-						if('index.html' == $val || !preg_match($pattern, $val) || !is_file(WRITEPATH . $session_path . DIRECTORY_SEPARATOR . $val) || !$modified_time || $modified_time > (time() - $session_expiration))
+						if('index.html' == $val || !is_file($session_path . DIRECTORY_SEPARATOR . $val) || !$modified_time || $modified_time > (time() - $session_expiration))
 						{
 							continue;
 						}
 						
-						if(unlink(WRITEPATH . $session_path . DIRECTORY_SEPARATOR . $val))
+						try
 						{
-							$session_cleaned++;
+							if(unlink($session_path . DIRECTORY_SEPARATOR . $val))
+							{
+								$session_cleaned++;
+							}
+						}
+						catch(\Throwable $e)
+						{
 						}
 					}
 				}
