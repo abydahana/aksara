@@ -5488,7 +5488,7 @@ class Core extends Controller
 						'original'					=> $original
 					);
 					
-					if($this->_grid_view)
+					if($this->_grid_view || $this->agent->isMobile())
 					{
 						$fields[$field]['type']		= $type;
 					}
@@ -8222,7 +8222,7 @@ class Core extends Controller
 				$type								= $val['type'];
 				
 				// skip field when it's disabled and has no default value
-				if((in_array($key, $this->_unset_field) && (!isset($this->_set_default[$key]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$key]) && in_array('disabled', $type))) continue;
+				if(in_array($key, $this->_unset_field) || isset($this->_set_default[$key]) || array_intersect(array('to_slug', 'current_timestamp'), $type)) continue;
 				
 				if(array_intersect(array('image'), $type))
 				{
@@ -8339,7 +8339,7 @@ class Core extends Controller
 					$type							= $value['type'];
 					
 					// skip field when it's disabled and has no default value
-					if((in_array($field, $this->_unset_field) && (!isset($this->_set_default[$field]) || !array_intersect(array('to_slug', 'current_timestamp'), $type))) || (!isset($this->_set_default[$field]) && in_array('disabled', $type))) continue;
+					if((in_array($field, $this->_unset_field) && !isset($this->_set_default[$field])) || (in_array('disabled', $type) && !isset($this->_set_default[$field]))) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
@@ -8389,19 +8389,24 @@ class Core extends Controller
 								}
 							}
 						}
-						else if(array_intersect(array('images', 'file', 'files'), $type) && is_array(service('request')->getPost($field . '_label')))
+						else if(array_intersect(array('images', 'file', 'files'), $type))
 						{
-							// reverse file attributes to match with newest upload data
-							$files					= array_reverse(service('request')->getPost($field . '_label'));
-							$uploaded				= (isset($this->_upload_data[$field]) ? array_reverse($this->_upload_data[$field]) : array());
+							$files					= array();
 							
-							// combine uploaded files to the old one
-							$uploaded				= array_combine(array_intersect_key($uploaded, $files), array_intersect_key($files, $uploaded));
-							
-							if($uploaded)
+							if(is_array(service('request')->getPost($field . '_label')))
 							{
-								// merge files
-								$files				= array_merge($uploaded, array_slice($files, sizeof($uploaded)));
+								// reverse file attributes to match with newest upload data
+								$files				= array_reverse(service('request')->getPost($field . '_label'));
+								$uploaded			= (isset($this->_upload_data[$field]) ? array_reverse($this->_upload_data[$field]) : array());
+								
+								// combine uploaded files to the old one
+								$uploaded			= array_combine(array_intersect_key($uploaded, $files), array_intersect_key($files, $uploaded));
+								
+								if($uploaded)
+								{
+									// merge files
+									$files			= array_merge($uploaded, array_slice($files, sizeof($uploaded)));
+								}
 							}
 							
 							// push the json encoded file to data preparation
@@ -8511,6 +8516,22 @@ class Core extends Controller
 							
 							// push the json encoded attributes to data preparation
 							$prepare[$field]		= json_encode(json_fixer($items));
+						}
+						else if(array_intersect(array('wysiwyg'), $type))
+						{
+							// sanitize the wysiwyg from the XSS attack
+							$value					= service('request')->getPost($field);
+							$value					= str_ireplace(array('<?php', '?>'), array('&lt;?php', '?&gt;'), $value);
+							$value					= str_ireplace(array('<script', '</script>'), array('&lt;script', '&lt;/script&gt;'), $value);
+							$value					= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $value);
+							$value					= str_ireplace(array('<style', '</style>'), array('&lt;style', '&lt;/style&gt;'), $value);
+							$value					= str_ireplace('<link', '&lt;link', $value);
+							$value					= str_ireplace(array('<iframe', '</iframe>'), array('&lt;iframe', '&lt;/iframe&gt;'), $value);
+							$value					= str_ireplace(array('<embed', '</embed>'), array('&lt;embed', '&lt;/embed&gt;'), $value);
+							$value					= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $value);
+							
+							// push the boolean field type to data preparation
+							$prepare[$field]		= $value;
 						}
 						else if(array_intersect(array('boolean'), $type))
 						{

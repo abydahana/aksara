@@ -138,6 +138,8 @@
 				$columns							= null;
 				$slideshow							= null;
 				$slideshow_count					= 0;
+				$column_number						= 0;
+				$has_cover							= false;
 				
 				foreach($val as $field => $params)
 				{
@@ -202,12 +204,37 @@
 					}
 					else
 					{
-						$columns					.= '
-							<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '">
-								' . $params->content . '
-							</li>
-						';
+						if(!$column_number && isset($params->type) && in_array('image', $params->type))
+						{
+							preg_match('/<img src="(.*?)"/', $params->content, $background);
+							
+							$background				= (isset($background[1]) ? str_replace('/icons/', '/thumbs/', $background[1]) : null);
+							
+							if($background)
+							{
+								$has_cover			= true;
+							}
+							
+							$columns				.= '
+								<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '" style="border-bottom:0;' . ($background ? 'background:url(' . $background . ') center center no-repeat; background-size:cover; height:256px' : null) . '">
+									' . (!$background ? $params->content : null) . '
+								</li>
+							';
+						}
+						else
+						{
+							$columns				.= '
+								<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '">
+									<label class="text-muted d-block mb-0">
+										' . $params->label . '
+									</label>
+									' . $params->content . '
+								</li>
+							';
+						}
 					}
+					
+					$column_number++;
 				}
 				
 				if($reading && !in_array('read', $results->unset_action))
@@ -289,7 +316,7 @@
 								' : null) . '
 							</div>
 							' : null) . '
-							<div class="card-body pr-0 pb-0 pl-0">
+							<div class="card-body pr-0 pb-0 pl-0' . ($has_cover ? ' pt-0' : null) . '">
 								<ul class="list-group list-group-flush">
 									' . $columns . '
 								</ul>
