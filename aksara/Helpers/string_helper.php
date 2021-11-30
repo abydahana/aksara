@@ -21,16 +21,17 @@ if(!function_exists('truncate'))
 	 */
 	function truncate($string = null, $limit = 0, $pad = '...')
 	{
-		$string										= preg_replace('/<script.*?\/script>/i','', $string);
-		$string										= preg_replace('/<noscript.*?\/noscript>/i','', $string);
-		$string										= preg_replace('/<style.*?\/style>/i','', $string);
-		$string										= preg_replace('/<link.*/i','', $string);
-		$string										= preg_replace('/<iframe.*?\/iframe>/i','', $string);
-		$string										= preg_replace('/<embed.*?\/embed>/i','', $string);
-		$string										= preg_replace('/<object.*?\/object>/i','', $string);
+		$string										= str_ireplace(array('<?php', '?>'), array('&lt;?php', '?&gt;'), $string);
+		$string										= str_ireplace(array('<script', '</script>'), array('&lt;script', '&lt;/script&gt;'), $string);
+		$string										= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $string);
+		$string										= str_ireplace(array('<style', '</style>'), array('&lt;style', '&lt;/style&gt;'), $string);
+		$string										= str_ireplace('<link', '&lt;link', $string);
+		$string										= str_ireplace(array('<iframe', '</iframe>'), array('&lt;iframe', '&lt;/iframe&gt;'), $string);
+		$string										= str_ireplace(array('<embed', '</embed>'), array('&lt;embed', '&lt;/embed&gt;'), $string);
+		$string										= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $string);
 		$string										= strip_tags($string);
 		$string										= str_replace('&nbsp;', ' ', $string);
-		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', $string));
+		$string										= htmlspecialchars(str_replace(array("\r", "\n"), null, $string));
 		
 		if($limit && strlen($string) >= $limit)
 		{
