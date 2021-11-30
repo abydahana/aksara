@@ -834,7 +834,6 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('announcement_id', true, true);
-		$this->forge->addKey('announcement_slug', false, true);
 		
 		$this->forge->addForeignKey('language_id', 'app__languages', 'id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		
@@ -1179,7 +1178,6 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('category_id', true, true);
-		$this->forge->addKey('category_slug', false, true);
 		
 		$this->forge->addForeignKey('language_id', 'app__languages', 'id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		
@@ -1278,7 +1276,6 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('post_id', true, true);
-		$this->forge->addKey('post_slug', false, true);
 		
 		$this->forge->addForeignKey('author', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE')), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		$this->forge->addForeignKey('post_category', 'blogs__categories', 'category_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE')), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
@@ -1364,7 +1361,6 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('gallery_id', true, true);
-		$this->forge->addKey('gallery_slug', false, true);
 		
 		$this->forge->addForeignKey('author', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		
@@ -1537,7 +1533,6 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('page_id', true, true);
-		$this->forge->addKey('page_slug', false, true);
 		
 		$this->forge->addForeignKey('author', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE')), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		$this->forge->addForeignKey('language_id', 'app__languages', 'id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE')), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
