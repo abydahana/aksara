@@ -41,9 +41,9 @@
 			{
 				foreach($installed as $key => $val)
 				{
-					if(file_exists(ROOTPATH . 'themes/' . $val->folder . '/' . $val->screenshot[0]->src))
+					if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val->folder . DIRECTORY_SEPARATOR . str_replace(array('../', '..\\', './', '.\\'), null, $val->screenshot[0]->src)))
 					{
-						$screenshot					= base_url('themes/' . $val->folder . '/' . $val->screenshot[0]->src);
+						$screenshot					= base_url('themes/' . $val->folder . '/' . str_replace(array('../', '..\\', './', '.\\'), null, $val->screenshot[0]->src));
 					}
 					else
 					{

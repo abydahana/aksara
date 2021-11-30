@@ -123,9 +123,9 @@
 						'<div class="col-sm-6 col-md-4 col-lg-3">' +
 							'<div class="card shadow border-0 rounded-more mb-3">' +
 								'<a href="' + val.detail_url + '" class="--modal">' +
-									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.thumbnail + ') center center no-repeat; background-size: cover; height: 256px">' +
+									'<div class="relative rounded-top bg-dark" style="background:url(' + val.thumbnail.src + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
-										(val.type == 'backend' ? '<span class="badge badge-warning float-right mt-3 mr-3"><?php echo phrase('back_end'); ?></span>' : '<span class="badge badge-success float-right mt-3 mr-3"><?php echo phrase('front_end'); ?></span>') +
+										(val.type == 'backend' ? '<span class="badge badge-warning float-right mt-3 mr-3"><?php echo phrase('back_end_theme'); ?></span>' : '<span class="badge badge-success float-right mt-3 mr-3"><?php echo phrase('front_end_theme'); ?></span>') +
 										'<div class="absolute w-100 text-center bottom p-3">' +
 											'<b class="text-light">' +
 												val.name +
@@ -158,11 +158,11 @@
 				{
 					$(
 						'<div class="col-sm-6 col-md-4 col-lg-3">' +
-							'<div class="card shadow border-0 mb-3">' +
+							'<div class="card shadow border-0 rounded-more mb-3">' +
 								'<a href="' + val.detail_url + '" class="--modal">' +
-									'<div class="relative rounded-top bg-dark" style="background:url(' + val.screenshot.thumbnail + ') center center no-repeat; background-size: cover; height: 256px">' +
+									'<div class="relative rounded-top bg-dark" style="background:url(' + val.thumbnail.src + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
-										'<span class="badge badge-danger float-right mt-3 mr-3"><?php echo phrase('module'); ?></span>' +
+										'<span class="badge badge-primary float-right mt-3 mr-3"><?php echo phrase('module'); ?></span>' +
 										'<div class="absolute w-100 text-center bottom p-3">' +
 											'<b class="text-light">' +
 												val.name +
@@ -173,12 +173,14 @@
 								'<div class="card-body p-3">' +
 									'<div class="row">' +
 										'<div class="col-6">' +
-											'<a href="' + val.install_url + '" class="btn btn-primary btn-block btn-sm">' +
+											'<a href="' + val.install_url + '" class="btn btn-primary btn-block btn-xs --xhr show-progress">' +
+												'<i class="mdi mdi-plus"></i>' +
 												'<?php echo phrase('install'); ?>' +
 											'</a>' +
 										'</div>' +
 										'<div class="col-6">' +
-											'<a href="' + val.demo_url + '" class="btn btn-outline-primary btn-block btn-sm" target="_blank">' +
+											'<a href="' + val.demo_url + '" class="btn btn-outline-primary btn-block btn-xs" target="_blank">' +
+												'<i class="mdi mdi-magnify"></i>' +
 												'<?php echo phrase('preview'); ?>' +
 											'</a>' +
 										'</div>' +

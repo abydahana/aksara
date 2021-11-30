@@ -71,15 +71,119 @@ class Modules extends \Aksara\Laboratory\Core
 	}
 	
 	/**
-	 * Activate module
+	 * Update module
 	 */
-	public function activate()
+	public function update()
 	{
-		if(DEMO_MODE)
+		if(!file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'))
 		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
+			return throw_exception(404, phrase('the_package_manifest_for_the_selected_module_is_missing'), current_page('../'));
 		}
 		
+		$package									= json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+		
+		if(!isset($package->hash) || !isset($package->version))
+		{
+			return throw_exception(404, phrase('the_selected_module_is_not_supported_by_the_official_market'), current_page('../', array('item' => null)));
+		}
+		
+		if(!function_exists('curl_init') || !function_exists('curl_exec'))
+		{
+			return throw_exception(403, phrase('the_curl_module_is_not_enabled'), current_page('../', array('item' => null)));
+		}
+		else if(!@fsockopen('www.aksaracms.com', 443))
+		{
+			return throw_exception(403, phrase('unable_to_connect_to_the_aksara_market'), current_page('../', array('item' => null)));
+		}
+		
+		$curl										= \Config\Services::curlrequest
+		(
+			array
+			(
+				'timeout'							=> 5,
+				'http_errors'						=> false
+			)
+		);
+		
+		$response									= $curl->post
+		(
+			'https://www.aksaracms.com/market/api/detail',
+			array
+			(
+				'allow_redirects'					=> array
+				(
+					'max'							=> 2
+				),
+				'headers'							=> array
+				(
+					'Referer'						=> base_url()
+				),
+				'form_params'						=> array
+				(
+					'type'							=> 'module',
+					'initial'						=> $package->hash,
+					'version'						=> aksara('version')
+				)
+			)
+		);
+		
+		$upstream									= json_decode($response->getBody());
+		
+		if($response->getStatusCode() !== 200)
+		{
+			return throw_exception(403, $response->getReason(), current_page('../', array('item' => null)));
+		}
+		else if(isset($upstream->version) && $upstream->version > $package->version)
+		{
+			$html									= '
+				<form action="' . current_page('../../../addons/install', array('item' => $upstream->path, 'type' => 'module')) . '" method="POST" class="p-3 --validate-form">
+					<div class="text-center">
+						' . phrase('a_new_version_of_the_selected_module_is_available') . '
+						<br />
+						<h4>
+							' . $upstream->name . '
+						</h4>
+						<h5>
+							'. phrase('version') . ' ' . $upstream->version . '
+						</h5>
+					</div>
+					<hr class="row" />
+					<div class="--validation-callback mb-0"></div>
+					<div class="row">
+						<div class="col-6">
+							<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+								<i class="mdi mdi-window-close"></i>
+								' . phrase('cancel') . '
+							</a>
+						</div>
+						<div class="col-6">
+							<input type="hidden" name="upgrade" value="' . $upstream->path . '" />
+							<button type="submit" class="btn btn-success btn-block">
+								<i class="mdi mdi-check"></i>
+								' . phrase('update') . '
+							</button>
+						</div>
+					</div>
+				</form>
+			';
+			
+			return make_json
+			(
+				array
+				(
+					'status'						=> 200,
+					'meta'							=> array
+					(
+						'title'						=> phrase('update_available'),
+						'icon'						=> 'mdi mdi-auto-fix',
+						'popup'						=> true
+					),
+					'html'							=> $html
+				)
+			);
+		}
+		
+		return throw_exception(404, phrase('no_update_available_at_the_moment'), current_page('../', array('item' => null)));
 	}
 	
 	/**
@@ -87,13 +191,13 @@ class Modules extends \Aksara\Laboratory\Core
 	 */
 	public function import()
 	{
-		if(DEMO_MODE)
-		{
-			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
-		}
-		
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
+			if(DEMO_MODE)
+			{
+				return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
+			}
+			
 			$this->form_validation->setRule('file', phrase('module_package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 			
 			if($this->form_validation->run(service('request')->getPost()) === false)
@@ -121,13 +225,18 @@ class Modules extends \Aksara\Laboratory\Core
 					return throw_exception(400, array('file' => phrase('unable_to_extract_your_module_package')));
 				}
 				
+				// extract the repository
 				$zip->extractTo($tmp_path);
 				
 				$files								= directory_map($tmp_path);
 				
 				if(!$files)
 				{
+					// close the opened zip
 					$zip->close();
+					
+					// remove temporary directory
+					$this->_rmdir($tmp_path);
 					
 					return throw_exception(400, array('file' => phrase('unable_to_extract_your_module_package')));
 				}
@@ -141,7 +250,7 @@ class Modules extends \Aksara\Laboratory\Core
 				{
 					if(!$package_path)
 					{
-						$package_path				= str_replace('\\', null, $key);
+						$package_path				= str_replace(DIRECTORY_SEPARATOR, null, $key);
 					}
 					
 					if(!is_array($val)) continue;
@@ -158,17 +267,21 @@ class Modules extends \Aksara\Laboratory\Core
 							
 							if(!$package || !isset($package->name) || !isset($package->description) || !isset($package->version) || !isset($package->author) || !isset($package->compatibility) || !isset($package->type) || !in_array($package->type, array('module')))
 							{
-								$this->_rmdir($tmp_path);
-								
+								// close the opened zip
 								$zip->close();
+								
+								// remove temporary directory
+								$this->_rmdir($tmp_path);
 								
 								return throw_exception(400, array('file' => phrase('the_package_manifest_was_invalid')));
 							}
 							else if(!in_array(aksara('version'), $package->compatibility))
 							{
-								$this->_rmdir($tmp_path);
-								
+								// close the opened zip
 								$zip->close();
+								
+								// remove temporary directory
+								$this->_rmdir($tmp_path);
 								
 								return throw_exception(400, array('file' => phrase('the_package_is_not_compatible_with_your_current_aksara_version')));
 							}
@@ -178,18 +291,24 @@ class Modules extends \Aksara\Laboratory\Core
 					}
 				}
 				
-				$this->_rmdir($tmp_path);
-				
 				if(!$valid_package)
 				{
+					// close the opened zip
 					$zip->close();
+					
+					// remove temporary directory
+					$this->_rmdir($tmp_path);
 					
 					return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_module_package')));
 				}
 				
 				if(is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && !service('request')->getPost('upgrade'))
 				{
+					// close the opened zip
 					$zip->close();
+					
+					// remove temporary directory
+					$this->_rmdir($tmp_path);
 					
 					return throw_exception(400, array('module' => phrase('this_module_package_with_same_structure_is_already_installed')));
 				}
@@ -464,6 +583,9 @@ class Modules extends \Aksara\Laboratory\Core
 						}
 					}
 					
+					// remove temporary directory
+					$this->_rmdir($tmp_path);
+					
 					return throw_exception(301, phrase('your_module_package_was_successfully_imported'), current_page('../'));
 				}
 				else
@@ -485,7 +607,12 @@ class Modules extends \Aksara\Laboratory\Core
 	 */
 	public function delete()
 	{
-		$this->permission->must_ajax(current_page('../'));
+		if(DEMO_MODE)
+		{
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../', array('item' => null)));
+		}
+		
+		$this->permission->must_ajax(current_page('../', array('item' => null)));
 		
 		/* delete confirmation */
 		if(!service('request')->getPost('module'))
@@ -757,7 +884,7 @@ class Modules extends \Aksara\Laboratory\Core
 	{
 		if(is_dir($directory))
 		{
-			/* migration error, delete directory */
+			/* delete directory */
 			if(!delete_files($directory, true))
 			{
 				/* Unable to delete directory. Get FTP configuration */
@@ -780,21 +907,31 @@ class Modules extends \Aksara\Laboratory\Core
 					$query->username				= service('encrypter')->decrypt(base64_decode($query->username));
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
-					/* trying to delete directory using ftp instead */
-					$connection						= @ftp_connect($query->hostname, $query->port, 10);
-					
-					if($connection && @ftp_login($connection, $query->username, $query->password))
+					try
 					{
-						/* yay! FTP is connected, try to delete directory */
-						$this->_ftp_rmdir($connection, $directory);
+						/* trying to delete directory using ftp instead */
+						$connection					= ftp_connect($query->hostname, $query->port, 10);
 						
-						/* close FTP connection */
-						ftp_close($connection);
+						if($connection && ftp_login($connection, $query->username, $query->password))
+						{
+							/* yay! FTP is connected, try to delete the directory */
+							$this->_ftp_rmdir($connection, $directory);
+							
+							/* close FTP connection */
+							ftp_close($connection);
+						}
+					}
+					catch(\Exception $e)
+					{
+						return throw_exception(400, array('file' => $e->getMessage()));
 					}
 				}
 			}
-			
-			@rmdir($directory);
+			else if(is_dir($directory))
+			{
+				// remove garbage directory
+				rmdir($directory);
+			}
 		}
 	}
 	

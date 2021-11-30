@@ -148,14 +148,25 @@ class Validation extends \CodeIgniter\Validation\Rules
 			
 			foreach($sliced as $key => $val)
 			{
-				if(!$val) continue;
+				// check if value not empty
+				if(!$val)
+				{
+					// change the loop number
+					$num++;
+					
+					// value is empty, continue next loops
+					continue;
+				}
 				
+				// check if not first loop
 				if(!$num)
 				{
+					// where value is not in statement
 					$this->model->where($key . ' != ', $val);
 				}
 				else
 				{
+					// where value is in statement
 					$this->model->where($key, $val);
 				}
 				
