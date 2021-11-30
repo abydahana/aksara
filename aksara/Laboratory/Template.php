@@ -779,11 +779,11 @@ class Template
 								' . $query_string . '
 								<div class="input-group">
 									<select name="limit" class="form-control form-control-sm">
-										<option value="' . $data->per_page . '"' . (!$data->per_page ? ' selected' : null) . '>' . $data->per_page . '</option>
-										<option value="' . ($data->per_page * 2) . '"' . (($data->per_page * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 2) . '</option>
-										<option value="' . ($data->per_page * 4) . '"' . (($data->per_page * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 4) . '</option>
-										<option value="' . ($data->per_page * 8) . '"' . (($data->per_page * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 8) . '</option>
-										<option value="' . ($data->per_page * 20) . '"' . (($data->per_page * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->per_page * 20) . '</option>
+										<option value="' . $data->limit . '"' . (!$data->per_page ? ' selected' : null) . '>' . $data->limit . '</option>
+										<option value="' . ($data->limit * 2) . '"' . (($data->limit * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 2) . '</option>
+										<option value="' . ($data->limit * 4) . '"' . (($data->limit * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 4) . '</option>
+										<option value="' . ($data->limit * 8) . '"' . (($data->limit * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 8) . '</option>
+										<option value="' . ($data->limit * 20) . '"' . (($data->limit * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 20) . '</option>
 									</select>
 									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
 									<div class="input-group-append">
@@ -805,6 +805,7 @@ class Template
 			$output									= array
 			(
 				'url'								=> current_page(null, array('per_page' => null)),
+				'limit'								=> $data->limit,
 				'per_page'							=> $data->per_page,
 				'last_page'							=> $last_page,
 				'text'								=> phrase('showing') . ' ' . ($data->offset ? number_format($data->offset) : number_format(($data->total_rows > 0 ? 1 : 0))) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries_found') : phrase('entry_found'))

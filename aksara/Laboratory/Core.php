@@ -171,6 +171,7 @@ class Core extends Controller
 	private $_group_by								= array();
 	private $_order_by								= array();
 	private $_order_bm								= array();
+	private $_limit_original						= 25;
 	private $_limit									= 25;
 	private $_offset								= 0;
 	private $_set									= array();
@@ -221,6 +222,9 @@ class Core extends Controller
 		// check if query string has limit
 		if(service('request')->getGet('limit'))
 		{
+			// store original limit
+			$this->_limit_original					= $this->_limit;
+			
 			// apply the limit for query builder
 			$this->_limit							= service('request')->getGet('limit');
 		}
@@ -2943,6 +2947,7 @@ class Core extends Controller
 				'total'								=> $this->_total,
 				'pagination'						=> array
 				(
+					'limit'							=> $this->_limit_original,
 					'offset'						=> $this->_offset,
 					'per_page'						=> $this->_limit,
 					'total_rows'					=> $this->_total,
@@ -6702,6 +6707,7 @@ class Core extends Controller
 	 */
 	public function limit($limit = 0, $offset = 0)
 	{
+		$this->_limit_original						= $limit;
 		$this->_limit								= $limit;
 		
 		if($offset)
