@@ -107,7 +107,7 @@ class Addons extends \Aksara\Laboratory\Core
 				'detail'							=> $package
 			)
 		)
-		->modal_size('modal-lg')
+		->modal_size('modal-xl')
 		
 		->render(null, 'detail');
 	}
@@ -117,6 +117,11 @@ class Addons extends \Aksara\Laboratory\Core
 	 */
 	public function install()
 	{
+		if(DEMO_MODE)
+		{
+			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page('../', array('item' => null, 'type' => null)));
+		}
+		
 		if(!function_exists('curl_init') || !function_exists('curl_exec'))
 		{
 			return throw_exception(403, phrase('the_curl_module_is_not_enabled'), go_to());
@@ -184,20 +189,42 @@ class Addons extends \Aksara\Laboratory\Core
 			if($package)
 			{
 				// get update package from remote server
-				$addon_file							= file_get_contents($package->repository);
+				$tmp_path							= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . service('request')->getGet('item');
 				
+				// check if temporary path is available
+				if(!is_dir($tmp_path))
+				{
+					try
+					{
+						// try create temporary path
+						mkdir($tmp_path, 0755, true);
+						
+						// copy the repository to temporary path
+						copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
+					}
+					catch(\Exception $e)
+					{
+						// action error, throw exception
+						return throw_exception(403, $response->getReason(), go_to());
+					}
+				}
+				
+				// load the zip class
 				$zip								= new \ZipArchive();
-				$unzip								= $zip->open($addon_file);
-				$tmp_path							= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($package->repository);
+				
+				// unzip the repository
+				$unzip								= $zip->open($tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
 				
 				if($unzip === true)
 				{
+					// extract the repository
 					$zip->extractTo($tmp_path);
 					
 					$files							= directory_map($tmp_path);
 					
 					if(!$files)
 					{
+						// close opened zip
 						$zip->close();
 						
 						return throw_exception(400, array('file' => phrase('unable_to_extract_the_selected_' . $type . '_package')));
@@ -211,7 +238,7 @@ class Addons extends \Aksara\Laboratory\Core
 					{
 						if(!$package_path)
 						{
-							$package_path			= str_replace('\\', null, $key);
+							$package_path			= str_replace(DIRECTORY_SEPARATOR, null, $key);
 						}
 						
 						if(!is_array($val)) continue;
@@ -224,17 +251,21 @@ class Addons extends \Aksara\Laboratory\Core
 								
 								if(!$package || !isset($package->name) || !isset($package->description) || !isset($package->version) || !isset($package->author) || !isset($package->compatibility) || !isset($package->type) || !in_array($package->type, array('module', 'backend', 'frontend')))
 								{
-									$this->_rmdir($tmp_path);
-									
+									// close opened zip
 									$zip->close();
+									
+									// remove temporary directory
+									$this->_rmdir($tmp_path);
 									
 									return throw_exception(400, array('file' => phrase('the_package_manifest_was_invalid')));
 								}
 								else if(!in_array(aksara('version'), $package->compatibility))
 								{
-									$this->_rmdir($tmp_path);
-									
+									// close opened zip
 									$zip->close();
+									
+									// remove temporary directory
+									$this->_rmdir($tmp_path);
 									
 									return throw_exception(400, array('file' => phrase('the_' . $type . '_package_is_not_compatible_with_your_current_aksara_version')));
 								}
@@ -244,69 +275,74 @@ class Addons extends \Aksara\Laboratory\Core
 						}
 					}
 					
-					$this->_rmdir($tmp_path);
-					
 					if(!$valid_package)
 					{
+						// close opened zip
 						$zip->close();
+						
+						// remove temporary directory
+						$this->_rmdir($tmp_path);
 						
 						return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_module_package')));
 					}
 					
-					if(is_dir(ROOTPATH . $type . $package_path))
+					// check if the directory already exists
+					if(is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path) && service('request')->getPost('upgrade') != service('request')->getGet('item'))
 					{
+						// close opened zip
 						$zip->close();
 						
-						if(!service('request')->getPost('upgrade'))
-						{
-							$html					= '
-								<div class="p-3">
-									<form action="' . current_page() . '" method="POST" class="--validate-form">
-										<div class="text-center">
-											' . phrase('the_' . $type . '_package_with_same_structure_is_already_installed') . ' ' . phrase('do_you_want_to_upgrade_' . $type . '_instead') . '
-										</div>
-										<hr class="row" />
-										<div class="--validation-callback mb-0"></div>
-										<div class="row">
-											<div class="col-6">
-												<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
-													<i class="mdi mdi-window-close"></i>
-													' . phrase('cancel') . '
-												</a>
-											</div>
-											<div class="col-6">
-												<input type="hidden" name="upgrade" value="1" />
-												<button type="submit" class="btn btn-danger btn-block">
-													<i class="mdi mdi-check"></i>
-													' . phrase('continue') . '
-												</button>
-											</div>
-										</div>
-									</form>
+						// remove temporary directory
+						$this->_rmdir($tmp_path);
+						
+						// offer upgrade version of selected module or theme
+						$html						= '
+							<form action="' . current_page() . '" method="POST" class="--validate-form">
+								<div class="text-center">
+									' . phrase('the_' . $type . '_package_with_same_structure_is_already_installed') . ' ' . phrase('do_you_want_to_upgrade_the_' . $type . '_instead') . '
 								</div>
-							';
-							
-							return make_json
+								<hr class="row" />
+								<div class="--validation-callback mb-0"></div>
+								<div class="row">
+									<div class="col-6">
+										<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+											<i class="mdi mdi-window-close"></i>
+											' . phrase('cancel') . '
+										</a>
+									</div>
+									<div class="col-6">
+										<input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
+										<button type="submit" class="btn btn-danger btn-block">
+											<i class="mdi mdi-check"></i>
+											' . phrase('continue') . '
+										</button>
+									</div>
+								</div>
+							</form>
+						';
+						
+						return make_json
+						(
+							array
 							(
-								array
+								'status'			=> 200,
+								'meta'				=> array
 								(
-									'status'		=> 200,
-									'meta'			=> array
-									(
-										'title'		=> phrase('action_warning'),
-										'icon'		=> 'mdi mdi-alert-outline',
-										'popup'		=> true
-									),
-									'html'			=> $html
-								)
-							);
-						}
+									'title'			=> phrase('action_warning'),
+									'icon'			=> 'mdi mdi-alert-outline',
+									'popup'			=> true
+								),
+								'html'				=> $html
+							)
+						);
 					}
 					
 					if(is_writable(ROOTPATH . $path))
 					{
+						// extract add-ons to module or theme path
 						$extract					= $zip->extractTo(ROOTPATH . $path);
 						
+						// close opened zip
 						$zip->close();
 					}
 					else
@@ -342,36 +378,246 @@ class Addons extends \Aksara\Laboratory\Core
 							return throw_exception(403, phrase('unable_to_connect_to_the_ftp_using_provided_configuration'));
 						}
 						
+						// extract add-ons to module or theme path
 						$extract					= $zip->extractTo(ROOTPATH . $path);
 						
+						// close opened zip
 						$zip->close();
 					}
 					
 					if($extract && is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path))
 					{
-						if('module' == $type)
+						try
 						{
-							try
+							// push module namespace to filelocator
+							$loader					= \CodeIgniter\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+							
+							// run install migration
+							$migration				= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
+							
+							// trying to run the migration
+							if($migration->latest())
 							{
-								// push module namespace to filelocator
-								$loader				= \CodeIgniter\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
-								
-								// run install migration
-								$migration			= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
-								
-								// trying to run the migration
-								$migration->latest();
+								//
 							}
-							catch(\Throwable $e)
+						}
+						catch(\Throwable $e)
+						{
+							/* migration error, delete module */
+							$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+							
+							return throw_exception(400, array('file' => $e->getMessage()));
+						}
+						
+						// run additional command to assign the menus or permissions
+						if(isset($package->menu) && is_array($package->menu))
+						{
+							// assign the available menus
+							foreach($package->menu as $key => $val)
 							{
-								/* migration error, delete module */
-								$this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+								// check if theme property contain valid menu
+								if(!isset($val->placement) || !in_array($val->placement, array('header', 'sidebar')) || !isset($val->group) || !isset($val->link) || !is_array($val->link) || !$val->link) continue;
 								
-								return throw_exception(400, array('upgrade' => $e->getMessage()));
+								// check if given group is on valid array
+								if(!is_array($val->group))
+								{
+									// otherwise, convert group as array
+									$val->group		= array($val->group);
+								}
+								
+								// populate given links as array with adding the unique id
+								$links				= str_replace('"label":"', '"id":"' . sha1($package_path) . '","label":"', json_encode($val->link));
+								$links				= json_decode($links, true);
+								
+								// check if links is available or continue
+								if(!$links) continue;
+								
+								// loops the given group
+								foreach($val->group as $_key => $_val)
+								{
+									// make the line is equal :)
+									$place			= 'menu_placement';
+									$group			= 'group_id';
+									
+									// get the existing menu from the database
+									$existing		= $this->model->get_where
+									(
+										'app__menus',
+										array
+										(
+											$place	=> $val->placement,
+											$group	=> $_val
+										),
+										1
+									)
+									->row();
+									
+									// populate the link obtained
+									$serialized		= (isset($existing->serialized_data) ? $existing->serialized_data : '[]');
+									$serialized		= ($serialized ? json_decode($serialized, true) : array());
+									
+									// check if obtained links is populated
+									if($serialized)
+									{
+										// merge the old link with new one
+										$links		= array_merge($serialized, $links);
+									}
+									
+									if($existing)
+									{
+										// make the line is equal :)
+										$sd			= 'serialized_data';
+										$id			= 'menu_id';
+										
+										// update the menu to the database
+										$this->model->update
+										(
+											'app__menus',
+											array
+											(
+												$sd	=> json_encode($links)
+											),
+											array
+											(
+												$id	=> $existing->menu_id
+											)
+										);
+									}
+									else
+									{
+										// make the line is equal :)
+										$mp			= 'menu_placement';
+										$ml			= 'menu_label';
+										$md			= 'menu_description';
+										$sd			= 'serialized_data';
+										$gi			= 'group_id';
+										$st			= 'status';
+										
+										// insert the menu to the database
+										$this->model->insert
+										(
+											'app__menus',
+											array
+											(
+												$mp	=> $val->placement,
+												$ml	=> phrase('generated_menu'),
+												$md	=> phrase('generated_menu_from_module_installation'),
+												$sd	=> json_encode($links),
+												$gi	=> $_val,
+												$st	=> 1
+											)
+										);
+									}
+								}
 							}
 						}
 						
-						return throw_exception(301, phrase('your_' . $type . '_package_was_successfully_imported'), current_page('../'));
+						if(isset($package->permission) && is_object($package->permission))
+						{
+							foreach($package->permission as $key => $val)
+							{
+								// check the value is in correct format or continue
+								if(!is_object($val)) continue;
+								
+								// loops the given permission
+								foreach($val as $_key => $_val)
+								{
+									// get the privileges from the database
+									$privileges		= $this->model->get_where
+									(
+										'app__groups_privileges',
+										array
+										(
+											'path'	=> $_key
+										),
+										1
+									)
+									->row('privileges');
+									
+									// check if query has results
+									if($privileges)
+									{
+										// make the line is equal :)
+										$pt			= 'path';
+										$gp			= 'privileges';
+										$lg			= 'last_generated';
+										
+										// update the existing privileges
+										$this->model->update
+										(
+											'app__groups_privileges',
+											array
+											(
+												$gp	=> json_encode(array_merge(json_decode($privileges, true), json_decode(json_encode($_val), true))),
+												$lg	=> date('Y-m-d H:i:s')
+											),
+											array
+											(
+												$pt	=> $_key
+											)
+										);
+									}
+									else
+									{
+										// make the line is equal :)
+										$pt			= 'path';
+										$gp			= 'privileges';
+										$lg			= 'last_generated';
+										
+										// otherwise, insert a new one
+										$this->model->insert
+										(
+											'app__groups_privileges',
+											array
+											(
+												$pt	=> $_key,
+												$gp	=> json_encode($_val),
+												$lg	=> date('Y-m-d H:i:s')
+											)
+										);
+									}
+								}
+								
+								// get the existing group privileges
+								$group_privileges	= $this->model->get_where
+								(
+									'app__groups',
+									array
+									(
+										'group_id'	=> $key
+									),
+									1
+								)
+								->row('group_privileges');
+								
+								// check if group privileges has result
+								if($group_privileges)
+								{
+									// make the line is equal :)
+									$gp				= 'group_privileges';
+									$gi				= 'group_id';
+									
+									// update the group privileges obtained
+									$this->model->update
+									(
+										'app__groups',
+										array
+										(
+											$gp		=> json_encode(array_merge(json_decode($group_privileges, true), json_decode(json_encode($val), true)))
+										),
+										array
+										(
+											$gi		=> $key
+										)
+									);
+								}
+							}
+						}
+						
+						// remove temporary directory
+						$this->_rmdir($tmp_path);
+						
+						return throw_exception(301, phrase('the_selected_' . $type . '_package_was_successfully_installed'), current_page('../', array('item' => null, 'type' => null)));
 					}
 					else
 					{
@@ -379,10 +625,13 @@ class Addons extends \Aksara\Laboratory\Core
 					}
 				}
 				
-				return throw_exception(403, phrase('unable_to_install_the_' . $type));
+				// remove temporary directory
+				$this->_rmdir($tmp_path);
+				
+				return throw_exception(403, phrase('unable_to_install_the_selected_' . $type));
 			}
 			
-			return throw_exception(404, phrase('the_' . $type . '_you_would_to_install_is_not_available'));
+			return throw_exception(404, phrase('the_selected_' . $type . '_you_would_to_install_is_not_available'));
 		}
 		
 		return throw_exception(404, phrase('your_web_server_need_to_connected_to_the_internet_to_install_the_addons'));
@@ -468,7 +717,15 @@ class Addons extends \Aksara\Laboratory\Core
 				(
 					'version'						=> aksara('version'),
 					'order'							=> service('request')->getPost('order'),
-					'keyword'						=> service('request')->getPost('keyword')
+					'keyword'						=> service('request')->getPost('keyword'),
+					'installed'						=> json_encode
+					(
+						array
+						(
+							'themes'				=> $installed_themes,
+							'modules'				=> $installed_modules
+						)
+					)
 				)
 			)
 		);
@@ -490,8 +747,8 @@ class Addons extends \Aksara\Laboratory\Core
 		{
 			foreach($package as $key => $val)
 			{
-				$package[$key]['detail_url']		= current_page('detail', array('item' => $val['slug'], 'type' => $val['addon_type']));
-				$package[$key]['install_url']		= current_page('install', array('item' => $val['slug'], 'type' => $val['addon_type']));
+				$package[$key]['detail_url']		= current_page('detail', array('item' => $val['path'], 'type' => $val['addon_type']));
+				$package[$key]['install_url']		= current_page('install', array('item' => $val['path'], 'type' => $val['addon_type']));
 			}
 		}
 		
@@ -505,7 +762,7 @@ class Addons extends \Aksara\Laboratory\Core
 	{
 		if(is_dir($directory))
 		{
-			/* migration error, delete directory */
+			/* delete directory */
 			if(!delete_files($directory, true))
 			{
 				/* Unable to delete directory. Get FTP configuration */
@@ -528,21 +785,31 @@ class Addons extends \Aksara\Laboratory\Core
 					$query->username				= service('encrypter')->decrypt(base64_decode($query->username));
 					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
 					
-					/* trying to delete directory using ftp instead */
-					$connection						= @ftp_connect($query->hostname, $query->port, 10);
-					
-					if($connection && @ftp_login($connection, $query->username, $query->password))
+					try
 					{
-						/* yay! FTP is connected, try to delete directory */
-						$this->_ftp_rmdir($connection, $directory);
+						/* trying to delete directory using ftp instead */
+						$connection					= ftp_connect($query->hostname, $query->port, 10);
 						
-						/* close FTP connection */
-						ftp_close($connection);
+						if($connection && ftp_login($connection, $query->username, $query->password))
+						{
+							/* yay! FTP is connected, try to delete the directory */
+							$this->_ftp_rmdir($connection, $directory);
+							
+							/* close FTP connection */
+							ftp_close($connection);
+						}
+					}
+					catch(\Exception $e)
+					{
+						return throw_exception(403, $e->getMessage(), go_to());
 					}
 				}
 			}
-			
-			@rmdir($directory);
+			else if(is_dir($directory))
+			{
+				// remove garbage directory
+				rmdir($directory);
+			}
 		}
 	}
 	

@@ -8339,7 +8339,7 @@ class Core extends Controller
 					$type							= $value['type'];
 					
 					// skip field when it's disabled and has no default value
-					if((in_array($field, $this->_unset_field) && !isset($this->_set_default[$field])) || (in_array('disabled', $type) && !isset($this->_set_default[$field]))) continue;
+					if((in_array($field, $this->_unset_field) && !isset($this->_set_default[$field]) && !array_intersect(array('to_slug', 'current_timestamp'), $type)) || (in_array('disabled', $type) && !isset($this->_set_default[$field]))) continue;
 					
 					if(array_key_exists($field, service('request')->getPost()) || array_intersect($type, array('current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousels', 'faqs')))
 					{
@@ -8608,8 +8608,8 @@ class Core extends Controller
 						// apply the formatter when not match any given parameter
 						if(!array_intersect(array('to_slug', 'password', 'encryption'), $type))
 						{
-							// use empty value instead of null when no data is submitted
-							if(isset($_POST[$field]) && null == $_POST[$field])
+							// use empty value instead of NULL when no data is submitted
+							if(!isset($prepare[$field]))
 							{
 								$prepare[$field]	= '';
 							}

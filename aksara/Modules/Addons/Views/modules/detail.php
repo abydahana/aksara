@@ -6,7 +6,7 @@
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
+			if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $detail->screenshot[0]->src))
 			{
 				$screenshot							= base_url('modules/' . $detail->folder . '/' . $val->src);
 			}
@@ -119,7 +119,7 @@
 				</div>
 				<div class="col-sm-6">
 					<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-block btn-sm --modal">
-						<i class="mdi mdi-window-close"></i>
+						<i class="mdi mdi-delete"></i>
 						<?php echo phrase('uninstall'); ?>
 					</a>
 				</div>

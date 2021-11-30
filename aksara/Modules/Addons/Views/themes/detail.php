@@ -6,9 +6,9 @@
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $val->src))
+			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(array('../', '..\\', './', '.\\'), null, $val->src)))
 			{
-				$screenshot							= base_url('themes/' . $detail->folder . '/' . $val->src);
+				$screenshot							= base_url('themes/' . $detail->folder . '/' . str_replace(array('../', '..\\', './', '.\\'), null, $val->src));
 			}
 			else
 			{
@@ -110,7 +110,15 @@
 	</div>
 	<hr class="row" />
 	<div class="row">
-		<div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
+		<div class="col-md-6 col-lg-7">
+			<a href="<?php echo current_page('../update', array('item' => $detail->folder)); ?>" class="btn btn-outline-success btn-sm --modal">
+				&nbsp; 
+				<i class="mdi mdi-auto-fix"></i>
+				<?php echo phrase('update'); ?>
+				&nbsp; 
+			</a>
+		</div>
+		<div class="col-md-6 col-lg-5">
 			<div class="row">
 				<div class="col-sm-4">
 					<?php if(($detail->type == 'backend' && $detail->folder == get_setting('backend_theme')) || ($detail->type == 'frontend' && $detail->folder == get_setting('frontend_theme'))) { ?>

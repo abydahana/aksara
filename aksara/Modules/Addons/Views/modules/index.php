@@ -41,9 +41,9 @@
 			{
 				foreach($installed as $key => $val)
 				{
-					if(isset($val->screenshot[0]->src) && file_exists('../modules/' . $val->folder . '/' . $val->screenshot[0]->src))
+					if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $val->folder . DIRECTORY_SEPARATOR . str_replace(array('../', '..\\', './', '.\\'), null, $val->screenshot[0]->src)))
 					{
-						$screenshot					= base_url('modules/' . $val->folder . '/' . $val->screenshot[0]->src);
+						$screenshot					= base_url('modules/' . $val->folder . '/' . str_replace(array('../', '..\\', './', '.\\'), null, $val->screenshot[0]->src));
 					}
 					else
 					{
@@ -66,12 +66,14 @@
 								<div class="card-body p-3">
 									<div class="row">
 										<div class="col-6">
-											<a href="' . current_page('activate', array('item' => $val->folder)) . '" class="btn btn-outline-primary btn-block btn-xs --modal" target="_blank">
-												' . phrase('up_to_date') . '
+											<a href="' . current_page('update', array('item' => $val->folder)) . '" class="btn btn-outline-success btn-block btn-xs --modal" target="_blank">
+												<i class="mdi mdi-auto-fix"></i>
+												' . phrase('update') . '
 											</a>
 										</div>
 										<div class="col-6">
 											<a href="' . current_page('delete', array('item' => $val->folder)) . '" class="btn btn-danger btn-block btn-xs --modal">
+												<i class="mdi mdi-delete"></i>
 												' . phrase('uninstall') . '
 											</a>
 										</div>
