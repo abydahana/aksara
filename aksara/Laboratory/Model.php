@@ -2445,7 +2445,7 @@ class Model
 			}
 		}
 		
-		if($this->_limit)
+		if($this->_limit && (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
 		{
 			// run limit command
 			$builder->limit($this->_limit, $this->_offset);
