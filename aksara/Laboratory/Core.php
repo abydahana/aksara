@@ -8649,7 +8649,7 @@ class Core extends Controller
 						}
 						
 						// apply the formatter when not match any given parameter
-						if(!array_intersect(array('to_slug', 'password', 'encryption'), $type))
+						if(!array_intersect(array('to_slug', 'password', 'encryption', 'image', 'images', 'file', 'files'), $type))
 						{
 							// use empty value instead of NULL when no data is submitted
 							if(!isset($prepare[$field]))
