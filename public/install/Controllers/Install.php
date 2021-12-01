@@ -72,7 +72,7 @@ class Install extends BaseController
 		}
 		
 		$extension									= array_map('strtolower', get_loaded_extensions());
-		$mod_rewrite								= ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) ? true : false);
+		$mod_rewrite								= ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? true : false);
 		
 		$output										= array
 		(
@@ -337,6 +337,12 @@ class Install extends BaseController
 			exit(header('Location:' . base_url()));
 		}
 		
+		if(service('request')->getPost('installation_mode'))
+		{
+			// developer mode
+			session()->set('installation_mode', 1);
+		}
+		
 		$error										= false;
 		$config_source								= file_get_contents('assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 		$config_source								= str_replace
@@ -440,7 +446,7 @@ class Install extends BaseController
 						array
 						(
 							'status'				=> 403,
-							'message'				=> $e->getMessage()
+							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . ROOTPATH . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="installation_mode" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
 						)
 					);
 				}
@@ -450,10 +456,10 @@ class Install extends BaseController
 			try
 			{
 				// check if migration has been run previously
-				if($this->db->tableExists(config('migrations')->table))
+				if($this->db->tableExists(config('Migrations')->table))
 				{
 					// truncate the migrations table
-					$this->db->table(config('migrations')->table)->truncate();
+					$this->db->table(config('Migrations')->table)->truncate();
 				}
 				
 				// run the installer migration
