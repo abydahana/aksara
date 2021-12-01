@@ -287,6 +287,16 @@ class Model
 			$this->_table							= trim(str_replace(array('`', '"', '\''), '', $matches[1]));
 		}
 		
+		// check if query is being execute without calling child method
+		if(1 == $query)
+		{
+			// run query
+			$this->db->query($query);
+			
+			// reset property
+			$this->_reset_property();
+		}
+		
 		$this->_query								= $query;
 		$this->_query_params						= $params;
 		
