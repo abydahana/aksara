@@ -2334,6 +2334,24 @@ class Core extends Controller
 			$this->_index_data						= $this->model->index_data($this->_from);
 			
 			// set the default primary if the table have any primary column
+			if(!$this->_set_primary && $this->_field_data)
+			{
+				// loops to get the primary key
+				foreach($this->_field_data as $key => $val)
+				{
+					// check if the field has primary key
+					if(isset($val['primary_key']) && $val['primary_key'])
+					{
+						// push primary key
+						$this->_set_primary[]		= $val['name'];
+					}
+				}
+				
+				// make the array unique
+				$this->_set_primary					= array_unique($this->_set_primary);
+			}
+			
+			// set the default primary if the table have any primary column
 			if(!$this->_set_primary && $this->_index_data)
 			{
 				// loops to get the primary key
@@ -5746,7 +5764,26 @@ class Core extends Controller
 		
 		if($data)
 		{
+			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_from)), true);
 			$this->_index_data						= $this->model->index_data($this->_from);
+			
+			// set the default primary if the table have any primary column
+			if(!$this->_set_primary && $this->_field_data)
+			{
+				// loops to get the primary key
+				foreach($this->_field_data as $key => $val)
+				{
+					// check if the field has primary key
+					if(isset($val['primary_key']) && $val['primary_key'])
+					{
+						// push primary key
+						$this->_set_primary[]		= $val['name'];
+					}
+				}
+				
+				// make the array unique
+				$this->_set_primary					= array_unique($this->_set_primary);
+			}
 			
 			// set the default primary if the table have any primary column
 			if(!$this->_set_primary && $this->_index_data)
