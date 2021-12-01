@@ -761,5 +761,11 @@ class Updater extends Migration
 	public function down()
 	{
 		// drop unused tables
+		$forge->dropKey('app__announcements', 'announcement_slug');
+		$forge->dropKey('blogs', 'post_slug');
+		$forge->dropKey('blogs__categories', 'category_slug');
+		$forge->dropKey('galleries', 'gallery_slug');
+		$forge->dropKey('pages', 'page_slug');
+		$forge->dropKey('peoples', 'people_slug');
 	}
 }

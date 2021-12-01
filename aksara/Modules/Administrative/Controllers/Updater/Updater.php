@@ -9,7 +9,7 @@ namespace Aksara\Modules\Administrative\Controllers\Updater;
  * @author			Aby Dahana
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
- * @since			version 4.1.22
+ * @since			version 4.2.7
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
