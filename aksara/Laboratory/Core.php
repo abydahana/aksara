@@ -2126,7 +2126,8 @@ class Core extends Controller
 					else
 					{
 						$primary_key				= $params['primary_key'];
-						$value						= (isset($val->$primary_key) ? $val->$primary_key : 0);
+						$relation_key				= $params['relation_key'];
+						$value						= (isset($val->$primary_key) ? $val->$primary_key : (isset($val->$relation_key) ? $val->$relation_key : 0));
 					}
 					
 					if($value == $selected)
