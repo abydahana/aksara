@@ -12,7 +12,8 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 
 - json (enabled by default - don't turn it off)
 - xml (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
+
+**Aksara** can be run under the MySQLi, PostgreSQL, SQL Server and SQLite3 or both of it without changing the code. The installer will guide you well when picking up the database type during installation, so follow the step carefully and make sure you reads every highlighted notes.
 
 # Installation
 There are two installation methods that you can choose:
