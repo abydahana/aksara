@@ -35,22 +35,27 @@ class Updater extends Migration
 				),
 				'path' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'method' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'browser' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'platform' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 64
 				),
 				'ip_address' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 45
 				),
 				'timestamp' => array
@@ -73,10 +78,12 @@ class Updater extends Migration
 				),
 				'title' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'announcement_slug' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'created_timestamp' => array
@@ -89,7 +96,8 @@ class Updater extends Migration
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -101,14 +109,17 @@ class Updater extends Migration
 			(
 				'name' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'description' => array
 				(
+					'type' => (DB_DRIVER === 'MySQLi' ? 'tinytext' : 'text'),
 					'constraint' => 255
 				),
 				'hostname' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'port' => array
@@ -118,18 +129,22 @@ class Updater extends Migration
 				),
 				'username' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 512
 				),
 				'password' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 512
 				),
 				'database_name' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 64
 				),
 				'status' => array
 				(
+					'type' => 'tinyint',
 					'default' => 0
 				)
 			)
@@ -142,30 +157,38 @@ class Updater extends Migration
 			(
 				'site_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'hostname' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'description' => array
 				(
+					'type' => (DB_DRIVER === 'MySQLi' ? 'tinytext' : 'text'),
 					'constraint' => 255
 				),
 				'hostname' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'port' => array
 				(
+					'type' => 'int',
 					'constraint' => 5
 				),
 				'username' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 512
 				),
 				'password' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 512
 				)
 			)
@@ -178,11 +201,14 @@ class Updater extends Migration
 			(
 				'group_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -194,6 +220,7 @@ class Updater extends Migration
 			(
 				'path' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'last_generated' => array
@@ -210,6 +237,8 @@ class Updater extends Migration
 			(
 				'id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				)
 			)
@@ -222,10 +251,14 @@ class Updater extends Migration
 			(
 				'menu_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'group_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				)
 			)
@@ -238,6 +271,8 @@ class Updater extends Migration
 			(
 				'id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				)
 			)
@@ -262,51 +297,65 @@ class Updater extends Migration
 			(
 				'id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'app_name' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'app_logo' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'app_icon' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'app_language' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'office_name' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'one_device_login' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'username_changes' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'frontend_registration' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'auto_active_registration' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'smtp_username' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 64
 				),
 				'action_sound' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -346,10 +395,14 @@ class Updater extends Migration
 				),
 				'group_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'country' => array
@@ -361,7 +414,8 @@ class Updater extends Migration
 				),
 				'gender' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'last_login' => array
 				(
@@ -369,7 +423,8 @@ class Updater extends Migration
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -401,6 +456,8 @@ class Updater extends Migration
 				),
 				'sub_level_1' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				)
 			)
@@ -413,6 +470,7 @@ class Updater extends Migration
 			(
 				'ip_address' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 45
 				),
 				'timestamp' => array
@@ -421,6 +479,7 @@ class Updater extends Migration
 				),
 				'platform' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 64
 				)
 			)
@@ -439,14 +498,18 @@ class Updater extends Migration
 				),
 				'post_title' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'post_slug' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'post_category' => array
 				(
+					'type' => 'int',
+					'constraint' => 11,
 					'unsigned' => true
 				),
 				'created_timestamp' => array
@@ -465,19 +528,24 @@ class Updater extends Migration
 				),
 				'headline' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'featured_image' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -489,19 +557,24 @@ class Updater extends Migration
 			(
 				'category_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 11,
 					'unsigned' => true
 				),
 				'category_image' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'language_id' => array
 				(
+					'type' => 'varchar',
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -519,10 +592,12 @@ class Updater extends Migration
 				),
 				'gallery_title' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'gallery_slug' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'created_timestamp' => array
@@ -535,7 +610,8 @@ class Updater extends Migration
 				),
 				'featured' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				),
 				'author' => array
 				(
@@ -545,7 +621,8 @@ class Updater extends Migration
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -581,7 +658,8 @@ class Updater extends Migration
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -599,18 +677,24 @@ class Updater extends Migration
 				),
 				'page_title' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'page_slug' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'carousel_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'faq_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'created_timestamp' => array
@@ -629,11 +713,14 @@ class Updater extends Migration
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -645,6 +732,8 @@ class Updater extends Migration
 			(
 				'carousel_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'created_timestamp' => array
@@ -657,11 +746,14 @@ class Updater extends Migration
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -673,6 +765,8 @@ class Updater extends Migration
 			(
 				'faq_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'created_timestamp' => array
@@ -685,11 +779,14 @@ class Updater extends Migration
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -701,19 +798,24 @@ class Updater extends Migration
 			(
 				'people_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'people_slug' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'photo' => array
 				(
+					'type' => 'varchar',
 					'constraint' => 255
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);
@@ -725,15 +827,20 @@ class Updater extends Migration
 			(
 				'testimonial_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 11,
 					'unsigned' => true
 				),
 				'language_id' => array
 				(
+					'type' => 'int',
+					'constraint' => 5,
 					'unsigned' => true
 				),
 				'status' => array
 				(
-					'default' => '0'
+					'type' => 'tinyint',
+					'default' => 0
 				)
 			)
 		);

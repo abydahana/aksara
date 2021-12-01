@@ -77,7 +77,8 @@ class Read extends \Aksara\Laboratory\Core
 					'blogs__categories',
 					array
 					(
-						'blogs.status'				=> 1
+						'blogs.status'				=> 1,
+						'blogs.language_id'			=> get_userdata('language_id')
 					)
 				)
 				->result(),
@@ -105,7 +106,8 @@ class Read extends \Aksara\Laboratory\Core
 					(
 						'blogs__categories.category_slug'	=> $category,
 						'blogs.post_slug != '		=> $slug,
-						'blogs.status'				=> 1
+						'blogs.status'				=> 1,
+						'blogs.language_id'			=> get_userdata('language_id')
 					)
 				)
 				->result()
@@ -143,7 +145,8 @@ class Read extends \Aksara\Laboratory\Core
 			array
 			(
 				'blogs.post_slug'					=> $slug,
-				'blogs.status'						=> 1
+				'blogs.status'						=> 1,
+				'blogs.language_id'					=> get_userdata('language_id')
 			)
 		)
 		->limit(1)

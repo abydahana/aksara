@@ -30,6 +30,17 @@ class Announcements extends \Aksara\Laboratory\Core
 		->set_description(phrase('announcements'))
 		->set_icon('mdi mdi-bullhorn-outline')
 		->set_primary('announcements_slug')
+		
+		->where
+		(
+			array
+			(
+				'status'							=> 1,
+				'end_date > '						=> date('Y-m-d'),
+				'language_id'						=> get_userdata('language_id')
+			)
+		)
+		
 		->order_by('end_date')
 		
 		->render($this->_table);

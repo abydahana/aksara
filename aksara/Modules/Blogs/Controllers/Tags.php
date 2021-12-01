@@ -56,8 +56,17 @@ class Tags extends \Aksara\Laboratory\Core
 			'app__users',
 			'app__users.user_id = blogs.author'
 		)
+		
 		->like('blogs.post_tags', $this->_keywords)
-		->where('blogs.status', 1)
+		
+		->where
+		(
+			array
+			(
+				'blogs.status'						=> 1,
+				'blogs.language_id'					=> get_userdata('language_id')
+			)
+		)
 		
 		->render('blogs');
 	}

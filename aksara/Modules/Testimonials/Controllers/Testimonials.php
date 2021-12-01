@@ -29,8 +29,17 @@ class Testimonials extends \Aksara\Laboratory\Core
 		$this->set_title(phrase('testimonials'))
 		->set_description(phrase('what_they_say_about_us'))
 		->set_icon('mdi mdi-bullhorn-outline')
+		
+		->where
+		(
+			array
+			(
+				'status'							=> 1,
+				'language_id'						=> get_userdata('language_id')
+			)
+		)
+		
 		->order_by('timestamp', 'desc')
-		->where('status', 1)
 		
 		->render($this->_table);
 	}

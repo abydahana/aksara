@@ -29,6 +29,13 @@ class Pages extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		$this->add_filter($this->_filter());
+		
+		if(service('request')->getGet('language'))
+		{
+			$this->where('language_id', service('request')->getGet('language'));
+		}
+		
 		$this->set_title(phrase('pages'))
 		->set_icon('mdi mdi-file-document-outline')
 		->set_primary('page_id')
@@ -142,5 +149,34 @@ class Pages extends \Aksara\Laboratory\Core
 		->order_by('updated_timestamp', 'DESC')
 		
 		->render($this->_table);
+	}
+	
+	private function _filter()
+	{
+		$languages									= '<option value="0">' . phrase('all_languages') . '</option>';
+		
+		$languages_query							= $this->model->get_where
+		(
+			'app__languages',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($languages_query)
+		{
+			foreach($languages_query as $key => $val)
+			{
+				$languages							.= '<option value="' . $val->id . '"' . ($val->id == service('request')->getGet('language') ? ' selected' : null) . '>' . $val->language . '</option>';
+			}
+		}
+		
+		return '
+			<select name="language" class="form-control form-control-sm bordered" placeholder="' . phrase('language') . '">
+				' . $languages . '
+			</select>
+		';
 	}
 }

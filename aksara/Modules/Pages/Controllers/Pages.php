@@ -48,7 +48,8 @@ class Pages extends \Aksara\Laboratory\Core
 					$this->_table,
 					array
 					(
-						'status'					=> 1
+						'status'					=> 1,
+						'language_id'				=> get_userdata('language_id')
 					),
 					8
 				)
