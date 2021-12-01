@@ -188,10 +188,14 @@ return array
 	'the_installer_was_interrupted' => 'The installer was interrupted!',
 	'the_installer_was_unable_to_write_the_configuration_file' => 'The installer was unable to write the configuration file.',
 	'please_follow_the_instructions_below_to_continue' => 'Please follow the instructions below to continue.',
-	'problem_found' => 'Probel found:',
+	'problem_found' => 'Problem Found',
 	'unable_to_create_or_write_file' => 'Unable to create or write file',
-	'solution' => 'Solution:',
+	'solution' => 'Solution',
 	'please_download_the_configuration_file_below_and_upload_or_paste_it_manually_under_the_following_folder' => 'Please download the configuration file below and upload or paste it manually under the following folder:',
 	'download_configuration' => 'Download Configuration',
-	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Once the configuration file were uploaded, please click the "Refresh" button to continue the installation.'
+	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Once the configuration file were uploaded, please click the "Refresh" button to continue the installation.',
+	'unable_to_extract_the_sample_module' => 'Unable to extract the sample module.',
+	'make_sure_the_following_directory_is_writable' => 'Make sure the following directory is writable',
+	'skip_installing_the_sample_module' => 'Skip installing the sample module.'
+	
 );

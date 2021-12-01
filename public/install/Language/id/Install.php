@@ -187,10 +187,13 @@ return array
 	'the_installer_was_interrupted' => 'Instalasi terganggu!',
 	'the_installer_was_unable_to_write_the_configuration_file' => 'Installer tidak dapat menulis berkas konfigurasi.',
 	'please_follow_the_instructions_below_to_continue' => 'Silakan ikuti petunjuk di bawah ini untuk melanjutkan.',
-	'problem_found' => 'Masalah ditemukan:',
+	'problem_found' => 'Masalah Ditemukan',
 	'unable_to_create_or_write_file' => 'Tidak dapat membuat berkas',
-	'solution' => 'Solusi:',
+	'solution' => 'Solusi',
 	'please_download_the_configuration_file_below_and_upload_or_paste_it_manually_under_the_following_folder' => 'Silakan unduh berkas konfigurasi di bawah ini lalu upload atau tempatkan secara manual pada folder berikut:',
 	'download_configuration' => 'Unduh Konfigurasi',
-	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Sesaat setelah berkas konfigurasi diunggah, silakan klik pada tombol "Periksa Ulang" untuk melanjutkan instalasi.'
+	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Sesaat setelah berkas konfigurasi diunggah, silakan klik pada tombol "Periksa Ulang" untuk melanjutkan instalasi.',
+	'unable_to_extract_the_sample_module' => 'Tidak dapat mengekstrak contoh modul.',
+	'make_sure_the_following_directory_is_writable' => 'Pastikan bahwa folder berikut dapat ditulisi',
+	'skip_installing_the_sample_module' => 'Lewati instalasi contoh modul'
 );

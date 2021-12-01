@@ -678,7 +678,7 @@ class Modules extends \Aksara\Laboratory\Core
 			{
 				$query								= $this->model->order_by('id', 'DESC')->get_where
 				(
-					config('migrations')->table,
+					config('Migrations')->table,
 					array
 					(
 						'namespace'					=> 'Modules\\' . service('request')->getPost('module')
