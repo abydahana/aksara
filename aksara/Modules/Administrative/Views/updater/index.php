@@ -1,4 +1,4 @@
-<div class="container-fluid pt-3 pb-3">
+<div class="container-fluid pb-5">
 	<?php
 		if(isset($updater->changelog))
 		{
@@ -44,27 +44,32 @@
 			}
 			
 			echo '
+				<div class="alert alert-info rounded-0 border-0" style="margin-left:-1rem; margin-right:-1rem">
+					<h5>
+						' . phrase('update_available') . '
+					</h5>
+					<p class="mb-0">
+						' . phrase('a_newer_version_of_aksara_is_available') . '
+						' . phrase('click_the_button_below_to_update_your_core_system_directly') . '
+						' . phrase('your_created_module_and_theme_will_not_be_overwritten') . '
+					</p>
+				</div>
 				<form action="' . current_page() . '" method="POST" class="--validate-form">
 					<div class="row">
 						<div class="col-lg-8">
-							<div class="alert alert-info rounded-more">
-								<h5>
-									' . phrase('update_available') . '
-								</h5>
-								<p class="mb-0">
-									' . phrase('a_newer_version_of_aksara_is_available') . '
-									' . phrase('click_the_button_below_to_update_your_core_system_directly') . '
-									' . phrase('your_created_module_and_theme_will_not_be_overwritten') . '
-								</p>
-							</div>
 							' . $changelog . '
 						</div>
 					</div>
 					<hr class="row" />
 					<div class="row">
 						<div class="col-lg-8">
+							<div class="--validation-callback"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-8">
 							<button type="submit" class="btn btn-success rounded-pill">
-								<i class="mdi mdi-update"></i>
+								<i class="mdi mdi-reload"></i>
 								' . phrase('update_now') . '
 							</button>
 							' . (isset($updater->server_version) ? '

@@ -142,13 +142,20 @@ class Updater extends \Aksara\Laboratory\Core
 	 */
 	private function _run_updater($response = array())
 	{
+		$updater_path								= sha1(time());
+		$tmp_path									= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
 		$old_dependencies							= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
-		$backup_name								= '_backup_' . date('Y-m-d_His', time()) . '.zip';
+		$backup_name								= '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
 		$zip										= new \ZipArchive();
 		
-		// create backup package
-		if($zip->open(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true)
+		/**
+		 * Create backup file
+		 */
+		try
 		{
+			mkdir($tmp_path, 0755, true);
+			
+			$zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 			$zip->addFile(ROOTPATH . 'composer.json', 'composer.json');
 			$zip->addFile(ROOTPATH . 'composer.lock', 'composer.lock');
 			
@@ -157,93 +164,83 @@ class Updater extends \Aksara\Laboratory\Core
 			$files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'public'), \RecursiveIteratorIterator::LEAVES_ONLY));
 			$files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'themes'), \RecursiveIteratorIterator::LEAVES_ONLY));
 			
-			foreach($files as $key => $val)
+			foreach($files as $name => $file)
 			{
 				// Skip directories (they would be added automatically)
-				if(!$val->isDir())
+				if(!$file->isDir())
 				{
-					// Get real and relative path for current file
-					$filePath						= $val->getRealPath();
-					$relativePath					= str_replace(ROOTPATH, null, $filePath);
-					
 					// Add current file to archive
-					$zip->addFile($filePath, $relativePath);
+					$zip->addFile($file->getRealPath(), str_replace(ROOTPATH, null, $file->getRealPath()));
 				}
 			}
 			
-			$updater_package						= null;
-			$updater_name							= sha1(time());
-			$updated								= false;
+			// zip archive will be created only after closing object
+			$zip->close();
+		}
+		catch(\Throwable $e)
+		{
+			// remove temporary path
+			$this->_rmdir($tmp_path);
 			
+			return throw_exception(400, array('package' => phrase('update_canceled_due_to_inability_to_create_the_backup_file')));
+		}
+		
+		$updater_package							= null;
+		$updated									= false;
+		
+		try
+		{
+			// get update package from the remote server
+			copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip');
+			
+			if($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo(ROOTPATH, $zip->getFromIndex(0)))
+			{
+				$updated							= true;
+			}
+		}
+		catch(\Throwable $e)
+		{
+			// extract failed, revert the updater
+			return throw_exception(400, array('package' => $e->getMessage()));
+		}
+		
+		// close opened zip
+		$zip->close();
+		
+		if($updated)
+		{
+			// extract the dependencies
+			$new_dependencies						= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
+			
+			if(isset($old_dependencies['require']) && isset($new_dependencies['require']))
+			{
+				// find the dependencies difference
+				$dependency_updated					= array_diff($old_dependencies['require'], $new_dependencies['require']);
+				
+				// merge dependencies
+				$new_dependencies['require']		= array_unique(array_merge($old_dependencies['require'], $new_dependencies['require']));
+			}
+			
+			// database migrations and seeder
 			try
 			{
-				// get update package from remote server
-				$updater_package					= file_get_contents($response->updater);
+				// remove temporary path
+				$this->_rmdir($tmp_path);
 				
-				file_put_contents(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_name);
+				// update and merge the dependencies
+				file_put_contents(ROOTPATH . 'composer.json', json_encode($new_dependencies, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 				
-				if($zip->open(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_name) === true && $zip->extractTo(ROOTPATH))
-				{
-					$updated						= true;
-				}
-			}
-			catch(\Throwable $e)
-			{
-				if($zip->open(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name) === true && $zip->extractTo(ROOTPATH))
-				{
-					// some notes
-				}
-			}
-			
-			$zip->close();
-			
-			if($updated)
-			{
-				$unlink								= false;
-				$dependency_updated					= array();
+				// run the updater migration
+				$migration							= \Config\Services::migrations()->setNamespace('Aksara');
 				
-				try
+				// migrate the updater database schema
+				if($migration->latest())
 				{
-					unlink(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_name);
-					unlink(WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $backup_name);
+					// call seeder
+					$seeder							= \Config\Database::seeder();
 					
-					$unlink							= true;
-				}
-				catch(\Throwable $e)
-				{
-					// some notes
-				}
-				
-				$new_dependencies					= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
-				
-				if(isset($old_dependencies['require']) && isset($new_dependencies['require']))
-				{
-					$dependency_updated				= array_diff($old_dependencies['require'], $new_dependencies['require']);
-					
-					$new_dependencies['require']	= array_unique(array_merge($old_dependencies->require, $new_dependencies['require']));
-					
-					file_put_contents(ROOTPATH . 'composer.json', json_encode($new_dependencies, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-				}
-				
-				// database migrations and seeder
-				try
-				{
-					// run the updater migration
-					$migration						= \Config\Services::migrations()->setNamespace('Aksara');
-					
-					// migrate the updater database schema
-					if($migration->latest())
-					{
-						// call seeder
-						$seeder						= \Config\Database::seeder();
-						
-						// run seeder
-						$seeder->call('Updater');
-					}
-				}
-				catch(\Throwable $e)
-				{
-					// some notes
+					// run seeder
+					$seeder->call('Aksara\Database\Seeds\Updater');
 				}
 				
 				$html								= '
@@ -263,7 +260,7 @@ class Updater extends \Aksara\Laboratory\Core
 						</div>
 					</div>
 					' : null) . '
-					' . (!$unlink ? '
+					' . (is_dir($tmp_path) ? '
 					<div class="alert alert-warning text-sm border-0 rounded-0 row">
 						<div class="text-center">
 							' . phrase('unable_to_remove_the_updater_junk_files_from_the_cache_directory') . ':
@@ -275,10 +272,14 @@ class Updater extends \Aksara\Laboratory\Core
 					<p class="text-center">
 						' . phrase('you_will_be_notified_when_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_are_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
 					</p>
-					<p class="text-center lead">
-						<i class="mdi mdi-heart text-danger"></i>
-						<a href="//abydahana.github.io" target="_blank">Aby Dahana</a>
-					</p>
+					<div class="text-center">
+						<a href="//abydahana.github.io" target="_blank">
+							<h5>
+								<i class="mdi mdi-heart text-danger"></i>
+								Aby Dahana
+							</h5>
+						</a>
+					</div>
 					<hr class="row" />
 					<div class="row">
 						<div class="col-6">
@@ -311,8 +312,82 @@ class Updater extends \Aksara\Laboratory\Core
 					)
 				);
 			}
+			catch(\Throwable $e)
+			{
+				// some notes
+			}
 		}
 		
-		return throw_exception(400, array('upgrade' => phrase('update_canceled_due_to_inability_to_create_the_backup_file')));
+		try
+		{
+			// update failed, restore the backup file
+			$zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name);
+			$zip->extractTo(ROOTPATH);
+		}
+		catch(\Exception $e)
+		{
+			// extract failed
+			return throw_exception(400, array('upgrade' => $e->getMessage()));
+		}
+		
+		return throw_exception(400, array('upgrade' => phrase('update_canceled_due_to_inability_to_write_updater_file')));
+	}
+	
+	/**
+	 * Remove directory recursivelly using
+	 */
+	private function _rmdir($directory = null)
+	{
+		if(is_dir($directory))
+		{
+			/* delete directory */
+			if(!delete_files($directory, true))
+			{
+				/* Unable to delete directory. Get FTP configuration */
+				$site_id							= get_setting('id');
+				
+				$query								= $this->model->get_where
+				(
+					'app__ftp',
+					array
+					(
+						'site_id'					=> $site_id
+					),
+					1
+				)
+				->row();
+				
+				if($query)
+				{
+					/* configuration found, decrypt password */
+					$query->username				= service('encrypter')->decrypt(base64_decode($query->username));
+					$query->password				= service('encrypter')->decrypt(base64_decode($query->password));
+					
+					try
+					{
+						/* trying to delete directory using ftp instead */
+						$connection					= ftp_connect($query->hostname, $query->port, 10);
+						
+						if($connection && ftp_login($connection, $query->username, $query->password))
+						{
+							/* yay! FTP is connected, try to delete the directory */
+							$this->_ftp_rmdir($connection, $directory);
+							
+							/* close FTP connection */
+							ftp_close($connection);
+						}
+					}
+					catch(\Exception $e)
+					{
+						return throw_exception(400, array('updater' => $e->getMessage()));
+					}
+				}
+			}
+			else if(is_dir($directory))
+			{
+				// remove garbage directory
+				rmdir($directory);
+			}
+		}
 	}
 }
