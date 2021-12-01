@@ -153,7 +153,10 @@ class Updater extends \Aksara\Laboratory\Core
 		 */
 		try
 		{
-			mkdir($tmp_path, 0755, true);
+			if(!is_dir($tmp_path))
+			{
+				mkdir($tmp_path, 0755, true);
+			}
 			
 			$zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 			$zip->addFile(ROOTPATH . 'composer.json', 'composer.json');
