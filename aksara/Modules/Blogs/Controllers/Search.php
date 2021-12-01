@@ -93,6 +93,16 @@ class Search extends \Aksara\Laboratory\Core
 				'blogs.post_excerpt'				=> $this->_keywords
 			)
 		)
+		
+		->where
+		(
+			array
+			(
+				'blogs.status'						=> 1,
+				'blogs.language_id'					=> get_userdata('language_id')
+			)
+		)
+		
 		->order_by('blogs.updated_timestamp', 'DESC')
 		
 		->render('blogs');

@@ -75,7 +75,8 @@ class Blogs extends \Aksara\Laboratory\Core
 			array
 			(
 				'blogs.status'						=> 1,
-				'blogs.headline'					=> 1
+				'blogs.headline'					=> 1,
+				'blogs.language_id'					=> get_userdata('language_id')
 			),
 			9
 		)
@@ -137,7 +138,8 @@ class Blogs extends \Aksara\Laboratory\Core
 					array
 					(
 						'blogs.post_category'		=> $val->category_id,
-						'blogs.status'				=> 1
+						'blogs.status'				=> 1,
+						'blogs.language_id'			=> get_userdata('language_id')
 					),
 					6
 				)

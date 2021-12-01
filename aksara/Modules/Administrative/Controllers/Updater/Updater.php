@@ -142,7 +142,7 @@ class Updater extends \Aksara\Laboratory\Core
 	 */
 	private function _run_updater($response = array())
 	{
-		$updater_path								= sha1(time());
+		$updater_path								= sha1($response->version);
 		$tmp_path									= WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
 		$old_dependencies							= json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
 		$backup_name								= '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';

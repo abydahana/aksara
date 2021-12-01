@@ -73,6 +73,11 @@ class Blogs extends \Aksara\Laboratory\Core
 			}
 		}
 		
+		if(service('request')->getGet('language'))
+		{
+			$this->where('language_id', service('request')->getGet('language'));
+		}
+		
 		$this->set_title(phrase('blogs'))
 		->set_icon('mdi mdi-newspaper')
 		->set_primary('post_id')
@@ -193,9 +198,9 @@ class Blogs extends \Aksara\Laboratory\Core
 	
 	private function _filter()
 	{
-		$output										= '<option value="0">' . phrase('all_categories') . '</option>';
+		$categories									= '<option value="0">' . phrase('all_categories') . '</option>';
 		
-		$query										= $this->model->get_where
+		$categories_query							= $this->model->get_where
 		(
 			'blogs__categories',
 			array
@@ -205,17 +210,40 @@ class Blogs extends \Aksara\Laboratory\Core
 		)
 		->result();
 		
-		if($query)
+		if($categories_query)
 		{
-			foreach($query as $key => $val)
+			foreach($categories_query as $key => $val)
 			{
-				$output								.= '<option value="' . $val->category_id . '"' . ($val->category_id == service('request')->getGet('category') ? ' selected' : null) . '>' . $val->category_title . '</option>';
+				$categories							.= '<option value="' . $val->category_id . '"' . ($val->category_id == service('request')->getGet('category') ? ' selected' : null) . '>' . $val->category_title . '</option>';
+			}
+		}
+		
+		$languages									= '<option value="0">' . phrase('all_languages') . '</option>';
+		
+		$languages_query							= $this->model->get_where
+		(
+			'app__languages',
+			array
+			(
+				'status'							=> 1
+			)
+		)
+		->result();
+		
+		if($languages_query)
+		{
+			foreach($languages_query as $key => $val)
+			{
+				$languages							.= '<option value="' . $val->id . '"' . ($val->id == service('request')->getGet('language') ? ' selected' : null) . '>' . $val->language . '</option>';
 			}
 		}
 		
 		return '
 			<select name="category" class="form-control form-control-sm bordered" placeholder="' . phrase('category') . '">
-				' . $output . '
+				' . $categories . '
+			</select>
+			<select name="language" class="form-control form-control-sm bordered" placeholder="' . phrase('language') . '">
+				' . $languages . '
 			</select>
 		';
 	}
