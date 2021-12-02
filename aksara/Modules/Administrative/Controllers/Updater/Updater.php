@@ -185,7 +185,7 @@ class Updater extends \Aksara\Laboratory\Core
 			// remove temporary path
 			$this->_rmdir($tmp_path);
 			
-			return throw_exception(400, array('package' => phrase('update_canceled_due_to_inability_to_create_the_backup_file')));
+			return throw_exception(400, array('package' => phrase('update_canceled_due_to_inability_to_write_the_backup_file') . ': ' . $e->getMessage()));
 		}
 		
 		$updater_package							= null;
@@ -333,7 +333,7 @@ class Updater extends \Aksara\Laboratory\Core
 			return throw_exception(400, array('upgrade' => $e->getMessage()));
 		}
 		
-		return throw_exception(400, array('upgrade' => phrase('update_canceled_due_to_inability_to_write_updater_file')));
+		return throw_exception(400, array('upgrade' => phrase('update_failed_due_to_inability_to_write_the_updater_file')));
 	}
 	
 	/**
