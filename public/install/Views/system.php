@@ -15,8 +15,8 @@
 					<b class="text-danger">*</b>
 				</label>
 				<select name="installation_mode" class="form-control form-control-sm">
-					<option value="0"<?php echo (!session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('basic_with_sample'); ?></option>
-					<option value="1"<?php echo (session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('developer_without_sample'); ?></option>
+					<option value="0"<?php echo (!session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('developer_without_sample'); ?></option>
+					<option value="1"<?php echo (session()->get('installation_mode') ? ' selected' : null); ?>><?php echo phrase('basic_with_sample'); ?></option>
 				</select>
 			</div>
 		</div>
@@ -77,7 +77,7 @@
 					<?php echo phrase('allowed_file_extension'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="file_extension" class="form-control form-control-sm" placeholder="<?php echo phrase('separate_with_comma'); ?>" value="<?php echo (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv,zip'); ?>" />
+				<input type="text" name="file_extension" class="form-control form-control-sm" placeholder="<?php echo phrase('separate_with_comma'); ?>" value="<?php echo (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv'); ?>" />
 			</div>
 		</div>
 		<div class="col-md-6">

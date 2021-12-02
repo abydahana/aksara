@@ -1837,8 +1837,16 @@ class Installer extends Migration
 				// loops the foreign key
 				foreach($foreignKeys as $_key => $_val)
 				{
-					// drop foreign key
-					$this->forge->dropForeignKey($val, $_val->constraint_name);
+					// since the method has no option to drop only when exist, use try catch to safe the migration runner
+					try
+					{
+						// drop foreign key
+						$this->forge->dropForeignKey($val, $_val->constraint_name);
+					}
+					catch(\Exception $e)
+					{
+						// don't return anything
+					}
 				}
 			}
 		}

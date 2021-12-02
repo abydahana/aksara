@@ -72,7 +72,7 @@ class Install extends BaseController
 		}
 		
 		$extension									= array_map('strtolower', get_loaded_extensions());
-		$mod_rewrite								= ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? true : false);
+		$mod_rewrite								= ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) ? true : false);
 		
 		$output										= array
 		(
@@ -337,10 +337,10 @@ class Install extends BaseController
 			exit(header('Location:' . base_url()));
 		}
 		
-		if(service('request')->getPost('installation_mode'))
+		if(service('request')->getPost('skip_module'))
 		{
 			// developer mode
-			session()->set('installation_mode', 1);
+			session()->set('installation_mode', 0);
 		}
 		
 		$error										= false;
@@ -422,17 +422,17 @@ class Install extends BaseController
 			}
 			
 			// check if basic installation is selected
-			if(!session()->get('installation_mode'))
+			if(session()->get('installation_mode'))
 			{
 				try
 				{
 					// try unzip the sample modules
 					$zip							= new \ZipArchive();
 					
-					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
+					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module-' . session()->get('installation_mode') . '.zip') === true)
 					{
 						// extract sample modules to modules path
-						$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'modules');
+						$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR);
 					}
 					
 					// close current opened zip file
@@ -446,7 +446,7 @@ class Install extends BaseController
 						array
 						(
 							'status'				=> 403,
-							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . ROOTPATH . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="installation_mode" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
+							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . ROOTPATH . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
 						)
 					);
 				}
@@ -475,7 +475,7 @@ class Install extends BaseController
 					$seeder->call('MainSeeder');
 					
 					// check if basic installation is selected
-					if(!session()->get('installation_mode'))
+					if(session()->get('installation_mode'))
 					{
 						// run seeder to insert sample data
 						$seeder->call('DummySeeder');
