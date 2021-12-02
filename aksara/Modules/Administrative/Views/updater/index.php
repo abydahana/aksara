@@ -86,7 +86,7 @@
 		else
 		{
 			echo '
-				<div class="alert alert-success rounded-more">
+				<div class="alert alert-success rounded-more mt-3">
 					<h5>
 						' . phrase('your_core_system_is_up_to_date') . '
 					</h5>

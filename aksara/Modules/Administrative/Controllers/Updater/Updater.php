@@ -325,7 +325,6 @@ class Updater extends \Aksara\Laboratory\Core
 							</a>
 						</li>
 					</ul>
-					<br />
 					<p class="text-center">
 						' . phrase('you_will_be_notified_when_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_are_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
 					</p>
@@ -422,12 +421,12 @@ class Updater extends \Aksara\Laboratory\Core
 			</p>
 			<ul>
 				<li>
-					<a href="//github.com/abydahana/Aksara/issues" target="_blank">
+					<a href="//github.com/abydahana/Aksara/issues" class="font-weight-bold" target="_blank">
 						GitHub Issue
 					</a>
 				</li>
 				<li>
-					<a href="//aksaracms.com/forum" target="_blank">
+					<a href="//aksaracms.com/forum" class="font-weight-bold" target="_blank">
 						Aksara Forum
 					</a>
 				</li>
