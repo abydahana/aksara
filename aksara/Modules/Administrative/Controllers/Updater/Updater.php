@@ -185,7 +185,7 @@ class Updater extends \Aksara\Laboratory\Core
 			// remove temporary path
 			$this->_rmdir($tmp_path);
 			
-			return throw_exception(400, array('package' => phrase('update_canceled_due_to_inability_to_write_the_backup_file') . ': ' . $e->getMessage()));
+			return throw_exception(400, array('package' => phrase('update_canceled_to_inability_to_write_the_backup_file') . ': ' . $e->getMessage()));
 		}
 		
 		$updater_package							= null;
@@ -310,6 +310,23 @@ class Updater extends \Aksara\Laboratory\Core
 						</div>
 					</div>
 					' : null) . '
+					<br />
+					<p>
+						' . phrase('if_you_found_a_problem_after_the_update_please_consider_to_open_an_issue_to_our_official_support') . '
+					</p>
+					<ul>
+						<li>
+							<a href="//github.com/abydahana/Aksara/issues" target="_blank">
+								GitHub Issue
+							</a>
+						</li>
+						<li>
+							<a href="//aksaracms.com/forum" target="_blank">
+								Aksara Forum
+							</a>
+						</li>
+					</ul>
+					<br />
 					<p class="text-center">
 						' . phrase('you_will_be_notified_when_another_update_is_available') . ' ' . phrase('keep_in_mind_that_we_are_collect_the_donation_from_people_like_you_to_support_our_research') . ' ' . phrase('we_look_forward_to_your_contributions_either_kind_of_donations_or_development') . '
 					</p>
@@ -375,7 +392,78 @@ class Updater extends \Aksara\Laboratory\Core
 			return throw_exception(400, array('upgrade' => $e->getMessage()));
 		}
 		
-		return throw_exception(400, array('upgrade' => phrase('update_failed_due_to_inability_to_write_the_updater_file') . ' ' . phrase('please_use_the_manual_update_instead')));
+		$html										= '
+			<div class="mb-3">
+				<div class="text-center">
+					<i class="mdi mdi-block-helper mdi-5x text-danger"></i>
+					<br />
+					<h5>
+						' . phrase('update_failed_due_inability_to_write_the_updater_file') . ' ' . phrase('please_use_the_manual_update_instead') . '
+					</h5>
+				</div>
+			</div>
+			<ol>
+				<li>
+					' . phrase('download_the_updater_file') . '
+				</li>
+				<li>
+					' . phrase('extract_the_updater_file_contents_to_the_following_directory') . '
+					<br />
+					<code>' . ROOTPATH . '</code>
+				</li>
+				<li>
+					' . phrase('you_may_need_to_run_the_composer_update_from_the_directory_below_to_update_the_dependencies') . '
+					<br />
+					<code>' . ROOTPATH . '</code>
+				</li>
+			</ol>
+			<br />
+			<p>
+				' . phrase('if_you_found_a_problem_after_the_update_please_consider_to_open_an_issue_to_our_official_support') . '
+			</p>
+			<ul>
+				<li>
+					<a href="//github.com/abydahana/Aksara/issues" target="_blank">
+						GitHub Issue
+					</a>
+				</li>
+				<li>
+					<a href="//aksaracms.com/forum" target="_blank">
+						Aksara Forum
+					</a>
+				</li>
+			</ul>
+			<hr class="row" />
+			<div class="row">
+				<div class="col-6">
+					<a href="javascript:void(0)" class="btn btn-light btn-block" data-dismiss="modal">
+						<i class="mdi mdi-window-close"></i>
+						' . phrase('close') . '
+					</a>
+				</div>
+				<div class="col-6">
+					<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark btn-block">
+						<i class="mdi mdi-download"></i>
+						' . phrase('download_updater') . '
+					</a>
+				</div>
+			</div>
+		';
+		
+		return make_json
+		(
+			array
+			(
+				'status'							=> 200,
+				'meta'								=> array
+				(
+					'title'							=> phrase('update_failed'),
+					'icon'							=> 'mdi mdi-block-helper',
+					'popup'							=> true
+				),
+				'html'								=> $html
+			)
+		);
 	}
 	
 	/**
