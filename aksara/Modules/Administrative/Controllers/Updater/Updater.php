@@ -310,18 +310,17 @@ class Updater extends \Aksara\Laboratory\Core
 						</div>
 					</div>
 					' : null) . '
-					<br />
 					<p>
 						' . phrase('if_you_found_a_problem_after_the_update_please_consider_to_open_an_issue_to_our_official_support') . '
 					</p>
 					<ul>
 						<li>
-							<a href="//github.com/abydahana/Aksara/issues" target="_blank">
+							<a href="//github.com/abydahana/Aksara/issues" class="font-weight-bold" target="_blank">
 								GitHub Issue
 							</a>
 						</li>
 						<li>
-							<a href="//aksaracms.com/forum" target="_blank">
+							<a href="//aksaracms.com/forum" class="font-weight-bold" target="_blank">
 								Aksara Forum
 							</a>
 						</li>
