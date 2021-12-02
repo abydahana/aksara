@@ -334,7 +334,7 @@ class Updater extends \Aksara\Laboratory\Core
 			return throw_exception(400, array('upgrade' => $e->getMessage()));
 		}
 		
-		return throw_exception(400, array('upgrade' => phrase('update_failed_due_to_inability_to_write_the_updater_file')));
+		return throw_exception(400, array('upgrade' => phrase('update_failed_due_to_inability_to_write_the_updater_file') . ' ' . phrase('please_use_the_manual_update_instead')));
 	}
 	
 	/**
