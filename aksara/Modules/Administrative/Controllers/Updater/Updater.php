@@ -196,9 +196,50 @@ class Updater extends \Aksara\Laboratory\Core
 			// get update package from the remote server
 			copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip');
 			
-			if($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo(ROOTPATH, $zip->getFromIndex(0)))
+			/**
+			 * STEP 1
+			 * open and extract the updater file to the temporary directory to get the updater files
+			 */
+			if($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo($tmp_path . DIRECTORY_SEPARATOR))
 			{
+				// close the opened zip
+				$zip->close();
+				
+				// set the updater name
+				$updater_name						= 'Aksara-' . $response->version;
+				
+				// create recursive directory iterator
+				$files								= new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), \RecursiveIteratorIterator::LEAVES_ONLY);
+				
+				// create updater package
+				$zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+				
+				// initialize updater file collections
+				foreach($files as $name => $file)
+				{
+					// skip empty directory
+					if(!$file->isDir())
+					{
+						// Add current file to archive
+						$zip->addFile($file->getRealPath(), substr($file->getRealPath(), strlen($tmp_path . DIRECTORY_SEPARATOR . $updater_name) + 1));
+					}
+				}
+				
+				// close the opened zip
+				$zip->close();
+			}
+			
+			/**
+			 * STEP 2
+			 * extract created updater file to root of the Aksara installation
+			 */
+			if($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo(ROOTPATH))
+			{
+				// updater success, change the state
 				$updated							= true;
+				
+				// close the opened zip
+				$zip->close();
 			}
 		}
 		catch(\Throwable $e)
@@ -206,9 +247,6 @@ class Updater extends \Aksara\Laboratory\Core
 			// extract failed, revert the updater
 			return throw_exception(400, array('package' => $e->getMessage()));
 		}
-		
-		// close opened zip
-		$zip->close();
 		
 		if($updated)
 		{
@@ -268,7 +306,7 @@ class Updater extends \Aksara\Laboratory\Core
 						<div class="text-center">
 							' . phrase('unable_to_remove_the_updater_junk_files_from_the_cache_directory') . ':
 							<br />
-							<code>' . WRITEPATH . 'cache' . '</code>
+							<code>' . WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $tmp_path . '</code>
 						</div>
 					</div>
 					' : null) . '
@@ -325,8 +363,11 @@ class Updater extends \Aksara\Laboratory\Core
 		try
 		{
 			// update failed, restore the backup file
-			$zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name);
-			$zip->extractTo(ROOTPATH);
+			if($zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name) === true && $zip->extractTo(ROOTPATH))
+			{
+				// close the opened zip
+				$zip->close();
+			}
 		}
 		catch(\Exception $e)
 		{
