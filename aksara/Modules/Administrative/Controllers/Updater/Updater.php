@@ -317,7 +317,8 @@ class Updater extends \Aksara\Laboratory\Core
 			}
 			catch(\Throwable $e)
 			{
-				// some notes
+				// update failed
+				return throw_exception(400, array('upgrade' => $e->getMessage()));
 			}
 		}
 		
@@ -329,7 +330,7 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		catch(\Exception $e)
 		{
-			// extract failed
+			// backup file restore failed
 			return throw_exception(400, array('upgrade' => $e->getMessage()));
 		}
 		
