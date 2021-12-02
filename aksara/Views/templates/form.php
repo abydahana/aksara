@@ -21,9 +21,17 @@
 	$column_4										= null;
 	$merged											= array();
 	$map											= null;
+	$hidden											= null;
 	
 	foreach($results->form_data as $field => $params)
 	{
+		if(in_array('hidden', $params->type))
+		{
+			$hidden									.= '<input type="hidden" name="' . $field . '" value="' . $params->original . '" />';
+			
+			continue;
+		}
+		
 		if(in_array('coordinate', $params->type) || in_array('point', $params->type) || in_array('polygon', $params->type) || in_array('linestring', $params->type))
 		{
 			$map									= '
@@ -249,6 +257,8 @@
 					{
 						echo $column_1 . $column_2 . $column_3 . $column_4;
 					}
+					
+					echo $hidden;
 				?>
 				
 				<div class="--validation-callback mb-0"></div>
