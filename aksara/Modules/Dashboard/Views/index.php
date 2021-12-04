@@ -32,15 +32,18 @@
 			<a href="<?php echo base_url('cms/blogs'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_blog_post'); ?>">
 				<div class="card border-0 bg-primary text-center text-sm-left" style="overflow:hidden">
 					<div class="row">
-						<div class="col-sm-4">
-							<div class="p-3 text-center" style="background:rgba(0, 0, 0, .1)">
+						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+							<div class="p-3 text-center">
 								<i class="mdi mdi-newspaper mdi-2x text-light"></i>
 							</div>
 						</div>
-						<div class="col-sm-8 p-3">
+						<div class="col-sm-8 col-xl-9">
 							<h5 class="m-0 text-truncate text-light">
 								<?php echo phrase('blogs'); ?>
 							</h5>
+							<p class="text-light mb-0">
+								<?php echo number_format($card->blogs) . ' ' . ($card->blogs > 2 ? phrase('articles') : phrase('article')); ?>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -50,15 +53,18 @@
 			<a href="<?php echo base_url('cms/pages'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_front_end_pages'); ?>">
 				<div class="card border-0 bg-info text-center text-sm-left" style="overflow:hidden">
 					<div class="row">
-						<div class="col-sm-4">
-							<div class="p-3 text-center" style="background:rgba(0, 0, 0, .1)">
+						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+							<div class="p-3 text-center">
 								<i class="mdi mdi-file-multiple mdi-2x text-light"></i>
 							</div>
 						</div>
-						<div class="col-sm-8 p-3">
+						<div class="col-sm-8 col-xl-9">
 							<h5 class="m-0 text-truncate text-light">
 								<?php echo phrase('pages'); ?>
 							</h5>
+							<p class="text-light mb-0">
+								<?php echo number_format($card->pages) . ' ' . ($card->pages > 2 ? phrase('pages') : phrase('page')); ?>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -68,33 +74,39 @@
 			<a href="<?php echo base_url('cms/galleries'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_galleries'); ?>">
 				<div class="card border-0 bg-danger text-center text-sm-left" style="overflow:hidden">
 					<div class="row">
-						<div class="col-sm-4">
-							<div class="p-3 text-center" style="background:rgba(0, 0, 0, .1)">
+						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+							<div class="p-3 text-center">
 								<i class="mdi mdi-folder-multiple-image mdi-2x text-light"></i>
 							</div>
 						</div>
-						<div class="col-sm-8 p-3">
+						<div class="col-sm-8 col-xl-9">
 							<h5 class="m-0 text-truncate text-light">
 								<?php echo phrase('galleries'); ?>
 							</h5>
+							<p class="text-light mb-0">
+								<?php echo number_format($card->galleries) . ' ' . ($card->album > 2 ? phrase('albums') : phrase('album')); ?>
+							</p>
 						</div>
 					</div>
 				</div>
 			</a>
 		</div>
 		<div class="col-6 col-lg-3 mb-3">
-			<a href="<?php echo base_url('cms/peoples'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_peoples_or_team'); ?>">
+			<a href="<?php echo base_url('administrative/users'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_peoples_or_team'); ?>">
 				<div class="card border-0 bg-dark text-center text-sm-left" style="overflow:hidden">
 					<div class="row">
-						<div class="col-sm-4">
-							<div class="p-3 text-center" style="background:rgba(0, 0, 0, .1)">
+						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+							<div class="p-3 text-center">
 								<i class="mdi mdi-account-group-outline mdi-2x text-light"></i>
 							</div>
 						</div>
-						<div class="col-sm-8 p-3">
+						<div class="col-sm-8 col-xl-9">
 							<h5 class="m-0 text-truncate text-light">
-								<?php echo phrase('peoples'); ?>
+								<?php echo phrase('users'); ?>
 							</h5>
+							<p class="text-light mb-0">
+								<?php echo number_format($card->users) . ' ' . ($card->users > 2 ? phrase('users') : phrase('user')); ?>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -235,6 +247,28 @@
 							</label>
 							<p>
 								<?php echo (get_setting('frontend_registration') ? '<span class="badge badge-success">' . phrase('enabled') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group border-bottom">
+							<label class="d-block text-muted mb-0">
+								<?php echo phrase('secure_login_attempt'); ?>
+							</label>
+							<p>
+								<?php echo (get_setting('login_attempt') ? '<span class="badge badge-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+							</p>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group border-bottom">
+							<label class="d-block text-muted mb-0">
+								<?php echo phrase('blocking_time'); ?>
+							</label>
+							<p>
+								<?php echo (get_setting('blocking_time') ? '<span class="badge badge-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
 							</p>
 						</div>
 					</div>
