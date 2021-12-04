@@ -2957,7 +2957,7 @@ class Core extends Controller
 					'icon'							=> $this->_set_icon,
 					'title'							=> $this->_set_title,
 					'modal_size'					=> $this->_modal_size,
-					'segmentation'					=> service('uri')->getSegments()
+					'segmentation'					=> array_map(function ($segment) use ($suffix){return preg_replace('/[^a-zA-Z0-9]/', '_', $segment);}, service('uri')->getSegments())
 				),
 				'results'							=> $this->_results,
 				'total'								=> $this->_total,
