@@ -257,7 +257,7 @@ class Addons extends \Aksara\Laboratory\Core
 									// remove temporary directory
 									$this->_rmdir($tmp_path);
 									
-									return throw_exception(400, array('file' => phrase('the_package_manifest_was_invalid')));
+									return throw_exception(403, phrase('the_package_manifest_was_invalid'));
 								}
 								else if(!in_array(aksara('version'), $package->compatibility))
 								{
@@ -267,7 +267,7 @@ class Addons extends \Aksara\Laboratory\Core
 									// remove temporary directory
 									$this->_rmdir($tmp_path);
 									
-									return throw_exception(400, array('file' => phrase('the_' . $type . '_package_is_not_compatible_with_your_current_aksara_version')));
+									return throw_exception(403, phrase('the_' . $type . '_package_is_not_compatible_with_your_current_aksara_version'));
 								}
 								
 								$valid_package		= true;
@@ -283,7 +283,7 @@ class Addons extends \Aksara\Laboratory\Core
 						// remove temporary directory
 						$this->_rmdir($tmp_path);
 						
-						return throw_exception(400, array('file' => phrase('no_package_manifest_found_on_your_module_package')));
+						return throw_exception(403, phrase('no_package_manifest_found_on_your_module_package'));
 					}
 					
 					// check if the directory already exists
@@ -621,7 +621,7 @@ class Addons extends \Aksara\Laboratory\Core
 					}
 					else
 					{
-						return throw_exception(400, array('file' => phrase('your_' . $type . '_folder_seems_cannot_be_writable')));
+						return throw_exception(403, phrase('your_' . $type . '_folder_seems_cannot_be_writable'));
 					}
 				}
 				

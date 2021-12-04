@@ -14,11 +14,11 @@
 		
 		<?php echo aksara_header(); ?>
 		
-		<?php echo asset_loader(array('css/styles.css')); ?>
+		<?php echo asset_loader(array('assets/css/styles.css')); ?>
 	</head>
 	<body>
 		
-		<?php require_once('navigation.php'); ?>
+		<?php require_once('header.php'); ?>
 		
 		<div id="content-wrapper">
 		
@@ -34,6 +34,6 @@
 		
 		<?php echo aksara_footer(); ?>
 		
-		<?php echo asset_loader(array('js/scripts.js')); ?>
+		<?php echo asset_loader(array('assets/js/scripts.js')); ?>
 	</body>
 </html>

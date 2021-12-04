@@ -42,6 +42,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 			(
 				array
 				(
+					'card'							=> $this->_card(),
 					'permission'					=> array
 					(
 						'uploads'					=> (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
@@ -58,6 +59,53 @@ class Dashboard extends \Aksara\Laboratory\Core
 		->set_icon('mdi mdi-monitor-dashboard')
 		
 		->render();
+	}
+	
+	private function _card()
+	{
+		$blogs										= $this->model->get_where
+		(
+			'blogs',
+			array
+			(
+			)
+		)
+		->count_all_results();
+		
+		$pages										= $this->model->get_where
+		(
+			'pages',
+			array
+			(
+			)
+		)
+		->count_all_results();
+		
+		$galleries									= $this->model->get_where
+		(
+			'pages',
+			array
+			(
+			)
+		)
+		->count_all_results();
+		
+		$users										= $this->model->get_where
+		(
+			'pages',
+			array
+			(
+			)
+		)
+		->count_all_results();
+		
+		return array
+		(
+			'blogs'									=> ($blogs ? $blogs : 0),
+			'pages'									=> ($pages ? $pages : 0),
+			'galleries'								=> ($galleries ? $galleries : 0),
+			'users'									=> ($users ? $users : 0)
+		);
 	}
 	
 	private function _visitors()

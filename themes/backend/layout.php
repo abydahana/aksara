@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		
-		<?php include_once('navigation.php'); ?>
+		<?php include_once('header.php'); ?>
 		
 		<?php include_once('breadcrumb.php'); ?>
 		
