@@ -306,7 +306,7 @@ class Updater extends \Aksara\Laboratory\Core
 						<div class="text-center">
 							' . phrase('unable_to_remove_the_updater_junk_files_from_the_cache_directory') . ':
 							<br />
-							<code>' . WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $tmp_path . '</code>
+							<code>' . $tmp_path . '</code>
 						</div>
 					</div>
 					' : null) . '
