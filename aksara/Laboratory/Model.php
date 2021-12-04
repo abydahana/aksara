@@ -1789,6 +1789,11 @@ class Model
 	 */
 	public function row($field = 1)
 	{
+		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		{
+			$this->_limit							= 1;
+		}
+		
 		return $this->_run_query('getRow', $field);
 	}
 	
@@ -1799,6 +1804,11 @@ class Model
 	 */
 	public function row_array($field = 1)
 	{
+		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		{
+			$this->_limit							= 1;
+		}
+		
 		return $this->_run_query('getRowArray', $field);
 	}
 	
@@ -2455,7 +2465,7 @@ class Model
 			}
 		}
 		
-		if($this->_limit && (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		if($this->_limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			// run limit command
 			$builder->limit($this->_limit, $this->_offset);
