@@ -2767,13 +2767,9 @@ class Core extends Controller
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			
-			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create' || service('request')->getPost('sessionStorage'))
 			{
 				$this->_query						= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_from))), ''));
-			}
-			else if($this->_method == 'create')
-			{
-				$this->_query						= array(array_flip($this->model->list_fields($this->_from)));
 			}
 			else
 			{
@@ -2960,7 +2956,8 @@ class Core extends Controller
 					'description'					=> $this->_set_description,
 					'icon'							=> $this->_set_icon,
 					'title'							=> $this->_set_title,
-					'modal_size'					=> $this->_modal_size
+					'modal_size'					=> $this->_modal_size,
+					'segmentation'					=> service('uri')->getSegments()
 				),
 				'results'							=> $this->_results,
 				'total'								=> $this->_total,
@@ -4184,7 +4181,7 @@ class Core extends Controller
 				{
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? $original : date('Y-m-d'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
 				}
-				else if(array_intersect(array('datetime'), $type))
+				else if(array_intersect(array('datetime', 'datetimepicker'), $type))
 				{
 					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetimepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value != '0000-00-00 00:00:00' ? $default_value : ($original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
 				}
@@ -4254,7 +4251,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'percent_format'), $type))
 				{
-					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . (is_numeric($default_value) ? number_format($default_value) : (is_numeric($original) ? number_format($original, (in_array('percent_format', $type) ? 2 : 0), '.', '') : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || in_array('percent_format', $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
+					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : $original) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || array_intersect(array('numeric', 'number_format','percent_format'), $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
 					
 					if(array_intersect(array('percent_format'), $type))
 					{
@@ -4835,7 +4832,7 @@ class Core extends Controller
 					
 					$content						= $items;
 				}
-				else if($original && array_intersect(array('datetime', 'current_timestamp'), $type))
+				else if($original && array_intersect(array('datetime', 'datetimepicker', 'current_timestamp'), $type))
 				{
 					if($original != '0000-00-00 00:00:00')
 					{
@@ -5277,7 +5274,7 @@ class Core extends Controller
 						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('items') : phrase('item')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
 					}
-					else if($original && array_intersect(array('datetime', 'current_timestamp'), $type))
+					else if($original && array_intersect(array('datetime', 'datetimepicker', 'current_timestamp'), $type))
 					{
 						if($original != '0000-00-00 00:00:00')
 						{
@@ -5432,7 +5429,7 @@ class Core extends Controller
 						}
 					}
 					
-					if(array_intersect(array('number_format', 'price_format', 'percent_format'), $type))
+					if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
 					{
 						if(array_intersect(array('price_format', 'percent_format'), $type))
 						{
@@ -5845,7 +5842,7 @@ class Core extends Controller
 						}
 					}
 					
-					if($content && array_intersect(array('number_format', 'price_format', 'percent_format'), $type))
+					if($content && array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
 					{
 						if(array_intersect(array('percent_format'), $type))
 						{
@@ -8592,7 +8589,7 @@ class Core extends Controller
 							// push the date field type to data preparation
 							$prepare[$field]		= date('Y-m-d', strtotime(service('request')->getPost($field)));
 						}
-						else if(array_intersect(array('datetime'), $type))
+						else if(array_intersect(array('datetime', 'datetimepicker'), $type))
 						{
 							// push the submitted timestamp field type to data preparation
 							$prepare[$field]		= date('Y-m-d H:i:s', strtotime(service('request')->getPost($field)));

@@ -91,9 +91,9 @@ class Synchronize extends \Aksara\Laboratory\Core
 		
 		if($error)
 		{
-			return throw_exception(403, phrase('phrase_synchronized') . ', ' .  phrase('however') . ' ' . phrase('there_are') . ' <b>' . number_format($error) . '</b> ' . phrase('were_unsuccessful'), current_page('../'));
+			return throw_exception(403, phrase('phrase_synchronized') . ' ' .  phrase('however') . ' ' . phrase('there_are') . ' <b>' . number_format($error) . '</b> ' . phrase('were_unsuccessful'), current_page('../'));
 		}
 		
-		return throw_exception(301, '<b>' . (sizeof($languages) - 1) . '</b> ' . ((sizeof($languages) - 1) > 1 ? phrase('languages') : phrase('language')) . ' ' . phrase('was_successfully_updated') . ', <b>' . number_format(sizeof($phrases)) . '</b> ' . phrase('phrase_synchronized'), current_page('../'));
+		return throw_exception(301, '<b>' . (sizeof($languages) - 1) . '</b> ' . ((sizeof($languages) - 1) > 1 ? phrase('languages') : phrase('language')) . ' ' . phrase('was_successfully_updated') . ' <b>' . number_format(sizeof($phrases)) . '</b> ' . phrase('phrase_synchronized'), current_page('../'));
 	}
 }
