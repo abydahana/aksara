@@ -14,7 +14,7 @@ $routes->group('assets', ['namespace' => '\Aksara\Modules\Assets\Controllers'], 
 	$routes->get('css/styles.min.css', 'Assets::styles');
 	$routes->get('js/scripts.min.js', 'Assets::scripts');
 	
-	$routes->get('svg/map_marker.svg', 'Svg::map_marker');
+	$routes->get('svg/point.svg', 'Svg::point');
 	$routes->get('svg/polygon.svg', 'Svg::polygon');
 	$routes->get('svg/linestring.svg', 'Svg::linestring');
 	$routes->get('svg/folder.svg', 'Svg::folder');

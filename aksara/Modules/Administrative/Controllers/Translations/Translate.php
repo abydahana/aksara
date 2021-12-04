@@ -170,7 +170,7 @@ class Translate extends \Aksara\Laboratory\Core
 				}
 			}
 			
-			if(is_writable($this->_translation_file) && file_put_contents($this->_translation_file, json_encode($phrase)))
+			if(is_writable($this->_translation_file) && file_put_contents($this->_translation_file, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)))
 			{
 				return throw_exception(301, phrase('data_was_successfully_submitted'), current_page());
 			}
