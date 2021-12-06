@@ -397,7 +397,7 @@ class Core extends Controller
 		if($this->_set_permission && !get_userdata('is_logged') && !$this->_api_request)
 		{
 			// user isn't signed in
-			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()));
+			return throw_exception(403, phrase('your_session_has_been_expired'), ($redirect ? $redirect : base_url()), true);
 		}
 		
 		// check if user permission is not allowed to access the module

@@ -122,6 +122,9 @@ if(!function_exists('make_json'))
 		
 		header('Content-Type: application/json');
 		
+		// gzip json
+		ob_start('ob_gzhandler');
+		
 		exit($data);
 	}
 }

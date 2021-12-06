@@ -1344,7 +1344,16 @@ class Model
 	 */
 	public function group_by($by = null)
 	{
-		$this->_group_by							= $by;
+		$by											= array_map('trim', explode(',', $by));
+		
+		if($this->_group_by)
+		{
+			$this->_group_by						= array_merge($this->_group_by, $by);
+		}
+		else
+		{
+			$this->_group_by						= $by;
+		}
 		
 		return $this;
 	}
@@ -2440,9 +2449,6 @@ class Model
 		{
 			if(in_array(DB_DRIVER, array('SQLSRV')))
 			{
-				// convert group as array
-				$this->_group_by					= array_map('trim', explode(',', $this->_group_by));
-				
 				// loops the group list
 				foreach($this->_group_by as $key => $val)
 				{
@@ -2460,6 +2466,8 @@ class Model
 			}
 			else
 			{
+				$this->_group_by					= implode(',', $this->_group_by);
+				
 				// run group command
 				$builder->groupBy($this->_group_by);
 			}

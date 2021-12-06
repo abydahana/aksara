@@ -1899,6 +1899,17 @@ ol.guide li::before
 	padding: 0!important
 }
 
+.ol-popup-content
+{
+	width: 300px!important
+}
+
+.ol-popup-closer
+{
+	top: 1rem!important;
+	right: 1rem!important
+}
+
 .ol-zoom
 {
 	top: 1rem!important;
