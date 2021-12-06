@@ -84,7 +84,7 @@
 								<?php echo phrase('galleries'); ?>
 							</h5>
 							<p class="text-light mb-0">
-								<?php echo number_format($card->galleries) . ' ' . ($card->album > 2 ? phrase('albums') : phrase('album')); ?>
+								<?php echo number_format($card->galleries) . ' ' . ($card->galleries > 2 ? phrase('albums') : phrase('album')); ?>
 							</p>
 						</div>
 					</div>

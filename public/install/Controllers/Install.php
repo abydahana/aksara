@@ -429,7 +429,7 @@ class Install extends BaseController
 					// try unzip the sample modules
 					$zip							= new \ZipArchive();
 					
-					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module-' . session()->get('installation_mode') . '.zip') === true)
+					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
 						// extract sample modules to modules path
 						$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR);
