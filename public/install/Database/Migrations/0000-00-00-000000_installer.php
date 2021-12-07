@@ -1837,6 +1837,9 @@ class Installer extends Migration
 				// loops the foreign key
 				foreach($foreignKeys as $_key => $_val)
 				{
+					// contrinue if no constraint
+					if(!isset($_val->constraint_name)) continue;
+					
 					// since the method has no option to drop only when exist, use try catch to safe the migration runner
 					try
 					{
