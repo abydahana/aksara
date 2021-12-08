@@ -221,6 +221,21 @@ class Validation extends \CodeIgniter\Validation\Rules
 	}
 	
 	/**
+	 * Check if field is valid date
+	 */
+	public function valid_datetime($value = null)
+	{
+		$valid_datetime								= \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+		
+		if(!$valid_datetime || $valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Check if field is valid year
 	 */
 	public function valid_year($value = null)

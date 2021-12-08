@@ -4183,7 +4183,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('datetime', 'datetimepicker'), $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetimepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value != '0000-00-00 00:00:00' ? $default_value : ($original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datetimepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . date('d F Y H:i:s', strtotime(($default_value && $default_value != '0000-00-00 00:00:00' ? $default_value : ($original && $original != '0000-00-00 00:00:00' ? $original : date('Y-m-d H:i:s'))))) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . $read_only . ' spellcheck="false" />';
 				}
 				else if(array_intersect(array('monthpicker'), $type))
 				{
@@ -5431,7 +5431,7 @@ class Core extends Controller
 					
 					if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
 					{
-						if(array_intersect(array('price_format', 'percent_format'), $type))
+						if(array_intersect(array('numeric', 'price_format', 'percent_format'), $type))
 						{
 							$parameter				= (strpos($content, '.00') !== false ? 0 : 2);
 						}
@@ -5848,7 +5848,7 @@ class Core extends Controller
 						{
 							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content) . '%';
 						}
-						else if(array_intersect(array('price_format'), $type))
+						else if(array_intersect(array('numeric', 'price_format'), $type))
 						{
 							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content);
 						}
@@ -8340,6 +8340,10 @@ class Core extends Controller
 					else if(array_intersect(array('date', 'datepicker'), $type))
 					{
 						$validation_suffix			= '|valid_date';
+					}
+					else if(array_intersect(array('timestamp', 'datetime', 'datetimepicker'), $type))
+					{
+						$validation_suffix			= '|valid_datetime';
 					}
 					
 					if($val['validation'] && !isset($this->_set_default[$key]))
