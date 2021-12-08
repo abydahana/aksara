@@ -24,7 +24,7 @@ class Auth extends \Aksara\Laboratory\Core
 		if($this->valid_token(service('request')->getPost('_token')))
 		{
 			/* apply login attempts limit (prevent bruteforce) */
-			if(get_userdata('_login_attempt') == get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
+			if(get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
 			{
 				/* check if login attempts failed from the previous session */
 				$blocking_check						= $this->model->get_where
@@ -68,7 +68,7 @@ class Auth extends \Aksara\Laboratory\Core
 					);
 				}
 				
-				return throw_exception(400, array('username' => phrase('you_are_temporarily_blocked_due_to_frequent_failed_login_attempts')));
+				return throw_exception(400, array('username' => phrase('you_are_temporarily_blocked_due_do_frequent_failed_login_attempts')));
 			}
 			
 			/* check if system apply one device login */
