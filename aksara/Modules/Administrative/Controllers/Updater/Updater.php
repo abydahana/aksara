@@ -206,7 +206,7 @@ class Updater extends \Aksara\Laboratory\Core
 				$zip->close();
 				
 				// set the updater name
-				$updater_name						= 'Aksara-' . $response->version;
+				$updater_name						= 'aksara-' . $response->version;
 				
 				// create recursive directory iterator
 				$files								= new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), \RecursiveIteratorIterator::LEAVES_ONLY);
@@ -315,7 +315,7 @@ class Updater extends \Aksara\Laboratory\Core
 					</p>
 					<ul>
 						<li>
-							<a href="//github.com/abydahana/Aksara/issues" class="font-weight-bold" target="_blank">
+							<a href="//github.com/abydahana/aksara/issues" class="font-weight-bold" target="_blank">
 								GitHub Issue
 							</a>
 						</li>
@@ -421,7 +421,7 @@ class Updater extends \Aksara\Laboratory\Core
 			</p>
 			<ul>
 				<li>
-					<a href="//github.com/abydahana/Aksara/issues" class="font-weight-bold" target="_blank">
+					<a href="//github.com/abydahana/aksara/issues" class="font-weight-bold" target="_blank">
 						GitHub Issue
 					</a>
 				</li>
