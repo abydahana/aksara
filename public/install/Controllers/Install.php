@@ -424,6 +424,9 @@ class Install extends BaseController
 			// check if basic installation is selected
 			if(session()->get('installation_mode'))
 			{
+				ini_set('max_execution_time', 600);
+				ini_set('memory_limit', '512M');
+				
 				try
 				{
 					// try unzip the sample modules
@@ -452,47 +455,54 @@ class Install extends BaseController
 				}
 			}
 			
-			// database migrations and seeder
-			try
+			// check if the migration not yet executed
+			if(!session()->get('migrated'))
 			{
-				// check if migration has been run previously
-				if($this->db->tableExists(config('Migrations')->table))
+				// database migrations and seeder
+				try
 				{
-					// truncate the migrations table
-					$this->db->table(config('Migrations')->table)->truncate();
-				}
-				
-				// run the installer migration
-				$migration							= \Config\Services::migrations();
-				
-				// migrate the database schema
-				if($migration->latest())
-				{
-					// call seeder
-					$seeder							= \Config\Database::seeder();
-					
-					// run seeder
-					$seeder->call('MainSeeder');
-					
-					// check if basic installation is selected
-					if(session()->get('installation_mode'))
+					// check if migration has been run previously
+					if($this->db->tableExists(config('Migrations')->table))
 					{
-						// run seeder to insert sample data
-						$seeder->call('DummySeeder');
+						// truncate the migrations table
+						$this->db->table(config('Migrations')->table)->truncate();
 					}
+					
+					// run the installer migration
+					$migration						= \Config\Services::migrations();
+					
+					// migrate the database schema
+					if($migration->latest())
+					{
+						// call seeder
+						$seeder						= \Config\Database::seeder();
+						
+						// run seeder
+						$seeder->call('MainSeeder');
+						
+						// check if basic installation is selected
+						if(session()->get('installation_mode'))
+						{
+							// run seeder to insert sample data
+							$seeder->call('DummySeeder');
+						}
+					}
+					
+					// mark the migration has been migrated
+					session()->set('migrated', true);
 				}
-			}
-			catch(\Throwable $e)
-			{
-				// migration couldn't be executed, throw error
-				return $this->response->setJSON
-				(
-					array
+				catch(\Throwable $e)
+				{
+					// migration couldn't be executed, throw error
+					return $this->response->setJSON
 					(
-						'status'					=> 403,
-						'message'					=> $e->getMessage()
-					)
-				);
+						array
+						(
+							'status'				=> 403,
+							'message'				=> $e->getMessage()
+						)
+					);
+				}
 			}
 			
 			// check if configuration file is exists

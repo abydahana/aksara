@@ -75,6 +75,7 @@ return [
 	'boolean'				=> 'Bidang {field} hanya boleh dicentang atau abaikan.',
 	'currency'				=> 'Bidang {field} hanya boleh berformat mata uang.',
 	'valid_date'			=> 'Bidang {field} harus menggunakan format tanggal.',
+	'valid_datetime'		=> 'Bidang {field} harus menggunakan format tanggal dan waktu.',
 	'valid_year'			=> 'Bidang {field} harus menggunakan format tahun.',
 	'valid_hex'				=> 'Bidang {field} hanya boleh berisi kode warna hex.'
 ];
