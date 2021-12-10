@@ -11,9 +11,9 @@ else if(!in_array('intl', array_map('strtolower', get_loaded_extensions())))
 {
 	exit('<center>You need to enable the INTL module on your server. <a href="//www.google.com/search?q=install+intl+extension" target="_blank"><b>Click here</b></a> to install the INTL extension on your server.</center>');
 }
-else if(!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable'))
+else if(!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable') || !is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads'))
 {
-	exit('<center>You need to make the following directory to be writable: <code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable' . '</code><br>Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
+	exit('<center>You need to make the following directory to be writable: ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable' . '</code>' : null) . ' ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . '</code>' : null) . '<br>Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
 }
 
 define('ENVIRONMENT', 'development');
