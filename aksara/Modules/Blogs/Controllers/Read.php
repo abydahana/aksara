@@ -145,8 +145,7 @@ class Read extends \Aksara\Laboratory\Core
 			array
 			(
 				'blogs.post_slug'					=> $slug,
-				'blogs.status'						=> 1,
-				'blogs.language_id'					=> get_userdata('language_id')
+				'blogs.status'						=> 1
 			)
 		)
 		->limit(1)
