@@ -13,7 +13,7 @@ else if(!in_array('intl', array_map('strtolower', get_loaded_extensions())))
 }
 else if(!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable') || !is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads'))
 {
-	exit('<center>You need to make the following directory to be writable: ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable' . '</code>' : null) . ' ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . '</code>' : null) . '<br>Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
+	exit('<center>You need to make the following directory to be writable: ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'writable' . '</code>' : null) . ' and ' . (!is_writable(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads') ? '<code style="color:red">' . dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . '</code>' : null) . '<br>Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
 }
 
 define('ENVIRONMENT', 'development');
