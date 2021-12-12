@@ -29,24 +29,29 @@ class Translate extends \Aksara\Laboratory\Core
 		$this->_code								= service('request')->getGet('code');
 		$this->_translation_file					= WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->_code . '.json';
 		$this->_total_phrase						= 0;
-		$this->_limit								= 99;
+		$this->_limit_original						= 99;
+		$this->_limit								= (service('request')->getGet('limit') ? service('request')->getGet('limit') : $this->_limit_original);
 		$this->_offset								= (service('request')->getGet('per_page') > 1 ? (service('request')->getGet('per_page') * $this->_limit) - $this->_limit : 0);
 	}
 	
 	public function index()
 	{
+		$phrases									= $this->_phrases();
+		
 		$this->set_title(phrase('translate'))
 		->set_icon('mdi mdi-translate')
 		->set_output
 		(
 			array
 			(
-				'phrases'							=> $this->_languages(),
+				'phrases'							=> $phrases,
 				'pagination'						=> array
 				(
+					'limit'							=> $this->_limit_original,
 					'total_rows'					=> $this->_total_phrase,
 					'per_page'						=> $this->_limit,
-					'offset'						=> $this->_offset
+					'offset'						=> $this->_offset,
+					'url'							=> current_page(null, array('per_page' => null))
 				)
 			)
 		)
@@ -185,7 +190,7 @@ class Translate extends \Aksara\Laboratory\Core
 		}
 	}
 	
-	private function _languages()
+	private function _phrases()
 	{
 		/* check if translation file is exists */
 		if(file_exists($this->_translation_file))

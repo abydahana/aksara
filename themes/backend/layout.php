@@ -66,7 +66,7 @@
 					<div class="col-8">
 						<h5 class="text-truncate">
 							<i class="<?php echo $meta->icon; ?>" id="will-be-replace-with-icon"></i>
-							<span class="will-be-replace-with-title">
+							<span id="will-be-replace-with-title">
 								<?php echo $meta->title; ?>
 							</span>
 						</h5>

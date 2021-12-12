@@ -226,7 +226,7 @@ class Core extends Controller
 			$this->_limit_original					= $this->_limit;
 			
 			// apply the limit for query builder
-			$this->_limit							= service('request')->getGet('limit');
+			$this->_limit							= (service('request')->getGet('limit') ? service('request')->getGet('limit') : $this->_limit_original);
 		}
 		
 		/**
@@ -2375,7 +2375,7 @@ class Core extends Controller
 			{
 				if('backend' == $this->template->get_theme_property('type'))
 				{
-					$this->set_description('<div class="alert-danger pt-2 pr-3 pb-2 pl-3 text-sm" style="margin-left:-15px; margin-right:-15px"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div>');
+					$this->set_description('<div class="alert alert-danger border-0 pt-2 pr-3 pb-2 pl-3 text-sm mb-0" style="margin-left:-15px; margin-right:-15px"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div>');
 				}
 				
 				$this->unset_action('read, update, delete, export, print, pdf');
@@ -2825,7 +2825,7 @@ class Core extends Controller
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
 				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('add_new_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info rounded-0 pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
 			}
@@ -2835,7 +2835,7 @@ class Core extends Controller
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
 				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('showing_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info rounded-0 pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
 				$this->_view						= (isset($this->_set_template[$this->_method]) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
 				$this->_results						= ('table' == service('request')->getPost('show_in') ? $this->render_table($this->_query) : $this->render_read($this->_query));
 				
@@ -2856,7 +2856,7 @@ class Core extends Controller
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
 				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('update_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info rounded-0 pt-2 pr-3 pb-2 pl-3" style="margin-left:-15px; margin-right:-15px">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($this->_query);
 			}
