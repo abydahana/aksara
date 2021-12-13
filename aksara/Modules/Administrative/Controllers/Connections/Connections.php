@@ -143,15 +143,25 @@ class Connections extends \Aksara\Laboratory\Core
 			return throw_exception(404, phrase('the_database_connection_is_not_found'));
 		}
 		
-		$connection									= array
-		(
-			'DBDriver'								=> $query->database_driver,
-			'hostname'								=> $query->hostname,
-			'port'									=> $query->port,
-			'username'								=> service('encrypter')->decrypt(base64_decode($query->username)),
-			'password'								=> service('encrypter')->decrypt(base64_decode($query->password)),
-			'database'								=> $query->database_name
-		);
+		try
+		{
+			// try to decrypting the parameter
+			$connection								= array
+			(
+				'DBDriver'						=> $query->database_driver,
+				'hostname'						=> service('encrypter')->decrypt(base64_decode($query->hostname)),
+				'port'							=> service('encrypter')->decrypt(base64_decode($query->port)),
+				'username'						=> service('encrypter')->decrypt(base64_decode($query->username)),
+				'password'						=> service('encrypter')->decrypt(base64_decode($query->password)),
+				'database'						=> service('encrypter')->decrypt(base64_decode($query->database_name)),
+				'DBDebug'						=> (ENVIRONMENT !== 'production')
+			);
+		}
+		catch(\Throwable $e)
+		{
+			// decrypt error
+			return throw_exception(403, $e->getMessage());
+		}
 		
 		$this->connector							= $this->model->database_config($connection);
 		

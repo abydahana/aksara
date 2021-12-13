@@ -103,14 +103,29 @@ class Model
 			
 			if($parameter)
 			{
+				try
+				{
+					// try to decrypting the parameter
+					$parameter->hostname			= service('encrypter')->decrypt(base64_decode($parameter->hostname));
+					$parameter->port				= service('encrypter')->decrypt(base64_decode($parameter->port));
+					$parameter->username			= service('encrypter')->decrypt(base64_decode($parameter->username));
+					$parameter->password			= service('encrypter')->decrypt(base64_decode($parameter->password));
+					$parameter->database_name		= service('encrypter')->decrypt(base64_decode($parameter->database_name));
+				}
+				catch(\Throwable $e)
+				{
+					// decrypt error
+					return throw_exception(403, $e->getMessage());
+				}
+				
 				$driver								= array
 				(
 					'DBDriver'						=> $parameter->database_driver,
-					'hostname'						=> service('encrypter')->decrypt(base64_decode($parameter->hostname)),
-					'port'						    => service('encrypter')->decrypt(base64_decode($parameter->port)),
-					'username'						=> service('encrypter')->decrypt(base64_decode($parameter->username)),
-					'password'						=> service('encrypter')->decrypt(base64_decode($parameter->password)),
-					'database'						=> service('encrypter')->decrypt(base64_decode($parameter->database_name)),
+					'hostname'						=> $parameter->hostname,
+					'port'							=> $parameter->port,
+					'username'						=> $parameter->username,
+					'password'						=> $parameter->password,
+					'database'						=> $parameter->database_name,
 					'DBDebug'						=> (ENVIRONMENT !== 'production')
 				);
 			}
@@ -136,8 +151,15 @@ class Model
 		
 		try
 		{
-			// check if connection successfully made
+			// trying to connect
 			$this->db->connect();
+			
+			// check wether the connection was successfully made
+			if(!$this->db->connID)
+			{
+				// connection failed
+				return throw_exception(403, phrase('unable_to_connect_to_the_database_using_the_provided_configuration'));
+			}
 		}
 		catch(\Throwable $e)
 		{

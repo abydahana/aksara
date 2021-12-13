@@ -18,10 +18,20 @@ use Facebook\Exceptions\FacebookSDKException;
 	
 class Facebook
 {
+	private $_client_secret;
+	
 	public function __construct()
 	{
 		$this->_client_id							= get_setting('facebook_app_id');
-		$this->_client_secret						= service('encrypter')->decrypt(base64_decode(get_setting('facebook_app_secret')));
+		
+		try
+		{
+			// try to decrypting the app secret
+			$this->_client_secret					= service('encrypter')->decrypt(base64_decode(get_setting('facebook_app_secret')));
+		}
+		catch(\Throwable $e)
+		{
+		}
 		
 		$this->client								= new BaseFacebook
 		(
