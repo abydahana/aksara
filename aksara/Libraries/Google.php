@@ -14,10 +14,20 @@ namespace Aksara\Libraries;
 
 class Google
 {
+	private $_client_secret;
+	
 	public function __construct()
 	{
 		$this->_client_id							= get_setting('google_client_id');
-		$this->_client_secret						= service('encrypter')->decrypt(base64_decode(get_setting('google_client_secret')));
+		
+		try
+		{
+			// try to decrypting the app secret
+			$this->_client_secret					= service('encrypter')->decrypt(base64_decode(get_setting('google_client_secret')));
+		}
+		catch(\Throwable $e)
+		{
+		}
 		
 		$this->client								= new \Google_Client();
 		
