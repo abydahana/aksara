@@ -154,7 +154,7 @@ class Model
 			// trying to connect
 			$this->db->connect();
 			
-			// check wether the connection was successfully made
+			// check whether the connection was successfully made
 			if(!$this->db->connID)
 			{
 				// connection failed
