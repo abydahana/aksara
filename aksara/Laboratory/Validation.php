@@ -210,9 +210,12 @@ class Validation extends \CodeIgniter\Validation\Rules
 	 */
 	public function valid_date($value = null)
 	{
+		// convert value to standardzitation
+		$value										= date('Y-m-d', strtotime($value));
+		
 		$valid_date									= \DateTime::createFromFormat('Y-m-d', $value);
 		
-		if(!$valid_date || $valid_date && $valid_date->format('Y-m-d') !== $value)
+		if(!$valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value))
 		{
 			return false;
 		}
@@ -221,13 +224,16 @@ class Validation extends \CodeIgniter\Validation\Rules
 	}
 	
 	/**
-	 * Check if field is valid date
+	 * Check if field is valid date and time
 	 */
 	public function valid_datetime($value = null)
 	{
+		// convert value to standardzitation
+		$value										= date('Y-m-d H:i:s', strtotime($value));
+		
 		$valid_datetime								= \DateTime::createFromFormat('Y-m-d H:i:s', $value);
 		
-		if(!$valid_datetime || $valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)
+		if(!$valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value))
 		{
 			return false;
 		}
