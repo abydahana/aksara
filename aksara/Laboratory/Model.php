@@ -157,8 +157,17 @@ class Model
 			// check whether the connection was successfully made
 			if(!$this->db->connID)
 			{
-				// connection failed
-				return throw_exception(403, phrase('unable_to_connect_to_the_database_using_the_provided_configuration'));
+				/**
+				 * Connection couldn't be made, connect through PDO library (emergency connection).
+				 * You're unable to using the query builder when connected through PDO.
+				 */
+				$this->db							= new \Aksara\Libraries\Pdo($parameter['hostname'], $parameter['port'], $parameter['username'], $parameter['password'], $parameter['database']);
+				
+				if(!$this->db->connID)
+				{
+					// connection failed
+					return throw_exception(403, phrase('unable_to_connect_to_the_database_using_the_provided_configuration'));
+				}
 			}
 		}
 		catch(\Throwable $e)
