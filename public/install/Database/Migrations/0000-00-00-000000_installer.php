@@ -1834,19 +1834,22 @@ class Installer extends Migration
 			// check if foreign key exists for current table
 			if($foreignKeys)
 			{
+				// remove duplicate of constraint
+				$foreignKeys = array_map('unserialize', array_unique(array_map('serialize', (array) $foreignKeys)));
+				
 				// loops the foreign key
 				foreach($foreignKeys as $_key => $_val)
 				{
-					// contrinue if no constraint
+					// continue if no constraint
 					if(!isset($_val->constraint_name)) continue;
 					
 					// since the method has no option to drop only when exist, use try catch to safe the migration runner
 					try
 					{
 						// drop foreign key
-						$this->forge->dropForeignKey($val, $_val->constraint_name);
+						$this->forge->dropForeignKey($_val->table_name, $_val->constraint_name);
 					}
-					catch(\Exception $e)
+					catch(\Throwable $e)
 					{
 						// don't return anything
 					}
