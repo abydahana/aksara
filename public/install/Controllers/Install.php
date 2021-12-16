@@ -449,7 +449,7 @@ class Install extends BaseController
 						array
 						(
 							'status'				=> 403,
-							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . ROOTPATH . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
+							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . preg_replace('/\/public/', null, ROOTPATH, 1) . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
 						)
 					);
 				}
