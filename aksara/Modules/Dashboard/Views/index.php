@@ -273,16 +273,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="d-block text-muted mb-0">
-						<?php echo phrase('uploaded_file'); ?>
-					</label>
-					<p>
-						<a href="<?php echo base_url('cms/partials/media'); ?>" class="--xhr uploaded-file">
-							0
-						</a>
-					</p>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -373,13 +363,6 @@
 			},
 			beforeSend: function()
 			{
-				var size							= 0;
-				interval							= setInterval(function()
-				{
-					$('.uploaded-file').text(size);
-					
-					size++;
-				}, 50)
 			}
 		})
 		.done(function(response)
@@ -405,8 +388,6 @@
 					'</div>'
 				)
 			}
-			
-			$('.uploaded-file').text(response.upload_size),
 			
 			clearInterval(interval)
 		})
