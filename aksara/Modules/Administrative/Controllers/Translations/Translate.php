@@ -132,7 +132,11 @@ class Translate extends \Aksara\Laboratory\Core
 				unset($phrase[$delete_key]);
 				
 				/* try to add language file */
-				if(!is_writable(WRITEPATH . 'translations') || !file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)))
+				try
+				{
+					file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+				}
+				catch(\Throwable $e)
 				{
 					/* failed to write file, throw an error exception */
 					$error++;
@@ -175,13 +179,15 @@ class Translate extends \Aksara\Laboratory\Core
 				}
 			}
 			
-			if(is_writable($this->_translation_file) && file_put_contents($this->_translation_file, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)))
+			try
 			{
+				file_put_contents($this->_translation_file, json_encode($phrase, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
+				
 				return throw_exception(301, phrase('data_was_successfully_submitted'), current_page());
 			}
-			else
+			catch(\Throwable $e)
 			{
-				return throw_exception(403, phrase('unable_to_rewrite_language_file'), current_page());
+				return throw_exception(403, $e->getMessage(), current_page());
 			}
 		}
 		else
