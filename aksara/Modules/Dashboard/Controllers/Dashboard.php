@@ -236,26 +236,11 @@ class Dashboard extends \Aksara\Laboratory\Core
 	{
 		$updater									= \Aksara\Modules\Administrative\Controllers\Updater\Updater::ping_upstream();
 		
-		$bytestotal									= 0;
-		
-		if(UPLOAD_PATH && is_dir(UPLOAD_PATH))
-		{
-			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(FCPATH . UPLOAD_PATH, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::LEAVES_ONLY, \RecursiveIteratorIterator::CATCH_GET_CHILD) as $object)
-			{
-				$bytestotal							+= $object->getSize();
-			}
-		}
-		
-		$base										= log($bytestotal, 1024);
-		$suffix										= array('', 'KB', 'MB', 'GB', 'TB');
-		$bytestotal									= number_format(round(pow(1024, $base - floor($base)), 2)) . ' ' . $suffix[floor($base)];
-		
 		return make_json
 		(
 			array
 			(
-				'update_available'					=> $updater,
-				'upload_size'						=> $bytestotal
+				'update_available'					=> $updater
 			)
 		);
 	}
