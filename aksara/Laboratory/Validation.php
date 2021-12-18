@@ -513,7 +513,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 			$source->move(UPLOAD_PATH . '/' . $this->_set_upload_path, $filename);
 		}
 		
-		if($__key)
+		if($__key !== null)
 		{
 			// collect uploaded data (has sub-name)
 			$this->_upload_data[$f][$_key][$__key]	= $filename;
