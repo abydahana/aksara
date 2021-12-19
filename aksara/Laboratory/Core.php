@@ -2779,7 +2779,7 @@ class Core extends Controller
 			}
 			
 			// try to convert the magic string and replace with result
-			$title									= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : null));
+			$title									= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : phrase('untitled')));
 			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 			
 			if($title && isset($this->_query[0]))
@@ -7037,11 +7037,6 @@ class Core extends Controller
 		}
 		
 		/**
-		 * Push select to forge
-		 */
-		$forge_select								= array();
-		
-		/**
 		 * Execute when method is not update or delete
 		 */
 		if(!in_array($this->_method, array('update', 'delete')) && is_array($this->_select) && sizeof($this->_select) > 0)
@@ -7060,10 +7055,9 @@ class Core extends Controller
 				
 				if(in_array($field[1], $compiled_select))
 				{
+					// field already selected
 					continue;
 				}
-				
-				$compiled_select[]					= $field[1];
 				
 				/**
 				 * Check if selected column is use alias
@@ -7074,32 +7068,26 @@ class Core extends Controller
 				}
 				else
 				{
-					$val							= str_ireplace(' AS ', ' ', $val);
-					
 					/**
 					 * Individual table
 					 */
 					list($table, $field)			= array_pad(explode('.', $val), 2, null);
 					
-					$field							= (stripos($field, ' ') !== false ? substr($field, strripos($field, ' ') + 1) : $field);
+					$field							= (stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field);
 					
-					if($table && $field && in_array($field, $forge_select))
+					if($table != $this->_from && $field && $this->model->field_exists($field, $table))
 					{
 						/**
 						 * Format column of select
 						 */
-						if($table != $this->_from && $this->model->field_exists($field, $table))
-						{
-							$val					= $table . '.' . $field . ' AS ' . $field;
-						}
-						else
-						{
-							continue;
-						}
+						$val						= $table . '.' . $field . ' AS ' . $field;
 					}
-					
-					$forge_select[]					= $field;
 				}
+				
+				/**
+				 * Compile the selected field
+				 */
+				$compiled_select[]					= $val;
 				
 				$this->model->select($val);
 			}

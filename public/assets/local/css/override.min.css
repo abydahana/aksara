@@ -808,7 +808,9 @@ input::-webkit-inner-spin-button
 .custom-file-label
 {
 	border: 2px dashed #ced4da;
-	background: #f9fcff
+	background: #f9fcff;
+	white-space: nowrap;
+	overflow: hidden
 }
 
 .custom-file-label::after

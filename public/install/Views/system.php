@@ -70,16 +70,14 @@
 	<h5>
 		<?php echo phrase('upload_setting'); ?>
 	</h5>
+	<div class="form-group">
+		<label class="d-block mb-0">
+			<?php echo phrase('allowed_file_extension'); ?>
+			<b class="text-danger">*</b>
+		</label>
+		<input type="text" name="file_extension" class="form-control form-control-sm" placeholder="<?php echo phrase('separate_with_comma'); ?>" value="<?php echo (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv'); ?>" />
+	</div>
 	<div class="row">
-		<div class="col-md-6">
-			<div class="form-group">
-				<label class="d-block mb-0">
-					<?php echo phrase('allowed_file_extension'); ?>
-					<b class="text-danger">*</b>
-				</label>
-				<input type="text" name="file_extension" class="form-control form-control-sm" placeholder="<?php echo phrase('separate_with_comma'); ?>" value="<?php echo (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv'); ?>" />
-			</div>
-		</div>
 		<div class="col-md-6">
 			<div class="form-group">
 				<label class="d-block mb-0">
@@ -89,15 +87,20 @@
 				<input type="text" name="image_extension" class="form-control form-control-sm" placeholder="<?php echo phrase('separate_with_comma'); ?>" value="<?php echo (session()->get('image_extension') ? session()->get('image_extension') : 'jpg,png,gif'); ?>" />
 			</div>
 		</div>
-	</div>
-	<div class="row">
 		<div class="col-md-6">
 			<div class="form-group">
 				<label class="d-block mb-0">
-					<?php echo phrase('maximum_upload_size'); ?> (Kb)
+					<?php echo phrase('maximum_upload_size'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="max_upload_size" class="form-control form-control-sm" placeholder="e.g: 2048" value="<?php echo (session()->get('max_upload_size') ? session()->get('max_upload_size') : 2048); ?>" />
+				<div class="input-group input-group-sm">
+					<input type="number" name="max_upload_size" class="form-control form-control-sm" placeholder="e.g: 2048" value="<?php echo (session()->get('max_upload_size') ? session()->get('max_upload_size') : 10); ?>" />
+					<div class="input-group-append">
+						<span class="input-group-text">
+							MB
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -112,7 +115,14 @@
 					<?php echo phrase('original'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="image_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('image_dimension') ? session()->get('image_dimension') : 1024); ?>" />
+				<div class="input-group input-group-sm">
+					<input type="number" name="image_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('image_dimension') ? session()->get('image_dimension') : 1024); ?>" />
+					<div class="input-group-append">
+						<span class="input-group-text">
+							px
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
@@ -121,7 +131,14 @@
 					<?php echo phrase('thumbnail'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="thumbnail_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('thumbnail_dimension') ? session()->get('thumbnail_dimension') : 256); ?>" />
+				<div class="input-group input-group-sm">
+					<input type="number" name="thumbnail_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('thumbnail_dimension') ? session()->get('thumbnail_dimension') : 256); ?>" />
+					<div class="input-group-append">
+						<span class="input-group-text">
+							px
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
@@ -130,7 +147,14 @@
 					<?php echo phrase('icon'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<input type="text" name="icon_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('icon_dimension') ? session()->get('icon_dimension') : 64); ?>" />
+				<div class="input-group input-group-sm">
+					<input type="number" name="icon_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('icon_dimension') ? session()->get('icon_dimension') : 64); ?>" />
+					<div class="input-group-append">
+						<span class="input-group-text">
+							px
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
