@@ -284,7 +284,7 @@ class Install extends BaseController
 		service('validation')->setRule('site_description', phrase('site_description'), 'required');
 		service('validation')->setRule('file_extension', phrase('file_extension'), 'required');
 		service('validation')->setRule('image_extension', phrase('image_extension'), 'required');
-		service('validation')->setRule('max_upload_size', phrase('max_upload_size'), 'required|numeric');
+		service('validation')->setRule('max_upload_size', phrase('max_upload_size'), 'required|numeric|greater_than[512]|less_than[' . (int) ini_get('upload_max_filesize') . ']');
 		service('validation')->setRule('image_dimension', phrase('image_dimension'), 'required|numeric');
 		service('validation')->setRule('thumbnail_dimension', phrase('thumbnail_dimension'), 'required|numeric');
 		service('validation')->setRule('icon_dimension', phrase('icon_dimension'), 'required|numeric');
@@ -382,7 +382,7 @@ class Install extends BaseController
 				session()->get('timezone'),
 				session()->get('file_extension'),
 				session()->get('image_extension'),
-				session()->get('max_upload_size'),
+				floor(session()->get('max_upload_size') * 1024),
 				session()->get('image_dimension'),
 				session()->get('thumbnail_dimension'),
 				session()->get('icon_dimension')
