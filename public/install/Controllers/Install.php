@@ -278,13 +278,15 @@ class Install extends BaseController
 			exit(header('Location:' . base_url()));
 		}
 		
+		$max_filesize_unit							= strtolower(preg_replace('/[^A-Za-z]+/', null, ini_get('upload_max_filesize')));
+		
 		service('validation')->setRule('installation_mode', phrase('installation_mode'), 'in_list[0,1]');
 		service('validation')->setRule('timezone', phrase('timezone'), 'required|timezone');
 		service('validation')->setRule('site_title', phrase('site_title'), 'required');
 		service('validation')->setRule('site_description', phrase('site_description'), 'required');
 		service('validation')->setRule('file_extension', phrase('file_extension'), 'required');
 		service('validation')->setRule('image_extension', phrase('image_extension'), 'required');
-		service('validation')->setRule('max_upload_size', phrase('max_upload_size'), 'required|numeric|greater_than[512]|less_than[' . (int) ini_get('upload_max_filesize') . ']');
+		service('validation')->setRule('max_upload_size', phrase('max_upload_size'), 'required|numeric|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ($max_filesize_unit == 'g' ? 1024 : ($max_filesize_unit == 't' ? 131072 : 1)) . ']');
 		service('validation')->setRule('image_dimension', phrase('image_dimension'), 'required|numeric');
 		service('validation')->setRule('thumbnail_dimension', phrase('thumbnail_dimension'), 'required|numeric');
 		service('validation')->setRule('icon_dimension', phrase('icon_dimension'), 'required|numeric');
