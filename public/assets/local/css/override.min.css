@@ -1387,6 +1387,12 @@ blink
 	color: #fff
 }
 
+.sidebar-menu:hover .nav-item.active:not(.is-parent) > a.nav-link
+{
+	background: transparent;
+	color: inherit
+}
+
 .sidebar-menu a.nav-link
 {
 	padding-left: 3rem;
