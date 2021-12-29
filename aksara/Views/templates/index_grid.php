@@ -385,3 +385,78 @@ if(isset($results->extra_action->toolbar))
 		</form>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function()
+	{
+		/**
+		 * Add the form format into the local storage
+		 */
+		<?php if(!isset($modal_html)) { ?>if($.inArray('create', <?php echo json_encode((isset($results->unset_action) ? $results->unset_action : array())); ?>) === -1)
+		{
+			/* generate the response data */
+			$.ajax
+			({
+				method: 'POST',
+				url: '<?php echo go_to('create', $query_string); ?>',
+				data:
+				{
+					prefer: 'modal'
+				},
+				beforeSend: function()
+				{
+					sessionStorage.setItem('form', '')
+				}
+			})
+			.done(function(response)
+			{
+				sessionStorage.setItem('form', JSON.stringify(response))
+			})
+		}
+		
+		else if($.inArray('update', <?php echo json_encode((isset($results->unset_action) ? $results->unset_action : array())); ?>) === -1)
+		{
+			/* generate the response data */
+			$.ajax
+			({
+				method: 'POST',
+				url: '<?php echo go_to('update', $query_string); ?>',
+				data:
+				{
+					prefer: 'modal'
+				},
+				beforeSend: function()
+				{
+					sessionStorage.setItem('form', '')
+				}
+			})
+			.done(function(response)
+			{
+				sessionStorage.setItem('form', JSON.stringify(response))
+			})
+		}<?php } ?>
+
+		/**
+		 * Add the view format into the local storage
+		 */
+		if($.inArray('read', <?php echo json_encode((isset($results->unset_action) ? $results->unset_action : array())); ?>) === -1)
+		{
+			$.ajax
+			({
+				method: 'POST',
+				url: '<?php echo go_to('read', $query_string); ?>',
+				data:
+				{
+					prefer: 'modal'
+				},
+				beforeSend: function()
+				{
+					sessionStorage.setItem('read', '')
+				}
+			})
+			.done(function(response)
+			{
+				sessionStorage.setItem('read', JSON.stringify(response))
+			})
+		}
+	})
+</script>
