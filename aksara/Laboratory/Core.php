@@ -7051,13 +7051,9 @@ class Core extends Controller
 				/**
 				 * Check if field is already selected
 				 */
-				$field								= (strpos($val, '.') !== false ? explode('.', $val) : array('anonymous', $val));
-				
-				if(in_array($field[1], $compiled_select))
-				{
-					// field already selected
-					continue;
-				}
+				$val								= trim(preg_replace('/\s\s+/', ' ', $val));
+				$alias								= (strrpos($val, ' ') !== false ? substr($val, strrpos($val, ' ') + 1) : (strpos($val, '.') !== false ? explode('.', $val) : array('anonymous', $val)));
+				$alias								= (is_array($alias) && isset($alias[1]) ? $alias[1] : $alias);
 				
 				/**
 				 * Check if selected column is use alias
@@ -7087,9 +7083,14 @@ class Core extends Controller
 				/**
 				 * Compile the selected field
 				 */
-				$compiled_select[]					= $val;
-				
-				$this->model->select($val);
+				$compiled_select[$alias]			= $val;
+			}
+			
+			// check if select compiled
+			if($compiled_select)
+			{
+				// select compiled field
+				$this->model->select(array_values($compiled_select));
 			}
 		}
 		

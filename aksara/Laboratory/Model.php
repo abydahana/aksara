@@ -28,7 +28,7 @@ class Model
 	
 	private $_called								= false;
 	
-	private $_distinct;
+	private $_distinct								= false;
 	private $_select								= array();
 	private $_select_avg							= array();
 	private $_select_max							= array();
@@ -213,6 +213,11 @@ class Model
 	 */
 	public function field_exists($field = null, $table = null)
 	{
+		if(strpos(trim($table), '(') !== false)
+		{
+			return false;
+		}
+		
 		if(strpos(trim($table), ' ') !== false)
 		{
 			$table									= str_ireplace(' AS ', ' ', $table);
@@ -337,14 +342,9 @@ class Model
 	/**
 	 * Distinct field
 	 */
-	public function distinct($val = null)
+	public function distinct($flag = false)
 	{
-		if(!is_array($val))
-		{
-			$val									= array_map('trim', explode(',', $val));
-		}
-		
-		$this->_distinct							= array_merge($this->_distinct, $val);
+		$this->_distinct							= $flag;
 		
 		return $this;
 	}
