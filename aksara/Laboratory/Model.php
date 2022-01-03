@@ -2030,7 +2030,7 @@ class Model
 			// run join command
 			foreach($this->_join as $key => $val)
 			{
-				$builder->join($key, $val['condition'], $val['type'], $val['escape']);
+				$builder->join($key, $val['condition'], ($val['type'] ? $val['type'] : ''), $val['escape']);
 			}
 		}
 		
