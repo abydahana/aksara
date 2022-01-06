@@ -213,7 +213,7 @@ class Model
 	 */
 	public function field_exists($field = null, $table = null)
 	{
-		if(strpos(trim($table), '(') !== false)
+		if(strpos(trim($table), '(') !== false || strpos(strtolower(trim($table)), 'select ') !== false)
 		{
 			return false;
 		}
