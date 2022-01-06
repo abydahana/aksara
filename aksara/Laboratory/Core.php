@@ -2300,7 +2300,7 @@ class Core extends Controller
 			$query_string							= service('request')->getGet();
 			
 			// validate token
-			if($this->_set_permission && $query_string && $token != generate_token($query_string))
+			if(!$this->_api_request && $this->_set_permission && $query_string && $token != generate_token($query_string))
 			{
 				// token is missmatch, throw an exception
 				return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), base_url());
@@ -5509,7 +5509,7 @@ class Core extends Controller
 						'original'					=> $original
 					);
 					
-					if($this->_grid_view || $this->agent->isMobile())
+					if($this->_grid_view || service('request')->getUserAgent()->isMobile())
 					{
 						$fields[$field]['type']		= $type;
 					}
@@ -8976,19 +8976,17 @@ class Core extends Controller
 	 */
 	private function _push_log()
 	{
-		$this->agent								= service('request')->getUserAgent();
-		
-		if($this->agent->isBrowser())
+		if(service('request')->getUserAgent()->isBrowser())
 		{
-			$user_agent								= $this->agent->getBrowser() . ' ' . $this->agent->getVersion();
+			$user_agent								= service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion();
 		}
-		else if($this->agent->isRobot())
+		else if(service('request')->getUserAgent()->isRobot())
 		{
-			$user_agent								= $this->agent->getRobot();
+			$user_agent								= service('request')->getUserAgent()->getRobot();
 		}
-		else if($this->agent->isMobile())
+		else if(service('request')->getUserAgent()->isMobile())
 		{
-			$user_agent								= $this->agent->getMobile();
+			$user_agent								= service('request')->getUserAgent()->getMobile();
 		}
 		else
 		{
@@ -8999,7 +8997,7 @@ class Core extends Controller
 		(
 			'ip_address'							=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
 			'browser'								=> $user_agent,
-			'platform'								=> $this->agent->getPlatform(),
+			'platform'								=> service('request')->getUserAgent()->getPlatform(),
 			'timestamp'								=> date('Y-m-d H:i:s')
 		);
 		
