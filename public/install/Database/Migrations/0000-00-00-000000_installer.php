@@ -1445,7 +1445,7 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('user_id', true, true);
-		$this->forge->addKey('service_provider', false, false);
+		$this->forge->addKey('service_provider', true, true);
 		
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'));
 		
