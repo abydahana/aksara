@@ -3703,7 +3703,7 @@ class Core extends Controller
 						{
 							foreach($original as $src => $label)
 							{
-								$icon				= (in_array('images', $type) ? get_image($this->_set_upload_path, $src, 'icon') : null);
+								$icon				= (in_array(pathinfo($src, PATHINFO_EXTENSION), array('jpg', 'jpeg', 'png', 'gif')) ? get_image($this->_set_upload_path, $src, 'icon') : null);
 								$url				= get_file($this->_set_upload_path, $src);
 								$filesize			= get_filesize($this->_set_upload_path, $src);
 								$filesize			= str_replace(array('kb', 'mb', 'gb', 'b', '.'), '', strtolower($filesize));
@@ -8431,7 +8431,7 @@ class Core extends Controller
 							{
 								// reverse file attributes to match with newest upload data
 								$files				= array_reverse(service('request')->getPost($field . '_label'));
-								$uploaded			= (isset($this->_upload_data[$field]) ? array_reverse($this->_upload_data[$field]) : array());
+								$uploaded			= (isset($this->_upload_data[$field]) ? array_reverse(array_values($this->_upload_data[$field])) : array());
 								
 								// combine uploaded files to the old one
 								$uploaded			= array_combine(array_intersect_key($uploaded, $files), array_intersect_key($files, $uploaded));
