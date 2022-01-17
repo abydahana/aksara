@@ -3703,7 +3703,7 @@ class Core extends Controller
 						{
 							foreach($original as $src => $label)
 							{
-								$icon				= (in_array(pathinfo($src, PATHINFO_EXTENSION), array('jpg', 'jpeg', 'png', 'gif')) ? get_image($this->_set_upload_path, $src, 'icon') : null);
+								$icon				= (in_array(strtolower(pathinfo($src, PATHINFO_EXTENSION)), array('jpg', 'jpeg', 'png', 'gif')) ? get_image($this->_set_upload_path, $src, 'icon') : null);
 								$url				= get_file($this->_set_upload_path, $src);
 								$filesize			= get_filesize($this->_set_upload_path, $src);
 								$filesize			= str_replace(array('kb', 'mb', 'gb', 'b', '.'), '', strtolower($filesize));
