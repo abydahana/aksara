@@ -172,8 +172,17 @@ class Model
 		}
 		catch(\Throwable $e)
 		{
-			// connection couldn't be made, throw error
-			return throw_exception(403, $e->getMessage());
+			/**
+			 * Connection couldn't be made, connect through PDO library (emergency connection).
+			 * You're unable to using the query builder when connected through PDO.
+			 */
+			$this->db								= new \Aksara\Libraries\Pdo($parameter['hostname'], $parameter['port'], $parameter['username'], $parameter['password'], $parameter['database']);
+			
+			if(!$this->db->connID)
+			{
+				// connection couldn't be made, throw error
+				return throw_exception(403, $e->getMessage());
+			}
 		}
 		
 		return $this;
