@@ -5436,7 +5436,7 @@ class Core extends Controller
 							$parameter				= (strpos($content, '.00') !== false ? 0 : 2);
 						}
 						
-						$content					= '<p class="text-md-right m-0" style="padding-right:15px">' . (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content) . '</p>';
+						$content					= '<p class="text-md-right m-0" style="padding-right:15px">' . (array_intersect(array('int', 'integer'), $type) ? $content : (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content)) . '</p>';
 					}
 					
 					if(array_intersect(array('hyperlink'), $type))
@@ -5844,7 +5844,11 @@ class Core extends Controller
 					
 					if($content && array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
 					{
-						if(array_intersect(array('percent_format'), $type))
+						if(array_intersect(array('int', 'integer'), $type))
+						{
+							$content				= $content;
+						}
+						else if(array_intersect(array('percent_format'), $type))
 						{
 							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content) . '%';
 						}
