@@ -284,6 +284,19 @@ class Model
 	}
 	
 	/**
+	 * Get the table foreign data of selected table
+	 */
+	public function foreign_data($table = null)
+	{
+		if($table && $this->db->tableExists($table))
+		{
+			return $this->db->getForeignKeyData($table);
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Get the affected rows
 	 */
 	public function affected_rows()
