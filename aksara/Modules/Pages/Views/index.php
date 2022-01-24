@@ -15,7 +15,7 @@
 				{
 					$navigation						.= '<li data-target="#carouselExampleIndicators" data-slide-to="' . $_key . '"' . ($_key == 0 ? ' class="active"' : '') . '></li>';
 					$carousel_items					.= '
-						<div class="carousel-item bg-dark gradient' . ($_key == 0 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
+						<div class="carousel-item bg-dark gradient' . ($_key == 0 || sizeof((array) $carousels) == 1 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
 							<div class="full-height d-flex align-items-center">
 								<div class="clip gradient-top"></div>
 								<div class="carousel-caption container" style="position:inherit">
@@ -56,7 +56,7 @@
 				
 				echo '
 					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-						' . (sizeof($carousels) > 1 ? '
+						' . (sizeof((array) $carousels) > 1 ? '
 						<ol class="carousel-indicators">
 							' . $navigation . '
 						</ol>
@@ -64,7 +64,7 @@
 						<div class="carousel-inner">
 							' . $carousel_items . '
 						</div>
-						' . (sizeof($carousels) > 1 ? '
+						' . (sizeof((array) $carousels) > 1 ? '
 						<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 							<span class="sr-only">

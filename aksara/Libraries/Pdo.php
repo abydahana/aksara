@@ -8,12 +8,13 @@ namespace Aksara\Libraries;
  */
 class Pdo extends \PDO
 {
-	private $db;
 	public $connID;
+	private $db;
 	private $_table;
 	private $_query;
 	private $_compiled_query;
 	private $_affected_rows;
+	private $_where;
 	
 	public function __construct($hostname = array(), $port = null, $username = null, $password = null, $database = null)
 	{
@@ -36,6 +37,20 @@ class Pdo extends \PDO
 		$this->_table								= $table;
 		
 		return $this;
+	}
+	
+	public function tableExists($table = null)
+	{ 
+		try
+		{
+			$result									= $this->db->query('SELECT 1 FROM ' . $table);
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -117,39 +132,72 @@ class Pdo extends \PDO
 	}
 	
 	/**
+	 * Where
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function where($field = '', $value = '', $escape = true)
+	{
+		if(!is_array($field))
+		{
+			if(isset($value['value']))
+			{
+				$this->_where[$field]				= $value['value'];
+			}
+			else
+			{
+				$this->_where[$field]				= $value;
+			}
+		}
+		else
+		{
+			foreach($field as $key => $val)
+			{
+				$this->_where[$key]					= $val;
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Insert data
 	 */
 	public function insert($set = array())
 	{
-		if(!is_array($set)) return false;
+		if(!$set || !is_array($set)) return false;
 		
-		$fields										= null;
+		$fields										= array();
 		$values										= null;
 		
 		foreach($set[0] as $key => $val)
 		{
-			$fields									.= ($fields ? ', ' : null) . $key;
-			$values									.= ($values ? ', ' : null) . '?';
+			if(in_array(gettype($val), array('float', 'double')))
+			{
+				$column								= 'CAST(? AS MONEY)';
+			}
+			else
+			{
+				$column								= '?';
+			}
+			
+			$fields[]								= $key;
+			$values									.= ($values ? ', ' : null) . $column;
 		}
 		
-		$statement									= $this->db->prepare('INSERT INTO ' . $this->_table . ' (' . $fields . ') VALUES (' . $values . ')');
+		$statement									= $this->db->prepare('INSERT INTO ' . $this->_table . ' (' . implode(', ', $fields) . ') VALUES (' . $values . ')');
 		
 		try
 		{
-			$this->db->beginTransaction();
+			$statement->execute(array_values($set));
 			
-			foreach($set as $key => $val)
-			{
-				$statement->execute($val);
-			}
+			$this->_affected_rows					= 1;
 			
-			$this->db->commit();
+			return true;
 			
 		}
 		catch(\PDOException $e)
 		{
-			$this->db->rollback();
-			
 			return throw_exception(500, $e->getMessage());
 		}
 	}
@@ -159,34 +207,51 @@ class Pdo extends \PDO
 	 */
 	public function insertBatch($set = array(), $escape = false, $batch_size = 1)
 	{
-		if(!is_array($set)) return false;
+		if(!$set || !is_array($set)) return false;
 		
-		$fields										= null;
+		$fields										= array();
 		$values										= null;
 		
 		foreach($set[0] as $key => $val)
 		{
-			$fields									.= ($fields ? ', ' : null) . $key;
-			$values									.= ($values ? ', ' : null) . '?';
+			if(in_array(gettype($val), array('float', 'double')))
+			{
+				$column								= 'CAST(? AS MONEY)';
+			}
+			else
+			{
+				$column								= '?';
+			}
+			
+			$fields[]								= $key;
+			$values									.= ($values ? ', ' : null) . $column;
 		}
 		
-		$statement									= $this->db->prepare('INSERT INTO ' . $this->_table . ' (' . $fields . ') VALUES (' . $values . ')');
+		$statement									= $this->db->prepare('INSERT INTO ' . $this->_table . ' (' . implode(', ', $fields) . ') VALUES (' . $values . ')');
 		
 		try
 		{
+			$affected_rows							= 0;
+			
 			$this->db->beginTransaction();
 			
 			foreach($set as $key => $val)
 			{
-				$statement->execute($val);
+				$statement->execute(array_values($val));
+				
+				$affected_rows++;
 			}
 			
 			$this->db->commit();
 			
+			$this->_affected_rows					= $affected_rows;
+			
+			return true;
+			
 		}
 		catch(\PDOException $e)
 		{
-			$this->db->rollback();
+			$this->db->rollBack();
 			
 			return throw_exception(500, $e->getMessage());
 		}
@@ -221,7 +286,12 @@ class Pdo extends \PDO
 		
 		try
 		{
-			if($statement->execute($set))
+			foreach($set as $key => $val)
+			{
+				$statement->bindValue(':' . $key, $val);
+			}
+			
+			if($statement->execute())
 			{
 				$this->_affected_rows				= $statement->rowCount();
 				
@@ -239,15 +309,13 @@ class Pdo extends \PDO
 	/**
 	 * Delete data
 	 */
-	public function delete($where = array())
+	public function delete()
 	{
-		if(!is_array($where)) return false;
-		
 		$bind_parameter								= null;
 		
-		foreach($where as $key => $val)
+		foreach($this->_where as $key => $val)
 		{
-			list($field, $operand)					= array_pad(array_map('trim', explode(' ', $val)), 2, null);
+			list($field, $operand)					= array_pad(array_map('trim', explode(' ', $key)), 2, null);
 			
 			$bind_parameter							.= ($bind_parameter ? ' AND ' : null) . $field . ' ' . ($operand ? $operand : '=') . ' :' . $field;
 		}
@@ -256,14 +324,16 @@ class Pdo extends \PDO
 		{
 			$statement								= $this->db->prepare('DELETE FROM ' . $this->_table . ' WHERE ' . $bind_parameter);
 			
-			foreach($where as $key => $val)
+			foreach($this->_where as $key => $val)
 			{
 				list($field, $operand)				= array_pad(array_map('trim', explode(' ', $key)), 2, null);
 				
-				$statement->bindParam(':' . $field, $val);
+				$statement->bindValue(':' . $field, $val);
 			}
 			
-			if($statement->execute($where))
+			$this->_where							= array();
+			
+			if($statement->execute())
 			{
 				$this->_affected_rows				= $statement->rowCount();
 				
@@ -272,6 +342,8 @@ class Pdo extends \PDO
 		}
 		catch(\PDOException $e)
 		{
+			$this->_where							= array();
+			
 			return throw_exception(500, $e->getMessage());
 		}
 		
@@ -281,7 +353,7 @@ class Pdo extends \PDO
 	/**
 	 * Truncate table
 	 */
-	public function truncate($where = array())
+	public function truncate()
 	{
 		try
 		{
