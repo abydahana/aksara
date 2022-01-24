@@ -23,7 +23,7 @@
 										' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
 										<div class="col-lg-4 offset-lg-1 text-center text-lg-left d-none d-md-block">
 											<div class="pt-5 w-100">
-												<img src="' . get_image('carousels', 'placeholder.png') . '" class="img-fluid rounded-more" />
+												<img src="' . get_image('carousels', $_val->thumbnail, 'thumb') . '" class="img-fluid rounded-more" />
 											</div>
 										</div>
 										' : null) . '
