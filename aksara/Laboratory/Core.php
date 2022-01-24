@@ -2073,6 +2073,20 @@ class Core extends Controller
 		
 		if($query)
 		{
+			$foreignKeys							= $this->model->foreign_data($this->_from);
+			$constraint								= false;
+			
+			if($foreignKeys)
+			{
+				foreach($foreignKeys as $key => $val)
+				{
+					if(isset($val->foreign_table_name) && $val->foreign_table_name == $params['relation_table'])
+					{
+						$constraint					= true;
+					}
+				}
+			}
+			
 			foreach($query as $key => $val)
 			{
 				$label								= str_ireplace(' AS ', ' ', $params['formatting']);
@@ -2177,7 +2191,7 @@ class Core extends Controller
 		{
 			$output									= '
 				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
-					' . ($query ? '<option value="' . (!$is_selected_exist ? $selected : null) . '">' . ($selected ? $this->_get_relation($params, $selected, 1, true) : phrase('please_choose')) . '</option>' : null) . '
+					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : (!$constraint ? '<option value="0">' . phrase('please_choose') . '</option>' : null)) . '
 					' . $output . '
 				</select>
 			';
