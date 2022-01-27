@@ -144,6 +144,8 @@ if(isset($results->extra_action->toolbar))
 				<?php
 					if(isset($results->table_data) && $total)
 					{
+						$reference						= array();
+						
 						foreach($results->table_data as $key => $val)
 						{
 							$extra_option				= null;
@@ -269,6 +271,25 @@ if(isset($results->extra_action->toolbar))
 									</div>
 								</td>
 							';
+							
+							foreach($results->item_reference as $_key => $_val)
+							{
+								if(isset($val->$_val->content) && (!isset($reference[$_val]) || !in_array($val->$_val->content, $reference[$_val])))
+								{
+									echo '
+										<tr>
+											' . (isset($results->extra_action->option) || !isset($results->unset_action) || !in_array('read', $results->unset_action) || !in_array('update', $results->unset_action) || !in_array('delete', $results->unset_action) || !in_array('print', $results->unset_action) || !in_array('pdf', $results->unset_action) ? '<td>&nbsp;</td>' : null) . '
+											<td colspan="' . ($colspan - (isset($results->extra_action->option) || !isset($results->unset_action) || !in_array('read', $results->unset_action) || !in_array('update', $results->unset_action) || !in_array('delete', $results->unset_action) || !in_array('print', $results->unset_action) || !in_array('pdf', $results->unset_action) ? 1 : 0)) . '">
+												<div class="font-weight-bold text-primary">
+													' . $val->$_val->original . '
+												</div>
+											</td>
+										</tr>
+									';
+									
+									$reference[$_val][]	= $val->$_val->content;
+								}
+							}
 							
 							echo '
 								<tr id="item__' . $results->query_string[$key]->aksara . '">
