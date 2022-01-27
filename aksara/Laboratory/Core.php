@@ -95,6 +95,7 @@ class Core extends Controller
 	private $_after_delete							= null;
 	private $_old_files								= array();
 	private $_group_field							= array();
+	private $_item_reference						= array();
 	
 	private $_modal_size							= null;
 	private $_field_position						= array();
@@ -1653,6 +1654,26 @@ class Core extends Controller
 		}
 		
 		$this->_group_field							= array_merge($this->_group_field, array_fill_keys($params, $group));
+		
+		return $this;
+	}
+	
+	/**
+	 * item_reference
+	 * Group row with the given parent from the field reference
+	 *
+	 * NOTE: It's case sensitive
+	 *
+	 * @access		public
+	 */
+	public function item_reference($params = array())
+	{
+		if(!is_array($params))
+		{
+			$params									= array_map('trim', explode(',', $params));
+		}
+		
+		$this->_item_reference						= array_merge($this->_item_reference, $params);
 		
 		return $this;
 	}
@@ -5727,6 +5748,7 @@ class Core extends Controller
 			'filter'								=> ($this->_add_filter ? $this->_add_filter : ''),
 			'merged_content'						=> $this->_merge_content,
 			'table_data'							=> $output,
+			'item_reference'						=> $this->_item_reference,
 			'query_string'							=> $query_string,
 			'extra_action'							=> array
 			(
