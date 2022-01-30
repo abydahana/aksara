@@ -2530,9 +2530,16 @@ class Core extends Controller
 						{
 							foreach($this->_select as $key => $val)
 							{
+								/*
 								$val				= str_ireplace(' AS ', ' ', $val);
 								$val				= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
+								*/
 								
+								if(stripos($val, ' AS ') !== false)
+								{
+									$val			= substr($val, 0, stripos($val, ' AS '));
+								}
+
 								if($this->_like)
 								{
 									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
@@ -2540,11 +2547,6 @@ class Core extends Controller
 								else
 								{
 									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
-								}
-								
-								if(stripos($val, ' AS ') !== false)
-								{
-									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
@@ -2559,7 +2561,7 @@ class Core extends Controller
 									}
 								}
 								
-								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists($val, $table))
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists((stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table))
 								{
 									// order by best match
 									$this->_order_bm[]		= '(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
