@@ -2539,6 +2539,11 @@ class Core extends Controller
 								{
 									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
+								
+								if(stripos($val, ' AS ') !== false)
+								{
+									$val			= substr($val, 0, stripos($val, ' AS '));
+								}
 
 								if($this->_like)
 								{
