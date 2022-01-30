@@ -2540,6 +2540,11 @@ class Core extends Controller
 									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
 								
+								if(stripos($val, ' AS ') !== false)
+								{
+									$val			= substr($val, 0, stripos($val, ' AS '));
+								}
+
 								if($this->_like)
 								{
 									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
