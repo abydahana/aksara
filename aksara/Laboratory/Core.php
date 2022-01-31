@@ -2096,15 +2096,18 @@ class Core extends Controller
 		
 		if($query)
 		{
-			$foreignKeys							= $this->model->foreign_data($this->_from);
-			
-			if($foreignKeys)
+			if(in_array($this->_method, array('create', 'update')))
 			{
-				foreach($foreignKeys as $key => $val)
+				$foreignKeys						= $this->model->foreign_data($this->_from);
+				
+				if($foreignKeys)
 				{
-					if(isset($val->foreign_table_name) && $val->foreign_table_name == $params['relation_table'])
+					foreach($foreignKeys as $key => $val)
 					{
-						$constraint					= true;
+						if(isset($val->foreign_table_name) && $val->foreign_table_name == $params['relation_table'])
+						{
+							$constraint				= true;
+						}
 					}
 				}
 			}
