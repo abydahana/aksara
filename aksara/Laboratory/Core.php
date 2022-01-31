@@ -2092,10 +2092,11 @@ class Core extends Controller
 		
 		$query										= $this->model->limit($params['limit'], $params['offset'])->get($params['relation_table'])->result();
 		
+		$constraint									= false;
+		
 		if($query)
 		{
 			$foreignKeys							= $this->model->foreign_data($this->_from);
-			$constraint								= false;
 			
 			if($foreignKeys)
 			{
