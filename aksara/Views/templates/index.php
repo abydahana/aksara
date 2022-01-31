@@ -255,7 +255,7 @@ if(isset($results->extra_action->toolbar))
 											</a>
 										' : null) . '
 										' . $extra_option . '
-										' . ($extra_dropdown || ($reading || !isset($results->unset_action) || !in_array('print', $results->unset_action)) || ($reading && (!isset($results->unset_action) || !in_array('pdf', $results->unset_action))) ? '
+										' . ($extra_dropdown || ($reading && !in_array('print', $results->unset_action)) || ($reading && !in_array('pdf', $results->unset_action)) ? '
 											<button type="button" class="btn btn-xs btn-secondary toggle-tooltip" data-title="' . phrase('more_options') . '" data-toggle="popover" data-trigger="focus" data-content=\'<div class="list-group list-group-flush">
 												' . $extra_dropdown . '
 												' . ($reading && !in_array('print', $results->unset_action) ? '<a href="' . go_to('print', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0" target="_blank"><i class="mdi mdi-printer" style="width:22px"></i>' . phrase('print') . '</a>' : null) . '
