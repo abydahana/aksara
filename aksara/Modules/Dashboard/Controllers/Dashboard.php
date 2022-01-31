@@ -83,7 +83,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 		
 		$galleries									= $this->model->get_where
 		(
-			'pages',
+			'galleries',
 			array
 			(
 			)
@@ -92,7 +92,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 		
 		$users										= $this->model->get_where
 		(
-			'pages',
+			'app__users',
 			array
 			(
 			)
