@@ -5562,7 +5562,7 @@ class Core extends Controller
 						
 						foreach($this->_grid_view['parameter'] as $_key => $_val)
 						{
-							$grid_query[$_key]		= (isset($val[$_key]['original']) ? $val[$_key]['original'] : $_val);
+							$grid_query[$_key]		= (isset($val[$_val]['original']) ? $val[$_val]['original'] : $_val);
 						}
 						
 						$this->_grid_view[$u][$key]	= base_url($this->_grid_view['hyperlink'], $grid_query);
