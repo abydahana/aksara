@@ -2098,13 +2098,13 @@ class Core extends Controller
 		{
 			if(in_array($this->_method, array('create', 'update')))
 			{
-				$foreignKeys						= $this->model->foreign_data($this->_from);
+				$foreignKeys						= $this->model->index_data($this->_from);
 				
 				if($foreignKeys)
 				{
 					foreach($foreignKeys as $key => $val)
 					{
-						if(isset($val->foreign_table_name) && $val->foreign_table_name == $params['relation_table'])
+						if($key == $params['relation_table'] && in_array($key->type, array('INDEX', 'PRIMARY')))
 						{
 							$constraint				= true;
 						}
