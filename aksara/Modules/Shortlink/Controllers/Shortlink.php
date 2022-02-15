@@ -19,17 +19,13 @@ class Shortlink extends \Aksara\Laboratory\Core
 		parent::__construct();
 	}
 	
-	public function index()
+	public function index($params = '')
 	{
 		$query										= null;
 		
-		if(!$this->model->table_exists('app__shortlink'))
+		if($this->model->table_exists('app__shortlink'))
 		{
-			$query									= $this->model->select
-			('
-				url
-			')
-			->get_where
+			$query									= $this->model->get_where
 			(
 				'app__shortlink',
 				array
@@ -38,9 +34,26 @@ class Shortlink extends \Aksara\Laboratory\Core
 				),
 				1
 			)
-			->row('url');
+			->row();
 		}
 		
-		redirect_to($query);
+		if($query)
+		{
+			/* set the one time temporary session */
+			if(!get_userdata('is_logged'))
+			{
+				$session							= json_decode($query->session, true);
+				$session['sess_destroy_after']		= 'once';
+				
+				set_userdata($session);
+			}
+			
+			/* redirect to real URL */
+			return throw_exception(301, null, $query->url);
+		}
+		else
+		{
+			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'), base_url());
+		}
 	}
 }
