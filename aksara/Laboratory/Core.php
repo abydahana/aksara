@@ -2861,6 +2861,22 @@ class Core extends Controller
 				$title								= trim($title);
 			}
 			
+			// check whether the method of controller is sets single
+			if($this->_set_method)
+			{
+				// set title by method
+				$this->_set_title					= array
+				(
+					$this->_method					=> $title
+				);
+				
+				// set icon by method
+				$this->_set_icon					= array
+				(
+					$this->_method					=> $this->_set_icon
+				);
+			}
+			
 			// if method is create
 			if('create' == $this->_method)
 			{
