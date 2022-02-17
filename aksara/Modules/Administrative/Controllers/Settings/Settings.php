@@ -81,7 +81,7 @@ class Settings extends \Aksara\Laboratory\Core
 			$required_email_masking					= 'valid_email';
 		}
 		
-		$this->set_title(array('update' => phrase('application_settings')))
+		$this->set_title(phrase('application_settings'))
 		->set_icon('mdi mdi-wrench-outline')
 		->set_primary('id')
 		->unset_field('id')
