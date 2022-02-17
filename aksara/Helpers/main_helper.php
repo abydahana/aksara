@@ -244,7 +244,7 @@ if(!function_exists('throw_exception'))
 			(
 				'status'							=> $code,
 				'message'							=> $exception,
-				'target'							=> $target,
+				'target'							=> ($target ? $target : ''),
 				'redirect'							=> $redirect
 			)
 		);

@@ -3248,6 +3248,7 @@ class Core extends Controller
 				
 				if(DB_DRIVER == 'Postgre')
 				{
+					$auto_increment					= false;
 					$field_data						= $this->model->field_data($table);
 					
 					foreach($field_data as $key => $val)
@@ -4220,7 +4221,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('date', 'datepicker'), $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? $original : date('Y-m-d'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
+					$content						= '<input type="text" name="' . $field . '" class="form-control' . $extra_class . '" role="datepicker" data-format="dd MM yyyy" data-modal="true" data-large-mode="true" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('click_to_select_date')) . '" value="' . ($default_value && $default_value != '0000-00-00' ? $default_value : ($original && $original != '0000-00-00' ? date('d F Y', strtotime($original)) : date('d F Y'))) . '" id="' . $field . '_input" maxlength="' . $max_length . '" readonly' . $read_only . ' spellcheck="false" />';
 				}
 				else if(array_intersect(array('datetime', 'datetimepicker'), $type))
 				{
