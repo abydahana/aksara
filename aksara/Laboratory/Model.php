@@ -236,7 +236,7 @@ class Model
 			$this->_table_alias[$destructure[1]]	= $table;
 		}
 		
-		if($table && $field && $this->db->fieldExists($field, $table))
+		if($table && $field && $this->db->tableExists($table) && $this->db->fieldExists($field, $table))
 		{
 			return true;
 		}

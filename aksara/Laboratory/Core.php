@@ -1838,7 +1838,7 @@ class Core extends Controller
 		{
 			if(!in_array($selected_value, $select))
 			{
-				$select[]							= $selected_value . ' AS ' . $field;
+				$select[]							= (strpos($selected_value, ' ') !== false ? substr($selected_value, strpos($selected_value, ' ') + 1) : $selected_value) . ' AS ' . $field;
 			}
 			
 			if(isset($this->_set_attribute[$field]))
@@ -1854,7 +1854,7 @@ class Core extends Controller
 			
 			if(!$group_by)
 			{
-				$group_by							= $relation_table . '.' . $relation_key;
+				$group_by							= (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key;
 			}
 			
 			$this->_unset_column[]					= $field;
@@ -1892,21 +1892,21 @@ class Core extends Controller
 			{
 				foreach($field as $key => $val)
 				{
-					$condition						.= ($condition ? ' AND ' : null) . $relation_table . '.' . $val . ' = {primary_table}.' . $val;
+					$condition						.= ($condition ? ' AND ' : null) . (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $val . ' = {primary_table}.' . $val;
 					
 					// apply validation
-					$this->set_validation($val, 'relation_checker[' . $relation_table . '.' . $val . ']');
+					$this->set_validation($val, 'relation_checker[' . (strpos($relation_table, ' ') !== false ? substr($relation_table, 0, strpos($relation_table, ' ')) : $relation_table) . '.' . $val . ']');
 				}
 			}
 			else
 			{
 				// apply validation
-				$this->set_validation($field, 'relation_checker[' . $relation_table . '.' . $relation_key . ']');
+				$this->set_validation($field, 'relation_checker[' . (strpos($relation_table, ' ') !== false ? substr($relation_table, 0, strpos($relation_table, ' ')) : $relation_table) . '.' . $relation_key . ']');
 			}
 			
 			$this->_join[$relation_table]			= array
 			(
-				'condition'							=> ($condition ? $condition : $relation_table . '.' . $relation_key . ' = {primary_table}.' . $field),
+				'condition'							=> ($condition ? $condition : (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key . ' = {primary_table}.' . $field),
 				'type'								=> 'LEFT',
 				'escape'							=> true
 			);
@@ -1945,7 +1945,7 @@ class Core extends Controller
 		{
 			$rk										= $params['relation_table'] . '.' . $params['relation_key'];
 			$params['limit']						= $limit;
-			$params['where'][$rk]					= $selected;
+			$params['where'][$rk]					= (strpos($selected, ' ') !== false ? substr($selected, strpos($selected, ' ') + 1) : $selected);
 		}
 		
 		if(service('request')->isAJAX() && 'ajax_select' == service('request')->getPost('method') && isset($params['limit']) && $params['limit'] > 1)
@@ -2059,12 +2059,12 @@ class Core extends Controller
 				{
 					if(!isset($selected[$key])) continue;
 					
-					$this->model->where($params['relation_table'] . '.' . $val, $selected[$key]);
+					$this->model->where((strpos($params['relation_table'], ' ') !== false ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table']) . '.' . $val, $selected[$key]);
 				}
 			}
 			else
 			{
-				$this->model->where($params['relation_table'] . '.' . $params['relation_key'], $selected);
+				$this->model->where((strpos($params['relation_table'], ' ') !== false ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table']) . '.' . $params['relation_key'], $selected);
 			}
 			
 			$params['limit']						= 1;
@@ -2104,7 +2104,7 @@ class Core extends Controller
 				{
 					foreach($foreignKeys as $key => $val)
 					{
-						if($key == $params['relation_table'] && in_array($key->type, array('INDEX', 'PRIMARY')))
+						if(in_array($params['relation_key'], $val->fields) && in_array($val->type, array('INDEX', 'PRIMARY')))
 						{
 							$constraint				= true;
 						}
@@ -3259,7 +3259,7 @@ class Core extends Controller
 			
 			if($this->model->insert($table, $data))
 			{
-				$auto_increment						= false;
+				$auto_increment						= true;
 				$primary							= 0;
 				
 				if(DB_DRIVER == 'Postgre')

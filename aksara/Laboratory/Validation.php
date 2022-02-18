@@ -303,8 +303,16 @@ class Validation extends \CodeIgniter\Validation\Rules
 	 *
 	 * @access		public
 	 */
-	public function validate_upload($value = null, $params = null)
+	public function validate_upload($value = null, $params = null, $reset = false)
 	{
+		if($reset)
+		{
+			// reset previously uploaded data
+			$this->_upload_data						= array();
+			
+			unset_userdata('_upload_data');
+		}
+		
 		$exploded									= explode('.', $params);
 		$field										= (isset($exploded[0]) ? $exploded[0] : null);
 		$type										= (isset($exploded[1]) ? $exploded[1] : null);
