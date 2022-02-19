@@ -2550,6 +2550,17 @@ ol.guide li::before
 		border-left: 0;
 		border-right: 0
 	}
+	
+	.ol-control
+	{
+		display: none
+	}
+	
+	.ol-geocoder.gcd-txt-container
+	{
+		left: 5%!important;
+		right: 5%!important
+	}
 }
 @media (min-width: 640px) and (max-width: 767px)
 {

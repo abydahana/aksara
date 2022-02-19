@@ -372,8 +372,6 @@ class Validation extends \CodeIgniter\Validation\Rules
 			if($this->_upload_error)
 			{
 				$this->form_validation->setError('validate_upload', $this->_upload_error);
-				
-				return false;
 			}
 		}
 		
