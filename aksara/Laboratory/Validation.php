@@ -305,7 +305,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 	 */
 	public function validate_upload($value = null, $params = null, $reset = false)
 	{
-		if($reset)
+		if(is_bool($reset) && $reset)
 		{
 			// reset previously uploaded data
 			$this->_upload_data						= array();
