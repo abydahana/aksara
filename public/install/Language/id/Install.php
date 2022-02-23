@@ -121,6 +121,7 @@ return array
 	'json' => 'JSON',
 	'xml' => 'XML',
 	'the_minimum_required_version_is' => 'Versi minimum yang dibutuhkan adalah',
+	'and_the_maximum_version_is' => 'dan versi maksimal adalah',
 	'off' => 'Nonaktif',
 	'on' => 'Aktif',
 	'turn_it_on' => 'silakan hidupkan!',

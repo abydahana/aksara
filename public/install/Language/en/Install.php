@@ -122,6 +122,7 @@ return array
 	'json' => 'JSON',
 	'xml' => 'XML',
 	'the_minimum_required_version_is' => 'The minimum required version is',
+	'and_the_maximum_version_is' => 'and the maximum version is',
 	'off' => 'Off',
 	'on' => 'On',
 	'turn_it_on' => 'turn it on!',
