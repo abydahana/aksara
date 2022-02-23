@@ -2937,7 +2937,8 @@ class Core extends Controller
 					}
 				}
 				
-				$this->_view						= (isset($this->_set_template['export']) ? $this->_set_template['export'] : 'templates/export');
+				$this->_view						= $this->template->get_view((isset($this->_set_template[$this->_method]) ? $this->_set_template[$this->_method] : $this->_method));
+				
 				$this->_results						= ($single_print ? $this->render_read($this->_query) : $this->render_table($this->_query));
 			}
 			

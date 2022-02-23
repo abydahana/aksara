@@ -525,7 +525,17 @@ class Template
 				// no view were found
 				else
 				{
-					$this->_view					= 'templates/error';
+					// check request mode
+					if(in_array($view, array('export', 'print', 'pdf')))
+					{
+						// export mode
+						$this->_view				= 'templates/export';
+					}
+					else
+					{
+						// no mode
+						$this->_view				= 'templates/error';
+					}
 				}
 			}
 			

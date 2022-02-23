@@ -1,7 +1,7 @@
 <?php
 	$error											= false;
 	
-	if(phpversion() < 7 || !$mod_rewrite || !in_array('mbstring', $extension) || !in_array('intl', $extension) || !in_array('gd', $extension) || !in_array('json', $extension) || !in_array('xml', $extension))
+	if(phpversion() < 7 || phpversion() >= 8 || !$mod_rewrite || !in_array('mbstring', $extension) || !in_array('intl', $extension) || !in_array('gd', $extension) || !in_array('json', $extension) || !in_array('xml', $extension))
 	{
 		$error										= true;
 	}
@@ -27,7 +27,7 @@
 					<?php echo phrase('php_version'); ?>
 				</label>
 				<p>
-					<?php echo (phpversion() < 7.3 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('the_minimum_required_version_is') . ' <b>7.3</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
+					<?php echo (phpversion() < 7.3 || phpversion() >= 8 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('the_minimum_required_version_is') . ' <b>7.3</b> ' . phrase('and_the_maximum_version_is') . ' <b>8</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
 				</p>
 			</div>
 		</div>

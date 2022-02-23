@@ -64,13 +64,9 @@ h6
 	pointer-events: none
 }
 
-#hide-on-scroll
-{
-	transition: all ease-in-out .3s
-}
-
 .navbar
 {
+	transition: all ease-in-out .3s;
 	min-height: 56px
 }
 
@@ -185,6 +181,12 @@ body:not(.sidebar-expanded) .navbar.bg-transparent .navbar-nav > .nav-item > .na
 .navbar.fixed-top+#content-wrapper
 {
 	margin-top: 56px
+}
+
+.navbar.fixed-top+.navbar.fixed-top+nav,
+.navbar.fixed-top+.navbar.fixed-top+#content-wrapper
+{
+	margin-top: 112px
 }
 
 .navbar-toggler
@@ -1862,6 +1864,24 @@ ol.guide li::before
 	display: none!important
 }
 
+.swiper-horizontal>.swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal,
+.swiper-pagination-custom,
+.swiper-pagination-fraction
+{
+	bottom: 60px!important
+}
+
+.swiper-pagination-bullet
+{
+	background: #fff!important
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active
+{
+	background: #09f!important
+}
+
 .fb-comments-container
 {
 	margin-left: -8px;
@@ -2437,6 +2457,16 @@ ol.guide li::before
 	.container-fluid > div > div > .form-group.border-bottom:last-child
 	{
 		border-bottom: none!important
+	}
+	
+	.row .col-6:nth-child(odd)
+	{
+		padding-right: .5rem
+	}
+	
+	.row .col-6:nth-child(even)
+	{
+		padding-left: .5rem
 	}
 	
 	.opt-btn-overlap-fix
