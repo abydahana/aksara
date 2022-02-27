@@ -100,7 +100,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'status' => array
 				(
@@ -547,7 +548,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'author' => array
 				(
@@ -639,7 +641,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'featured' => array
 				(
@@ -741,7 +744,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'author' => array
 				(
@@ -782,7 +786,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'language_id' => array
 				(
@@ -817,7 +822,8 @@ class Updater extends Migration
 				),
 				'updated_timestamp' => array
 				(
-					'type' => 'timestamp'
+					'type' => 'timestamp',
+					'null' => true
 				),
 				'language_id' => array
 				(
