@@ -16,7 +16,7 @@ class Updater extends Migration
     public function up()
     {
 		// disable foreign key check
-		$this->db->disableForeignKeyChecks()
+		$this->db->disableForeignKeyChecks();
 		
 		// modify previous column type
 		$this->forge->modifyColumn
@@ -912,7 +912,7 @@ class Updater extends Migration
 		$this->forge->createTable('app__users_blocked', true);
 		
 		// enable foreign key check
-		$this->db->enableForeignKeyChecks()
+		$this->db->enableForeignKeyChecks();
     }
 	
 	public function down()
