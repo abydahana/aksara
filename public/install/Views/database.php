@@ -74,6 +74,12 @@
 				</label>
 				<input type="text" name="database_initial" class="form-control form-control-sm" value="<?php echo session()->get('database_initial'); ?>" />
 			</div>
+			<div class="form-group">
+				<label>
+					<input type="checkbox" name="database_forge" value="1" />
+					<?php echo phrase('create_database_if_not_exists'); ?>
+				</label>
+			</div>
 		</div>
 	</div>
 	<hr class="row" />

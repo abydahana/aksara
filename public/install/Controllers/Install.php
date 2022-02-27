@@ -16,7 +16,7 @@ class Install extends BaseController
 	{
 		if(file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php') && (!isset($_SERVER['PATH_INFO'])  || (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] != '/run')))
 		{
-			exit(header('Location:' . str_replace('/install', null, base_url())));
+			exit(header('Location:' . str_replace('/install', '', base_url())));
 		}
 		
 		helper('language');
@@ -144,6 +144,24 @@ class Install extends BaseController
 						'validation'				=> service('validation')->getErrors()
 					)
 				);
+			}
+			
+			// check request to create new database
+			if(service('request')->getPost('database_forge'))
+			{
+				$group								= 'database.default';
+
+				$_SERVER[$group . '.DSN']			= service('request')->getPost('database_dsn');
+				$_SERVER[$group . '.DBDriver']		= service('request')->getPost('database_driver');
+				$_SERVER[$group . '.hostname']		= service('request')->getPost('database_hostname');
+				$_SERVER[$group . '.port']			= service('request')->getPost('database_port');
+				$_SERVER[$group . '.username']		= service('request')->getPost('database_username');
+				$_SERVER[$group . '.password']		= service('request')->getPost('database_password');
+
+				$forge								= \Config\Database::forge();
+				
+				// create database
+				$forge->createDatabase(service('request')->getPost('database_initial'), true);
 			}
 			
 			$config									= array
@@ -278,7 +296,7 @@ class Install extends BaseController
 			exit(header('Location:' . base_url()));
 		}
 		
-		$max_filesize_unit							= strtolower(preg_replace('/[^A-Za-z]+/', null, ini_get('upload_max_filesize')));
+		$max_filesize_unit							= strtolower(preg_replace('/[^A-Za-z]+/', '', ini_get('upload_max_filesize')));
 		
 		service('validation')->setRule('installation_mode', phrase('installation_mode'), 'in_list[0,1]');
 		service('validation')->setRule('timezone', phrase('timezone'), 'required|timezone');
@@ -451,7 +469,7 @@ class Install extends BaseController
 						array
 						(
 							'status'				=> 403,
-							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . preg_replace('/\/public/', null, ROOTPATH, 1) . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
+							'message'				=> phrase('unable_to_extract_the_sample_module') . ' ' . phrase('make_sure_the_following_directory_is_writable') . ': <code>' . preg_replace('/\/public/', '', ROOTPATH, 1) . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('skip_installing_the_sample_module') . '</label>'
 						)
 					);
 				}
