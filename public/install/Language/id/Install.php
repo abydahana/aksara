@@ -62,6 +62,7 @@ return array
 	'your_server_do_not_have_sqlsrv_driver_installed' => 'Server Anda belum mempunyai driver SQL Server yang diinstal!',
 	'your_server_do_not_have_sqlite3_driver_installed' => 'Server Anda belum mempunyai driver SQLite3 yang diinstal!',
 	'please_choose_the_correct_database_driver' => 'Silakan pilih database driver yang terdaftar!',
+	'create_database_if_not_exists' => 'Buat database jika belum tersedia',
 	
 	// Finalizing
 	'the_timezone_is_not_valid' => 'Zona waktu yang Anda pilih tidak valid!',

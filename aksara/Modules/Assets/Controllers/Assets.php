@@ -66,6 +66,8 @@ class Assets extends \Aksara\Laboratory\Core
 		
 		foreach($file_list as $key => $source)
 		{
+			if(!$source) continue;
+
 			$output									.= @file_get_contents($source);
 		}
 		
@@ -138,6 +140,8 @@ class Assets extends \Aksara\Laboratory\Core
 		
 		foreach($file_list as $key => $source)
 		{
+			if(!$source) continue;
+			
 			$output									.= @file_get_contents($source);
 		}
 		

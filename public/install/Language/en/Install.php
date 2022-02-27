@@ -62,6 +62,7 @@ return array
 	'your_server_do_not_have_sqlsrv_driver_installed' => 'Your server don\'t have SQL Server driver installed!',
 	'your_server_do_not_have_sqlite3_driver_installed' => 'Your server don\'t have SQLite3 driver installed!',
 	'please_choose_the_correct_database_driver' => 'Please choose the correct database driver!',
+	'create_database_if_not_exists' => 'Create database if not exists',
 	
 	// Finalizing
 	'the_timezone_is_not_valid' => 'The timezone is not valid!',
