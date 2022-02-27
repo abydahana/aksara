@@ -25,13 +25,16 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'user_id' => array
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'path' => array
 				(
@@ -74,7 +77,9 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'title' => array
 				(
@@ -159,7 +164,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'hostname' => array
 				(
@@ -203,7 +210,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'status' => array
 				(
@@ -239,7 +248,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				)
 			)
 		);
@@ -253,7 +264,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'group_id' => array
 				(
@@ -273,7 +286,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				)
 			)
 		);
@@ -299,7 +314,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'app_name' => array
 				(
@@ -391,19 +408,23 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'group_id' => array
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'country' => array
 				(
@@ -438,7 +459,8 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				)
 			)
 		);
@@ -452,7 +474,8 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'sub_level_1' => array
 				(
@@ -494,7 +517,9 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'post_title' => array
 				(
@@ -510,7 +535,8 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 11,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
@@ -559,7 +585,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 11,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'category_image' => array
 				(
@@ -588,7 +616,9 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'gallery_title' => array
 				(
@@ -636,7 +666,9 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'timestamp' => array
 				(
@@ -654,7 +686,8 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
@@ -673,7 +706,9 @@ class Updater extends Migration
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'page_title' => array
 				(
@@ -734,7 +769,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
@@ -767,7 +804,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'created_timestamp' => array
 				(
@@ -800,7 +839,9 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'people_slug' => array
 				(
@@ -829,13 +870,16 @@ class Updater extends Migration
 				(
 					'type' => 'int',
 					'constraint' => 11,
-					'unsigned' => true
+					'unsigned' => true,
+					'auto_increment' => true,
+					'null' => false
 				),
 				'language_id' => array
 				(
 					'type' => 'int',
 					'constraint' => 5,
-					'unsigned' => true
+					'unsigned' => true,
+					'null' => false
 				),
 				'status' => array
 				(
