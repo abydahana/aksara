@@ -331,10 +331,10 @@ class Model
 	public function query($query = null, $params = array())
 	{
 		// convert multiple line to single line
-		$query										= preg_replace('/[\r\n]*/', '', $query);
+		$query										= trim(preg_replace('/\s+/S', ' ', $query));
 		
 		// remove string inside bracket to extract the primary table
-		$extract_table								= preg_replace('/\(([^()]*+|(?R))*\)/', '', preg_replace('/[\r\n]*/', '', $query));
+		$extract_table								= preg_replace('/\(([^()]*+|(?R))*\)/', '', $query);
 		
 		// get primary table
 		preg_match('/FROM[\s]+(.*?)[\s]+/i', $extract_table, $matches);
@@ -346,7 +346,7 @@ class Model
 		}
 		
 		// check if query is being execute without calling child method
-		if(1 == $query)
+		if(true === $params)
 		{
 			// run query
 			$this->db->query($query);
