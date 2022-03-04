@@ -2028,19 +2028,19 @@ class Core extends Controller
 			{
 				if(is_numeric($key) && stripos(trim($val), ' NOT IN') !== false)
 				{
-					$this->model->where($val, null, true);
+					$this->model->where($val, null, false);
 				}
 				else if(is_numeric($key) && stripos(trim($val), ' IN') !== false)
 				{
-					$this->model->where($val, null, true);
+					$this->model->where($val, null, false);
 				}
 				else if(stripos(trim($key), ' NOT IN') !== false)
 				{
-					$this->model->where_not_in(str_ireplace(' NOT IN', null, $key), $val);
+					$this->model->where_not_in(str_ireplace(' NOT IN', null, $key), $val, false);
 				}
 				else if(stripos(trim($key), ' IN') !== false)
 				{
-					$this->model->where_in(str_ireplace(' IN', null, $key), $val);
+					$this->model->where_in(str_ireplace(' IN', null, $key), $val, false);
 				}
 				else
 				{
