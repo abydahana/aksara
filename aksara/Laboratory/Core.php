@@ -4321,7 +4321,7 @@ class Core extends Controller
 				{
 					$content						= '
 						<label class="d-block pt-1">
-							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == $original || 1 == $original || 'create' == $this->_method ? ' checked' : null) . $read_only . ' />
+							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == $original || 1 == $original || ('create' == $this->_method && $default_value) ? ' checked' : null) . $read_only . ' />
 							&nbsp;
 							' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
 							&nbsp;
