@@ -150,18 +150,33 @@ class Install extends BaseController
 			if(service('request')->getPost('database_forge'))
 			{
 				$group								= 'database.default';
-
+				
 				$_SERVER[$group . '.DSN']			= service('request')->getPost('database_dsn');
 				$_SERVER[$group . '.DBDriver']		= service('request')->getPost('database_driver');
 				$_SERVER[$group . '.hostname']		= service('request')->getPost('database_hostname');
 				$_SERVER[$group . '.port']			= service('request')->getPost('database_port');
 				$_SERVER[$group . '.username']		= service('request')->getPost('database_username');
 				$_SERVER[$group . '.password']		= service('request')->getPost('database_password');
-
-				$forge								= \Config\Database::forge();
 				
-				// create database
-				$forge->createDatabase(service('request')->getPost('database_initial'), true);
+				try
+				{
+					$forge							= \Config\Database::forge();
+					
+					// create database
+					$forge->createDatabase(service('request')->getPost('database_initial'), true);
+				}
+				catch(\Throwable $e)
+				{
+					// connection couldn't be made, throw error
+					return $this->response->setJSON
+					(
+						array
+						(
+							'status'				=> 403,
+							'message'				=> $e->getMessage()
+						)
+					);
+				}
 			}
 			
 			$config									= array

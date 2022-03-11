@@ -203,7 +203,7 @@
 		<?php echo $map; ?>
 		
 		<div class="row">
-			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? 12 : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
+			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? 12 : (1 == $results->column_total ? 6 : ($results->column_total > 2 ? 12 : 10))); ?>">
 				<?php
 					if(4 == $results->column_total)
 					{
@@ -266,7 +266,7 @@
 		</div>
 		<?php echo ('modal' == service('request')->getPost('prefer') ? '<hr class="row" />' : '<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->'); ?>
 		<div class="row<?php echo ('modal' != service('request')->getPost('prefer') ? ' opt-btn' : null); ?>">
-			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
+			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : ($results->column_total > 2 ? 12 : 10))); ?>">
 				
 				<?php if('modal' == service('request')->getPost('prefer')) { ?>
 				<button type="button" class="btn btn-light" data-dismiss="modal">
