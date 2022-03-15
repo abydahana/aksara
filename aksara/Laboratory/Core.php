@@ -2092,26 +2092,8 @@ class Core extends Controller
 		
 		$query										= $this->model->limit($params['limit'], $params['offset'])->get($params['relation_table'])->result();
 		
-		$constraint									= false;
-		
 		if($query)
 		{
-			if(in_array($this->_method, array('create', 'update')))
-			{
-				$foreignKeys						= $this->model->index_data($this->_from);
-				
-				if($foreignKeys)
-				{
-					foreach($foreignKeys as $key => $val)
-					{
-						if(in_array($params['relation_key'], $val->fields) && in_array($val->type, array('INDEX', 'PRIMARY')))
-						{
-							$constraint				= true;
-						}
-					}
-				}
-			}
-			
 			foreach($query as $key => $val)
 			{
 				$label								= str_ireplace(' AS ', ' ', $params['formatting']);
@@ -2216,7 +2198,7 @@ class Core extends Controller
 		{
 			$output									= '
 				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
-					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : (!$constraint ? '<option value="0">' . phrase('please_choose') . '</option>' : null)) . '
+					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="0">' . phrase('please_choose') . '</option>') . '
 					' . $output . '
 				</select>
 			';
@@ -8334,6 +8316,16 @@ class Core extends Controller
 		if(service('request')->getPost() && is_array($serialized) && sizeof($serialized) > 0)
 		{
 			$validation								= false;
+			$constraint_keys						= array();
+			$foreignKeys							= $this->model->foreign_data($this->_from);
+			
+			if($foreignKeys)
+			{
+				foreach($foreignKeys as $key => $val)
+				{
+					$constraint_keys[]				= $val->column_name;
+				}
+			}
 			
 			foreach($serialized[0] as $key => $val)
 			{
@@ -8397,6 +8389,12 @@ class Core extends Controller
 					{
 						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $validation);
 					}
+				}
+				else if(in_array($key, $constraint_keys) && service('request')->getPost($key) <= 0)
+				{
+					$validation						= true;
+					
+					$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|greater_than[0]');
 				}
 				else
 				{
