@@ -68,6 +68,14 @@
 									</div>
 								</div>
 								<div class="col-md-8 pt-3 pb-3">
+									<div class="d-md-none text-center">
+										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
+											<h4 class="font-weight-bold mb-3">
+												Aksara <small class="text-sm font-weight-light">Installer</small>
+											</h4>
+										</a>
+										<hr class="row" />
+									</div>
 									<div class="sticky-top step-content" style="top:15px">
 										<form action="<?php echo site_url('requirement'); ?>" method="POST" class="--validate-form">
 											<div class="row">
@@ -130,7 +138,7 @@
 														<?php echo phrase('pretend_to_agree'); ?>
 													</label>
 												</div>
-												<div class="col-md-6 text-right">
+												<div class="col-md-6">
 													<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
 													<button type="submit" class="btn btn-primary btn-block" disabled>
 														<i class="mdi mdi-check"></i>
@@ -255,7 +263,11 @@
 						{
 							$('.step' + response.active).addClass('text-warning'),
 							$(response.passed).removeClass('text-warning').addClass('text-success'),
-							$('.step-content').html(response.html)
+							$('.step-content').html(response.html),
+							$('html, body').animate
+							({
+								scrollTop: 0
+							}, 500)
 						}
 						else if(response.status === 400)
 						{

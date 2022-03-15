@@ -33,13 +33,13 @@
 	<hr class="row" />
 	<div class="--validation-callback"></div>
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-6">
 			<a href="<?php echo site_url('system'); ?>" class="btn btn-light btn-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<?php echo phrase('back'); ?>
 			</a>
 		</div>
-		<div class="col-sm-6 text-right">
+		<div class="col-6 text-right">
 			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
 			<button type="submit" class="btn btn-primary btn-block">
 				<i class="mdi mdi-reload"></i>
