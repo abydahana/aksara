@@ -55,7 +55,7 @@
 		&nbsp;
 	</div>
 	<div class="col-sm-6">
-		<a href="../xhr/boot" class="btn btn-warning btn-block font-weight-bold">
+		<a href="../<?php echo ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) ? null : 'index.php/'); ?>xhr/boot" class="btn btn-warning btn-block font-weight-bold">
 			<i class="mdi mdi-rocket"></i>
 			<?php echo phrase('launch_your_site'); ?>
 		</a>

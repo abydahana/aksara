@@ -221,13 +221,13 @@ class Core extends Controller
 		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', null, $path) : $path);
 		
 		// check if query string has limit
-		if(service('request')->getGet('limit'))
+		if(is_numeric(service('request')->getGet('limit')) && service('request')->getGet('limit'))
 		{
 			// store original limit
 			$this->_limit_original					= $this->_limit;
 			
 			// apply the limit for query builder
-			$this->_limit							= (service('request')->getGet('limit') ? service('request')->getGet('limit') : $this->_limit_original);
+			$this->_limit							= service('request')->getGet('limit');
 		}
 		
 		/**
@@ -255,7 +255,7 @@ class Core extends Controller
 		if('preview-theme' == service('request')->getGet('aksara_mode') && sha1(service('request')->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == service('request')->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . service('request')->getGet('aksara_theme')))
 		{
 			// set the temporary theme
-			$this->_set_theme						= service('request')->getGet('aksara_theme');
+			$this->_set_theme						= strip_tags(service('request')->getGet('aksara_theme'));
 		}
 		
 		/**
@@ -2449,7 +2449,7 @@ class Core extends Controller
 							}
 							
 							$key					= $this->_from . '.' . $val;
-							$this->_where[$key]		= service('request')->getGet($val);
+							$this->_where[$key]		= htmlspecialchars(service('request')->getGet($val));
 						}
 						else if(in_array($val, $this->_set_primary) && $this->model->field_exists($val, $this->_from) && isset($this->_set_default[$val]) && $this->_set_default[$val])
 						{
@@ -2480,17 +2480,17 @@ class Core extends Controller
 			}
 			else
 			{
-				$this->_offset						= (is_numeric(service('request')->getGet('per_page')) ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
+				$this->_offset						= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
 				
 				if((!$this->_like && $this->_searchable && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
 				{
-					$column							= service('request')->getGet('column');
+					$column							= strip_tags(service('request')->getGet('column'));
 					
 					if($column && 'all' != $column)
 					{
 						$this->_like				= array
 						(
-							$column					=> ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'))
+							$column					=> htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))
 						);
 					}
 					else
@@ -2503,11 +2503,11 @@ class Core extends Controller
 							{
 								if($this->_like)
 								{
-									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 								}
 								else
 								{
-									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 								}
 							}
 						}
@@ -2528,11 +2528,11 @@ class Core extends Controller
 
 								if($this->_like)
 								{
-									$this->_or_like[$val]	= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_or_like[$val]	= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 								}
 								else
 								{
-									$this->_like[$val]		= ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'));
+									$this->_like[$val]		= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
 								}
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
@@ -2775,18 +2775,11 @@ class Core extends Controller
 				return $this->_get_relation($this->_set_relation[service('request')->getPost('source')]);
 			}
 			
-			if(service('request')->getGet('order'))
-			{
-				$this->_order_by					= array();
-				$order								= service('request')->getGet('order');
-				$this->_order_by[$order]			= service('request')->getGet('sort');
-			}
-			
 			// get the results from the database query
 			if(service('request')->getGet('order'))
 			{
 				$this->_order_by					= array();
-				$order								= service('request')->getGet('order');
+				$order								= strip_tags(service('request')->getGet('order'));
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			

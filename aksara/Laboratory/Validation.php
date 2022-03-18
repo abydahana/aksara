@@ -149,7 +149,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 			foreach($sliced as $key => $val)
 			{
 				// check if value not empty
-				if(!$val)
+				if(!$val && !is_numeric($val))
 				{
 					// change the loop number
 					$num++;

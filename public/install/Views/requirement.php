@@ -1,7 +1,7 @@
 <?php
 	$error											= false;
 	
-	if(phpversion() < 7 || !$mod_rewrite || !in_array('mbstring', $extension) || !in_array('intl', $extension) || !in_array('gd', $extension) || !in_array('json', $extension) || !in_array('xml', $extension))
+	if(phpversion() < 7.3 || !in_array('mbstring', $extension) || !in_array('intl', $extension) || !in_array('gd', $extension) || !in_array('json', $extension) || !in_array('xml', $extension))
 	{
 		$error										= true;
 	}
@@ -108,7 +108,7 @@
 			</div>
 		</div>
 	</div>
-	<?php echo ($error ? '<div class="alert alert-warning failure"><b>' . phrase('whoops') . '</b> ' . phrase('some_requirement_are_not_yet_fulfilled') . ' ' . phrase('please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation') . '</div>' : null); ?>
+	<?php echo ($error ? '<div class="alert alert-warning failure"><b>' . phrase('whoops') . '</b> ' . phrase('some_requirement_are_not_yet_fulfilled') . ' ' . phrase('please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation') . '</div>' : (!$mod_rewrite ? '<div class="alert alert-warning failure"><b>' . phrase('whoops') . '</b> ' . phrase('the_rewrite_module_is_disabled_by_your_server') . ' ' . phrase('you_can_continue_the_installation_but_we_recommend_to_enable_it') . '</div>' : null)); ?>
 	<hr class="row" />
 	<div class="--validation-callback"></div>
 	<div class="row">
