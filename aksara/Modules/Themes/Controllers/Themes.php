@@ -32,7 +32,7 @@ class Themes extends \Aksara\Laboratory\Core
 			
 			$path									= ROOTPATH . dirname($segments);
 			$filename								= basename($segments);
-			$mime									= mime_content_type($path . DIRECTORY_SEPARATOR . $filename);
+			$mime									= \mime_content_type($path . DIRECTORY_SEPARATOR . $filename);
 			
 			if('css' == strtolower(pathinfo($filename, PATHINFO_EXTENSION)))
 			{

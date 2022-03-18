@@ -128,6 +128,8 @@ return array
 	'turn_it_on' => 'silakan hidupkan!',
 	'some_requirement_are_not_yet_fulfilled' => 'Beberapa persyaratan belum terpenuhi.',
 	'please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation' => 'Harap perbarui konfigurasi server Anda dan klik tombol segarkan untuk melanjutkan instalasi.',
+	'the_rewrite_module_is_disabled_by_your_server' => 'Module rewrite (mod_rewrite) dinonaktifkan oleh server Anda.',
+	'you_can_continue_the_installation_but_we_recommend_to_enable_it' => 'Anda tetap dapat melanjutkan instalasi tapi kami menyarankan untuk mengaktifkan modul ini.',
 	
 	// Security
 	'enter_your_secret_formula_to_secure_your_application' => 'Masukkan formula rahasia untuk mengamankan aplikasi Anda.',

@@ -768,7 +768,7 @@ class Template
 			{
 				if(in_array($key, array('q', 'per_page'))) continue;
 				
-				$query_string						.= '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
+				$query_string						.= '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
 			}
 			
 			$output									= '
@@ -795,7 +795,7 @@ class Template
 										<option value="' . ($data->limit * 8) . '"' . (($data->limit * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 8) . '</option>
 										<option value="' . ($data->limit * 20) . '"' . (($data->limit * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 20) . '</option>
 									</select>
-									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
+									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
 									<div class="input-group-append">
 										<button type="submit" class="btn btn-sm btn-primary">
 											' . phrase('go') . '
@@ -828,7 +828,7 @@ class Template
 					'parentClass'					=> $li->class,
 					'class'							=> $li->find('a', 0)->class,
 					'href'							=> $li->find('a', 0)->href,
-					'label'							=> $li->find('a', 0)->innertext
+					'label'							=> htmlspecialchars($li->find('a', 0)->innertext)
 				);
 			}
 			

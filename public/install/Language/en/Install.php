@@ -129,6 +129,8 @@ return array
 	'turn_it_on' => 'turn it on!',
 	'some_requirement_are_not_yet_fulfilled' => 'Some requirement are not yet fulfilled.',
 	'please_update_your_server_configuration_and_click_on_refresh_button_to_continue_the_installation' => 'Please update your server configuration and click on refresh button to continue the installation.',
+	'the_rewrite_module_is_disabled_by_your_server' => 'The rewrite module is disabled by your server.',
+	'you_can_continue_the_installation_but_we_recommend_to_enable_it' => 'You can continue the installation but we recommend to enable it.',
 	
 	// Security
 	'enter_your_secret_formula_to_secure_your_application' => 'Enter your secret formula to secure your application.',

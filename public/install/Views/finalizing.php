@@ -21,7 +21,7 @@
 	<hr class="row" />
 	<div class="--validation-callback"></div>
 	<div class="row">
-		<div class="col-4">
+		<div class="col-4 col-sm-6">
 			<a href="<?php echo site_url('system'); ?>" class="btn btn-light btn-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<span class="d-none d-sm-visible">
@@ -29,7 +29,7 @@
 				</span>
 			</a>
 		</div>
-		<div class="col-8">
+		<div class="col-8 col-sm-6">
 			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
 			<button type="submit" class="btn btn-primary btn-block">
 				<i class="mdi mdi-check"></i>

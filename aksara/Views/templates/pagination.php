@@ -9,7 +9,7 @@
 	 * @since			version 4.0.0
 	 */
 	$pager->setSurroundCount(0);
-	$current_page									= (service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1);
+	$current_page									= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1);
 	$last_page										= parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
 	$last_page										= (isset($output['page']) ? $output['page'] : 0);
 ?>
