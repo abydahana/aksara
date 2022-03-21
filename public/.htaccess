@@ -1,6 +1,3 @@
-# Prevent clickjacking
-Header append X-Frame-Options: "SAMEORIGIN"
-
 # Disable directory browsing
 Options All -Indexes
 
@@ -44,6 +41,15 @@ Options All -Indexes
     # If we don't have mod_rewrite installed, all 404's
     # can be sent to index.php, and everything works as normal.
     ErrorDocument 404 index.php
+</IfModule>
+
+<IfModule mod_headers.c>
+	Header set X-XSS-Protection "1; mode=block"
+	Header set X-Frame-Options "SAMEORIGIN"
+	Header set X-Content-Type-Options "nosniff"
+	Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
+	Header set Referrer-Policy "same-origin"
+	Header set Feature-Policy "geolocation 'self'; vibrate 'none'"
 </IfModule>
 
 # Disable server signature start
