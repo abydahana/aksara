@@ -1,3 +1,6 @@
+# Prevent clickjacking
+Header append X-Frame-Options: "SAMEORIGIN"
+
 # Disable directory browsing
 Options All -Indexes
 

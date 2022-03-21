@@ -24,7 +24,7 @@ class Media extends \Aksara\Laboratory\Core
 		
 		$this->restrict_on_demo();
 		
-		$this->set_permission(array(1, 2));
+		$this->set_permission();
 		$this->set_theme('backend');
 		
 		$this->set_method('index');
