@@ -74,7 +74,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]
      */
-    public $imageSrc = '*';
+    public $imageSrc = ['*', 'self', 'data:'];
 
     /**
      * Restricts the URLs that can appear in a page's `<base>` element.
