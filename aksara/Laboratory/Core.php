@@ -8213,7 +8213,7 @@ class Core extends Controller
 						// fix table alias
 						$table						= (strpos($this->_from, ' ') !== false ? substr($this->_from, strripos($this->_from, ' ') + 1) : $this->_from);
 						
-						$this->model->order_by($table . '.' . $key, $val['direction'], $val['escape']);
+						$this->model->order_by($key, $val['direction'], $val['escape']);
 					}
 					/**
 					 * Validate the column to check if column is exist in table
@@ -8246,7 +8246,7 @@ class Core extends Controller
 									// fix table alias
 									$table			= (strpos($table, ' ') !== false ? substr($table, strripos($table, ' ') + 1) : $table);
 									
-									$this->model->order_by($table . '.' . $key, $val['direction'], $val['escape']);
+									$this->model->order_by($key, $val['direction'], $val['escape']);
 								}
 							}
 						}
