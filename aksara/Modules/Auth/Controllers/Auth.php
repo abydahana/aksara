@@ -497,7 +497,7 @@ class Auth extends \Aksara\Laboratory\Core
 				(
 					'email'							=> $session->email,
 					'password'						=> '',
-					'username'						=> '',
+					'username'						=> $session->oauth_uid,
 					'first_name'					=> $session->first_name,
 					'last_name'						=> $session->last_name,
 					'photo'							=> $photo,
