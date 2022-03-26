@@ -230,9 +230,9 @@
 	<div class="row">
 		<div class="col-md-6 offset-md-3">
 			<p class="lead text-center">
-				Thank you for those developers that brings their works for free. Without them, <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> cannot be implemented.
+				Terima kasih kepada para pengembang yang membagikan karya mereka secara cuma-cuma. Tanpa mereka, <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tidak akan pernah terwujud.
 				<br />
-				We are awesome!
+				Kita luar biasa!
 				<br />
 				<br />
 				<i class="mdi mdi-heart text-danger"></i>

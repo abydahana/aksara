@@ -16,12 +16,12 @@
 		<div class="col-lg-8">
 			<div class="article text-justify mb-3">
 				<p>
-					<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> is a core software designed to create ready-to-use derivative software with easy control and maintenance that is incredibly easy to control, both from the interface, data source structure, lines of code and it's output. <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> is a codename that was created to help developers to create other software packages based on the core structure of <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> rules.
+					<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> is a core software designed to create ready-to-use derivative ecosystem that is incredibly easy to control, both the interface, data source structure, lines of code and its output. <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> is a codename created to help developers to create their software packages using <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> rules and method.
 				</p>
 			</div>
 			<div class="article text-justify mb-5">
 				<p>
-					This software is free to use with terms and conditions and with applicable criteria. There are no restrictions on software development with <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a>, but software redistribution requires a more specific policy approval as mentioned below:
+					This software is free to use with terms and conditions for applicable criteria. There are no restrictions within software development using <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a>, but software redistribution requires a more specific policy approval as mentioned below:
 				</p>
 			</div>
 			<div class="article text-justify mb-5">
@@ -33,12 +33,12 @@
 					</li>
 					<li>
 						<p>
-							You're allowed to re-distribute the ecosystems you built with <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> without any concern of my permission, however admitting it was built by you as a whole is a shame;
+							You're allowed to re-distribute the ecosystems built with <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank"><b>Aksara</b></a> without any concern of my permission, however admitting it was built by yourself as a whole is a shame;
 						</p>
 					</li>
 					<li>
 						<p>
-							Never disappoint the creative people who share their work for free, or you'll find them selling their future idea at prices you can't reach.
+							Never disappoint the creative people who share their work for free, or you'll find them selling their future idea at prices that you can't reach.
 						</p>
 					</li>
 				</ol>
