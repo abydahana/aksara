@@ -49,7 +49,7 @@ Options All -Indexes
 	Header set X-Content-Type-Options "nosniff"
 	Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
 	Header set Referrer-Policy "same-origin"
-	Header set Feature-Policy "geolocation 'self'; vibrate 'none'"
+	Header set Feature-Policy "geolocation 'self'"
 </IfModule>
 
 # Disable server signature start
