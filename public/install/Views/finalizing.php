@@ -24,7 +24,7 @@
 		<div class="col-4 col-sm-6">
 			<a href="<?php echo site_url('system'); ?>" class="btn btn-light btn-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
-				<span class="d-none d-sm-visible">
+				<span class="d-none d-sm-inline">
 					<?php echo phrase('back'); ?>
 				</span>
 			</a>
