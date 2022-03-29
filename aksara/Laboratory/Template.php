@@ -828,7 +828,7 @@ class Template
 					'parentClass'					=> $li->class,
 					'class'							=> $li->find('a', 0)->class,
 					'href'							=> $li->find('a', 0)->href,
-					'label'							=> htmlspecialchars($li->find('a', 0)->innertext)
+					'label'							=> str_replace('&amp;', '&', htmlspecialchars($li->find('a', 0)->innertext))
 				);
 			}
 			
