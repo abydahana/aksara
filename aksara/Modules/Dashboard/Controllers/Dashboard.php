@@ -234,7 +234,12 @@ class Dashboard extends \Aksara\Laboratory\Core
 	
 	private function _fetch_information()
 	{
-		$updater									= \Aksara\Modules\Administrative\Controllers\Updater\Updater::ping_upstream();
+		$updater									= false;
+		
+		if(get_setting('update_check'))
+		{
+			$updater								= \Aksara\Modules\Administrative\Controllers\Updater\Updater::ping_upstream();
+		}
 		
 		return make_json
 		(

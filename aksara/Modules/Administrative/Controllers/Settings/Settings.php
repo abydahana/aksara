@@ -104,6 +104,7 @@ class Settings extends \Aksara\Laboratory\Core
 				'facebook_app_secret'				=> 'encryption',
 				'google_client_secret'				=> 'encryption',
 				'action_sound'						=> 'boolean',
+				'update_check'						=> 'boolean',
 				'smtp_password'						=> 'encryption'
 			)
 		)
@@ -187,6 +188,7 @@ class Settings extends \Aksara\Laboratory\Core
 				
 				/* NOTIFIER */
 				'action_sound'						=> 'boolean',
+				'update_check'						=> 'boolean',
 				'smtp_email_masking'				=> $required_email_masking,
 				'smtp_port'							=> 'numeric|max_length[5]'
 			)
@@ -235,6 +237,7 @@ class Settings extends \Aksara\Laboratory\Core
 				
 				/* NOTIFIER */
 				'action_sound'						=> phrase('action_sound'),
+				'update_check'						=> phrase('update_check'),
 				'smtp_email_masking'				=> phrase('smtp_email_masking'),
 				'smtp_sender_masking'				=> phrase('smtp_sender_masking'),
 				'smtp_host'							=> phrase('smtp_host'),

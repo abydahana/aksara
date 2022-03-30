@@ -354,6 +354,16 @@
 									<?php echo $results->form_data->action_sound->content; ?>
 								</div>
 							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="text-muted d-block" for="update_check_input">
+										<?php echo $results->form_data->update_check->label; ?>
+										<?php echo ($results->form_data->update_check->required ? '<span class="float-right text-sm text-danger">' . phrase('required') . '</span>' : null); ?>
+										<i class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="<?php echo phrase('check_for_aksara_core_updates'); ?>"></i>
+									</label>
+									<?php echo $results->form_data->update_check->content; ?>
+								</div>
+							</div>
 						</div>
 						<hr />
 						<h5 class="mb-3">
