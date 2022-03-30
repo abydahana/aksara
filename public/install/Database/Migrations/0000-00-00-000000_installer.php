@@ -353,6 +353,13 @@ class Installer extends Migration
 					'constraint' => 1,
 					'default' => '0',
 					'null' => false
+				),
+				'update_check' => array
+				(
+					'type' => 'tinyint',
+					'constraint' => 1,
+					'default' => '0',
+					'null' => false
 				)
 			)
 		);
