@@ -399,6 +399,13 @@ class Updater extends Migration
 					'constraint' => 5,
 					'default' => 0,
 					'after' => 'login_attempt'
+				),
+				'update_check' => array
+				(
+					'type' => 'tinyint',
+					'constraint' => 1,
+					'default' => 1,
+					'after' => 'action_sound'
 				)
 			)
 		);
