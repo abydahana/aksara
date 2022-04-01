@@ -206,72 +206,78 @@ class Documentation extends \Aksara\Laboratory\Core
 			);
 		}
 		
-		// prepare the cURL
-		$curl										= \Config\Services::curlrequest
-		(
-			array
-			(
-				'timeout'							=> 5,
-				'http_errors'						=> false,
-				'allow_redirects'					=> array
-				(
-					'max'							=> 2
-				),
-				'headers'							=> array
-				(
-					'X-API-KEY'						=> sha1(ENCRYPTION_KEY . $session_id),
-					'X-ACCESS-TOKEN'				=> $session_id
-				)
-			)
-		);
-		
-		foreach($method as $key => $val)
+		try
 		{
-			// make a request
-			$request								= $curl->get(base_url($slug . ('index' != $val ? '/' . $val : null)));
+			// prepare the cURL
+			$curl									= \Config\Services::curlrequest
+			(
+				array
+				(
+					'timeout'						=> 5,
+					'http_errors'					=> false,
+					'allow_redirects'				=> array
+					(
+						'max'						=> 2
+					),
+					'headers'						=> array
+					(
+						'X-API-KEY'					=> sha1(ENCRYPTION_KEY . $session_id),
+						'X-ACCESS-TOKEN'			=> $session_id
+					)
+				)
+			);
 			
-			// decode the response
-			$response								= json_decode($request->getBody());
-			
-			if(isset($response->results) && !in_array($response->method, array('index', 'read', 'delete', 'export', 'print', 'pdf')))
+			foreach($method as $key => $val)
 			{
-				$output[$val]['parameter']			= $response->results;
-			}
-			
-			if(isset($response->query_string) && !in_array($response->method, array('index', 'create')))
-			{
-				$output[$val]['query_string']		= $response->query_string;
-			}
-			
-			$output[$val]['response'][$e]			= $exception;
-			
-			if(isset($response->method) && !in_array($response->method, array('create', 'update', 'delete')))
-			{
-				$output[$val]['response'][$s]		= $response;
-			}
-			else
-			{
-				$output[$val]['response'][$s]		= $exception;
+				// make a request
+				$request							= $curl->get(base_url($slug . ('index' != $val ? '/' . $val : null)));
 				
-				if(isset($response->method) && in_array($response->method, array('create', 'update')) && isset($response->results) && $response->results)
+				// decode the response
+				$response							= json_decode($request->getBody());
+				
+				if(isset($response->results) && !in_array($response->method, array('index', 'read', 'delete', 'export', 'print', 'pdf')))
 				{
-					$error							= $exception;
-					$error['message']				= array();
+					$output[$val]['parameter']		= $response->results;
+				}
+				
+				if(isset($response->query_string) && !in_array($response->method, array('index', 'create')))
+				{
+					$output[$val]['query_string']	= $response->query_string;
+				}
+				
+				$output[$val]['response'][$e]		= $exception;
+				
+				if(isset($response->method) && !in_array($response->method, array('create', 'update', 'delete')))
+				{
+					$output[$val]['response'][$s]	= $response;
+				}
+				else
+				{
+					$output[$val]['response'][$s]	= $exception;
 					
-					foreach($response->results as $_key => $_val)
+					if(isset($response->method) && in_array($response->method, array('create', 'update')) && isset($response->results) && $response->results)
 					{
-						if(!$_val->required) continue;
+						$error						= $exception;
+						$error['message']			= array();
 						
-						$error['message'][$_key]	= phrase('validation_message');
+						foreach($response->results as $_key => $_val)
+						{
+							if(!$_val->required) continue;
+							
+							$error['message'][$_key]	= phrase('validation_message');
+						}
+						
+						$error['status']			= 400;
+						
+						unset($error['target']);
+						
+						$output[$val]['response'][$e]	= $error;
 					}
-					
-					$error['status']				= 400;
-					
-					unset($error['target']);
-					
-					$output[$val]['response'][$e]	= $error;
 				}
 			}
+		}
+		catch(\Throwable $e)
+		{
 		}
 		
 		// remove the temporary session
@@ -349,7 +355,7 @@ class Documentation extends \Aksara\Laboratory\Core
 			else
 			{
 				$namespace							= $namespace . $val;
-				$val								= '/' . str_replace(array('\\', '.php'), array('/', null), strtolower($parent_dir . (!is_numeric($key) ? $key : null) . $val));
+				$val								= '/' . str_replace(array('\\', '.php'), array('/', ''), strtolower($parent_dir . (!is_numeric($key) ? $key : null) . $val));
 				
 				$find_duplicate						= array_reverse(explode('/', $val));
 				
@@ -361,7 +367,7 @@ class Documentation extends \Aksara\Laboratory\Core
 				}
 				else
 				{
-					$slug							= ltrim(rtrim('/' . str_replace(array('\\', '.php'), array('/', null), strtolower($parent_dir . (!is_numeric($key) ? $key : null))), '/'), '/');
+					$slug							= ltrim(rtrim('/' . str_replace(array('\\', '.php'), array('/', ''), strtolower($parent_dir . (!is_numeric($key) ? $key : null))), '/'), '/');
 				}
 				
 				if(!in_array($slug, $this->_restricted_resource()))

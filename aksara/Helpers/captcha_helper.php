@@ -182,12 +182,12 @@ if ( ! function_exists('create_captcha'))
 		{
 			$theta += $thetac;
 			$rad = $radius * ($i / $points);
-			$x = ($rad * cos($theta)) + $x_axis;
-			$y = ($rad * sin($theta)) + $y_axis;
+			$x = (int) ($rad * cos($theta)) + $x_axis;
+			$y = (int) ($rad * sin($theta)) + $y_axis;
 			$theta += $thetac;
 			$rad1 = $radius * (($i + 1) / $points);
-			$x1 = ($rad1 * cos($theta)) + $x_axis;
-			$y1 = ($rad1 * sin($theta)) + $y_axis;
+			$x1 = (int) ($rad1 * cos($theta)) + $x_axis;
+			$y1 = (int) ($rad1 * sin($theta)) + $y_axis;
 			imageline($im, $x, $y, $x1, $y1, $colors['grid']);
 			$theta -= $thetac;
 		}

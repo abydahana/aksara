@@ -795,7 +795,7 @@ class simple_html_dom_node
 			if (!empty($m[6])) {$val=$m[6];}
 
 			// convert to lowercase
-			if ($this->dom->lowercase) {$tag=strtolower($tag); $key=strtolower($key);}
+			if ($this->dom->lowercase) {$tag=($tag ? strtolower($tag) : null); $key=($key ? strtolower($key) : null);}
 			//elements that do NOT have the specified attribute
 			if (isset($key[0]) && $key[0]==='!') {$key=substr($key, 1); $no_key=true;}
 

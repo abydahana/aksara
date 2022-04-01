@@ -229,7 +229,7 @@ if(!function_exists('throw_exception'))
 		{
 			foreach($data as $key => $val)
 			{
-				$key								= str_replace('[]', null, $key);
+				$key								= str_replace('[]', '', $key);
 				$exception[$key]					= $val;
 			}
 		}

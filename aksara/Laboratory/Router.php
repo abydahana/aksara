@@ -52,7 +52,7 @@ class Router
 			$namespace								= $this->_collection[$higher];
 			$namespace								= substr($namespace, 0, strrpos($namespace, '.'));
 			$controller								= substr($namespace, strrpos($namespace, '\\') + 1);
-			$method									= (strpos($this->_uri_string, '/') !== false ? substr($this->_uri_string, strrpos($this->_uri_string, '/') + 1) : null);
+			$method									= (strpos($this->_uri_string, '/') !== false ? substr($this->_uri_string, strrpos($this->_uri_string, '/') + 1) : '');
 			
 			// get priority file
 			$file									= str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method) . '.php'), '\\')));
@@ -139,7 +139,7 @@ class Router
 					}
 					
 					/* format namespace to module slug */
-					$module							= ltrim(preg_replace(array('/aksara\/modules\//', '/modules\//'), array(null, null), $module, 1), '/');
+					$module							= ltrim(preg_replace(array('/aksara\/modules\//', '/modules\//'), array('', ''), $module, 1), '/');
 					
 					/* extract method from current slug*/
 					$method							= substr($this->_uri_string, strrpos($this->_uri_string, '/') + 1);

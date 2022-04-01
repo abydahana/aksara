@@ -186,7 +186,7 @@ if(!function_exists('go_to'))
 		}
 		
 		$slug										= strtolower(str_replace('\\', '/', service('router')->controllerName()));
-		$slug										= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array(null, null, '/'), $slug, 1);
+		$slug										= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array('', '', '/'), $slug, 1);
 		$slug										= $slug;
 		
 		$destructure								= explode('/', $slug);

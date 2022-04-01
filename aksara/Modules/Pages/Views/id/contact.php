@@ -58,7 +58,7 @@
 							<?php echo phrase('whatsapp'); ?>
 						</label>
 						<p class="lead">
-							<a href="https://api.whatsapp.com/send?phone=<?php echo str_replace(array('+', '-', ' '), array(null, null, null), get_setting('whatsapp_number')); ?>&text=<?php echo phrase('hello') . '%20' . get_setting('app_name'); ?>..." target="_blank">
+							<a href="https://api.whatsapp.com/send?phone=<?php echo str_replace(array('+', '-', ' '), '', get_setting('whatsapp_number')); ?>&text=<?php echo phrase('hello') . '%20' . get_setting('app_name'); ?>..." target="_blank">
 								<?php echo get_setting('whatsapp_number'); ?>
 							</a>
 						</p>

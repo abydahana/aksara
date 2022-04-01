@@ -104,7 +104,7 @@ class Groups extends \Aksara\Laboratory\Core
 		)
 		->row('group_privileges');
 		
-		$current									= json_decode($current, true);
+		$current									= ($current ? json_decode($current, true) : array());
 		$output										= null;
 		
 		if($modules_collection)
@@ -115,7 +115,7 @@ class Groups extends \Aksara\Laboratory\Core
 			foreach($modules_collection as $key => $val)
 			{
 				$privilege_output					= null;
-				$privileges							= json_decode($val->privileges);
+				$privileges							= ($val->privileges ? json_decode($val->privileges) : new \stdClass());
 				
 				if(!$privileges) continue;
 				

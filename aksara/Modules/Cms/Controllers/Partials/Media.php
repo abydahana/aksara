@@ -70,7 +70,7 @@ class Media extends \Aksara\Laboratory\Core
 		}
 		
 		$filename									= service('request')->getGet('file');
-		$parent_directory							= substr($directory, 0, strpos($directory, DIRECTORY_SEPARATOR));
+		$parent_directory							= ($directory ? substr($directory, 0, strpos($directory, DIRECTORY_SEPARATOR)) : null);
 		$folders									= array();
 		$files										= array();
 		
@@ -112,8 +112,8 @@ class Media extends \Aksara\Laboratory\Core
 				{
 					$this->_folders[]				= array
 					(
-						'source'					=> str_replace(DIRECTORY_SEPARATOR, null, $key),
-						'label'						=> str_replace(DIRECTORY_SEPARATOR, null, $key),
+						'source'					=> str_replace(DIRECTORY_SEPARATOR, '', $key),
+						'label'						=> str_replace(DIRECTORY_SEPARATOR, '', $key),
 						'type'						=> 'directory',
 						'icon'						=> base_url('assets/svg/folder')
 					);

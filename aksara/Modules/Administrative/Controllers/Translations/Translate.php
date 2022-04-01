@@ -159,13 +159,6 @@ class Translate extends \Aksara\Laboratory\Core
 			return throw_exception(404, phrase('changes_will_not_saved_in_demo_mode'), current_page());
 		}
 		
-		$this->form_validation->setRule('phrase[]', phrase('phrase'), 'trim');
-		
-		if($this->form_validation->run() === false)
-		{
-			return throw_exception(400, $this->form_validation->getErrors());
-		}
-		
 		if(file_exists($this->_translation_file))
 		{
 			$phrase									= file_get_contents($this->_translation_file);

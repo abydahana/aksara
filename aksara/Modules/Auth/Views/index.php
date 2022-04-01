@@ -1,6 +1,6 @@
 <div class="container-fluid pt-5 pb-5">
 	<div class="row">
-		<div class="<?php echo (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
+		<div class="<?php echo (get_setting('frontend_registration') ? 'col-md-8 offset-md-2 col-xl-6 offset-xl-3' : 'col-md-4 offset-md-4'); ?>">
 			<div class="card-group">
 				<div class="card shadow">
 					<div class="card-body">
