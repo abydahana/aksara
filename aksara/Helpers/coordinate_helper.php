@@ -24,7 +24,7 @@ function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '
 			
 			if(in_array($val->geometry->type, array('LineString', 'MultiLineString')))
 			{
-				$paths								.= '&path=color:0x' . str_replace('#', null, $stroke_color) . '99|weight:1';
+				$paths								.= '&path=color:0x' . str_replace('#', '', $stroke_color) . '99|weight:1';
 
 				foreach($val->geometry->coordinates as $_key => $_val)
 				{
@@ -43,7 +43,7 @@ function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '
 			}
 			else if(in_array($val->geometry->type, array('Polygon', 'MultiPolygon')))
 			{
-				$paths								.= '&path=color:0x' . str_replace('#', null, $stroke_color) . '|weight:1|fillcolor:0x' . str_replace('#', null, $fill_color);
+				$paths								.= '&path=color:0x' . str_replace('#', '', $stroke_color) . '|weight:1|fillcolor:0x' . str_replace('#', '', $fill_color);
 				
 				foreach($val->geometry->coordinates as $_key => $_val)
 				{

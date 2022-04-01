@@ -94,7 +94,7 @@ class Template
 	public function get_view($view = 'index', $data = array(), $table = null)
 	{
 		// route namespace controller to view
-		$base_view									= preg_replace('/modules\//i', null, ltrim(lcfirst(ltrim(str_replace('\\', '/', preg_replace('/\\\\Controllers\\\\/', '\Views\\', service('router')->controllerName(), 1) . '\\' . $view), '/')), 'aksara/'), 1);
+		$base_view									= preg_replace('/modules\//i', '', ltrim(lcfirst(ltrim(str_replace('\\', '/', preg_replace('/\\\\Controllers\\\\/', '\Views\\', service('router')->controllerName(), 1) . '\\' . $view), '/')), 'aksara/'), 1);
 		
 		// get parent module classname
 		$parent_module								= strtok($base_view, '/');
@@ -897,7 +897,7 @@ class Template
 				)
 				->row('visible_menu');
 				
-				$visible_menus						= json_decode($visible_menus, true);
+				$visible_menus						= ($visible_menus ? json_decode($visible_menus, true) : array());
 				
 				if(!$menu)
 				{
@@ -939,12 +939,7 @@ class Template
 				->row('serialized_data');
 			}
 			
-			$menu									= json_decode($menu, true);
-			
-			if(!$menu)
-			{
-				$menu								= array();
-			}
+			$menu									= ($menu ? json_decode($menu, true) : array());
 			
 			$main_menu								= array
 			(
@@ -1305,7 +1300,7 @@ class Template
 					}
 					
 					$menus							.= '
-						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() ? ' active' : '') . '">
+						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() || (service('uri')->getPath() && $slug == preg_replace(array('/\/create/', '/\/read/', '/\/update/'), '', service('uri')->getPath())) ? ' active' : '') . '">
 							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
 								' . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? '<i class="' . (isset($field['icon']) ? $field['icon'] : 'mdi mdi-circle-outline') . '"></i>' : null) . '
 								' . ($children && 'header' != $placement ? '<i class="mdi mdi-chevron-right float-right"></i>' : null) . '

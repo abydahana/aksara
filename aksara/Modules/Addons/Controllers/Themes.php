@@ -96,36 +96,49 @@ class Themes extends \Aksara\Laboratory\Core
 			return throw_exception(403, phrase('unable_to_connect_to_the_aksara_market'), current_page('../', array('item' => null)));
 		}
 		
-		$curl										= \Config\Services::curlrequest
-		(
-			array
+		try
+		{
+			$curl									= \Config\Services::curlrequest
 			(
-				'timeout'							=> 5,
-				'http_errors'						=> false
-			)
-		);
-		
-		$response									= $curl->post
-		(
-			'https://www.aksaracms.com/market/api/detail',
-			array
-			(
-				'allow_redirects'					=> array
+				array
 				(
-					'max'							=> 2
-				),
-				'headers'							=> array
-				(
-					'Referer'						=> base_url()
-				),
-				'form_params'						=> array
-				(
-					'type'							=> 'theme',
-					'initial'						=> $package->hash,
-					'version'						=> aksara('version')
+					'timeout'						=> 5,
+					'http_errors'					=> false
 				)
-			)
-		);
+			);
+			
+			$response								= $curl->post
+			(
+				'https://www.aksaracms.com/market/api/detail',
+				array
+				(
+					'allow_redirects'				=> array
+					(
+						'max'						=> 2
+					),
+					'headers'						=> array
+					(
+						'Referer'					=> base_url()
+					),
+					'form_params'					=> array
+					(
+						'type'						=> 'theme',
+						'initial'					=> $package->hash,
+						'version'					=> aksara('version')
+					)
+				)
+			);
+		}
+		catch(\Throwable $e)
+		{
+			return make_json
+			(
+				array
+				(
+					'error'							=> $e->getMessage()
+				)
+			);
+		}
 		
 		$upstream									= json_decode($response->getBody());
 		
@@ -410,7 +423,7 @@ class Themes extends \Aksara\Laboratory\Core
 				{
 					if(!$package_path)
 					{
-						$package_path				= str_replace(DIRECTORY_SEPARATOR, null, $key);
+						$package_path				= str_replace(DIRECTORY_SEPARATOR, '', $key);
 					}
 					
 					if(!is_array($val)) continue;
@@ -678,7 +691,7 @@ class Themes extends \Aksara\Laboratory\Core
 					
 					if($package)
 					{
-						$package->folder			= str_replace(DIRECTORY_SEPARATOR, null, $key);
+						$package->folder			= str_replace(DIRECTORY_SEPARATOR, '', $key);
 						$package->integrity			= sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 						
 						$output[]					= $package;

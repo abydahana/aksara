@@ -86,7 +86,7 @@ if($total > 0 && isset($results->table_data))
 					}
 					.text-sm
 					{
-						font-size: 12px
+						font-size: 10px
 					}
 					.text-uppercase
 					{

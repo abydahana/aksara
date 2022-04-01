@@ -73,7 +73,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 						if(stripos($_val, 'callback_') !== false)
 						{
 							// callback found, find method if exists
-							$method					= preg_replace('/callback_/', null, $_val, 1);
+							$method					= preg_replace('/callback_/', '', $_val, 1);
 							
 							if(!method_exists($class, $method))
 							{
@@ -88,7 +88,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 								preg_match('#\[(.*?)\]#', $method, $params);
 								
 								$params				= explode('.', $params[1]);
-								$method				= preg_replace('/\[([^\[\]]++|(?R))*+\]/', null, $method);
+								$method				= preg_replace('/\[([^\[\]]++|(?R))*+\]/', '', $method);
 								
 								// call the validation method
 								$validate			= $class->$method(service('request')->getVar($key), $params);

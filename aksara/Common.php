@@ -223,10 +223,10 @@ if(! function_exists('phrase'))
 		$language									= file_get_contents($translation_file);
 		
 		/* decode json from translation */
-		$language									= json_decode($language, true);
+		$language									= ($language ? json_decode($language, true) : array());
 		
 		/* check if language property is valid */
-		if(isset($language[$phrase]))
+		if(isset($language[$phrase]) && $language[$phrase])
 		{
 			/* throwback the translated phrase */
 			return preg_replace('/"([^<>]*?)"(?=[^>]*?<)/', '&raquo;\1&laquo', str_replace('\'', '&apos;', $language[$phrase]));

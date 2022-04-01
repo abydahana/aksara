@@ -218,7 +218,7 @@ class Core extends Controller
 		$this->_method								= service('router')->methodName();
 		
 		// get the module path
-		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', null, $path) : $path);
+		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', '', $path) : $path);
 		
 		// check if query string has limit
 		if(is_numeric(service('request')->getGet('limit')) && service('request')->getGet('limit'))
@@ -1303,7 +1303,7 @@ class Core extends Controller
 		{
 			// shorthand possibility, separate with commas
 			$path									= strtolower(str_replace('\\', '/', service('router')->controllerName()));
-			$path									= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array(null, null, '/'), $path, 1);
+			$path									= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array('', '', '/'), $path, 1);
 			$path									= array_unique(explode('/', $path));
 			
 			$this->_set_upload_path					= (isset($path[1]) ? $path[1] : $path[0]);
@@ -2097,8 +2097,8 @@ class Core extends Controller
 			foreach($query as $key => $val)
 			{
 				$label								= str_ireplace(' AS ', ' ', $params['formatting']);
-				$attributes							= str_ireplace(' AS ', ' ', (isset($this->_set_attribute[$primary_key]) ? $this->_set_attribute[$primary_key] : null));
-				$option_label						= str_ireplace(' AS ', ' ', (isset($this->_set_option_label[$primary_key]) ? $this->_set_option_label[$primary_key] : null));
+				$attributes							= str_ireplace(' AS ', ' ', (isset($this->_set_attribute[$primary_key]) ? $this->_set_attribute[$primary_key] : ''));
+				$option_label						= str_ireplace(' AS ', ' ', (isset($this->_set_option_label[$primary_key]) ? $this->_set_option_label[$primary_key] : ''));
 				
 				foreach($params['select'] as $magic => $replace)
 				{
@@ -2796,12 +2796,14 @@ class Core extends Controller
 			
 			// try to convert the magic string and replace with result
 			$title									= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : phrase('untitled')));
-			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : ''));
 			
 			if($title && isset($this->_query[0]))
 			{
 				foreach($this->_query[0] as $do => $magic)
 				{
+					if(!$magic) continue;
+					
 					$title							= str_replace('{' . $do . '}', $magic, $title);
 					$description					= str_replace('{' . $do . '}', $magic, $description);
 				}
@@ -2815,7 +2817,7 @@ class Core extends Controller
 				{
 					foreach($matches as $key => $val)
 					{
-						$title						= str_replace('{' . $val . '}', null, $title);
+						$title						= str_replace('{' . $val . '}', '', $title);
 					}
 				}
 				
@@ -2826,7 +2828,7 @@ class Core extends Controller
 				{
 					foreach($matches_2 as $key => $val)
 					{
-						$description				= str_replace('{' . $val . '}', null, $description);
+						$description				= str_replace('{' . $val . '}', '', $description);
 					}
 				}
 			}
@@ -3088,7 +3090,7 @@ class Core extends Controller
 				if($this->valid_token($token_sent))
 				{
 					// token approved, check if validation use the custom callback
-					if(method_exists($this, $this->_form_callback))
+					if($this->_form_callback && method_exists($this, $this->_form_callback))
 					{
 						// use callback as form validation
 						$_callback					= $this->_form_callback;
@@ -3107,12 +3109,12 @@ class Core extends Controller
 					return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
 				}
 			}
-			else if($this->_api_request && 'POST' == env('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || method_exists($this, $this->_form_callback)))
+			else if($this->_api_request && 'POST' == env('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || ($this->_form_callback && method_exists($this, $this->_form_callback))))
 			{
 				/**
 				 * Indicate the method is requested through API
 				 */
-				if(method_exists($this, $this->_form_callback))
+				if($this->_form_callback && method_exists($this, $this->_form_callback))
 				{
 					// use callback as form validation
 					$_callback						= $this->_form_callback;
@@ -3680,7 +3682,7 @@ class Core extends Controller
 				$type								= $params['type'];
 				$max_length							= $params['max_length'];
 				$content							= (isset($this->_set_default[$field]) ? $this->_set_default[$field] : $params['original']);
-				$original							= $params['original'];
+				$original							= ($params['original'] ? $params['original'] : '');
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 				$skip								= (isset($this->_set_field[$field]['skip']) ? $this->_set_field[$field]['skip'] : null);
@@ -4330,9 +4332,9 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('custom_format'), $type))
 				{
-					$callback						= str_replace('callback_', null, $parameter);
+					$callback						= str_replace('callback_', '', $parameter);
 					
-					if(method_exists($this, $callback))
+					if($callback && method_exists($this, $callback))
 					{
 						$content					= $this->$callback($serialized);
 					}
@@ -4618,7 +4620,7 @@ class Core extends Controller
 						else
 						{
 							$_calback[$magic]		= null;
-							$content				= str_replace('{' . $magic . '}', null, $content);
+							$content				= str_replace('{' . $magic . '}', '', $content);
 						}
 					}
 					
@@ -4630,9 +4632,9 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('custom_format'), $type))
 				{
-					$callback						= str_replace('callback_', null, $parameter);
+					$callback						= str_replace('callback_', '', $parameter);
 					
-					if(method_exists($this, $callback))
+					if($callback && method_exists($this, $callback))
 					{
 						$content					= $this->$callback($serialized);
 					}
@@ -5199,8 +5201,8 @@ class Core extends Controller
 				{
 					$type							= $params['type'];
 					$primary						= $params['primary'];
-					$content						= $params['content'];
-					$original						= $params['original'];
+					$content						= ($params['content'] ? $params['content'] : '');
+					$original						= ($params['original'] ? $params['original'] : '');
 					$parameter						= $params['parameter'];
 					$extra_params					= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
@@ -5234,7 +5236,7 @@ class Core extends Controller
 							else
 							{
 								$_calback[$magic]	= null;
-								$content			= str_replace('{' . $magic . '}', null, $content);
+								$content			= str_replace('{' . $magic . '}', '', $content);
 							}
 						}
 						
@@ -5246,9 +5248,9 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('custom_format'), $type))
 					{
-						$callback					= str_replace('callback_', null, $parameter);
+						$callback					= str_replace('callback_', '', $parameter);
 					
-						if(method_exists($this, $callback))
+						if($callback && method_exists($this, $callback))
 						{
 							$content				= $this->$callback($val);
 						}
@@ -5418,7 +5420,7 @@ class Core extends Controller
 						}
 						else
 						{
-							$items					= json_decode($content, true);
+							$items					= ($content ? json_decode($content, true) : array());
 							
 							if($extra_params)
 							{
@@ -5452,7 +5454,7 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('textarea'), $type))
 					{
-						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', $content));
+						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', ($content ? $content : '')));
 					}
 					else if(array_intersect(array('email'), $type))
 					{
@@ -6111,7 +6113,7 @@ class Core extends Controller
 	 */
 	public function join($table = null, $condition = null, $type = '', $escape = true)
 	{
-		if(strpos(trim($table), ' ') !== false)
+		if($table && strpos(trim($table), ' ') !== false)
 		{
 			$table									= str_ireplace(' AS ', ' ', $table);
 			$destructure							= explode(' ', $table);
@@ -8170,7 +8172,7 @@ class Core extends Controller
 			 */
 			if(!$this->_order_by)
 			{
-				$this->_order_by					= array_fill_keys($this->_set_primary, ('desc' == strtolower(get_userdata('sortOrder')) ? 'DESC' : 'ASC'));
+				$this->_order_by					= array_fill_keys($this->_set_primary, (get_userdata('sortOrder') && 'desc' == strtolower(get_userdata('sortOrder')) ? 'DESC' : 'ASC'));
 			}
 			
 			/**
@@ -8178,7 +8180,7 @@ class Core extends Controller
 			 */
 			if(is_array($this->_order_by) && sizeof($this->_order_by) > 0)
 			{
-				if('asc' == strtolower(service('request')->getGet('sort')))
+				if(service('request')->getGet('sort') && 'asc' == strtolower(service('request')->getGet('sort')))
 				{
 					set_userdata('sortOrder', 'desc');
 				}
@@ -8356,8 +8358,8 @@ class Core extends Controller
 				{
 					$validation						= true;
 					
-					$this->form_validation->setRule($key . '.question.*', phrase('question') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|required');
-					$this->form_validation->setRule($key . '.answer.*', phrase('answer') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|required');
+					$this->form_validation->setRule($key . '.question.*', phrase('question') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . 'required');
+					$this->form_validation->setRule($key . '.answer.*', phrase('answer') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . 'required');
 				}
 				else if(array_intersect(array('password'), $type))
 				{
@@ -8420,16 +8422,16 @@ class Core extends Controller
 						
 						if(is_array(service('request')->getPost($key)))
 						{
-							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|' . $val['validation']);
+							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation']);
 						}
 						else
 						{
-							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim|' . $val['validation'] . $validation_suffix);
+							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation'] . $validation_suffix);
 						}
 					}
 					else if($validation_suffix)
 					{
-						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'trim' . $validation_suffix);
+						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim' : null) . $validation_suffix);
 					}
 				}
 			}
@@ -8634,14 +8636,18 @@ class Core extends Controller
 						{
 							// sanitize the wysiwyg from the XSS attack
 							$value					= service('request')->getPost($field);
-							$value					= str_ireplace(array('<?php', '?>'), array('&lt;?php', '?&gt;'), $value);
-							$value					= str_ireplace(array('<script', '</script>'), array('&lt;script', '&lt;/script&gt;'), $value);
-							$value					= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $value);
-							$value					= str_ireplace(array('<style', '</style>'), array('&lt;style', '&lt;/style&gt;'), $value);
-							$value					= str_ireplace('<link', '&lt;link', $value);
-							$value					= str_ireplace(array('<iframe', '</iframe>'), array('&lt;iframe', '&lt;/iframe&gt;'), $value);
-							$value					= str_ireplace(array('<embed', '</embed>'), array('&lt;embed', '&lt;/embed&gt;'), $value);
-							$value					= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $value);
+							
+							if($value)
+							{
+								$value				= str_ireplace(array('<?php', '?>'), array('&lt;?php', '?&gt;'), $value);
+								$value				= str_ireplace(array('<script', '</script>'), array('&lt;script', '&lt;/script&gt;'), $value);
+								$value				= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $value);
+								$value				= str_ireplace(array('<style', '</style>'), array('&lt;style', '&lt;/style&gt;'), $value);
+								$value				= str_ireplace('<link', '&lt;link', $value);
+								$value				= str_ireplace(array('<iframe', '</iframe>'), array('&lt;iframe', '&lt;/iframe&gt;'), $value);
+								$value				= str_ireplace(array('<embed', '</embed>'), array('&lt;embed', '&lt;/embed&gt;'), $value);
+								$value				= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $value);
+							}
 							
 							// push the boolean field type to data preparation
 							$prepare[$field]		= $value;

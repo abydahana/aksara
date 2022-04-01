@@ -326,14 +326,14 @@ class Document
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment; filename="' . str_replace('"', null, $filename) . '.xls"');
+		header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.xls"');
 		
 		$writer->save('php://output');
 	}
 	
 	private function _word($html = null, $filename = null, $method = 'embed', $params = array())
 	{
-		$html										= preg_replace('/<htmlpagefooter[^>].*?<\/htmlpagefooter>/s', null, $html);
+		$html										= preg_replace('/<htmlpagefooter[^>].*?<\/htmlpagefooter>/s', '', $html);
 		
 		header('Content-Transfer-Encoding: binary');
 		header('Cache-Control: must-revalidate');

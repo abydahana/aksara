@@ -59,36 +59,49 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if(!$package)
 		{
-			$curl									= \Config\Services::curlrequest
-			(
-				array
+			try
+			{
+				$curl								= \Config\Services::curlrequest
 				(
-					'timeout'						=> 5,
-					'http_errors'					=> false
-				)
-			);
-			
-			$response								= $curl->post
-			(
-				'https://www.aksaracms.com/market/api/detail',
-				array
-				(
-					'allow_redirects'				=> array
+					array
 					(
-						'max'						=> 2
-					),
-					'headers'						=> array
-					(
-						'Referer'					=> base_url()
-					),
-					'form_params'					=> array
-					(
-						'type'						=> service('request')->getGet('type'),
-						'initial'					=> service('request')->getGet('item'),
-						'version'					=> aksara('version')
+						'timeout'					=> 5,
+						'http_errors'				=> false
 					)
-				)
-			);
+				);
+				
+				$response							= $curl->post
+				(
+					'https://www.aksaracms.com/market/api/detail',
+					array
+					(
+						'allow_redirects'			=> array
+						(
+							'max'					=> 2
+						),
+						'headers'					=> array
+						(
+							'Referer'				=> base_url()
+						),
+						'form_params'				=> array
+						(
+							'type'					=> service('request')->getGet('type'),
+							'initial'				=> service('request')->getGet('item'),
+							'version'				=> aksara('version')
+						)
+					)
+				);
+			}
+			catch(\Throwable $e)
+			{
+				return make_json
+				(
+					array
+					(
+						'error'						=> $e->getMessage()
+					)
+				);
+			}
 			
 			$package								= json_decode($response->getBody());
 			
@@ -136,37 +149,50 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		if(in_array(service('request')->getGet('type'), array('theme', 'module')))
 		{
-			$curl									= \Config\Services::curlrequest
-			(
-				array
+			try
+			{
+				$curl								= \Config\Services::curlrequest
 				(
-					'timeout'						=> 5,
-					'http_errors'					=> false
-				)
-			);
-			
-			$response								= $curl->post
-			(
-				'https://www.aksaracms.com/market/api/detail',
-				array
-				(
-					'allow_redirects'				=> array
+					array
 					(
-						'max'						=> 2
-					),
-					'headers'						=> array
-					(
-						'Referer'					=> base_url()
-					),
-					'form_params'					=> array
-					(
-						'type'						=> service('request')->getGet('type'),
-						'initial'					=> service('request')->getGet('item'),
-						'version'					=> aksara('version'),
-						'install'					=> true
+						'timeout'					=> 5,
+						'http_errors'				=> false
 					)
-				)
-			);
+				);
+				
+				$response							= $curl->post
+				(
+					'https://www.aksaracms.com/market/api/detail',
+					array
+					(
+						'allow_redirects'			=> array
+						(
+							'max'					=> 2
+						),
+						'headers'					=> array
+						(
+							'Referer'				=> base_url()
+						),
+						'form_params'				=> array
+						(
+							'type'					=> service('request')->getGet('type'),
+							'initial'				=> service('request')->getGet('item'),
+							'version'				=> aksara('version'),
+							'install'				=> true
+						)
+					)
+				);
+			}
+			catch(\Throwable $e)
+			{
+				return make_json
+				(
+					array
+					(
+						'error'						=> $e->getMessage()
+					)
+				);
+			}
 			
 			$package								= json_decode($response->getBody());
 			
@@ -238,7 +264,7 @@ class Addons extends \Aksara\Laboratory\Core
 					{
 						if(!$package_path)
 						{
-							$package_path			= str_replace(DIRECTORY_SEPARATOR, null, $key);
+							$package_path			= str_replace(DIRECTORY_SEPARATOR, '', $key);
 						}
 						
 						if(!is_array($val)) continue;
@@ -672,7 +698,7 @@ class Addons extends \Aksara\Laboratory\Core
 			{
 				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
 				{
-					$installed_themes[]				= str_replace(DIRECTORY_SEPARATOR, null, $val);
+					$installed_themes[]				= str_replace(DIRECTORY_SEPARATOR, '', $val);
 				}
 			}
 		}
@@ -686,49 +712,62 @@ class Addons extends \Aksara\Laboratory\Core
 			{
 				if(strpos($val, DIRECTORY_SEPARATOR) !== false)
 				{
-					$installed_modules[]			= str_replace(DIRECTORY_SEPARATOR, null, $val);
+					$installed_modules[]			= str_replace(DIRECTORY_SEPARATOR, '', $val);
 				}
 			}
 		}
 		
-		$curl										= \Config\Services::curlrequest
-		(
-			array
+		try
+		{
+			$curl									= \Config\Services::curlrequest
 			(
-				'timeout'							=> 5,
-				'http_errors'						=> false
-			)
-		);
-		
-		$response									= $curl->post
-		(
-			'https://www.aksaracms.com/market/api',
-			array
+				array
+				(
+					'timeout'						=> 5,
+					'http_errors'					=> false
+				)
+			);
+			
+			$response								= $curl->post
 			(
-				'allow_redirects'					=> array
+				'https://www.aksaracms.com/market/api',
+				array
 				(
-					'max'							=> 2
-				),
-				'headers'							=> array
-				(
-					'Referer'						=> base_url()
-				),
-				'form_params'						=> array
-				(
-					'version'						=> aksara('version'),
-					'order'							=> service('request')->getPost('order'),
-					'keyword'						=> service('request')->getPost('keyword'),
-					'installed'						=> json_encode
+					'allow_redirects'				=> array
 					(
-						array
+						'max'						=> 2
+					),
+					'headers'						=> array
+					(
+						'Referer'					=> base_url()
+					),
+					'form_params'					=> array
+					(
+						'version'					=> aksara('version'),
+						'order'						=> service('request')->getPost('order'),
+						'keyword'					=> service('request')->getPost('keyword'),
+						'installed'					=> json_encode
 						(
-							'themes'				=> $installed_themes,
-							'modules'				=> $installed_modules
+							array
+							(
+								'themes'			=> $installed_themes,
+								'modules'			=> $installed_modules
+							)
 						)
 					)
 				)
-			)
-		);
+			);
+		}
+		catch(\Throwable $e)
+		{
+			return make_json
+			(
+				array
+				(
+					'error'							=> $e->getMessage()
+				)
+			);
+		}
 		
 		$package									= json_decode($response->getBody(), true);
 		

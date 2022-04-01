@@ -6,9 +6,9 @@
 	{
 		foreach($detail->screenshot as $key => $val)
 		{
-			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(array('../', '..\\', './', '.\\'), null, $val->src)))
+			if(file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(array('../', '..\\', './', '.\\'), '', $val->src)))
 			{
-				$screenshot							= base_url('themes/' . $detail->folder . '/' . str_replace(array('../', '..\\', './', '.\\'), null, $val->src));
+				$screenshot							= base_url('themes/' . $detail->folder . '/' . str_replace(array('../', '..\\', './', '.\\'), '', $val->src));
 			}
 			else
 			{

@@ -21,6 +21,8 @@ if(!function_exists('truncate'))
 	 */
 	function truncate($string = null, $limit = 0, $pad = '...')
 	{
+		if(!$string) return false;
+		
 		$string										= str_ireplace(array('<?php', '?>'), array('&lt;?php', '?&gt;'), $string);
 		$string										= str_ireplace(array('<script', '</script>'), array('&lt;script', '&lt;/script&gt;'), $string);
 		$string										= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $string);
@@ -31,7 +33,7 @@ if(!function_exists('truncate'))
 		$string										= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $string);
 		$string										= strip_tags($string);
 		$string										= str_replace('&nbsp;', ' ', $string);
-		$string										= htmlspecialchars(str_replace(array("\r", "\n"), null, $string));
+		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', $string));
 		
 		if($limit && strlen($string) >= $limit)
 		{
@@ -51,7 +53,7 @@ if(!function_exists('is_json'))
 	 */
 	function is_json($string = null)
 	{
-		if(is_string($string))
+		if($string && is_string($string))
 		{
 			$string									= json_decode($string, true);
 			

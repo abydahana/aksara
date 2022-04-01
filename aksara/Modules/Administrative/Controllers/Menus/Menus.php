@@ -107,7 +107,8 @@ class Menus extends \Aksara\Laboratory\Core
 		)
 		->row('serialized_data');
 		
-		$serialized_menus							= json_decode($serialized);
+		$serialized_menus							= ($serialized ? json_decode($serialized) : new \stdClass());
+		
 		if($serialized_menus)
 		{
 			foreach($serialized_menus as $key => $val)
@@ -141,6 +142,7 @@ class Menus extends \Aksara\Laboratory\Core
 				';
 			}
 		}
+		
 		$output										= '
 			<div class="form-group" id="serialized_data_input">
 				<ul class="list sortable" role="sortable-menu">
@@ -174,9 +176,10 @@ class Menus extends \Aksara\Laboratory\Core
 					</li>
 					' . $menus . '
 				</ul>
-				<input type="hidden" name="serialized_data" value="' . htmlspecialchars($serialized) . '" class="serialized_data" />
+				<input type="hidden" name="serialized_data" value="' . ($serialized ? htmlspecialchars($serialized) : '[]') . '" class="serialized_data" />
 			</div>
 		';
+		
 		if('read' != $this->_method)
 		{
 			return $output;

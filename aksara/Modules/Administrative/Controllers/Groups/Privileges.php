@@ -92,7 +92,7 @@ class Privileges extends \Aksara\Laboratory\Core
 		)
 		->row('privileges');
 		
-		$privileges									= json_decode($query, true);
+		$privileges									= ($query ? json_decode($query, true) : array());
 		
 		if(is_array($privileges) && sizeof($privileges) > 0 && $this->_method != 'create')
 		{
