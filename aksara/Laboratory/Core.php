@@ -218,7 +218,7 @@ class Core extends Controller
 		$this->_method								= service('router')->methodName();
 		
 		// get the module path
-		$this->_module								= ($this->_method && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', '', $path) : $path);
+		$this->_module								= ($this->_method && $path && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', '', $path) : $path);
 		
 		// check if query string has limit
 		if(is_numeric(service('request')->getGet('limit')) && service('request')->getGet('limit'))

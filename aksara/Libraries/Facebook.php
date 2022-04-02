@@ -39,7 +39,7 @@ class Facebook
 			(
 				'app_id'							=> $this->_client_id,
 				'app_secret'						=> $this->_client_secret,
-				'default_graph_version'				=> 'v5.0'
+				'default_graph_version'				=> 'v12.0'
 			)
 		);
 		
