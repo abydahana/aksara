@@ -106,11 +106,11 @@ class Model
 				try
 				{
 					// try to decrypting the parameter
-					$parameter->hostname			= service('encrypter')->decrypt(base64_decode($parameter->hostname));
-					$parameter->port				= service('encrypter')->decrypt(base64_decode($parameter->port));
+					$parameter->hostname			= $parameter->hostname;
+					$parameter->port				= $parameter->port;
 					$parameter->username			= service('encrypter')->decrypt(base64_decode($parameter->username));
 					$parameter->password			= service('encrypter')->decrypt(base64_decode($parameter->password));
-					$parameter->database_name		= service('encrypter')->decrypt(base64_decode($parameter->database_name));
+					$parameter->database_name		= $parameter->database_name;
 				}
 				catch(\Throwable $e)
 				{
