@@ -149,11 +149,11 @@ class Connections extends \Aksara\Laboratory\Core
 			$connection								= array
 			(
 				'DBDriver'						=> $query->database_driver,
-				'hostname'						=> service('encrypter')->decrypt(base64_decode($query->hostname)),
-				'port'							=> service('encrypter')->decrypt(base64_decode($query->port)),
+				'hostname'						=> $query->hostname,
+				'port'							=> $query->port,
 				'username'						=> service('encrypter')->decrypt(base64_decode($query->username)),
 				'password'						=> service('encrypter')->decrypt(base64_decode($query->password)),
-				'database'						=> service('encrypter')->decrypt(base64_decode($query->database_name)),
+				'database'						=> $query->database_name,
 				'DBDebug'						=> (ENVIRONMENT !== 'production')
 			);
 		}

@@ -1,25 +1,32 @@
 <?php
+
+if(version_compare(PHP_VERSION, '7.3', '<'))
+{
+	exit('<center>You need to update your PHP version to 7.3 or newer!</center>');
+}
+else if(!is_dir(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor'))
+{
+	exit('<center>Please run "<code style="color:green">composer install</code>" from "<code style="color:red">' . dirname(__DIR__) . '</code>" to fetch the required dependencies before we start the installation wizard.<br /><a href="//getcomposer.org/download" target="_blank"><b>Click here</b></a> to download the composer if it\'s not yet installed on your web server.</center>');
+}
+else if(!in_array('intl', array_map('strtolower', get_loaded_extensions())))
+{
+	exit('<center>You need to enable the INTL module on your server. <a href="//www.google.com/search?q=install+intl+extension" target="_blank"><b>Click here</b></a> to install the INTL extension on your server.</center>');
+}
+else if(!is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable') || !is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable' . DIRECTORY_SEPARATOR . 'session') || !is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads'))
+{
+	exit('<center>You need to make the following directory and it\'s subdirectories to be writable recursively: ' . (!is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable') || !is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable' . DIRECTORY_SEPARATOR . 'session') ? '<br /><code style="color:red">' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable' . '</code>' : null) . (!is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads') ? '<br /><code style="color:red">' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . '</code>' : null) . '<br />Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
+}
+
 // check if configuration file already exists
 if(!file_exists('../config.php'))
 {
-	// find the root path of the app
-	$redirect = preg_replace('/\/\w+/', '../', (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : null));
-	
-	// check if app opened with path
-	if($redirect)
-	{
-		// trim last path
-		$redirect = substr_replace($redirect,'', strrpos($redirect, '../'), 3);
-	}
-	
-	// redirect to installation
-	header('Location:' . $redirect . 'install');
-	
-	exit;
+	define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 }
-
-// include the configuration file
-require_once '../config.php';
+else
+{
+	// include the configuration file
+	require_once '../config.php';
+}
 
 // Valid PHP Version?
 $minPHPVersion = '7.3';
@@ -46,7 +53,7 @@ chdir(__DIR__);
 
 // Load our paths config file
 // This is the line that might need to be changed, depending on your folder structure.
-require realpath(FCPATH . '../aksara/Config/Paths.php') ?: FCPATH . '../aksara/Config/Paths.php';
+require realpath(FCPATH . (file_exists('../config.php') ? '../aksara/Config/Paths.php' : '../install/Config/Paths.php')) ?: FCPATH . (file_exists('../config.php') ? '../aksara/Config/Paths.php' : '../install/Config/Paths.php');
 // ^^^ Change this if you move your application folder
 
 $paths = new Config\Paths();

@@ -10,8 +10,8 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-		<link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css" type="text/css" />
-		<link rel="stylesheet" href="../assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
+		<link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
 	</head>
 	<style type="text/css">
 		html,
@@ -155,8 +155,8 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="../assets/jquery/jquery.min.js"></script>
-		<script type="text/javascript" src="../assets/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap/bootstrap.min.js"></script>
 		
 		<script type="text/javascript">
 			$(document).ready(function()
