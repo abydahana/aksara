@@ -125,6 +125,7 @@ class Assets extends \Aksara\Laboratory\Core
 				content_wrapper: "#content-wrapper",
 				registration_enabled: ' . (int) get_setting('frontend_registration') . ',
 				language: "' . htmlspecialchars(get_userdata('language')) . '",
+				timezone: "' . TIMEZONE . '",
 				openlayers_search_provider: "' . htmlspecialchars(get_setting('openlayers_search_provider')) . '",
 				openlayers_search_key: "' . htmlspecialchars(get_setting('openlayers_search_key')) . '",
 				default_map_tile: "' . get_setting('default_map_tile') . '",

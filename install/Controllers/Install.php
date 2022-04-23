@@ -14,11 +14,6 @@ class Install extends BaseController
 {
 	public function __construct()
 	{
-		if(file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php') && (!isset($_SERVER['PATH_INFO'])  || (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] != '/run')))
-		{
-			exit(header('Location:' . str_replace('/install', '', base_url())));
-		}
-		
 		helper('language');
 		
 		if(service('request')->getGet('language') && is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . service('request')->getGet('language')))
@@ -379,7 +374,7 @@ class Install extends BaseController
 		}
 		
 		$error										= false;
-		$config_source								= file_get_contents('assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
+		$config_source								= file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 		$config_source								= str_replace
 		(
 			array
@@ -467,10 +462,10 @@ class Install extends BaseController
 					// try unzip the sample modules
 					$zip							= new \ZipArchive();
 					
-					if($zip->open('assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
+					if($zip->open(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true)
 					{
 						// extract sample modules to modules path
-						$zip->extractTo(ROOTPATH . '..' . DIRECTORY_SEPARATOR);
+						$zip->extractTo(ROOTPATH);
 					}
 					
 					// close current opened zip file
@@ -541,12 +536,12 @@ class Install extends BaseController
 			}
 			
 			// check if configuration file is exists
-			if(!file_exists(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php'))
+			if(!file_exists(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php'))
 			{
 				try
 				{
 					// try to writing configuration file
-					file_put_contents(ROOTPATH . '..' . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
+					file_put_contents(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
 				}
 				catch(\Throwable $e)
 				{

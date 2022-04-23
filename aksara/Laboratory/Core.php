@@ -3334,7 +3334,23 @@ class Core extends Controller
 					$this->before_update();
 				}
 				
-				if($this->model->update($table, $data, $where, 1))
+				if($this->_where_in)
+				{
+					foreach($this->_where_in as $key => $val)
+					{
+						$this->model->where_in($key, $val);
+					}
+				}
+				
+				if($this->_where_not_in)
+				{
+					foreach($this->_where_not_in as $key => $val)
+					{
+						$this->model->where_not_in($key, $val);
+					}
+				}
+				
+				if($this->model->update($table, $data, $where))
 				{
 					// check if file is updated
 					if($this->_old_files && sizeof($this->_old_files) > 0)
@@ -3443,6 +3459,22 @@ class Core extends Controller
 				if(method_exists($this, 'before_delete'))
 				{
 					$this->before_delete();
+				}
+				
+				if($this->_where_in)
+				{
+					foreach($this->_where_in as $key => $val)
+					{
+						$this->model->where_in($key, $val);
+					}
+				}
+				
+				if($this->_where_not_in)
+				{
+					foreach($this->_where_not_in as $key => $val)
+					{
+						$this->model->where_not_in($key, $val);
+					}
 				}
 				
 				// safe check for delete
@@ -5208,7 +5240,11 @@ class Core extends Controller
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
 					
-					if(!$hidden)
+					if($hidden)
+					{
+						continue;
+					}
+					else
 					{
 						$column_lib[]				= $field;
 					}
@@ -8229,6 +8265,8 @@ class Core extends Controller
 					}
 					else
 					{
+						$ordered					= false;
+						
 						if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
 						{
 							foreach($this->_compiled_table as $num => $table)
@@ -8238,6 +8276,8 @@ class Core extends Controller
 								 */
 								if($this->model->field_exists($key, $table))
 								{
+									$ordered		= true;
+									
 									if(service('request')->getGet('sort'))
 									{
 										$dir		= 'direction';
@@ -8251,6 +8291,11 @@ class Core extends Controller
 									$this->model->order_by($key, $val['direction'], $val['escape']);
 								}
 							}
+						}
+						
+						if(!$ordered)
+						{
+							$this->model->order_by($key, $val['direction'], $val['escape']);
 						}
 					}
 				}
@@ -8736,7 +8781,7 @@ class Core extends Controller
 					}
 					
 					// check if the field is sets to use the default value
-					if(isset($this->_set_default[$field]) && $this->_set_default[$field])
+					if(isset($this->_set_default[$field]) && ($this->_set_default[$field] || is_numeric($this->_set_default[$field])))
 					{
 						// push the default value to the data preparation
 						$prepare[$field]			= $this->_set_default[$field];
