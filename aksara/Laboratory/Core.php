@@ -3489,7 +3489,7 @@ class Core extends Controller
 						{
 							if(array_intersect(array('image', 'images', 'file', 'files'), $params['type']))
 							{
-								$files				= json_decode($params['original']);
+								$files				= ($params['original'] ? json_decode($params['original']) : new \stdClass());
 								
 								if($files)
 								{
@@ -3616,7 +3616,7 @@ class Core extends Controller
 						{
 							if(array_intersect(array('image', 'images', 'file', 'files'), $params['type']))
 							{
-								$files				= json_decode($params['original']);
+								$files				= ($params['original'] ? json_decode($params['original']) : new \stdClass());
 								
 								if($files)
 								{
@@ -3765,7 +3765,7 @@ class Core extends Controller
 					
 					if('update' == $this->_method)
 					{
-						$original					= json_decode($original, true);
+						$original					= ($original ? json_decode($original, true) : array());
 						
 						if(is_array($original) && sizeof($original) > 0)
 						{
@@ -3792,7 +3792,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('attributes'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					$items							= null;
 					
 					if(is_array($original) && sizeof($original) > 0)
@@ -3871,7 +3871,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('carousels'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					$items							= null;
 					
 					if(is_array($original) && sizeof($original) > 0)
@@ -4029,7 +4029,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('faqs'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					$items							= null;
 					
 					if(is_array($original) && sizeof($original) > 0)
@@ -4093,7 +4093,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('steps'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					$items							= null;
 					
 					if(is_array($original) && sizeof($original) > 0)
@@ -4165,7 +4165,7 @@ class Core extends Controller
 							}
 							else if(array_intersect(array('checkbox'), $type))
 							{
-								$checker			= json_decode($original, true);
+								$checker			= ($original ? json_decode($original, true) : array());
 								
 								if(!is_array($checker))
 								{
@@ -4700,7 +4700,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('images'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					$items							= null;
 					
 					if(is_array($original) && sizeof($original) > 0)
@@ -4725,7 +4725,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('file'), $type))
 				{
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
@@ -4744,7 +4744,7 @@ class Core extends Controller
 				{
 					$images							= null;
 					$files							= null;
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
@@ -4786,7 +4786,7 @@ class Core extends Controller
 				else if(array_intersect(array('attributes'), $type))
 				{
 					$items							= null;
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
@@ -4813,7 +4813,7 @@ class Core extends Controller
 				else if(array_intersect(array('carousels'), $type))
 				{
 					$items							= null;
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
@@ -4856,7 +4856,7 @@ class Core extends Controller
 				else if(array_intersect(array('faqs'), $type))
 				{
 					$items							= null;
-					$original						= json_decode($original, true);
+					$original						= ($original ? json_decode($original, true) : array());
 					
 					if(is_array($original) && sizeof($original) > 0)
 					{
@@ -4956,7 +4956,7 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('checkbox'), $type))
 					{
-						$json						= json_decode($content, true);
+						$json						= ($content ? json_decode($content, true) : array());
 						
 						if(is_array($json) && sizeof($json) > 0)
 						{
@@ -4978,7 +4978,7 @@ class Core extends Controller
 					}
 					else
 					{
-						$items						= json_decode($content, true);
+						$items						= ($content ? json_decode($content, true) : array());
 						
 						if($extra_params)
 						{
@@ -5056,7 +5056,7 @@ class Core extends Controller
 				}
 				else
 				{
-					$json							= json_decode($content, true);
+					$json							= ($content ? json_decode($content, true) : array());
 					
 					if(json_last_error() === JSON_ERROR_NONE && is_array($json) && sizeof($json) > 0)
 					{
@@ -5318,7 +5318,7 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('file'), $type))
 					{
-						$original					= json_decode($original);
+						$original					= ($original ? json_decode($original, true) : new \stdClass());
 						
 						if($original)
 						{
@@ -5337,7 +5337,7 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('images', 'files'), $type))
 					{
-						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
+						$content					= sizeof(($content && is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						
 						if($content > 1)
 						{
@@ -5350,12 +5350,12 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('attributes'), $type))
 					{
-						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
+						$content					= sizeof(($content && is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('attributes') : phrase('attribute')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
 					}
 					else if(array_intersect(array('carousels', 'faqs'), $type))
 					{
-						$content					= sizeof((is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
+						$content					= sizeof(($content && is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
 						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('items') : phrase('item')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
 					}
 					else if($original && array_intersect(array('datetime', 'datetimepicker', 'current_timestamp'), $type))
@@ -5434,7 +5434,7 @@ class Core extends Controller
 						}
 						else if(array_intersect(array('checkbox'), $type))
 						{
-							$json					= json_decode($content, true);
+							$json					= ($content ? json_decode($content, true) : array());
 							
 							if(is_array($json) && sizeof($json) > 0)
 							{
