@@ -4576,17 +4576,17 @@ class Core extends Controller
 			
 			if(is_array($this->_view_order) && sizeof($this->_view_order) > 0)
 			{
-				$field_order						= array();
+				$view_order							= array();
 				
 				foreach($this->_view_order as $order_key => $order_val)
 				{
 					if(array_key_exists($order_val, $serialized))
 					{
-						$field_order[]				= $order_val;
+						$view_order[]				= $order_val;
 					}
 				}
 				
-				$serialized							= array_replace(array_flip($field_order), $serialized);
+				$serialized							= array_replace(array_flip($view_order), $serialized);
 			}
 			else if(is_array($this->_column_order) && sizeof($this->_column_order) > 0)
 			{
@@ -4606,8 +4606,9 @@ class Core extends Controller
 			foreach($serialized as $field => $params)
 			{
 				$type								= $params['type'];
-				$content							= $params['content'];
-				$original							= $params['original'];
+				$primary							= $params['primary'];
+				$content							= ($params['content'] ? $params['content'] : '');
+				$original							= ($params['original'] ? $params['original'] : '');
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 				$another_params						= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
