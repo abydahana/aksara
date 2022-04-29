@@ -1858,7 +1858,11 @@ class Core extends Controller
 			}
 			
 			$this->_unset_column[]					= $field;
-			$this->_unset_view[]					= $field;
+			
+			if('modal' != service('request')->getPost('prefer'))
+			{
+				$this->_unset_view[]				= $field;
+			}
 		}
 		
 		if($join && !isset($join[0]))
@@ -4606,8 +4610,9 @@ class Core extends Controller
 			foreach($serialized as $field => $params)
 			{
 				$type								= $params['type'];
-				$content							= $params['content'];
-				$original							= $params['original'];
+				$primary							= $params['primary'];
+				$content							= ($params['content'] ? $params['content'] : '');
+				$original							= ($params['original'] ? $params['original'] : '');
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 				$another_params						= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
