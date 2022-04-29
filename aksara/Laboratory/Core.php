@@ -3338,7 +3338,7 @@ class Core extends Controller
 				{
 					foreach($this->_where_in as $key => $val)
 					{
-						$this->model->where_in($key, $val);
+						$this->model->where_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
 					}
 				}
 				
@@ -3346,7 +3346,7 @@ class Core extends Controller
 				{
 					foreach($this->_where_not_in as $key => $val)
 					{
-						$this->model->where_not_in($key, $val);
+						$this->model->where_not_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
 					}
 				}
 				
@@ -3465,7 +3465,7 @@ class Core extends Controller
 				{
 					foreach($this->_where_in as $key => $val)
 					{
-						$this->model->where_in($key, $val);
+						$this->model->where_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
 					}
 				}
 				
@@ -3473,7 +3473,7 @@ class Core extends Controller
 				{
 					foreach($this->_where_not_in as $key => $val)
 					{
-						$this->model->where_not_in($key, $val);
+						$this->model->where_not_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
 					}
 				}
 				
@@ -4448,7 +4448,7 @@ class Core extends Controller
 						{
 							if(array_intersect(array('sprintf'), $type))
 							{
-								$original			= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
+								$original			= str_replace('{1}', sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original), $parameter);
 							}
 						}
 					}
@@ -5008,7 +5008,7 @@ class Core extends Controller
 				{
 					if(array_intersect(array('sprintf'), $type))
 					{
-						$content					= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
+						$content					= str_replace('{1}', sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original), $parameter);
 					}
 				}
 				else if(array_intersect(array('textarea'), $type))
@@ -5486,7 +5486,7 @@ class Core extends Controller
 					{
 						if(array_intersect(array('sprintf'), $type))
 						{
-							$content				= sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original);
+							$content				= str_replace('{1}', sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original), $parameter);
 						}
 					}
 					else if(array_intersect(array('textarea'), $type))
@@ -7171,7 +7171,7 @@ class Core extends Controller
 					 */
 					list($table, $field)			= array_pad(explode('.', $val), 2, null);
 					
-					$field							= (stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field);
+					$field							= ($field && stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field);
 					
 					if($table != $this->_from && $field && $this->model->field_exists($field, $table))
 					{
