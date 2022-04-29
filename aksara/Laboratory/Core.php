@@ -2783,7 +2783,7 @@ class Core extends Controller
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			
-			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create' || service('request')->getPost('sessionStorage'))
+			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create')
 			{
 				$this->_query						= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_from))), ''));
 			}
