@@ -1619,7 +1619,7 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function update($table = null, $set = array(), array $where = array(), $limit = 1)
+	public function update($table = null, $set = array(), array $where = array(), $limit = null)
 	{
 		$set										= array_merge($this->_set, $set);
 		
