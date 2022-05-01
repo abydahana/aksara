@@ -2335,7 +2335,12 @@ class Core extends Controller
 		}
 		
 		// check before action
-		if('update' == $this->_method && method_exists($this, 'before_update'))
+		if('create' == $this->_method && method_exists($this, 'before_insert'))
+		{
+			// before insert
+			$this->before_insert();
+		}
+		else if('update' == $this->_method && method_exists($this, 'before_update'))
 		{
 			// before update
 			$this->before_update();
@@ -3329,11 +3334,7 @@ class Core extends Controller
 		{
 			if(is_array($where) && sizeof($where) > 0 && $this->model->get_where($table, $where, 1)->num_rows() > 0)
 			{
-				if(method_exists($this, 'before_insert'))
-				{
-					$this->before_insert();
-				}
-				else if(method_exists($this, 'before_update'))
+				if(method_exists($this, 'before_update'))
 				{
 					$this->before_update();
 				}
