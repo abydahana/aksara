@@ -1985,7 +1985,7 @@ class Core extends Controller
 			
 			if(service('request')->getPost('method') == 'ajax_select' && service('request')->getPost('search'))
 			{
-				if(stripos($val, ' AS ') !== false)
+				if($val && stripos($val, ' AS ') !== false)
 				{
 					$val							= substr($val, 0, stripos($val, ' AS '));
 				}
@@ -2026,11 +2026,11 @@ class Core extends Controller
 		{
 			foreach($params['where'] as $key => $val)
 			{
-				if(is_numeric($key) && stripos(trim($val), ' NOT IN') !== false)
+				if(is_numeric($key) && $val && stripos(trim($val), ' NOT IN') !== false)
 				{
 					$this->model->where($val, null, false);
 				}
-				else if(is_numeric($key) && stripos(trim($val), ' IN') !== false)
+				else if(is_numeric($key) && $val && stripos(trim($val), ' IN') !== false)
 				{
 					$this->model->where($val, null, false);
 				}
@@ -2110,8 +2110,8 @@ class Core extends Controller
 					}
 					else
 					{
-						$replacement				= (stripos($replace, '.') !== false ? substr($replace, strripos($replace, '.') + 1) : $replace);
-						$replacement				= (stripos($replacement, ' ') !== false ? substr($replacement, strripos($replacement, ' ') + 1) : $replacement);
+						$replacement				= ($replace && stripos($replace, '.') !== false ? substr($replace, strripos($replace, '.') + 1) : $replace);
+						$replacement				= ($replacement && stripos($replacement, ' ') !== false ? substr($replacement, strripos($replacement, ' ') + 1) : $replacement);
 					}
 					
 					if(isset($val->$replacement))
@@ -2484,7 +2484,7 @@ class Core extends Controller
 				
 				if((!$this->_like && $this->_searchable && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
 				{
-					$column							= strip_tags(service('request')->getGet('column'));
+					$column							= (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
 					
 					if($column && 'all' != $column)
 					{
@@ -2518,10 +2518,10 @@ class Core extends Controller
 							{
 								/*
 								$val				= str_ireplace(' AS ', ' ', $val);
-								$val				= (stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
+								$val				= ($val && stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
 								*/
 								
-								if(stripos($val, ' AS ') !== false)
+								if($val && stripos($val, ' AS ') !== false)
 								{
 									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
@@ -2547,7 +2547,7 @@ class Core extends Controller
 									}
 								}
 								
-								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists((stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table))
+								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table))
 								{
 									// order by best match
 									$this->_order_bm[]		= '(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
@@ -2685,7 +2685,7 @@ class Core extends Controller
 					// loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead
 					foreach($this->_select as $key => $val)
 					{
-						$val						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
+						$val						= ($val && stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
 						
 						// if there's LIKE
 						if($this->_like)
@@ -2736,7 +2736,7 @@ class Core extends Controller
 						foreach($val as $field => $value)
 						{
 							// check if the result value is not contain the search keyword or the field is unset from column (list table)
-							if(strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false || in_array($field, $this->_unset_column)) continue;
+							if(($value['original'] && strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false) || in_array($field, $this->_unset_column)) continue;
 							
 							// everything's looks good, throw into autocomplete result
 							if(!$autocomplete_item && $value['original'] && !in_array($value['content'], $added_item))
@@ -2779,7 +2779,7 @@ class Core extends Controller
 			if(service('request')->getGet('order'))
 			{
 				$this->_order_by					= array();
-				$order								= strip_tags(service('request')->getGet('order'));
+				$order								= (service('request')->getGet('order') ? strip_tags(service('request')->getGet('order')) : service('request')->getGet('order'));
 				$this->_order_by[$order]			= service('request')->getGet('sort');
 			}
 			
@@ -3129,7 +3129,7 @@ class Core extends Controller
 			}
 			else
 			{
-				if(('html' != service('request')->getPost('prefer') && service('request')->isAJAX() && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
+				if(('html' != service('request')->getPost('prefer') && service('request')->isAJAX() && $this->template->get_view($this->_view) && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
 				{
 					/**
 					 * Indicate the method is requested through Promise (XHR) or API
@@ -3163,7 +3163,7 @@ class Core extends Controller
 					/**
 					 * Returning the response as json format
 					 */
-					if(stripos(env('HTTP_REFERER'), env('SERVER_NAME')) !== false || $this->_api_request)
+					if(env('HTTP_REFERER') && stripos(env('HTTP_REFERER'), env('SERVER_NAME')) !== false || $this->_api_request)
 					{
 						if($this->_api_request && 'GET' != env('REQUEST_METHOD'))
 						{
@@ -3252,7 +3252,7 @@ class Core extends Controller
 							$primary				= $this->_set_default[$val->name];
 						}
 						
-						if((isset($field_data->primary_key) && $field_data->primary_key === 1) || (isset($field_data->default) && stripos($field_data->default, 'nextval(') !== false))
+						if((isset($field_data->primary_key) && $field_data->primary_key === 1) || (isset($field_data->default) && $field_data->default && stripos($field_data->default, 'nextval(') !== false))
 						{
 							$auto_increment			= true;
 						}
@@ -3329,7 +3329,11 @@ class Core extends Controller
 		{
 			if(is_array($where) && sizeof($where) > 0 && $this->model->get_where($table, $where, 1)->num_rows() > 0)
 			{
-				if(method_exists($this, 'before_update'))
+				if(method_exists($this, 'before_insert'))
+				{
+					$this->before_insert();
+				}
+				else if(method_exists($this, 'before_update'))
 				{
 					$this->before_update();
 				}
@@ -3726,7 +3730,7 @@ class Core extends Controller
 				$required							= (in_array('required', $validation) ? 1 : 0);
 				$position							= (isset($this->_field_position[$field]) ? $this->_field_position[$field] : 1);
 				$attribute							= (isset($this->_set_attribute[$field]) ? $this->_set_attribute[$field] : null);
-				$default_value						= (('create' == $this->_method || !$original) && isset($this->_default_value[$field]) ? $this->_default_value[$field] : null);
+				$default_value						= (('create' == $this->_method || !$original || array_intersect(array('boolean'), $type)) && isset($this->_default_value[$field]) ? $this->_default_value[$field] : null);
 				
 				/**
 				 * save primary key to be generated as token
@@ -4330,7 +4334,7 @@ class Core extends Controller
 				{
 					$content						= '
 						<label class="d-block pt-1">
-							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == $original || 1 == $original || ('create' == $this->_method && $default_value) ? ' checked' : null) . $read_only . ' />
+							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value = 0 && ($default_value == $original || 1 == $original || ('create' == $this->_method && $default_value)) ? ' checked' : null) . $read_only . ' />
 							&nbsp;
 							' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
 							&nbsp;
@@ -4908,7 +4912,7 @@ class Core extends Controller
 						$timestamp					= strtotime($original);
 						$month						= date('F', $timestamp);
 						$month						= phrase($month);
-						$content					= date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ',' . date('H:i:s', $timestamp);
+						$content					= date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
 					}
 					else
 					{
@@ -5611,7 +5615,7 @@ class Core extends Controller
 						$fields[$field]['type']		= $type;
 					}
 					
-					if($this->_grid_view && $this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false) && $this->_grid_view['parameter'] && !isset($this->_grid_view['url'][$key]))
+					if($this->_grid_view && $this->_grid_view['hyperlink'] && ($this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], 'http://') === false || stripos($this->_grid_view['hyperlink'], 'http://') === false)) && $this->_grid_view['parameter'] && !isset($this->_grid_view['url'][$key]))
 					{
 						$grid_query					= array();
 						$u							= 'url';
@@ -5693,12 +5697,12 @@ class Core extends Controller
 			
 			foreach($search_columns as $key => $val)
 			{
-				if(stripos($val, '.') !== false)
+				if($val && stripos($val, '.') !== false)
 				{
 					$val							= str_replace('.', '', strstr($val, '.'));
 				}
 				
-				if(stripos(trim($val), ' AS ') !== false)
+				if($val && stripos(trim($val), ' AS ') !== false)
 				{
 					$explode						= preg_split('/ AS /i', $val);
 					
@@ -7302,6 +7306,10 @@ class Core extends Controller
 					else if(!array_filter($val))
 					{
 						$this->model->where($key, null, false);
+					}
+					else
+					{
+						$this->model->where($key, $val['value'], $val['escape']);
 					}
 				}
 			}
