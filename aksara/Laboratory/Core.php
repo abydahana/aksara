@@ -5714,6 +5714,8 @@ class Core extends Controller
 				
 				if(!in_array($val, $this->_unset_column))
 				{
+					if(strpos($val, ' ') !== false) continue;
+					
 					$columns[$val]					= array
 					(
 						'field'						=> $val,
@@ -6034,7 +6036,24 @@ class Core extends Controller
 		if(!is_array($select))
 		{
 			// split selected by comma, but ignore that inside brackets
-			$select									= array_map('trim', preg_split('/,(?![^(]+\))/', $select));
+			$matches								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($select)));
+			
+			if($matches)
+			{
+				$select							 	= array();
+				
+				foreach($matches as $key => $val)
+				{
+					if(strpos($val, '(') !== false && $val[0] != '(' && isset($select[($key - 1)]) && isset($matches[($key - 1)]))
+					{
+						$select[($key - 1)]			= $matches[($key - 1)] . ', ' . $val;
+					}
+					else
+					{
+						$select[$key]				= $val;
+					}
+				}
+			}
 		}
 		
 		$this->_select								= array_merge($this->_select, $select);
@@ -7175,7 +7194,17 @@ class Core extends Controller
 					 */
 					list($table, $field)			= array_pad(explode('.', $val), 2, null);
 					
-					$field							= ($field && stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field);
+					if(!$field)
+					{
+						$field						= $table;
+					}
+					
+					$field							= trim(($field && stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field));
+					
+					if($field && stripos($field, ' ') !== false)
+					{
+						$field						= substr($field, 0, strrpos($field, ' '));
+					}
 					
 					if($table != $this->_from && $field && $this->model->field_exists($field, $table))
 					{
