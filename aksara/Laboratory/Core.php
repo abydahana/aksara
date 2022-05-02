@@ -4325,7 +4325,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'percent_format'), $type))
 				{
-					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : $original) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || array_intersect(array('numeric', 'number_format','percent_format'), $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
+					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || array_intersect(array('numeric', 'number_format','percent_format'), $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
 					
 					if(array_intersect(array('percent_format'), $type))
 					{
