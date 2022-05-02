@@ -3728,6 +3728,7 @@ class Core extends Controller
 				$read_only							= (in_array('readonly', $type) ? ' readonly' : (in_array('disabled', $type) ? ' disabled' : null));
 				$extra_class						= (isset($this->_add_class[$field]) ? ' ' . $this->_add_class[$field] : null);
 				$validation							= (isset($this->_set_validation[$field]) ? explode('|', $this->_set_validation[$field]) : array());
+				
 				$required							= (in_array('required', $validation) ? 1 : 0);
 				$position							= (isset($this->_field_position[$field]) ? $this->_field_position[$field] : 1);
 				$attribute							= (isset($this->_set_attribute[$field]) ? $this->_set_attribute[$field] : null);
@@ -8506,11 +8507,11 @@ class Core extends Controller
 						
 						if(is_array(service('request')->getPost($key)))
 						{
-							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation']);
+							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) || ($val['validation'] && strpos($val['validation'], 'callback_') !== false) ? 'trim|' : null) . $val['validation']);
 						}
 						else
 						{
-							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation'] . $validation_suffix);
+							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) || ($val['validation'] && strpos($val['validation'], 'callback_') !== false) ? 'trim|' : null) . $val['validation'] . $validation_suffix);
 						}
 					}
 					else if($validation_suffix)
