@@ -116,6 +116,7 @@ class Register extends \Aksara\Laboratory\Core
 		$this->set_title(phrase('register_an_account'))
 		->set_icon('mdi mdi-account-plus')
 		->set_description(phrase('fill_all_the_required_fields_below_to_register_your_account'))
+		
 		->form_callback('_validate_form')
 		
 		->render();
@@ -172,7 +173,7 @@ class Register extends \Aksara\Laboratory\Core
 		/* insert user with safe checkpoint */
 		if($this->model->insert('app__users', $prepare, 1))
 		{
-			$insert_id								= $this->model->insert_id();
+			$prepare['user_id']						= $this->model->insert_id();
 			
 			/* unset stored captcha */
 			unset_userdata(array('captcha', 'captcha_file'));
@@ -186,7 +187,7 @@ class Register extends \Aksara\Laboratory\Core
 				(
 					array
 					(
-						'user_id'					=> $insert_id,
+						'user_id'					=> $prepare['user_id'],
 						'group_id'					=> $default_membership_group,
 						'language_id'				=> $prepare['language_id'],
 						'is_logged'					=> true
@@ -194,18 +195,18 @@ class Register extends \Aksara\Laboratory\Core
 				);
 				
 				/* send email to user */
-				$this->_send_welcome_email(service('request')->getPost('email'), service('request')->getPost('username'), service('request')->getPost('first_name'), service('request')->getPost('last_name'));
+				$this->_send_welcome_email($prepare);
 				
 				/* return to previous page */
-				return throw_exception(301, phrase('your_account_has_been_registered_successfully'), base_url('dashboard'), true);
+				return throw_exception(301, phrase('your_account_has_been_registered_successfully'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
 			}
 			else
 			{
 				/* send email to user */
-				$this->_send_activation_email($insert_id, service('request')->getPost('email'), service('request')->getPost('first_name'), service('request')->getPost('last_name'));
+				$this->_send_activation_email($prepare);
 				
 				/* return to previous page */
-				return throw_exception(301, phrase('follow_the_link_we_sent_to_your_email_to_activate_your_account'), base_url('auth'));
+				return throw_exception(301, phrase('follow_the_link_we_sent_to_your_email_to_activate_your_account'), base_url('auth', array('activation' => base64_encode(service('encrypter')->encrypt($prepare['user_id'])))));
 			}
 		}
 		else
@@ -286,16 +287,16 @@ class Register extends \Aksara\Laboratory\Core
 		}
 	}
 	
-	private function _send_activation_email($user_id = 0, $email = null, $first_name = null, $last_name = null)
+	private function _send_activation_email($params = array())
 	{
-		$token										= sha1($email . time());
+		$token										= sha1($params['email'] . time());
 		
 		$this->model->insert
 		(
 			'app__users_hash',
 			array
 			(
-				'user_id'							=> $user_id,
+				'user_id'							=> $params['user_id'],
 				'hash'								=> $token
 			)
 		);
@@ -336,7 +337,7 @@ class Register extends \Aksara\Laboratory\Core
 		$this->email->initialize($config);	
 		
 		$this->email->setFrom($sender_email, $sender_name);
-		$this->email->setTo($email);
+		$this->email->setTo($params['email']);
 		
 		$this->email->setSubject(phrase('account_activation'));
 		$this->email->setMessage
@@ -352,7 +353,7 @@ class Register extends \Aksara\Laboratory\Core
 				</head>
 				<body>
 					<p>
-						' . phrase('hi') . ', <b>' . $first_name . ' ' . $last_name . '</b>
+						' . phrase('hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
 					</p>
 					<p>
 						' . phrase('you_are_recently_register_your_account_using_this_email_on_our_website') . ' ' . phrase('your_account_need_to_be_activated') . '
@@ -383,7 +384,7 @@ class Register extends \Aksara\Laboratory\Core
 		}
 	}
 	
-	private function _send_welcome_email($email = null, $username = null, $first_name = null, $last_name = null)
+	private function _send_welcome_email($params = array())
 	{
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
@@ -421,7 +422,7 @@ class Register extends \Aksara\Laboratory\Core
 		$this->email->initialize($config);	
 		
 		$this->email->setFrom($sender_email, $sender_name);
-		$this->email->setTo($email);
+		$this->email->setTo($params['email']);
 		
 		$this->email->setSubject(phrase('account_registered'));
 		$this->email->setMessage
@@ -437,11 +438,11 @@ class Register extends \Aksara\Laboratory\Core
 				</head>
 				<body>
 					<p>
-						' . phrase('hi') . ', <b>' . $first_name . ' ' . $last_name . '</b>
+						' . phrase('hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
 					</p>
 					<p>
 						<b>
-							' . phrase('congratulations') . '
+							' . phrase('congratulations') . ',
 						</b>
 						<br />
 						' . phrase('your_account_was_successfully_registered_to_our_website') . ' ' . phrase('you_can_use_your_email_or_username_to_sign_in_to_your_dashboard') . '

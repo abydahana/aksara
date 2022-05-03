@@ -740,6 +740,7 @@
 	"unable_to_remove_the_selected_data": "Tidak dapat menghapus data yang dipilih",
 	"unable_to_remove_the_updater_junk_files_from_the_cache_directory": "Tidak dapat menghapus sampah sisa pembaruan pada folder cache",
 	"unable_to_rewrite_language_file": "Tidak dapat menulis ulang berkas bahasa",
+	"unable_to_signing_you_in_using_the_selected_platform": "Tidak dapat memproses login Anda menggunakan platform yang dipilih.",
 	"unable_to_submit_your_data": "Tidak dapat mengirimkan data Anda",
 	"unable_to_uninstall_the_theme_that_is_in_use": "Tidak dapat melakukan pencopotan tema yang saat ini sedang digunakan",
 	"unable_to_update_data": "Tidak dapat memperbarui data Anda",
