@@ -1,3 +1,19 @@
+<?php
+	if($activation)
+	{
+		echo '
+			<div class="alert alert-info border-0 rounded-0">
+				<div class="container text-center">
+					<i class="mdi mdi-check-circle mdi-5x"></i>
+					<h3>
+						' . phrase('account_registered') . '
+					</h3>
+					' . phrase('follow_the_link_we_sent_to_your_email_to_activate_your_account') . '
+				</div>
+			</div>
+		';
+	}
+?>
 <div class="container-fluid pt-5 pb-5">
 	<div class="row">
 		<div class="<?php echo (get_setting('frontend_registration') ? 'col-md-8 offset-md-2 col-xl-6 offset-xl-3' : 'col-md-4 offset-md-4'); ?>">

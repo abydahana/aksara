@@ -269,7 +269,8 @@ class Auth extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'years'								=> $this->_get_active_years()
+				'years'								=> $this->_get_active_years(),
+				'activation'						=> $this->_get_activation()
 			)
 		)
 		
@@ -292,9 +293,6 @@ class Auth extends \Aksara\Laboratory\Core
 			
 			$this->google->revokeToken();
 		}
-		
-		// save session id to variable before destroy the source
-		$session_id									= session_id();
 		
 		// destroy session
 		service('session')->destroy();
@@ -379,162 +377,189 @@ class Auth extends \Aksara\Laboratory\Core
 	}
 	
 	/**
+	 * check activation
+	 */
+	private function _get_activation()
+	{
+		$user_id									= 0;
+		
+		try
+		{
+			$user_id								= service('encrypter')->decrypt(base64_decode(service('request')->getGet('activation')));
+		}
+		catch(\Throwable $e)
+		{
+		}
+		
+		if($this->model->get_where('app__users_hash', array('user_id' => $user_id), 1)->row())
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * do validation
 	 */
-	private function _validate($session = null)
+	private function _validate($params = array())
 	{
 		if(DEMO_MODE)
 		{
 			return throw_exception(403, phrase('this_feature_is_disabled_in_demo_mode'), current_page('../'));
 		}
+		else if(!$params)
+		{
+			return throw_exception(403, phrase('unable_to_signing_you_in_using_the_selected_platform'), current_page('../'));
+		}
 		
-		if($session)
+		$query										= $this->model->select
+		('
+			app__users.user_id,
+			app__users.username,
+			app__users.group_id,
+			app__users.language_id
+		')
+		->join
+		(
+			'app__users',
+			'app__users.user_id = oauth__login.user_id'
+		)
+		->get_where
+		(
+			'oauth__login',
+			array
+			(
+				'oauth__login.service_provider'		=> $params->oauth_provider,
+				'oauth__login.access_token'			=> $params->oauth_uid
+			)
+		)
+		->row();
+		
+		if($query)
+		{
+			/* set the user credential into session */
+			set_userdata
+			(
+				array
+				(
+					'is_logged'						=> true,
+					'oauth_uid'						=> $params->oauth_uid,
+					'user_id'						=> $query->user_id,
+					'username'						=> $query->username,
+					'group_id'						=> $query->group_id,
+					'language_id'					=> $query->language_id,
+					'year'							=> ($this->_get_active_years() ? date('Y') : null),
+					'session_generated'				=> time()
+				)
+			);
+			
+			return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
+		}
+		else
 		{
 			$query									= $this->model->select
 			('
-				app__users.user_id,
-				app__users.username,
-				app__users.group_id,
-				app__users.language_id
+				user_id
 			')
-			->join
-			(
-				'app__users',
-				'app__users.user_id = oauth__login.user_id'
-			)
 			->get_where
 			(
-				'oauth__login',
+				'app__users',
 				array
 				(
-					'oauth__login.service_provider'	=> $session->oauth_provider,
-					'oauth__login.access_token'		=> $session->oauth_uid
+					'email'							=> $params->email
 				)
 			)
 			->row();
 			
 			if($query)
 			{
-				/* set the user credential into session */
-				set_userdata
-				(
-					array
-					(
-						'is_logged'					=> true,
-						'oauth_uid'					=> $session->oauth_uid,
-						'user_id'					=> $query->user_id,
-						'username'					=> $query->username,
-						'group_id'					=> $query->group_id,
-						'language_id'				=> $query->language_id,
-						'year'						=> ($this->_get_active_years() ? date('Y') : null),
-						'session_generated'			=> time()
-					)
-				);
-				
-				return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
-			}
-			else
-			{
-				$query								= $this->model->select
-				('
-					user_id
-				')
-				->get_where
-				(
-					'app__users',
-					array
-					(
-						'email'						=> $session->email
-					)
-				)
-				->row();
-				
-				if($query)
-				{
-					$this->model->insert
-					(
-						'oauth__login',
-						array
-						(
-							'user_id'				=> $query->user_id,
-							'service_provider'		=> $session->oauth_provider,
-							'access_token'			=> $session->oauth_uid,
-							'status'				=> 1
-						)
-					);
-					
-					return $this->_validate($session);
-				}
-			}
-			
-			$photo									= $session->picture;
-			$extension								= getimagesize($photo);
-			$extension								= image_type_to_extension($extension[2]);
-			$upload_name							= sha1(time()) . $extension;
-			
-			if(copy($photo, UPLOAD_PATH . '/users/' . $upload_name))
-			{
-				$photo								= $upload_name;
-				
-				$thumbnail_dimension				= (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-				$icon_dimension						= (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
-				
-				$this->_resize_image('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-				$this->_resize_image('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
-			}
-			else
-			{
-				$photo								= 'placeholder.png';
-			}
-			
-			$language_id							= (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
-			$default_membership						= (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
-			
-			$this->model->insert
-			(
-				'app__users',
-				array
-				(
-					'email'							=> $session->email,
-					'password'						=> '',
-					'username'						=> $session->oauth_uid,
-					'first_name'					=> $session->first_name,
-					'last_name'						=> $session->last_name,
-					'photo'							=> $photo,
-					'phone'							=> '',
-					'postal_code'					=> '',
-					'language_id'					=> $language_id,
-					'group_id'						=> $default_membership,
-					'registered_date'				=> date('Y-m-d'),
-					'last_login'					=> date('Y-m-d H:i:s'),
-					'status'						=> 1
-				)
-			);
-			
-			if($this->model->affected_rows() > 0)
-			{
-				$insert_id							= $this->model->insert_id();
-				
+				// user found, set the oauth platform integration
 				$this->model->insert
 				(
 					'oauth__login',
 					array
 					(
-						'user_id'					=> $insert_id,
-						'service_provider'			=> $session->oauth_provider,
-						'access_token'				=> $session->oauth_uid,
+						'user_id'					=> $query->user_id,
+						'service_provider'			=> $params->oauth_provider,
+						'access_token'				=> $params->oauth_uid,
 						'status'					=> 1
 					)
 				);
 				
-				$this->_send_welcome_email($session);
+				return $this->_validate($params);
+			}
+			else
+			{
+				// user not found, create user and set the oauth platform integration
+				$photo								= $params->picture;
+				$extension							= getimagesize($photo);
+				$extension							= image_type_to_extension($extension[2]);
+				$upload_name						= sha1(time()) . $extension;
 				
-				return $this->_validate($session);
+				if(copy($photo, UPLOAD_PATH . '/users/' . $upload_name))
+				{
+					$photo							= $upload_name;
+					$thumbnail_dimension			= (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+					$icon_dimension					= (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+					
+					$this->_resize_image('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
+					$this->_resize_image('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
+				}
+				else
+				{
+					$photo							= 'placeholder.png';
+				}
+				
+				$language_id						= (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+				$default_membership					= (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
+				
+				$this->model->insert
+				(
+					'app__users',
+					array
+					(
+						'email'						=> $params->email,
+						'password'					=> '',
+						'username'					=> $params->oauth_uid,
+						'first_name'				=> $params->first_name,
+						'last_name'					=> $params->last_name,
+						'photo'						=> $photo,
+						'phone'						=> '',
+						'postal_code'				=> '',
+						'language_id'				=> $language_id,
+						'group_id'					=> $default_membership,
+						'registered_date'			=> date('Y-m-d'),
+						'last_login'				=> date('Y-m-d H:i:s'),
+						'status'					=> 1
+					)
+				);
+				
+				if($this->model->affected_rows() > 0)
+				{
+					$insert_id						= $this->model->insert_id();
+					
+					$this->model->insert
+					(
+						'oauth__login',
+						array
+						(
+							'user_id'				=> $insert_id,
+							'service_provider'		=> $params->oauth_provider,
+							'access_token'			=> $params->oauth_uid,
+							'status'				=> 1
+						)
+					);
+					
+					$this->_send_welcome_email($params);
+				}
+				
+				return $this->_validate($params);
 			}
 		}
 	}
 	
-	private function _send_welcome_email($session)
+	private function _send_welcome_email($params = array())
 	{
 		/**
 		 * to working with Google SMTP, make sure to activate less secure apps setting
@@ -572,7 +597,7 @@ class Auth extends \Aksara\Laboratory\Core
 		$this->email->initialize($config);	
 		
 		$this->email->setFrom($sender_email, $sender_name);
-		$this->email->setTo($session->email);
+		$this->email->setTo($params->email);
 		
 		$this->email->setSubject(phrase('welcome_to') . ' ' . get_setting('app_name'));
 		$this->email->setMessage
@@ -588,10 +613,10 @@ class Auth extends \Aksara\Laboratory\Core
 				</head>
 				<body>
 					<p>
-						' . phrase('hi') . ', <b>' . $session->first_name . ' ' . $session->last_name . '</b>
+						' . phrase('hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
 					</p>
 					<p>
-						' . phrase('you_are_successfully_registered_to_our_website') . ' ' . phrase('now_you_can_sign_in_to_our_website_using_your_' . $session->oauth_provider . '_account') . ' ' . phrase('make_sure_to_set_your_password_and_username_to_secure_your_account') . '
+						' . phrase('you_are_successfully_registered_to_our_website') . ' ' . phrase('now_you_can_sign_in_to_our_website_using_your_' . $params->oauth_provider . '_account') . ' ' . phrase('make_sure_to_set_your_password_and_username_to_secure_your_account') . '
 					</p>
 					<p>
 						' . phrase('please_contact_us_directly_if_you_still_unable_to_signing_in') . '

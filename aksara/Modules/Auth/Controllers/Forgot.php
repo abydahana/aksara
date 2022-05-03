@@ -161,6 +161,7 @@ class Forgot extends \Aksara\Laboratory\Core
 			//return throw_exception(400, array('message' => $this->email->printDebugger()));
 		}
 		
+		// delete previous password request
 		$this->model->delete
 		(
 			'app__users_hash',
@@ -170,6 +171,7 @@ class Forgot extends \Aksara\Laboratory\Core
 			)
 		);
 		
+		// insert new request
 		$this->model->insert
 		(
 			'app__users_hash',

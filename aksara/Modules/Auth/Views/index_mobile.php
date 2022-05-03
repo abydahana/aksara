@@ -1,10 +1,26 @@
+<?php
+	if($activation)
+	{
+		echo '
+			<div class="alert alert-info border-0 rounded-0">
+				<div class="container text-center">
+					<i class="mdi mdi-check-circle mdi-5x"></i>
+					<h3>
+						' . phrase('account_registered') . '
+					</h3>
+					' . phrase('follow_the_link_we_sent_to_your_email_to_activate_your_account') . '
+				</div>
+			</div>
+		';
+	}
+?>
 <style type="text/css">
 	#footer-wrapper
 	{
 		display: none
 	}
 </style>
-<div class="full-height d-flex align-items-center justify-content-center">
+<div class="<?php echo (!$activation ? 'full-height d-flex align-items-center justify-content-center' : null); ?>">
 	<div class="container-fluid pt-3 pb-3">
 		<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
 			<div class="pr-2 pl-2">
