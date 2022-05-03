@@ -2198,7 +2198,7 @@ class Core extends Controller
 		{
 			$output									= '
 				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
-					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="0">' . phrase('please_choose') . '</option>') . '
+					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="' . (isset($this->_set_validation[$primary_key]) && stripos($this->_set_validation[$primary_key], 'required') !== false ? null : 0) . '">' . phrase('please_choose') . '</option>') . '
 					' . $output . '
 				</select>
 			';
