@@ -208,7 +208,7 @@ class Auth extends \Aksara\Laboratory\Core
 					else
 					{
 						// requested through browser
-						return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_have_been_signed_in'), base_url('dashboard'), true);
+						return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_have_been_signed_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
 					}
 				}
 				
@@ -247,7 +247,7 @@ class Auth extends \Aksara\Laboratory\Core
 			else
 			{
 				// requested through browser
-				return throw_exception(301, phrase('you_were_logged_in'), base_url('dashboard'), true);
+				return throw_exception(301, phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
 			}
 		}
 		else if(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
@@ -431,7 +431,7 @@ class Auth extends \Aksara\Laboratory\Core
 					)
 				);
 				
-				return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_were_logged_in'), base_url('dashboard'), true);
+				return throw_exception(301, phrase('welcome_back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
 			}
 			else
 			{

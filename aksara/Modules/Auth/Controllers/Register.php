@@ -278,7 +278,7 @@ class Register extends \Aksara\Laboratory\Core
 				)
 			);
 			
-			return throw_exception(301, phrase('your_account_has_been_successfully_activated'), base_url());
+			return throw_exception(301, phrase('your_account_has_been_successfully_activated'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : null)));
 		}
 		else
 		{
