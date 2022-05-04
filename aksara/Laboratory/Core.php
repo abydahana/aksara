@@ -4192,7 +4192,7 @@ class Core extends Controller
 							{
 								$options			.= '
 									<label class="' . $extra_class . '">
-										<input type="radio" name="' . $field . '" value="' . $value . '"' . ($default_value == 1 || $original == 1 || ('create' == $this->_method && (!isset($this->_default_value[$field]) || (isset($this->_default_value[$field]) && $this->_default_value[$field] == 1))) ? ' checked' : null) . $read_only . ' />
+										<input type="radio" name="' . $field . '" value="' . $value . '"' . ($default_value == $value || $value == $original ? ' checked' : null) . $read_only . ' />
 										' . $label . '
 										&nbsp;
 										' . $extra_params . '
