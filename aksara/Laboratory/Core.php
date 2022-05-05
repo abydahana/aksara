@@ -3134,7 +3134,9 @@ class Core extends Controller
 			}
 			else
 			{
-				if(('html' != service('request')->getPost('prefer') && service('request')->isAJAX() && $this->template->get_view($this->_view) && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
+				$prefer								= (in_array($this->_method, array('create', 'read', 'update')) && !service('request')->getPost('prefer') ? 'html' : service('request')->getPost('prefer'));
+				
+				if(('html' != $prefer && service('request')->isAJAX() && $this->template->get_view($this->_view) && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
 				{
 					/**
 					 * Indicate the method is requested through Promise (XHR) or API
