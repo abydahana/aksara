@@ -333,7 +333,7 @@ if(isset($results->extra_action->toolbar))
 <!-- search modal -->
 <div class="modal --prevent-remove" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="FORM" class="modal-content --xhr-form">
+		<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="modal-content --xhr-form">
 			<div class="modal-header">
 				<h5 class="modal-title" id="searchModalCenterTitle">
 					<i class="mdi mdi-magnify"></i>
