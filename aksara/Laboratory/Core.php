@@ -1998,6 +1998,8 @@ class Core extends Controller
 		{
 			$num									= 0;
 			
+			$this->model->group_start();
+			
 			foreach($like as $key => $val)
 			{
 				if($num)
@@ -2010,6 +2012,8 @@ class Core extends Controller
 				}
 				$num++;
 			}
+			
+			$this->model->group_end();
 		}
 		
 		if($params['join'])
@@ -2609,6 +2613,8 @@ class Core extends Controller
 					{
 						if(!$val) continue;
 						
+						$this->model->group_start();
+						
 						if($num > 0)
 						{
 							$this->model->or_like($val, $keyword);
@@ -2617,6 +2623,8 @@ class Core extends Controller
 						{
 							$this->model->like($val, $keyword);
 						}
+						
+						$this->model->group_end();
 						
 						$columns[]					= $val . ' AS ' . $key;
 						
@@ -7585,6 +7593,12 @@ class Core extends Controller
 		 */
 		if(is_array($this->_like) && sizeof($this->_like) > 0)
 		{
+			if($this->_like || $this->_or_like)
+			{
+				/* wrap like inside brackets */
+				$this->model->group_start();
+			}
+			
 			foreach($this->_like as $key => $val)
 			{
 				$key								= trim($key);
@@ -7628,6 +7642,11 @@ class Core extends Controller
 						}
 					}
 				}
+			}
+			
+			if(!$this->_or_like)
+			{
+				$this->model->group_end();
 			}
 		}
 		
@@ -7673,6 +7692,12 @@ class Core extends Controller
 					}
 				}
 			}
+			
+			if($this->_like && $this->_or_like)
+			{
+				/* wrap like inside brackets */
+				$this->model->group_end();
+			}
 		}
 		
 		/**
@@ -7680,6 +7705,12 @@ class Core extends Controller
 		 */
 		if(is_array($this->_not_like) && sizeof($this->_not_like) > 0)
 		{
+			if($this->_not_like || $this->_or_not_like)
+			{
+				/* wrap like inside brackets */
+				$this->model->group_start();
+			}
+			
 			foreach($this->_not_like as $key => $val)
 			{
 				$key								= trim($key);
@@ -7707,6 +7738,12 @@ class Core extends Controller
 						}
 					}
 				}
+			}
+			
+			if(!$this->_or_not_like)
+			{
+				/* wrap like inside brackets */
+				$this->model->group_end();
 			}
 		}
 		
@@ -7742,6 +7779,12 @@ class Core extends Controller
 						}
 					}
 				}
+			}
+			
+			if($this->_not_like && $this->_or_not_like)
+			{
+				/* wrap like inside brackets */
+				$this->model->group_end();
 			}
 		}
 		

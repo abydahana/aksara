@@ -403,7 +403,7 @@ if(!function_exists('number2alpha'))
 	}
 }
 
-if(!function_exists('number2alpha'))
+if(!function_exists('alpha2number'))
 {
 	/*
 	 * Convert a string of uppercase letters to an integer.
