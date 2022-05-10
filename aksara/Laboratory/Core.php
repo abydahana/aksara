@@ -5257,7 +5257,7 @@ class Core extends Controller
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
 					
-					if(array_intersect(array('encryption', 'password'), $type) || ($hidden && !$primary))
+					if(array_intersect(array('encryption', 'password'), $type))
 					{
 						continue;
 					}

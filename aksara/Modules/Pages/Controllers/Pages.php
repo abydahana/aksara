@@ -81,7 +81,6 @@ class Pages extends \Aksara\Laboratory\Core
 			array
 			(
 				'page_slug'							=> ($slug ? $slug : ''),
-				'language_id'						=> get_userdata('language_id'),
 				'status'							=> 1
 			)
 		)
