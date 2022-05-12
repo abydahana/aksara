@@ -5221,6 +5221,7 @@ class Core extends Controller
 		$serialized									= $this->serialize($data);
 		$output										= array();
 		$query_string								= array();
+		$unsets										= array();
 		
 		if($serialized)
 		{
@@ -5259,6 +5260,8 @@ class Core extends Controller
 					
 					if(array_intersect(array('encryption', 'password'), $type))
 					{
+						$unsets[]					= $field;
+						
 						continue;
 					}
 					else
@@ -5753,6 +5756,17 @@ class Core extends Controller
 			}
 			
 			$columns								= array_replace(array_flip($column_order), $columns);
+		}
+		
+		if($unsets)
+		{
+			foreach($unsets as $key => $val)
+			{
+				if(isset($columns[$val]))
+				{
+					unset($columns[$val]);
+				}
+			}
 		}
 		
 		$option										= array();
