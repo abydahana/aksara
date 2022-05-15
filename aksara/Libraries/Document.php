@@ -268,6 +268,29 @@ class Document
 		
 		$pdf->WriteHTML($html);
 		
+		/**
+		 * Find attachment
+		 */
+		preg_match_all('/<import src="(.*?)"/', $html, $attachment);
+		
+		if(isset($attachment[1]) && $attachment[1])
+		{
+			/**
+			 * Import attachment
+			 */
+			foreach($attachment[1] as $key => $val)
+			{
+				//$pdf->SetImportUse(); // only with mPDF <8.0
+				
+				$pdf->AddPage();
+				
+				$pagecount							= $pdf->SetSourceFile(str_replace(base_url(), '', $val));
+				$templateId							= $pdf->importPage($pagecount);
+				
+				$pdf->useTemplate($templateId);
+			}
+		}
+		
 		if($method == 'attach')
 		{
 			// attach to email
