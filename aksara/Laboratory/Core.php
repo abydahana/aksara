@@ -8456,7 +8456,7 @@ class Core extends Controller
 		{
 			$validation								= false;
 			$constraint_keys						= array();
-			$foreignKeys							= $this->model->foreign_data($this->_from);
+			$foreignKeys							= ($this->_set_relation ? $this->model->foreign_data($this->_from) : array());
 			
 			if($foreignKeys)
 			{
