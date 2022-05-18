@@ -3122,7 +3122,7 @@ class Core extends Controller
 					return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
 				}
 			}
-			else if($this->_api_request && 'POST' == env('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || ($this->_form_callback && method_exists($this, $this->_form_callback))))
+			else if($this->_api_request && 'POST' == service('request')->getServer('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || ($this->_form_callback && method_exists($this, $this->_form_callback))))
 			{
 				/**
 				 * Indicate the method is requested through API
@@ -3164,7 +3164,7 @@ class Core extends Controller
 						{
 							unset($this->_output->total, $this->_output->pagination);
 						}
-						else if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != env('REQUEST_METHOD'))
+						else if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
 						{
 							unset($this->_output->pagination);
 						}
@@ -3178,14 +3178,14 @@ class Core extends Controller
 					/**
 					 * Returning the response as json format
 					 */
-					if(env('HTTP_REFERER') && stripos(env('HTTP_REFERER'), env('SERVER_NAME')) !== false || $this->_api_request)
+					if(service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false || $this->_api_request)
 					{
-						if($this->_api_request && 'GET' != env('REQUEST_METHOD'))
+						if($this->_api_request && 'GET' != service('request')->getServer('REQUEST_METHOD'))
 						{
 							/**
 							 * Indicate the method is requested through API
 							 */
-							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 						}
 						
 						return make_json
@@ -3232,7 +3232,7 @@ class Core extends Controller
 	 */
 	public function insert_data($table = null, $data = array())
 	{
-		if($this->_api_request && 'POST' != env('REQUEST_METHOD'))
+		if($this->_api_request && 'POST' != service('request')->getServer('REQUEST_METHOD'))
 		{
 			// unlink the files
 			$this->_unlink_files();
@@ -3240,7 +3240,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if($table && $this->model->table_exists($table))
@@ -3329,7 +3329,7 @@ class Core extends Controller
 	 */
 	public function update_data($table = null, $data = array(), $where = array())
 	{
-		if($this->_api_request && 'POST' != env('REQUEST_METHOD'))
+		if($this->_api_request && 'POST' != service('request')->getServer('REQUEST_METHOD'))
 		{
 			// unlink the files
 			$this->_unlink_files();
@@ -3337,7 +3337,7 @@ class Core extends Controller
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if($table && $this->model->table_exists($table))
@@ -3434,12 +3434,12 @@ class Core extends Controller
 	 */
 	public function delete_data($table = null, $where = array(), $limit = 1)
 	{
-		if($this->_api_request && 'DELETE' != env('REQUEST_METHOD'))
+		if($this->_api_request && 'DELETE' != service('request')->getServer('REQUEST_METHOD'))
 		{
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		// check if app on demo mode
@@ -3560,12 +3560,12 @@ class Core extends Controller
 	 */
 	public function delete_batch($table = null)
 	{
-		if($this->_api_request && 'DELETE' != env('REQUEST_METHOD'))
+		if($this->_api_request && 'DELETE' != service('request')->getServer('REQUEST_METHOD'))
 		{
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		// check if app on demo mode
@@ -3674,12 +3674,12 @@ class Core extends Controller
 	 */
 	public function render_form($data = array())
 	{
-		if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != env('REQUEST_METHOD'))
+		if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
 		{
 			/**
 			 * Indicate the method is requested through API
 			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if(!$data && !$this->_insert_on_update_fail && 'autocomplete' != service('request')->getPost('method'))
@@ -8915,7 +8915,7 @@ class Core extends Controller
 					$this->_unlink_files();
 					
 					// throw the exception messages
-					return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . env('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+					return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
 				}
 			}
 		}
@@ -9105,7 +9105,7 @@ class Core extends Controller
 			$api_service							= (object) array
 			(
 				'ip_range'							=> null,
-				'method'							=> json_encode(array(env('REQUEST_METHOD'))),
+				'method'							=> json_encode(array(service('request')->getServer('REQUEST_METHOD'))),
 				'status'							=> 1
 			);
 		}
@@ -9118,9 +9118,9 @@ class Core extends Controller
 		{
 			return throw_exception(403, phrase('the_api_service_you_requested_is_temporary_deactivated'));
 		}
-		else if(!in_array(env('REQUEST_METHOD'), json_decode($api_service->method, true)))
+		else if(!in_array(service('request')->getServer('REQUEST_METHOD'), json_decode($api_service->method, true)))
 		{
-			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_using_the_requested_method') . ': ' . env('REQUEST_METHOD'));
+			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_using_the_requested_method') . ': ' . service('request')->getServer('REQUEST_METHOD'));
 		}
 		else if($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range))
 		{
@@ -9177,7 +9177,7 @@ class Core extends Controller
 			$whitelist								= array_map('trim', explode(',', $whitelist));
 		}
 		
-		if(in_array(env('REMOTE_ADDR'), $whitelist))
+		if(in_array(service('request')->getServer('REMOTE_ADDR'), $whitelist))
 		{
 			return true;
 		}
@@ -9187,7 +9187,7 @@ class Core extends Controller
 			{
 				$wildcardPos						= strpos($val, '*');
 				
-				if($wildcardPos !== false && substr(env('REMOTE_ADDR'), 0, $wildcardPos) . '*' == $val)
+				if($wildcardPos !== false && substr(service('request')->getServer('REMOTE_ADDR'), 0, $wildcardPos) . '*' == $val)
 				{
 					return true;
 				}

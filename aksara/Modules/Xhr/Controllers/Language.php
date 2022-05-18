@@ -45,6 +45,6 @@ class Language extends \Aksara\Laboratory\Core
 			}
 		}
 		
-		return throw_exception(301, null, $_SERVER['HTTP_REFERER'], true);
+		return throw_exception(301, null, service('request')->getServer('HTTP_REFERER'), true);
 	}
 }
