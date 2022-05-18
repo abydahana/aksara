@@ -115,7 +115,7 @@ class Template
 		}
 		
 		/* add suffix to view to detect if mobile or modal template is sets */
-		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_SERVER['GRID_VIEW']) && $_SERVER['GRID_VIEW'] ? '_grid' : null)));
+		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (service('request')->getServer('GRID_VIEW') ? '_grid' : null)));
 		
 		// generate theme view
 		$theme_view									= '../themes/' . $this->_theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
