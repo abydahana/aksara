@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+    aksara:
+        build:
+            args:
+                user: alireza
+                uid: 1000
+            context: .
+            dockerfile: Dockerfile
+        image: aksara/php
+        container_name: aksara
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        volumes:
+            - './:/var/www'
+            - './docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini'
+        networks:
+            - aksara-network
+    aksara-mysql:
+        image: 'mysql:8.0'
+        ports:
+            - '${DB_PORT:-3306}:3306'
+        container_name: aksara-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'aksaramysql:/var/lib/mysql'
+            - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+            - './:/var/www'
+        networks:
+            - aksara-network
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+          retries: 3
+          timeout: 5s
+    server-aksara-app:
+        image: nginx:1.19.4-alpine
+        container_name: server-aksara-app
+        restart: unless-stopped
+        command: ["nginx","-g","daemon off;"]
+        tty: true
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - './:/var/www'
+            - './docker/nginx/conf.d/:/etc/nginx/conf.d/'
+            - './www:/usr/share/nginx/html'
+        networks:
+            - aksara-network
+
+networks:
+    aksara-network:
+        driver: bridge
+volumes:
+    aksaramysql:
+        driver: local
