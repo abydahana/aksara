@@ -58,7 +58,7 @@ class Pages extends \Aksara\Laboratory\Core
 		->set_field('page_slug', 'to_slug', 'page_title')
 		->set_field('page_title', 'hyperlink', 'pages', array('page_slug' => 'page_slug'), true)
 		
-		->add_action('option', '../../pages', phrase('view_page'), 'btn-success', 'mdi mdi-eye', array('page_slug' => 'page_slug'), true)
+		->add_action('option', '../../pages', phrase('view_page'), 'btn-success', 'mdi mdi-eye', array('page_id' => 'page_id'), true)
 		
 		->set_relation
 		(

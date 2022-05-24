@@ -2824,6 +2824,7 @@ class Core extends Controller
 			else
 			{
 				preg_match_all('#\{(.*?)\}#', $title, $matches);
+				
 				$matches							= $matches[1];
 				
 				if($matches)
@@ -2832,9 +2833,12 @@ class Core extends Controller
 					{
 						$title						= str_replace('{' . $val . '}', '', $title);
 					}
+					
+					$title							= preg_replace('/\{[^)]+\}/', '', $title);
 				}
 				
 				preg_match_all('#\{(.*?)\}#', $description, $matches_2);
+				
 				$matches_2							= $matches_2[1];
 				
 				if($matches_2)
@@ -2848,7 +2852,12 @@ class Core extends Controller
 			
 			if(!is_array($title))
 			{
-				$title								= trim($title);
+				$title								= trim(preg_replace('/\{[^}]+\}/', '', $title));
+			}
+			
+			if(!is_array($description))
+			{
+				$description						= trim(preg_replace('/\{[^}]+\}/', '', $description));
 			}
 			
 			// check whether the method of controller is sets single
@@ -2939,7 +2948,7 @@ class Core extends Controller
 				
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
 				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
-				$this->_set_description				= ($description ? $description : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+				$this->_set_description				= $description;
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
 			}
