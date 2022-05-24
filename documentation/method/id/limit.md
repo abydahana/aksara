@@ -1,21 +1,14 @@
-Kontribusi kalian dibutuhkan!
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan menyertakan kalimat pembukaan.
+Digunakan untuk melakukan pembatasan pada hasil tabel yang didapatkan.
 
 ###### Referensi
 
 `limit($parameter)`
 
 ###### Parameter
-* **$parameter** (array) keterangan terkait variabel.
+* **$parameter** (number) angka untuk membatasi hasil.
 
 ###### Contoh Penggunaan
 
 ```php
-$this->limit
-(
-	array
-	(
-		'foo' => 'bar'
-	)
-);
+$this->limit(25);
 ```
