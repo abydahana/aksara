@@ -9,5 +9,6 @@ Sesuai dengan namanya, metode digunakan untuk mewakili `query builder` yang mana
 * **$group_by** (mixed) - nama field yang akan dilakukan pengelompokan
 
 ###### Contoh penggunaan
-
-`$this->group_by('user_id, product_id');`
+```php
+$this->group_by('user_id, product_id');
+```
