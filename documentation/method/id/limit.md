@@ -3,7 +3,7 @@ Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar be
 
 ###### Referensi
 
-`nama_metode($parameter)`
+`limit($parameter)`
 
 ###### Parameter
 * **$parameter** (array) keterangan terkait variabel.
@@ -11,7 +11,7 @@ Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar be
 ###### Contoh Penggunaan
 
 ```php
-$this->nama_metode
+$this->limit
 (
 	array
 	(
