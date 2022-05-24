@@ -25,30 +25,21 @@ class Read extends \Aksara\Laboratory\Core
 	
 	public function index($category = null, $slug = null)
 	{
-		if(!$slug)
+		if($slug)
 		{
-			$slug									= service('request')->getGet('post_slug');
-		}
-		
-		$category									= $this->model->select
-		('
-			blogs__categories.category_slug
-		')
-		->join
-		(
-			'blogs__categories',
-			'blogs__categories.category_id = blogs.post_category'
-		)
-		->get_where
-		(
-			'blogs',
-			array
+			$this->where
 			(
-				'blogs.post_slug'					=> service('request')->getGet('post_slug')
-			),
-			1
-		)
-		->row('category_slug');
+				array
+				(
+					'post_slug'						=> $slug,
+					'status'						=> 1
+				)
+			);
+		}
+		else if(service('request')->getGet('post_id'))
+		{
+			$this->where('post_id', service('request')->getGet('post_id'));
+		}
 		
 		$this->set_title('{post_title}', phrase('no_post_were_found'))
 		->set_icon('mdi mdi-newspaper')
@@ -104,8 +95,8 @@ class Read extends \Aksara\Laboratory\Core
 					'blogs',
 					array
 					(
-						'blogs__categories.category_slug'	=> $category,
-						'blogs.post_slug != '		=> $slug,
+						'category_slug'				=> ($category ? $category : ''),
+						'post_slug != '				=> ($slug ? $slug : ''),
 						'blogs.status'				=> 1,
 						'blogs.language_id'			=> get_userdata('language_id')
 					)
@@ -139,14 +130,6 @@ class Read extends \Aksara\Laboratory\Core
 		(
 			'app__users',
 			'app__users.user_id = blogs.author'
-		)
-		->where
-		(
-			array
-			(
-				'blogs.post_slug'					=> $slug,
-				'blogs.status'						=> 1
-			)
 		)
 		->limit(1)
 		

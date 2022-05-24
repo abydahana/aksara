@@ -90,7 +90,7 @@ class Testimonials extends \Aksara\Laboratory\Core
 		->merge_field('first_name, last_name')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		
-		->order_by('updated_timestamp', 'DESC')
+		->order_by('timestamp', 'DESC')
 		
 		->render($this->_table);
 	}

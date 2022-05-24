@@ -106,7 +106,7 @@ class Blogs extends \Aksara\Laboratory\Core
 		->set_field('post_title', 'hyperlink', 'blogs/read', array('post_slug' => 'post_slug'), true)
 		->set_field('category_title', 'hyperlink', 'cms/blogs', array('category' => 'post_category'))
 		
-		->add_action('option', '../../blogs/read', phrase('view_post'), 'btn-success', 'mdi mdi-eye', array('post_slug' => 'post_slug'), true)
+		->add_action('option', '../../blogs/read', phrase('view_post'), 'btn-success', 'mdi mdi-eye', array('post_id' => 'post_id'), true)
 		
 		->set_validation
 		(

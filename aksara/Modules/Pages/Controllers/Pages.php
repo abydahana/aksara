@@ -26,9 +26,20 @@ class Pages extends \Aksara\Laboratory\Core
 	
 	public function index($slug = null)
 	{
-		if(!$slug && service('request')->getGet('page_slug'))
+		if($slug)
 		{
-			$slug									= service('request')->getGet('page_slug');
+			$this->where
+			(
+				array
+				(
+					'page_slug'						=> $slug,
+					'status'						=> 1
+				)
+			);
+		}
+		else if(service('request')->getGet('page_id'))
+		{
+			$this->where('page_id', service('request')->getGet('page_id'));
 		}
 		
 		$this->set_title('{page_title}', phrase('page_not_found'))
@@ -74,14 +85,6 @@ class Pages extends \Aksara\Laboratory\Core
 			array
 			(
 				'pages__carousels.status'			=> 1
-			)
-		)
-		->where
-		(
-			array
-			(
-				'page_slug'							=> ($slug ? $slug : ''),
-				'status'							=> 1
 			)
 		)
 		->limit(1)
