@@ -4182,6 +4182,8 @@ class Core extends Controller
 					
 					if(is_array($parameter) && sizeof($parameter) > 0)
 					{
+						$num						= 0;
+						
 						foreach($parameter as $value => $label)
 						{
 							if(array_intersect(array('dropdown'), $type))
@@ -4198,13 +4200,13 @@ class Core extends Controller
 								}
 								
 								$options			.= '
-									<label class="' . $extra_class . '">
-										<input type="checkbox" name="' . $field . '[]" value="' . $value . '"' . ($default_value == $value || in_array($value, $checker) ? ' checked' : null) . $read_only . ' />
-										&nbsp;
-										' . $label . '
-										&nbsp;
+									<div class="custom-control custom-switch">
+										<input type="checkbox" name="' . $field . '[]" value="' . $value . '" class="custom-control-input ' . $extra_class . '" id="check_' . $num . '"' . ($default_value == $value || in_array($value, $checker) ? ' checked' : null) . $read_only . ' />
+										<label class="custom-control-label" for="check_' . $num . '">
+											' . $label . '
+										</label>
 										' . $extra_params . '
-									</label>
+									</div>
 								';
 							}
 							else if(array_intersect(array('radio'), $type))
@@ -4218,6 +4220,8 @@ class Core extends Controller
 									</label>
 								';
 							}
+							
+							$num++;
 						}
 					}
 					
@@ -4354,12 +4358,12 @@ class Core extends Controller
 				else if(array_intersect(array('boolean'), $type))
 				{
 					$content						= '
-						<label class="d-block pt-1">
-							<input type="checkbox" name="' . $field . '" value="1" id="' . $field . '_input"' . ($default_value == 1 || $original == 1 || ('create' == $this->_method && (!isset($this->_default_value[$field]) || (isset($this->_default_value[$field]) && $this->_default_value[$field] == 1))) ? ' checked' : null) . $read_only . ' />
-							&nbsp;
-							' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
-							&nbsp;
-						</label>
+						<div class="custom-control custom-switch">
+							<input type="checkbox" name="' . $field . '" value="1" class="custom-control-input" id="' . $field . '_input"' . ($default_value == 1 || $original == 1 || ('create' == $this->_method && (!isset($this->_default_value[$field]) || (isset($this->_default_value[$field]) && $this->_default_value[$field] == 1))) ? ' checked' : null) . $read_only . ' />
+							<label class="custom-control-label" for="' . $field . '_input">
+								' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
+							</label>
+						</div>
 					';
 				}
 				else if(array_intersect(array('email'), $type))

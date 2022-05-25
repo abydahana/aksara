@@ -114,6 +114,7 @@ class Groups extends \Aksara\Laboratory\Core
 			
 			foreach($modules_collection as $key => $val)
 			{
+				$path								= str_replace('/', '__', $val->path);
 				$privilege_output					= null;
 				$privileges							= ($val->privileges ? json_decode($val->privileges) : new \stdClass());
 				
@@ -186,11 +187,12 @@ class Groups extends \Aksara\Laboratory\Core
 					{
 						$privilege_output			.= '
 							<div class="col-6 col-md-3 bg-white">
-								<label class="d-block font-weight-bold mb-0"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
-									<input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="checker-children"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
-									&nbsp;
-									<span class="badge pr-0 pl-0">' . $label . '</span>
-								</label>
+								<div class="custom-control custom-switch mb-0"' . (strlen($label) > 12 ? ' data-toggle="tooltip" title="' . $label . '"' : null) . '>
+									<input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="custom-control-input checker-children" id="' . $path . '_' . $privilege . '"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
+									<label class="custom-control-label text-sm" for="' . $path . '_' . $privilege . '">
+										' . $label . '
+									</label>
+								</div>
 							</div>
 						';
 					}
@@ -216,15 +218,16 @@ class Groups extends \Aksara\Laboratory\Core
 						</label>
 					</a>
 					' : '') . '
-					<div class="check-group text-truncate">
-						<label class="d-block">
-							' . (in_array($this->_method, array('create', 'update')) ? '<input type="checkbox" data-toggle="tooltip" title="' . phrase('check_all') . '" role="checker" data-parent=".check-group" />
-							&nbsp;' : null) . '
-							' . $module_path . '
+					<div class="check-group">
+						<div class="custom-control custom-switch">
+							' . (in_array($this->_method, array('create', 'update')) ? '<input type="checkbox" class="custom-control-input" id="' . $path . '" data-toggle="tooltip" title="' . phrase('check_all') . '" role="checker" data-parent=".check-group" />' : null) . '
+							<label class="custom-control-label font-weight-bold" for="' . $path . '">
+								' . $module_path . '
+							</label>
 							<a href="' . base_url($val->path) . '" target="_blank">
 								<i class="mdi mdi-launch"></i>
 							</a>
-						</label>
+						</div>
 						<div class="row form-group">
 							' . $privilege_output . '
 						</div>
