@@ -299,6 +299,19 @@ class Updater extends Migration
 		
 		$this->forge->modifyColumn
 		(
+			'app__shortlink',
+			array
+			(
+				'session' => array
+				(
+					'name' => 'data',
+					'type' => (DB_DRIVER === 'MySQLi' ? 'longtext' : 'text')
+				)
+			)
+		);
+		
+		$this->forge->modifyColumn
+		(
 			'app__sessions',
 			array
 			(

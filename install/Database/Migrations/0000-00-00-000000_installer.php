@@ -1089,9 +1089,9 @@ class Installer extends Migration
 					'type' => 'text',
 					'null' => false
 				),
-				'session' => array
+				'data' => array
 				(
-					'type' => 'text',
+					'type' => (in_array($this->db->DBDriver, array('Postgre', 'SQLSRV')) ? 'text' : 'longtext'),
 					'null' => false
 				)
 			)

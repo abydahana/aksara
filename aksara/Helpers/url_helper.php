@@ -68,7 +68,7 @@ if (!function_exists('base_url'))
 			$uri									= $method;
 		}
 		
-		if(strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on' || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || file_exists($uri))
+		if((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || file_exists($uri))
 		{
 			return service('request')->config->baseURL . rtrim($uri, '/');
 		}

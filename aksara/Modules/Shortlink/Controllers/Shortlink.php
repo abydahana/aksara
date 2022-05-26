@@ -42,10 +42,10 @@ class Shortlink extends \Aksara\Laboratory\Core
 			/* set the one time temporary session */
 			if(!get_userdata('is_logged'))
 			{
-				$session							= json_decode($query->session, true);
+				$data								= json_decode($query->data, true);
 				$session['sess_destroy_after']		= 'once';
 				
-				set_userdata($session);
+				set_userdata($data);
 			}
 			
 			/* redirect to real URL */
