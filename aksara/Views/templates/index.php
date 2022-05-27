@@ -76,7 +76,7 @@ if(isset($results->extra_action->toolbar))
 					<div class="input-group input-group-sm">
 						
 						<?php echo (isset($results->filter) ? $results->filter : null); ?>
-						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo service('request')->getGet('q'); ?>" role="autocomplete" />
+						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo htmlspecialchars(service('request')->getGet('q')); ?>" role="autocomplete" />
 						<select name="column" class="form-control form-control-sm">
 							<option value="all"><?php echo phrase('all_columns'); ?></option>
 							<?php

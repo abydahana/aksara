@@ -66,7 +66,7 @@
 			<form action="<?php echo current_page(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
 				<div class="form-group">
 					<div class="input-group">
-						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('search_phrase'); ?>" value="<?php echo service('request')->getGet('q'); ?>" />
+						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('search_phrase'); ?>" value="<?php echo htmlspecialchars(service('request')->getGet('q')); ?>" />
 						<div class="input-group-append">
 							<button type="submit" class="btn btn-primary">
 								<i class="mdi mdi-magnify"></i>
