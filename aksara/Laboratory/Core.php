@@ -2316,6 +2316,12 @@ class Core extends Controller
 	 */
 	public function render($table = null, $view = null)
 	{
+		if(!$table && $this->_table)
+		{
+			// set table when not present
+			$table									= $this->_table;
+		}
+		
 		/**
 		 * Token checker
 		 */
