@@ -1300,7 +1300,7 @@ class Template
 					}
 					
 					$menus							.= '
-						<li class="' . $navigation_item_class . ($children ? ' ' . $dropdown_link_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() || (service('uri')->getPath() && $slug == preg_replace(array('/\/create/', '/\/read/', '/\/update/'), '', service('uri')->getPath())) ? ' active' : '') . '">
+						<li class="' . $navigation_item_class . ($children && $dropdown_link_class ? ' ' . $dropdown_link_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() || (service('uri')->getPath() && $slug == preg_replace(array('/\/create/', '/\/read/', '/\/update/'), '', service('uri')->getPath())) ? ' active' : '') . '">
 							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
 								' . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? '<i class="' . (isset($field['icon']) ? $field['icon'] : 'mdi mdi-circle-outline') . '"></i>' : null) . '
 								' . ($children && 'header' != $placement ? '<i class="mdi mdi-chevron-right float-right"></i>' : null) . '

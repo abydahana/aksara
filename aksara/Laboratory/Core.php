@@ -6940,7 +6940,7 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function order_by($column = null, $direction = null, $escape = true)
+	public function order_by($column = null, $direction = 'ASC', $escape = true)
 	{
 		if(!is_array($column))
 		{
