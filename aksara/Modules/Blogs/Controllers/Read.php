@@ -131,6 +131,7 @@ class Read extends \Aksara\Laboratory\Core
 			'app__users',
 			'app__users.user_id = blogs.author'
 		)
+		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 		->limit(1)
 		
 		->render($this->_table);

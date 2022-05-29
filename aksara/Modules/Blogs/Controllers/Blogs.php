@@ -69,14 +69,14 @@ class Blogs extends \Aksara\Laboratory\Core
 			'app__users.user_id = blogs.author'
 		)
 		->order_by('updated_timestamp', 'DESC')
+		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 		->get_where
 		(
 			'blogs',
 			array
 			(
 				'blogs.status'						=> 1,
-				'blogs.headline'					=> 1,
-				'blogs.language_id'					=> get_userdata('language_id')
+				'blogs.headline'					=> 1
 			),
 			9
 		)
