@@ -108,8 +108,7 @@ class Category extends \Aksara\Laboratory\Core
 			array
 			(
 				'blogs__categories.category_slug'	=> $slug,
-				'blogs.status'						=> 1,
-				'blogs.language_id'					=> get_userdata('language_id')
+				'blogs.status'						=> 1
 			)
 		)
 		
