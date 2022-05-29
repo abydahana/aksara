@@ -41,7 +41,8 @@ class Announcements extends \Aksara\Laboratory\Core
 			)
 		)
 		
-		->order_by('end_date')
+		->order_by('end_date', 'DESC')
+		->order_by('FIELD(language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 		
 		->render($this->_table);
 	}

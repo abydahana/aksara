@@ -68,6 +68,7 @@ class Category extends \Aksara\Laboratory\Core
 					)
 				)
 				->order_by('category_title', 'RANDOM')
+				->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 				->group_by('category_id, category_slug, category_title, category_description, category_image')
 				->get('blogs__categories')
 				->result()
@@ -101,6 +102,7 @@ class Category extends \Aksara\Laboratory\Core
 			'app__users.user_id = blogs.author'
 		)
 		->order_by('blogs.updated_timestamp', 'DESC')
+		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 		->where
 		(
 			array

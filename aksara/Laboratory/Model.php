@@ -1352,11 +1352,11 @@ class Model
 			}
 			else
 			{
-				$column								= array_map('trim', explode(',', $column));
+				$column								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($column)));
 				
 				foreach($column as $key => $val)
 				{
-					$dir							= null;
+					$dir							= 'ASC';
 					
 					if(strpos($val, '(') !== false && strpos($val, ')') !== false)
 					{
@@ -1369,7 +1369,7 @@ class Model
 					
 					$this->_order_by[$col]			= array
 					(
-						'direction'					=> ($dir ? $dir : 'asc'),
+						'direction'					=> $dir,
 						'escape'					=> $escape
 					);
 				}

@@ -6954,10 +6954,12 @@ class Core extends Controller
 			}
 			else
 			{
-				$column								= array_map('trim', explode(',', $column));
+				$column								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($column)));
 				
 				foreach($column as $key => $val)
 				{
+					$dir							= 'ASC';
+					
 					if(strpos($val, '(') !== false && strpos($val, ')') !== false)
 					{
 						$col						= $val;
@@ -6969,7 +6971,7 @@ class Core extends Controller
 					
 					$this->_order_by[$col]			= array
 					(
-						'direction'					=> ($dir ? $dir : 'asc'),
+						'direction'					=> $dir,
 						'escape'					=> $escape
 					);
 				}

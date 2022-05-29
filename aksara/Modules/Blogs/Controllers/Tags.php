@@ -68,6 +68,8 @@ class Tags extends \Aksara\Laboratory\Core
 			)
 		)
 		
+		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		
 		->render('blogs');
 	}
 }

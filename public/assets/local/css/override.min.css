@@ -882,6 +882,14 @@ input::-webkit-inner-spin-button
 	font-size: 14px
 }
 
+.custom-switch
+{
+	display: inline-block;
+	margin-right: 1rem;
+	padding-top: .35rem;
+	padding-bottom: .35rem
+}
+
 input[type=checkbox]:not(.custom-control-input),
 input[type=radio]
 {
@@ -2180,7 +2188,10 @@ ol.guide li::before
 	
 	.sidebar-collapsed:not(.sidebar-hovered) #sidebar-wrapper a.nav-link
 	{
-		padding-left: 0
+		padding-left: 0;
+		border-bottom: 1px solid rgba(127, 139, 149, .25);
+		padding-top: 6px;
+		padding-bottom: 6px
 	}
 	
 	.sidebar-collapsed:not(.sidebar-hovered) #sidebar-wrapper .mdi

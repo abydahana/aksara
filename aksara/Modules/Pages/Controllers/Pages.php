@@ -87,6 +87,7 @@ class Pages extends \Aksara\Laboratory\Core
 				'pages__carousels.status'			=> 1
 			)
 		)
+		->order_by('FIELD(pages.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 		->limit(1)
 		
 		->render($this->_table);
