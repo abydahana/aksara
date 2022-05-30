@@ -766,7 +766,9 @@ class Template
 			
 			foreach(service('request')->getGet() as $key => $val)
 			{
-				if(in_array($key, array('q', 'per_page'))) continue;
+				$key								= preg_replace('/[^\w-]/', '', $key);
+				
+				if(!$key || in_array($key, array('q', 'per_page'))) continue;
 				
 				$query_string						.= '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
 			}
