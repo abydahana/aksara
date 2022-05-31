@@ -427,9 +427,11 @@
 					{
 						foreach(service('request')->getGet() as $key => $val)
 						{
-							if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+							$key					= preg_replace('/[^\w-]/', '', $key);
 							
-							echo '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
+							if(!$key || in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+							
+							echo '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
 						}
 					}
 				?>
