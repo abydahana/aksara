@@ -743,7 +743,7 @@ class Template
 				<ul class="pagination pagination-sm">
 					<li class="page-item disabled">
 						<a href="javascript:void(0)" tabindex="-1" class="page-link">
-							Previous
+							' . phrase('previous') . '
 						</a>
 					</li>
 					<li class="page-item active">
@@ -753,7 +753,7 @@ class Template
 					</li>
 					<li class="page-item disabled">
 						<a href="javascript:void(0)" class="page-link">
-							Next
+							' . phrase('next') . '
 						</a>
 					</li>
 				</ul>
