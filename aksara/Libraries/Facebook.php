@@ -37,8 +37,8 @@ class Facebook
 		(
 			array
 			(
-				'app_id'							=> $this->_client_id,
-				'app_secret'						=> $this->_client_secret,
+				'app_id'							=> ($this->_client_id ? $this->_client_id : 'no_key'),
+				'app_secret'						=> ($this->_client_secret ? $this->_client_secret : 'no_hash'),
 				'default_graph_version'				=> 'v12.0'
 			)
 		);

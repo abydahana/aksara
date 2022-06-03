@@ -31,8 +31,8 @@ class Google
 		
 		$this->client								= new \Google_Client();
 		
-		$this->client->setClientId($this->_client_id);
-		$this->client->setClientSecret($this->_client_secret);
+		$this->client->setClientId(($this->_client_id ? $this->_client_id : 'no_key'));
+		$this->client->setClientSecret(($this->_client_secret ? $this->_client_secret : 'no_hash'));
 		$this->client->setRedirectUri(base_url('auth'));
 		$this->client->setScopes
 		(
