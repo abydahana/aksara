@@ -21,7 +21,7 @@ class Auth extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if($this->valid_token(service('request')->getPost('_token')))
+		if(service('request')->getPost('_token'))
 		{
 			/* apply login attempts limit (prevent bruteforce) */
 			if(get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
