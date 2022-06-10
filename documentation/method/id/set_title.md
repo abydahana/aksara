@@ -8,4 +8,4 @@ Fungsi ini di gunakan untuk menetapkan value pada judul
 $this->set_title('Ini Judul');
 ```
 
-![alt text](https://github.com/khoirulmustofa/Kumpulan-Gambar/blob/master/Barang%20KM%20POS.png)
+![alt text](https://github.com/khoirulmustofa/aksara/blob/main/documentation/images/set_title.jpg)
