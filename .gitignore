@@ -1,0 +1,6 @@
+
+composer.lock
+vendor
+writable/cache
+writable/session
+writable/logs
