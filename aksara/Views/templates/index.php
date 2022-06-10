@@ -67,16 +67,18 @@ if(isset($results->extra_action->toolbar))
 						{
 							foreach(service('request')->getGet() as $key => $val)
 							{
-								if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+								$key				= preg_replace('/[^\w-]/', '', $key);
 								
-								echo '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
+								if(!$key || in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+								
+								echo '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
 							}
 						}
 					?>
 					<div class="input-group input-group-sm">
 						
 						<?php echo (isset($results->filter) ? $results->filter : null); ?>
-						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo htmlspecialchars(service('request')->getGet('q')); ?>" role="autocomplete" />
+						<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" role="autocomplete" />
 						<select name="column" class="form-control form-control-sm">
 							<option value="all"><?php echo phrase('all_columns'); ?></option>
 							<?php

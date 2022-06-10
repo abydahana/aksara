@@ -567,31 +567,49 @@ class Template
 			);
 		}
 		
+		$this->_view								= $this->get_view($view, $data, $table);
+		
+		// generate the html from the view
+		$data->html									= preg_replace(array('/<!--(.|\s)*?-->/'), '', view($this->_view, (array) $data));
+		
+		$minify_pattern								= array
+		(
+			'/[ \t]+/'								=> ' ',
+			'/(\>)\s*(\<)/m'						=> '$1 $2',
+			'/<!--(.|\s)*?-->/'						=> ''
+		);
+		
+		/* make a backup of "pre" tag */
+		preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
+		
+		$data->html									= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
+		
+		/* make a backup of "script" tag */
+		preg_match_all('#\<script.*\>(.*)\<\/script\>#Uis', $data->html, $script_backup);
+		
+		$data->html									= str_replace($script_backup[0], array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), $data->html);
+		
+		/* minify the data */
+		$data->html									= preg_replace(array_keys($minify_pattern), array_values($minify_pattern), $data->html);
+		
+		/* rollback the pre tag */
+		$data->html									= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
+		
+		/* rollback the script tag */
+		$data->html									= str_replace(array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $script_backup[0]), $data->html);
+		
 		/**
 		 * Build the result and send to client
 		 */
-		$this->_view								= $this->get_view($view, $data, $table);
-		
 		if((service('request')->isAJAX() && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) || $this->_api_request)
 		{
-			$data->html								= preg_replace('/<!--(.|\s)*?-->/', '', view($this->_view, (array) $data));
-			
 			unset($data->template, $data->pagination);
-			
-			/* make a backup of "pre" tag */
-			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
-			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
-			
-			$data->html								= preg_replace(array('/[ \t]+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\>)\s*(\<)/m'), array(' ', '>', '<', '$1$2'), $data->html);
-			
-			/* rollback the pre tag */
-			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
 			
 			return make_json($data);
 		}
 		else
 		{
-			$content								= preg_replace('/<!--(.|\s)*?-->/', '', view($this->_view, (array) $data));
+			$content								= $data->html;
 			
 			$output									= array
 			(
@@ -743,7 +761,7 @@ class Template
 				<ul class="pagination pagination-sm">
 					<li class="page-item disabled">
 						<a href="javascript:void(0)" tabindex="-1" class="page-link">
-							Previous
+							' . phrase('previous') . '
 						</a>
 					</li>
 					<li class="page-item active">
@@ -753,7 +771,7 @@ class Template
 					</li>
 					<li class="page-item disabled">
 						<a href="javascript:void(0)" class="page-link">
-							Next
+							' . phrase('next') . '
 						</a>
 					</li>
 				</ul>

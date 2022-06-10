@@ -44,7 +44,7 @@
 		</div>
 		<div class="col-md-6 offset-md-2">
 			<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="form-horizontal relative --xhr-form mb-3">
-				<input type="text" name="q" class="form-control form-control-sm" placeholder="<?php echo phrase('search_addon'); ?>" value="<?php echo htmlspecialchars(service('request')->getGet('q')); ?>" />
+				<input type="text" name="q" class="form-control form-control-sm" placeholder="<?php echo phrase('search_addon'); ?>" value="<?php echo (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" />
 				<button type="submit" class="btn float-right absolute top right">
 					<i class="mdi mdi-magnify font-weight-bold"></i>
 				</button>

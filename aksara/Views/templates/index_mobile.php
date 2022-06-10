@@ -427,9 +427,11 @@
 					{
 						foreach(service('request')->getGet() as $key => $val)
 						{
-							if(in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+							$key					= preg_replace('/[^\w-]/', '', $key);
 							
-							echo '<input type="hidden" name="' . $key . '" value="' . $val . '" />';
+							if(!$key || in_array($key, array('aksara', 'q', 'per_page', 'column'))) continue;
+							
+							echo '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
 						}
 					}
 				?>
@@ -437,7 +439,7 @@
 				<?php echo (isset($results->filter) ? '<div class="form-group">' . $results->filter . '</div>' : null); ?>
 				
 				<div class="form-group">
-					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo htmlspecialchars(service('request')->getGet('q')); ?>" role="autocomplete" />
+					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" role="autocomplete" />
 				</div>
 				<div class="form-group">
 					<select name="column" class="form-control">

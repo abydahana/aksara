@@ -411,7 +411,7 @@ a:hover,
 	overflow: hidden
 }
 
-.rounded-more .card-header:first-child
+.card.rounded-more > .card-header:first-child
 {
 	border-radius: 1rem 1rem 0 0!important;
 	-webkit-border-radius: 1rem 1rem 0 0!important;
@@ -419,7 +419,7 @@ a:hover,
 	overflow: hidden
 }
 
-.rounded-more .card-footer:last-child
+.card.rounded-more .card-footer:last-child
 {
 	border-radius: 0 0 1rem 1rem!important;
 	-webkit-border-radius: 0 0 1rem 1rem!important;
@@ -2058,6 +2058,60 @@ ol.guide li::before
 
 @-webkit-keyframes ripple {
 	to {-webkit-transform: scale(24); opacity:0}
+}
+
+.btn-switch
+{
+	background-color: #343a40;
+	border-color: #343a40;
+	width: 35px;
+	position: relative
+}
+
+.btn-switch:before
+{
+	position: absolute;
+	left: 3px;
+	right: 3px;
+	content: '';
+	background: #dc3545;
+	border-radius: 3px
+}
+
+.btn-switch:after
+{
+	position: absolute;
+	left: 6px;
+	content: '';
+	background: #fff;
+	border: 1px solid #343a40;
+	border-radius: 50%;
+	transition: all ease-in-out .3s
+}
+
+.btn-switch.active:before
+{
+	background: #28a745!important
+}
+
+.btn-switch.active:after
+{
+	left: auto!important;
+	right: 6px;
+	transition: all ease-in-out .3s
+}
+
+.btn-switch.btn-xs:before
+{
+	height: 6px;
+	margin: 6px 5px
+}
+
+.btn-switch.btn-xs:after
+{
+	width: 12px;
+	height: 12px;
+	top: 4px
 }
 
 /**
