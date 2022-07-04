@@ -64,6 +64,23 @@ $app       = require realpath($bootstrap) ?: $bootstrap;
 
 /*
  *---------------------------------------------------------------
+ * SCRIPT TAMBAHAN
+ *---------------------------------------------------------------
+ * Mengacu pada file Codeigniter 4 relase terbaru: (https://github.com/codeigniter4/CodeIgniter4/blob/develop/public/index.php)
+ * agar support untuk PHP Built-in web server ( php -S localhost:8000 )
+ */
+$app = Config\Services::codeigniter();
+$app->initialize();
+$context = is_cli() ? 'php-cli' : 'web';
+$app->setContext($context);
+
+// Load environment settings from .env files into $_SERVER and $_ENV
+require_once SYSTEMPATH . 'Config/DotEnv.php';
+(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
+
+
+/*
+ *---------------------------------------------------------------
  * LAUNCH THE APPLICATION
  *---------------------------------------------------------------
  * Now that everything is setup, it's time to actually fire
