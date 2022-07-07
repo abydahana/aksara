@@ -1,4 +1,4 @@
-<div class="bg-secondary text-white pt-5 pb-5" style="background-image:url(<?php echo get_image('blogs', 'cover.jpg'); ?>)">
+<div class="bg-secondary text-white pt-5 pb-5" style="background-image:url(<?php echo get_image('blogs', 'cover.jpg'); ?>); background-position:center center; background-repeat:no-repeat">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 offset-md-2">

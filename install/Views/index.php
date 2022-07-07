@@ -10,7 +10,7 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-		<link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" />
 		<link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
 	</head>
 	<style type="text/css">
@@ -25,14 +25,17 @@
 		<div class="container-fluid h-100">
 			<div class="row h-100 align-items-center">
 				<div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2 pt-3 pb-3">
-					<div class="card shadow">
-						<div class="card-body pt-0 pr-3 pb-0 pl-3">
+					<div class="card shadow border-0 rounded-4 overflow-hidden">
+						<div class="card-body pt-0 pe-3 pb-0 ps-3">
 							<div class="row">
 								<div class="col-md-4 bg-light border-right pt-3 d-none d-md-block">
 									<div class="sticky-top" style="top:15px">
 										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
 											<h4 class="font-weight-bold mb-3">
-												Aksara <small class="text-sm font-weight-light">Installer</small>
+												<b>
+													Aksara
+												</b>
+												<small class="text-sm text-secondary">Installer</small>
 											</h4>
 										</a>
 										<hr class="row" />
@@ -85,7 +88,7 @@
 													</h4>
 												</div>
 												<div class="col-5">
-													<select name="language" class="form-control form-control-sm" placeholder="<?php echo phrase('choose_language'); ?>">
+													<select name="language" class="form-select form-select-sm" placeholder="<?php echo phrase('choose_language'); ?>">
 														<option value="en"<?php echo (isset($_SESSION['language']) && $_SESSION['language'] == 'en' ? ' selected' : null); ?>>English</option>
 														<option value="id"<?php echo (isset($_SESSION['language']) && $_SESSION['language'] == 'id' ? ' selected' : null); ?>>Indonesia</option>
 													</select>
@@ -122,7 +125,7 @@
 											<p class="mb-0">
 												<?php echo phrase('the_fool'); ?>,
 											</p>
-											<p class="mb-0">
+											<p>
 												<a href="//abydahana.github.io" class="text-primary text-decoration-none" target="_blank">
 													<b>
 														Aby Dahana
@@ -131,7 +134,7 @@
 											</p>
 											<hr class="row" />
 											<div class="--validation-callback"></div>
-											<div class="row">
+											<div class="row align-items-center">
 												<div class="col-md-6">
 													<label>
 														<input type="checkbox" name="agree" value="1" />
@@ -139,11 +142,13 @@
 													</label>
 												</div>
 												<div class="col-md-6">
-													<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
-													<button type="submit" class="btn btn-primary btn-block" disabled>
-														<i class="mdi mdi-check"></i>
-														<?php echo phrase('start_installation'); ?>
-													</button>
+													<div class="d-grid">
+														<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
+														<button type="submit" class="btn btn-primary" disabled>
+															<i class="mdi mdi-check"></i>
+															<?php echo phrase('start_installation'); ?>
+														</button>
+													</div>
 												</div>
 											</div>
 										</form>
@@ -156,7 +161,7 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="assets/jquery/jquery.min.js"></script>
-		<script type="text/javascript" src="assets/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 		
 		<script type="text/javascript">
 			$(document).ready(function()
