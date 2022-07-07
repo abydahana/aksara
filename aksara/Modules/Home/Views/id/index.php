@@ -17,7 +17,7 @@
 	}
 ?>
 
-<div class="jumbotron jumbotron-fluid bg-light">
+<div class="bg-light pt-5 pb-5">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 offset-lg-2">
@@ -158,15 +158,15 @@
 					Seperti kebanyakan peneliti lainnya, jika merasa terbantu dengan penelitian yang saya lakukan dan ingin memberikan dukungan moril maupun materil, jangan sungkan untuk menghubungi saya dari <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Website Pengembangan Aksara</b></a>. Saya akan sangat menghargai apapun dukungan Anda, dan tentu saja itu akan membuat saya lebih percaya diri.
 				</p>
 			</div>
-			<h3 class="text-center font-weight-light">
+			<h5 class="text-center font-weight-light">
 				Sekali lagi, terima kasih.
-			</h3>
-			<h3 class="text-center font-weight-light mb-3">
+			</h5>
+			<h5 class="text-center font-weight-light mb-3">
 				Kita semua luar biasa!
-			</h3>
-			<h3 class="text-center">
+			</h5>
+			<h4 class="text-center">
 				<a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-			</h3>
+			</h4>
 		</div>
 	</div>
 </div>
