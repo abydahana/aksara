@@ -1,19 +1,21 @@
 <?php if($results) { ?>
-<div class="jumbotron jumbotron-fluid bg-light gradient">
-	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+<div class="bg-light text-secondary">
+	<div class="container pt-5 pb-5">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<h1 class="text-center">
+					<?php echo $meta->title; ?>
+				</h1>
+				<p class="lead text-center">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 <?php } ?>
 
-<div class="container pt-3 pb-3">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-md-10 offset-1">
 			<?php
@@ -46,7 +48,7 @@
 									<h1 class="text-muted">
 										404
 									</h1>
-									<i class="mdi mdi-message-alert-outline mdi-5x text-muted"></i>
+									<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
 								</div>
 								<h2 class="text-center">
 									' . phrase('announcement_not_found') . '

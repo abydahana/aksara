@@ -3,7 +3,7 @@
  * Main Helper
  * A helper that required by Aksara
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -311,9 +311,22 @@ if(!function_exists('show_flashdata'))
 		if(service('session')->getFlashdata())
 		{
 			return '
-				<div class="alert ' . (service('session')->getFlashdata('success') ? 'alert-success' : (service('session')->getFlashdata('warning') ? 'alert-warning' : 'alert-danger')) . ' alert-dismissable fade' . (service('session')->getFlashdata() ? ' show' : null) . ' exception text-center rounded-0 fixed-top">
-					<i class="mdi mdi-' . (service('session')->getFlashdata('success') ? 'check' : (service('session')->getFlashdata('warning') ? 'alert-octagram-outline' : 'emoticon-sad-outline')) . '"></i>
-					' . (service('session')->getFlashdata('success') ? service('session')->getFlashdata('success') : (service('session')->getFlashdata('warning') ? service('session')->getFlashdata('warning') : service('session')->getFlashdata('error'))) . '
+				<div class="toast-container position-fixed bottom-0 end-0 p-3">
+					<div class="toast align-items-center text-bg-' . (service('session')->getFlashdata('success') ? 'success' : (service('session')->getFlashdata('warning') ? 'warning' : 'danger')) . ' fade show" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="d-flex">
+							<div class="toast-body">
+								<div class="row align-items-center">
+									<div class="col-2">
+										<i class="mdi mdi-' .(service('session')->getFlashdata('success') ? 'check-circle-outline' : (service('session')->getFlashdata('warning') ? 'alert-octagram-outline' : 'emoticon-sad-outline')) . ' mdi-2x"></i>
+									</div>
+									<div class="col-10 text-break">
+										' . (service('session')->getFlashdata('success') ? service('session')->getFlashdata('success') : (service('session')->getFlashdata('warning') ? service('session')->getFlashdata('warning') : service('session')->getFlashdata('error'))) . '
+									</div>
+								</div>
+							</div>
+							<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="' . phrase('close') . '"></button>
+						</div>
+					</div>
 				</div>
 			';
 		}
@@ -463,5 +476,35 @@ if(!function_exists('alpha2number'))
 		}
 		
 		return ($number - 1) . $suffix;
+	}
+}
+
+if(!function_exists('encrypt'))
+{
+	/*
+	 * Encryption
+	 */
+	function encrypt($passphrase = null)
+	{
+		if(!$passphrase) return false;
+		
+		$encrypter									= \Config\Services::encrypter();
+		
+		return base64_encode($encrypter->encrypt($passphrase));
+	}
+}
+
+if(!function_exists('decrypt'))
+{
+	/*
+	 * Encryption
+	 */
+	function decrypt($source = null)
+	{
+		if(!$source) return false;
+		
+		$encrypter									= \Config\Services::encrypter();
+		
+		return $encrypter->decrypt(base64_decode($source));
 	}
 }

@@ -1,17 +1,22 @@
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="bg-light pt-5 pb-5">
 	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+		<div class="row align-items-center">
+			<div class="col-3 col-sm-2 col-md-1">
+				<i class="<?php echo $meta->icon; ?> bi-4x"></i>
+			</div>
+			<div class="col-9 col-sm-10 col-md-11">
+				<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
+					<?php echo $meta->title; ?>
+				</h3>
+				<p class="lead">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-lg-8">
 			<div class="article text-justify mb-3">

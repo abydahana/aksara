@@ -4,7 +4,7 @@
  * Originally written by CodeIgniter team for CodeIgniter version 3.
  * Ported to be compatible in CodeIgniter version 4
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.1.9

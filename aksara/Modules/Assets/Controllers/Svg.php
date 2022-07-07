@@ -3,7 +3,7 @@
 namespace Aksara\Modules\Assets\Controllers;
 
 /**
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

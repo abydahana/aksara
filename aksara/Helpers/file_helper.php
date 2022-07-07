@@ -3,7 +3,7 @@
  * File Helper
  * A helper to call the uploaded file in shorthand
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

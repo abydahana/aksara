@@ -6,7 +6,7 @@ namespace Aksara\Modules\Cms\Controllers\Partials;
  * CMS > Partials > Media
  * Manage uploaded media.
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -32,6 +32,11 @@ class Media extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		if(service('request')->getGet('action') == 'delete')
+		{
+			return $this->_delete_file(service('request')->getGet('file'));
+		}
+		
 		$this->set_title(phrase('media'))
 		->set_icon('mdi mdi-folder-image')
 		->set_output
@@ -45,12 +50,26 @@ class Media extends \Aksara\Laboratory\Core
 		->render();
 	}
 	
+	private function _delete_file($filename = '')
+	{
+		try
+		{
+			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+		}
+		catch(\Throwable $e)
+		{
+			return throw_exception(403, $e->getMessage());
+		}
+		
+		return throw_exception(301, phrase('the_file_was_successfully_removed'), current_page(null, array('file' => null, 'action' => null)));
+	}
+	
 	private function _directory_list($directory = null)
 	{
 		/* load required helper */
 		helper('filesystem');
 		
-		$data										= directory_map(UPLOAD_PATH);
+		$data										= directory_map(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory);
 		
 		unset($data['_extension' . DIRECTORY_SEPARATOR], $data['_import_tmp' . DIRECTORY_SEPARATOR], $data['captcha' . DIRECTORY_SEPARATOR], $data['logs' . DIRECTORY_SEPARATOR]);
 		
@@ -69,8 +88,8 @@ class Media extends \Aksara\Laboratory\Core
 			}
 		}
 		
-		$filename									= service('request')->getGet('file');
-		$parent_directory							= ($directory ? substr($directory, 0, strpos($directory, DIRECTORY_SEPARATOR)) : null);
+		$filename									= (service('request')->getGet('file') ? str_replace('/', DIRECTORY_SEPARATOR, service('request')->getGet('file')) : null);
+		$parent_directory							= ($directory ? substr($directory, 0, strpos($directory, '/')) : null);
 		$folders									= array();
 		$files										= array();
 		
@@ -87,6 +106,7 @@ class Media extends \Aksara\Laboratory\Core
 			$description							= get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
 			$description['icon']					= $this->_get_icon($directory, $filename);
 			$description['mime_type']				= $file->getMimeType();
+			$description['server_path']				= str_replace('\\', '/', $description['server_path']);
 		}
 		else if(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory))
 		{

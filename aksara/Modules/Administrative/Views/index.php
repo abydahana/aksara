@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<a href="<?php echo go_to('users'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-account-group mdi-3x"></i>
@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-md-4">
 			<a href="<?php echo go_to('groups'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-sitemap mdi-3x"></i>
@@ -41,7 +41,7 @@
 		</div>
 		<div class="col-md-4">
 			<a href="<?php echo go_to('groups/privileges'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-account-check-outline mdi-3x"></i>
@@ -62,7 +62,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<a href="<?php echo go_to('settings'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-wrench mdi-flip-h mdi-3x"></i>
@@ -81,7 +81,7 @@
 		</div>
 		<div class="col-md-4">
 			<a href="<?php echo go_to('menus'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-menu mdi-3x"></i>
@@ -100,7 +100,7 @@
 		</div>
 		<div class="col-md-4">
 			<a href="<?php echo go_to('translations'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-translate mdi-3x"></i>
@@ -121,7 +121,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<a href="<?php echo go_to('countries'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-account-edit mdi-3x"></i>
@@ -140,7 +140,7 @@
 		</div>
 		<div class="col-md-4">
 			<a href="<?php echo go_to('activities'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-information-outline mdi-3x"></i>
@@ -162,7 +162,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<a href="<?php echo go_to('account'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-cogs mdi-3x"></i>

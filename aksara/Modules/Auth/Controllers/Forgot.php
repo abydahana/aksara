@@ -5,7 +5,7 @@ namespace Aksara\Modules\Auth\Controllers;
 /**
  * Auth > Forgot
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -28,7 +28,7 @@ class Forgot extends \Aksara\Laboratory\Core
 		}
 		
 		$this->set_title(phrase('reset_password'))
-		->set_icon('mdi mdi-key-change')
+		->set_icon('mdi mdi-account-key-outline')
 		->set_description(phrase('reset_your_password_and_request_new_one'))
 		
 		->form_callback('_validate_form')
@@ -204,8 +204,8 @@ class Forgot extends \Aksara\Laboratory\Core
 		}
 		
 		$this->set_title(phrase('reset_password'))
-		->set_icon('mdi mdi-key-change')
-		->set_description(phrase('reset_your_password_and_request_new_one'))
+		->set_icon('mdi mdi-account-key-outline')
+		->set_description(phrase('change_your_password_with_a_new_one'))
 		
 		->form_callback('_reset_password')
 		

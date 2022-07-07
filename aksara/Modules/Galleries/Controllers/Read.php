@@ -6,7 +6,7 @@ namespace Aksara\Modules\Galleries\Controllers;
  * Galleries > Read
  * Show the individual photo from the gallery
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

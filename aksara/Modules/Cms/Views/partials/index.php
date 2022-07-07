@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-md-5">
 			<a href="<?php echo go_to('announcements'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-bullhorn-outline mdi-3x"></i>
@@ -21,7 +21,7 @@
 		</div>
 		<div class="col-md-5">
 			<a href="<?php echo go_to('carousels'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-view-carousel mdi-3x"></i>
@@ -42,7 +42,7 @@
 	<div class="row">
 		<div class="col-md-5">
 			<a href="<?php echo go_to('faqs'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-help-circle-outline mdi-3x"></i>
@@ -61,7 +61,7 @@
 		</div>
 		<div class="col-md-5">
 			<a href="<?php echo go_to('media'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pr-3 pb-2 pl-3">
+				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
 							<i class="mdi mdi-folder-multiple-image mdi-3x"></i>

@@ -5,7 +5,7 @@ namespace Aksara\Modules\Addons\Controllers;
 /**
  * Addons > Modules Manager
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -164,7 +164,7 @@ class Modules extends \Aksara\Laboratory\Core
 					<div class="--validation-callback mb-0"></div>
 					<div class="row">
 						<div class="col-6">
-							<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+							<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light btn-block">
 								<i class="mdi mdi-window-close"></i>
 								' . phrase('cancel') . '
 							</a>
@@ -639,7 +639,7 @@ class Modules extends \Aksara\Laboratory\Core
 					<div class="--validation-callback mb-0"></div>
 					<div class="row">
 						<div class="col-6">
-							<a href="javascript:void(0)" data-dismiss="modal" class="btn btn-light btn-block">
+							<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light btn-block">
 								<i class="mdi mdi-window-close"></i>
 								' . phrase('cancel') . '
 							</a>

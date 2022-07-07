@@ -1,17 +1,19 @@
-<div class="jumbotron jumbotron-fluid bg-light gradient">
+<div class="bg-light text-secondary pt-5 pb-5">
 	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<h1 class="text-center">
+					<?php echo $meta->title; ?>
+				</h1>
+				<p class="lead text-center">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container pt-3 pb-3">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-md-10 offset-1">
 			<?php
@@ -42,7 +44,7 @@
 				{
 					echo '
 						<div class="alert alert-warning">
-							<i class="mdi mdi-information"></i>
+							<i class="mdi mdi-information-outline"></i>
 							' . phrase('no_announcement_is_available') . '
 						</div>
 					';

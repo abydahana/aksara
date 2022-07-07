@@ -2,7 +2,7 @@
 	if(in_array(get_userdata('group_id'), array(1)) && (!$permission->uploads || !$permission->writable))
 	{
 		echo '
-			<div class="alert alert-danger pr-3 pl-3 rounded-0 mb-0">
+			<div class="alert alert-danger pe-3 ps-3 rounded-0 mb-0">
 				<h5>
 					' . phrase('notice') . '
 				</h5>
@@ -16,7 +16,7 @@
 	else if(in_array(get_userdata('group_id'), array(1)) && is_dir(ROOTPATH . 'install'))
 	{
 		echo '
-			<div class="alert alert-warning pr-3 pl-3 rounded-0 mb-0">
+			<div class="alert alert-warning pe-3 ps-3 rounded-0 mb-0">
 				<h5>
 					' . phrase('notice') . '
 				</h5>
@@ -29,9 +29,9 @@
 <div class="container-fluid">
 	<div class="row border-bottom pt-3">
 		<div class="col-6 col-lg-3 mb-3">
-			<a href="<?php echo base_url('cms/blogs'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_blog_post'); ?>">
-				<div class="card border-0 bg-primary text-center text-sm-left" style="overflow:hidden">
-					<div class="row">
+			<a href="<?php echo base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?php echo phrase('manage_blog_post'); ?>">
+				<div class="card border-0 bg-primary text-center text-sm-start" style="overflow:hidden">
+					<div class="row align-items-center">
 						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
 							<div class="p-3 text-center">
 								<i class="mdi mdi-newspaper mdi-2x text-light"></i>
@@ -50,9 +50,9 @@
 			</a>
 		</div>
 		<div class="col-6 col-lg-3 mb-3">
-			<a href="<?php echo base_url('cms/pages'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_front_end_pages'); ?>">
-				<div class="card border-0 bg-info text-center text-sm-left" style="overflow:hidden">
-					<div class="row">
+			<a href="<?php echo base_url('cms/pages'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?php echo phrase('manage_front_end_pages'); ?>">
+				<div class="card border-0 bg-info text-center text-sm-start" style="overflow:hidden">
+					<div class="row align-items-center">
 						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
 							<div class="p-3 text-center">
 								<i class="mdi mdi-file-multiple mdi-2x text-light"></i>
@@ -71,9 +71,9 @@
 			</a>
 		</div>
 		<div class="col-6 col-lg-3 mb-3">
-			<a href="<?php echo base_url('cms/galleries'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_galleries'); ?>">
-				<div class="card border-0 bg-danger text-center text-sm-left" style="overflow:hidden">
-					<div class="row">
+			<a href="<?php echo base_url('cms/galleries'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?php echo phrase('manage_galleries'); ?>">
+				<div class="card border-0 bg-danger text-center text-sm-start" style="overflow:hidden">
+					<div class="row align-items-center">
 						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
 							<div class="p-3 text-center">
 								<i class="mdi mdi-folder-multiple-image mdi-2x text-light"></i>
@@ -92,9 +92,9 @@
 			</a>
 		</div>
 		<div class="col-6 col-lg-3 mb-3">
-			<a href="<?php echo base_url('administrative/users'); ?>" class="d-block --xhr" data-toggle="tooltip" title="<?php echo phrase('manage_peoples_or_team'); ?>">
-				<div class="card border-0 bg-dark text-center text-sm-left" style="overflow:hidden">
-					<div class="row">
+			<a href="<?php echo base_url('administrative/users'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?php echo phrase('manage_peoples_or_team'); ?>">
+				<div class="card border-0 bg-dark text-center text-sm-start" style="overflow:hidden">
+					<div class="row align-items-center">
 						<div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
 							<div class="p-3 text-center">
 								<i class="mdi mdi-account-group-outline mdi-2x text-light"></i>
@@ -136,12 +136,12 @@
 										foreach($visitors->browsers as $key => $val)
 										{
 											echo '
-												' . ($num ? '<hr class="mt-2 mb-2" />' : null) . '
-												<div class="row no-gutters">
+												' . ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) . '
+												<div class="row no-gutters align-items-center">
 													<div class="col-3 col-sm-2">
 														<i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
 													</div>
-													<div class="col-9 col-sm-10 pl-3">
+													<div class="col-9 col-sm-10 ps-3">
 														<b>
 															' . ($key == 'chrome' ? phrase('google_chrome') : ($key == 'firefox' ? phrase('mozilla_firefox') : ($key == 'safari' ? phrase('safari') : ($key == 'edge' ? phrase('microsoft_edge') : ($key == 'opera' ? phrase('opera') : ($key == 'explorer' ? phrase('internet_explorer') : phrase('unknown'))))))) . '
 														</b>
@@ -171,13 +171,13 @@
 									{
 										echo '
 											' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
-											<div class="row no-gutters">
+											<div class="row no-gutters align-items-center">
 												<div class="col-3 col-sm-2">
 													<a href="' . base_url('user', array('user_id' => $val->user_id)) . '" target="_blank">
 														<img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded" />
 													</a>
 												</div>
-												<div class="col-9 col-sm-10 pl-3">
+												<div class="col-9 col-sm-10 ps-3">
 													<a href="' . base_url('user', array('user_id' => $val->user_id)) . '" target="_blank">
 														<b>
 															' . $val->first_name . ' ' . $val->last_name . '
@@ -201,7 +201,7 @@
 			<div class="sticky-top pt-3" style="top:86px; z-index:0">
 				<div class="row">
 					<div class="col-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								AKSARA
 							</label>
@@ -211,7 +211,7 @@
 						</div>
 					</div>
 					<div class="col-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								<?php echo phrase('built_version'); ?>
 							</label>
@@ -221,7 +221,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group border-bottom">
+				<div class="mb-3 border-bottom">
 					<label class="d-block text-muted mb-0">
 						<?php echo phrase('last_modified'); ?>
 					</label>
@@ -231,7 +231,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								<?php echo phrase('system_language'); ?>
 							</label>
@@ -241,34 +241,34 @@
 						</div>
 					</div>
 					<div class="col-sm-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								<?php echo phrase('membership'); ?>
 							</label>
 							<p>
-								<?php echo (get_setting('frontend_registration') ? '<span class="badge badge-success">' . phrase('enabled') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+								<?php echo (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
 							</p>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								<?php echo phrase('secure_login_attempt'); ?>
 							</label>
 							<p>
-								<?php echo (get_setting('login_attempt') ? '<span class="badge badge-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+								<?php echo (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
 							</p>
 						</div>
 					</div>
 					<div class="col-sm-6">
-						<div class="form-group border-bottom">
+						<div class="mb-3 border-bottom">
 							<label class="d-block text-muted mb-0">
 								<?php echo phrase('blocking_time'); ?>
 							</label>
 							<p>
-								<?php echo (get_setting('blocking_time') ? '<span class="badge badge-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge badge-danger">' . phrase('disabled') . '</span>'); ?>
+								<?php echo (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
 							</p>
 						</div>
 					</div>

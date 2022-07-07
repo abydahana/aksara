@@ -3,7 +3,7 @@
  * String Helper
  * A helper that sanitize the string
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -33,7 +33,7 @@ if(!function_exists('truncate'))
 		$string										= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $string);
 		$string										= strip_tags($string);
 		$string										= str_replace('&nbsp;', ' ', $string);
-		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', $string));
+		$string										= htmlspecialchars(str_replace(array("\r", "\n"), '', strip_tags($string)));
 		
 		if($limit && strlen($string) >= $limit)
 		{
@@ -115,7 +115,7 @@ if(!function_exists('make_json'))
 		
 		$data										= json_fixer($data);
 		
-		$data										= preg_replace('/\t/', '', json_encode($data));
+		$data										= preg_replace('/\\\r|\\\n|\\\t/', '', json_encode($data));
 		
 		if($filename)
 		{

@@ -1,6 +1,6 @@
-<div class="container-fluid pt-3 pb-3">
+<div class="container-fluid p-3">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--api-debug">
-		<div class="row border-bottom --apply-increase-one">
+		<div class="row --apply-increase-one border-bottom">
 			<div class="col-md-10">
 				<div class="input-group mb-3">
 					<select name="method" class="form-control" style="max-width:100px">
@@ -18,45 +18,43 @@
 				</div>
 			</div>
 			<div class="col-md-2">
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary btn-block">
+				<div class="d-grid mb-3">
+					<button type="submit" class="btn btn-primary">
 						<i class="mdi mdi-send"></i>
 						<?php echo phrase('send'); ?>
 					</button>
 				</div>
 			</div>
 		</div>
-		<div style="margin-right:-15px; margin-left:-15px">
-			<nav class="--apply-increase-two" style="margin-top:-1px; margin-right:-1px; margin-left:-1px">
+		<div style="margin-right:-1rem; margin-left:-1rem">
+			<nav class="--apply-increase-two" style="margin-top:-1px">
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
-					<a class="nav-item nav-link rounded-0" data-toggle="tab" href="#params-headers" role="tab">
+					<a class="nav-item nav-link rounded-0" data-bs-toggle="tab" href="#params-headers" role="tab" style="border-left:0">
 						<?php echo phrase('request_headers'); ?>
 					</a>
-					<a class="nav-item nav-link rounded-0" data-toggle="tab" href="#params-body" role="tab">
+					<a class="nav-item nav-link rounded-0" data-bs-toggle="tab" href="#params-body" role="tab">
 						<?php echo phrase('request_body'); ?>
 					</a>
-					<a class="nav-item nav-link rounded-0 active response-result" data-toggle="tab" href="#results-pretty" role="tab">
+					<a class="nav-item nav-link rounded-0 active response-result" data-bs-toggle="tab" href="#results-pretty" role="tab">
 						<?php echo phrase('response'); ?>
 					</a>
 				</div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent1" style="margin-top:-1px">
-				<div class="tab-pane border-top border-bottom p-3" id="params-headers" role="tabpanel">
+				<div class="tab-pane border-bottom p-3" id="params-headers" role="tabpanel">
 					<div class="row">
-						<div class="text-muted col-6 col-md-4">
-							<div class="form-group">
+						<div class="col-6 col-md-4 text-muted">
+							<div class="mb-3">
 								<input type="text" name="header_key[]" class="form-control form-control-sm param-header-key" placeholder="Key" />
 							</div>
 						</div>
-						<div class="text-muted col-6 col-md-6 pl-0">
-							<div class="form-group">
+						<div class="col-6 col-md-6 ps-0 text-muted">
+							<div class="mb-3">
 								<div class="input-group">
 									<input type="text" name="header_value[]" class="form-control form-control-sm param-header-value" placeholder="Value" />
-									<div class="input-group-append">
-										<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest('.row').remove())">
-											<i class="mdi mdi-window-close"></i>
-										</button>
-									</div>
+									<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest('.row').remove())">
+										<i class="mdi mdi-window-close"></i>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -66,22 +64,20 @@
 						<?php echo phrase('add_parameter'); ?>
 					</button>
 				</div>
-				<div class="tab-pane border-top border-bottom p-3" id="params-body" role="tabpanel">
+				<div class="tab-pane border-bottom p-3" id="params-body" role="tabpanel">
 					<div class="row">
-						<div class="text-muted col-6 col-md-4">
-							<div class="form-group">
+						<div class="col-6 col-md-4 text-muted">
+							<div class="mb-3">
 								<input type="text" name="body_key[]" class="form-control form-control-sm param-body-key" placeholder="Key" />
 							</div>
 						</div>
-						<div class="text-muted col-6 col-md-6 pl-0">
-							<div class="form-group">
+						<div class="col-6 col-md-6 ps-0 text-muted">
+							<div class="mb-3">
 								<div class="input-group">
 									<input type="text" name="body_value[]" class="form-control form-control-sm param-body-value" placeholder="Value" />
-									<div class="input-group-append">
-										<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest('.row').remove())">
-											<i class="mdi mdi-window-close"></i>
-										</button>
-									</div>
+									<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest('.row').remove())">
+										<i class="mdi mdi-window-close"></i>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -91,10 +87,8 @@
 						<?php echo phrase('add_parameter'); ?>
 					</button>
 				</div>
-				<div class="tab-pane show active" id="results-pretty" role="tabpanel">
-					<div class="pane-wrapper border-top">
-						<pre class="rounded-0 mt-0 mb-0 language-javascript"><code>{}</code></pre>
-					</div>
+				<div class="tab-pane border-bottom p-3 p-3 show active" id="results-pretty" role="tabpanel">
+					<pre class="rounded mt-0 mb-0 language-javascript"><code>{}</code></pre>
 				</div>
 			</div>
 		</div>
@@ -111,19 +105,17 @@
 			$(
 				'<div class="row">' +
 					'<div class="text-muted col-6 col-md-4">' +
-						'<div class="form-group">' +
+						'<div class="mb-3">' +
 							'<input type="text" name="' + initial + '_key[]" class="form-control form-control-sm param-' + initial + '-key" placeholder="<?php echo phrase('key'); ?>" />' +
 						'</div>' +
 					'</div>' +
-					'<div class="text-muted col-6 col-md-6 pl-0">' +
-						'<div class="form-group">' +
+					'<div class="text-muted col-6 col-md-6 ps-0">' +
+						'<div class="mb-3">' +
 							'<div class="input-group">' +
 								'<input type="text" name="' + initial + '_value[]" class="form-control form-control-sm param-' + initial + '-value" placeholder="<?php echo phrase('value'); ?>" />' +
-								'<div class="input-group-append">' +
-									'<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest(\'.row\').remove())">' +
-										'<i class="mdi mdi-window-close"></i>' +
-									'</button>' +
-								'</div>' +
+								'<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest(\'.row\').remove())">' +
+									'<i class="mdi mdi-window-close"></i>' +
+								'</button>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
@@ -182,7 +174,7 @@
 				headers: header,
 				beforeSend: function()
 				{
-					$('pre code').text(''),
+					$('pre code').text('<?php echo phrase('requesting'); ?>...'),
 					$('.result-html').html('')
 				}
 			})

@@ -5,7 +5,7 @@ namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs > Search
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -18,9 +18,7 @@ class Search extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
-		$this->limit(24);
-		
-		$this->_keywords							= htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
+		$this->_keywords							= (service('request')->getGet('q') || service('request')->getPost('q') ? htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'))) : null);
 	}
 	
 	public function index()
@@ -38,6 +36,8 @@ class Search extends \Aksara\Laboratory\Core
 		(
 			array
 			(
+				'keywords'							=> $this->_keywords,
+				
 				/* category detail */
 				'category'							=> $this->model->get_where
 				(
@@ -79,20 +79,11 @@ class Search extends \Aksara\Laboratory\Core
 			'app__users',
 			'app__users.user_id = blogs.author'
 		)
-		->like
-		(
-			array
-			(
-				'blogs.post_title'					=> $this->_keywords
-			)
-		)
-		->or_like
-		(
-			array
-			(
-				'blogs.post_excerpt'				=> $this->_keywords
-			)
-		)
+		
+		->group_start()
+		->like('blogs.post_title', $this->_keywords)
+		->or_like('blogs.post_excerpt', $this->_keywords)
+		->group_end()
 		
 		->where
 		(

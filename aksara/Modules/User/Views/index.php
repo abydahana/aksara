@@ -4,17 +4,17 @@
 	if($results)
 	{
 		echo '
-			<div class="jumbotron jumbotron-fluid mb-0">
-				<div class="container">
+			<div class="bg-light">
+				<div class="container pt-5 pb-5">
 					<div class="row align-items-center">
 						<div class="col-lg-2 text-center">
 							<img src="' . get_image('users', $results->photo, 'thumb') . '" class="img-fluid rounded-circle" alt="..." />
 						</div>
 						<div class="col-lg-10">
-							<div class="text-center text-lg-left">
-								<h1 class="mb-0">
+							<div class="text-center text-lg-start">
+								<h2 class="mb-0">
 									' . $meta->title . '
-								</h1>
+								</h2>
 								<p class="lead">
 									@' . $results->username . '
 								</p>
@@ -23,11 +23,11 @@
 					</div>
 				</div>
 			</div>
-			<div class="border-bottom bg-white mb-3">
+			<div class="border-top border-bottom bg-white pt-1 pb-1">
 				<div class="container">
 					<div class="row">
-						<div class="col-lg-10 offset-lg-2" style="padding-top:5px">
-							<ul class="nav" style="flex-wrap: nowrap">
+						<div class="col-lg-10 offset-lg-2">
+							<ul class="nav nav-pills">
 								<li class="nav-item">
 									<a href="' . go_to($results->username) . '" class="nav-link no-wrap --xhr active">
 										<i class="mdi mdi-information-outline"></i>
@@ -42,7 +42,7 @@
 			<div class="container pt-5 pb-5">
 				<div class="row">
 					<div class="col-lg-10 offset-lg-2">
-						<div class="form-group mb-5">
+						<div class="mb-5">
 							<h4>
 								' . phrase('bio') . '
 							</h4>
@@ -88,7 +88,7 @@
 		}
 		
 		echo '
-			<div class="container pt-5">
+			<div class="container pt-5 pb-5">
 				<div class="text-center pt-5 pb-5">
 					<h1 class="text-muted">
 						404

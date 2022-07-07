@@ -5,7 +5,7 @@ namespace Aksara\Modules\Administrative\Controllers\Groups;
 /**
  * Administrative > Groups > Privileges
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -34,15 +34,17 @@ class Privileges extends \Aksara\Laboratory\Core
 		->set_icon('mdi mdi-account-check-outline')
 		->set_description
 		('
-			<div class="alert-info pr-3 pl-3" style="margin-left:-15px; margin-right:-15px">
-				' . phrase('you_may_review') . '
-				&nbsp;
-				<a href="' . go_to('../', array('per_page' => null)) . '" class="badge badge-secondary --xhr">
-					<i class="mdi mdi-arrow-right"></i>
-					' . phrase('group_privileges') . '
-				</a>
-				&nbsp;
-				' . phrase('after_modify_this_adjustment_to_sets_new_roles') . '
+			<div class="row">
+				<div class="col-12">
+					' . phrase('you_may_review') . '
+					&nbsp;
+					<a href="' . go_to('../', array('per_page' => null)) . '" class="badge bg-secondary --xhr">
+						<i class="mdi mdi-arrow-right"></i>
+						' . phrase('group_privileges') . '
+					</a>
+					&nbsp;
+					' . phrase('after_modify_this_adjustment_to_sets_new_roles') . '
+				</div>
 			</div>
 		')
 		->unset_column('id, privileges')
@@ -101,13 +103,11 @@ class Privileges extends \Aksara\Laboratory\Core
 				$output								.= '
 					<div class="col-md-6 privilege mt-1">
 						' . (in_array($this->_method, array('create', 'update')) ? '
-							<div class="input-group input-group-sm">
+							<div class="input-group">
 								<input type="text" name="privileges[]" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="' . $val . '" />
-								<div class="input-group-append">
-									<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
-										<i class="mdi mdi-window-close"></i>
-									</a>
-								</div>
+								<a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="jExec(this.closest(\'.privilege\').remove())">
+									<i class="mdi mdi-window-close"></i>
+								</a>
 							</div>
 						' : '
 							<label class="control-label">
@@ -124,12 +124,10 @@ class Privileges extends \Aksara\Laboratory\Core
 			$output									.= '
 				<div class="col-md-6 privilege mt-1">
 					<div class="input-group input-group-sm">
-						<input type="text" name="privileges[]" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
-						<div class="input-group-append">
-							<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
-								<i class="mdi mdi-window-close"></i>
-							</a>
-						</div>
+						<input type="text" name="privileges[]" class="form-control" placeholder="' . phrase('example') . ': create" value="index" />
+						<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
+							<i class="mdi mdi-window-close"></i>
+						</a>
 					</div>
 				</div>
 			';
@@ -138,12 +136,10 @@ class Privileges extends \Aksara\Laboratory\Core
 			<div class="row">
 				<div class="col-md-6 privilege mt-1" style="display:none">
 					<div class="input-group input-group-sm">
-						<input type="text" name="" class="form-control form-control-sm bordered" placeholder="' . phrase('example') . ': create" value="index" />
-						<div class="input-group-append">
-							<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
-								<i class="mdi mdi-window-close"></i>
-							</a>
-						</div>
+						<input type="text" name="" class="form-control bordered" placeholder="' . phrase('example') . ': create" value="index" />
+						<a href="javascript:void(0)" class="btn btn-secondary" onclick="jExec(this.closest(\'.privilege\').remove())">
+							<i class="mdi mdi-window-close"></i>
+						</a>
 					</div>
 				</div>
 			
@@ -151,7 +147,7 @@ class Privileges extends \Aksara\Laboratory\Core
 				
 				' . (in_array($this->_method, array('index', 'create', 'update')) ? '
 				<div class="col-md-6 mt-1">
-					<a href="javascript:void(0)" class="btn btn-secondary btn-sm btn-block" onclick="jExec($(this).closest(\'.row\').find(\'.privilege\').first().clone().insertBefore($(this).closest(\'.col-md-6\')).css(\'display\', \'block\').find(\'input[type=text]\').attr(\'name\', \'privileges[]\').val(\'\'))">
+					<a href="javascript:void(0)" class="btn btn-secondary btn-sm d-block" onclick="jExec($(this).closest(\'.row\').find(\'.privilege\').first().clone().insertBefore($(this).closest(\'.col-md-6\')).css(\'display\', \'block\').find(\'input[type=text]\').attr(\'name\', \'privileges[]\').val(\'\'))">
 						<i class="mdi mdi-plus"></i>
 						&nbsp;
 						' . phrase('add_method') . '

@@ -6,7 +6,7 @@ namespace Aksara\Laboratory;
  * Permission library
  * Handle the permission of user role
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

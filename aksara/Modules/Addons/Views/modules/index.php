@@ -14,7 +14,7 @@
 				</a>
 			</li>
 			<li class="nav-item">
-				<a href="<?php echo current_page(); ?>" class="nav-link no-wrap --xhr active">
+				<a href="<?php echo current_page(); ?>" class="nav-link no-wrap --xhr text-bg-primary">
 					<i class="mdi mdi-puzzle"></i>
 					<?php echo phrase('installed_module'); ?>
 				</a>
@@ -28,7 +28,7 @@
 		</ul>
 	</div>
 	<div class="row border-bottom pb-1 mb-3">
-		<div class="col-md-6 offset-md-6 text-right">
+		<div class="col-md-6 offset-md-6 text-end">
 			<a href="<?php echo current_page('import'); ?>" class="btn btn-primary btn-sm --xhr">
 				<i class="mdi mdi-import"></i>
 				<?php echo phrase('import_module'); ?>
@@ -52,12 +52,12 @@
 					
 					echo '
 						<div class="col-sm-6 col-md-4 col-lg-3">
-							<div class="card shadow border-0 rounded-more mb3">
+							<div class="card shadow border-0 rounded-4 mb3">
 								<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
-									<div class="relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
+									<div class="position-relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
 										<div class="clip gradient-top rounded-top"></div>
 										<div class="absolute bottom p-3">
-											<h5 class="text-light" data-toggle="tooltip" title="' . $val->name . '">
+											<h5 class="text-light" data-bs-toggle="tooltip" title="' . $val->name . '">
 												' . truncate($val->name, 80) . '
 											</h5>
 										</div>
@@ -66,13 +66,13 @@
 								<div class="card-body p-3">
 									<div class="row">
 										<div class="col-6">
-											<a href="' . current_page('update', array('item' => $val->folder)) . '" class="btn btn-outline-success btn-block btn-xs --modal" target="_blank">
+											<a href="' . current_page('update', array('item' => $val->folder)) . '" class="btn btn-outline-success d-block btn-xs --modal" target="_blank">
 												<i class="mdi mdi-auto-fix"></i>
 												' . phrase('update') . '
 											</a>
 										</div>
 										<div class="col-6">
-											<a href="' . current_page('delete', array('item' => $val->folder)) . '" class="btn btn-danger btn-block btn-xs --modal">
+											<a href="' . current_page('delete', array('item' => $val->folder)) . '" class="btn btn-danger d-block btn-xs --modal">
 												<i class="mdi mdi-delete"></i>
 												' . phrase('uninstall') . '
 											</a>
@@ -89,6 +89,7 @@
 				echo '
 					<div class="col-sm-12">
 						<div class="alert alert-warning">
+							<i class="mdi mdi-information-outline"></i>
 							' . phrase('no_module_installed_yet') . '
 						</div>
 					</div>

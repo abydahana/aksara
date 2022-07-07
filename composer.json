@@ -18,7 +18,7 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-		"codeigniter4/framework": "4.1.9",
+		"codeigniter4/framework": "^4.2",
 		"mpdf/mpdf": "^8.0",
 		"abydahana/facebook-php-sdk": "^5.7",
 		"google/apiclient": "^2.8",

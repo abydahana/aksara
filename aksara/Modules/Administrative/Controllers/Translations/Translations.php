@@ -5,7 +5,7 @@ namespace Aksara\Modules\Administrative\Controllers\Translations;
 /**
  * Administrative > Translations
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -35,8 +35,10 @@ class Translations extends \Aksara\Laboratory\Core
 		->set_icon('mdi mdi-translate')
 		->set_description
 		('
-			<div class="alert-info pr-3 pl-3" style="margin-left:-15px; margin-right:-15px">
-				' . phrase('click_the_synchronize_button_to_equate_the_phrases_for_each_translations') . '
+			<div class="row">
+				<div class="col-12">
+					' . phrase('click_the_synchronize_button_to_equate_the_phrases_for_each_translations') . '
+				</div>
 			</div>
 		')
 		->unset_column('id')

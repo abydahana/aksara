@@ -5,7 +5,7 @@ namespace Aksara\Laboratory;
 /**
  * Template
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -115,7 +115,7 @@ class Template
 		}
 		
 		/* add suffix to view to detect if mobile or modal template is sets */
-		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (service('request')->getServer('GRID_VIEW') ? '_grid' : null)));
+		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_SERVER['GRID_VIEW']) && $_SERVER['GRID_VIEW'] ? '_grid' : null)));
 		
 		// generate theme view
 		$theme_view									= '../themes/' . $this->_theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
@@ -570,7 +570,7 @@ class Template
 		$this->_view								= $this->get_view($view, $data, $table);
 		
 		// generate the html from the view
-		$data->html									= preg_replace(array('/<!--(.|\s)*?-->/'), '', view($this->_view, (array) $data));
+		$data->html									= view($this->_view, (array) $data);
 		
 		$minify_pattern								= array
 		(
@@ -584,6 +584,11 @@ class Template
 		
 		$data->html									= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
 		
+		/* make a backup of "textarea" tag */
+		preg_match_all('#\<textarea.*\>(.*)\<\/textarea\>#Uis', $data->html, $textarea_backup);
+		
+		$data->html									= str_replace($textarea_backup[0], array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $data->html);
+		
 		/* make a backup of "script" tag */
 		preg_match_all('#\<script.*\>(.*)\<\/script\>#Uis', $data->html, $script_backup);
 		
@@ -594,6 +599,9 @@ class Template
 		
 		/* rollback the pre tag */
 		$data->html									= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
+		
+		/* rollback the textarea tag */
+		$data->html									= str_replace(array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $textarea_backup[0], $data->html);
 		
 		/* rollback the script tag */
 		$data->html									= str_replace(array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $script_backup[0]), $data->html);
@@ -758,7 +766,7 @@ class Template
 		else
 		{
 			$output									= '
-				<ul class="pagination pagination-sm">
+				<ul class="pagination pagination-sm mb-0">
 					<li class="page-item disabled">
 						<a href="javascript:void(0)" tabindex="-1" class="page-link">
 							' . phrase('previous') . '
@@ -792,9 +800,9 @@ class Template
 			}
 			
 			$output									= '
-				<div class="row">
-					<div class="col-sm-6 text-center text-sm-left">
-						<label class="text-muted mb-0 pt-1">
+				<div class="row align-items-center">
+					<div class="col-sm-6 text-center text-sm-start">
+						<label class="text-muted mb-0">
 							<small class="result-for">
 								<i class="mdi mdi-information-outline"></i>
 								&nbsp;
@@ -805,24 +813,24 @@ class Template
 					<div class="col-sm-6">
 						<nav class="d-flex justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end" aria-label="Page navigation">
 							' . $output . '
+							' . ($data->total_rows > $data->limit ? '
 							<form action="' . current_page(null, array('per_page' => null)) . '" method="POST" class="--xhr-form ml-2 d-none d-sm-none d-md-block d-lg-block d-xl-block">
 								' . $query_string . '
-								<div class="input-group">
-									<select name="limit" class="form-control form-control-sm">
+								<div class="input-group input-group-sm">
+									<select name="limit" class="form-control">
 										<option value="' . $data->limit . '"' . (!$data->per_page ? ' selected' : null) . '>' . $data->limit . '</option>
-										<option value="' . ($data->limit * 2) . '"' . (($data->limit * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 2) . '</option>
-										<option value="' . ($data->limit * 4) . '"' . (($data->limit * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 4) . '</option>
-										<option value="' . ($data->limit * 8) . '"' . (($data->limit * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 8) . '</option>
-										<option value="' . ($data->limit * 20) . '"' . (($data->limit * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 20) . '</option>
+										' . ($data->total_rows > ($data->limit * 2) ? '<option value="' . ($data->limit * 2) . '"' . (($data->limit * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 2) . '</option>' : null) . '
+										' . ($data->total_rows > ($data->limit * 4) ? '<option value="' . ($data->limit * 4) . '"' . (($data->limit * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 4) . '</option>' : null) . '
+										' . ($data->total_rows > ($data->limit * 8) ? '<option value="' . ($data->limit * 8) . '"' . (($data->limit * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 8) . '</option>' : null) . '
+										' . ($data->total_rows > ($data->limit * 20) ? '<option value="' . ($data->limit * 20) . '"' . (($data->limit * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 20) . '</option>' : null) . '
 									</select>
-									<input type="number" name="per_page" class="form-control form-control-sm text-center" value="' . (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
-									<div class="input-group-append">
-										<button type="submit" class="btn btn-sm btn-primary">
-											' . phrase('go') . '
-										</button>
-									</div>
+									<input type="number" name="per_page" class="form-control text-center" value="' . (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
+									<button type="submit" class="btn btn-primary">
+										' . phrase('go') . '
+									</button>
 								</div>
 							</form>
+							' : null) . '
 						</nav>
 					</div>
 				</div>
@@ -835,6 +843,7 @@ class Template
 			$output									= array
 			(
 				'url'								=> current_page(null, array('per_page' => null)),
+				'total_rows'						=> $data->total_rows,
 				'limit'								=> $data->limit,
 				'per_page'							=> $data->per_page,
 				'last_page'							=> $last_page,
@@ -866,505 +875,359 @@ class Template
 		return $view;
 	}
 	
-	private function _get_menu($placement = null, $additional_class = null, $menu = array(), $visible_menus = array(), $rendered = false, $level = 0)
+	private function _get_menu($menus = array())
 	{
-		if('frontend' == $this->get_theme_property('type'))
+		if(!$menus)
 		{
-			$placement								= 'header';
-		}
-		else
-		{
-			$placement								= 'sidebar';
-		}
-		
-		if(!$menu && !$rendered)
-		{
-			$is_children							= false;
-			
-			$user_id								= get_userdata('user_id');
 			$group_id								= get_userdata('group_id');
 			
-			if(get_userdata('is_logged'))
-			{
-				$menu								= $this->model->select
-				('
-					serialized_data
-				')
-				->get_where
-				(
-					'app__menus',
-					array
-					(
-						'menu_placement'			=> $placement,
-						'group_id'					=> $group_id
-					),
-					1
-				)
-				->row('serialized_data');
-				
-				$visible_menus						= $this->model->select
-				('
-					visible_menu
-				')
-				->get_where
-				(
-					'app__users_privileges',
-					array
-					(
-						'user_id'					=> $user_id
-					),
-					1
-				)
-				->row('visible_menu');
-				
-				$visible_menus						= ($visible_menus ? json_decode($visible_menus, true) : array());
-				
-				if(!$menu)
-				{
-					$menu							= $this->model->select
-					('
-						serialized_data
-					')
-					->get_where
-					(
-						'app__menus',
-						array
-						(
-							'menu_placement'		=> $placement,
-							'group_id'				=> 0
-						), 
-						1
-					)
-					->row('serialized_data');
-				}
-			}
-			else
-			{
-				$visible_menus						= array();
-				
-				$menu								= $this->model->select
-				('
-					serialized_data
-				')
-				->get_where
-				(
-					'app__menus',
-					array
-					(
-						'menu_placement'			=> $placement,
-						'group_id'					=> 0
-					),
-					1
-				)
-				->row('serialized_data');
-			}
-			
-			$menu									= ($menu ? json_decode($menu, true) : array());
-			
-			$main_menu								= array
+			$menus									= $this->model->select
+			('
+				serialized_data
+			')
+			->group_start()
+			->where('group_id', $group_id)
+			->or_where('group_id', 0)
+			->group_end()
+			->get_where
 			(
+				'app__menus',
 				array
 				(
-					'id'							=> 0,
-					'label'							=> '',
-					'slug'							=> '---'
+					'menu_placement'				=> ('frontend' == $this->get_theme_property('type') ? 'header' : 'sidebar')
 				),
-				array
-				(
-					'id'							=> 0,
-					'label'							=> 'CMS',
-					'slug'							=> 'cms',
-					'icon'							=> 'mdi mdi-dropbox',
-					'children'						=> array
-					(
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Blogs',
-							'slug'					=> 'cms/blogs',
-							'icon'					=> 'mdi mdi-newspaper',
-							'children'				=> array
-							(
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Posts',
-									'slug'			=> 'cms/blogs',
-									'icon'			=> 'mdi mdi-pencil'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Categories',
-									'slug'			=> 'cms/blogs/categories',
-									'icon'			=> 'mdi mdi-sitemap'
-								)
-							)
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Pages',
-							'slug'					=> 'cms/pages',
-							'icon'					=> 'mdi mdi-book-open-page-variant'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Galleries',
-							'slug'					=> 'cms/galleries',
-							'icon'					=> 'mdi mdi-folder-multiple-image'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Peoples',
-							'slug'					=> 'cms/peoples',
-							'icon'					=> 'mdi mdi-account-group-outline'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Partial Content',
-							'slug'					=> 'cms/partials',
-							'icon'					=> 'mdi mdi-file-image',
-							'children'				=> array
-							(
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Carousels',
-									'slug'			=> 'cms/partials/carousels',
-									'icon'			=> 'mdi mdi-image-multiple'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'FAQs',
-									'slug'			=> 'cms/partials/faqs',
-									'icon'			=> 'mdi mdi-file-question'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Announcements',
-									'slug'			=> 'cms/partials/announcements',
-									'icon'			=> 'mdi mdi-bullhorn-outline'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Testimonials',
-									'slug'			=> 'cms/partials/testimonials',
-									'icon'			=> 'mdi mdi-comment-account-outline'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Inquiries',
-									'slug'			=> 'cms/partials/inquiries',
-									'icon'			=> 'mdi mdi-message-text'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Media',
-									'slug'			=> 'cms/partials/media',
-									'icon'			=> 'mdi mdi-folder-image'
-								)
-							)
-						)
-					)
-				),
-				array
-				(
-					'id'							=> 0,
-					'label'							=> 'Core Tools',
-					'slug'							=> '---'
-				),
-				array
-				(
-					'id'							=> 0,
-					'label'							=> 'Administrative',
-					'slug'							=> 'administrative',
-					'icon'							=> 'mdi mdi-cogs',
-					'children'						=> array
-					(
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Users and Groups',
-							'slug'					=> 'administrative/users',
-							'icon'					=> 'mdi mdi-account-group-outline',
-							'children'				=> array
-							(
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Users',
-									'slug'			=> 'administrative/users',
-									'icon'			=> 'mdi mdi-account-group'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Groups',
-									'slug'			=> 'administrative/groups',
-									'icon'			=> 'mdi mdi-sitemap'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Privileges',
-									'slug'			=> 'administrative/groups/privileges',
-									'icon'			=> 'mdi mdi-account-check-outline'
-								)
-							)
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Configurations',
-							'slug'					=> 'administrative',
-							'icon'					=> 'mdi mdi-wrench-outline',
-							'children'				=> array
-							(
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Site Settings',
-									'slug'			=> 'administrative/settings',
-									'icon'			=> 'mdi mdi-wrench mdi-flip-h'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Menus',
-									'slug'			=> 'administrative/menus',
-									'icon'			=> 'mdi mdi-menu'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Translations',
-									'slug'			=> 'administrative/translations',
-									'icon'			=> 'mdi mdi-translate'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Countries',
-									'slug'			=> 'administrative/countries',
-									'icon'			=> 'mdi mdi-map-legend'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Years',
-									'slug'			=> 'administrative/years',
-									'icon'			=> 'mdi mdi-calendar-clock'
-								),
-								array
-								(
-									'id'			=> 0,
-									'label'			=> 'Connections',
-									'slug'			=> 'administrative/connections',
-									'icon'			=> 'mdi mdi-power-plug'
-								)
-							)
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Activity Logs',
-							'slug'					=> 'administrative/activities',
-							'icon'					=> 'mdi mdi-information-outline'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Session Cleaner',
-							'slug'					=> 'administrative/cleaner',
-							'icon'					=> 'mdi mdi-trash-can'
-						)
-					)
-				),
-				array
-				(
-					'id'							=> 0,
-					'label'							=> 'Addons',
-					'slug'							=> 'addons',
-					'icon'							=> 'mdi mdi-puzzle'
-				),
-				array
-				(
-					'id'							=> 0,
-					'label'							=> 'APIs',
-					'slug'							=> 'apis',
-					'icon'							=> 'mdi mdi-code-braces',
-					'children'						=> array
-					(
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Services',
-							'slug'					=> 'apis/services',
-							'icon'					=> 'mdi mdi-link-variant'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Debug Tool',
-							'slug'					=> 'apis/debug_tool',
-							'icon'					=> 'mdi mdi-android-debug-bridge'
-						),
-						array
-						(
-							'id'					=> 0,
-							'label'					=> 'Documentation',
-							'slug'					=> 'apis/documentation',
-							'icon'					=> 'mdi mdi mdi-book-open-page-variant'
-						)
-					)
-				)
-			);
+				1
+			)
+			->row('serialized_data');
 			
-			if(1 != get_userdata('group_id') || 'header' == $placement)
+			$menus									= ($menus ? json_decode($menus, true) : array());
+			
+			if(get_userdata('group_id') == 1 && $this->get_theme_property('type') == 'backend')
 			{
-				$main_menu							= array();
-			}
-			
-			$menu									= array_merge($menu, $main_menu);
-		}
-		else
-		{
-			$is_children							= true;
-		}
-		
-		$module										= strtolower(substr(service('router')->controllerName(), strrpos(service('router')->controllerName(), '/') + 1));
-		$menus										= null;
-		
-		if('header' == $placement)
-		{
-			$navigation_class						= 'navbar-nav' . ($additional_class ? ' ' . $additional_class : null);
-			$navigation_item_class					= 'nav-item';
-			$navigation_link_class					= 'nav-link';
-			$dropdown_link_class					= 'dropdown';
-			$dropdown_list_class					= 'dropdown-menu';
-			$toggle_class							= 'dropdown-toggle';
-			$toggle_initial							= 'data-toggle="dropdown"';
-			$additional_prefix						= null;
-		}
-		else
-		{
-			$navigation_class						= 'nav flex-column' . ($additional_class ? ' ' . $additional_class : null);
-			$navigation_item_class					= 'nav-item';
-			$navigation_link_class					= 'nav-link';
-			$dropdown_link_class					= null;
-			$dropdown_list_class					= 'list-unstyled flex-column collapse';
-			$toggle_class							= null;
-			$toggle_initial							= 'data-toggle="expand-collapse"';
-			$additional_prefix						= (!$rendered ? '
-				<li class="nav-item">
-					<span class="nav-link hide-on-collapse">
-						' . phrase('main_navigation') . '
-					</span>
-				</li>
-				<li class="nav-item' . ('dashboard' == service('uri')->getPath() ? ' active' : '') . '">
-					<a href="' . base_url('dashboard') . '" class="nav-link --xhr" data-segmentation="dashboard">
-						<i class="mdi mdi-monitor-dashboard"></i>
-						<span class="hide-on-collapse">
-							' . phrase('dashboard') . '
-						</span>
-					</a>
-				</li>
-			' : null);
-		}
-		
-		foreach($menu as $key => $field)
-		{
-			$children								= false;
-			$arrow									= null;
-			
-			if(isset($field['id']) && isset($field['label']) && isset($field['slug']))
-			{
-				if('---' == $field['slug'])
-				{
-					$menus							.= '
-						<li class="nav-item">
-							<span class="nav-link hide-on-collapse">
-								' . ($field['label'] ? phrase($field['label'], true) : null) . '
-							</span>
-						</li>
-					';
-				}
-				else
-				{
-					if(1 != get_userdata('group_id') && $visible_menus && !in_array($field['id'], $visible_menus)) continue;
-					
-					if(isset($field['children']) && is_array($field['children']) && sizeof($field['children']) > 0)
-					{
-						$children					= true;
-					}
-					
-					$segments						= service('uri')->getSegments();
-					$slug							= $field['slug'];
-					
-					if(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $field['slug']))
-					{
-						$field['slug']				= $field['slug'] . '" target="_blank';
-					}
-					else
-					{
-						$field['slug']				= base_url($field['slug']);
-					}
-					
-					$menus							.= '
-						<li class="' . $navigation_item_class . ($children && $dropdown_link_class ? ' ' . $dropdown_link_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() || (service('uri')->getPath() && $slug == preg_replace(array('/\/create/', '/\/read/', '/\/update/'), '', service('uri')->getPath())) ? ' active' : '') . '">
-							<a href="' . ($children ? '#' : $field['slug']) . '" class="' . $navigation_link_class . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? ' nav-padding-left' : null) . (!$children ? ' --xhr' : ' ' . $toggle_class) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($field['newtab']) && 1 == $field['newtab'] && !$children ? ' target="_blank"' : null) . '>
-								' . (stripos($field['icon'], 'mdi-blank') === false && stripos($field['icon'], 'mdi-') !== false ? '<i class="' . (isset($field['icon']) ? $field['icon'] : 'mdi mdi-circle-outline') . '"></i>' : null) . '
-								' . ($children && 'header' != $placement ? '<i class="mdi mdi-chevron-right float-right"></i>' : null) . '
-								<span class="hide-on-collapse">
-									' . ($field['label'] ? phrase($field['label'], true) : null) . '
-								</span>
-							</a>
-							' . ($children ? $this->_get_menu($placement, null, $field['children'], $visible_menus, true, ($level + 1)) : '') . '
-						</li>
-					';
-				}
-			}
-		}
-		
-		$output										= '
-			<ul class="' . ($is_children ? $dropdown_list_class : $navigation_class) . '">
-			
-				' . $additional_prefix . '
-				' . $menus . '
+				$core_menus							= array
+				(
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Dashboard',
+						'slug'						=> 'dashboard',
+						'icon'						=> 'mdi mdi-monitor-dashboard',
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> '',
+						'slug'						=> '---'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'CMS',
+						'slug'						=> 'cms',
+						'icon'						=> 'mdi mdi-dropbox',
+						'children'					=> array
+						(
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Blogs',
+								'slug'				=> 'cms/blogs',
+								'icon'				=> 'mdi mdi-newspaper',
+								'children'			=> array
+								(
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Posts',
+										'slug'		=> 'cms/blogs',
+										'icon'		=> 'mdi mdi-pencil'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Categories',
+										'slug'		=> 'cms/blogs/categories',
+										'icon'		=> 'mdi mdi-sitemap'
+									)
+								)
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Pages',
+								'slug'				=> 'cms/pages',
+								'icon'				=> 'mdi mdi-book-open-page-variant'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Galleries',
+								'slug'				=> 'cms/galleries',
+								'icon'				=> 'mdi mdi-folder-multiple-image'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Peoples',
+								'slug'				=> 'cms/peoples',
+								'icon'				=> 'mdi mdi-account-group-outline'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Partial Content',
+								'slug'				=> 'cms/partials',
+								'icon'				=> 'mdi mdi-file-image',
+								'children'			=> array
+								(
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Carousels',
+										'slug'		=> 'cms/partials/carousels',
+										'icon'		=> 'mdi mdi-image-multiple'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'FAQs',
+										'slug'		=> 'cms/partials/faqs',
+										'icon'		=> 'mdi mdi-file-question'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Announcements',
+										'slug'		=> 'cms/partials/announcements',
+										'icon'		=> 'mdi mdi-bullhorn-outline'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Testimonials',
+										'slug'		=> 'cms/partials/testimonials',
+										'icon'		=> 'mdi mdi-comment-account-outline'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Inquiries',
+										'slug'		=> 'cms/partials/inquiries',
+										'icon'		=> 'mdi mdi-message-text'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Media',
+										'slug'		=> 'cms/partials/media',
+										'icon'		=> 'mdi mdi-folder-image'
+									)
+								)
+							)
+						)
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> '',
+						'slug'						=> '---'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Core Tools',
+						'slug'						=> '---'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Administrative',
+						'slug'						=> 'administrative',
+						'icon'						=> 'mdi mdi-cogs',
+						'children'					=> array
+						(
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Users and Groups',
+								'slug'				=> 'administrative/users',
+								'icon'				=> 'mdi mdi-account-group-outline',
+								'children'			=> array
+								(
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Users',
+										'slug'		=> 'administrative/users',
+										'icon'		=> 'mdi mdi-account-group'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Groups',
+										'slug'		=> 'administrative/groups',
+										'icon'		=> 'mdi mdi-sitemap'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Privileges',
+										'slug'		=> 'administrative/groups/privileges',
+										'icon'		=> 'mdi mdi-account-check-outline'
+									)
+								)
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Configurations',
+								'slug'				=> 'administrative',
+								'icon'				=> 'mdi mdi-wrench-outline',
+								'children'			=> array
+								(
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Site Settings',
+										'slug'		=> 'administrative/settings',
+										'icon'		=> 'mdi mdi-settings'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Menus',
+										'slug'		=> 'administrative/menus',
+										'icon'		=> 'mdi mdi-menu'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Translations',
+										'slug'		=> 'administrative/translations',
+										'icon'		=> 'mdi mdi-translate'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Countries',
+										'slug'		=> 'administrative/countries',
+										'icon'		=> 'mdi mdi-map-legend'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Years',
+										'slug'		=> 'administrative/years',
+										'icon'		=> 'mdi mdi-calendar-clock'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Connections',
+										'slug'		=> 'administrative/connections',
+										'icon'		=> 'mdi mdi-power-plug'
+									)
+								)
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Activity Logs',
+								'slug'				=> 'administrative/activities',
+								'icon'				=> 'mdi mdi-information-outline'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Session Cleaner',
+								'slug'				=> 'administrative/cleaner',
+								'icon'				=> 'mdi mdi-trash-can'
+							)
+						)
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Addons',
+						'slug'						=> 'addons',
+						'icon'						=> 'mdi mdi-puzzle'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'APIs',
+						'slug'						=> 'apis',
+						'icon'						=> 'mdi mdi-code-braces',
+						'children'					=> array
+						(
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Services',
+								'slug'				=> 'apis/services',
+								'icon'				=> 'mdi mdi-link-variant'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Debug Tool',
+								'slug'				=> 'apis/debug_tool',
+								'icon'				=> 'mdi mdi-android-debug-bridge'
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Documentation',
+								'slug'				=> 'apis/documentation',
+								'icon'				=> 'mdi mdi mdi-book-open-page-variant'
+							)
+						)
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> '&nbsp;',
+						'slug'						=> '---'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'About',
+						'slug'						=> 'pages/about',
+						'icon'						=> 'mdi mdi-blank',
+						'class'						=> 'text-sm'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'License',
+						'slug'						=> 'pages/license',
+						'icon'						=> 'mdi mdi-blank',
+						'class'						=> 'text-sm'
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Aksara ' . aksara('built_version'),
+						'slug'						=> '---',
+						'icon'						=> 'mdi mdi-blank',
+						'class'						=> 'text-sm'
+					),
+				);
 				
-				' . ('header' != $placement ? '
-				' . (!$rendered ? '
-				<li class="divider"></li>
-				<li class="' . $navigation_item_class . '">
-					<a href="' . base_url('pages/about') . '" class="' . $navigation_link_class . ' text-sm hide-on-collapse" target="_blank">
-						' . phrase('about') . '
-					</a>
-				</li>
-				<li class="' . $navigation_item_class . '">
-					<a href="' . base_url('pages/license') . '" class="' . $navigation_link_class . ' text-sm hide-on-collapse" target="_blank">
-						' . phrase('license') . '
-					</a>
-				</li>
-				<li class="' . $navigation_item_class . '">
-					<a href="javascript:void(0)" class="' . $navigation_link_class . ' disabled text-sm hide-on-collapse">
-						AKSARA ' . aksara('built_version') . '
-					</a>
-				</li>
-				' : null) . '
-				' : '') . '
-			</ul>
-		';
+				$menus								= array_merge($menus, $core_menus);
+			}
+		}
 		
-		return $output;
+		array_walk_recursive($menus, function(&$label, $key)
+		{
+			if($key == 'label' && $label)
+			{
+				$label								= phrase($label, true);
+			}
+		});
+		
+		return $menus;
 	}
 	
 	private function _strtolower_callback($string = array())

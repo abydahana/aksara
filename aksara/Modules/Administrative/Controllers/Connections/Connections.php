@@ -5,7 +5,7 @@ namespace Aksara\Modules\Administrative\Controllers\Connections;
 /**
  * Administrative > Connections
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -56,7 +56,8 @@ class Connections extends \Aksara\Laboratory\Core
 				'MySQLi'							=> 'MySQLi',
 				'SQLSRV'							=> 'Microsoft SQL Server',
 				'Postgre'							=> 'PostgreSQL',
-				'SQLite3'							=> 'SQLite'
+				'SQLite3'							=> 'SQLite',
+				'OCI8'								=> 'Oracle (OCI8)'
 			)
 		)
 		->set_relation
@@ -101,7 +102,7 @@ class Connections extends \Aksara\Laboratory\Core
 				'year'								=> 'required',
 				'name'								=> 'required',
 				'year'								=> 'required',
-				'database_driver'					=> 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3]',
+				'database_driver'					=> 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]',
 				'hostname'							=> 'required',
 				'username'							=> 'required',
 				'database_name'						=> 'required'

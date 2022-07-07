@@ -237,11 +237,11 @@ if(! function_exists('phrase'))
 			if($check)
 			{
 				/* return formatted phrase */
-				return ucwords(str_replace('_', ' ', $phrase));
+				return ucfirst(str_replace('_', ' ', $phrase));
 			}
 			
 			/* set new phrase and push into existing */
-			$language[$phrase]						= (!$keep_word ? ucwords(str_replace('_', ' ', $phrase)) : $original_phrase);
+			$language[$phrase]						= (!$keep_word ? ucfirst(str_replace('_', ' ', $phrase)) : $original_phrase);
 			
 			/* sort and humanize the order of phrase */
 			ksort($language);

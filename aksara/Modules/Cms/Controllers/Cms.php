@@ -6,7 +6,7 @@ namespace Aksara\Modules\Cms\Controllers;
  * CMS
  * Landing page for Content Management Module.
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

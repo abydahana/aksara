@@ -96,13 +96,17 @@ if($total > 0 && isset($results->table_data))
 					{
 						color: #888888
 					}
-					.text-right
+					.text-sm-start
 					{
-						text-align: right
+						text-align: left!important
 					}
 					.text-center
 					{
 						text-align: center
+					}
+					.text-end
+					{
+						text-align: right
 					}
 					table
 					{
@@ -256,7 +260,7 @@ if($total > 0 && isset($results->table_data))
 										' . phrase('the_document_was_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
 									</i>
 								</td>
-								<td class="text-muted text-sm text-right">
+								<td class="text-muted text-sm text-end">
 									' . phrase('page') . ' {PAGENO} ' . phrase('of') . ' {nb}
 								</td>
 							</tr>
@@ -278,7 +282,7 @@ else if($total > 0 && isset($results->form_data))
 	{
 		$fields										.= '
 			<tr>
-				<td class="text-muted text-uppercase text-right">
+				<td class="text-muted text-uppercase text-end">
 					' . $params->label . '
 				</td>
 				<td width="70%">
@@ -358,7 +362,7 @@ else if($total > 0 && isset($results->form_data))
 					{
 						color: #888888
 					}
-					.text-right
+					.text-end
 					{
 						text-align: right
 					}
@@ -426,7 +430,7 @@ else if($total > 0 && isset($results->form_data))
 										' . phrase('the_document_was_generated_from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s') . '
 									</i>
 								</td>
-								<td class="text-muted text-sm text-right">
+								<td class="text-muted text-sm text-end">
 									' . phrase('page') . ' {PAGENO} ' . phrase('of') . ' {nb}
 								</td>
 							</tr>

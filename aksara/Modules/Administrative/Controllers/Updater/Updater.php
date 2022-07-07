@@ -6,7 +6,7 @@ namespace Aksara\Modules\Administrative\Controllers\Updater;
  * Administrative > Updater
  * This module is used to update Aksara.
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.2.7
@@ -448,7 +448,7 @@ class Updater extends \Aksara\Laboratory\Core
 			<hr class="row" />
 			<div class="row">
 				<div class="col-6">
-					<a href="javascript:void(0)" class="btn btn-light btn-block" data-dismiss="modal">
+					<a href="javascript:void(0)" class="btn btn-light btn-block" data-bs-dismiss="modal">
 						<i class="mdi mdi-window-close"></i>
 						' . phrase('close') . '
 					</a>

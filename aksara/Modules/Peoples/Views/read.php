@@ -1,6 +1,10 @@
 <?php if($results) { ?>
-<div class="jumbotron jumbotron-fluid bg-dark gradient relative">
+<div class="bg-light">
 	<div class="container">
+		<br />
+		<br />
+		<br />
+		<br />
 		<br />
 		<br />
 		<br />
@@ -23,7 +27,7 @@
 									<img src="' . get_image('peoples', $val->photo, 'thumb') . '" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="' . $val->first_name . ' ' . $val->last_name . '" />
 								</a>
 							</div>
-							<div class="form-group">
+							<div class="mb-5">
 								<label class="text-muted d-block">
 									' . phrase('full_name') . '
 								</label>
@@ -31,7 +35,7 @@
 									' . $val->first_name . ' ' . $val->last_name . '
 								</h6>
 							</div>
-							<div class="form-group">
+							<div class="mb-5">
 								<label class="text-muted d-block">
 									' . phrase('position') . '
 								</label>
@@ -39,7 +43,7 @@
 									' . $val->position . '
 								</h6>
 							</div>
-							<div class="row form-group">
+							<div class="row mb-3 mb-5">
 								<div class="col-sm-6">
 									<label class="text-muted d-block">
 										' . phrase('email') . '
@@ -57,19 +61,16 @@
 									</h6>
 								</div>
 							</div>
-							<div class="form-group">
-								<p class="article">
+							<div class="mb-5">
+								<div class="article text-secondary">
 									<i class="mdi mdi-format-quote-close mdi-3x text-muted"></i>' . $val->biography . '
-								</p>
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="text-muted d-block">
-									' . phrase('social_account') . '
-								</label>
+							<div class="mb-3">
 								<div class="row">
 									' . ($val->instagram ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->instagram . '" class="btn btn-outline-danger btn-block rounded-pill mb-3" target="_blank">
+											<a href="' . $val->instagram . '" class="btn btn-outline-danger d-block  rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-instagram"></i>
 												Instagram
 											</a>
@@ -77,7 +78,7 @@
 									' : '') . '
 									' . ($val->facebook ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->facebook . '" class="btn btn-outline-primary btn-block rounded-pill mb-3" target="_blank">
+											<a href="' . $val->facebook . '" class="btn btn-outline-primary d-block  rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-facebook"></i>
 												Facebook
 											</a>
@@ -85,7 +86,7 @@
 									' : '') . '
 									' . ($val->twitter ? '
 										<div class="col-sm-6 col-md-4">
-											<a href="' . $val->twitter . '" class="btn btn-outline-info btn-block rounded-pill mb-3" target="_blank">
+											<a href="' . $val->twitter . '" class="btn btn-outline-info d-block rounded-pill mb-3" target="_blank">
 												<i class="mdi mdi-twitter"></i>
 												Twitter
 											</a>
