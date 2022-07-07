@@ -119,7 +119,7 @@
 			?>
 		</div>
 		<div class="col-lg-4 pt-3 pb-3">
-			<div class="sticky-top" style="top:71px">
+			<div class="sticky-top">
 				<?php
 					if($similar)
 					{

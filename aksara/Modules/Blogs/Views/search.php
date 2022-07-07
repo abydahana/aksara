@@ -67,10 +67,10 @@
 						';
 					}
 					
-					if($total > 25)
+					if($total > $limit)
 					{
 						echo '
-							<div class="col-lg-12">
+							<div class="pt-3 pb-3">
 								' . $template->pagination . '
 							</div>
 						';
@@ -79,13 +79,11 @@
 				else
 				{
 					echo '
-						<div class="col-lg-6 offset-lg-3 text-center">
-							<div class="pt-5 pb-5">
-								<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-								<h2>
-									' . phrase('your_keyword_did_not_match_any_result') . '
-								</h2>
-							</div>
+						<div class="pt-5 pb-5">
+							<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+							<h2>
+								' . phrase('your_keyword_did_not_match_any_result') . '
+							</h2>
 						</div>
 					';
 				}

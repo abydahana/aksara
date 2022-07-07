@@ -20,105 +20,109 @@
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form">
 		<div class="row">
 			<div class="col-md-8">
-				<div class="mb-3">
-					<div class="card rounded-0">
-						<div class="card-body p-3 background-color border-bottom" style="background:<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : '#ffffff'); ?>">
-							<div class="row">
-								<div class="col-md-6 pt-1">
-									<b class="text-color" style="color:<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#333333'); ?>">
-										<?php echo phrase('page_color_scheme'); ?>
-									</b>
+				<div class="card mb-3">
+					<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : '#ffffff'); ?>; color:<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#333333'); ?>">
+						<div class="row align-items-center">
+							<div class="col-12 col-md-6 col-lg-8">
+								<b>
+									<?php echo phrase('page_color_scheme'); ?>
+								</b>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('background'); ?>
+									</span>
+									<input type="color" name="colorscheme[page][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : null); ?>" />
 								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[page][background]" class="form-control background-color-picker" placeholder="<?php echo phrase('background_color'); ?>" value="<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[page][text]" class="form-control text-color-picker" placeholder="<?php echo phrase('text_color'); ?>" value="<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : null); ?>" />
-										<span class="input-group-text">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('foreground'); ?>
+									</span>
+									<input type="color" name="colorscheme[page][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#FFFFFF'); ?>" />
 								</div>
 							</div>
 						</div>
-						<div class="card-body p-3 background-color" style="background:<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : '#ffffff'); ?>">
-							<div class="row">
-								<div class="col-md-6 pt-1">
-									<b class="text-color" style="color:<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : '#333333'); ?>">
-										<?php echo phrase('sidebar_color_scheme'); ?>
-									</b>
+					</div>
+				</div>
+				<div class="card mb-3">
+					<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : '#ffffff'); ?>; color:<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : '#333333'); ?>">
+						<div class="row align-items-center">
+							<div class="col-12 col-md-6 col-lg-8">
+								<b>
+									<?php echo phrase('sidebar_color_scheme'); ?>
+								</b>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('background'); ?>
+									</span>
+									<input type="color" name="colorscheme[sidebar][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : null); ?>" />
 								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[sidebar][background]" class="form-control background-color-picker" placeholder="<?php echo phrase('background_color'); ?>" value="<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[sidebar][text]" class="form-control text-color-picker" placeholder="<?php echo phrase('text_color'); ?>" value="<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('foreground'); ?>
+									</span>
+									<input type="color" name="colorscheme[sidebar][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : '#FFFFFF'); ?>" />
 								</div>
 							</div>
 						</div>
-						<div class="card-body p-3 background-color border-bottom" style="background:<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : '#ffffff'); ?>">
-							<div class="row">
-								<div class="col-md-6 pt-1">
-									<b class="text-color" style="color:<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#333333'); ?>">
-										<?php echo phrase('header_color_scheme'); ?>
-									</b>
+					</div>
+				</div>
+				<div class="card mb-3">
+					<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : '#ffffff'); ?>; color:<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#333333'); ?>">
+						<div class="row align-items-center">
+							<div class="col-12 col-md-6 col-lg-8">
+								<b>
+									<?php echo phrase('header_color_scheme'); ?>
+								</b>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('background'); ?>
+									</span>
+									<input type="color" name="colorscheme[header][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : null); ?>" />
 								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[header][background]" class="form-control background-color-picker" placeholder="<?php echo phrase('background_color'); ?>" value="<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[header][text]" class="form-control text-color-picker" placeholder="<?php echo phrase('text_color'); ?>" value="<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('foreground'); ?>
+									</span>
+									<input type="color" name="colorscheme[header][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#FFFFFF'); ?>" />
 								</div>
 							</div>
 						</div>
-						<div class="card-body p-3 background-color" style="background:<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : '#ffffff'); ?>">
-							<div class="row">
-								<div class="col-md-6 pt-1">
-									<b class="text-color" style="color:<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : '#333333'); ?>">
-										<?php echo phrase('footer_color_scheme'); ?>
-									</b>
+					</div>
+				</div>
+				<div class="card mb-3">
+					<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : '#ffffff'); ?>; color:<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : '#333333'); ?>">
+						<div class="row align-items-center">
+							<div class="col-12 col-md-6 col-lg-8">
+								<b>
+									<?php echo phrase('footer_color_scheme'); ?>
+								</b>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('background'); ?>
+									</span>
+									<input type="color" name="colorscheme[footer][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : null); ?>" />
 								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[footer][background]" class="form-control background-color-picker" placeholder="<?php echo phrase('background_color'); ?>" value="<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="input-group input-group-sm" role="colorpicker">
-										<input type="text" name="colorscheme[footer][text]" class="form-control text-color-picker" placeholder="<?php echo phrase('text_color'); ?>" value="<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : null); ?>" />
-										<span class="input-group-text" data-bs-toggle="tooltip" title="<?php echo phrase('pick_a_color'); ?>">
-											&nbsp;&nbsp;&nbsp;
-										</span>
-									</div>
+							</div>
+							<div class="col-6 col-md-3 col-lg-2">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text">
+										<?php echo phrase('foreground'); ?>
+									</span>
+									<input type="color" name="colorscheme[footer][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : '#FFFFFF'); ?>" />
 								</div>
 							</div>
 						</div>

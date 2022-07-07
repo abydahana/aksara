@@ -44,7 +44,14 @@
 					
 					echo $items;
 					
-					echo $template->pagination;
+					if($total > $limit)
+					{
+						echo '
+							<div class="pt-3 pb-3">
+								' . $template->pagination . '
+							</div>
+						';
+					}
 				}
 				else
 				{

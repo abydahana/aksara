@@ -72,15 +72,26 @@
 							</div>
 						';
 					}
+					
+					if($total > $limit)
+					{
+						echo '
+							<div class="pt-3 pb-3">
+								' . $template->pagination . '
+							</div>
+						';
+					}
+				}
+				else
+				{
+					echo '
+						<div class="text-muted">
+							<i class="mdi mdi-information-outline"></i>
+							' . phrase('no_album_is_available') . '
+						</div>
+					';
 				}
 			?>
-		</div>
-	</div>
-</div>
-<div class="container pt-3 pb-3">
-	<div class="row">
-		<div class="col-md-10 offset-md-1">
-			<?php echo $template->pagination; ?>
 		</div>
 	</div>
 </div>

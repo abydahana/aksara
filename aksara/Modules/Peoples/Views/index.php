@@ -50,12 +50,19 @@
 				</div>
 			';
 			
-			echo $template->pagination;
+			if($total > $limit)
+			{
+				echo '
+					<div class="pt-3 pb-3">
+						' . $template->pagination . '
+					</div>
+				';
+			}
 		}
 		else
 		{
 			echo '
-				<div class="alert alert-warning">
+				<div class="text-muted">
 					<i class="mdi mdi-information-outline"></i>
 					' . phrase('no_people_is_available') . '
 				</div>

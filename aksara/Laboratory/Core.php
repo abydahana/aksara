@@ -3054,6 +3054,7 @@ class Core extends Controller
 				),
 				'results'							=> $this->_results,
 				'total'								=> $this->_total,
+				'limit'								=> $this->_limit,
 				'pagination'						=> array
 				(
 					'limit'							=> $this->_limit_backup,
@@ -4261,7 +4262,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('colorpicker'), $type))
 				{
-					$content						= '<div class="input-group" role="colorpicker"><input type="text" name="' . $field . '" class="form-control" value="' . ($default_value ? $default_value : $original) . '"' . $read_only . ' /><span class="input-group-text" data-bs-toggle="tooltip" title="' . phrase('pick_a_color') . '">&nbsp;&nbsp;&nbsp;</span></div>';
+					$content						= '<div class="input-group"><span class="input-group-text">' . phrase('pick_a_color') . '</span><input type="color" name="' . $field . '" class="form-control form-control-color" value="' . ($default_value ? $default_value : $original) . '"' . $read_only . ' /></div>';
 				}
 				else if(array_intersect(array('wysiwyg'), $type))
 				{

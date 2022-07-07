@@ -142,10 +142,6 @@
 			Bootstrap Iconpicker
 		</a>
 		&middot;
-		<a href="//itsjavi.com/bootstrap-colorpicker/" target="_blank">
-			Bootstrap Colorpicker
-		</a>
-		&middot;
 		<a href="//bootstrap-datepicker.readthedocs.io/en/latest/" target="_blank">
 			Bootstrap Datepicker
 		</a>
@@ -190,10 +186,6 @@
 			OpenLayers
 		</a>
 		&middot;
-		<a href="//popper.js.org" target="_blank">
-			Popper
-		</a>
-		&middot;
 		<a href="//prismjs.com" target="_blank">
 			Prism
 		</a>
@@ -218,16 +210,8 @@
 			SwiperJS
 		</a>
 		&middot;
-		<a href="javascript:void(0)">
-			Typewritter
-		</a>
-		&middot;
 		<a href="//github.com/customd/jquery-visible" target="_blank">
 			Visible
-		</a>
-		&middot;
-		<a href="//maze.digital/webticker/" target="_blank">
-			Webticker
 		</a>
 	</div>
 	<br />
