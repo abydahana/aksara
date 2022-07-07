@@ -17,7 +17,7 @@
 	}
 ?>
 
-<div class="jumbotron jumbotron-fluid bg-light">
+<div class="bg-light pt-5 pb-5">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 offset-lg-2">
@@ -158,15 +158,15 @@
 					Like most single fighter researchers, if you feel helped by the research I did and want to provide moral or material support, don't hesitate to contact me from the <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara development website</b></a>. I would really appreciate whatever your support was, and of course it will give me more confidence.
 				</p>
 			</div>
-			<h3 class="text-center font-weight-light">
+			<h5 class="text-center">
 				Once again, thank you.
-			</h3>
-			<h3 class="text-center font-weight-light mb-3">
+			</h5>
+			<h5 class="text-center mb-3">
 				We are awesome!
-			</h3>
-			<h3 class="text-center">
+			</h5>
+			<h4 class="text-center">
 				<a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-			</h3>
+			</h4>
 		</div>
 	</div>
 </div>
