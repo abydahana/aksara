@@ -10,6 +10,12 @@
 	-moz-box-shadow: 1px 15px 15px -15px rgba(0,0,0,.2) inset
 }
 
+.navbar-brand .img-logo,
+.navbar-brand .img-icon
+{
+	height: 40px
+}
+
 .modal-header
 {
 	padding: .25rem 1rem
@@ -20,15 +26,35 @@
 	top: 56px
 }
 
-.navbar-nav .dropdown-menu:before,
-.navbar-nav .dropdown-menu:after
+.navbar .dropdown-menu .nav-item:hover
+{
+	background: rgba(0, 0, 0, .2)
+}
+
+.navbar .dropdown-menu .dropdown-menu
+{
+	top: 0;
+	position: relative;
+	border-right: 0;
+	border-left: 0;
+	border-radius: 0
+}
+
+.navbar .dropdown-menu .dropdown-toggle::after
+{
+	float: right;
+	margin-top: 10px
+}
+
+.navbar-nav .dropdown-menu::before,
+.navbar-nav .dropdown-menu::after
 {
 	position: absolute;
 	display: inline-block;
 	content: ''
 }
 
-.navbar .dropdown-menu:before
+.navbar .dropdown-menu::before
 {
 	top: -9px;
 	left: 19px;
@@ -37,7 +63,7 @@
 	border-left: 9px solid transparent
 }
 
-.navbar .dropdown-menu:after
+.navbar .dropdown-menu::after
 {
 	top: -8px;
 	left: 20px;
@@ -83,4 +109,74 @@
 a
 {
 	text-decoration: none
+}
+
+@media (min-width: 992px) and (min-height: 360px)
+{
+	.navbar-expand-lg .navbar-nav .dropdown-menu
+	{
+		min-width: 240px
+	}
+	
+	.navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-menu
+	{
+		min-width: 238px
+	}
+}
+
+@media (max-width: 991px)
+{
+	.navbar .navbar-collapse
+	{
+		overflow-x: hidden
+	}
+	
+	.navbar .dropdown-toggle::after
+	{
+		float: right;
+		margin-top: 10px
+	}
+	
+	.navbar-nav .dropdown-menu
+	{
+		position: relative;
+		top: 0;
+		background-color: transparent;
+		border: none;
+		margin-left: -1rem;
+		margin-right: -1rem
+	}
+	
+	.navbar-nav .dropdown-menu .dropdown-menu
+	{
+		margin-left: 0;
+		margin-right: 0
+	}
+
+	.navbar-nav .dropdown-menu::before,
+	.navbar-nav .dropdown-menu::after
+	{
+		display: none
+	}
+	
+	.navbar-nav .dropdown-menu .nav-link
+	{
+		color: var(--bs-nav-link-color)
+	}
+	
+	.navbar .dropdown-menu .nav-item:hover
+	{
+		background: transparent
+	}
+	
+	.navbar-nav .dropdown-menu .dropdown-menu .nav-link
+	{
+		padding: .25rem 1rem
+	}
+	
+	.navbar-nav .nav-link i
+	{
+		width: 2rem;
+		display: inline-block
+	}
 }
