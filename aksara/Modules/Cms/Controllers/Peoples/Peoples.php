@@ -6,7 +6,7 @@ namespace Aksara\Modules\Cms\Controllers\Peoples;
  * CMS > Peoples
  * Manage peoples that will be shown in the frontpage
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0

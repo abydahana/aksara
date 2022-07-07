@@ -13,7 +13,7 @@
 	$last_page										= parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
 	$last_page										= (isset($output['page']) ? $output['page'] : 0);
 ?>
-<ul class="pagination pagination-sm">
+<ul class="pagination pagination-sm mb-0">
 	<?php
 		echo '
 			<li class="page-item' . ($current_page <= 1 ? ' disabled' : null) . '">

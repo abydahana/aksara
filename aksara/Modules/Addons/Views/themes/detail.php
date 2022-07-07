@@ -49,7 +49,7 @@
 <div class="container-fluid pt-3 pb-3">
 	<div class="row">
 		<div class="col-md-6 col-lg-7">
-			<div class="relative rounded" style="overflow: hidden">
+			<div class="position-relative rounded" style="overflow: hidden">
 				<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 					<div class="carousel-inner">
 						<?php echo $carousel; ?>
@@ -57,15 +57,9 @@
 					<?php if(sizeof($detail->screenshot) > 1) { ?>
 						<a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-slide="prev">
 							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="sr-only">
-								<?php echo phrase('previous'); ?>
-							</span>
 						</a>
 						<a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-slide="next">
 							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="sr-only">
-								<?php echo phrase('next'); ?>
-							</span>
 						</a>
 					<?php } ?>
 				</div>
@@ -74,7 +68,7 @@
 		<div class="col-md-6 col-lg-5">
 			<h5>
 				<?php echo $detail->name; ?>
-				<?php echo ($detail->type == 'backend' ? '<span class="badge badge-dark float-right">' . phrase('back_end') . '</span>' : '<span class="badge badge-success float-right">' . phrase('front_end') . '</span>'); ?>
+				<?php echo ($detail->type == 'backend' ? '<span class="badge bg-dark float-end">' . phrase('back_end') . '</span>' : '<span class="badge bg-success float-end">' . phrase('front_end') . '</span>'); ?>
 			</h5>
 			<hr class="mt-1 mb-1" />
 			<div class="row">

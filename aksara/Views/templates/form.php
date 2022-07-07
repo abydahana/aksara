@@ -6,7 +6,7 @@
 		foreach($results->extra_action->submit as $key => $val)
 		{
 			$extra_submit							.= '
-				<a href="' . go_to($val->url, $val->parameter) . '" class="' . ($val->class ? $val->class : 'btn-default --xhr') . ' float-right ml-1"' . ($val->new_tab ? ' target="_blank"' : null) . '>
+				<a href="' . go_to($val->url, $val->parameter) . '" class="' . ($val->class ? $val->class : 'btn-default --xhr') . ' float-end ml-1"' . ($val->new_tab ? ' target="_blank"' : null) . '>
 					<i class="' . ($val->icon ? $val->icon : 'mdi mdi-link') . '"></i>
 					' . $val->label . '
 				</a>
@@ -35,7 +35,7 @@
 		if(in_array('coordinate', $params->type) || in_array('point', $params->type) || in_array('polygon', $params->type) || in_array('linestring', $params->type))
 		{
 			$map									= '
-				<div class="form-group" style="margin-right: -15px; margin-left: -15px">
+				<div class="mb-3" style="margin-right: -15px; margin-left: -15px">
 					' . $params->content . '
 				</div>
 			';
@@ -53,29 +53,25 @@
 				
 				$col								.= '
 					<div class="' . (isset($results->field_size->$val) ? $results->field_size->$val : 'col') . '">
-						<div class="form-group">
+						<div class="form-group mb-3">
 							<label class="text-muted d-block mb-0" for="' . $val . '_input">
 								' . $results->form_data->$val->label . '
-								' . ($results->form_data->$val->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $results->form_data->$val->tooltip . '"></i>' : null) . '
+								' . ($results->form_data->$val->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-bs-toggle="tooltip" title="' . $results->form_data->$val->tooltip . '"></i>' : null) . '
 								' . ($results->form_data->$val->required ? '<b class="text-danger"> *</b>' : null) . '
 							</label>
 							' . ($results->form_data->$val->prepend || $results->form_data->$val->append ? '<div class="input-group">' : '') . '
 								' . ($results->form_data->$val->prepend ? '
-									<div class="input-group-prepend">
-										<span class="input-group-text">
-											' . $results->form_data->$val->prepend . '
-										</span>
-									</div>
+									<span class="input-group-text">
+										' . $results->form_data->$val->prepend . '
+									</span>
 								' : '') . '
 								
 								' . $results->form_data->$val->content . '
 								
 								' . ($results->form_data->$val->append ? '
-									<div class="input-group-append">
-										<span class="input-group-text">
-											' . $results->form_data->$val->append . '
-										</span>
-									</div>
+									<span class="input-group-text">
+										' . $results->form_data->$val->append . '
+									</span>
 								' : '') . '
 							' . ($results->form_data->$val->prepend || $results->form_data->$val->append ? '</div>' : '') . '
 						</div>
@@ -127,29 +123,25 @@
 			if(in_array($field, $merged)) continue;
 			
 			$output									= '
-				<div class="form-group">
+				<div class="form-group mb-3">
 					<label class="text-muted d-block mb-0" for="' . $field . '_input">
 						' . $params->label . '
-						' . ($params->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-toggle="tooltip" title="' . $params->tooltip . '"></i>' : null) . '
+						' . ($params->tooltip ? '<i class="mdi mdi-information-outline text-primary" data-bs-toggle="tooltip" title="' . $params->tooltip . '"></i>' : null) . '
 						' . ($params->required ? '<b class="text-danger"> *</b>' : null) . '
 					</label>
 					' . ($params->prepend || $params->append ? '<div class="input-group">' : '') . '
 						' . ($params->prepend ? '
-							<div class="input-group-prepend">
-								<span class="input-group-text">
-									' . $params->prepend . '
-								</span>
-							</div>
+							<span class="input-group-text">
+								' . $params->prepend . '
+							</span>
 						' : '') . '
 						
 						' . $params->content . '
 						
 						' . ($params->append ? '
-							<div class="input-group-append">
-								<span class="input-group-text">
-									' . $params->append . '
-								</span>
-							</div>
+							<span class="input-group-text">
+								' . $params->append . '
+							</span>
 						' : '') . '
 					' . ($params->prepend || $params->append ? '</div>' : '') . '
 				</div>
@@ -266,10 +258,10 @@
 		</div>
 		<?php echo ('modal' == service('request')->getPost('prefer') ? '<hr class="row" />' : '<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->'); ?>
 		<div class="row<?php echo ('modal' != service('request')->getPost('prefer') ? ' opt-btn' : null); ?>">
-			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : ($results->column_total > 2 ? 12 : 10))); ?>">
+			<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-end' : (1 == $results->column_total ? 6 : ($results->column_total > 2 ? 12 : 10))); ?>">
 				
 				<?php if('modal' == service('request')->getPost('prefer')) { ?>
-				<button type="button" class="btn btn-light" data-dismiss="modal">
+				<button type="button" class="btn btn-light" data-bs-dismiss="modal">
 					<?php echo phrase('close'); ?>
 					<em class="text-sm">(esc)</em>
 				</button>
@@ -282,7 +274,7 @@
 				
 				<?php echo $extra_submit; ?>
 				
-				<button type="submit" class="btn btn-primary float-right">
+				<button type="submit" class="btn btn-primary float-end">
 					<i class="mdi mdi-check"></i>
 					<?php echo phrase('submit'); ?>
 					<em class="text-sm">(ctrl+s)</em>

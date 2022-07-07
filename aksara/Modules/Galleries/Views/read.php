@@ -30,28 +30,28 @@
 		display: none
 	}
 </style>
-<div class="row no-gutters bg-light">
+<div class="row g-0 bg-light">
 	<div class="col-lg-8">
-		<div class="sticky-top" style="top:15px">
+		<div class="sticky-top">
 			<div class="photo-view">
-				<div class="relative" style="overflow: hidden">
-					<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+				<div class="position-relative overflow-hidden">
+					<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
 						<div class="carousel-inner">
 							<?php echo $carousel; ?>
 						</div>
 						<?php if($count > 1) { ?>
-							<a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-slide="prev">
+							<button class="carousel-control-prev gradient-right" type="button" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="prev">
 								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-								<span class="sr-only">
+								<span class="visually-hidden">
 									<?php echo phrase('previous'); ?>
 								</span>
-							</a>
-							<a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-slide="next">
+							</button>
+							<button class="carousel-control-next gradient-left" type="button" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="next">
 								<span class="carousel-control-next-icon" aria-hidden="true"></span>
-								<span class="sr-only">
+								<span class="visually-hidden">
 									<?php echo phrase('next'); ?>
 								</span>
-							</a>
+							</button>
 						<?php } ?>
 					</div>
 				</div>
@@ -59,15 +59,15 @@
 		</div>
 	</div>
 	<div class="col-lg-4 p-3 bg-white">
-		<div class="sticky-top" style="top:15px">
+		<div class="sticky-top">
 			<div class="row mb-3">
-				<div class="col-3 col-md-2 pr-0">
+				<div class="col-3 col-md-2 pe-0">
 					<a href="<?php echo base_url('user/' . $results[0]->username); ?>" class="--xhr">
 						<img src="<?php echo get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded" />
 					</a>
 				</div>
 				<div class="col-9 col-md-10">
-					<a href="<?php echo current_page('../../', array('gallery_slug' => null)); ?>" class="float-right font-weight-bold --xhr">
+					<a href="<?php echo current_page('../../', array('gallery_slug' => null)); ?>" class="float-end --xhr">
 						<i class="mdi mdi-window-close"></i>
 					</a>
 					<a href="<?php echo base_url('user/' . $results[0]->username); ?>" class="--xhr">
@@ -76,7 +76,7 @@
 						</b>
 					</a>
 					<p class="mt-0">
-						<span class="text-sm text-muted" data-toggle="tooltip" title="<?php echo $results[0]->updated_timestamp; ?>">
+						<span class="text-sm text-muted" data-bs-toggle="tooltip" title="<?php echo $results[0]->updated_timestamp; ?>">
 							<?php echo time_ago($results[0]->updated_timestamp); ?>
 						</span>
 					</p>

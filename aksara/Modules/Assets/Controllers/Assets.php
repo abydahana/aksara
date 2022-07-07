@@ -5,7 +5,7 @@ namespace Aksara\Modules\Assets\Controllers;
 /**
  * Assets controller
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -49,7 +49,6 @@ class Assets extends \Aksara\Laboratory\Core
 		
 		$file_list									= array
 		(
-			'assets/bootstrap/bootstrap' . ($this->_rtl ? '.rtl' : null) . '.min.css',
 			'assets/mcustomscrollbar/jquery.mCustomScrollbar.min.css',
 			'assets/select2/select2.min.css',
 			'assets/select2/select2.bootstrap4.min.css',
@@ -77,7 +76,7 @@ class Assets extends \Aksara\Laboratory\Core
 		}
 		
 		service('response')->setHeader('Content-Type', 'text/css');
-		service('response')->setBody(trim(preg_replace('/\s+/S', ' ', $output)));
+		service('response')->setBody($output);
 		
 		return service('response')->send();
 	}
@@ -90,8 +89,6 @@ class Assets extends \Aksara\Laboratory\Core
 		(
 			'assets/jquery/jquery.min.js',
 			'assets/local/js/require.min.js',
-			'assets/popper/popper.min.js',
-			'assets/bootstrap/bootstrap.min.js',
 			'assets/sprintf/sprintf.min.js',
 			'assets/actual/actual.min.js',
 			'assets/mcustomscrollbar/jquery.mousewheel.min.js',
@@ -115,6 +112,7 @@ class Assets extends \Aksara\Laboratory\Core
 			{
 				base_url: "' . htmlspecialchars(preg_replace('/\?.*/', '', base_url())) . '",
 				asset_url: "' . htmlspecialchars(preg_replace('/\?.*/', '', base_url('assets'))) . '/",
+				current_slug: "' . htmlspecialchars(str_replace('.', '-', service('uri')->setSilent()->getPath())) . '",
 				is_logged: ' . (get_userdata('is_logged') ? 1 : '0') . ',
 				document_extension_allowed: ' . (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : '[]') . ',
 				image_extension_allowed: ' . (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : '[]') . ',
@@ -122,7 +120,7 @@ class Assets extends \Aksara\Laboratory\Core
 				app_name: "' . htmlspecialchars(get_setting('app_name')) . '",
 				app_logo: "' . htmlspecialchars(get_image('settings', get_setting('app_logo'))) . '",
 				app_icon: "' . htmlspecialchars(get_image('settings', get_setting('app_icon'), 'icon')) . '",
-				content_wrapper: "#content-wrapper",
+				content_placeholder: "#content-placeholder",
 				registration_enabled: ' . (int) get_setting('frontend_registration') . ',
 				language: "' . htmlspecialchars(get_userdata('language')) . '",
 				timezone: "' . TIMEZONE . '",
@@ -147,7 +145,7 @@ class Assets extends \Aksara\Laboratory\Core
 		}
 		
 		service('response')->setHeader('Content-Type', 'text/javascript');
-		service('response')->setBody(trim(preg_replace('/\s+/S', ' ', $output)));
+		service('response')->setBody($output);
 		
 		return service('response')->send();
 	}

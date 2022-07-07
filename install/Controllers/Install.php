@@ -100,7 +100,14 @@ class Install extends BaseController
 		
 		$output										= array
 		(
-			'driver'								=> array('MySQLi', 'Postgre', 'SQLSRV', 'SQLite3')
+			'driver'								=> array
+			(
+				'MySQLi'							=> 'MySQLi',
+				'SQLSRV'							=> 'Microsoft SQL Server',
+				'Postgre'							=> 'PostgreSQL',
+				'SQLite3'							=> 'SQLite',
+				'OCI8'								=> 'Oracle (OCI8)'
+			)
 		);
 		
 		return $this->response->setJSON
@@ -124,7 +131,7 @@ class Install extends BaseController
 		
 		if(service('request')->getPost('_token'))
 		{
-			service('validation')->setRule('database_driver', phrase('database_driver'), 'required');
+			service('validation')->setRule('database_driver', phrase('database_driver'), 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]');
 			service('validation')->setRule('database_hostname', phrase('hostname'), 'required');
 			service('validation')->setRule('database_username', phrase('username'), 'required');
 			service('validation')->setRule('database_initial', phrase('database_initial'), 'required');
@@ -185,11 +192,11 @@ class Install extends BaseController
 				'DBDebug'							=> true
 			);
 			
-			// initialize parameter to new connection
-			$this->db								= \Config\Database::connect($config);
-			
 			try
 			{
+				// initialize parameter to new connection
+				$this->db							= \Config\Database::connect($config);
+				
 				// try to connect to the database
 				$this->db->connect();
 			}
@@ -430,11 +437,11 @@ class Install extends BaseController
 			$_SERVER['database.default.password']	= session()->get('database_password');
 			$_SERVER['database.default.database']	= session()->get('database_initial');
 			
-			// initialize parameter to new connection
-			$this->db								= \Config\Database::connect();
-			
 			try
 			{
+				// initialize parameter to new connection
+				$this->db							= \Config\Database::connect();
+				
 				// try to connect to the database
 				$this->db->connect();
 			}

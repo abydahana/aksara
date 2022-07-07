@@ -20,6 +20,11 @@ else if(!is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable') || !is
 // check if configuration file already exists
 if(!file_exists('../config.php'))
 {
+	if(!is_dir('../install'))
+	{
+		exit('<center>The config file or installer does not exists!</center>');
+	}
+	
 	define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 }
 else
@@ -62,11 +67,41 @@ $paths = new Config\Paths();
 $bootstrap = rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
 $app       = require realpath($bootstrap) ?: $bootstrap;
 
-/*
- *---------------------------------------------------------------
- * LAUNCH THE APPLICATION
- *---------------------------------------------------------------
- * Now that everything is setup, it's time to actually fire
- * up the engines and make this app do its thang.
- */
-$app->run();
+if(!is_int($app) && method_exists($app, 'run'))
+{
+	/*
+	 *---------------------------------------------------------------
+	 * LAUNCH THE APPLICATION
+	 *---------------------------------------------------------------
+	 * Now that everything is setup, it's time to actually fire
+	 * up the engines and make this app do its thang.
+	 */
+	$app->run();
+}
+else
+{
+	/*
+	 * ---------------------------------------------------------------
+	 * GRAB OUR CODEIGNITER INSTANCE (Since Version 4.2.*)
+	 * ---------------------------------------------------------------
+	 *
+	 * The CodeIgniter class contains the core functionality to make
+	 * the application run, and does all of the dirty work to get
+	 * the pieces all working together.
+	 */
+
+	$app = Config\Services::codeigniter();
+	$app->initialize();
+	$context = is_cli() ? 'php-cli' : 'web';
+	$app->setContext($context);
+
+	/*
+	 *---------------------------------------------------------------
+	 * LAUNCH THE APPLICATION
+	 *---------------------------------------------------------------
+	 * Now that everything is setup, it's time to actually fire
+	 * up the engines and make this app do its thang.
+	 */
+
+	$app->run();
+}

@@ -22,8 +22,8 @@ Options All -Indexes
 
 	# Rewrite "www.example.com -> example.com"
 	# RewriteCond %{HTTPS} !=on
-	# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-	# RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
 	# Checks to see if the user is attempting to access a valid file,
     # such as an image or css document, if this isn't true it sends the
@@ -53,5 +53,5 @@ Options All -Indexes
 </IfModule>
 
 # Disable server signature start
-    ServerSignature Off
+ServerSignature Off
 # Disable server signature end

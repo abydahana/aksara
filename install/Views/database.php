@@ -11,7 +11,7 @@
 		
 		foreach($driver as $key => $val)
 		{
-			$driver_list							.= '<option value="' . $val . '"' . (session()->get('database_driver') == $val ? ' selected' : null) . '>' . $val . '</option>';
+			$driver_list							.= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
 		}
 	?>
 	<div class="row">

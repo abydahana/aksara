@@ -26,7 +26,7 @@
 								<img src="' . $val->profile_avatar . '" class="img-fluid rounded-more" />
 							</a>
 						</div>
-						<div class="col-8 col-md-10 col-lg-11 pl-3 text-break-word">
+						<div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">
 							<a href="' . $val->profile_url . '" target="_blank">
 								<h5>
 									' . $val->committer . '

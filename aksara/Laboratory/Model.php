@@ -6,7 +6,7 @@ namespace Aksara\Laboratory;
  * CRUD Model
  * The global model that linked to the core, make crud easier
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -16,60 +16,21 @@ namespace Aksara\Laboratory;
 class Model
 {
 	private $db;
+	private $builder;
 	
-	private $_list_tables;
-	private $_table_exists;
-	private $_field_exists;
-	private $_list_fields;
-	private $_field_data;
-	
-	private $_query;
-	private $_query_params;
-	
+	private $_prepare								= array();
+	private $_finished								= false;
 	private $_called								= false;
 	
-	private $_distinct								= false;
 	private $_select								= array();
-	private $_select_avg							= array();
-	private $_select_max							= array();
-	private $_select_min							= array();
-	private $_select_sum							= array();
 	private $_from;
 	private $_table;
-	private $_join									= array();
-	private $_where									= array();
-	private $_or_where								= array();
-	private $_where_in								= array();
-	private $_or_where_in							= array();
-	private $_where_not_in							= array();
-	private $_or_where_not_in						= array();
-	private $_like									= array();
-	private $_or_like								= array();
-	private $_not_like								= array();
-	private $_or_not_like							= array();
-	private $_having								= array();
-	private $_or_having								= array();
-	private $_having_in								= array();
-	private $_or_having_in							= array();
-	private $_having_not_in							= array();
-	private $_or_having_not_in						= array();
-	private $_having_like							= array();
-	private $_or_having_like						= array();
-	private $_not_having_like						= array();
-	private $_or_not_having_like					= array();
-	private $_group_start;
-	private $_group_end;
-	private $_or_group_start;
-	private $_not_group_start;
-	private $_or_not_group_start;
-	private $_group_by;
-	private $_order_by								= array();
 	private $_limit;
 	private $_offset;
 	private $_set									= array();
-	private $_replace								= array();
+	private $_get;
 	
-	function __construct()
+	public function __construct()
 	{
 		$this->db									= \Config\Database::connect();
 	}
@@ -348,15 +309,12 @@ class Model
 		// check if query is being execute without calling child method
 		if(true === $params)
 		{
-			// run query
-			$this->db->query($query);
-			
-			// reset property
-			$this->_reset_property();
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'query',
+				'arguments'							=> array($query)
+			);
 		}
-		
-		$this->_query								= $query;
-		$this->_query_params						= $params;
 		
 		return $this;
 	}
@@ -364,9 +322,13 @@ class Model
 	/**
 	 * Distinct field
 	 */
-	public function distinct($flag = false)
+	public function distinct($flag = true)
 	{
-		$this->_distinct							= $flag;
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'distinct',
+			'arguments'								=> array($flag)
+		);
 		
 		return $this;
 	}
@@ -375,99 +337,96 @@ class Model
 	 * Select field
 	 * Possible to use comma separated
 	 */
-	public function select($select = null, $escape = true)
+	public function select($column = null, $escape = true)
 	{
-		if(!is_array($select))
+		if(!is_array($column))
 		{
 			// split selected by comma, but ignore that inside brackets
-			$select									= array_map('trim', preg_split('/,(?![^(]+\))/', $select));
+			$column									= array_map('trim', preg_split('/,(?![^(]+\))/', $column));
 		}
 		
-		$this->_select								= array_merge($this->_select, $select);
+		$column										= array_unique($column);
+		
+		foreach($column as $key => $val)
+		{
+			$this->_select[]						= $val;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'select',
+			'arguments'								=> array($column, $escape)
+		);
+		
+		return $this;
+	}
+	
+	/**
+	 * Select count
+	 */
+	public function select_count($column = null, $alias = null)
+	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'selectCount',
+			'arguments'								=> array($column, $alias)
+		);
 		
 		return $this;
 	}
 	
 	/**
 	 * Select and Sum
-	 * Possible to use comma separated
 	 */
-	public function select_sum($select = null, $alias = null)
+	public function select_sum($column = null, $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_sum[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_sum[$key]			= $val;
-			}
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'selectSum',
+			'arguments'								=> array($column, $alias)
+		);
 		
 		return $this;
 	}
 	
 	/**
 	 * Select Minimum
-	 * Possible to use comma separated
 	 */
-	public function select_min($select = null, $alias = null)
+	public function select_min($column = null, $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_min[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_min[$key]			= $val;
-			}
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'selectMin',
+			'arguments'								=> array($column, $alias)
+		);
 		
 		return $this;
 	}
 	
 	/**
 	 * Select Maximum
-	 * Possible to use comma separated
 	 */
-	public function select_max($select = null, $alias = null)
+	public function select_max($column = null, $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_max[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_max[$key]			= $val;
-			}
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'selectMax',
+			'arguments'								=> array($column, $alias)
+		);
 		
 		return $this;
 	}
 	
 	/**
 	 * Select Average of field
-	 * Possible to use comma separated
 	 */
-	public function select_avg($select = null, $alias = null)
+	public function select_avg($column = null, $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_avg[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_avg[$key]			= $val;
-			}
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'selectAvg',
+			'arguments'								=> array($column, $alias)
+		);
 		
 		return $this;
 	}
@@ -478,6 +437,8 @@ class Model
 	public function from($table = null)
 	{
 		$this->_table								= $table;
+		
+		$this->builder								= $this->db->table($table);
 		
 		return $this;
 	}
@@ -490,6 +451,8 @@ class Model
 	{
 		$this->_table								= $table;
 		
+		$this->builder								= $this->db->table($table);
+		
 		return $this;
 	}
 	
@@ -500,34 +463,11 @@ class Model
 	 */
 	public function join($table = null, $condition = null, $type = '', $escape = true)
 	{
-		if(!is_array($table))
-		{
-			if(isset($condition['condition']))
-			{
-				$this->_join[$table]				= $condition;
-			}
-			else
-			{
-				$this->_join[$table]				= array
-				(
-					'condition'						=> $condition,
-					'type'							=> $type,
-					'escape'						=> $escape
-				);
-			}
-		}
-		else
-		{
-			foreach($table as $key => $val)
-			{
-				$this->_join[$key]					= array
-				(
-					'condition'						=> $val,
-					'type'							=> $type,
-					'escape'						=> $escape
-				);
-			}
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'join',
+			'arguments'								=> array($table, $condition, $type, $escape)
+		);
 		
 		return $this;
 	}
@@ -539,31 +479,25 @@ class Model
 	 */
 	public function where($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			// run or where command
+			foreach($field as $key => $val)
 			{
-				$this->_where[$field]				= $value;
-			}
-			else
-			{
-				$this->_where[$field]				= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'where',
+					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_where[$key]					= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'where',
+				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -576,31 +510,25 @@ class Model
 	 */
 	public function or_where($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			// run or where command
+			foreach($field as $key => $val)
 			{
-				$this->_or_where[$field]			= $value;
-			}
-			else
-			{
-				$this->_or_where[$field]			= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orWhere',
+					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_where[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orWhere',
+				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -613,31 +541,24 @@ class Model
 	 */
 	public function where_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_where_in[$field]			= $value;
-			}
-			else
-			{
-				$this->_where_in[$field]			= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'whereIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_where_in[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'whereIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -650,31 +571,24 @@ class Model
 	 */
 	public function or_where_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_or_where[$field]			= $value;
-			}
-			else
-			{
-				$this->_or_where_in[$field]			= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orWhereIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_where_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orWhereIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -687,31 +601,24 @@ class Model
 	 */
 	public function where_not_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_where_not_in[$field]		= $value;
-			}
-			else
-			{
-				$this->_where_not_in[$field]		= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'whereNotIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_where_not_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'whereNotIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -724,31 +631,24 @@ class Model
 	 */
 	public function or_where_not_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_or_where_not_in[$field]		= $value;
-			}
-			else
-			{
-				$this->_or_where_not_in[$field]		= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orWhereNotIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_where_not_in[$key]		= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orWhereNotIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -761,15 +661,17 @@ class Model
 	 */
 	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_like[$field]				= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_like[$field]				= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -782,7 +684,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_like[$key]					= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -790,6 +692,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'like',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -802,15 +713,17 @@ class Model
 	 */
 	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_or_like[$field]				= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_or_like[$field]				= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -823,7 +736,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_like[$key]				= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -831,6 +744,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -843,15 +765,17 @@ class Model
 	 */
 	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_not_like[$field]			= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_not_like[$field]			= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -864,7 +788,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_not_like[$key]				= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -872,6 +796,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'notLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -884,15 +817,17 @@ class Model
 	 */
 	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_or_not_like[$field]			= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_or_not_like[$field]			= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -905,7 +840,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_not_like[$key]			= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -913,6 +848,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orNotLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -925,31 +869,25 @@ class Model
 	 */
 	public function having($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			// run or where command
+			foreach($field as $key => $val)
 			{
-				$this->_having[$field]				= $value;
-			}
-			else
-			{
-				$this->_having[$field]				= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'having',
+					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_having[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'having',
+				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -962,31 +900,25 @@ class Model
 	 */
 	public function or_having($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			// run or where command
+			foreach($field as $key => $val)
 			{
-				$this->_or_having[$field]			= $value;
-			}
-			else
-			{
-				$this->_or_having[$field]			= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orHaving',
+					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_having[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orHaving',
+				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -999,31 +931,24 @@ class Model
 	 */
 	public function having_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_having_in[$field]			= $value;
-			}
-			else
-			{
-				$this->_having_in[$field]			= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'havingIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_having_in[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'havingIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -1036,31 +961,24 @@ class Model
 	 */
 	public function or_having_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_or_having_in[$field]		= $value;
-			}
-			else
-			{
-				$this->_or_having_in[$field]		= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orHavingIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_having_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orHavingIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -1073,31 +991,24 @@ class Model
 	 */
 	public function having_not_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_having_not_in[$field]		= $value;
-			}
-			else
-			{
-				$this->_having_not_in[$field]		= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'havingNotIn',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_having_not_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'havingNotIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -1110,31 +1021,24 @@ class Model
 	 */
 	public function or_having_not_in($field = '', $value = '', $escape = true)
 	{
-		if(!is_array($field))
+		if(is_array($field))
 		{
-			if(isset($value['value']))
+			foreach($field as $key => $val)
 			{
-				$this->_or_having_not_in[$field]	= $value;
-			}
-			else
-			{
-				$this->_or_having_not_in[$field]	= array
+				$this->_prepare[]					= array
 				(
-					'value'							=> $value,
-					'escape'						=> $escape
+					'function'						=> 'orHavingNotIN',
+					'arguments'						=> array($key, $val, $escape)
 				);
 			}
 		}
 		else
 		{
-			foreach($field as $key => $val)
-			{
-				$this->_or_having_not_in[$key]		= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orHavingNotIn',
+				'arguments'							=> array($field, $value, $escape)
+			);
 		}
 		
 		return $this;
@@ -1147,15 +1051,17 @@ class Model
 	 */
 	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_having_like[$field]			= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_having_like[$field]			= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -1168,7 +1074,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_having_like[$key]			= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -1176,6 +1082,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'havingLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -1188,15 +1103,17 @@ class Model
 	 */
 	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_or_having_like[$field]		= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_or_having_like[$field]		= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -1209,7 +1126,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_having_like[$key]		= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -1217,6 +1134,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orHavingLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -1229,15 +1155,17 @@ class Model
 	 */
 	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_not_having_like[$field]		= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_not_having_like[$field]		= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -1250,7 +1178,7 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_not_having_like[$key]		= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
@@ -1258,6 +1186,15 @@ class Model
 					'case_insensitive'				=> $case_insensitive
 				);
 			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'notHavingLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
 		}
 		
 		return $this;
@@ -1270,15 +1207,17 @@ class Model
 	 */
 	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
 	{
+		$column										= array();
+		
 		if(!is_array($field))
 		{
 			if(isset($match['match']))
 			{
-				$this->_or_not_having_like[$field]	= $match;
+				$column[$field]						= $match;
 			}
 			else
 			{
-				$this->_or_not_having_like[$field]	= array
+				$column[$field]						= array
 				(
 					'match'							=> $match,
 					'side'							=> $side,
@@ -1291,12 +1230,119 @@ class Model
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_not_having_like[$key]	= array
+				$column[$key]						= array
 				(
 					'match'							=> $val,
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
+				);
+			}
+		}
+		
+		foreach($column as $key => $val)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orNotHavingLike',
+				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Group By
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function group_by($column = null)
+	{
+		if(in_array(DB_DRIVER, array('SQLSRV')))
+		{
+			$column									= array_map('trim', explode(',', $by));
+			
+			// loops the group list
+			foreach($column as $key => $val)
+			{
+				if(stripos($val, '(') && stripos($val, ')'))
+				{
+					$this->_prepare[]				= array
+					(
+						'function'					=> 'groupBy',
+						'arguments'					=> array($val)
+					);
+				}
+				else
+				{
+					$this->_prepare[]				= array
+					(
+						'function'					=> 'groupBy',
+						'arguments'					=> array('CONVERT(VARCHAR(MAX), ' . (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val) . ')')
+					);
+				}
+			}
+		}
+		else
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'groupBy',
+				'arguments'							=> array($column)
+			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Order By
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function order_by($column = null, $direction = '', $escape = true)
+	{
+		if(is_array($column))
+		{
+			foreach($column as $key => $val)
+			{
+				$this->_prepare[]					= array
+				(
+					'function'						=> 'orderBy',
+					'arguments'						=> array($key, $val, $escape)
+				);
+			}
+		}
+		else if($direction)
+		{
+			$this->_prepare[]						= array
+			(
+				'function'							=> 'orderBy',
+				'arguments'							=> array($column, $direction, $escape)
+			);
+		}
+		else
+		{
+			$column									= ($column ? array_map('trim', preg_split('/,(?![^(]+\))/', trim($column))) : array());
+			
+			foreach($column as $key => $val)
+			{
+				$dir								= '';
+				
+				if(strpos($val, '(') !== false && strpos($val, ')') !== false)
+				{
+					$col							= $val;
+				}
+				else
+				{
+					list($col, $dir)				= array_pad(array_map('trim', explode(' ', $val)), 2, '');
+				}
+				
+				$this->_prepare[]					= array
+				(
+					'function'						=> 'orderBy',
+					'arguments'						=> array($col, $dir, $escape)
 				);
 			}
 		}
@@ -1311,12 +1357,11 @@ class Model
 	 */
 	public function limit($limit = 0, $offset = 0)
 	{
-		$this->_limit								= $limit;
-		
-		if($offset)
-		{
-			$this->_offset							= $offset;
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'limit',
+			'arguments'								=> array($limit, $offset)
+		);
 		
 		return $this;
 	}
@@ -1328,85 +1373,26 @@ class Model
 	 */
 	public function offset($offset = null)
 	{
-		$this->_offset								= $offset;
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'offset',
+			'arguments'								=> array($offset)
+		);
 		
 		return $this;
 	}
 	
 	/**
-	 * Order By
-	 * Your contribution is needed to write complete hint about
-	 * this method
+	 * Select subqueries
+	 * Possible to use comma separated
 	 */
-	public function order_by($column = null, $direction = 'ASC', $escape = true)
+	public function subquery($subquery = null, $alias = null)
 	{
-		if(!is_array($column))
-		{
-			if($direction)
-			{
-				$this->_order_by[$column]			= array
-				(
-					'direction'						=> $direction,
-					'escape'						=> $escape
-				);
-			}
-			else
-			{
-				$column								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($column)));
-				
-				foreach($column as $key => $val)
-				{
-					$dir							= 'ASC';
-					
-					if(strpos($val, '(') !== false && strpos($val, ')') !== false)
-					{
-						$col						= $val;
-					}
-					else
-					{
-						list($col, $dir)			= array_pad(array_map('trim', explode(' ', $val)), 2, null);
-					}
-					
-					$this->_order_by[$col]			= array
-					(
-						'direction'					=> $dir,
-						'escape'					=> $escape
-					);
-				}
-			}
-		}
-		else
-		{
-			foreach($column as $key => $val)
-			{
-				$this->_order_by[$key]				= array
-				(
-					'direction'						=> $val,
-					'escape'						=> true
-				);
-			}
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Group By
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function group_by($by = null)
-	{
-		$by											= array_map('trim', explode(',', $by));
-		
-		if($this->_group_by)
-		{
-			$this->_group_by						= array_merge($this->_group_by, $by);
-		}
-		else
-		{
-			$this->_group_by						= $by;
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'fromSubquery',
+			'arguments'								=> array($subquery, $alias)
+		);
 		
 		return $this;
 	}
@@ -1418,6 +1404,12 @@ class Model
 	 */
 	public function group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'groupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1428,6 +1420,12 @@ class Model
 	 */
 	public function or_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'orGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1438,6 +1436,12 @@ class Model
 	 */
 	public function not_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'notGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1448,6 +1452,12 @@ class Model
 	 */
 	public function or_not_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'orNotGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1458,6 +1468,12 @@ class Model
 	 */
 	public function group_end()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'groupEnd',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1466,8 +1482,14 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function group_having_start()
+	public function having_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'havingGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1476,8 +1498,14 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_group_having_start()
+	public function or_having_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'orHavingGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1486,8 +1514,14 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_group_having_start()
+	public function not_having_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'notHavingGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1496,8 +1530,14 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_group_having_start()
+	public function or_not_having_group_start()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'orNotHavingGroupStart',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
@@ -1506,28 +1546,206 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function group_having_end()
+	public function having_group_end()
 	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'havingGroupEnd',
+			'arguments'								=> array()
+		);
+		
 		return $this;
 	}
 	
 	/**
-	 * Set
+	 * Get
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function set($key = null, $value = null, $escape = true)
+	public function get($table = null, $limit = 0, $offset = 0)
 	{
-		if(!is_array($key))
+		if(!$this->_table && $table)
 		{
-			$this->_set[$key]						= $value;
-		}
-		else
-		{
-			$this->_set								= array_merge($this->_set, $key);
+			$this->_table							= $table;
 		}
 		
+		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		{
+			$this->_limit							= $limit;
+			$this->_offset							= $offset;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'get',
+			'arguments'								=> array($limit, $offset)
+		);
+		
 		return $this;
+	}
+	
+	/**
+	 * Get Where
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function get_where($table = null, array $where = array(), $limit = 0, $offset = null, $reset = true)
+	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		{
+			$this->_limit							= $limit;
+			$this->_offset							= $offset;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'getWhere',
+			'arguments'								=> array($where, $limit, $offset, $reset)
+		);
+		
+		return $this;
+	}
+	
+	/**
+	 * Result (object format)
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function result()
+	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'getResultObject',
+			'arguments'								=> array()
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Result (array format)
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function result_array()
+	{
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'getResultArray',
+			'arguments'								=> array()
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Get Row
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function row($field = 1)
+	{
+		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		{
+			$this->_limit							= 1;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> (is_int($field) ? 'getRowObject' : 'getRow'),
+			'arguments'								=> array($field)
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Get Row Array
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function row_array($field = 1)
+	{
+		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		{
+			$this->_limit							= 1;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'getRowArray',
+			'arguments'								=> array($field)
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Get number of rows
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function num_rows($table = null, $reset = true)
+	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'getNumRows',
+			'arguments'								=> array($reset)
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Count All
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function count_all($table = null, $reset = true)
+	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'countAll',
+			'arguments'								=> array($reset)
+		);
+		
+		return $this->_run_query();
+	}
+	
+	/**
+	 * Count All Results
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function count_all_results($table = null, $reset = true)
+	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'countAllResults',
+			'arguments'								=> array($reset)
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1537,6 +1755,11 @@ class Model
 	 */
 	public function insert($table = null, $set = array(), $escape = true)
 	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
 		$set										= array_merge($this->_set, $set);
 		
 		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
@@ -1560,7 +1783,13 @@ class Model
 			}
 		}
 		
-		return $this->db->table($table)->insert($set);
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'insert',
+			'arguments'								=> array($set, $escape)
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1570,6 +1799,11 @@ class Model
 	 */
 	public function insert_batch($table = null, $set = array(), $batch_size = 1, $escape = true)
 	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
 		$set										= array_merge($this->_set, $set);
 		
 		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
@@ -1611,7 +1845,13 @@ class Model
 			$set									= $new_set;
 		}
 		
-		return $this->db->table($table)->insertBatch($set, $escape, $batch_size);
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'insertBatch',
+			'arguments'								=> array($set, $escape, $batch_size)
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1621,6 +1861,16 @@ class Model
 	 */
 	public function update($table = null, $set = array(), array $where = array(), $limit = null)
 	{
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		{
+			$this->_limit							= $limit;
+		}
+		
 		$set										= array_merge($this->_set, $set);
 		
 		foreach($where as $key => $val)
@@ -1629,9 +1879,19 @@ class Model
 			{
 				$where[$key]						= $val['value'];
 			}
+			else
+			{
+				$where[$key]						= $val;
+			}
 		}
 		
-		return $this->db->table($table)->update($set, $where, (!in_array(DB_DRIVER, array('Postgre', 'SQLite3')) ? $limit : null));
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'update',
+			'arguments'								=> array($set, $where, (!in_array(DB_DRIVER, array('Postgre', 'SQLite3')) ? $this->_limit : null))
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1641,9 +1901,23 @@ class Model
 	 */
 	public function update_batch($table = null, $set = array(), $batch_size = 1, $escape = true)
 	{
-		$set										= array_merge($this->_set, $set);
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
 		
-		return $this->db->table($table)->updateBatch($set, '', $batch_size);
+		if($set)
+		{
+			$set									= array_merge($this->_set, $set);
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'updateBatch',
+			'arguments'								=> array($set, '', $batch_size)
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1653,9 +1927,23 @@ class Model
 	 */
 	public function replace($table = null, $set = array())
 	{
-		$set										= array_merge($this->_set, $set);
+		if($set)
+		{
+			$set									= array_merge($this->_set, $set);
+		}
 		
-		return $this->db->table($table)->replace($set);
+		if(!$this->_table && $table)
+		{
+			$this->_table							= $table;
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'replace',
+			'arguments'								=> array($set)
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1665,29 +1953,23 @@ class Model
 	 */
 	public function delete($table = null, $where = array(), $limit = 0, $reset_data = true)
 	{
-		if($table && $this->db->tableExists($table))
+		if(!$this->_table && $table)
 		{
 			$this->_table							= $table;
 		}
 		
-		if($where && is_array($where))
-		{
-			foreach($where as $key => $val)
-			{
-				$this->_where[$key]					= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
-			}
-		}
-		
-		if($limit && !in_array(DB_DRIVER, array('Postgre')))
+		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			$this->_limit							= $limit;
 		}
 		
-		return $this->_run_query('delete');
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'delete',
+			'arguments'								=> array($where, (!in_array(DB_DRIVER, array('Postgre')) ? $this->_limit : null))
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1697,12 +1979,18 @@ class Model
 	 */
 	public function truncate($table = null)
 	{
-		if(!$table)
+		if(!$this->_table && $table)
 		{
-			$table									= $this->_table;
+			$this->_table							= $table;
 		}
 		
-		return $this->db->table($table)->truncate();
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'truncate',
+			'arguments'								=> array()
+		);
+		
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1712,166 +2000,18 @@ class Model
 	 */
 	public function empty_table($table = null)
 	{
-		if(!$table)
-		{
-			$table									= $this->_table;
-		}
-		
-		return $this->db->table($table)->emptyTable();
-	}
-	
-	/**
-	 * Get number of rows
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function num_rows($table = null, $reset = true)
-	{
-		if($table)
+		if(!$this->_table && $table)
 		{
 			$this->_table							= $table;
 		}
 		
-		return $this->_run_query('countAllResults');
-	}
-	
-	/**
-	 * Count All
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function count_all($table = null, $reset = true)
-	{
-		if($table)
-		{
-			$this->_table							= $table;
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'emptyTable',
+			'arguments'								=> array()
+		);
 		
-		return $this->_run_query('countAll');
-	}
-	
-	/**
-	 * Count All Results
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function count_all_results($table = null, $reset = true)
-	{
-		if($table)
-		{
-			$this->_table							= $table;
-		}
-		
-		return $this->_run_query('countAllResults');
-	}
-	
-	/**
-	 * Get
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function get($table = null, $limit = 0, $offset = 0)
-	{
-		if($table)
-		{
-			$this->_table							= $table;
-		}
-		
-		if($limit)
-		{
-			$this->_limit							= $limit;
-		}
-		
-		if($offset)
-		{
-			$this->_offset							= $offset;
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Get Where
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function get_where($table = null, array $where = array(), $limit = 0, $offset = null, $reset = true)
-	{
-		if($table)
-		{
-			$this->_table							= $table;
-		}
-		
-		foreach($where as $key => $val)
-		{
-			$this->_where[$key]						= array
-			(
-				'value'								=> (isset($val['value']) ? $val['value'] : $val),
-				'escape'							=> (isset($val['escape']) ? $val['escape'] : true)
-			);
-		}
-		
-		if($limit)
-		{
-			$this->_limit							= $limit;
-		}
-		
-		if($offset)
-		{
-			$this->_offset							= $offset;
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Result (object format)
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function result()
-	{
-		return $this->_run_query('getResult');
-	}
-	
-	/**
-	 * Result (array format)
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function result_array()
-	{
-		return $this->_run_query('getResultArray');
-	}
-	
-	/**
-	 * Get Row
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function row($field = 1)
-	{
-		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
-		{
-			$this->_limit							= 1;
-		}
-		
-		return $this->_run_query('getRow', $field);
-	}
-	
-	/**
-	 * Get Row Array
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function row_array($field = 1)
-	{
-		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
-		{
-			$this->_limit							= 1;
-		}
-		
-		return $this->_run_query('getRowArray', $field);
+		return $this->_run_query();
 	}
 	
 	/**
@@ -1910,9 +2050,7 @@ class Model
 	 */
 	public function trans_complete()
 	{
-		$this->db->transComplete();
-		
-		return $this;
+		return $this->db->transComplete();
 	}
 	
 	/**
@@ -1922,9 +2060,7 @@ class Model
 	 */
 	public function trans_status()
 	{
-		$this->db->transStatus();
-		
-		return $this;
+		return $this->db->transStatus();
 	}
 	
 	/**
@@ -1934,9 +2070,7 @@ class Model
 	 */
 	public function trans_commit()
 	{
-		$this->db->transCommit();
-		
-		return $this;
+		return $this->db->transCommit();
 	}
 	
 	/**
@@ -1946,9 +2080,7 @@ class Model
 	 */
 	public function trans_rollback()
 	{
-		$this->db->transRollback();
-		
-		return $this;
+		return $this->db->transRollback();
 	}
 	
 	/**
@@ -1966,611 +2098,155 @@ class Model
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	private function _run_query($result_type = null, $parameter = 'object')
+	private function _run_query()
 	{
-		// check if request use a plain query
-		if($this->_query)
+		if(!$this->builder)
 		{
-			$output									= $this->db->query($this->_query, $this->_query_params)->$result_type($parameter);
+			$this->builder							= $this->db->table($this->_table);
 			
-			$this->_reset_property();
+			if($this->_limit)
+			{
+				$this->builder->limit($this->_limit, $this->_offset);
+			}
+			
+			if(!$this->_select)
+			{
+				$this->builder->select('*');
+			}
+		}
+		
+		$builder_filter								= array('get', 'getWhere', 'countAll', 'countAllResults', 'insert', 'insertBatch', 'update', 'updateBatch', 'delete', 'deleteBatch', 'truncate', 'emptyTable', 'selectSubQuery');
+		$result_filter								= array('getFieldCount', 'getFieldName', 'getFieldData', 'getNumRows', 'getResult', 'getResultArray', 'getResultObject', 'getRow', 'getRowArray', 'getRowObject');
+		
+		foreach($this->_prepare as $key => $val)
+		{
+			$function								= $val['function'];
+			$arguments								= $val['arguments'];
+			
+			if(in_array($function, $builder_filter))
+			{
+				$this->_get							= true;
+				
+				// indicates that query builder has finished
+				$this->_finished					= true;
+			}
+			else if(in_array($function, $result_filter))
+			{
+				if(!$this->_get)
+				{
+					$this->builder					= $this->builder->get();
+				}
+				else
+				{
+					$this->builder					= $query;
+				}
+				
+				// indicates that query builder has finished
+				$this->_finished					= true;
+			}
+			
+			if(is_array($arguments) && sizeof($arguments) == 7)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5], $arguments[6]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 6)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 5)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 4)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 3)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1], $arguments[2]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 2)
+			{
+				$query								= $this->builder->$function($arguments[0], $arguments[1]);
+			}
+			else
+			{
+				$query								= $this->builder->$function((isset($arguments[0]) ? $arguments[0] : $arguments));
+			}
+		}
+		
+		if($this->_finished)
+		{
+			$output									= $query;
+			
+			// reset properties
+			$this->builder							= null;
+			$this->_prepare							= array();
+			$this->_finished						= false;
+			$this->_select							= array();
+			$this->_from							= null;
+			$this->_table							= null;
+			$this->_set								= array();
+			$this->_limit							= null;
+			$this->_offset							= null;
+			$this->_set								= array();
+			$this->_get								= false;
 			
 			return $output;
 		}
 		
-		// otherwise create a builder class
-		$builder									= $this->db->table($this->_table);
-		
-		if($this->_select)
-		{
-			if(in_array(DB_DRIVER, array('SQLSRV')))
-			{
-				// loops the selection to convert the datatype
-				foreach($this->_select as $key => $val)
-				{
-					// check if selection is wrapped with brackets
-					if(stripos($val, '(') && stripos($val, ')'))
-					{
-						// run select command
-						$builder->select($val, false);
-					}
-					else
-					{
-						// get the field name after dot
-						$alias						= (stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : (stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val));
-						
-						// run select command
-						$builder->select('CONVERT(VARCHAR(MAX), ' . (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val) . ') AS ' . $alias);
-					}
-				}
-			}
-			else
-			{
-				// run select command
-				$builder->select($this->_select);
-			}
-		}
-		
-		if($this->_select_sum)
-		{
-			// run select sum command
-			foreach($this->_select_sum as $key => $val)
-			{
-				$builder->selectSum($key, $val);
-			}
-		}
-		
-		if($this->_select_max)
-		{
-			// run select max command
-			foreach($this->_select_max as $key => $val)
-			{
-				$builder->selectMax($key, $val);
-			}
-		}
-		
-		if($this->_select_min)
-		{
-			// run select min command
-			foreach($this->_select_min as $key => $val)
-			{
-				$builder->selectMin($key, $val);
-			}
-		}
-		
-		if($this->_select_avg)
-		{
-			// run select avg command
-			foreach($this->_select_avg as $key => $val)
-			{
-				$builder->selectAvg($key, $val);
-			}
-		}
-		
-		if($this->_join)
-		{
-			// run join command
-			foreach($this->_join as $key => $val)
-			{
-				$builder->join($key, $val['condition'], ($val['type'] ? $val['type'] : ''), $val['escape']);
-			}
-		}
-		
-		if($this->_where)
-		{
-			// run where command
-			foreach($this->_where as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					// type casting for PostgreSQL
-					if(in_array(gettype($val['value']), array('integer')))
-					{
-						$cast_type					= 'INTEGER';
-						$val['value']				= (int) $val['value'];
-					}
-					else if(in_array(gettype($val['value']), array('double')))
-					{
-						$cast_type					= 'DOUBLE';
-						$val['value']				= (double) $val['value'];
-					}
-					else if(in_array(gettype($val['value']), array('float')))
-					{
-						$cast_type					= 'FLOAT';
-						$val['value']				= (float) $val['value'];
-					}
-					else if(\DateTime::createFromFormat('Y-m-d H:i:s', $val['value']))
-					{
-						$cast_type					= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
-						$val['value']				= $val['value'];
-					}
-					else if(\DateTime::createFromFormat('Y-m-d', $val['value']))
-					{
-						$cast_type					= 'DATE';
-						$val['value']				= $val['value'];
-					}
-					else if(!is_array(gettype($val['value'])))
-					{
-						$cast_type					= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
-						$val['value']				= (string) $val['value'];
-					}
-					
-					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
-					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
-					
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						$key						= 'CONVERT(' . $cast_type . ', ' . $field . ')' . ($field != $operand ? $operand : null);
-					}
-					else
-					{
-						$key						= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
-					}
-					
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->where($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_or_where)
-		{
-			// run or where command
-			foreach($this->_or_where as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					// type casting for PostgreSQL
-					if(in_array(gettype($val['value']), array('integer')))
-					{
-						$cast_type					= 'INTEGER';
-						$val['value']				= (int) $val['value'];
-					}
-					else if(in_array(gettype($val['value']), array('double')))
-					{
-						$cast_type					= 'DOUBLE';
-						$val['value']				= (double) $val['value'];
-					}
-					else if(in_array(gettype($val['value']), array('float')))
-					{
-						$cast_type					= 'FLOAT';
-						$val['value']				= (float) $val['value'];
-					}
-					else if(\DateTime::createFromFormat('Y-m-d H:i:s', $val['value']))
-					{
-						$cast_type					= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
-						$val['value']				= $val['value'];
-					}
-					else if(\DateTime::createFromFormat('Y-m-d', $val['value']))
-					{
-						$cast_type					= 'DATE';
-						$val['value']				= $val['value'];
-					}
-					else if(!is_array(gettype($val['value'])))
-					{
-						$cast_type					= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
-						$val['value']				= (string) $val['value'];
-					}
-					
-					$field							= (stripos($key, ' ') !== false ? substr($key, 0, stripos($key, ' ')) : $key);
-					$operand						= (stripos($key, ' ') !== false ? substr($key, stripos($key, ' ') + 1) : $key);
-					
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						$key						= 'CONVERT(' . $cast_type . ', ' . $field . ')' . ($field != $operand ? $operand : null);
-					}
-					else
-					{
-						$key						= 'CAST(' . $field . ' AS ' . $cast_type . ')' . ($field != $operand ? $operand : null);
-					}
-					
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->orWhere($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_where_in)
-		{
-			// run where in command
-			foreach($this->_where_in as $key => $val)
-			{
-				$builder->whereIn($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_or_where_in)
-		{
-			// run or where in command
-			foreach($this->_or_where_in as $key => $val)
-			{
-				$builder->orWhereIn($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_where_not_in)
-		{
-			// run where not in command
-			foreach($this->_where_not_in as $key => $val)
-			{
-				$builder->whereNotIn($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_or_where_not_in)
-		{
-			// run or where not in command
-			foreach($this->_or_where_not_in as $key => $val)
-			{
-				$builder->orWhereNotIn($key, $val['value'], $val['escape']);
-			}
-		}
-		
-		if($this->_like)
-		{
-			$builder->groupStart();
-			
-			// run like command
-			foreach($this->_like as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						// type casting for SQL Server
-						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-					}
-					else
-					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS VARCHAR)';
-					}
-					
-					$val['match']					= (string) $val['match'];
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->like($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-			}
-			
-			if($this->_or_like)
-			{
-				// run or like command
-				foreach($this->_or_like as $key => $val)
-				{
-					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-					{
-						if(DB_DRIVER == 'SQLSRV')
-						{
-							// type casting for SQL Server
-							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-						}
-						else
-						{
-							// type casting for PostgreSQL
-							$key					= 'CAST(' . $key . ' AS VARCHAR)';
-						}
-						
-						$val['match']				= (string) $val['match'];
-						$val['case_insensitive']	= true;
-					}
-					
-					$builder->orLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_not_like)
-		{
-			$builder->groupStart();
-			
-			// run not like command
-			foreach($this->_not_like as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						// type casting for SQL Server
-						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-					}
-					else
-					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS VARCHAR)';
-					}
-					
-					$val['match']					= (string) $val['match'];
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->notLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-			}
-			
-			if($this->_or_not_like)
-			{
-				// run or not like command
-				foreach($this->_or_not_like as $key => $val)
-				{
-					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-					{
-						if(DB_DRIVER == 'SQLSRV')
-						{
-							// type casting for SQL Server
-							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-						}
-						else
-						{
-							// type casting for PostgreSQL
-							$key					= 'CAST(' . $key . ' AS VARCHAR)';
-						}
-						
-						$val['match']				= (string) $val['match'];
-						$val['case_insensitive']	= true;
-					}
-					
-					$builder->orNotLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_having)
-		{
-			$builder->groupStart();
-			
-			// run having command
-			foreach($this->_having as $key => $val)
-			{
-				$builder->having($key, $val['value'], $val['escape']);
-			}
-			
-			if($this->_or_having)
-			{
-				// run or having command
-				foreach($this->_or_having as $key => $val)
-				{
-					$builder->having($key, $val['value'], $val['escape']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_having_in)
-		{
-			$builder->groupStart();
-			
-			// run having in command
-			foreach($this->_having_in as $key => $val)
-			{
-				$builder->havingIn($key, $val['value'], $val['escape']);
-			}
-			
-			if($this->_or_having_in)
-			{
-				// run or having in command
-				foreach($this->_or_having_in as $key => $val)
-				{
-					$builder->orHavingIn($key, $val['value'], $val['escape']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_having_not_in)
-		{
-			$builder->groupStart();
-			
-			// run having not in command
-			foreach($this->_having_not_in as $key => $val)
-			{
-				$builder->havingNotIn($key, $val['value'], $val['escape']);
-			}
-			
-			if($this->_or_having_not_in)
-			{
-				// run or having not in command
-				foreach($this->_or_having_not_in as $key => $val)
-				{
-					$builder->orHavingNotIn($key, $val['value'], $val['escape']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_having_like)
-		{
-			$builder->groupStart();
-			
-			// run having like command
-			foreach($this->_having_like as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						// type casting for SQL Server
-						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-					}
-					else
-					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS VARCHAR)';
-					}
-					
-					$val['match']					= (string) $val['match'];
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->havingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-			}
-			
-			if($this->_or_having_like)
-			{
-				// run or having like command
-				foreach($this->_or_having_like as $key => $val)
-				{
-					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-					{
-						if(DB_DRIVER == 'SQLSRV')
-						{
-							// type casting for SQL Server
-							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-						}
-						else
-						{
-							// type casting for PostgreSQL
-							$key					= 'CAST(' . $key . ' AS VARCHAR)';
-						}
-						
-						$val['match']				= (string) $val['match'];
-						$val['case_insensitive']	= true;
-					}
-					
-					$builder->orHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_not_having_like)
-		{
-			$builder->groupStart();
-			
-			// run not having like command
-			foreach($this->_not_having_like as $key => $val)
-			{
-				if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-				{
-					if(DB_DRIVER == 'SQLSRV')
-					{
-						// type casting for SQL Server
-						$key						= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-					}
-					else
-					{
-						// type casting for PostgreSQL
-						$key						= 'CAST(' . $key . ' AS VARCHAR)';
-					}
-					
-					$val['match']					= (string) $val['match'];
-					$val['case_insensitive']		= true;
-				}
-				
-				$builder->notHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-			}
-			
-			if($this->_or_not_having_like)
-			{
-				// run or not having like command
-				foreach($this->_or_not_having_like as $key => $val)
-				{
-					if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
-					{
-						if(DB_DRIVER == 'SQLSRV')
-						{
-							// type casting for SQL Server
-							$key					= 'CONVERT(VARCHAR(MAX), ' . $key . ')';
-						}
-						else
-						{
-							// type casting for PostgreSQL
-							$key					= 'CAST(' . $key . ' AS VARCHAR)';
-						}
-						
-						$val['match']				= (string) $val['match'];
-						$val['case_insensitive']	= true;
-					}
-					
-					$builder->orNotHavingLike($key, $val['match'], $val['side'], $val['escape'], $val['case_insensitive']);
-				}
-			}
-			
-			$builder->groupEnd();
-		}
-		
-		if($this->_group_by)
-		{
-			if(in_array(DB_DRIVER, array('SQLSRV')))
-			{
-				// loops the group list
-				foreach($this->_group_by as $key => $val)
-				{
-					if(stripos($val, '(') && stripos($val, ')'))
-					{
-						// run group command
-						$builder->groupBy($val);
-					}
-					else
-					{
-						// run group command
-						$builder->groupBy('CONVERT(VARCHAR(MAX), ' . (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val) . ')');
-					}
-				}
-			}
-			else
-			{
-				$this->_group_by					= implode(',', $this->_group_by);
-				
-				// run group command
-				$builder->groupBy($this->_group_by);
-			}
-		}
-		
-		if($this->_limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
-		{
-			// run limit command
-			$builder->limit($this->_limit, $this->_offset);
-		}
-		
-		if($this->_order_by)
-		{
-			// run order by command
-			foreach($this->_order_by as $key => $val)
-			{
-				$builder->orderBy($key, $val['direction'], $val['escape']);
-			}
-		}
-		
-		if(in_array($result_type, array('countAll', 'countAllResults', 'delete')))
-		{
-			if(in_array($result_type, array('delete')))
-			{
-				$parameter							= '';
-			}
-			
-			$output									= $builder->$result_type($parameter);
-		}
-		else
-		{
-			$output									= $builder->get()->$result_type($parameter);
-		}
-		
-		// reset property
-		$this->_reset_property();
-		
-		return $output;
+		return $this;
 	}
 	
-	/**
-	 * Reset property to prevent duplicate
-	 */
-	private function _reset_property()
+	private function _cast_column($column = null, $value = '')
 	{
-		foreach(get_class_vars(get_class($this)) as $key => $val)
+		if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
 		{
-			if(in_array($key, array('db'))) continue;
+			// type casting for PostgreSQL
+			if(in_array(gettype($value), array('integer')))
+			{
+				$cast_type							= 'INTEGER';
+				$value								= (int) $value['value'];
+			}
+			else if(in_array(gettype($value), array('double')))
+			{
+				$cast_type							= 'DOUBLE';
+				$value								= (double) $value['value'];
+			}
+			else if(in_array(gettype($value), array('float')))
+			{
+				$cast_type							= 'FLOAT';
+				$value								= (float) $value['value'];
+			}
+			else if(\DateTime::createFromFormat('Y-m-d H:i:s', $value))
+			{
+				$cast_type							= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
+				$value								= $value;
+			}
+			else if(\DateTime::createFromFormat('Y-m-d', $value))
+			{
+				$cast_type							= 'DATE';
+				$value								= $value;
+			}
+			else if(!is_array(gettype($value)))
+			{
+				$cast_type							= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
+				$value								= (string) $value;
+			}
 			
-			$this->$key								= (is_array($val) ? array() : null);
+			$column									= (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
+			$operand								= (stripos($column, ' ') !== false ? substr($column, stripos($column, ' ') + 1) : $column);
+			
+			if(DB_DRIVER == 'SQLSRV')
+			{
+				$column								= 'CONVERT(' . $cast_type . ', ' . $column . ')' . ($column != $operand ? $operand : null);
+			}
+			else
+			{
+				$column								= 'CAST(' . $column . ' AS ' . $cast_type . ')' . ($column != $operand ? $operand : null);
+			}
 		}
+		
+		return $column;
 	}
 }

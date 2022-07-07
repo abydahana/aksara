@@ -12,28 +12,48 @@
 		<meta name="description" content="<?php echo truncate($template->meta->description); ?>" />
 		<link rel="icon" type="image/x-icon" href="<?php echo get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
 		
-		<?php echo aksara_header(); ?>
+		<?php
+			echo aksara_header();
+			
+			echo asset_loader
+			(
+				[
+					'assets/bootstrap/css/bootstrap.min.css',
+					'assets/local/css/styles.min.css'
+				]
+			);
+		?>
 		
-		<?php echo asset_loader(array('assets/css/styles.css')); ?>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+		<style type="text/css">
+			body
+			{
+				font-family: 'Fira Sans', sans-serif
+			}
+		</style>
 	</head>
 	<body>
 		
 		<?php require_once('header.php'); ?>
 		
 		<div id="content-wrapper">
-		
-			<?php echo $template->content; ?>
-			
+			<div id="content-placeholder">
+				<?php echo $template->content; ?>
+			</div>
 		</div>
 		
-		<div id="footer-wrapper">
-			
-			<?php require_once('footer.php'); ?>
-			
-		</div>
+		<?php require_once('footer.php'); ?>
 		
-		<?php echo aksara_footer(); ?>
-		
-		<?php echo asset_loader(array('assets/js/scripts.js')); ?>
+		<?php
+			echo aksara_footer();
+			
+			echo asset_loader
+			(
+				[
+					'assets/bootstrap/js/bootstrap.bundle.min.js'
+				]
+			);
+		?>
 	</body>
 </html>

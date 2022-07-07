@@ -1,17 +1,22 @@
-<div class="jumbotron jumbotron-fluid bg-transparent">
+<div class="bg-light pt-5 pb-5">
 	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+		<div class="row align-items-center">
+			<div class="col-3 col-sm-2 col-md-1">
+				<i class="<?php echo $meta->icon; ?> bi-4x"></i>
+			</div>
+			<div class="col-9 col-sm-10 col-md-11">
+				<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
+					<?php echo $meta->title; ?>
+				</h3>
+				<p class="lead">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-md-4">
 			<h6 class="mb-3">
@@ -19,7 +24,7 @@
 			</h6>
 			<div class="row">
 				<div class="col-6 col-sm-6 col-md-12">
-					<div class="form-group">
+					<div class="mb-3">
 						<label class="d-block text-muted mb-0">
 							AKSARA
 						</label>
@@ -29,7 +34,7 @@
 					</div>
 				</div>
 				<div class="col-6 col-sm-6 col-md-12">
-					<div class="form-group">
+					<div class="mb-3">
 						<label class="d-block text-muted mb-0">
 							<?php echo phrase('built_version'); ?>
 						</label>
@@ -39,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label class="d-block text-muted mb-0">
 					<?php echo phrase('last_modified'); ?>
 				</label>
@@ -52,7 +57,7 @@
 			<h6 class="mb-3">
 				<?php echo phrase('the_laborant'); ?>
 			</h6>
-			<div class="form-group">
+			<div class="mb-3">
 				<label class="d-block text-muted mb-0">
 					<a href="//abydahana.github.io" class="font-weight-bold" target="_blank">
 						Aby Dahana
@@ -65,7 +70,7 @@
 			<h6 class="mb-3">
 				<?php echo phrase('contributors'); ?>
 			</h6>
-			<div class="form-group">
+			<div class="mb-3">
 				<label class="d-block text-muted mb-0">
 					<a href="//ganjar.id" class="font-weight-bold" target="_blank">
 						Ganjar Nugraha
@@ -79,7 +84,7 @@
 	<h6 class="mb-3">
 		<?php echo phrase('dependencies'); ?>
 	</h6>
-	<div class="form-group">
+	<div class="mb-3">
 		<a href="//codeigniter.com" target="_blank">
 			CodeIgniter
 		</a>
@@ -116,7 +121,7 @@
 	<h6 class="mb-3">
 		JS/CSS <small class="text-muted">(<?php echo phrase('sorted_ascending'); ?>)</small>
 	</h6>
-	<div class="form-group">
+	<div class="mb-3">
 		<a href="//github.com/dreamerslab/jquery.actual" target="_blank">
 			Actual
 		</a>

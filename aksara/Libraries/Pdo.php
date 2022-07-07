@@ -5,6 +5,12 @@ namespace Aksara\Libraries;
 /**
  * PDO Library
  * An emergency library to connecting the database
+ *
+ * @author			Aby Dahana <abydahana@gmail.com>
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
 class Pdo extends \PDO
 {

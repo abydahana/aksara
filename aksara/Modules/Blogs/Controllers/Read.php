@@ -5,7 +5,7 @@ namespace Aksara\Modules\Blogs\Controllers;
 /**
  * Blogs > Read
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -31,8 +31,8 @@ class Read extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'post_slug'						=> $slug,
-					'status'						=> 1
+					'blogs.post_slug'				=> $slug,
+					'blogs.status'					=> 1
 				)
 			);
 		}
@@ -78,6 +78,7 @@ class Read extends \Aksara\Laboratory\Core
 				('
 					blogs.post_slug,
 					blogs.post_title,
+					blogs.post_excerpt,
 					blogs.featured_image,
 					blogs__categories.category_slug,
 					blogs__categories.category_title,

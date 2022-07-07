@@ -1,6 +1,6 @@
-<div class="jumbotron jumbotron-fluid bg-light gradient">
+<div class="bg-light text-secondary pt-5 pb-5">
 	<div class="container">
-		<div class="text-center text-md-left">
+		<div class="text-center">
 			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
 				<?php echo $meta->title; ?>
 			</h3>
@@ -10,8 +10,7 @@
 		</div>
 	</div>
 </div>
-
-<div class="container pt-3 pb-3">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-md-10 offset-md-1">
 			<?php
@@ -44,12 +43,12 @@
 						}
 						
 						echo '
-							<div class="rounded-more shadow-sm mb-5">
-								<div class="row no-gutters">
+							<div class="rounded-4 overflow-hidden shadow-sm mb-5">
+								<div class="row g-0">
 									<div class="col-' . (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)) . ' text-center d-flex align-items-center" style="background:url(' . get_image('galleries', $album_cover) . ') center center no-repeat; background-size:cover; min-height:320px">
 										<div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">
 											<h4 class="text-light">
-												<span class="badge badge-primary float-right">
+												<span class="badge bg-primary float-end">
 													' . count($images) . '
 												</span>
 												' . $val->gallery_title . '
@@ -58,7 +57,7 @@
 												' . truncate($val->gallery_description, 160) . '
 											</p>
 											<p class="text-light">
-												' . (count($images) > 4 ? '<a href="' . go_to($val->gallery_slug) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-folder-multiple-image"></i> ' . phrase('show_all') . '</a>' : '<a href="' . go_to(array($val->gallery_slug, $album_cover)) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-magnify"></i> ' . phrase('show') . '</a>') . '
+												' . (count($images) > 4 ? '<a href="' . go_to($val->gallery_slug) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-folder-multiple-image"></i> ' . phrase('show_all') . '</a>' : '<a href="' . go_to(array($val->gallery_slug, $album_cover)) . '" class="btn btn-outline-light rounded-pill --xhr"><i class="mdi mdi-magnify-plus"></i> ' . phrase('show') . '</a>') . '
 											</p>
 										</div>
 									</div>

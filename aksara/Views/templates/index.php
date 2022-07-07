@@ -54,14 +54,14 @@ if(isset($results->extra_action->toolbar))
 						</a>
 					<?php } ?>
 					<?php if(!isset($results->unset_action) || !in_array('delete', $results->unset_action)) { ?>
-						<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger disabled d-none --open-delete-confirm" data-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
+						<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger disabled d-none --open-delete-confirm" data-bs-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
 							<i class="mdi mdi-trash-can-outline"></i>
 						</a>
 					<?php } ?>
 				</div>
 			</div>
 			<div class="col<?php echo (!isset($results->filter) || !$results->filter ? '-4' : null); ?>">
-				<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="--xhr-form">
+				<form action="<?php echo go_to(null, array('per_page' => null, 'q' => null)); ?>" method="POST" class="--xhr-form">
 					<?php
 						if(service('request')->getGet())
 						{
@@ -95,18 +95,16 @@ if(isset($results->extra_action->toolbar))
 								}
 							?>
 						</select>
-						<span class="input-group-append">
-							<button type="submit" class="btn btn-primary">
-								<i class="mdi mdi-magnify"></i>
-							</button>
-						</span>
+						<button type="submit" class="btn btn-primary">
+							<i class="mdi mdi-magnify"></i>
+						</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 	<div class="table-responsive alias-table-index">
-		<table class="table table-sm table-hover">
+		<table class="table table-sm table-hover mb-0">
 			<thead>
 				<tr>
 					<?php
@@ -115,7 +113,7 @@ if(isset($results->extra_action->toolbar))
 						{
 							echo (!isset($results->unset_action) || !in_array('delete', $results->unset_action) ? '
 								<th width="1" class="border-top-0">
-									<input type="checkbox" role="checker" data-parent="table" class="bulk-delete" />
+									<input type="checkbox" role="checker" data-parent="table" class="form-check-input bulk-delete" />
 								</th>
 							' : '') . '
 								<th width="1" class="border-top-0">
@@ -129,9 +127,9 @@ if(isset($results->extra_action->toolbar))
 							foreach($results->columns as $key => $val)
 							{
 								echo '
-									<th class="border-top-0' . ('right' == $val->align ? ' text-right' : null) . '">
+									<th class="border-top-0' . ('right' == $val->align ? ' text-end' : null) . '">
 										<a href="' . go_to(null, array('order' => $val->field, 'sort' => get_userdata('sortOrder'))) . '" class="--xhr' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-default') . '">
-											<i class="mdi mdi-sort-' . ($val->field == service('request')->getGet('order') && 'asc' == service('request')->getGet('sort') ? 'ascending' : 'descending') . ' float-right' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-muted') . '"></i>
+											<i class="mdi mdi-sort-' . ($val->field == service('request')->getGet('order') && 'asc' == service('request')->getGet('sort') ? 'ascending' : 'descending') . ' float-end pt-1' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-muted') . '"></i>
 											' . $val->label . '
 										</a>
 									</th>
@@ -186,7 +184,7 @@ if(isset($results->extra_action->toolbar))
 									}
 									
 									$extra_option		.= '
-										<a href="' . go_to($_val->url, $_val->parameter) . '" class="btn btn-xs ' . ($class ? $class : ($_val->class ? $_val->class : 'btn-secondary --xhr')) . '" data-toggle="tooltip" title="' . ($label ? $label : $_val->label) . '"' . (isset($_val->new_tab) && $_val->new_tab == true ? ' target="_blank"' : null) . '>
+										<a href="' . go_to($_val->url, $_val->parameter) . '" class="btn btn-xs ' . ($class ? $class : ($_val->class ? $_val->class : 'btn-secondary --xhr')) . '" data-bs-toggle="tooltip" title="' . ($label ? $label : $_val->label) . '"' . (isset($_val->new_tab) && $_val->new_tab == true ? ' target="_blank"' : null) . '>
 											<i class="' . ($icon ? $icon : ($_val->icon ? $_val->icon : 'mdi mdi-link')) . '"></i>
 										</a>
 									';
@@ -198,7 +196,7 @@ if(isset($results->extra_action->toolbar))
 								foreach($results->extra_action->dropdown[$key] as $_key => $_val)
 								{
 									$extra_dropdown		.= '
-										<a href="' . go_to($_val->url, $_val->parameter) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0 ' . ($_val->class ? str_replace('btn', 'unused-btn', $_val->class) : '--xhr') . '"' . (isset($_val->new_tab) && is_bool($_val->new_tab) ? ' target="_blank"' : null) . '>
+										<a href="' . go_to($_val->url, $_val->parameter) . '" class="list-group-item pt-1 pe-0 pb-1 ps-0 ' . ($_val->class ? str_replace('btn', 'unused-btn', $_val->class) : '--xhr') . '"' . (isset($_val->new_tab) && is_bool($_val->new_tab) ? ' target="_blank"' : null) . '>
 											<i class="' . ($_val->icon ? $_val->icon : 'mdi mdi-link') . '" style="width:22px"></i>
 											' . $_val->label . '
 										</a>
@@ -212,7 +210,7 @@ if(isset($results->extra_action->toolbar))
 							{
 								if($params->primary)
 								{
-									$primary[$field]= $params->primary;
+									$primary[$field]	= $params->primary;
 									
 									if(isset($results->unset_read->$field) && is_array($results->unset_read->$field) && in_array($params->original, $results->unset_read->$field))
 									{
@@ -241,32 +239,36 @@ if(isset($results->extra_action->toolbar))
 							
 							$options					= (!isset($results->unset_action) || !in_array('delete', $results->unset_action) ? '
 								<td>
-									' . ($deleting ? '<input type="checkbox" name="bulk_delete[]" class="checker-children" value="' . htmlspecialchars(json_encode($results->query_string[$key])) . '" />' : '') . '
+									' . ($deleting ? '<input type="checkbox" name="bulk_delete[]" class="form-check-input checker-children" value="' . htmlspecialchars(json_encode($results->query_string[$key])) . '" />' : '') . '
 								</td>
 								' : '') . '
 								<td>
 									<div class="btn-group">
 										' . ($reading && (!isset($results->unset_action) || !in_array('read', $results->unset_action)) ? '
-											<a href="' . go_to('read', $results->query_string[$key]) . '" class="btn btn-primary btn-xs --open-modal-read" data-toggle="tooltip" title="' . phrase('read') . '">
+											<a href="' . go_to('read', $results->query_string[$key]) . '" class="btn btn-primary btn-xs --open-modal-read" data-bs-toggle="tooltip" title="' . phrase('read') . '">
 												<i class="mdi mdi-magnify"></i>
 											</a>
 										' : null) . '
 										' . ($updating && (!isset($results->unset_action) || !in_array('update', $results->unset_action)) ? '
-											<a href="' . go_to('update', $results->query_string[$key]) . '" class="btn btn-info btn-xs ' . (isset($modal_html) ? '--modal' : '--open-modal-form') . '" data-toggle="tooltip" title="' . phrase('update') . '">
+											<a href="' . go_to('update', $results->query_string[$key]) . '" class="btn btn-info btn-xs ' . (isset($modal_html) ? '--modal' : '--open-modal-form') . '" data-bs-toggle="tooltip" title="' . phrase('update') . '">
 												<i class="mdi mdi-square-edit-outline"></i>
 											</a>
 										' : null) . '
 										' . $extra_option . '
 										' . ($extra_dropdown || ($reading && !in_array('print', $results->unset_action)) || ($reading && !in_array('pdf', $results->unset_action)) ? '
-											<button type="button" class="btn btn-xs btn-secondary toggle-tooltip" data-title="' . phrase('more_options') . '" data-toggle="popover" data-trigger="focus" data-content=\'<div class="list-group list-group-flush">
-												' . $extra_dropdown . '
-												' . ($reading && !in_array('print', $results->unset_action) ? '<a href="' . go_to('print', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0" target="_blank"><i class="mdi mdi-printer" style="width:22px"></i>' . phrase('print') . '</a>' : null) . '
-												' . ($reading && !in_array('pdf', $results->unset_action) ? '<a href="' . go_to('pdf', $results->query_string[$key]) . '" class="list-group-item pt-1 pr-0 pb-1 pl-0"  target="_blank"><i class="mdi mdi-file-pdf text-danger" style="width:22px"></i>' . phrase('pdf') . '</a>' : null) . '</div>\'" data-container="body" data-html="true">
+											<button type="button" class="btn btn-xs btn-secondary toggle-tooltip" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="' . htmlspecialchars
+											('
+												<div class="list-group list-group-flush">
+													' . $extra_dropdown . '
+													' . ($reading && !in_array('print', $results->unset_action) ? '<a href="' . go_to('print', $results->query_string[$key]) . '" class="list-group-item pt-1 pe-0 pb-1 ps-0" target="_blank"><i class="mdi mdi-printer" style="width:22px"></i>' . phrase('print') . '</a>' : null) . '
+													' . ($reading && !in_array('pdf', $results->unset_action) ? '<a href="' . go_to('pdf', $results->query_string[$key]) . '" class="list-group-item pt-1 pe-0 pb-1 ps-0"  target="_blank"><i class="mdi mdi-file-pdf text-danger" style="width:22px"></i>' . phrase('pdf') . '</a>' : null) . '
+												</div>
+											') . '" data-bs-container="body" data-bs-html="true">
 												<i class="mdi mdi-chevron-down"></i>
 											</button>
 										' : null) . '
 										' . ($deleting && (!isset($results->unset_action) || !in_array('delete', $results->unset_action)) ? '
-											<a href="' . go_to('delete', $results->query_string[$key]) . '" class="btn btn-danger btn-xs --open-delete-confirm" data-toggle="tooltip" title="' . phrase('delete') . '">
+											<a href="' . go_to('delete', $results->query_string[$key]) . '" class="btn btn-danger btn-xs --open-delete-confirm" data-bs-toggle="tooltip" title="' . phrase('delete') . '">
 												<i class="mdi mdi-trash-can-outline"></i>
 											</a>
 										' : null) . '

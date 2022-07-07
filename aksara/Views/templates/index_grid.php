@@ -18,7 +18,7 @@ if(isset($results->extra_action->toolbar))
 <div class="alias-table-toolbar">
 	<div class="container-fluid pt-3 pb-3">
 		<div class="row">
-			<div class="col-md-10 text-center text-md-left">
+			<div class="col-md-10 text-center text-md-start">
 				<?php if(!isset($results->unset_action) || !in_array('create', $results->unset_action)) { ?>
 					<a href="<?php echo go_to('create'); ?>" class="btn btn-primary btn-sm rounded-pill --btn-create <?php echo (isset($modal_html) ? '--modal' : '--open-modal-form'); ?>">
 						<i class="mdi mdi-plus"></i>
@@ -53,13 +53,13 @@ if(isset($results->extra_action->toolbar))
 					</a>
 				<?php } ?>
 				<?php if(!isset($results->unset_action) || !in_array('delete', $results->unset_action)) { ?>
-					<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger btn-sm rounded-pill disabled d-none --open-delete-confirm" data-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
+					<a href="<?php echo go_to('delete'); ?>" class="btn btn-danger btn-sm rounded-pill disabled d-none --open-delete-confirm" data-bs-toggle="tooltip" title="<?php echo phrase('delete_checked'); ?>" data-bulk-delete="true">
 						<i class="mdi mdi-trash-can-outline"></i>
 					</a>
 				<?php } ?>
 			</div>
 			<div class="col-md-2">
-				<a href="javascript:void(0)" class="btn btn-success btn-sm btn-block rounded-pill"data-toggle="modal" data-target="#searchModal">
+				<a href="javascript:void(0)" class="btn btn-success btn-sm d-block rounded-pill"data-bs-toggle="modal" data-bs-target="#searchModal">
 					<i class="mdi mdi-magnify"></i>
 					<?php echo phrase('search'); ?>
 				</a>
@@ -167,7 +167,7 @@ if(isset($results->extra_action->toolbar))
 									if($num == 3) break;
 									
 									$slideshow		.= '
-										<div class="carousel-item rounded' . (!$num ? ' active' : null) . '">
+										<div class="carousel-item rounded-4' . (!$num ? ' active' : null) . '">
 											<a href="' . (isset($results->grid->url[$key]) ? $results->grid->url[$key] : get_image($results->grid->path, $src, 'thumb')) . '"' . (isset($results->grid->url[$key]) && !$results->grid->new_tab ? ' class="--xhr"' : ' target="_blank"') . '>
 												<div class="clip gradient-top rounded-top"></div>
 												<img src="' . get_image($results->grid->path, $src, 'thumb') . '" class="d-block rounded w-100" alt="' . $alt . '">
@@ -188,7 +188,7 @@ if(isset($results->extra_action->toolbar))
 							else
 							{
 								$slideshow			= '
-									<div class="carousel-item rounded active">
+									<div class="carousel-item rounded-4 active">
 										<a href="' . (isset($results->grid->url[$key]) ? $results->grid->url[$key] : get_image($results->grid->path, $params->original, 'thumb')) . '"' . (isset($results->grid->url[$key]) && !$results->grid->new_tab ? ' class="--xhr"' : ' target="_blank"') . '>
 											<div class="clip gradient-top rounded-top"></div>
 											<img src="' . get_image($results->grid->path, $params->original, 'thumb') . '" class="d-block rounded w-100" alt="...">
@@ -200,7 +200,7 @@ if(isset($results->extra_action->toolbar))
 						else
 						{
 							$columns				.= '
-								<li class="list-group-item pt-1 pb-1" data-toggle="tooltip" title="' . $params->label . '">
+								<li class="list-group-item pt-1 pb-1" data-bs-toggle="tooltip" title="' . $params->label . '">
 									' . $params->content . '
 								</li>
 							';
@@ -250,7 +250,7 @@ if(isset($results->extra_action->toolbar))
 							if($_key == 3) break;
 							
 							$item_option			.= '
-								<a href="' . $_val['url'] . '" class="text-truncate pt-2 pb-2 ' . $_val['class'] . '" data-toggle="tooltip" title="' . $_val['label'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
+								<a href="' . $_val['url'] . '" class="text-truncate ' . $_val['class'] . '" data-bs-toggle="tooltip" title="' . $_val['label'] . '"' . (isset($_val['new_tab']) && $_val['new_tab'] ? ' target="_blank"' : null) . '>
 									<i class="' . $_val['icon'] . '"></i>
 								</a>
 							';
@@ -261,38 +261,32 @@ if(isset($results->extra_action->toolbar))
 					
 					$grid							.= '
 						<div class="col-sm-6 col-md-4 col-lg-3">
-							<div class="card shadow-sm rounded-more border-0 overflow-hidden mb-3">
+							<div class="card shadow-sm rounded-4 border-0 overflow-hidden mb-3">
 								' . ($slideshow ? '
-								<div id="slideshow_' . $key . '" class="carousel slide" data-ride="carousel">
+								<div id="slideshow_' . $key . '" class="carousel slide" data-bs-ride="carousel">
 									<div class="carousel-inner">
 										' . $slideshow . '
 									</div>
 									' . ($slideshow_count > 1 ? '
-									<a class="carousel-control-prev gradient-right" href="#slideshow_' . $key . '" role="button" data-slide="prev">
+									<a class="carousel-control-prev gradient-right" href="#slideshow_' . $key . '" role="button" data-bs-slide="prev">
 										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-										<span class="sr-only">
-											' . phrase('previous') . '
-										</span>
 									</a>
-									<a class="carousel-control-next gradient-left" href="#slideshow_' . $key . '" role="button" data-slide="next">
+									<a class="carousel-control-next gradient-left" href="#slideshow_' . $key . '" role="button" data-bs-slide="next">
 										<span class="carousel-control-next-icon" aria-hidden="true"></span>
-										<span class="sr-only">
-											' . phrase('next') . '
-										</span>
 									</a>
 									' : null) . '
 								</div>
 								' : null) . '
-								<div class="card-body pr-0 pb-0 pl-0">
+								<div class="card-body pe-0 pb-0 ps-0">
 									<ul class="list-group list-group-flush">
 										' . $columns . '
 									</ul>
-									<div class="btn-group d-flex bg-white border-top">
+									<div class="btn-group d-flex bg-white border-top rounded-0">
 									
 										' . $item_option . '
 										
 										' . ($extra_option ? '
-										<a href="" class="btn --open-item-option pt-2 pb-2" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-toggle="tooltip" title="' . phrase('more') . '">
+										<a href="" class="btn --open-item-option" data-url="' . go_to('____', $results->query_string[$key]) . '" data-document-url="' . go_to('____', $results->query_string[$key]) . '" data-read="' . ($reading ? 1 : 0) . '" data-update="' . ($updating ? 1 : 0) . '" data-delete="' . ($deleting ? 1 : 0) . '" data-restrict="' . htmlspecialchars(json_encode($results->unset_action)) . '" data-additional-option="' . htmlspecialchars(json_encode($extra_option)) . '" data-bs-toggle="tooltip" title="' . phrase('more') . '">
 											<i class="mdi mdi-dots-horizontal-circle-outline"></i>
 										</a>
 										' : null) . '
@@ -325,7 +319,7 @@ if(isset($results->extra_action->toolbar))
 	</div>
 </div>
 <div class="alias-pagination">
-	<div class="container-fluid pt-3 pb-3">
+	<div class="container-fluid pt-2 pb-2">
 		<?php echo $template->pagination; ?>
 	</div>
 </div>
@@ -333,15 +327,13 @@ if(isset($results->extra_action->toolbar))
 <!-- search modal -->
 <div class="modal --prevent-remove" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<form action="<?php echo go_to(null, array('per_page' => null)); ?>" method="POST" class="modal-content --xhr-form">
+		<form action="<?php echo go_to(null, array('per_page' => null, 'q' => null)); ?>" method="POST" class="modal-content --xhr-form">
 			<div class="modal-header">
 				<h5 class="modal-title" id="searchModalCenterTitle">
 					<i class="mdi mdi-magnify"></i>
 					<?php echo phrase('search_data'); ?>
 				</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="<?php echo phrase('close'); ?>">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php echo phrase('close'); ?>"></button>
 			</div>
 			<div class="modal-body">
 				<?php
@@ -358,12 +350,12 @@ if(isset($results->extra_action->toolbar))
 					}
 				?>
 				
-				<?php echo (isset($results->filter) ? '<div class="form-group">' . $results->filter . '</div>' : null); ?>
+				<?php echo (isset($results->filter) ? '<div class="mb-3">' . $results->filter . '</div>' : null); ?>
 				
-				<div class="form-group">
+				<div class="mb-3">
 					<input type="text" name="q" class="form-control" placeholder="<?php echo phrase('keyword_to_search'); ?>" value="<?php echo (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" role="autocomplete" />
 				</div>
-				<div class="form-group">
+				<div class="mb-3">
 					<select name="column" class="form-control">
 						<option value="all"><?php echo phrase('all_columns'); ?></option>
 						<?php

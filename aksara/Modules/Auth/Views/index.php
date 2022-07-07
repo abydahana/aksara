@@ -17,40 +17,38 @@
 <div class="container-fluid pt-5 pb-5">
 	<div class="row">
 		<div class="<?php echo (get_setting('frontend_registration') ? 'col-md-8 offset-md-2 col-xl-6 offset-xl-3' : 'col-md-4 offset-md-4'); ?>">
-			<div class="card-group">
+			<div class="card-group pt-5 pb-5">
 				<div class="card shadow">
-					<div class="card-body">
+					<div class="card-body p-4">
 						<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-							<div class="form-group">
-								<p class="text-center text-muted">
-									<i class="mdi mdi-account-circle-outline mdi-5x text-muted"></i>
+							<div class="mb-3">
+								<p class="text-center">
+									<i class="mdi mdi-account-circle-outline mdi-5x text-black-50"></i>
 								</p>
 							</div>
-							<div class="form-group pb-2">
-								<p class="text-center text-muted">
+							<div class="mb-3">
+								<p class="text-center text-black-50">
 									<?php echo phrase('please_enter_your_account_information_to_sign_in'); ?>
 								</p>
 							</div>
-							<div class="form-group">
-								<div class="input-group flex-nowrap">
-									<div class="input-group-prepend">
-										<span class="input-group-text" id="addon-wrapping">
-											<i class="mdi mdi-account-outline" style="width:22px"></i>
-										</span>
-									</div>
+							<div class="form-group mb-3">
+								<div class="input-group">
+									<span class="input-group-text">
+										<i class="mdi mdi-account" style="width:22px"></i>
+									</span>
 									<input type="text" name="username" class="form-control" id="username_input" placeholder="<?php echo phrase('enter_your_username_or_email'); ?>" />
 								</div>
 							</div>
-							<div class="form-group relative">
-								<div class="input-group flex-nowrap">
-									<div class="input-group-prepend">
-										<span class="input-group-text" id="addon-wrapping">
-											<i class="mdi mdi-fingerprint" style="width:22px"></i>
-										</span>
-									</div>
-									<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_password'); ?>" autocomplete="new-password" />
+							<div class="form-group mb-3 position-relative">
+								<div class="input-group">
+									<span class="input-group-text">
+										<i class="mdi mdi-fingerprint" style="width:22px"></i>
+									</span>
+									<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_password'); ?>" autocomplete="new-password" style="border-right:0" />
+									<span class="input-group-text bg-white" style="border-left:0">
+										<i class="mdi mdi-eye-outline" style="width:22px"></i>
+									</span>
 								</div>
-								<i class="mdi mdi-2x password-peek text-muted mdi-eye-outline absolute top right mt-2 mr-2" data-parent=".form-group" data-peek=".form-control" style="z-index:3"></i>
 							</div>
 							
 							<?php
@@ -64,13 +62,11 @@
 									}
 									
 									echo '
-										<div class="form-group">
-											<div class="input-group flex-nowrap">
-												<div class="input-group-prepend">
-													<span class="input-group-text" id="addon-wrapping">
-														<i class="mdi mdi-calendar-check" style="width:22px"></i>
-													</span>
-												</div>
+										<div class="form-group mb-3">
+											<div class="input-group">
+												<span class="input-group-text">
+													<i class="mdi mdi-calendar-check" style="width:22px"></i>
+												</span>
 												<select name="year" class="form-control" placeholder="' . phrase('choose_year') . '" id="year_input">
 													' . $option . '
 												</select>
@@ -91,10 +87,12 @@
 									</label>
 								</div>
 								<div class="col-5">
-									<button type="submit" class="btn btn-primary btn-block">
-										<i class="mdi mdi-check"></i> 
-										<?php echo phrase('sign_in'); ?>
-									</button>
+									<div class="d-grid">
+										<button type="submit" class="btn btn-primary">
+											<i class="mdi mdi-check"></i> 
+											<?php echo phrase('sign_in'); ?>
+										</button>
+									</div>
 								</div>
 							</div>
 						</form>
@@ -104,31 +102,31 @@
 				<div class="card shadow">
 					<div class="card-body d-flex align-items-center justify-content-center">
 						<div>
-							<p class="lead text-center text-muted">
+							<p class="lead text-center text-black-50">
 								<?php echo phrase('do_not_have_an_account'); ?>
 							</p>
 							<?php if(get_setting('google_client_id') && get_setting('google_client_secret')) { ?>
-							<p class="lead text-center">
-								<a href="<?php echo base_url('auth/google'); ?>" class="btn btn-outline-danger btn-block text-left">
+							<div class="d-grid mb-2">
+								<a href="<?php echo base_url('auth/google'); ?>" class="btn btn-outline-danger">
 									<i class="mdi mdi-google"></i>
 									<?php echo phrase('sign_in_with_google'); ?>
 								</a>
-							</p>
+							</div>
 							<?php } ?>
 							<?php if(get_setting('facebook_app_id') && get_setting('facebook_app_secret')) { ?>
-							<p class="lead text-center">
-								<a href="<?php echo base_url('auth/facebook'); ?>" class="btn btn-outline-primary btn-block text-left">
+							<div class="d-grid mb-2">
+								<a href="<?php echo base_url('auth/facebook'); ?>" class="btn btn-outline-primary">
 									<i class="mdi mdi-facebook"></i>
 									<?php echo phrase('sign_in_with_facebook'); ?>
 								</a>
-							</p>
+							</div>
 							<?php } ?>
-							<p class="lead text-center">
-								<a href="<?php echo base_url('auth/register'); ?>" class="btn btn-outline-info btn-block text-left --xhr">
+							<div class="d-grid">
+								<a href="<?php echo base_url('auth/register'); ?>" class="btn btn-outline-success --xhr">
 									<i class="mdi mdi-account-plus"></i>
 									<?php echo phrase('register_an_account'); ?>
 								</a>
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>

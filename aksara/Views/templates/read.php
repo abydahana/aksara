@@ -12,7 +12,7 @@
 		if(in_array('coordinate', $params->type) || in_array('point', $params->type) || in_array('polygon', $params->type) || in_array('linestring', $params->type))
 		{
 			$map									= '
-				<div class="form-group" style="margin-right: -15px; margin-left: -15px">
+				<div class="mb-3" style="margin-right: -15px; margin-left: -15px">
 					' . $params->content . '
 				</div>
 			';
@@ -27,7 +27,7 @@
 				
 				$col								.= '
 					<div class="' . (isset($results->field_size->$val) ? $results->field_size->$val : 'col') . '">
-						<div class="form-group">
+						<div class="mb-3">
 							<label class="text-muted d-block mb-0" for="' . $val . '_label">
 								' . $results->form_data->$val->label . '
 							</label>
@@ -82,7 +82,7 @@
 			if(in_array($field, $merged)) continue;
 			
 			$output									= '
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="text-muted d-block mb-0" for="' . $field . '_label">
 						' . $params->label . '
 					</label>
@@ -197,10 +197,10 @@
 	</div>
 	<?php echo ('modal' == service('request')->getPost('prefer') ? '<hr class="row" />' : '<div class="opt-btn-overlap-fix"></div><!-- fix the overlap -->'); ?>
 	<div class="row<?php echo ('modal' != service('request')->getPost('prefer') ? ' opt-btn' : null); ?>">
-		<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-right' : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
+		<div class="col-md-<?php echo ('modal' == service('request')->getPost('prefer') ? '12 text-end' : (1 == $results->column_total ? 6 : (2 == $results->column_total ? 10 : 10))); ?>">
 		
 			<?php if('modal' == service('request')->getPost('prefer')) { ?>
-			<button type="button" class="btn btn-link" data-dismiss="modal">
+			<button type="button" class="btn btn-link" data-bs-dismiss="modal">
 				<?php echo phrase('close'); ?>
 				<em class="text-sm">(esc)</em>
 			</button>
@@ -211,7 +211,7 @@
 				</a>
 			<?php } ?>
 			
-			<a href="<?php echo current_page('../update'); ?>" class="btn btn-primary float-right <?php echo (service('request')->getUserAgent()->isMobile() ? '--xhr' : '--open-modal-form'); ?>">
+			<a href="<?php echo current_page('../update'); ?>" class="btn btn-primary float-end <?php echo (service('request')->getUserAgent()->isMobile() ? '--xhr' : '--open-modal-form'); ?>">
 				<i class="mdi mdi-square-edit-outline"></i>
 				<?php echo phrase('update'); ?>
 			</a>

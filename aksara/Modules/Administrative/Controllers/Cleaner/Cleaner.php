@@ -7,7 +7,7 @@ namespace Aksara\Modules\Administrative\Controllers\Cleaner;
  * This module is used to clean everything that not used anymore by
  * the application (garbage).
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -163,24 +163,24 @@ class Cleaner extends \Aksara\Laboratory\Core
 					' . phrase('below_is_the_detailed_information_about_the_cleaned_garbage') . '
 				</p>
 				<div class="row">
-					<div class="col-6 text-right">
+					<div class="col-6 text-end">
 						' . phrase('visitor_logs') . '
 					</div>
 					<div class="col-6">
-						' . number_format($logs_cleaned) . ' ' . phrase('cleaned') . '
+						<b>' . number_format($logs_cleaned) . '</b> ' . phrase('cleaned') . '
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-6 text-right">
+					<div class="col-6 text-end">
 						' . phrase('expired_session') . '
 					</div>
 					<div class="col-6">
-						' . number_format($session_cleaned) . ' ' . phrase('cleaned') . '
+						<b>' . number_format($session_cleaned) . '</b> ' . phrase('cleaned') . '
 					</div>
 				</div>
-				<hr class="row" />
-				<div class="text-right">
-					<a href="javascript:void(0)" class="btn btn-light" data-dismiss="modal">
+				<hr class="border-secondary" />
+				<div class="text-end">
+					<a href="javascript:void(0)" class="btn btn-light" data-bs-dismiss="modal">
 						<i class="mdi mdi-window-close"></i>
 						' . phrase('close') . '
 						<em class="text-sm">(esc)</em>

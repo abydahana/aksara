@@ -1,17 +1,19 @@
-<div class="jumbotron jumbotron-fluid bg-light gradient">
-	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+<div class="bg-light text-secondary">
+	<div class="container pt-5 pb-5">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<h1 class="text-center">
+					<?php echo $meta->title; ?>
+				</h1>
+				<p class="lead text-center">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container pt-3 pb-3">
+<div class="container pt-5 pb-5">
 	<div class="row">
 		<div class="col-md-10 offset-1">
 			<?php
@@ -23,15 +25,15 @@
 						$items						.= '
 							<div class="row mb-3 align-items-center">
 								<div class="col-3 col-md-3 pt-2">
-									<img src="' . get_image('testimonials', $val->photo, 'thumb') . '" class="img-fluid rounded-more">
+									<img src="' . get_image('testimonials', $val->photo, 'thumb') . '" class="img-fluid rounded-4">
 								</div>
 								<div class="col-9 col-md-9">
 									<h4 class="article font-weight-bold">
 										' . $val->testimonial_title . '
 									</h4>
-									<p class="article">
+									<div class="article mb-4">
 										' . $val->testimonial_content . '
-									</p>
+									</div>
 									<p class="blockquote-footer">
 										<b>' . $val->first_name . ' ' . $val->last_name . '</b>, ' . $val->timestamp . '
 									</p>
@@ -48,7 +50,7 @@
 				{
 					echo '
 						<div class="text-muted">
-							<i class="fa fa-info"></i>
+							<i class="mdi mdi-information-outline"></i>
 							' . phrase('no_testimonial_is_available') . '
 						</div>
 					';

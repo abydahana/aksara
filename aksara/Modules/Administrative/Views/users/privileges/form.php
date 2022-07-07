@@ -64,7 +64,7 @@
 		<hr class="row" />
 		<div class="row">
 			<div class="col-md-5">
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="text-muted d-block" for="menus_input">
 						<?php echo phrase('accessible_menus'); ?>
 					</label>
@@ -72,7 +72,7 @@
 				</div>
 			</div>
 			<div class="col-md-5">
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="text-muted d-block" for="kegiatan_input">
 						<?php echo phrase('the_sub_level_can_be_accessed'); ?>
 					</label>
@@ -114,7 +114,7 @@
 					&nbsp;
 					<?php echo phrase('back'); ?>
 				</a>
-				<button type="submit" class="btn btn-primary float-right">
+				<button type="submit" class="btn btn-primary float-end">
 					<i class="mdi mdi-check"></i>
 					&nbsp;
 					<?php echo phrase('update'); ?>

@@ -5,7 +5,7 @@ namespace Aksara\Laboratory;
 /**
  * Form Validation
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -437,7 +437,7 @@ class Validation extends \CodeIgniter\Validation\Rules
 			
 			return false;
 		}
-		else if($source->getSizeByUnit('kb') > MAX_UPLOAD_SIZE)
+		else if((float) str_replace(',', '', $source->getSizeByUnit('kb')) > MAX_UPLOAD_SIZE)
 		{
 			// size is exceeded the maximum allocation
 			$this->_upload_error					= phrase('the_selected_file_size_exceeds_the_maximum_allocation');

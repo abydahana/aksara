@@ -14,13 +14,13 @@ namespace Aksara\Laboratory;
  *
  * With great power comes great responsibility --- Uncle Ben
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
- * @copyright		(c) 2020-2021 Aksara Laboratory
+ * @copyright		(c) 2020-2022 Aksara Laboratory
  * -------------------------------------------------------------------
- * You sometimes need a fool to get your complicated work done :)
+ * You may need to work with a fool get your complicated work done faster :)
  * -------------------------------------------------------------------
  */
 
@@ -119,65 +119,20 @@ class Core extends Controller
 	private $_default_value							= array();
 	private $_set_relation							= array();
 	
-	private $_compiled_table						= array();
-	private $_compiled_where						= array();
-	private $_compiled_or_where						= array();
-	private $_compiled_where_in						= array();
-	private $_compiled_or_where_in					= array();
-	private $_compiled_where_not_in					= array();
-	private $_compiled_or_where_not_in				= array();
-	private $_compiled_like							= array();
-	private $_compiled_or_like						= array();
-	private $_compiled_not_like						= array();
-	private $_compiled_or_not_like					= array();
-	private $_compiled_having						= array();
-	private $_compiled_or_having					= array();
+	private $_prepare								= array();
 	
-	private $_crud;
-	private $_distinct;
-	private $_select								= array();
-	private $_select_avg							= array();
-	private $_select_max							= array();
-	private $_select_min							= array();
-	private $_select_sum							= array();
-	private $_from;
 	private $_table;
-	private $_table_alias							= array();
+	private $_compiled_table						= array();
+	private $_select								= array();
+	private $_compiled_select						= array();
+	private $_distinct								= array();
 	private $_join									= array();
 	private $_where									= array();
-	private $_or_where								= array();
-	private $_where_in								= array();
-	private $_or_where_in							= array();
-	private $_where_not_in							= array();
-	private $_or_where_not_in						= array();
 	private $_like									= array();
-	private $_or_like								= array();
-	private $_not_like								= array();
-	private $_or_not_like							= array();
-	private $_having								= array();
-	private $_or_having								= array();
-	private $_having_in								= array();
-	private $_or_having_in							= array();
-	private $_having_not_in							= array();
-	private $_or_having_not_in						= array();
-	private $_having_like							= array();
-	private $_or_having_like						= array();
-	private $_not_having_like						= array();
-	private $_or_not_having_like					= array();
-	private $_group_start;
-	private $_group_end;
-	private $_or_group_start;
-	private $_not_group_start;
-	private $_or_not_group_start;
-	private $_group_by								= array();
-	private $_order_by								= array();
-	private $_order_bm								= array();
-	private $_limit_original						= 25;
-	private $_limit									= 25;
-	private $_offset								= 0;
-	private $_set									= array();
-	private $_replace								= array();
 	
+	private $_limit									= 25;
+	private $_limit_backup							= 25;
+	private $_offset								= 0;
 	private $_total									= 0;
 	private $_insert_on_update_fail					= false;
 	private $_searchable							= true;
@@ -224,7 +179,7 @@ class Core extends Controller
 		if(is_numeric(service('request')->getGet('limit')) && service('request')->getGet('limit'))
 		{
 			// store original limit
-			$this->_limit_original					= $this->_limit;
+			$this->_limit_backup					= $this->_limit;
 			
 			// apply the limit for query builder
 			$this->_limit							= service('request')->getGet('limit');
@@ -300,6 +255,16 @@ class Core extends Controller
 	}
 	
 	/**
+	 * Debugging
+	 */
+	public function debug(string $result_type = '')
+	{
+		$this->_debugging							= $result_type;
+		
+		return $this;
+	}
+	
+	/**
 	 * restrict_on_demo
 	 * Function to apply demo mode
 	 *
@@ -323,7 +288,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function database_config($driver = array(), $hostname = null, $port = null, $username = null, $password = null, $database = null)
+	public function database_config($driver = array(), string $hostname = null, int $port = null, string $username = null, string $password = null, string $database = null)
 	{
 		// check if the parameter is sets with array
 		if(is_array($driver) && isset($driver['driver']) && isset($driver['hostname']) && isset($driver['port']) && isset($driver['username']) && isset($driver['password']) && isset($driver['database']))
@@ -366,7 +331,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		exception
 	 */
-	public function parent_module($module = null)
+	public function parent_module(string $module)
 	{
 		// sets parent module
 		$this->_module								= $module;
@@ -382,7 +347,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		exception
 	 */
-	public function set_permission($permissive_user = array(), $redirect = null)
+	public function set_permission($permissive_user = array(), string $redirect = null)
 	{
 		// this mean the permission is set as true
 		$this->_set_permission						= true;
@@ -424,7 +389,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		string
 	 */
-	public function set_method($method = 'index')
+	public function set_method(string $method = 'index')
 	{
 		// set the method property
 		$this->_method								= $method;
@@ -440,7 +405,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		object
 	 */
-	public function set_theme($theme = 'frontend')
+	public function set_theme(string $theme = 'frontend')
 	{
 		// validate the theme parameter to match with predefined config
 		if(!in_array($theme, array('frontend', 'backend'))) return false;
@@ -473,7 +438,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		array
 	 */
-	public function set_template($params = array(), $value = null)
+	public function set_template($params = array(), string $value = null)
 	{
 		// make sure the parameter is array, otherwise convert it
 		if(!is_array($params))
@@ -498,7 +463,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		array
 	 */
-	public function set_breadcrumb($params = array(), $value = null)
+	public function set_breadcrumb($params = array(), string $value = null)
 	{
 		// check if parameters isn't in array format
 		if(!is_array($params))
@@ -546,12 +511,14 @@ class Core extends Controller
 	/**
 	 * set_title
 	 * Set the title of module. It also will displayed as document
-	 * title in the browser
+	 * title in the browser.
+	 *
+	 * A magic string can be wrapped using curly brackets.
 	 *
 	 * @access		public
 	 * @return		string
 	 */
-	public function set_title($magic_string = null, $placeholder = null)
+	public function set_title($magic_string = null, string $placeholder = null)
 	{
 		// check if the magic string is in array format
 		if(is_array($magic_string))
@@ -609,6 +576,8 @@ class Core extends Controller
 	 * Set the description of module. It also will displayed as
 	 * description of meta
 	 *
+	 * A magic string can be wrapped using curly brackets.
+	 *
 	 * @access		public
 	 * @return		array
 	 */
@@ -639,7 +608,7 @@ class Core extends Controller
 	 * @messages	string
 	 * @return		array
 	 */
-	public function set_messages($params = array(), $code = null, $messages = null)
+	public function set_messages($params = array(), int $code = null, string $messages = null)
 	{
 		// check if parameter is not in array format
 		if(!is_array($params))
@@ -667,7 +636,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		array
 	 */
-	public function set_button($button = null, $value = null, $label = null, $icon = null, $class = null, $target = null)
+	public function set_button(string $button, string $value, string $label, string $icon = null, string $class = null, $target = null)
 	{
 		// push the button properties
 		$this->_set_button[$button]					= array
@@ -692,7 +661,7 @@ class Core extends Controller
 	 * @description	string
 	 * @return		string
 	 */
-	public function grid_view($thumbnail = null, $hyperlink = null, $parameter = array(), $new_tab = false)
+	public function grid_view(string $thumbnail, string $hyperlink = null, array $parameter = array(), bool $new_tab = false)
 	{
 		// use grid view instead of data tables
 		$_SERVER['GRID_VIEW']						= true;
@@ -716,7 +685,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		string
 	 */
-	public function add_filter($filter = null)
+	public function add_filter(string $filter)
 	{
 		// push the parameter to filters property
 		$this->_add_filter							= $filter;
@@ -755,7 +724,7 @@ class Core extends Controller
 	 * @params		mixed		$parameter	extra query string
 	 * @return		array
 	 */
-	public function add_action($placement = 'option', $url = null, $label = null, $class = null, $icon = null, $parameter = array(), $new_tab = false)
+	public function add_action(string $placement = 'option', string $url = null, string $label = null, string $class = null, string $icon = null, array $parameter = array(), bool $new_tab = false)
 	{
 		// get query string
 		$query_string								= service('request')->getGet();
@@ -868,7 +837,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		array
 	 */
-	public function add_class($params = array(), $value = null)
+	public function add_class($params = array(), string $value = null)
 	{
 		// check if parameter isn't in array format
 		if(!is_array($params))
@@ -1012,7 +981,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		mixed
 	 */
-	public function set_tooltip($params = array(), $value = null)
+	public function set_tooltip($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
@@ -1042,6 +1011,7 @@ class Core extends Controller
 	{
 		// shorthand possibility, separate with commas
 		$params										= array_map('trim', explode(',', $params));
+		
 		$this->_unset_field							= array_merge($this->_unset_field, $params);
 		
 		return $this;
@@ -1061,6 +1031,7 @@ class Core extends Controller
 	{
 		// shorthand possibility, separate with commas
 		$params										= array_map('trim', explode(',', $params));
+		
 		$this->_unset_column						= array_merge($this->_unset_column, $params);
 		
 		return $this;
@@ -1080,6 +1051,7 @@ class Core extends Controller
 	{
 		// shorthand possibility, separate with commas
 		$params										= array_map('trim', explode(',', $params));
+		
 		$this->_unset_view							= array_merge($this->_unset_view, $params);
 		
 		return $this;
@@ -1163,11 +1135,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function unset_read($params = array(), $value = null)
+	public function unset_read($params = array(), array $value = array())
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1188,11 +1159,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function unset_update($params = array(), $value = null)
+	public function unset_update($params = array(), array $value = array())
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1213,11 +1183,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function unset_delete($params = array(), $value = array())
+	public function unset_delete($params = array(), array $value = array())
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1245,7 +1214,6 @@ class Core extends Controller
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1268,11 +1236,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function set_validation($params = array(), $value = null)
+	public function set_validation($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1292,7 +1259,7 @@ class Core extends Controller
 	 * @param		string		$path
 	 * @return		string
 	 */
-	public function set_upload_path($path = null)
+	public function set_upload_path(string $path = null)
 	{
 		// validate the given parameter is valid path name
 		if($path && preg_match('/^[a-z0-9\-\.\_\/]*$/', $path))
@@ -1301,7 +1268,6 @@ class Core extends Controller
 		}
 		else
 		{
-			// shorthand possibility, separate with commas
 			$path									= strtolower(str_replace('\\', '/', service('router')->controllerName()));
 			$path									= preg_replace(array('/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'), array('', '', '/'), $path, 1);
 			$path									= array_unique(explode('/', $path));
@@ -1322,7 +1288,7 @@ class Core extends Controller
 	 * @param		string		$callback
 	 * @return		mixed
 	 */
-	public function form_callback($callback = null)
+	public function form_callback(string $callback)
 	{
 		$this->_form_callback						= $callback;
 		
@@ -1341,11 +1307,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function set_alias($params = array(), $value = null)
+	public function set_alias($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1368,11 +1333,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function set_heading($params = array(), $value = null)
+	public function set_heading($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1397,7 +1361,6 @@ class Core extends Controller
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1421,7 +1384,9 @@ class Core extends Controller
 	 */
 	public function unset_truncate($field = array())
 	{
+		// shorthand possibility, separate with commas
 		$field										= array_map('trim', explode(',', $field));
+		
 		$this->_unset_truncate						= array_merge($this->_unset_truncate, $field);
 		
 		return $this;
@@ -1436,7 +1401,7 @@ class Core extends Controller
 	 * @param		string		$size
 	 * @return		mixed
 	 */
-	public function modal_size($size = null)
+	public function modal_size(string $size)
 	{
 		$this->_modal_size							= strtolower($size);
 		
@@ -1454,11 +1419,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function field_position($params = array(), $value = null)
+	public function field_position($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1482,11 +1446,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function column_size($params = array(), $value = null)
+	public function column_size($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1510,11 +1473,10 @@ class Core extends Controller
 	 * @param		string		$value
 	 * @return		mixed
 	 */
-	public function field_size($params = array(), $value = null)
+	public function field_size($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1530,11 +1492,10 @@ class Core extends Controller
 	 * field_prepend
 	 * Add the prefix to the field
 	 */
-	public function field_prepend($params = array(), $value = null)
+	public function field_prepend($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1550,11 +1511,10 @@ class Core extends Controller
 	 * field_append
 	 * Add the suffix to the field
 	 */
-	public function field_append($params = array(), $value = null)
+	public function field_append($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
-			// shorthand possibility, separate with commas
 			$params									= array
 			(
 				$params								=> $value
@@ -1578,7 +1538,7 @@ class Core extends Controller
 	 * @param		string		$callback
 	 * @return		mixed
 	 */
-	public function merge_content($magic_string = null, $alias = null, $callback = null)
+	public function merge_content(string $magic_string, string $alias = null, string $callback = null)
 	{
 		// get the fields from the magic string
 		preg_match_all('#\{(.*?)\}#', $magic_string, $matches);
@@ -1630,6 +1590,7 @@ class Core extends Controller
 	{
 		if(!is_array($params))
 		{
+			// shorthand possibility, separate with commas
 			$params									= array_map('trim', explode(',', $params));
 		}
 		
@@ -1646,10 +1607,11 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function group_field($params = array(), $group = null)
+	public function group_field($params = array(), string $group = null)
 	{
 		if(!is_array($params))
 		{
+			// shorthand possibility, separate with commas
 			$params									= array_map('trim', explode(',', $params));
 		}
 		
@@ -1670,6 +1632,7 @@ class Core extends Controller
 	{
 		if(!is_array($params))
 		{
+			// shorthand possibility, separate with commas
 			$params									= array_map('trim', explode(',', $params));
 		}
 		
@@ -1686,7 +1649,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_attribute($params = null, $value = null)
+	public function set_attribute($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
@@ -1709,7 +1672,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_placeholder($params = null, $value = null)
+	public function set_placeholder($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
@@ -1732,7 +1695,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_option_label($params = null, $value = null)
+	public function set_option_label($params = array(), string $value = null)
 	{
 		if(!is_array($params))
 		{
@@ -1778,7 +1741,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_relation($field = null, $selected_value = null, $formatting = null, $where = array(), $join = array(), $order_by = array(), $group_by = null, $limit = null, $translate = false)
+	public function set_relation(string $field, string $selected_value, string $formatting, array $where = array(), array $join = array(), $order_by = array(), string $group_by = null, int $limit = 0, bool $translate = false)
 	{
 		$as_field									= $field;
 		
@@ -1829,7 +1792,7 @@ class Core extends Controller
 						$this->_unset_column[]		= $explode[1];
 						$this->_unset_view[]		= $explode[1];
 						
-						array_unshift($select, $explode[0] . '.' . $field[0] . ' AS ' . $field[0] . '_masking');
+						array_unshift($select, $explode[0] . '.' . $field[0] . ' AS ' . $as_field . '_masking');
 					}
 				}
 			}
@@ -1838,7 +1801,7 @@ class Core extends Controller
 		{
 			if(!in_array($selected_value, $select))
 			{
-				$select[]							= (strpos($selected_value, ' ') !== false ? substr($selected_value, strpos($selected_value, ' ') + 1) : $selected_value) . ' AS ' . $field;
+				$select[]							= (strpos($selected_value, ' ') !== false ? substr($selected_value, strpos($selected_value, ' ') + 1) : $selected_value) . ' AS ' . $as_field;
 			}
 			
 			if(isset($this->_set_attribute[$field]))
@@ -1943,9 +1906,9 @@ class Core extends Controller
 		
 		if($limit && !$self)
 		{
-			$rk										= $params['relation_table'] . '.' . $params['relation_key'];
+			$relation_key							= $params['relation_table'] . '.' . $params['relation_key'];
 			$params['limit']						= $limit;
-			$params['where'][$rk]					= (strpos($selected, ' ') !== false ? substr($selected, strpos($selected, ' ') + 1) : $selected);
+			$params['where'][$relation_key]			= (strpos($selected, ' ') !== false ? substr($selected, strpos($selected, ' ') + 1) : $selected);
 		}
 		
 		if(service('request')->isAJAX() && 'ajax_select' == service('request')->getPost('method') && isset($params['limit']) && $params['limit'] > 1)
@@ -1973,7 +1936,7 @@ class Core extends Controller
 			{
 				$replace_me[$val]					= $column . '_' . $table;
 				
-				if($table != $this->_from)
+				if($table != $this->_table)
 				{
 					$val							= $val . ' AS ' . $column . '_' . $table;
 				}
@@ -2217,7 +2180,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_autocomplete($field = null, $selected_value = null, $formatting = null, $where = array(), $join = array(), $order_by = array(), $group_by = null, $limit = null)
+	public function set_autocomplete(string $field, string $selected_value, string $formatting, array $where = array(), array $join = array(), $order_by = array(), string $group_by = null, int $limit = 0)
 	{
 		$value										= (isset($formatting['value']) ? $formatting['value'] : (isset($formatting[0]) ? $formatting[0] : null));
 		$label										= (isset($formatting['label']) ? $formatting['label'] : (isset($formatting[1]) ? $formatting[1] : null));
@@ -2314,12 +2277,12 @@ class Core extends Controller
 	 * @param		string		$view
 	 * @return		mixed
 	 */
-	public function render($table = null, $view = null)
+	public function render(string $table = null, string $view = null)
 	{
-		if(!$table && $this->_table)
+		if(!$this->_table)
 		{
 			// set table when not present
-			$table									= $this->_table;
+			$this->_table							= $table;
 		}
 		
 		/**
@@ -2364,11 +2327,11 @@ class Core extends Controller
 		$this->template								= new Template($this->_set_theme, $this->_api_request);
 		
 		// check if given table is exists in database
-		if($table && $this->model->table_exists($table))
+		if($this->_table && $this->model->table_exists($this->_table))
 		{
-			$this->_from							= $table;
-			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_from)), true);
-			$this->_index_data						= $this->model->index_data($this->_from);
+			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_table)), true);
+			$this->_index_data						= $this->model->index_data($this->_table);
+			$order_by								= array();
 			
 			// set the default primary if the table have any primary column
 			if(!$this->_set_primary && $this->_field_data)
@@ -2411,21 +2374,15 @@ class Core extends Controller
 			{
 				if('backend' == $this->template->get_theme_property('type'))
 				{
-					$this->set_description('<div class="alert alert-danger border-0 pt-2 pr-3 pb-2 pl-3 text-sm mb-0" style="margin-left:-15px; margin-right:-15px"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div>');
+					$this->set_description('<div class="row bg-danger text-light"><div class="col-12"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div></div>');
 				}
 				
 				$this->unset_action('read, update, delete, export, print, pdf');
 			}
 			
 			// check the requested method
-			if(in_array($this->_method, array('read', 'update', 'delete', 'export', 'print', 'pdf')))
+			if(in_array($this->_method, array('create', 'read', 'update', 'delete', 'export', 'print', 'pdf')))
 			{
-				// set limit of modification action
-				if(in_array($this->_method, array('read', 'update', 'delete')) || ($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN'))))
-				{
-					$this->_limit					= 1;
-				}
-				
 				// apply primary from where if it's were sets
 				if(!$this->_set_primary && $this->_where)
 				{
@@ -2435,14 +2392,9 @@ class Core extends Controller
 				// check the additional primary key that been sets up
 				if(is_array($this->_set_primary) && sizeof($this->_set_primary) > 0)
 				{
-					if($this->_where && !in_array($this->_set_method, array('read', 'update')))
-					{
-						$this->_where				= array();
-					}
-					
 					foreach($this->_set_primary as $key => $val)
 					{
-						if(service('request')->getGet($val) && $this->model->field_exists($val, $this->_from))
+						if(service('request')->getGet($val) && $this->model->field_exists($val, $this->_table))
 						{
 							if(('read' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array(service('request')->getGet($val), $this->_unset_update[$val])) || ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array(service('request')->getGet($val), $this->_unset_delete[$val])) || ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])))
 							{
@@ -2463,10 +2415,9 @@ class Core extends Controller
 								}
 							}
 							
-							$key					= $this->_from . '.' . $val;
-							$this->_where[$key]		= htmlspecialchars(service('request')->getGet($val));
+							$this->_prepare('where', array($this->_table . '.' . $val, htmlspecialchars(service('request')->getGet($val))));
 						}
-						else if(in_array($val, $this->_set_primary) && $this->model->field_exists($val, $this->_from) && isset($this->_set_default[$val]) && $this->_set_default[$val])
+						else if(in_array($val, $this->_set_primary) && $this->model->field_exists($val, $this->_table) && isset($this->_set_default[$val]) && $this->_set_default[$val])
 						{
 							if(('read' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array(service('request')->getGet($val), $this->_unset_update[$val])) || ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array(service('request')->getGet($val), $this->_unset_delete[$val])) || ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) || ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])))
 							{
@@ -2487,68 +2438,146 @@ class Core extends Controller
 								}
 							}
 							
-							$key					= $this->_from . '.' . $val;
-							$this->_where[$key]		= $this->_set_default[$val];
+							$this->_prepare('where', array($this->_table . '.' . $val, $this->_set_default[$val]));
 						}
+					}
+				}
+				
+				/**
+				 * Indicates the request is to writing the data
+				 */
+				if($this->_set_primary && in_array($this->_method, array('create', 'update')))
+				{
+					if(service('request')->getPost('_token'))
+					{
+						/**
+						 * Post token is a initial to validate the form. It's mean the request were
+						 * submitted through the form
+						 */
+						
+						// validate sent token
+						$token_sent					= service('request')->getPost('_token');
+						
+						if($this->valid_token($token_sent))
+						{
+							// token approved, check if validation use the custom callback
+							if($this->_form_callback && method_exists($this, $this->_form_callback))
+							{
+								// use callback as form validation
+								$_callback			= $this->_form_callback;
+								
+								return $this->$_callback();
+							}
+							else
+							{
+								// serialize table data
+								$field_data			= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
+								
+								// or use the master validation instead
+								return $this->validate_form($field_data);
+							}
+						}
+						else
+						{
+							// token isn't valid, throw exception
+							return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
+						}
+					}
+					else if($this->_api_request && 'POST' == service('request')->getServer('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || ($this->_form_callback && method_exists($this, $this->_form_callback))))
+					{
+						/**
+						 * Indicate the method is requested through API
+						 */
+						if($this->_form_callback && method_exists($this, $this->_form_callback))
+						{
+							// use callback as form validation
+							$_callback				= $this->_form_callback;
+							
+							return $this->$_callback();
+						}
+						else
+						{
+							// serialize table data
+							$field_data				= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
+							
+							// or use the master validation instead
+							return $this->validate_form($field_data);
+						}
+					}
+				}
+				
+				/**
+				 * Indicates the request is to writing the data
+				 */
+				elseif($this->_set_primary && 'delete' == $this->_method)
+				{
+					/**
+					 * Method delete
+					 */
+					if(1 == service('request')->getPost('batch'))
+					{
+						// batch delete
+						return $this->delete_batch($this->_table);
+					}
+					else if($this->_where)
+					{
+						// single delete
+						return $this->delete_data($this->_table, $this->_where, $this->_limit);
 					}
 				}
 			}
 			else
 			{
-				$this->_offset						= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
+				$offset								= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
 				
-				if((!$this->_like && $this->_searchable && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
+				if($offset)
+				{
+					// push offset to the prepared query builder
+					$this->_prepare('offset', array($offset));
+				}
+				
+				if(($this->_searchable && !$this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
 				{
 					$column							= (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
 					
 					if($column && 'all' != $column)
 					{
-						$this->_like				= array
-						(
-							$column					=> htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))
-						);
+						// push like to the prepared query builder
+						$this->_prepare('like', array($column, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
 					}
 					else
 					{
-						$columns					= $this->model->list_fields($this->_from);
+						$columns					= $this->model->list_fields($this->_table);
 						
 						if($columns)
 						{
 							foreach($columns as $key => $val)
 							{
-								if($this->_like)
-								{
-									$this->_or_like[$val]	= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
-								}
-								else
-								{
-									$this->_like[$val]		= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
-								}
+								// add the table prefix to prevent ambiguous
+								$val				= $this->_table . '.' . $val;
+								
+								// push like an or like to the prepared query builder
+								$this->_prepare(($key ? 'or_like' : 'like'), array($val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
 							}
 						}
 						
 						if($this->_select)
 						{
+							$compiled_like			= array();
+							
 							foreach($this->_select as $key => $val)
 							{
-								/*
-								$val				= str_ireplace(' AS ', ' ', $val);
-								$val				= ($val && stripos($val, ' ') !== false ? substr($val, strripos($val, ' ') + 1) : $val);
-								*/
-								
 								if($val && stripos($val, ' AS ') !== false)
 								{
 									$val			= substr($val, 0, stripos($val, ' AS '));
 								}
-
-								if($this->_like)
-								{
-									$this->_or_like[$val]	= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
-								}
-								else
-								{
-									$this->_like[$val]		= htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')));
-								}
+								
+								$field_origin		= (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
+								
+								if(in_array($field_origin, $compiled_like)) continue;
+								
+								// push like an or like to the prepared query builder
+								$this->_prepare(($key ? 'or_like' : 'like'), array($val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
 								{
@@ -2564,18 +2593,15 @@ class Core extends Controller
 								
 								if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table))
 								{
-									// order by best match
-									$this->_order_bm[]		= '(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)';
+									// push order by best match to the prepared query builder
+									$this->_prepare('order_by', array('(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)'));
 								}
+								
+								$compiled_like[]	= $field_origin;
 							}
 						}
 					}
 				}
-			}
-			
-			if($this->_set_primary)
-			{
-				$this->_crud						= true;
 			}
 			
 			// check if data is requested through autocomplete (jQuery plugin)
@@ -2588,8 +2614,8 @@ class Core extends Controller
 				 * table.
 				 * To use a complex autocomplete within complex database query, use
 				 * the set_autocomplete()  function instead.  It will allow you  to
-				 * custom format the result, also join  into multiple table include
-				 * where, order and grouping
+				 * custom format the result, also join into multiple table includes
+				 * where, order and grouping.
 				 */
 				$suggestions						= array();
 				
@@ -2655,11 +2681,11 @@ class Core extends Controller
 					}
 					
 					// order by best match
-					if($this->_order_bm)
+					if($order_by)
 					{
-						foreach($this->_order_bm as $key => $val)
+						foreach($order_by as $key => $val)
 						{
-							$this->model->order_by($val);
+							$this->model->order_by($val, null, false);
 						}
 					}
 					
@@ -2693,41 +2719,60 @@ class Core extends Controller
 				else
 				{
 					/**
-					 * Autocomplete search data from list of table
+					 * Autocomplete search data from listed of table
 					 */
 					if(!$this->_select)
 					{
 						// check the select list, if none, use the main table field instead
-						$this->_select				= preg_filter('/^/', $this->_from . '.', $this->model->list_fields($this->_from));
+						$this->_select				= preg_filter('/^/', $this->_table . '.', $this->model->list_fields($this->_table));
 					}
 					
 					// loop the select field to prevent query using multiple LIKE condition and use OR LIKE instead
+					$compiled_like					= array();
+					
 					foreach($this->_select as $key => $val)
 					{
-						$val						= ($val && stripos($val, ' AS ') !== false ? substr($val, strripos($val, ' AS ') + 4) : $val);
+						if($val && stripos($val, ' AS ') !== false)
+						{
+							$val					= substr($val, 0, stripos($val, ' AS '));
+						}
 						
-						// if there's LIKE
-						if($this->_like)
+						$field_origin				= (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
+						
+						if(in_array($field_origin, $compiled_like)) continue;
+						
+						// push like an or like to the prepared query builder
+						$this->_prepare(($key ? 'or_like' : 'like'), array($val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
+						
+						if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']))
 						{
-							// use OR LIKE
-							$this->_or_like[$val]	= service('request')->getPost('q');
+							if(is_array($this->_set_field[service('request')->getPost('origin')]['parameter']))
+							{
+								$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+							}
+							else
+							{
+								$table				= $this->_set_field[service('request')->getPost('origin')]['parameter'];
+							}
 						}
-						else
+						
+						if(isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table))
 						{
-							// otherwise, set the LIKE
-							$this->_like[$val]		= service('request')->getPost('q');
+							// push order by best match to the prepared query builder
+							$this->_prepare('order_by', array('(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)'));
 						}
+						
+						$compiled_like[]			= $field_origin;
 					}
 					
 					// run query
-					$query							= $this->_run_query($this->_from);
-					$this->_query					= $query['results'];
+					$query							= $this->_fetch($this->_table);
 					
 					// populate added item
 					$added_item						= array();
 					
 					// serialize results
-					$serialized						= $this->serialize($this->_query);
+					$serialized						= $this->serialize($query['results']);
 					
 					foreach($serialized as $key => $val)
 					{
@@ -2794,133 +2839,114 @@ class Core extends Controller
 				return $this->_get_relation($this->_set_relation[service('request')->getPost('source')]);
 			}
 			
-			// get the results from the database query
-			if(service('request')->getGet('order'))
+			/**
+			 * Start sort order
+			 */
+			if(service('request')->getGet('sort') && 'desc' == strtolower(service('request')->getGet('sort')))
 			{
-				$this->_order_by					= array();
-				$order								= (service('request')->getGet('order') ? strip_tags(service('request')->getGet('order')) : service('request')->getGet('order'));
-				$this->_order_by[$order]			= service('request')->getGet('sort');
-			}
-			
-			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create')
-			{
-				$this->_query						= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_from))), ''));
+				set_userdata('sortOrder', 'asc');
 			}
 			else
 			{
-				$query								= $this->_run_query($this->_from);
-				$this->_query						= $query['results'];
+				set_userdata('sortOrder', 'desc');
+			}
+			
+			// match order by the primary table
+			if($this->model->field_exists(service('request')->getGet('order'), $this->_table))
+			{
+				// push order to the prepared query builder
+				$this->_prepare[]					= array
+				(
+					'function'						=> 'order_by',
+					'arguments'						=> array($this->_table . '.' . service('request')->getGet('order'), get_userdata('sortOrder'))
+				);
+			}
+			
+			// otherwhise, find it from the relation table
+			else if($this->_compiled_table)
+			{
+				foreach($this->_compiled_table as $key => $table)
+				{
+					/**
+					 * Validate the column to check if column is exist in table
+					 */
+					if($this->model->field_exists(service('request')->getGet('order'), $table))
+					{
+						// push order to the prepared query builder
+						$this->_prepare[]			= array
+						(
+							'function'				=> 'order_by',
+							'arguments'				=> array($table . '.' . service('request')->getGet('order'), get_userdata('sortOrder'))
+						);
+					}
+				}
+			}
+			
+			/**
+			 * Indicates requested from the API calls
+			 */
+			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create')
+			{
+				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
+			}
+			
+			/**
+			 * Indicates requested from the browser
+			 */
+			else
+			{
+				$query								= $this->_fetch($this->_table);
+				$result								= $query['results'];
 				$this->_total						= $query['total'];
 			}
 			
-			// try to convert the magic string and replace with result
+			// try to convert the magic string and replace with the result
 			$title									= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) ? $this->_set_title : phrase('untitled')));
 			$description							= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : ''));
 			
-			if($title && isset($this->_query[0]))
+			if(isset($result[0]))
 			{
-				foreach($this->_query[0] as $do => $magic)
+				foreach($result[0] as $do => $magic)
 				{
 					if(!$magic) continue;
 					
+					// replace the magic string to query result
 					$title							= str_replace('{' . $do . '}', $magic, $title);
 					$description					= str_replace('{' . $do . '}', $magic, $description);
 				}
 			}
-			else
-			{
-				preg_match_all('#\{(.*?)\}#', $title, $matches);
-				
-				$matches							= $matches[1];
-				
-				if($matches)
-				{
-					foreach($matches as $key => $val)
-					{
-						$title						= str_replace('{' . $val . '}', '', $title);
-					}
-					
-					$title							= preg_replace('/\{[^)]+\}/', '', $title);
-				}
-				
-				preg_match_all('#\{(.*?)\}#', $description, $matches_2);
-				
-				$matches_2							= $matches_2[1];
-				
-				if($matches_2)
-				{
-					foreach($matches_2 as $key => $val)
-					{
-						$description				= str_replace('{' . $val . '}', '', $description);
-					}
-				}
-			}
 			
-			if(!is_array($title))
-			{
-				$title								= trim(preg_replace('/\{[^}]+\}/', '', $title));
-			}
-			
-			if(!is_array($description))
-			{
-				$description						= trim(preg_replace('/\{[^}]+\}/', '', $description));
-			}
-			
-			// check whether the method of controller is sets single
-			if($this->_set_method)
-			{
-				// set title by method
-				$this->_set_title					= array
-				(
-					$this->_method					=> $title
-				);
-				
-				// set icon by method
-				$this->_set_icon					= array
-				(
-					$this->_method					=> $this->_set_icon
-				);
-			}
+			$title									= preg_replace('/\{.*?\}/', '', $title);
+			$description							= preg_replace('/\{.*?\}/', '', $description);
 			
 			// if method is create
 			if('create' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('add_new_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('please_fill_all_the_required_fields_below_to_add_new_data') . '</div>');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('add_new_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('please_fill_all_the_required_fields_below_to_add_new_data'));
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
-				$this->_results						= $this->render_form($this->_query);
+				$this->_results						= $this->render_form($result);
 			}
 			
 			// if method is read
 			else if('read' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('showing_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('showing_the_result_of_the_selected_item') . '</div>');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('showing_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('showing_the_result_of_the_selected_item'));
 				$this->_view						= (isset($this->_set_template[$this->_method]) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
-				$this->_results						= ('table' == service('request')->getPost('show_in') ? $this->render_table($this->_query) : $this->render_read($this->_query));
-				
-				if('table' == service('request')->getPost('show_in') && isset($this->_results['table_data'][0]))
-				{
-					return make_json
-					(
-						array
-						(
-							'table_data'			=> $this->_results['table_data'][0]
-						)
-					);
-				}
+				$this->_results						= $this->render_read($result);
 			}
 			
 			// if method is update
 			else if('update' == $this->_method)
 			{
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : phrase('update_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : '<div class="alert alert-info border-0 rounded-0 pt-2 pr-3 pb-2 pl-3 mb-0" style="margin-left:-15px; margin-right:-15px">' . phrase('make_sure_to_check_the_changes_before_submitting') . '</div>');
+				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('update_data'));
+				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('make_sure_to_check_the_changes_before_submitting'));
 				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
-				$this->_results						= $this->render_form($this->_query);
+				$this->_results						= $this->render_form($result);
 			}
 			
 			// if method is export
@@ -2944,19 +2970,19 @@ class Core extends Controller
 				
 				$this->_view						= $this->template->get_view((isset($this->_set_template[$this->_method]) ? $this->_set_template[$this->_method] : $this->_method));
 				
-				$this->_results						= ($single_print ? $this->render_read($this->_query) : $this->render_table($this->_query));
+				$this->_results						= ($single_print ? $this->render_read($result) : $this->render_table($result));
 			}
 			
 			// otherwise
 			else
 			{
-				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $table), array('templates/index', 'templates/index_grid', 'templates/index_mobile', 'templates/error')) ? true : false);
+				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $this->_table), array('templates/index', 'templates/index_grid', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
 				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
-				$this->_set_title					= ($title ? $title : ($this->_crud || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
+				$this->_set_title					= ($title ? $title : (($title && $this->_set_primary) || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= $description;
 				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-				$this->_results						= ($this->_crud && !$view_exists ? $this->render_table($this->_query) : $this->_query);
+				$this->_results						= ($this->_set_primary && !$view_exists ? $this->render_table($result) : $result);
 			}
 		}
 		else
@@ -2965,11 +2991,11 @@ class Core extends Controller
 			$this->_set_title						= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) && $this->_set_title ? $this->_set_title : phrase('untitled')));
 			$this->_set_description					= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 			$this->_view							= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
-			$this->_results							= $this->_query;
+			$this->_results							= array();
 		}
 		
 		/**
-		 * Prepare the output
+		 * Indicates requested from the API calls
 		 */
 		if($this->_api_request)
 		{
@@ -2979,21 +3005,21 @@ class Core extends Controller
 			{
 				$results							= array();
 			}
-			else if($results && 'index' == $this->_method && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
-			{
-				$this->_total						= sizeof($results);
-			}
 			
+			/**
+			 * Set the output results
+			 */
 			$this->_output							= array
 			(
 				'method'							=> $this->_method,
 				'query_string'						=> $this->_set_primary,
-				'results'							=> $results
+				'results'							=> $results,
+				'total'								=> $this->_total
 			);
 			
-			if(in_array($this->_method, array('index')))
+			if(in_array($this->_method, array('create', 'read', 'update')))
 			{
-				$this->_output['total']				= ($this->_total ? $this->_total : 0);
+				unset($this->_output['total']);
 			}
 			
 			if($this->_set_output)
@@ -3006,6 +3032,10 @@ class Core extends Controller
 				return make_json($this->_output);
 			}
 		}
+		
+		/**
+		 * Indicates requested from the browser
+		 */
 		else
 		{
 			$this->_output							= array
@@ -3020,13 +3050,13 @@ class Core extends Controller
 					'icon'							=> $this->_set_icon,
 					'title'							=> $this->_set_title,
 					'modal_size'					=> $this->_modal_size,
-					'segmentation'					=> array_map(function ($segment = null){return preg_replace('/[^a-zA-Z0-9]/', '_', $segment);}, service('uri')->getSegments())
+					'segmentation'					=> array_map(function ($segment = null){return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
 				),
 				'results'							=> $this->_results,
 				'total'								=> $this->_total,
 				'pagination'						=> array
 				(
-					'limit'							=> $this->_limit_original,
+					'limit'							=> $this->_limit_backup,
 					'offset'						=> $this->_offset,
 					'per_page'						=> $this->_limit,
 					'total_rows'					=> $this->_total,
@@ -3038,7 +3068,7 @@ class Core extends Controller
 			
 			if(isset($this->_set_template['read']) || isset($this->_set_template['form']))
 			{
-				$this->_output['modal_html']			= true;
+				$this->_output['modal_html']		= true;
 			}
 		}
 		
@@ -3058,26 +3088,10 @@ class Core extends Controller
 		/**
 		 * Generate output from the method
 		 */
-		if('delete' == $this->_method)
+		if('print' == $this->_method)
 		{
 			/**
-			 * Method delete
-			 */
-			if(1 == service('request')->getPost('batch'))
-			{
-				// batch delete
-				return $this->delete_batch($this->_from);
-			}
-			else if($this->_where)
-			{
-				// single delete
-				return $this->delete_data($this->_from, $this->_where, $this->_limit);
-			}
-		}
-		else if('print' == $this->_method)
-		{
-			/**
-			 * Method print
+			 * Print
 			 */
 			$this->_output->template				= (object) array
 			(
@@ -3090,7 +3104,7 @@ class Core extends Controller
 		else if(in_array($this->_method, array('pdf', 'export')))
 		{
 			/**
-			 * Method document
+			 * Document
 			 */
 			$this->_output							= view($this->_view, (array) $this->_output);
 			
@@ -3102,122 +3116,66 @@ class Core extends Controller
 		}
 		else
 		{
-			/**
-			 * Or
-			 */
-			if(service('request')->getPost('_token'))
+			$prefer									= (in_array($this->_method, array('create', 'read', 'update')) && !service('request')->getPost('prefer') ? 'html' : service('request')->getPost('prefer'));
+			
+			if(('html' != $prefer && service('request')->isAJAX() && $this->template->get_view($this->_view) && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
 			{
 				/**
-				 * Post token is initial to validate form. It's mean the request were
-				 * submitted through the form
+				 * Indicate the method is requested through Promise (XHR) or API
 				 */
-				
-				// validate sent token
-				$token_sent							= service('request')->getPost('_token');
-				
-				if($this->valid_token($token_sent))
+				if('modal' == service('request')->getPost('prefer'))
 				{
-					// token approved, check if validation use the custom callback
-					if($this->_form_callback && method_exists($this, $this->_form_callback))
+					unset($this->_output->breadcrumb, $this->_output->total, $this->_output->pagination);
+					
+					if($this->_set_method)
 					{
-						// use callback as form validation
-						$_callback					= $this->_form_callback;
-						
-						return $this->$_callback();
-					}
-					else
-					{
-						// or use the master validation instead
-						return $this->validate_form($this->_query);
+						return $this->template->build($this->_view, $this->_output, null, $this->_table, $this->_language);
 					}
 				}
 				else
 				{
-					// token isn't valid, throw exception
-					return throw_exception(403, phrase('the_token_you_submitted_has_been_expired_or_you_are_trying_to_bypass_it_from_the_restricted_source'), $this->_redirect_back);
+					if(in_array($this->_method, array('create', 'read', 'update')))
+					{
+						unset($this->_output->total, $this->_output->pagination);
+					}
+					else if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
+					{
+						unset($this->_output->pagination);
+					}
+					
+					if(isset($this->_output->pagination))
+					{
+						$this->_output->pagination	= $this->template->pagination($this->_output->pagination, false);
+					}
 				}
-			}
-			else if($this->_api_request && 'POST' == service('request')->getServer('REQUEST_METHOD') && (in_array($this->_method, array('create', 'update')) || ($this->_form_callback && method_exists($this, $this->_form_callback))))
-			{
+				
 				/**
-				 * Indicate the method is requested through API
+				 * Returning the response as json format
 				 */
-				if($this->_form_callback && method_exists($this, $this->_form_callback))
+				if(service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false || $this->_api_request)
 				{
-					// use callback as form validation
-					$_callback						= $this->_form_callback;
+					if($this->_api_request && 'GET' != service('request')->getServer('REQUEST_METHOD'))
+					{
+						/**
+						 * Indicate the method is requested through API
+						 */
+						return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+					}
 					
-					return $this->$_callback();
-				}
-				else
-				{
-					// or use the master validation instead
-					return $this->validate_form($this->_query);
+					return make_json
+					(
+						$this->_output
+					);
 				}
 			}
-			else
+			
+			if(in_array($this->_method, array('create', 'read', 'update')))
 			{
-				$prefer								= (in_array($this->_method, array('create', 'read', 'update')) && !service('request')->getPost('prefer') ? 'html' : service('request')->getPost('prefer'));
-				
-				if(('html' != $prefer && service('request')->isAJAX() && $this->template->get_view($this->_view) && stripos($this->template->get_view($this->_view), 'templates/') !== false && (isset($this->_output->results->table_data) || isset($this->_output->results->form_data))) || $this->_api_request)
-				{
-					/**
-					 * Indicate the method is requested through Promise (XHR) or API
-					 */
-					if('modal' == service('request')->getPost('prefer'))
-					{
-						unset($this->_output->breadcrumb, $this->_output->total, $this->_output->pagination);
-						
-						if($this->_set_method)
-						{
-							return $this->template->build($this->_view, $this->_output, null, $this->_from, $this->_language);
-						}
-					}
-					else
-					{
-						if(in_array($this->_method, array('create', 'read', 'update')))
-						{
-							unset($this->_output->total, $this->_output->pagination);
-						}
-						else if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
-						{
-							unset($this->_output->pagination);
-						}
-						
-						if(isset($this->_output->pagination))
-						{
-							$this->_output->pagination	= $this->template->pagination($this->_output->pagination, false);
-						}
-					}
-					
-					/**
-					 * Returning the response as json format
-					 */
-					if(service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false || $this->_api_request)
-					{
-						if($this->_api_request && 'GET' != service('request')->getServer('REQUEST_METHOD'))
-						{
-							/**
-							 * Indicate the method is requested through API
-							 */
-							return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
-						}
-						
-						return make_json
-						(
-							$this->_output
-						);
-					}
-				}
-				
-				if(in_array($this->_method, array('create', 'read', 'update')))
-				{
-					unset($this->_output->total);
-				}
-				
-				// Display to the browser
-				return $this->template->build($this->_view, $this->_output, $this->_set_breadcrumb, $this->_from, $this->_language);
+				unset($this->_output->total);
 			}
+			
+			// Display to the browser
+			return $this->template->build($this->_view, $this->_output, $this->_set_breadcrumb, $this->_table, $this->_language);
 		}
 	}
 	
@@ -3364,22 +3322,6 @@ class Core extends Controller
 					$this->before_update();
 				}
 				
-				if($this->_where_in)
-				{
-					foreach($this->_where_in as $key => $val)
-					{
-						$this->model->where_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
-					}
-				}
-				
-				if($this->_where_not_in)
-				{
-					foreach($this->_where_not_in as $key => $val)
-					{
-						$this->model->where_not_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
-					}
-				}
-				
 				if($this->model->update($table, $data, $where))
 				{
 					// check if file is updated
@@ -3489,22 +3431,6 @@ class Core extends Controller
 				if(method_exists($this, 'before_delete'))
 				{
 					$this->before_delete();
-				}
-				
-				if($this->_where_in)
-				{
-					foreach($this->_where_in as $key => $val)
-					{
-						$this->model->where_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
-					}
-				}
-				
-				if($this->_where_not_in)
-				{
-					foreach($this->_where_not_in as $key => $val)
-					{
-						$this->model->where_not_in($key, (isset($val['value']) ? $val['value'] : $val), (isset($val['escape']) ? $val['escape'] : true));
-					}
 				}
 				
 				// safe check for delete
@@ -3781,7 +3707,7 @@ class Core extends Controller
 				{
 					$content						= '
 						<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-							<span class="btn btn-file btn-block">
+							<span class="btn btn-file d-block">
 								<input type="file" name="' . $field . '" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 								<div class="fileupload-new text-center">
 									<img class="img-fluid upload_preview" src="' . get_image($this->_set_upload_path, ($original ? $original : $parameter), 'thumb') . '" alt="' . ($original ? $original : $parameter) . '" />
@@ -3819,7 +3745,7 @@ class Core extends Controller
 					}
 					
 					$files							= htmlspecialchars(json_encode($files));
-					$content						= '<div class="input-group uploader-input"><div class="custom-file"><input type="file" class="custom-file-input" data-name="' . (array_intersect(array('images', 'files'), $type) ? $field . '[]' : $field) . '" role="uploader" id="' . $field . '_input" data-fileuploader-files="' . $files . '" accept="' . (in_array('images', $type) ? implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) : implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))))) . '"' . (array_intersect(array('images', 'files'), $type) ? ' multiple' : null) . ' /><label class="custom-file-label" for="' . $field . '_input">' . phrase('choose_file') . '</label></div></div>';
+					$content						= '<div class="uploader-input"><input type="file" class="custom-file-input d-none" data-name="' . (array_intersect(array('images', 'files'), $type) ? $field . '[]' : $field) . '" role="uploader" id="' . $field . '_input" data-fileuploader-files="' . $files . '" accept="' . (in_array('images', $type) ? implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) : implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))))) . '"' . (array_intersect(array('images', 'files'), $type) ? ' multiple' : null) . ' /><label class="form-control custom-file-label" for="' . $field . '_input">' . phrase('choose_file') . '</label></div>';
 				}
 				else if(array_intersect(array('attributes'), $type))
 				{
@@ -3833,22 +3759,22 @@ class Core extends Controller
 							if(!isset($attribute['label']) || !isset($attribute['value'])) continue;
 							$items					.= '
 								<div class="row mb-1">
-									<div class="col-4 pr-0">
+									<div class="col-4 pe-0">
 										<input type="text" name="' . $field . '[label][]" class="form-control form-control-sm" placeholder="' . phrase('label') . '" value="' . $attribute['label'] . '" autocomplete="off" spellcheck="false" />
 									</div>
-									<div class="col-5 pr-0">
+									<div class="col-5 pe-0">
 										<input type="text" name="' . $field . '[value][]" class="form-control form-control-sm" placeholder="' . phrase('value') . '" value="' . $attribute['value'] . '" autocomplete="off" spellcheck="false" />
 									</div>
 									<div class="col-3">
-										<div class="btn-group btn-group-sm float-right">
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".row" data-toggle="tooltip" title="' . phrase('move_up') . '">
+										<div class="btn-group btn-group-sm float-end">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".row" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 												<i class="mdi mdi-arrow-collapse-up"></i>
 											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".row" data-toggle="tooltip" title="' . phrase('move_down') . '">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".row" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
 											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-attribute"' : null) . ' data-element=".row">
-												<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+												<i class="mdi mdi-window-close" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 											</a>
 										</div>
 									</div>
@@ -3860,22 +3786,22 @@ class Core extends Controller
 					{
 						$items						.= '
 							<div class="row mb-1">
-								<div class="col-4 pr-0">
+								<div class="col-4 pe-0">
 									<input type="text" name="' . $field . '[label][]" class="form-control form-control-sm" placeholder="' . phrase('label') . '" autocomplete="off" spellcheck="false" />
 								</div>
-								<div class="col-5 pr-0">
+								<div class="col-5 pe-0">
 									<input type="text" name="' . $field . '[value][]" class="form-control form-control-sm" placeholder="' . phrase('value') . '" autocomplete="off" spellcheck="false" />
 								</div>
 								<div class="col-3">
-									<div class="btn-group btn-group-sm float-right">
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".row" data-toggle="tooltip" title="' . phrase('move_up') . '">
+									<div class="btn-group btn-group-sm float-end">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".row" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 											<i class="mdi mdi-arrow-collapse-up"></i>
 										</a>
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".row" data-toggle="tooltip" title="' . phrase('move_down') . '">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".row" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 											<i class="mdi mdi-arrow-collapse-down"></i>
 										</a>
 										<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-attribute"' : null) . ' data-element=".row">
-											<i class="mdi mdi-window-close" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+											<i class="mdi mdi-window-close" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 										</a>
 									</div>
 								</div>
@@ -3889,8 +3815,8 @@ class Core extends Controller
 								' . $items . '
 							</div>
 							<div class="row">
-								<div class="col-4 pr-0">
-									<button type="button" class="btn btn-secondary btn-sm btn-block"' . (!$read_only ? ' role="add-attribute"' : null) . ' data-label="' . $field . '[label][]" data-label-placeholder="' . phrase('label') . '" data-value-placeholder="' . phrase('value') . '" data-value="' . $field . '[value][]">
+								<div class="col-4 pe-0">
+									<button type="button" class="btn btn-secondary btn-sm d-block"' . (!$read_only ? ' role="add-attribute"' : null) . ' data-label="' . $field . '[label][]" data-label-placeholder="' . phrase('label') . '" data-value-placeholder="' . phrase('value') . '" data-value="' . $field . '[value][]">
 										<i class="mdi mdi-plus-circle-outline"></i>
 										&nbsp;
 										' . phrase('add') . '
@@ -3915,12 +3841,12 @@ class Core extends Controller
 									<div class="card-body">
 										<div class="row">
 											<div class="col-md-6">
-												<div class="form-group">
+												<div class="form-group mb-3">
 													<label class="text-muted">
 														' . phrase('background') . '
 													</label>
 													<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-														<span class="btn btn-file btn-block">
+														<span class="btn btn-file d-block">
 															<input type="file" name="' . $field . '[background][' . $carousel . ']" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 															<div class="fileupload-new text-center">
 																<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, (isset($item['background']) ? $item['background'] : 'placeholder.png'), 'thumb') . '" alt="..." />
@@ -3930,12 +3856,12 @@ class Core extends Controller
 												</div>
 											</div>
 											<div class="col-md-6">
-												<div class="form-group">
+												<div class="form-group mb-3">
 													<label class="text-muted">
 														' . phrase('thumbnail') . '
 													</label>
 													<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-														<span class="btn btn-file btn-block">
+														<span class="btn btn-file d-block">
 															<input type="file" name="' . $field . '[thumbnail][' . $carousel . ']" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 															<div class="fileupload-new text-center">
 																<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, (isset($item['thumbnail']) ? $item['thumbnail'] : 'placeholder.png'), 'thumb') . '" alt="..." />
@@ -3945,20 +3871,20 @@ class Core extends Controller
 												</div>
 											</div>
 										</div>
-										<div class="form-group">
+										<div class="form-group mb-3">
 											<input type="text" name="' . $field . '[title][' . $carousel . ']" class="form-control" placeholder="' . phrase('title') . '" value="' . (isset($item['title']) ? $item['title'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 										</div>
-										<div class="form-group">
+										<div class="form-group mb-3">
 											<textarea name="' . $field . '[description][' . $carousel . ']" class="form-control" placeholder="' . phrase('description') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '>' . (isset($item['description']) ? $item['description'] : null) . '</textarea>
 										</div>
 										<div class="row">
 											<div class="col-md-6">
-												<div class="form-group">
+												<div class="form-group mb-3">
 													<input type="text" name="' . $field . '[link][' . $carousel . ']" class="form-control" placeholder="' . phrase('target_url') . '" value="' . (isset($item['link']) ? $item['link'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 												</div>
 											</div>
 											<div class="col-md-6">
-												<div class="form-group">
+												<div class="form-group mb-3">
 													<input type="text" name="' . $field . '[label][' . $carousel . ']" class="form-control" placeholder="' . phrase('button_label') . '" value="' . (isset($item['label']) ? $item['label'] : null) . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 												</div>
 											</div>
@@ -3968,15 +3894,15 @@ class Core extends Controller
 										<input type="hidden" name="' . $field . '[default_background][' . $carousel . ']" value="' . (isset($item['background']) ? $item['background'] : null) . '"' . $read_only . ' />
 										<input type="hidden" name="' . $field . '[default_thumbnail][' . $carousel . ']" value="' . (isset($item['thumbnail']) ? $item['thumbnail'] : null) . '"' . $read_only . ' />
 										<div class="btn-group btn-group-sm">
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 												<i class="mdi mdi-arrow-collapse-up"></i>
 											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
 										</div>
-										<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-right"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
-											<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+										<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-end"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
+											<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 										</a>
 									</div>
 								</div>
@@ -3990,12 +3916,12 @@ class Core extends Controller
 								<div class="card-body">
 									<div class="row">
 										<div class="col-md-6">
-											<div class="form-group">
+											<div class="form-group mb-3">
 												<label class="text-muted">
 													' . phrase('background') . '
 												</label>
 												<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-													<span class="btn btn-file btn-block">
+													<span class="btn btn-file d-block">
 														<input type="file" name="' . $field . '[background][]" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 														<div class="fileupload-new text-center">
 															<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" alt="" />
@@ -4005,12 +3931,12 @@ class Core extends Controller
 											</div>
 										</div>
 										<div class="col-md-6">
-											<div class="form-group">
+											<div class="form-group mb-3">
 												<label class="text-muted">
 													' . phrase('thumbnail') . '
 												</label>
 												<div data-provides="fileupload" class="fileupload fileupload-new text-sm-center">
-													<span class="btn btn-file btn-block">
+													<span class="btn btn-file d-block">
 														<input type="file" name="' . $field . '[thumbnail][]" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="' . $field . '_input"' . $read_only . ' />
 														<div class="fileupload-new text-center">
 															<img class="img-fluid upload_preview rounded" src="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" alt="" />
@@ -4020,20 +3946,20 @@ class Core extends Controller
 											</div>
 										</div>
 									</div>
-									<div class="form-group">
+									<div class="mb-3">
 										<input type="text" name="' . $field . '[title][]" class="form-control" placeholder="' . phrase('title') . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 									</div>
-									<div class="form-group">
+									<div class="mb-3">
 										<textarea name="' . $field . '[description][]" class="form-control" placeholder="' . phrase('description') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '></textarea>
 									</div>
 									<div class="row">
 										<div class="col-md-6">
-											<div class="form-group">
+											<div class="mb-3">
 												<input type="text" name="' . $field . '[link][]" class="form-control" placeholder="' . phrase('target_url') . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 											</div>
 										</div>
 										<div class="col-md-6">
-											<div class="form-group">
+											<div class="mb-3">
 												<input type="text" name="' . $field . '[label][]" class="form-control" placeholder="' . phrase('button_label') . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
 											</div>
 										</div>
@@ -4041,22 +3967,22 @@ class Core extends Controller
 								</div>
 								<div class="card-footer pt-1 pb-1">
 									<div class="btn-group btn-group-sm">
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 											<i class="mdi mdi-arrow-collapse-up"></i>
 										</a>
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 											<i class="mdi mdi-arrow-collapse-down"></i>
 										</a>
 									</div>
-									<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-right"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
-										<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+									<a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-end"' . (!$read_only ? ' role="remove-carousel"' : null) . ' data-element=".card">
+										<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 									</a>
 								</div>
 							</div>
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-carousel"' : null) . ' data-field="' . $field . '" data-image-placeholder="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a></div>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light d-block"' . (!$read_only ? ' role="add-carousel"' : null) . ' data-field="' . $field . '" data-image-placeholder="' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
 				}
 				else if(array_intersect(array('faqs'), $type))
 				{
@@ -4073,17 +3999,15 @@ class Core extends Controller
 									<div class="card-header p-2">
 										<div class="input-group input-group-sm">
 											<input type="text" name="' . $field . '[question][]" class="form-control" placeholder="' . phrase('question') . '" value="' . $item['question'] . '" id="' . $field . '_input" spellcheck="false" />
-											<div class="input-group-append">
-												<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
-													<i class="mdi mdi-arrow-collapse-up"></i>
-												</a>
-												<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
-													<i class="mdi mdi-arrow-collapse-down"></i>
-												</a>
-												<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
-													<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
-												</a>
-											</div>
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
+												<i class="mdi mdi-arrow-collapse-up"></i>
+											</a>
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
+												<i class="mdi mdi-arrow-collapse-down"></i>
+											</a>
+											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
+												<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
+											</a>
 										</div>
 									</div>
 									<div class="card-body p-2">
@@ -4100,17 +4024,15 @@ class Core extends Controller
 								<div class="card-header p-2">
 									<div class="input-group input-group-sm">
 										<input type="text" name="' . $field . '[question][]" class="form-control" placeholder="' . phrase('question') . '" id="' . $field . '_input" spellcheck="false"' . $read_only . ' />
-										<div class="input-group-append">
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
-												<i class="mdi mdi-arrow-collapse-up"></i>
-											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
-												<i class="mdi mdi-arrow-collapse-down"></i>
-											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
-												<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
-											</a>
-										</div>
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
+											<i class="mdi mdi-arrow-collapse-up"></i>
+										</a>
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
+											<i class="mdi mdi-arrow-collapse-down"></i>
+										</a>
+										<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-faq"' : null) . ' data-element=".card">
+											<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
+										</a>
 									</div>
 								</div>
 								<div class="card-body p-2">
@@ -4120,7 +4042,7 @@ class Core extends Controller
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-faq"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light d-block"' . (!$read_only ? ' role="add-faq"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
 				}
 				else if(array_intersect(array('steps'), $type))
 				{
@@ -4133,16 +4055,16 @@ class Core extends Controller
 						{
 							$items					.= '
 								<div class="card mb-3">
-									<div class="card-body p-2 relative">
+									<div class="card-body p-2 position-relative">
 										<div class="btn-group btn-group-xs absolute" style="top: 5px; right: 10px; z-index: 1">
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 												<i class="mdi mdi-arrow-collapse-up"></i>
 											</a>
-											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
+											<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 												<i class="mdi mdi-arrow-collapse-down"></i>
 											</a>
 											<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-step"' : null) . ' data-element=".card">
-												<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+												<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 											</a>
 										</div>
 										<textarea name="' . $field . '[]" class="form-control" role="wysiwyg" placeholder="' . phrase('add_step') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '>' . $item . '</textarea>
@@ -4155,16 +4077,16 @@ class Core extends Controller
 					{
 						$items						.= '
 							<div class="card mb-3">
-								<div class="card-body p-2 relative">
+								<div class="card-body p-2 position-relative">
 									<div class="btn-group btn-group-xs absolute" style="top: 5px; right: 10px; z-index: 1">
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_up') . '">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-up' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_up') . '">
 											<i class="mdi mdi-arrow-collapse-up"></i>
 										</a>
-										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-toggle="tooltip" title="' . phrase('move_down') . '">
+										<a href="javascript:void(0)" class="btn btn-secondary' . (!$read_only ? ' --move-down' : null) . '" data-element=".card" data-bs-toggle="tooltip" title="' . phrase('move_down') . '">
 											<i class="mdi mdi-arrow-collapse-down"></i>
 										</a>
 										<a href="javascript:void(0)" class="btn btn-secondary"' . (!$read_only ? ' role="remove-step"' : null) . ' data-element=".card">
-											<i class="mdi mdi-delete" data-toggle="tooltip" title="' . phrase('remove') . '"></i>
+											<i class="mdi mdi-delete" data-bs-toggle="tooltip" title="' . phrase('remove') . '"></i>
 										</a>
 									</div>
 									<textarea name="' . $field . '[]" class="form-control" role="wysiwyg" placeholder="' . phrase('add_step') . '" id="' . $field . '_input" rows="1" spellcheck="false"' . $read_only . '></textarea>
@@ -4173,7 +4095,7 @@ class Core extends Controller
 						';
 					}
 					
-					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light btn-block"' . (!$read_only ? ' role="add-step"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
+					$content						= $items . '<a href="javascript:void(0)" class="btn btn-light d-block"' . (!$read_only ? ' role="add-step"' : null) . ' data-field="' . $field . '" style="border:2px dashed #ddd"><i class="mdi mdi-plus-circle-outline"></i>&nbsp;' . phrase('add') . '</a>';
 				}
 				else if(array_intersect(array('dropdown', 'checkbox', 'radio'), $type))
 				{
@@ -4206,9 +4128,9 @@ class Core extends Controller
 								}
 								
 								$options			.= '
-									<div class="custom-control custom-switch">
-										<input type="checkbox" name="' . $field . '[]" value="' . $value . '" class="custom-control-input ' . $extra_class . '" id="check_' . $num . '"' . ($default_value == $value || in_array($value, $checker) ? ' checked' : null) . $read_only . ' />
-										<label class="custom-control-label" for="check_' . $num . '">
+									<div class="form-check form-switch">
+										<label class="form-check-label" for="check_' . $num . '">
+											<input type="checkbox" name="' . $field . '[]" value="' . $value . '" class="form-check-input ' . $extra_class . '" id="check_' . $num . '"' . ($default_value == $value || in_array($value, $checker) ? ' checked' : null) . $read_only . ' />
 											' . $label . '
 										</label>
 										' . $extra_params . '
@@ -4218,12 +4140,13 @@ class Core extends Controller
 							else if(array_intersect(array('radio'), $type))
 							{
 								$options			.= '
-									<label class="' . $extra_class . '">
-										<input type="radio" name="' . $field . '" value="' . $value . '"' . ($default_value == $value || $value == $original ? ' checked' : null) . $read_only . ' />
-										' . $label . '
-										&nbsp;
+									<div class="form-check">
+										<label class="' . $extra_class . '">
+											<input type="radio" name="' . $field . '" class="form-check-input" value="' . $value . '"' . ($default_value == $value || $value == $original ? ' checked' : null) . $read_only . ' />
+											' . $label . '
+										</label>
 										' . $extra_params . '
-									</label>
+									</div>
 								';
 							}
 							
@@ -4338,7 +4261,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('colorpicker'), $type))
 				{
-					$content						= '<div class="input-group" role="colorpicker"><input type="text" name="' . $field . '" class="form-control" value="' . ($default_value ? $default_value : $original) . '"' . $read_only . ' /><div class="input-group-append" data-toggle="tooltip" title="' . phrase('pick_a_color') . '"><span class="input-group-text">&nbsp;&nbsp;&nbsp;</span></div></div>';
+					$content						= '<div class="input-group" role="colorpicker"><input type="text" name="' . $field . '" class="form-control" value="' . ($default_value ? $default_value : $original) . '"' . $read_only . ' /><span class="input-group-text" data-bs-toggle="tooltip" title="' . phrase('pick_a_color') . '">&nbsp;&nbsp;&nbsp;</span></div>';
 				}
 				else if(array_intersect(array('wysiwyg'), $type))
 				{
@@ -4350,7 +4273,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('price_format'), $type))
 				{
-					$content						= '<input type="text" name="' . $field . '" min="0" class="form-control text-right' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" role="price" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
+					$content						= '<input type="text" name="' . $field . '" min="0" class="form-control text-end' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" role="price" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '" spellcheck="false"' . $read_only . ' />';
 				}
 				else if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'percent_format'), $type))
 				{
@@ -4358,15 +4281,15 @@ class Core extends Controller
 					
 					if(array_intersect(array('percent_format'), $type))
 					{
-						$content					= '<div class="input-group">' . $content . '<div class="input-group-append"><span class="input-group-text">%</span></div></div>';
+						$content					= '<div class="input-group">' . $content . '<span class="input-group-text">%</span></div>';
 					}
 				}
 				else if(array_intersect(array('boolean'), $type))
 				{
 					$content						= '
-						<div class="custom-control custom-switch">
-							<input type="checkbox" name="' . $field . '" value="1" class="custom-control-input" id="' . $field . '_input"' . ($default_value == 1 || $original == 1 || ('create' == $this->_method && (!isset($this->_default_value[$field]) || (isset($this->_default_value[$field]) && $this->_default_value[$field] == 1))) ? ' checked' : null) . $read_only . ' />
-							<label class="custom-control-label" for="' . $field . '_input">
+						<div class="form-check form-switch">
+							<input type="checkbox" name="' . $field . '" value="1" class="form-check-input" id="' . $field . '_input"' . ($default_value == 1 || $original == 1 || ('create' == $this->_method && (!isset($this->_default_value[$field]) || (isset($this->_default_value[$field]) && $this->_default_value[$field] == 1))) ? ' checked' : null) . $read_only . ' />
+							<label class="form-check-label" for="' . $field . '_input">
 								' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('check_to_activate')) . '
 							</label>
 						</div>
@@ -4437,7 +4360,7 @@ class Core extends Controller
 							{
 								foreach($this->_where as $k => $v)
 								{
-									if($this->model->field_exists($k, $this->_from))
+									if($this->model->field_exists($k, $this->_table))
 									{
 										$where[$k]	= $v;
 									}
@@ -4451,11 +4374,11 @@ class Core extends Controller
 									$this->model->where($parameter);
 								}
 								
-								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_from, 1)->row($field);
+								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
 							}
 							else
 							{
-								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_from, $where, 1)->row($field);
+								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
 							}
 							
 							$last_insert			= explode('/', $last_insert);
@@ -4497,7 +4420,7 @@ class Core extends Controller
 				else if(array_intersect(array('coordinate'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '" data-apply-coordinate-to="#' . $field . '_input" data-apply-address-to=".map-address-listener"' . (!$read_only ? ' data-draggable="1"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('drag_marker_to_update_the_location') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
 							<input type="hidden" name="' . $field . '" id="' . $field . '_input" value="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '"' . $read_only . ' />
 						</div>
@@ -4506,7 +4429,7 @@ class Core extends Controller
 				else if(array_intersect(array('point'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '" data-apply-coordinate-to="#' . $field . '_input"' . (!$read_only && in_array($this->_method, array('create', 'update')) ? ' data-drawing-manager="1" data-drawing-type="point"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('click_map_to_start_drawing') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:360px"></div>
 							<input type="hidden" name="' . $field . '" id="' . $field . '_input" value="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . $read_only . ' />
 						</div>
@@ -4515,7 +4438,7 @@ class Core extends Controller
 				else if(array_intersect(array('polygon'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '" data-apply-coordinate-to="#' . $field . '_input"' . (!$read_only && in_array($this->_method, array('create', 'update')) ? ' data-drawing-manager="1" data-drawing-type="polygon"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('click_map_to_start_drawing') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:360px"></div>
 							<input type="hidden" name="' . $field . '" id="' . $field . '_input" value="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . $read_only . ' />
 						</div>
@@ -4524,7 +4447,7 @@ class Core extends Controller
 				else if(array_intersect(array('linestring'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="map_' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '" data-apply-coordinate-to="#' . $field . '_input"' . (!$read_only && in_array($this->_method, array('create', 'update')) ? ' data-drawing-manager="1" data-drawing-type="linestring"' : null) . ' data-geocoder="1"' . (!$original ? ' data-geolocation="1"' : null) . ' data-mousewheel="0" title="' . phrase('click_map_to_start_drawing') . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:360px"></div>
 							<input type="hidden" name="' . $field . '" id="' . $field . '_input"' . $attribute . ' value="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . $read_only . ' />
 						</div>
@@ -4744,7 +4667,7 @@ class Core extends Controller
 						foreach($original as $img => $src)
 						{
 							$items					.= '
-								<div class="col-md-3 col-xs-6 text-sm">
+								<div class="col-6 col-sm-4 col-md-3 text-sm">
 									<a href="' . get_image($this->_set_upload_path, $img) . '" target="_blank">
 										<img src="' . get_image($this->_set_upload_path, $img, 'thumb') . '" class="img-fluid rounded" alt="' . $src . '" />
 									</a>
@@ -4769,7 +4692,7 @@ class Core extends Controller
 						{
 							$filesize				= get_filesize($this->_set_upload_path, $src);
 							$content				= '
-								<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
+								<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-bs-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
 									' . ($label ? $label : $src) . '
 								</a>
 							';
@@ -4800,7 +4723,7 @@ class Core extends Controller
 							else
 							{
 								$files				.= '
-									<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
+									<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-bs-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
 										<label class="d-block">
 											' . ($label ? $label : $src) . '
 										</label>
@@ -4874,17 +4797,15 @@ class Core extends Controller
 					}
 					
 					$content						= '
-						<div id="carousel_' . $field . '" class="carousel slide" data-ride="carousel">
+						<div id="carousel_' . $field . '" class="carousel slide" data-bs-ride="carousel">
 							<div class="carousel-inner">
 								' . $items . '
 							</div>
-							<a class="carousel-control-prev" href="#carousel_' . $field . '" role="button" data-slide="prev">
+							<a class="carousel-control-prev" href="#carousel_' . $field . '" role="button" data-bs-slide="prev">
 								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-								<span class="sr-only">' . phrase('previous') . '</span>
 							</a>
-							<a class="carousel-control-next" href="#carousel_' . $field . '" role="button" data-slide="next">
+							<a class="carousel-control-next" href="#carousel_' . $field . '" role="button" data-bs-slide="next">
 								<span class="carousel-control-next-icon" aria-hidden="true"></span>
-								<span class="sr-only">' . phrase('next') . '</span>
 							</a>
 						</div>
 					';
@@ -4899,14 +4820,14 @@ class Core extends Controller
 						foreach($original as $faq => $value)
 						{
 							$items					.= '
-								<div class="card">
-									<div class="card-header" id="heading_' . $faq . '">
-										<a href="#" class="d-block font-weight-bold" data-toggle="collapse" data-target="#collapse_' . $faq . '" aria-expanded="true" aria-controls="collapse_' . $faq . '">
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="heading_' . $faq . '">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_' . $faq . '" aria-controls="collapse_' . $faq . '">
 											' . (isset($value['question']) ? $value['question'] : null) . '
-										</a>
-									</div>
-									<div id="collapse_' . $faq . '" class="collapse" aria-labelledby="heading_' . $faq . '" data-parent="#accordion_' . $field . '">
-										<div class="card-body">
+										</button>
+									</h2>
+									<div id="collapse_' . $faq . '" class="accordion-collapse collapse" aria-labelledby="heading_' . $faq . '" data-bs-parent="#accordion_' . $field . '">
+										<div class="accordion-body">
 											' . (isset($value['answer']) ? $value['answer'] : null) . '
 										</div>
 									</div>
@@ -4930,7 +4851,7 @@ class Core extends Controller
 					{
 						foreach($original as $tag => $value)
 						{
-							$items					.= '<span class="badge badge-info">' . $value . '</span>';
+							$items					.= '<span class="badge bg-info">' . $value . '</span>';
 						}
 					}
 					
@@ -5002,7 +4923,7 @@ class Core extends Controller
 							{
 								if(!is_array($_val) && isset($this->_set_field[$field]['parameter'][$_val]))
 								{
-									$items				.= '<span class="badge badge-info">' . $this->_set_field[$field]['parameter'][$_val] . '</span> ';
+									$items				.= '<span class="badge bg-info">' . $this->_set_field[$field]['parameter'][$_val] . '</span> ';
 								}
 							}
 							
@@ -5037,7 +4958,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('boolean'), $type))
 				{
-					$content						= ($content == 1 ? '<span class="badge badge-success">' . phrase('active') . '</span>' : '<span class="badge badge-danger">' . phrase('inactive') . '</span>');
+					$content						= ($content == 1 ? '<span class="badge bg-success">' . phrase('active') . '</span>' : '<span class="badge bg-danger">' . phrase('inactive') . '</span>');
 				}
 				else if(array_intersect(array('last_insert'), $type))
 				{
@@ -5061,7 +4982,7 @@ class Core extends Controller
 				else if(array_intersect(array('coordinate'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-draggable="false" data-coordinate="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : (get_setting('office_map') ? get_setting('office_map') : '[]')))) . '" style="height:260px"></div>
 						</div>
 					';
@@ -5069,7 +4990,7 @@ class Core extends Controller
 				else if(array_intersect(array('point'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
 						</div>
 					';
@@ -5077,7 +4998,7 @@ class Core extends Controller
 				else if(array_intersect(array('polygon'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
 						</div>
 					';
@@ -5085,7 +5006,7 @@ class Core extends Controller
 				else if(array_intersect(array('linestring'), $type))
 				{
 					$content						= '
-						<div class="drawing-placeholder preloader relative w-100" style="overflow:hidden">
+						<div class="drawing-placeholder preloader position-relative w-100" style="overflow:hidden">
 							<div id="' . $field . rand(0, 999) . '"' . ($extra_class ? ' class="' . $extra_class . '"' : null) . ' role="map" data-coordinate="' . strip_tags(htmlspecialchars(get_setting('office_map'))) . '" data-geojson="' . strip_tags(htmlspecialchars(($original && is_json($original) ? $original : '[]'))) . '"' . (isset($this->_set_attribute[$field]) ? ' ' . $this->_set_attribute[$field] : null) . ' style="height:260px"></div>
 						</div>
 					';
@@ -5151,7 +5072,7 @@ class Core extends Controller
 							
 							$content				= '
 								<a href="' . $link . '"' . ('_blank' == $another_params || $external ? ' target="_blank"' : ' class="' . ($another_params || $external ? $another_params : '--xhr') . '"') . ' style="display:block">
-									<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
+									<b data-bs-toggle="tooltip" title="' . phrase('click_to_open') . '">
 										<i class="mdi mdi-open-in-new"></i>' . $content . '
 									</b>
 								</a>
@@ -5222,7 +5143,7 @@ class Core extends Controller
 	 */
 	public function render_table($data = array())
 	{
-		if(!$this->_crud)
+		if(!$this->_set_primary)
 		{
 			$this->_unset_action					= array_merge($this->_unset_action, array('create', 'update', 'delete'));
 			
@@ -5365,7 +5286,7 @@ class Core extends Controller
 							{
 								$filesize			= get_filesize($this->_set_upload_path, $src);
 								$content			= '
-									<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
+									<a href="' . get_file($this->_set_upload_path, $src) . '" target="_blank" data-bs-toggle="tooltip" title="' . $filesize . ', ' . phrase('click_to_open') . '">
 										<b>
 											' . truncate($label, 10) . '
 										</b>
@@ -5380,22 +5301,22 @@ class Core extends Controller
 						
 						if($content > 1)
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (array_intersect(array('images'), $type) ? phrase('images') : phrase('files')) . '</span>';
+							$content				= '<span class="badge bg-info">' . $content . ' ' . (array_intersect(array('images'), $type) ? phrase('images') : phrase('files')) . '</span>';
 						}
 						else
 						{
-							$content				= '<span class="badge badge-info">' . $content . ' ' . (array_intersect(array('image'), $type) ? phrase('images') : phrase('file')) . '</span>';
+							$content				= '<span class="badge bg-info">' . $content . ' ' . (array_intersect(array('image'), $type) ? phrase('images') : phrase('file')) . '</span>';
 						}
 					}
 					else if(array_intersect(array('attributes'), $type))
 					{
 						$content					= sizeof(($content && is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
-						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('attributes') : phrase('attribute')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
+						$content					= ($content > 0 ? '<span class="badge bg-secondary">' . $content . ' ' . ($content > 1 ? phrase('attributes') : phrase('attribute')) . '</span>' : '<span class="badge bg-warning">' . phrase('not_set') . '</span>');
 					}
 					else if(array_intersect(array('carousels', 'faqs'), $type))
 					{
 						$content					= sizeof(($content && is_array(json_decode($content, true)) ? json_decode($content, true) : array()));
-						$content					= ($content > 0 ? '<span class="badge badge-light">' . $content . ' ' . ($content > 1 ? phrase('items') : phrase('item')) . '</span>' : '<span class="badge badge-warning">' . phrase('not_set') . '</span>');
+						$content					= ($content > 0 ? '<span class="badge bg-secondary">' . $content . ' ' . ($content > 1 ? phrase('items') : phrase('item')) . '</span>' : '<span class="badge bg-warning">' . phrase('not_set') . '</span>');
 					}
 					else if($original && array_intersect(array('datetime', 'datetimepicker', 'current_timestamp'), $type))
 					{
@@ -5404,7 +5325,7 @@ class Core extends Controller
 							$timestamp				= strtotime($original);
 							$month					= date('F', $timestamp);
 							$month					= phrase($month);
-							$content				= '<span data-toggle="tooltip" title="' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y - H:i:s', $timestamp) . '">' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . '</span>';
+							$content				= '<span data-bs-toggle="tooltip" title="' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y - H:i:s', $timestamp) . '">' . date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . '</span>';
 						}
 						else
 						{
@@ -5483,7 +5404,7 @@ class Core extends Controller
 								{
 									if(!is_array($_val) && isset($this->_set_field[$field]['parameter'][$_val]))
 									{
-										$items		.= '<span class="badge badge-info">' . $this->_set_field[$field]['parameter'][$_val] . '</span> ';
+										$items		.= '<span class="badge bg-info">' . $this->_set_field[$field]['parameter'][$_val] . '</span> ';
 									}
 								}
 								
@@ -5518,7 +5439,7 @@ class Core extends Controller
 					}
 					else if(array_intersect(array('boolean'), $type))
 					{
-						$content					= ($content == 1 ? '<span class="badge badge-success">' . phrase('active') . '</span>' : '<span class="badge badge-danger">' . phrase('inactive') . '</span>');
+						$content					= ($content == 1 ? '<span class="badge bg-success">' . phrase('active') . '</span>' : '<span class="badge bg-danger">' . phrase('inactive') . '</span>');
 					}
 					else if(array_intersect(array('last_insert'), $type))
 					{
@@ -5527,9 +5448,9 @@ class Core extends Controller
 							$content				= str_replace('{1}', sprintf((is_string($extra_params) ? $extra_params : '%04d'), $original), $parameter);
 						}
 					}
-					else if(array_intersect(array('textarea'), $type))
+					else if(array_intersect(array('textarea', 'wisywig'), $type))
 					{
-						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', ($content ? $content : '')));
+						$content					= preg_replace('/\n/', ' ', preg_replace('/(\s{4})\s+/','$1', ($content ? (!in_array($field, $this->_unset_truncate) && in_array($this->_method, array('index')) ? truncate($content, 60) : $content) : '')));
 					}
 					else if(array_intersect(array('email'), $type))
 					{
@@ -5559,7 +5480,7 @@ class Core extends Controller
 							$parameter				= (strpos($content, '.00') !== false ? 0 : 2);
 						}
 						
-						$content					= '<p class="text-md-right m-0" style="padding-right:15px">' . (array_intersect(array('int', 'integer'), $type) ? $content : (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content)) . '</p>';
+						$content					= '<p class="text-md-end m-0" style="padding-right:15px">' . (array_intersect(array('int', 'integer'), $type) ? $content : (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content)) . '</p>';
 					}
 					
 					if(array_intersect(array('hyperlink'), $type))
@@ -5613,7 +5534,7 @@ class Core extends Controller
 								
 								$content			= '
 									<a href="' . $link . '"' . ('_blank' == $another_params || $external ? ' target="_blank"' : ' class="' . ($another_params || $external ? $another_params : '--xhr') . '"') . ' style="display:block">
-										<b data-toggle="tooltip" title="' . phrase('click_to_open') . '">
+										<b data-bs-toggle="tooltip" title="' . phrase('click_to_open') . '">
 											<i class="mdi mdi-open-in-new"></i>' . $content . '
 										</b>
 									</a>
@@ -5683,13 +5604,10 @@ class Core extends Controller
 				
 				$uri_parameter						= service('request')->getGet();
 				
+				unset($uri_parameter['aksara']);
+				
 				if($primary_key)
 				{
-					if(isset($uri_parameter['aksara']))
-					{
-						unset($uri_parameter['aksara']);
-					}
-					
 					$uri_parameter					= array_merge(array('aksara' => generate_token(array_filter(array_merge($uri_parameter, $primary_key)))), $uri_parameter, $primary_key);
 				}
 				
@@ -5703,7 +5621,7 @@ class Core extends Controller
 		}
 		
 		$columns									= array();
-		$search_columns								= $this->model->list_fields($this->_from);
+		$search_columns								= $this->model->list_fields($this->_table);
 		
 		if(!$search_columns)
 		{
@@ -5724,10 +5642,7 @@ class Core extends Controller
 		{
 			$qs										= service('request')->getGet();
 			
-			if(isset($qs['aksara']))
-			{
-				unset($qs['aksara']);
-			}
+			unset($qs['aksara']);
 			
 			foreach($search_columns as $key => $val)
 			{
@@ -5893,10 +5808,10 @@ class Core extends Controller
 	 */
 	public function serialize($data = array(), $partial = false)
 	{
-		if(!$data && $this->model->table_exists($this->_from))
+		if(!$data && $this->model->table_exists($this->_table))
 		{
 			$this->_data							= false;
-			$data									= array(array_flip($this->model->list_fields($this->_from)));
+			$data									= array(array_flip($this->model->list_fields($this->_table)));
 		}
 		
 		$field_data									= array();
@@ -5911,8 +5826,8 @@ class Core extends Controller
 		
 		if($data)
 		{
-			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_from)), true);
-			$this->_index_data						= $this->model->index_data($this->_from);
+			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_table)), true);
+			$this->_index_data						= $this->model->index_data($this->_table);
 			
 			// set the default primary if the table have any primary column
 			if(!$this->_set_primary && $this->_field_data)
@@ -5978,7 +5893,7 @@ class Core extends Controller
 					{
 						$hidden						= true;
 					}
-					else if(in_array($this->_method, array('index', 'export', 'print', 'pdf')) && ($this->_where && !in_array($this->_method, array('index')) ? in_array($key, $this->_unset_view) : in_array($key, $this->_unset_column)))
+					else if(in_array($this->_method, array('index', 'export', 'print', 'pdf')) && in_array($key, $this->_unset_column))
 					{
 						$hidden						= true;
 						
@@ -6047,61 +5962,52 @@ class Core extends Controller
 	 * Query Builder
 	 * ---------------------------------------------------------------
 	 */
-	/**
-	 * Run the SQL command string
-	 */
-	public function query($query = null)
-	{
-		$this->_query								= $query;
-		
-		return $this;
-	}
-	
-	/**
-	 * Distinct field
-	 */
-	public function distinct($val = null)
-	{
-		if(!is_array($val))
-		{
-			$val									= array_map('trim', explode(',', $val));
-		}
-		
-		$this->_distinct							= array_merge($this->_distinct, $val);
-		
-		return $this;
-	}
 	
 	/**
 	 * Select field
 	 * Possible to use comma separated
 	 */
-	public function select($select = null, $escape = true)
+	public function select(string $column, bool $escape = true)
 	{
-		if(!is_array($select))
+		if(!is_array($column))
 		{
 			// split selected by comma, but ignore that inside brackets
-			$matches								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($select)));
-			
-			if($matches)
-			{
-				$select							 	= array();
-				
-				foreach($matches as $key => $val)
-				{
-					if(strpos($val, '(') !== false && $val[0] != '(' && isset($select[($key - 1)]) && isset($matches[($key - 1)]))
-					{
-						$select[($key - 1)]			= $matches[($key - 1)] . ', ' . $val;
-					}
-					else
-					{
-						$select[$key]				= $val;
-					}
-				}
-			}
+			$column									= array_map('trim', preg_split('/,(?![^(]+\))/', $column));
 		}
 		
-		$this->_select								= array_merge($this->_select, $select);
+		foreach($column as $key => $val)
+		{
+			// push to the select list
+			$this->_select[]						= $val;
+			
+			// find the prefixed table select
+			if(strpos($val, '.') !== false && strpos($val, '(') === false && strpos($val, ')') === false)
+			{
+				$val								= substr($val, strpos($val, '.') + 1);
+			}
+			
+			// find the aliased selection
+			if(stripos($val, ' AS ') !== false)
+			{
+				$val								= substr($val, stripos($val, ' AS ') + 4);
+			}
+			
+			// push to the compilation
+			$this->_compiled_select[]				= $val;
+		}
+		
+		$this->_prepare(__FUNCTION__, array($column, $escape));
+		
+		return $this;
+	}
+	
+	/**
+	 * Select count
+	 * Possible to use comma separated
+	 */
+	public function select_count(string $column, string $alias = null)
+	{
+		$this->_prepare(__FUNCTION__, array($column, $alias));
 		
 		return $this;
 	}
@@ -6110,19 +6016,9 @@ class Core extends Controller
 	 * Select and Sum
 	 * Possible to use comma separated
 	 */
-	public function select_sum($select = null, $alias = null)
+	public function select_sum(string $column, string $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_sum[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_sum[$key]			= $val;
-			}
-		}
+		$this->_prepare(__FUNCTION__, array($column, $alias));
 		
 		return $this;
 	}
@@ -6131,19 +6027,9 @@ class Core extends Controller
 	 * Select Minimum
 	 * Possible to use comma separated
 	 */
-	public function select_min($select = null, $alias = null)
+	public function select_min(string $column, string $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_min[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_min[$key]			= $val;
-			}
-		}
+		$this->_prepare(__FUNCTION__, array($column, $alias));
 		
 		return $this;
 	}
@@ -6152,19 +6038,9 @@ class Core extends Controller
 	 * Select Maximum
 	 * Possible to use comma separated
 	 */
-	public function select_max($select = null, $alias = null)
+	public function select_max(string $column, string $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_max[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_max[$key]			= $val;
-			}
-		}
+		$this->_prepare(__FUNCTION__, array($column, $alias));
 		
 		return $this;
 	}
@@ -6173,19 +6049,19 @@ class Core extends Controller
 	 * Select Average of field
 	 * Possible to use comma separated
 	 */
-	public function select_avg($select = null, $alias = null)
+	public function select_avg(string $column, string $alias = null)
 	{
-		if(!is_array($select))
-		{
-			$this->_select_avg[$select]				= ($alias ? $alias : $select);
-		}
-		else
-		{
-			foreach($select as $key => $val)
-			{
-				$this->_select_avg[$key]			= $val;
-			}
-		}
+		$this->_prepare(__FUNCTION__, array($column, $alias));
+		
+		return $this;
+	}
+	
+	/**
+	 * Distinct field
+	 */
+	public function distinct(bool $flag = true)
+	{
+		$this->_distinct							= $flag;
 		
 		return $this;
 	}
@@ -6193,7 +6069,7 @@ class Core extends Controller
 	/**
 	 * Set the primary table
 	 */
-	public function from($table = null)
+	public function from(string $table)
 	{
 		$this->_table								= $table;
 		
@@ -6204,7 +6080,7 @@ class Core extends Controller
 	 * Set the primary table
 	 * It's similar to from() method
 	 */
-	public function table($table = null)
+	public function table(string $table)
 	{
 		$this->_table								= $table;
 		
@@ -6216,36 +6092,11 @@ class Core extends Controller
 	 * Your contribution is needed to write hint about
 	 * this method
 	 */
-	public function join($table = null, $condition = null, $type = '', $escape = true)
+	public function join(string $table, string $condition, string $type = '', bool $escape = true)
 	{
-		if($table && strpos(trim($table), ' ') !== false)
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
 		{
-			$table									= str_ireplace(' AS ', ' ', $table);
-			$destructure							= explode(' ', $table);
-			
-			$this->_table_alias[$destructure[1]]	= $destructure[0];
-		}
-		
-		if(!is_array($table))
-		{
-			$this->_join[$table]					= array
-			(
-				'condition'							=> $condition,
-				'type'								=> $type,
-				'escape'							=> $escape
-			);
-		}
-		else
-		{
-			foreach($table as $key => $val)
-			{
-				$this->_join[$key]					= array
-				(
-					'condition'						=> $val,
-					'type'							=> $type,
-					'escape'						=> $escape
-				);
-			}
+			$this->_prepare(__FUNCTION__, array($table, $condition, $type, $escape));
 		}
 		
 		return $this;
@@ -6256,37 +6107,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where($field = '', $value = '', $escape = true)
+	public function where($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_where[$field]					= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				if(is_numeric($key))
-				{
-					$key							= $val;
-					$val							= null;
-					$escape							= false;
-				}
-				else
-				{
-					$escape							= true;
-				}
-				
-				$this->_where[$key]					= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6297,37 +6129,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where($field = '', $value = '', $escape = true)
+	public function or_where($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_where[$field]				= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				if(is_numeric($key))
-				{
-					$key							= $val;
-					$val							= null;
-					$escape							= false;
-				}
-				else
-				{
-					$escape							= true;
-				}
-				
-				$this->_or_where[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> $escape
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6338,26 +6151,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_in($field = '', $value = '', $escape = true)
+	public function where_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_where_in[$field]				= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_where_in[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6368,26 +6173,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_in($field = '', $value = '', $escape = true)
+	public function or_where_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_where_in[$field]				= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_where_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6398,26 +6195,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function where_not_in($field = '', $value = '', $escape = true)
+	public function where_not_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_where_not_in[$field]			= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_where_not_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6428,26 +6217,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_where_not_in($field = '', $value = '', $escape = true)
+	public function or_where_not_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_where_not_in[$field]			= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_where_not_in[$key]		= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6458,30 +6239,22 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_like[$field]					= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_like[$key]					= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_like[$key]					= $val;
+				
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_like[$field]					= $match;
+			
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6492,30 +6265,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function or_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_like[$field]					= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_like[$key]				= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6526,30 +6287,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function not_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_not_like[$field]				= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_not_like[$key]				= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6560,30 +6309,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function or_not_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_not_like[$field]				= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_not_like[$key]			= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6594,26 +6331,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having($field = '', $value = '', $escape = true)
+	public function having($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_having[$field]					= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_having[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6624,26 +6353,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having($field = '', $value = '', $escape = true)
+	public function or_having($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_having[$field]				= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_having[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6654,26 +6375,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_in($field = '', $value = '', $escape = true)
+	public function having_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_having_in[$field]				= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_having_in[$key]				= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6684,26 +6397,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_in($field = '', $value = '', $escape = true)
+	public function or_having_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_having_in[$field]			= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_having_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6714,26 +6419,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_not_in($field = '', $value = '', $escape = true)
+	public function having_not_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_having_not_in[$field]			= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_having_not_in[$key]			= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6744,26 +6441,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_not_in($field = '', $value = '', $escape = true)
+	public function or_having_not_in($field = array(), $value = '', bool $escape = true)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_having_not_in[$field]		= array
-			(
-				'value'								=> $value,
-				'escape'							=> $escape
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_having_not_in[$key]		= array
-				(
-					'value'							=> $val,
-					'escape'						=> true
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $value, $escape));
 		}
 		
 		return $this;
@@ -6774,30 +6463,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function having_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_having_like[$field]				= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_having_like[$key]			= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6808,30 +6485,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function or_having_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_having_like[$field]			= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_having_like[$key]		= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6842,30 +6507,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function not_having_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_not_having_like[$field]			= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_not_having_like[$key]		= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
+		}
+		else
+		{
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
 		
 		return $this;
@@ -6876,61 +6529,19 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_having_like($field = '', $match = '', $side = 'both', $escape = true, $case_insensitive = false)
+	public function or_not_having_like($field = array(), $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
 	{
-		if(!is_array($field))
-		{
-			$this->_or_not_having_like[$field]		= array
-			(
-				'match'								=> $match,
-				'side'								=> $side,
-				'escape'							=> $escape,
-				'case_insensitive'					=> $case_insensitive
-			);
-		}
-		else
+		if(is_array($field))
 		{
 			foreach($field as $key => $val)
 			{
-				$this->_or_not_having_like[$key]	= array
-				(
-					'match'							=> $val,
-					'side'							=> 'both',
-					'escape'						=> true,
-					'case_insensitive'				=> $case_insensitive
-				);
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
 		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Limit
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function limit($limit = 0, $offset = 0)
-	{
-		$this->_limit_original						= $limit;
-		$this->_limit								= $limit;
-		
-		if($offset)
+		else
 		{
-			$this->_offset							= $offset;
+			$this->_prepare(__FUNCTION__, array($field, $match, $side, $escape, $case_insensitive));
 		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Offset
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function offset($offset = null)
-	{
-		$this->_offset								= $offset;
 		
 		return $this;
 	}
@@ -6940,53 +6551,18 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function order_by($column = null, $direction = 'ASC', $escape = true)
+	public function order_by($field = array(), $direction = '', bool $escape = true)
 	{
-		if(!is_array($column))
+		if(is_array($field))
 		{
-			if($direction)
+			foreach($field as $key => $val)
 			{
-				$this->_order_by[$column]			= array
-				(
-					'direction'						=> $direction,
-					'escape'						=> $escape
-				);
-			}
-			else
-			{
-				$column								= array_map('trim', preg_split('/,(?![^(]+\))/', trim($column)));
-				
-				foreach($column as $key => $val)
-				{
-					$dir							= 'ASC';
-					
-					if(strpos($val, '(') !== false && strpos($val, ')') !== false)
-					{
-						$col						= $val;
-					}
-					else
-					{
-						list($col, $dir)			= array_pad(array_map('trim', explode(' ', $val)), 2, null);
-					}
-					
-					$this->_order_by[$col]			= array
-					(
-						'direction'					=> $dir,
-						'escape'					=> $escape
-					);
-				}
+				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
 			}
 		}
 		else
 		{
-			foreach($column as $key => $val)
-			{
-				$this->_order_by[$key]				= array
-				(
-					'direction'						=> $val,
-					'escape'						=> true
-				);
-			}
+			$this->_prepare(__FUNCTION__, array($field, $direction, $escape));
 		}
 		
 		return $this;
@@ -6997,9 +6573,63 @@ class Core extends Controller
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function group_by($by = null)
+	public function group_by(string $column)
 	{
-		$this->_group_by							= $by;
+		$this->_prepare(__FUNCTION__, array($column));
+		
+		return $this;
+	}
+	
+	/**
+	 * Limit
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function limit($limit = null, int $offset = 0)
+	{
+		if(in_array($this->_method, array('create', 'read', 'update', 'delete')) || ($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN'))))
+		{
+			$this->_limit							= 1;
+			$this->_offset							= 0;
+		}
+		else
+		{
+			$this->_limit							= $limit;
+			$this->_offset							= $offset;
+		}
+		
+		$this->_prepare(__FUNCTION__, array($limit, $offset));
+		
+		return $this;
+	}
+	
+	/**
+	 * Offset
+	 * Your contribution is needed to write complete hint about
+	 * this method
+	 */
+	public function offset(int $offset)
+	{
+		if(!in_array($this->_method, array('create', 'read', 'update', 'delete')))
+		{
+			$this->_offset							= $offset;
+		}
+		
+		$this->_prepare(__FUNCTION__, array($offset));
+		
+		return $this;
+	}
+	
+	/**
+	 * Select subqueries
+	 * Possible to use comma separated
+	 */
+	public function subquery($subquery = null, string $alias = null)
+	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__, array($subquery, $alias));
+		}
 		
 		return $this;
 	}
@@ -7011,6 +6641,10 @@ class Core extends Controller
 	 */
 	public function group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
@@ -7022,6 +6656,10 @@ class Core extends Controller
 	 */
 	public function or_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
@@ -7033,6 +6671,10 @@ class Core extends Controller
 	 */
 	public function not_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
@@ -7044,6 +6686,10 @@ class Core extends Controller
 	 */
 	public function or_not_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
@@ -7055,1376 +6701,84 @@ class Core extends Controller
 	 */
 	public function group_end()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Group Start
+	 * Having Group Start
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function group_having_start()
+	public function having_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Or Group Start
+	 * Or Having Group Start
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_group_having_start()
+	public function or_having_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Not Group Start
+	 * Not Having Group Start
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function not_group_having_start()
+	public function not_having_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Or Not Group Start
+	 * Or Not Having Group Start
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function or_not_group_having_start()
+	public function or_not_having_group_start()
 	{
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			$this->_prepare(__FUNCTION__);
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Group End
+	 * Having Group End
 	 * Your contribution is needed to write complete hint about
 	 * this method
 	 */
-	public function group_having_end()
+	public function having_group_end()
 	{
-		
-		return $this;
-	}
-	
-	/**
-	 * Set
-	 * Your contribution is needed to write complete hint about
-	 * this method
-	 */
-	public function set($key = null, $value = null, $escape = true)
-	{
-		if(!is_array($key))
+		if(!in_array($this->_method, array('create', 'update', 'delete')))
 		{
-			$this->_set[$key]						= $value;
-		}
-		else
-		{
-			$this->_set								= array_merge($this->_set, $key);
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * _query
-	 * Collect the method into parameter
-	 *
-	 * @access		private
-	 */
-	private function _query($table = null)
-	{
-		/**
-		 * Add distinct
-		 */
-		if($this->_distinct)
-		{
-			$this->model->distinct();
-		}
-		
-		/**
-		 * Prepare indexing the columns of table to be selected
-		 */
-		$columns									= $this->model->field_data($table);
-		$prepare_select								= preg_filter('/^/', $table . '.', $this->model->list_fields($table));
-		
-		if($columns)
-		{
-			foreach($columns as $key => $val)
-			{
-				if(in_array($this->_method, array('create', 'update')) && in_array($val->name, $this->_unset_field))
-				{
-					if(!isset($val->primary_key) || empty($val->primary_key))
-					{
-						unset($prepare_select[$val->name]);
-					}
-				}
-				else if(in_array($this->_method, array('read')) && in_array($val->name, $this->_unset_view))
-				{
-					if(!isset($val->primary_key) || empty($val->primary_key))
-					{
-						unset($prepare_select[$val->name]);
-					}
-				}
-				else if(in_array($val->name, $this->_unset_column))
-				{
-					if(!isset($val->primary_key) || empty($val->primary_key))
-					{
-						unset($prepare_select[$val->name]);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Select columns
-		 */
-		if($this->_select)
-		{
-			$this->_select							= array_merge($prepare_select, $this->_select);
-		}
-		else
-		{
-			$this->_select							= $prepare_select;
-		}
-		
-		/**
-		 * Make the select column unique to prevend duplicate select
-		 */
-		$this->_select								= array_unique($this->_select);
-		
-		/**
-		 * From table
-		 */
-		if(!$this->_from)
-		{
-			$this->_from							= $table;
-		}
-		
-		/**
-		 * Execute when method is not update or delete
-		 */
-		if(!in_array($this->_method, array('update', 'delete')) && is_array($this->_select) && sizeof($this->_select) > 0)
-		{
-			/**
-			 * Validate the select column to check if column is exist in table
-			 */
-			$compiled_select						= array();
-			
-			foreach($this->_select as $key => $val)
-			{
-				/**
-				 * Check if field is already selected
-				 */
-				$val								= trim(preg_replace('/\s\s+/', ' ', $val));
-				$alias								= (strrpos($val, ' ') !== false ? substr($val, strrpos($val, ' ') + 1) : (strpos($val, '.') !== false ? explode('.', $val) : array('anonymous', $val)));
-				$alias								= (is_array($alias) && isset($alias[1]) ? $alias[1] : $alias);
-				
-				/**
-				 * Check if selected column is use alias
-				 */
-				if(strpos($val, '.*') !== false && $this->_from == strstr($val, '.*', true))
-				{
-					continue;
-				}
-				else
-				{
-					/**
-					 * Individual table
-					 */
-					list($table, $field)			= array_pad(explode('.', $val), 2, null);
-					
-					if(!$field)
-					{
-						$field						= $table;
-					}
-					
-					$field							= trim(($field && stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field));
-					
-					if($field && stripos($field, ' ') !== false)
-					{
-						$field						= substr($field, 0, strrpos($field, ' '));
-					}
-					
-					if($table != $this->_from && $field && $this->model->field_exists($field, $table))
-					{
-						/**
-						 * Format column of select
-						 */
-						$val						= $table . '.' . $field . ' AS ' . $field;
-					}
-				}
-				
-				/**
-				 * Compile the selected field
-				 */
-				$compiled_select[$alias]			= $val;
-			}
-			
-			// check if select compiled
-			if($compiled_select)
-			{
-				// select compiled field
-				$this->model->select(array_values($compiled_select));
-			}
-		}
-		
-		/**
-		 * Select sum
-		 */
-		if(is_array($this->_select_sum) && sizeof($this->_select_sum) > 0)
-		{
-			/**
-			 * Validate the select column to check if column is exist in table
-			 */
-			foreach($this->_select_sum as $key => $val)
-			{
-				$val								= (sizeof(explode('.', $val)) <= 1 ? $this->_from . '.' . $val : $val);
-				
-				$this->model->select_sum($val);
-			}
-		}
-		
-		/**
-		 * Select lowest
-		 */
-		if(is_array($this->_select_min) && sizeof($this->_select_min) > 0)
-		{
-			/**
-			 * Validate the select column to check if column is exist in table
-			 */
-			foreach($this->_select_min as $key => $val)
-			{
-				$val								= (sizeof(explode('.', $val)) <= 1 ? $this->_from . '.' . $val : $val);
-				
-				$this->model->select_min($val);
-			}
-		}
-		
-		/**
-		 * Select greater
-		 */
-		if(is_array($this->_select_max) && sizeof($this->_select_max) > 0)
-		{
-			/**
-			 * Validate the select column to check if column is exist in table
-			 */
-			foreach($this->_select_max as $key => $val)
-			{
-				$val								= (sizeof(explode('.', $val)) <= 1 ? $this->_from . '.' . $val : $val);
-				
-				$this->model->select_max($val);
-			}
-		}
-		
-		/**
-		 * Select average
-		 */
-		if(is_array($this->_select_avg) && sizeof($this->_select_avg) > 0)
-		{
-			/**
-			 * Validate the select column to check if column is exist in table
-			 */
-			foreach($this->_select_avg as $key => $val)
-			{
-				$val								= (sizeof(explode('.', $val)) <= 1 ? $this->_from . '.' . $val : $val);
-				
-				$this->model->select_avg($val);
-			}
-		}
-		
-		/**
-		 * Where
-		 */
-		if(is_array($this->_where) && sizeof($this->_where) > 0)
-		{
-			foreach($this->_where as $key => $val)
-			{
-				$key								= trim($key);
-				
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->where($this->_from . '.' . $key, $val);
-				}
-				else if($this->model->field_exists(str_replace(' !=', '', $key), $this->_from) || $this->model->field_exists(str_replace(' <', '', $key), $this->_from) || $this->model->field_exists(str_replace(' >', '', $key), $this->_from) || $this->model->field_exists(str_replace(' >=', '', $key), $this->_from) || $this->model->field_exists(str_replace(' <=', '', $key), $this->_from))
-				{
-					$this->model->where($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists(trim($checker[1]), $checker[0]))
-					{
-						$this->model->where($key, $val);
-					}
-					else if(is_array($checker) && sizeof($checker) == 2 && ($this->model->field_exists(str_replace(' !=', '', trim($checker[1])), $checker[0]) || $this->model->field_exists(str_replace(' <', '', trim($checker[1])), $checker[0]) || $this->model->field_exists(str_replace(' >', '', trim($checker[1])), $checker[0]) || $this->model->field_exists(str_replace(' >=', '', trim(trim($checker[1]))), $checker[0]) || $this->model->field_exists(str_replace(' <=', '', trim($checker[1])), $checker[0])))
-					{
-						$this->model->where($checker[1], $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							if($this->model->field_exists(str_replace(' !=', '', $key), $table) || $this->model->field_exists(str_replace(' <', '', $key), $table) || $this->model->field_exists(str_replace(' >', '', $key), $table) || $this->model->field_exists(str_replace(' >=', '', $key), $table) || $this->model->field_exists(str_replace(' <=', '', $key), $table))
-							{
-								$this->model->where($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!array_filter($val))
-					{
-						$this->model->where($key, null, false);
-					}
-					else
-					{
-						$this->model->where($key, $val['value'], $val['escape']);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or where
-		 */
-		if(is_array($this->_or_where) && sizeof($this->_or_where) > 0)
-		{
-			foreach($this->_or_where as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_where($this->_from . '.' . $key, $val);
-				}
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				else if($this->model->field_exists(str_replace(' !=', '', $key), $this->_from) || $this->model->field_exists(str_replace(' <', '', $key), $this->_from) || $this->model->field_exists(str_replace(' >', '', $key), $this->_from) || $this->model->field_exists(str_replace(' >=', '', $key), $this->_from) || $this->model->field_exists(str_replace(' <=', '', $key), $this->_from))
-				{
-					$this->model->or_where($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_where($key, $val);
-					}
-					else if(is_array($checker) && sizeof($checker) == 2 && ($this->model->field_exists(str_replace(' !=', '', $checker[1]), $checker[0]) || $this->model->field_exists(str_replace(' <', '', $checker[1]), $checker[0]) || $this->model->field_exists(str_replace(' >', '', $checker[1]), $checker[0]) || $this->model->field_exists(str_replace(' >=', '', $checker[1]), $checker[0]) || $this->model->field_exists(str_replace(' <=', '', $checker[1]), $checker[0])))
-					{
-						$this->model->or_where($checker[1], $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists(str_replace(' !=', '', $key), $table) || $this->model->field_exists(str_replace(' <', '', $key), $table) || $this->model->field_exists(str_replace(' >', '', $key), $table) || $this->model->field_exists(str_replace(' >=', '', $key), $table) || $this->model->field_exists(str_replace(' <=', '', $key), $table))
-							{
-								$this->model->or_where($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_where($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Where in
-		 */
-		if(is_array($this->_where_in) && sizeof($this->_where_in) > 0)
-		{
-			foreach($this->_where_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->where_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->where_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->where_in($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or where in
-		 */
-		if(is_array($this->_or_where_in) && sizeof($this->_or_where_in) > 0)
-		{
-			foreach($this->_or_where_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_where_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_where_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_where_in($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Where not in
-		 */
-		if(is_array($this->_where_not_in) && sizeof($this->_where_not_in) > 0)
-		{
-			foreach($this->_where_not_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->where_not_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->where_not_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->where_not_in($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or where not in
-		 */
-		if(is_array($this->_or_where_not_in) && sizeof($this->_or_where_not_in) > 0)
-		{
-			foreach($this->_or_where_not_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_where_not_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_where_not_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_where_not_in($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Like
-		 */
-		if(is_array($this->_like) && sizeof($this->_like) > 0)
-		{
-			if($this->_like || $this->_or_like)
-			{
-				/* wrap like inside brackets */
-				$this->model->group_start();
-			}
-			
-			foreach($this->_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->like($this->_from . '.' . $key, $val);
-				}
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				else if($this->model->field_exists(str_replace(' !=', '', $key), $this->_from))
-				{
-					$this->model->like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists(str_replace(' !=', '', $key), $table))
-							{
-								$this->model->like($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-			
-			if(!$this->_or_like)
-			{
-				$this->model->group_end();
-			}
-		}
-		
-		/**
-		 * Or like
-		 */
-		if(is_array($this->_or_like) && sizeof($this->_or_like) > 0)
-		{
-			foreach($this->_or_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(isset($checker[0]) && isset($checker[1]) && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_like($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-			
-			if($this->_like && $this->_or_like)
-			{
-				/* wrap like inside brackets */
-				$this->model->group_end();
-			}
-		}
-		
-		/**
-		 * Not like
-		 */
-		if(is_array($this->_not_like) && sizeof($this->_not_like) > 0)
-		{
-			if($this->_not_like || $this->_or_not_like)
-			{
-				/* wrap like inside brackets */
-				$this->model->group_start();
-			}
-			
-			foreach($this->_not_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->not_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->not_like($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-			
-			if(!$this->_or_not_like)
-			{
-				/* wrap like inside brackets */
-				$this->model->group_end();
-			}
-		}
-		
-		/**
-		 * Or not like
-		 */
-		if(is_array($this->_or_not_like) && sizeof($this->_or_not_like) > 0)
-		{
-			foreach($this->_or_not_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_not_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_not_like($table . '.' . $key, $val);
-							}
-						}
-					}
-				}
-			}
-			
-			if($this->_not_like && $this->_or_not_like)
-			{
-				/* wrap like inside brackets */
-				$this->model->group_end();
-			}
-		}
-		
-		/**
-		 * Having
-		 */
-		if(is_array($this->_having) && sizeof($this->_having) > 0)
-		{
-			foreach($this->_having as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the select column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->having($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the select column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->having($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the select column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->having($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->having($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or having
-		 */
-		if(is_array($this->_or_having) && sizeof($this->_or_having) > 0)
-		{
-			foreach($this->_or_having as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_having($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_having($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_having($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_having($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Having in
-		 */
-		if(is_array($this->_having_in) && sizeof($this->_having_in) > 0)
-		{
-			foreach($this->_having_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->having_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->having_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->having_in($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->having_in($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or having in
-		 */
-		if(is_array($this->_or_having_in) && sizeof($this->_or_having_in) > 0)
-		{
-			foreach($this->_or_having_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_having_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_having_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_having_in($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_having_in($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Having not in
-		 */
-		if(is_array($this->_having_not_in) && sizeof($this->_having_not_in) > 0)
-		{
-			foreach($this->_having_not_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->having_not_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->having_not_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->having_not_in($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->having_not_in($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or having not in
-		 */
-		if(is_array($this->_or_having_not_in) && sizeof($this->_or_having_not_in) > 0)
-		{
-			foreach($this->_or_having_not_in as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_having_not_in($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_having_not_in($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_having_not_in($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_having_not_in($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Having like
-		 */
-		if(is_array($this->_having_like) && sizeof($this->_having_like) > 0)
-		{
-			foreach($this->_having_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->having_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->having_like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->having_like($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->having_like($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or having like
-		 */
-		if(is_array($this->_or_having_like) && sizeof($this->_or_having_like) > 0)
-		{
-			foreach($this->_or_having_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_having_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_having_like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_having_like($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_having_like($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Not having like
-		 */
-		if(is_array($this->_not_having_like) && sizeof($this->_not_having_like) > 0)
-		{
-			foreach($this->_not_having_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->not_having_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->not_having_like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->not_having_like($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->not_having_like($key);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Or not having like
-		 */
-		if(is_array($this->_or_not_having_like) && sizeof($this->_or_not_having_like) > 0)
-		{
-			foreach($this->_or_not_having_like as $key => $val)
-			{
-				$key								= trim($key);
-				
-				/**
-				 * Validate the column to check if column is exist in table
-				 */
-				if($this->model->field_exists($key, $this->_from))
-				{
-					$this->model->or_not_having_like($this->_from . '.' . $key, $val);
-				}
-				else
-				{
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$checker						= explode('.', $key);
-					
-					if(is_array($checker) && sizeof($checker) == 2 && $this->model->field_exists($checker[1], $checker[0]))
-					{
-						$this->model->or_not_having_like($key, $val);
-					}
-					else if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-					{
-						foreach($this->_compiled_table as $num => $table)
-						{
-							/**
-							 * Validate the column to check if column is exist in table
-							 */
-							if($this->model->field_exists($key, $table))
-							{
-								$this->model->or_not_having_like($table . '.' . $key, $val);
-							}
-						}
-					}
-					else if(!$val)
-					{
-						$this->model->or_not_having_like($key);
-					}
-				}
-			}
-		}
-		
-		if($this->_limit)
-		{
-			$this->model->limit($this->_limit, $this->_offset);
-		}
-		
-		/**
-		 * Apply when method is not update nor delete
-		 */
-		if(!in_array($this->_method, array('update', 'delete')))
-		{
-			if(is_array($this->_join) && sizeof($this->_join) > 0)
-			{
-				foreach($this->_join as $table => $params)
-				{
-					$this->_compiled_table[]		= $table;
-					
-					$this->model->join($table, str_replace('{primary_table}', $this->_from, $params['condition']), $params['type'], $params['escape']);
-				}
-			}
-		
-			/**
-			 * Fix the limit and offset when used the SQL Server database
-			 */
-			if(!$this->_order_by)
-			{
-				$this->_order_by					= array_fill_keys($this->_set_primary, (get_userdata('sortOrder') && 'desc' == strtolower(get_userdata('sortOrder')) ? 'DESC' : 'ASC'));
-			}
-			
-			/**
-			 * Apply the order query
-			 */
-			if(is_array($this->_order_by) && sizeof($this->_order_by) > 0)
-			{
-				if(service('request')->getGet('sort') && 'asc' == strtolower(service('request')->getGet('sort')))
-				{
-					set_userdata('sortOrder', 'desc');
-				}
-				else
-				{
-					set_userdata('sortOrder', 'asc');
-				}
-				
-				foreach($this->_order_by as $key => $val)
-				{
-					if(!is_array($val))
-					{
-						$val						= array
-						(
-							'direction'				=> $val,
-							'escape'				=> true
-						);
-					}
-					
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					$relation						= explode('.', $key);
-					
-					if($this->model->field_exists($key, $this->_from))
-					{
-						if(service('request')->getGet('sort'))
-						{
-							$val['direction']		= get_userdata('sortOrder');
-						}
-						
-						// fix table alias
-						$table						= (strpos($this->_from, ' ') !== false ? substr($this->_from, strripos($this->_from, ' ') + 1) : $this->_from);
-						
-						$this->model->order_by($key, $val['direction'], $val['escape']);
-					}
-					/**
-					 * Validate the column to check if column is exist in table
-					 */
-					else if(isset($relation[0]) && isset($relation[1]) && $this->model->field_exists($relation[1], $relation[0]))
-					{
-						// fix table alias
-						$table						= (strpos($key, ' ') !== false ? substr($key, strripos($key, ' ') + 1) : $key);
-						
-						$this->model->order_by($table, $val['direction'], $val['escape']);
-					}
-					else
-					{
-						$ordered					= false;
-						
-						if(is_array($this->_compiled_table) && sizeof($this->_compiled_table) > 0)
-						{
-							foreach($this->_compiled_table as $num => $table)
-							{
-								/**
-								 * Validate the column to check if column is exist in table
-								 */
-								if($this->model->field_exists($key, $table))
-								{
-									$ordered		= true;
-									
-									if(service('request')->getGet('sort'))
-									{
-										$dir		= 'direction';
-										
-										$val[$dir]	= get_userdata('sortOrder');
-									}
-									
-									// fix table alias
-									$table			= (strpos($table, ' ') !== false ? substr($table, strripos($table, ' ') + 1) : $table);
-									
-									$this->model->order_by($key, $val['direction'], $val['escape']);
-								}
-							}
-						}
-						
-						if(!$ordered)
-						{
-							$this->model->order_by($key, $val['direction'], $val['escape']);
-						}
-					}
-				}
-			}
-			
-			if($this->_group_by)
-			{
-				$this->model->group_by($this->_group_by);
-			}
+			$this->_prepare(__FUNCTION__);
 		}
 		
 		return $this;
@@ -8436,14 +6790,243 @@ class Core extends Controller
 	 *
 	 * @access		private
 	 */
-	private function _run_query($table = null)
+	private function _run_query($table = null, bool $recycling = false)
 	{
+		$query										= $this->model->table($table);
+		
+		/**
+		 * Add distinct
+		 */
+		if($this->_distinct)
+		{
+			$query									= $this->model->distinct();
+		}
+		
+		/**
+		 * Check if the request is not recycling the previous properties
+		 */
+		if(!$recycling)
+		{
+			/**
+			 * Prepare indexing the columns of table to be selected
+			 */
+			$columns								= $this->model->field_data($table);
+			$select									= preg_filter('/^/', $table . '.', $this->model->list_fields($table));
+			
+			if($columns)
+			{
+				foreach($columns as $key => $val)
+				{
+					if(in_array($this->_method, array('create', 'update')) && in_array($val->name, $this->_unset_field))
+					{
+						if(!isset($val->primary_key) || empty($val->primary_key))
+						{
+							unset($select[$val->name]);
+						}
+					}
+					else if(in_array($this->_method, array('read')) && in_array($val->name, $this->_unset_view))
+					{
+						if(!isset($val->primary_key) || empty($val->primary_key))
+						{
+							unset($select[$val->name]);
+						}
+					}
+					else if(in_array($val->name, $this->_unset_column))
+					{
+						if(!isset($val->primary_key) || empty($val->primary_key))
+						{
+							unset($select[$val->name]);
+						}
+					}
+				}
+			}
+			
+			/**
+			 * Merge selection
+			 */
+			if($this->_select)
+			{
+				$select								= array_merge($this->_select, $select);
+			}
+			
+			/**
+			 * Execute when method is not update or delete
+			 */
+			if(!in_array($this->_method, array('update', 'delete')) && is_array($select) && sizeof($select) > 0)
+			{
+				/**
+				 * Validate the select column to check if column is exist in table
+				 */
+				$compiled_select					= array();
+				
+				foreach($select as $key => $val)
+				{
+					// prevent duplicate the selection
+					if(in_array(str_replace($table . '.', '', $val), $this->_compiled_select)) continue;
+					
+					/**
+					 * Check if field is already selected
+					 */
+					$val							= trim(preg_replace('/\s\s+/', ' ', $val));
+					$alias							= (strrpos($val, ' ') !== false ? substr($val, strrpos($val, ' ') + 1) : (strpos($val, '.') !== false ? explode('.', $val) : array('anonymous', $val)));
+					$alias							= (is_array($alias) && isset($alias[1]) ? $alias[1] : $alias);
+					
+					/**
+					 * Check if selected column is use alias
+					 */
+					if(strpos($val, '.*') !== false && $table == strstr($val, '.*', true))
+					{
+						continue;
+					}
+					else
+					{
+						/**
+						 * Individual table
+						 */
+						list($backup_table, $field)	= array_pad(explode('.', $val), 2, null);
+						
+						if(!$field)
+						{
+							$field					= $backup_table;
+						}
+						
+						// get the name alias
+						$field						= trim(($field && stripos($field, ' AS ') !== false ? substr($field, strripos($field, ' AS ') + 4) : $field));
+						
+						if($field && stripos($field, ' ') !== false)
+						{
+							$field					= substr($field, 0, strrpos($field, ' '));
+						}
+						
+						if($backup_table != $table && $field && $this->model->field_exists($field, $backup_table))
+						{
+							/**
+							 * Format column of select
+							 */
+							$val					= $backup_table . '.' . $field . ' AS ' . $field;
+						}
+					}
+					
+					/**
+					 * Compile the selected field
+					 */
+					$compiled_select[]				= $val;
+				}
+				
+				// check if select compiled
+				if($compiled_select)
+				{
+					// push compiled select to prepared query builder
+					$this->_prepare[]				= array
+					(
+						'function'					=> 'select',
+						'arguments'					=> array(array_values($compiled_select))
+					);
+				}
+				
+				/**
+				 * Generate join query passed from set_relation
+				 */
+				if(is_array($this->_join) && sizeof($this->_join) > 0)
+				{
+					foreach($this->_join as $table => $params)
+					{
+						if(in_array($table, $this->_compiled_table)) continue;
+						
+						// push join to prepared query builder
+						$this->_prepare[]			= array
+						(
+							'function'				=> 'join',
+							'arguments'				=> array($table, str_replace('{primary_table}', $this->_table, $params['condition']), $params['type'], $params['escape'])
+						);
+						
+						// compile table
+						$this->_compiled_table[]	= $table;
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Run generated query builder
+		 */
+		foreach($this->_prepare as $key => $val)
+		{
+			$function								= $val['function'];
+			$arguments								= $val['arguments'];
+			
+			if(is_array($arguments) && sizeof($arguments) == 7)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5], $arguments[6]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 6)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 5)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 4)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 3)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2]);
+			}
+			else if(is_array($arguments) && sizeof($arguments) == 2)
+			{
+				$query								= $this->model->$function($arguments[0], $arguments[1]);
+			}
+			else
+			{
+				$query								= $this->model->$function((isset($arguments[0]) ? $arguments[0] : $arguments));
+			}
+		}
+		
+		return $query;
+	}
+	
+	/**
+	 * _fetch
+	 * Fetch the data from collected query
+	 *
+	 * @access		private
+	 */
+	private function _fetch($table = null)
+	{
+		/**
+		 * Debugging
+		 */
+		if(isset($this->_debugging))
+		{
+			if(in_array($this->_debugging, array('params', 'parameter')))
+			{
+				dd($this->_prepare);
+			}
+			
+			$query									= $this->_run_query($table)->limit($this->_limit, $this->_offset)->result();
+			
+			if($this->_debugging == 'query')
+			{
+				// return as last executed query
+				exit(nl2br($this->model->last_query()));
+			}
+			else
+			{
+				// return the result of query
+				dd($query);
+			}
+		}
+		
 		$output										= array
 		(
-			'results'								=> $this->_query($table)->model->get($table, $this->_limit, $this->_offset)->result()
+			'results'								=> $this->_run_query($table)->limit($this->_limit, $this->_offset)->result(),
+			'total'									=> $this->_run_query($table, true)->count_all_results()
 		);
 		
-		$output['total']							= ($output['results'] && !in_array($this->_method, array('create', 'read', 'update', 'delete')) ? $this->_query($table)->model->count_all_results($table) : null);
+		$this->_prepare								= array();
 		
 		return $output;
 	}
@@ -8476,16 +7059,6 @@ class Core extends Controller
 		if(service('request')->getPost() && is_array($serialized) && sizeof($serialized) > 0)
 		{
 			$validation								= false;
-			$constraint_keys						= array();
-			$foreignKeys							= ($this->_set_relation ? $this->model->foreign_data($this->_from) : array());
-			
-			if($foreignKeys)
-			{
-				foreach($foreignKeys as $key => $val)
-				{
-					$constraint_keys[]				= $val->column_name;
-				}
-			}
 			
 			foreach($serialized[0] as $key => $val)
 			{
@@ -8550,11 +7123,14 @@ class Core extends Controller
 						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $validation);
 					}
 				}
-				else if(in_array($key, $constraint_keys) && service('request')->getPost($key) <= 0)
+				else if(isset($this->_set_relation[$key]))
 				{
-					$validation						= true;
+					$validation						= ($val['validation'] ? explode('|', $val['validation']) : array());
 					
-					$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|greater_than[0]');
+					if(in_array('required', $validation))
+					{
+						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|relation_checker[' . $this->_set_relation[$key]['relation_table'] . '.' . $this->_set_relation[$key]['relation_key'] . ']');
+					}
 				}
 				else
 				{
@@ -8919,14 +7495,14 @@ class Core extends Controller
 				if($prepare && in_array('create', array($this->_method, $this->_set_method)))
 				{
 					// insert new data
-					$this->insert_data($this->_from, $prepare);
+					$this->insert_data($this->_table, $prepare);
 				}
 				
 				// if data preparation is ready and the method is update
 				else if($prepare && in_array('update', array($this->_method, $this->_set_method)))
 				{
 					// update the old data
-					$this->update_data($this->_from, $prepare, $this->_where);
+					$this->update_data($this->_table, $prepare, $this->_where);
 				}
 				
 				// otherwise
@@ -9051,53 +7627,6 @@ class Core extends Controller
 				}
 			}
 		}
-	}
-	
-	/**
-	 * _humanize_array
-	 * Make an array (include multidimensional) is readable by human
-	 *
-	 * @access		private
-	 */
-	private function _humanize_array($data = array(), $children = false)
-	{
-		$items										= null;
-		
-		foreach($data as $key => $val)
-		{
-			$ab										= $key;
-			
-			if(is_array($val))
-			{
-				// if value is array, loop it once again
-				$ab									= $this->_humanize_array($val, true);
-			}
-			else
-			{
-				if(is_numeric($key))
-				{
-					$key							= null;
-				}
-				$ab									= '<label>' . ($key && $val ? ' <i class="mdi mdi-arrow-right text-muted"></i> ' : null) . $val . '</label>';
-			}
-			
-			$items									.= '
-				<li>
-					<label>
-						<i class="mdi mdi-square-outline"></i>
-						&nbsp;
-						' . $key . '
-					</label>
-					' . $ab . '
-				</li>
-			';
-		}
-		
-		return '
-			<ul class="list-unstyled' . ($children ? ' ml-3' : null) . '">
-				' . $items . '
-			</ul>
-		';
 	}
 	
 	/**
@@ -9344,5 +7873,22 @@ class Core extends Controller
 			
 			service('language')->setLocale($language_code);
 		}
+	}
+	
+	/**
+	 * Prepare the given parameter as the query builder queue
+	 */
+	private function _prepare(string $function, array $arguments = array())
+	{
+		if('where' == $function)
+		{
+			$this->_where[$arguments[0]]			= $arguments[1];
+		}
+		
+		$this->_prepare[]							= array
+		(
+			'function'								=> $function,
+			'arguments'								=> $arguments
+		);
 	}
 }

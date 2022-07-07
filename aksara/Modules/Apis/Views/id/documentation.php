@@ -62,7 +62,7 @@
 							{
 								foreach($extract_privileges->$active as $_key => $_val)
 								{
-									$method				.= '<a href="#--method-' . $_val . '"><span class="badge badge-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
+									$method				.= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
 								}
 							}
 							
@@ -130,13 +130,13 @@
 							$method[]				= $val;
 							
 							echo '
-								<div class="form-group" id="--method-' . $val . '">
+								<div class="mb-3" id="--method-' . $val . '">
 									<h5 class="mb-1">
-										<span class="badge badge-primary badge-md">
+										<span class="badge bg-primary bg-md">
 											' . (in_array($val, array('create', 'update')) ? 'POST' : (in_array($val, array('delete')) ? 'DELETE' : 'GET')) . '
 										</span>
 									</h5>
-									<div class="rounded pt-2 pr-3 pb-2 pl-3 bg-dark">
+									<div class="rounded pt-2 pe-3 pb-2 ps-3 bg-dark">
 										<code class="text-light">' . base_url(('index' !== $val ? $active . '/' . $val : $active)) . '</code>
 									</div>
 								</div>
@@ -175,7 +175,7 @@
 													' . phrase('valid_api_key_added_in_api_service') . '
 												</td>
 												<td class="text-center">
-													<span class="badge badge-danger">
+													<span class="badge bg-danger">
 														' . phrase('required') . '
 													</span>
 												</td>
@@ -194,7 +194,7 @@
 													' . phrase('the_token_that_given_from_authentication_response') . '
 												</td>
 												<td class="text-center">
-													<span class="badge badge-danger">
+													<span class="badge bg-danger">
 														' . phrase('required') . '
 													</span>
 												</td>
@@ -204,9 +204,7 @@
 									</table>
 								</div>
 								<div class="text-center --spinner">
-									<div class="spinner-border" role="status">
-										<span class="sr-only">' . phrase('loading') . '</span>
-									</div>
+									<div class="spinner-border" role="status"></div>
 								</div>
 								<div class="--query-' . $val . ' d-none">
 									<h5 class="mt-3">
@@ -337,7 +335,7 @@
 											' . phrase('valid_api_key_added_in_api_service') . '
 										</td>
 										<td class="text-center">
-											<span class="badge badge-danger">
+											<span class="badge bg-danger">
 												' . phrase('required') . '
 											</span>
 										</td>
@@ -380,7 +378,7 @@
 											' . phrase('the_token_that_given_from_authentication_response') . '
 										</td>
 										<td class="text-center">
-											<span class="badge badge-danger">
+											<span class="badge bg-danger">
 												' . phrase('required') . '
 											</span>
 										</td>
@@ -450,7 +448,7 @@
 								$('.--query-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _val + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge badge-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _val + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
 						})
 					}
 					
@@ -463,7 +461,7 @@
 								$('.--parameter-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge badge-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
 						})
 					}
 					

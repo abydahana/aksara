@@ -3,8 +3,8 @@
 	{
 		foreach($results as $key => $val)
 		{
-			$carousels								= json_decode($val->carousel_content);
-			$faqs									= json_decode($val->faq_content);
+			$carousels								= ($val->carousel_content ? json_decode($val->carousel_content) : array());
+			$faqs									= ($val->faq_content ? json_decode($val->faq_content) : array());
 			
 			if($carousels)
 			{
@@ -13,32 +13,32 @@
 				
 				foreach($carousels as $_key => $_val)
 				{
-					$navigation						.= '<li data-target="#carouselExampleIndicators" data-slide-to="' . $_key . '"' . ($_key == 0 ? ' class="active"' : '') . '></li>';
+					$navigation						.= '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $_key . '"' . ($_key == 0 ? ' class="active"' : '') . '></button>';
 					$carousel_items					.= '
-						<div class="carousel-item bg-dark gradient' . ($_key == 0 || sizeof((array) $carousels) == 1 ? ' active' : '') . '" style="background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
-							<div class="full-height d-flex align-items-center">
-								<div class="clip gradient-top"></div>
-								<div class="carousel-caption container" style="position:inherit">
-									<div class="row">
+						<div class="carousel-item' . ($_key == 0 || sizeof((array) $carousels) == 1 ? ' active' : '') . '" style="min-height:360px; background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
+							<div class="clip gradient-top"></div>
+							<div class="carousel-caption">
+								<div class="container">
+									<div class="row align-items-center">
 										' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
-										<div class="col-lg-4 offset-lg-1 text-center text-lg-left d-none d-md-block">
+										<div class="col-lg-4 offset-lg-1 text-center text-lg-start d-none d-md-block">
 											<div class="pt-5 w-100">
-												<img src="' . get_image('carousels', $_val->thumbnail, 'thumb') . '" class="img-fluid rounded-more" />
+												<img src="' . get_image('carousels', $_val->thumbnail, 'thumb') . '" class="img-fluid rounded-4" />
 											</div>
 										</div>
 										' : null) . '
-										<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-left d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
+										<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-start d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
 											<div class="pt-5 w-100">
-												<h1 class="font-weight-bold mb-3 text-light">
+												<h2 class="font-weight-bold mb-3 text-light">
 													' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
-												</h1>
+												</h2>
 												<p class="text-light mb-5">
 													' . (isset($_val->description) ? truncate($_val->description, 260) : phrase('description_was_not_set')) . '
 												</p>
 												' . (isset($_val->link) && $_val->link ? '
 												<div class="row">
 													<div class="col-sm-6 offset-sm-3 col-md-12 offset-md-0">
-														<a href="' . $_val->link . '" class="btn btn-outline-light btn-lg rounded-pill" data-animation="animated bounceInLeft" style="border-width:2px">
+														<a href="' . $_val->link . '" class="btn btn-outline-light btn-lg rounded-pill">
 															' . (isset($_val->label) && $_val->label ? $_val->label : phrase('read_more')) . '
 															<i class="mdi mdi-chevron-right"></i>
 														</a>
@@ -55,27 +55,21 @@
 				}
 				
 				echo '
-					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+					<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
 						' . (sizeof((array) $carousels) > 1 ? '
-						<ol class="carousel-indicators">
+						<div class="carousel-indicators">
 							' . $navigation . '
-						</ol>
+						</div>
 						' : '') . '
 						<div class="carousel-inner">
 							' . $carousel_items . '
 						</div>
 						' . (sizeof((array) $carousels) > 1 ? '
-						<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+						<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
 							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="sr-only">
-								' . phrase('previous') . '
-							</span>
 						</a>
-						<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+						<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
 							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="sr-only">
-								' . phrase('next') . '
-							</span>
 						</a>
 						' : '') . '
 					</div>
@@ -91,14 +85,14 @@
 					if(!isset($_val->question) || !$_val->answer) continue;
 					
 					$output							.= '
-						<div class="card">
-							<div class="card-header" id="heading_' . $_key . '">
-								<a href="#" class="d-block font-weight-bold" data-toggle="collapse" data-target="#collapse_' . $_key . '" aria-expanded="' . (!$_key ? 'true' : 'false') . '" aria-controls="collapse_' . $_key . '">
+						<div class="accordion-item">
+							<div class="accordion-header" id="heading_' . $_key . '">
+								<button type="button" class="accordion-button' . (!$_key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $_key . '" aria-expanded="' . (!$_key ? 'true' : 'false') . '" aria-controls="collapse_' . $_key . '">
 									' . $_val->question . '
 								</a>
 							</div>
-							<div id="collapse_' . $_key . '" class="collapse' . (!$_key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-parent="#accordionExample">
-								<div class="card-body">
+							<div id="collapse_' . $_key . '" class="collapse' . (!$_key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-bs-parent="#accordionExample">
+								<div class="accordion-body">
 									' . $_val->answer . '
 								</div>
 							</div>
@@ -114,9 +108,9 @@
 			}
 			
 			echo '
-				<div class="jumbotron jumbotron-fluid bg-light gradient">
+				<div class="bg-light gradient pt-5 pb-5">
 					<div class="container">
-						<div class="text-center text-sm-left">
+						<div class="text-center text-sm-start">
 							<h3 class="mb-0' . (!$meta->description ? ' mt-3' : null) . '">
 								' . $meta->title . '
 							</h3>
@@ -126,7 +120,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="container">
+				<div class="container pt-3 pb-3">
 					<div class="text-justify mb-3">
 						' . preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $val->page_content)) . '
 					</div>

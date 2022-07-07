@@ -1,10 +1,13 @@
 <?php
 /**
- * MY_url_helper
+ * URL Helper
  * Override the default CodeIgniter url_helper to follow the local parameter
  *
- * @author		Aby Dahana
- * @profile		abydahana.github.io
+ * @author			Aby Dahana <abydahana@gmail.com>
+ * @profile			abydahana.github.io
+ * @website			www.aksaracms.com
+ * @since			version 4.0.0
+ * @copyright		(c) 2021 - Aksara Laboratory
  */
 if (!function_exists('base_url'))
 {

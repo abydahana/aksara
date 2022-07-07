@@ -1,17 +1,19 @@
-<div class="jumbotron jumbotron-fluid bg-light gradient">
-	<div class="container">
-		<div class="text-center text-md-left">
-			<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
-				<?php echo $meta->title; ?>
-			</h3>
-			<p class="lead">
-				<?php echo truncate($meta->description, 256); ?>
-			</p>
+<div class="bg-light text-secondary">
+	<div class="container pt-5 pb-5">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<h1 class="text-center">
+					<?php echo $meta->title; ?>
+				</h1>
+				<p class="lead text-center">
+					<?php echo truncate($meta->description, 256); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container pt-3 pb-3">
+<div class="container pt-5 pb-5">
 	<?php
 		if($results)
 		{
@@ -21,7 +23,7 @@
 			{
 				$output						.= '
 					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card border-0 rounded-more shadow mb-3">
+						<div class="card border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
 							<a href="' . go_to($val->people_slug) . '" class="--xhr">
 								<img src="' . get_image('peoples', $val->photo, 'thumb') . '" class="card-img-top" alt="' . $val->first_name . ' '  . $val->last_name . '" width="100%" />
 							</a>
@@ -43,7 +45,7 @@
 			}
 			
 			echo '
-				<div class="row form-group">
+				<div class="row mb-3">
 					' . $output . '
 				</div>
 			';
@@ -54,7 +56,7 @@
 		{
 			echo '
 				<div class="alert alert-warning">
-					<i class="mdi mdi-information"></i>
+					<i class="mdi mdi-information-outline"></i>
 					' . phrase('no_people_is_available') . '
 				</div>
 			';

@@ -6,7 +6,7 @@ namespace Aksara\Modules\Pages\Controllers;
  * Pages
  * Render the frontend page. Also to be used as default routes.
  *
- * @author			Aby Dahana
+ * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
  * @website			www.aksaracms.com
  * @since			version 4.0.0
@@ -32,8 +32,8 @@ class Pages extends \Aksara\Laboratory\Core
 			(
 				array
 				(
-					'page_slug'						=> $slug,
-					'status'						=> 1
+					'pages.page_slug'				=> $slug,
+					'pages.status'					=> 1
 				)
 			);
 		}

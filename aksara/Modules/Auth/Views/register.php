@@ -1,10 +1,8 @@
-<div class="jumbotron jumbotron-fluid bg-light gradient">
-	<div class="container-fluid">
+<div class="bg-light pt-5 pb-5">
+	<div class="container">
 		<div class="row align-items-center">
 			<div class="col-3 col-sm-2 col-md-1 offset-md-2">
-				<button type="button" class="btn btn-outline-secondary rounded-more">
-					<i class="<?php echo $meta->icon; ?> mdi-4x"></i>
-				</button>
+				<i class="<?php echo $meta->icon; ?> mdi-4x"></i>
 			</div>
 			<div class="col-9 col-sm-10 col-md-6">
 				<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
@@ -17,7 +15,7 @@
 		</div>
 	</div>
 </div>
-<div class="container-fluid pt-5 pb-5">
+<div class="container pt-5 pb-5">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form">
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
@@ -27,7 +25,7 @@
 							<label class="d-block font-weight-bold" for="first_name_input">
 								<?php echo phrase('first_name'); ?>
 							</label>
-							<input type="text" name="first_name" class="form-control form-control-lg font-weight-light" id="first_name_input" placeholder="<?php echo phrase('your_first_name'); ?>" autocomplete="off" maxlength="64" />
+							<input type="text" name="first_name" class="form-control" id="first_name_input" placeholder="<?php echo phrase('your_first_name'); ?>" autocomplete="off" maxlength="64" />
 						</div>
 					</div>
 					<div class="col-sm-6">
@@ -35,7 +33,7 @@
 							<label class="d-block font-weight-bold" for="last_name_input">
 								<?php echo phrase('last_name'); ?>
 							</label>
-							<input type="text" name="last_name" class="form-control form-control-lg font-weight-light" id="last_name_input" placeholder="<?php echo phrase('your_last_name'); ?>" autocomplete="off" maxlength="64" />
+							<input type="text" name="last_name" class="form-control" id="last_name_input" placeholder="<?php echo phrase('your_last_name'); ?>" autocomplete="off" maxlength="64" />
 						</div>
 					</div>
 				</div>
@@ -43,7 +41,7 @@
 					<label class="d-block font-weight-bold" for="email_input">
 						<?php echo phrase('email_address'); ?>
 					</label>
-					<input type="email" name="email" class="form-control form-control-lg font-weight-light" id="email_input" placeholder="<?php echo phrase('enter_your_email_address'); ?>" autocomplete="off" maxlength="128" />
+					<input type="email" name="email" class="form-control" id="email_input" placeholder="<?php echo phrase('enter_your_email_address'); ?>" autocomplete="off" maxlength="128" />
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
@@ -51,16 +49,20 @@
 							<label class="d-block font-weight-bold" for="username_input">
 								<?php echo phrase('username'); ?>
 							</label>
-							<input type="text" name="username" class="form-control form-control-lg font-weight-light" id="username_input" placeholder="<?php echo phrase('choose_your_username'); ?>" autocomplete="off" maxlength="32" />
+							<input type="text" name="username" class="form-control" id="username_input" placeholder="<?php echo phrase('choose_your_username'); ?>" autocomplete="off" maxlength="32" />
 						</div>
 					</div>
 					<div class="col-sm-6">
-						<div class="form-group relative mb-4">
+						<div class="form-group mb-4 position-relative">
 							<label class="d-block font-weight-bold" for="password_input">
 								<?php echo phrase('password'); ?>
 							</label>
-							<input type="password" name="password" class="form-control form-control-lg font-weight-light" id="password_input" placeholder="<?php echo phrase('minimum'); ?> 6 <?php echo phrase('characters'); ?>" maxlength="32" />
-							<i class="mdi mdi-2x password-peek text-muted mdi-eye-outline absolute bottom right mb-2 mr-2" data-parent=".form-group" data-peek=".form-control" style="z-index:3"></i>
+							<div class="input-group">
+								<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('minimum'); ?> 6 <?php echo phrase('characters'); ?>" maxlength="32" style="border-right:0" />
+								<span class="input-group-text bg-white" style="border-left:0">
+									<i class="mdi mdi-eye-outline" style="width:22px"></i>
+								</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -70,7 +72,7 @@
 							<label class="d-block font-weight-bold" for="email_input">
 								<?php echo phrase('phone_number'); ?>
 							</label>
-							<input type="phone" name="phone" class="form-control form-control-lg font-weight-light" id="phone_input" placeholder="0812XXXX" autocomplete="off" maxlength="16" />
+							<input type="phone" name="phone" class="form-control" id="phone_input" placeholder="0812XXXX" autocomplete="off" maxlength="16" />
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -79,21 +81,19 @@
 								<?php echo phrase('enter_shown_characters'); ?>
 							</label>
 							<div class="input-group">
-								<div class="input-group-prepend">
-									<span class="input-group-text bg-dark p-0">
-										<?php
-											if($captcha->string)
-											{
-												echo '<b class="text-light pr-3 pl-3">' . $captcha->string . '</b>';
-											}
-											else
-											{
-												echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
-											}
-										?>
-									</span>
-								</div>
-								<input type="text" name="captcha" class="form-control form-control-lg font-weight-light" id="captcha_input" placeholder="XXXXXX" maxlength="32" />
+								<span class="input-group-text bg-dark p-0">
+									<?php
+										if($captcha->string)
+										{
+											echo '<b class="text-light pe-3 ps-3">' . $captcha->string . '</b>';
+										}
+										else
+										{
+											echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
+										}
+									?>
+								</span>
+								<input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="XXXXXX" maxlength="32" />
 							</div>
 						</div>
 					</div>
@@ -101,17 +101,21 @@
 				
 				<div class="--validation-callback"></div>
 				
-				<div class="form-group">
-					<button type="submit" class="btn btn-outline-primary btn-block btn-lg rounded-pill">
-						<i class="mdi mdi-check"></i>
-						<?php echo phrase('register_account'); ?>
-					</button>
+				<div class="mb-3">
+					<div class="d-grid">
+						<button type="submit" class="btn btn-outline-primary">
+							<i class="mdi mdi-check"></i>
+							<?php echo phrase('register_account'); ?>
+						</button>
+					</div>
 				</div>
-				<div class="form-group mt-4 mb-4">
+				<div class="mt-4 mb-4">
 					<label class="text-muted d-block">
-						<?php echo phrase('by_submitting_this_form_you_are_agree_about_all_future_action_related_to_your_account'); ?>
-						<a href="<?php echo base_url('pages/guidelines/terms-and-conditions'); ?>" target="_blank" data-toggle="tooltip" title="<?php echo phrase('detail_of_terms_and_conditions'); ?>">
-							<i class="mdi mdi-help-circle-outline"></i>
+						<?php echo phrase('by_submitting_this_form_you_are_agree_about_all_future_action_related_to_your_account_related_to_the'); ?>
+						<a href="<?php echo base_url('pages/guidelines/terms-and-conditions'); ?>" target="_blank">
+							<b>
+								<?php echo phrase('terms_and_conditions'); ?>
+							</b>
 						</a>
 					</label>
 				</div>
