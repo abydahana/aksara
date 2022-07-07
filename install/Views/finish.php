@@ -9,16 +9,20 @@
 	<?php echo phrase('you_can_login_as_superuser_using_following_credential'); ?>
 </p>
 <div class="row">
-	<div class="col-4 font-weight-bold">
-		<?php echo phrase('username'); ?>
+	<div class="col-4">
+		<b>
+			<?php echo phrase('username'); ?>
+		</b>
 	</div>
 	<div class="col-8">
 		<?php echo session()->get('username'); ?>
 	</div>
 </div>
-<div class="row form-group">
-	<div class="col-4 font-weight-bold">
-		<?php echo phrase('password'); ?>
+<div class="row form-group mb-3">
+	<div class="col-4">
+		<b>
+			<?php echo phrase('password'); ?>
+		</b>
 	</div>
 	<div class="col-8">
 		<?php echo session()->get('password'); ?>
@@ -26,10 +30,10 @@
 </div>
 <hr />
 <div class="row">
-	<div class="col-md-5">
+	<div class="col-md-4">
 		<img src="assets/like-a-boss.png" class="img-fluid" alt="Like a boss..." />
 	</div>
-	<div class="col-md-7">
+	<div class="col-md-8">
 		<p>
 			<?php echo phrase('follow_our_updates_to_get_our_other_works_if_you_find_this_useful'); ?>
 		</p>
@@ -55,7 +59,7 @@
 		&nbsp;
 	</div>
 	<div class="col-sm-6">
-		<a href="<?php echo site_url('xhr/boot'); ?>" class="btn btn-warning btn-block font-weight-bold">
+		<a href="<?php echo site_url('xhr/boot'); ?>" class="btn btn-warning d-block font-weight-bold">
 			<i class="mdi mdi-rocket"></i>
 			<?php echo phrase('launch_your_site'); ?>
 		</a>

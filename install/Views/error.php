@@ -34,17 +34,19 @@
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-6">
-			<a href="<?php echo site_url('system'); ?>" class="btn btn-light btn-block --xhr">
+			<a href="<?php echo site_url('system'); ?>" class="btn btn-light d-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<?php echo phrase('back'); ?>
 			</a>
 		</div>
 		<div class="col-6 text-right">
-			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
-			<button type="submit" class="btn btn-primary btn-block">
-				<i class="mdi mdi-reload"></i>
-				<?php echo phrase('refresh'); ?>
-			</button>
+			<div class="d-grid">
+				<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
+				<button type="submit" class="btn btn-primary btn-block">
+					<i class="mdi mdi-reload"></i>
+					<?php echo phrase('refresh'); ?>
+				</button>
+			</div>
 		</div>
 	</div>
 </form>

@@ -16,12 +16,12 @@
 	?>
 	<div class="row">
 		<div class="col-md-6">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('database_driver'); ?>
 					<b class="text-danger">*</b>
 				</label>
-				<select name="database_driver" class="form-control form-control-sm">
+				<select name="database_driver" class="form-select form-select-sm">
 					<?php echo $driver_list; ?>
 				</select>
 			</div>
@@ -29,7 +29,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-8">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('hostname'); ?>
 					<b class="text-danger">*</b>
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		<div class="col-md-4">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('port'); ?>
 				</label>
@@ -48,7 +48,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('username'); ?>
 					<b class="text-danger">*</b>
@@ -57,7 +57,7 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('password'); ?>
 				</label>
@@ -67,14 +67,14 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label class="d-block mb-0">
 					<?php echo phrase('initial_database'); ?>
 					<b class="text-danger">*</b>
 				</label>
 				<input type="text" name="database_initial" class="form-control form-control-sm" value="<?php echo session()->get('database_initial'); ?>" />
 			</div>
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label>
 					<input type="checkbox" name="database_forge" value="1" />
 					<?php echo phrase('create_database_if_not_exists'); ?>
@@ -86,17 +86,19 @@
 	<div class="--validation-callback"></div>
 	<div class="row">
 		<div class="col-6">
-			<a href="<?php echo site_url('requirement'); ?>" class="btn btn-light btn-block --xhr">
+			<a href="<?php echo site_url('requirement'); ?>" class="btn btn-light d-block --xhr">
 				<i class="mdi mdi-arrow-left"></i>
 				<?php echo phrase('back'); ?>
 			</a>
 		</div>
 		<div class="col-6">
-			<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
-			<button type="submit" class="btn btn-primary btn-block">
-				<i class="mdi mdi-check"></i>
-				<?php echo phrase('continue'); ?>
-			</button>
+			<div class="d-grid">
+				<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
+				<button type="submit" class="btn btn-primary">
+					<i class="mdi mdi-check"></i>
+					<?php echo phrase('continue'); ?>
+				</button>
+			</div>
 		</div>
 	</div>
 </form>
