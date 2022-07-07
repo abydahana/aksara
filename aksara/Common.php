@@ -20,7 +20,7 @@ if(! function_exists('aksara'))
 	 */
 	function aksara($parameter = null)
 	{
-		$version									= '4.3.3';
+		$version									= '4.4.0';
 		$modified									= filemtime(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php');
 		
 		if('version' == $parameter)
