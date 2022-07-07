@@ -130,7 +130,7 @@ if(!function_exists('asset_loader'))
 					
 					$output							.= '
 						<li class="' . $li_class . ($children && $dropdown_class ? ' ' . $dropdown_class : null) . ((!$children && isset($segments[$level]) && $segments[$level] == $slug) || $slug == service('uri')->getPath() || (service('uri')->getPath() && $slug == preg_replace(array('/\/create/', '/\/read/', '/\/update/'), '', service('uri')->getPath())) ? ' active' : '') . (isset($val['class']) ? ' ' . $val['class'] : null) . '">
-							<a href="' . ($children ? '#' : $val['slug']) . '" class="' . $a_class . ($children ? ' ' . $toggle_class : null) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val['newtab']) && $val['newtab'] && !$children ? ' target="_blank"' : null) . '>
+							<a href="' . ($children ? '#' : $val['slug']) . '" class="' . $a_class . ($children ? ' ' . $toggle_class : null) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val['newtab']) && $val['newtab'] && !$children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
 								' . (isset($val['icon']) && $val['icon'] ? '<i class="' . $val['icon'] . '"></i>' : null) . '
 								<span class="hide-on-collapse">
 									' . $val['label'] . '
