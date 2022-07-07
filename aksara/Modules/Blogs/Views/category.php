@@ -100,10 +100,10 @@
 						';
 					}
 					
-					if($total > 24)
+					if($total > $limit)
 					{
 						echo '
-							<div class="col-lg-12">
+							<div class="col-lg-12 pt-3 pb-3">
 								' . $template->pagination . '
 							</div>
 						';

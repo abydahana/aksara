@@ -1,5 +1,5 @@
 <div class="container-fluid pb-3">
-	<div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x: auto; top:88px">
+	<div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x:auto">
 		<ul class="nav" style="flex-wrap: nowrap">
 			<li class="nav-item">
 				<a href="<?php echo go_to(); ?>" class="nav-link no-wrap --xhr text-bg-primary">

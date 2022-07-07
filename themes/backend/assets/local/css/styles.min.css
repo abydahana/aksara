@@ -23,7 +23,7 @@ body.sidebar-collapsed .navbar-brand span.badge
 #breadcrumb-wrapper
 {
 	top: 56px;
-	z-index: 1
+	z-index: 4
 }
 
 #sidebar-wrapper
@@ -43,10 +43,11 @@ body.sidebar-collapsed .navbar-brand span.badge
 
 #sidebar-wrapper .nav-link
 {
-	padding-top: .25rem;
-	padding-bottom: .25rem;
+	padding-top: .2rem;
+	padding-bottom: .2rem;
 	color: rgba(0, 0, 0, .75);
-	word-wrap: break-word
+	word-wrap: break-word;
+	color: #333
 }
 
 #sidebar-wrapper .nav-link i:before
@@ -254,14 +255,19 @@ a
 		margin-right: 0
 	}
 	
+	.sticky-top
+	{
+		top: 88px
+	}
+	
 	#sidebar-wrapper
 	{
-		width: 240px
+		width: 220px
 	}
 	
 	#content-wrapper
 	{
-		padding-left: 240px
+		padding-left: 220px
 	}
 	
 	.opt-btn
@@ -305,6 +311,11 @@ a
 	{
 		left: 80%;
 		right: -80%
+	}
+	
+	.sticky-top
+	{
+		top: 79px
 	}
 	
 	.opt-btn-overlap-fix

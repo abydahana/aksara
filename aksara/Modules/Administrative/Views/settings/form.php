@@ -1,6 +1,6 @@
 <div class="container-fluid pb-3">
 	<form action="<?php echo current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-		<div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x: auto; top:81px">
+		<div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x:auto">
 			<ul class="nav nav-pills" style="flex-wrap: nowrap">
 				<li class="nav-item">
 					<a href="#pills-setting" data-bs-toggle="pill" id="pills-setting-tab" class="nav-link rounded-0 no-wrap active">

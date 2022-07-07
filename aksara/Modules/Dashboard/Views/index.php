@@ -115,7 +115,7 @@
 	</div>
 	<div class="row">
 		<div class="col-lg-8 bg-white border-right" style="margin-right:-1px">
-			<div class="sticky-top pt-3" style="top:86px; z-index:0">
+			<div class="sticky-top pt-3">
 				<div class="border rounded p-1 mb-3">
 					<div id="visitor-chart" class="rounded" style="width:100%; height:300px"></div>
 				</div>

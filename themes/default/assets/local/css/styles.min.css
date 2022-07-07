@@ -122,6 +122,11 @@ a
 	{
 		min-width: 238px
 	}
+	
+	.sticky-top
+	{
+		top: 88px
+	}
 }
 
 @media (max-width: 991px)
@@ -178,5 +183,10 @@ a
 	{
 		width: 2rem;
 		display: inline-block
+	}
+	
+	.sticky-top
+	{
+		top: 79px
 	}
 }

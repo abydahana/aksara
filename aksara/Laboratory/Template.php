@@ -909,13 +909,6 @@ class Template
 					array
 					(
 						'id'						=> 0,
-						'label'						=> 'Dashboard',
-						'slug'						=> 'dashboard',
-						'icon'						=> 'mdi mdi-monitor-dashboard',
-					),
-					array
-					(
-						'id'						=> 0,
 						'label'						=> '',
 						'slug'						=> '---'
 					),
@@ -1215,7 +1208,25 @@ class Template
 					),
 				);
 				
-				$menus								= array_merge($menus, $core_menus);
+				$dashboard							= array
+				(
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Main Navigation',
+						'slug'						=> '---',
+						'icon'						=> 'mdi mdi-blank',
+					),
+					array
+					(
+						'id'						=> 0,
+						'label'						=> 'Dashboard',
+						'slug'						=> 'dashboard',
+						'icon'						=> 'mdi mdi-monitor-dashboard',
+					)
+				);
+				
+				$menus								= array_merge($dashboard, $menus, $core_menus);
 			}
 		}
 		
