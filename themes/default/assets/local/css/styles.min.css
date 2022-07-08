@@ -1,6 +1,7 @@
 #content-wrapper
 {
-	margin-top: 56px
+	margin-top: 56px;
+	word-wrap: break-word
 }
 
 #footer-wrapper
@@ -26,7 +27,7 @@
 	top: 56px
 }
 
-.navbar .dropdown-menu .nav-item:hover
+.navbar .dropdown-menu .nav-item a.nav-link:hover
 {
 	background: rgba(0, 0, 0, .2)
 }

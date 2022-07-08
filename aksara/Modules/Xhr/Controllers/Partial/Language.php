@@ -18,7 +18,12 @@ class Language extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
-		if('modal' != service('request')->getPost('prefer'))
+		if('dropdown' == service('request')->getPost('prefer'))
+		{
+			return $this->_languages(true);
+		}
+		
+		else if('modal' != service('request')->getPost('prefer'))
 		{
 			return throw_exception(404, phrase('the_page_you_requested_does_not_exist'));
 		}
@@ -40,7 +45,7 @@ class Language extends \Aksara\Laboratory\Core
 		->render();
 	}
 	
-	private function _languages()
+	private function _languages($json = false)
 	{
 		$query										= $this->model->get_where
 		(
@@ -51,6 +56,11 @@ class Language extends \Aksara\Laboratory\Core
 			)
 		)
 		->result();
+		
+		if($json)
+		{
+			return make_json($query);
+		}
 		
 		return $query;
 	}

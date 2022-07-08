@@ -51,7 +51,8 @@
 			echo asset_loader
 			(
 				[
-					'assets/bootstrap/js/bootstrap.bundle.min.js'
+					'assets/bootstrap/js/bootstrap.bundle.min.js',
+					'assets/local/js/scripts.min.js'
 				]
 			);
 		?>

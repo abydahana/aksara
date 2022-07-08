@@ -86,7 +86,6 @@ if(!function_exists('make_json'))
 		ini_set('max_execution_time', 0);
 		ini_set('memory_limit', -1);
 		
-		$data										= (object) $data;
 		$html										= null;
 		
 		if(isset($data->html))

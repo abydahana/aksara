@@ -14,6 +14,15 @@
 		<div class="collapse navbar-collapse" id="navbarText">
 			<?php echo generate_menu($template->menu, 'navbar-nav me-auto', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
 			<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="<?php echo base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
+						<i class="mdi mdi-translate"></i>
+						<?php echo phrase('language'); ?>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<!-- language list -->
+					</ul>
+				</li>
 				<?php if(get_userdata('is_logged')) { ?>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown">

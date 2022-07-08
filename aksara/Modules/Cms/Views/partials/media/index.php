@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-lg-8 pt-3 pb-3 bg-white border-right" style="margin-right:-1px">
+		<div class="col-lg-8 pt-3 pb-3 bg-white border-end" style="margin-right:-1px">
 			<div class="row align-items-end">
 				<?php
 					if($results->directory && !isset($key))
