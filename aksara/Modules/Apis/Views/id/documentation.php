@@ -389,6 +389,109 @@
 						<p>
 							Proses otentikasi dilakukan pada dengan melakukan POST ke <code>' . base_url('auth') . '</code> serta menyematkan <code>X-API-KEY</code> pada HEADER, berikut data formulir (form-data) dengan parameter <code>username</code> dan <code>password</code> sesuai kredensial pengguna.
 						</p>
+						<hr />
+						<h4>
+							Mengambil Hasil Query
+						</h4>
+						<p>
+							Saat Anda meminta data, ada helper query string (yang disebutkan di bawah "<code>query_string</code>") yang akan membantu Anda mengambil data secara lebih spesifik. Selain itu juga tersedia helper query string untuk mengambil hasil yang menggunakan kriteria tertentu.
+						</p>
+						<div class="table-responsive">
+							<table class="table table-bordered table-sm">
+								<thead>
+									<tr>
+										<th>
+											' . phrase('key') . '
+										</th>
+										<th>
+											' . phrase('type') . '
+										</th>
+										<th>
+											' . phrase('description') . '
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												limit
+											</span>
+										</td>
+										<td>
+											Angka
+										</td>
+										<td>
+											Menerapkan limit atau batas pengambilan data
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												offset
+											</span>
+										</td>
+										<td>
+											Angka
+										</td>
+										<td>
+											Menerapkan offset pada saat mengambil data
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												order
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											Bidang atau kolom yang akan diurutkan
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												sort
+											</span>
+										</td>
+										<td>
+											String <code>ASC|DESC</code>
+										</td>
+										<td>
+											Jenis pengurutan (sortir)
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												q
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											Kata kunci pencarian
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												column
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											Bidang spesifik yang akan dilakukan pencarian
+										</td>
+									</tr>
+								</tbody>
+							</table>
 					';
 				}
 			?>

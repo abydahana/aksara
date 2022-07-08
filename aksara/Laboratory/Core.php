@@ -185,6 +185,13 @@ class Core extends Controller
 			$this->_limit							= service('request')->getGet('limit');
 		}
 		
+		// check if query string has offset
+		if(is_numeric(service('request')->getGet('offset')) && service('request')->getGet('offset'))
+		{
+			// apply the offset for query builder
+			$this->_offset							= service('request')->getGet('offset');
+		}
+		
 		/**
 		 * Apply token serialization in order to prevent the query string bypass or hijacking
 		 */
@@ -2279,6 +2286,11 @@ class Core extends Controller
 	 */
 	public function render(string $table = null, string $view = null)
 	{
+		if($this->_api_request && in_array(service('request')->getServer('REQUEST_METHOD'), array('POST', 'DELETE')) && !in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+		}
+		
 		if(!$this->_table)
 		{
 			// set table when not present
@@ -2885,7 +2897,7 @@ class Core extends Controller
 			/**
 			 * Indicates requested from the API calls
 			 */
-			if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) || $this->_method == 'create')
+			if(($this->_api_request && $this->_method == 'create') || (!$this->_api_request && $this->_method == 'create'))
 			{
 				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
 			}
@@ -2999,12 +3011,7 @@ class Core extends Controller
 		 */
 		if($this->_api_request)
 		{
-			$results								= (isset($this->_results['table_data']) ? $this->_results['table_data'] : (isset($this->_results['form_data']) ? $this->_results['form_data'] : $this->_results));
-			
-			if(!$results && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
-			{
-				$results							= array();
-			}
+			$results								= (isset($this->_results['table_data']) ? $this->_results['table_data'] : (isset($this->_results['form_data']) ? $this->_results['form_data'] : $result));
 			
 			/**
 			 * Set the output results
@@ -3027,7 +3034,7 @@ class Core extends Controller
 				$this->_output						= array_merge($this->_output, $this->_set_output);
 			}
 			
-			if(service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
+			if($this->_api_request)
 			{
 				return make_json($this->_output);
 			}
@@ -3139,7 +3146,7 @@ class Core extends Controller
 					{
 						unset($this->_output->total, $this->_output->pagination);
 					}
-					else if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
+					else if($this->_api_request && 'POST' != service('request')->getServer('REQUEST_METHOD'))
 					{
 						unset($this->_output->pagination);
 					}
@@ -3616,14 +3623,6 @@ class Core extends Controller
 	 */
 	public function render_form($data = array())
 	{
-		if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) && 'POST' != service('request')->getServer('REQUEST_METHOD'))
-		{
-			/**
-			 * Indicate the method is requested through API
-			 */
-			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
-		}
-		
 		if(!$data && !$this->_insert_on_update_fail && 'autocomplete' != service('request')->getPost('method'))
 		{
 			return throw_exception(404, phrase('the_data_you_requested_does_not_exist_or_has_been_removed'), $this->_redirect_back);
@@ -4476,7 +4475,7 @@ class Core extends Controller
 				{
 					unset($fields[$field]['tooltip'], $fields[$field]['original'], $fields[$field]['content'], $fields[$field]['position'], $fields[$field]['append'], $fields[$field]['prepend']);
 					
-					$fields[$field]['value']		= (service('request')->getHeaderLine('X-API-KEY') != sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? $original : null);
+					$fields[$field]['value']		= $original;
 				}
 			}
 		}
@@ -5106,7 +5105,7 @@ class Core extends Controller
 				{
 					unset($fields[$field]['required'], $fields[$field]['content'], $fields[$field]['original'], $fields[$field]['position']);
 					
-					$fields[$field]['value']		= (service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? null : $original);
+					$fields[$field]['value']		= $original;
 				}
 			}
 		}
@@ -5589,7 +5588,7 @@ class Core extends Controller
 						unset($fields[$field]['content'], $fields[$field]['original']);
 						
 						$fields[$field]['type']		= $type;
-						$fields[$field]['value']	= (service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')) ? 'mixed' : $original);
+						$fields[$field]['value']	= $original;
 					}
 					
 					/**
@@ -5613,11 +5612,6 @@ class Core extends Controller
 				}
 				
 				$query_string[]						= $uri_parameter;
-				
-				if($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
-				{
-					break;
-				}
 			}
 		}
 		
@@ -5766,6 +5760,11 @@ class Core extends Controller
 					$dropdown[$key][$_key]			= $_val;
 				}
 			}
+		}
+		
+		if($this->_api_request && !$this->_total)
+		{
+			$output									= array();
 		}
 		
 		$output										= array
@@ -6588,7 +6587,7 @@ class Core extends Controller
 	 */
 	public function limit($limit = null, int $offset = 0)
 	{
-		if(in_array($this->_method, array('create', 'read', 'update', 'delete')) || ($this->_api_request && service('request')->getHeaderLine('X-API-KEY') == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN'))))
+		if(in_array($this->_method, array('create', 'read', 'update', 'delete')))
 		{
 			$this->_limit							= 1;
 			$this->_offset							= 0;
@@ -7651,16 +7650,6 @@ class Core extends Controller
 		)
 		->row();
 		
-		if(!$api_service && $api_key == sha1(ENCRYPTION_KEY . service('request')->getHeaderLine('X-ACCESS-TOKEN')))
-		{
-			$api_service							= (object) array
-			(
-				'ip_range'							=> null,
-				'method'							=> json_encode(array(service('request')->getServer('REQUEST_METHOD'))),
-				'status'							=> 1
-			);
-		}
-		
 		if(!$api_service)
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_module_or_already_expired'));
@@ -7678,8 +7667,11 @@ class Core extends Controller
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
 		}
 		
+		$this->_api_request							= true;
+		$this->_api_request_parameter				= json_decode($api_service->method, true);
+		
 		/**
-		 * Retrieve the temporary session
+		 * retrieve the temporary session
 		 */
 		if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
 		{
@@ -7703,16 +7695,19 @@ class Core extends Controller
 			{
 				session_decode($cookie);
 				
-				$_SESSION['access_token']			= service('request')->getHeaderLine('X-ACCESS-TOKEN');
-				
 				set_userdata(array_filter($_SESSION));
+				
+				$this->_set_language(get_userdata('language_id'));
 			}
 		}
 		
-		$this->_set_language(get_userdata('language_id'));
-		
-		$this->_api_request							= true;
-		$this->_api_request_parameter				= json_decode($api_service->method, true);
+		/**
+		 * access token not found
+		 */
+		else if($this->_module != 'auth')
+		{
+			return throw_exception(403, phrase('missing_authentication_token_header') . ' (X-ACCESS-TOKEN)');
+		}
 		
 		return $this;
 	}

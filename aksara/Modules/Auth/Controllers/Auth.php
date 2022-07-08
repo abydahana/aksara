@@ -21,7 +21,32 @@ class Auth extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if(service('request')->getPost('_token'))
+		/* check if use is already signed in */
+		if(get_userdata('is_logged'))
+		{
+			// check if request is made through API or not
+			if($this->_api_request)
+			{
+				// requested through API, provide the access token
+				return make_json
+				(
+					array
+					(
+						'status'					=> 200,
+						'message'					=> phrase('you_were_logged_in'),
+						'access_token'				=> session_id()
+					)
+				);
+			}
+			else
+			{
+				// requested through browser
+				return throw_exception(301, phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
+			}
+		}
+		
+		/* check authentication request */
+		else if(service('request')->getPost('_token') || $this->_api_request)
 		{
 			/* apply login attempts limit (prevent bruteforce) */
 			if(get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
@@ -194,6 +219,20 @@ class Auth extends \Aksara\Laboratory\Core
 					// check if request is made through API or not
 					if($this->_api_request)
 					{
+						$session_id					= session_id();
+						
+						$this->model->insert
+						(
+							'app__sessions',
+							array
+							(
+								'id'				=> $session_id,
+								'ip_address'		=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+								'timestamp'			=> date('Y-m-d H:i:s'),
+								'data'				=> session_encode(get_userdata())
+							)
+						);
+						
 						// requested through API, provide the access token
 						return make_json
 						(
@@ -201,7 +240,7 @@ class Auth extends \Aksara\Laboratory\Core
 							(
 								'status'			=> 200,
 								'message'			=> phrase('you_were_logged_in'),
-								'access_token'		=> session_id()
+								'access_token'		=> $session_id
 							)
 						);
 					}
@@ -227,29 +266,6 @@ class Auth extends \Aksara\Laboratory\Core
 			}
 		}
 		
-		/* check if use is already signed in */
-		if(get_userdata('is_logged'))
-		{
-			// check if request is made through API or not
-			if($this->_api_request)
-			{
-				// requested through API, provide the access token
-				return make_json
-				(
-					array
-					(
-						'status'					=> 200,
-						'message'					=> phrase('you_were_logged_in'),
-						'access_token'				=> session_id()
-					)
-				);
-			}
-			else
-			{
-				// requested through browser
-				return throw_exception(301, phrase('you_were_logged_in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
-			}
-		}
 		else if(service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt'))
 		{
 			/* google login authentication */
