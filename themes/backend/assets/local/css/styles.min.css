@@ -23,7 +23,7 @@ body.sidebar-collapsed .navbar-brand span.badge
 #breadcrumb-wrapper
 {
 	top: 56px;
-	z-index: 4
+	z-index: 1020
 }
 
 #sidebar-wrapper
@@ -91,7 +91,8 @@ body.sidebar-collapsed .navbar-brand span.badge
 
 #content-wrapper
 {
-	margin-top: 81px
+	margin-top: 81px;
+	word-wrap: break-word
 }
 
 .btn-group-xs>.btn, .btn-xs
@@ -146,6 +147,11 @@ body.sidebar-collapsed .navbar-brand span.badge
 {
 	left: auto;
 	right: 20px
+}
+
+.navbar .dropdown-menu .nav-item a.nav-link:hover
+{
+	background: rgba(0, 0, 0, .2)
 }
 
 .dropdown-menu .dropdown-header
@@ -249,9 +255,14 @@ a
 		display: none
 	}
 	
+	.navbar-expand-lg .navbar-nav .dropdown-menu
+	{
+		min-width: 240px;
+	}
+	
 	.navbar-brand
 	{
-		width: 225px;
+		width: 205px;
 		margin-right: 0
 	}
 	

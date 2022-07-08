@@ -125,50 +125,6 @@ if(!function_exists('aksara_footer'))
 		$output										.= '<script type="text/javascript" src="' . base_url('assets/js/scripts.min.js') . '"></script>' . "\n";
 		$output										.= '<script type="text/javascript">(function($,d){$.each(readyQ,function(i,f){$(f)});$.each(bindReadyQ,function(i,f){$(d).bind("ready",f)})})(jQuery,document)</script>' . "\n";
 		
-		/**
-		 * Announcements
-		 */
-		$placement									= 0;
-		$backtrace									= debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-		
-		if(isset($backtrace[0]['file']) && file_exists(str_replace('layout.php', 'package.json', $backtrace[0]['file'])))
-		{
-			$package								= file_get_contents(str_replace('layout.php', 'package.json', $backtrace[0]['file']));
-			$package								= json_decode(($package ? $package : '[]'));
-			
-			if(isset($package->type) && 'backend' == $package->type)
-			{
-				$placement							= 1;
-			}
-		}
-		
-		$model										= new \Aksara\Laboratory\Model;
-		$query										= $model->order_by('announcement_id', 'desc')->get_where
-		(
-			'app__announcements',
-			array
-			(
-				'status'							=> 1,
-				'placement'							=> $placement,
-				'start_date <= '					=> date('Y-m-d'),
-				'end_date >= '						=> date('Y-m-d')
-			),
-			10
-		)
-		->result();
-		
-		if($query)
-		{
-			$announcements							= null;
-			
-			foreach($query as $key => $val)
-			{
-				$announcements						.= '<li><a href="' . base_url('announcements/' . $val->announcement_slug) . '" target="_blank">' . $val->title . '</a></li><li class="ticker-spacer"><img src="' . get_image('settings', get_setting('app_icon'), 'icon') . '" height="16" /></li>';
-			}
-			
-			$output									.= ($announcements ? '<ul role="announcements" class="announcements-ticker alias-announcements-ticker">' . $announcements . '</ul>' : null);
-		}
-		
 		return $output;
 	}
 }

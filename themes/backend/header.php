@@ -1,31 +1,3 @@
-<?php
-	$user_language								= null;
-	$translations								= array();
-	$language									= get_languages();
-	$language_list								= null;
-	
-	if($language && sizeof((array) $language) > 1)
-	{
-		foreach($language as $key => $val)
-		{
-			if(get_userdata('language_id') == $val->id)
-			{
-				$user_language					= $val->language;
-			}
-			
-			$translations[$val->code]			= $val->language;
-			
-			$language_list						.= '
-				<li class="nav-item">
-					<a class="nav-link nav-padding-left --xhr" href="' . base_url('xhr/language/' . $val->code) . '">
-						<i class="mdi mdi-flag-outline"></i>
-						' . $val->language . '
-					</a>
-				</li>
-			';
-		}
-	}
-?>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand pt-0 pb-0 d-none d-lg-block" href="<?php echo base_url(); ?>" target="_blank">
@@ -53,17 +25,15 @@
 						<i class="mdi mdi-fullscreen"></i>
 					</a>
 				</li>
-				<?php if($language_list) { ?>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a class="nav-link dropdown-toggle" href="<?php echo base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
 						<i class="mdi mdi-translate"></i>
-						<?php echo $user_language; ?>
+						<?php echo phrase('language'); ?>
 					</a>
 					<ul class="dropdown-menu dropdown-menu-end">
-						<?php echo $language_list; ?>
+						<!-- language list -->
 					</ul>
 				</li>
-				<?php } ?>
 				<li class="nav-item">
 					<a href="<?php echo base_url('administrative/account'); ?>" class="nav-link --xhr">
 						<i class="mdi mdi-cogs"></i>
