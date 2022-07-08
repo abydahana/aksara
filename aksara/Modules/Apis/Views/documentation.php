@@ -272,20 +272,20 @@
 							Introduction
 						</h4>
 						<p>
-							<a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a> built with capability to deliver the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> output without building the another controller to produce the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request and response. The concept and workflow of <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> implementation just same as you accessing the application built with <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>, that you open now.
+							<a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a> built with capability to deliver the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> output without building the another controller to produce the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request and response. The concept and workflow of the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> implementation\'s just same as you accessing the application built with <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>, which you are open now.
 						</p>
 						<p>
-							You no longer need to think about complicated things that burden your work. All the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request will be deliver through the authentication (handshake), permission checks, including the validation that you have defined for each module that you have or will build.
+							You will no longer need to think about complicated things that burden your work. All the <a href="//en.wikipedia.org/wiki/API" target="_blank"><b>API</b></a> request will be deliver through the authentication (handshake), permission checks, including the validation that you\'ve defined for each existing or future modules.
 						</p>
 						<p>
-							It\'s that easy? Yes, becaus it\'s <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>!
+							It\'s that easy? Yes, because it\'s <a href="//www.aksaracms.com" target="_blank"><b class="text-primary">Aksara</b></a>!
 						</p>
 						<hr />
 						<h4 class="mb-3">
 							Getting Started
 						</h4>
 						<p>
-							To be able to use the API request feature, you need to first add an API key from the <a href="' . go_to('../services') . '" class="--xhr"><b>API Services Management</b></a> menu. Specify the request method that can be used, the allowed IP range and also the expiration date for the generated API key.
+							To be able to use the API request feature, you need to first add an API key from the <a href="' . go_to('../services') . '" class="--xhr"><b>API Services Management</b></a> menu. Specify the allowed request method, the allowed IP range and also the expiration date of the generated API key.
 						</p>
 						<p>
 							Use the generated API key to a specific client in the HEADER property when making a request.
@@ -374,8 +374,112 @@
 							</table>
 						</div>
 						<p>
-							The authentication process can be POST to <code>' . base_url('auth') . '</code> by add <code>X-API-KEY</code> on the client HEADER, including the form data (form-data) to send the <code>username</code> and <code>password</code> of the user.
+							The authentication process can be POST to <code>' . base_url('auth') . '</code> by adding the <code>X-API-KEY</code> on the client HEADER, including the form data (form-data) to send the <code>username</code> and <code>password</code> of the user.
 						</p>
+						<hr />
+						<h4>
+							Retrieving the Query Builder
+						</h4>
+						<p>
+							When you\'re requesting the data, there are query string helper (which mentioned under the "<code>query_string</code>") that will help you to retrieving the data to be matched with the query string keywords. Besides that, it\'s also available query string helper to retrieving the specified results.
+						</p>
+						<div class="table-responsive">
+							<table class="table table-bordered table-sm">
+								<thead>
+									<tr>
+										<th>
+											' . phrase('key') . '
+										</th>
+										<th>
+											' . phrase('type') . '
+										</th>
+										<th>
+											' . phrase('description') . '
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												limit
+											</span>
+										</td>
+										<td>
+											Number
+										</td>
+										<td>
+											Applying the result limit
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												offset
+											</span>
+										</td>
+										<td>
+											Number
+										</td>
+										<td>
+											Applying the result offset
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												order
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											Field name to be ordered
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												sort
+											</span>
+										</td>
+										<td>
+											String <code>ASC|DESC</code>
+										</td>
+										<td>
+											Sort order
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												q
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											The keyword to applying search
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span style="font-family:Consolas">
+												column
+											</span>
+										</td>
+										<td>
+											String
+										</td>
+										<td>
+											Specified field to apply the specific search
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					';
 				}
 			?>

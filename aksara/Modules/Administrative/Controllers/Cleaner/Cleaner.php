@@ -68,7 +68,7 @@ class Cleaner extends \Aksara\Laboratory\Core
 		/**
 		 * Clean session garbage
 		 */
-		$session_driver								= service('request')->config->sessionDriver;
+		$session_driver								= (service('request')->config->sessionDriver ? service('request')->config->sessionDriver : '');
 		$session_name								= service('request')->config->sessionCookieName;
 		$session_expiration							= service('request')->config->sessionExpiration;
 		$session_path								= service('request')->config->sessionSavePath;

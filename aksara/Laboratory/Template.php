@@ -609,7 +609,7 @@ class Template
 		/**
 		 * Build the result and send to client
 		 */
-		if((service('request')->isAJAX() && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) || $this->_api_request)
+		if((service('request')->isAJAX() && service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) || $this->_api_request)
 		{
 			unset($data->template, $data->pagination);
 			
@@ -1179,7 +1179,7 @@ class Template
 					array
 					(
 						'id'						=> 0,
-						'label'						=> '&nbsp;',
+						'label'						=> '',
 						'slug'						=> '---'
 					),
 					array
