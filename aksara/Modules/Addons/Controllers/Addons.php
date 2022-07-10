@@ -35,7 +35,7 @@ class Addons extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		$this->set_title(phrase('addons_market'))
+		$this->set_title(phrase('add_ons_market'))
 		->set_icon('mdi mdi-cart')
 		
 		->render();
@@ -660,7 +660,7 @@ class Addons extends \Aksara\Laboratory\Core
 			return throw_exception(404, phrase('the_selected_' . $type . '_you_would_to_install_is_not_available'));
 		}
 		
-		return throw_exception(404, phrase('your_web_server_need_to_connected_to_the_internet_to_install_the_addons'));
+		return throw_exception(404, phrase('your_web_server_need_to_connected_to_the_internet_to_install_the_add_ons'));
 	}
 	
 	/**

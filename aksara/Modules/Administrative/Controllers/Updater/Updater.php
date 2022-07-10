@@ -61,7 +61,7 @@ class Updater extends \Aksara\Laboratory\Core
 					'form_params'					=> array
 					(
 						'version'					=> aksara('version'),
-						'built_version'				=> aksara('built_version'),
+						'build_version'				=> aksara('build_version'),
 						'changelog'					=> $changelog
 					)
 				)
@@ -116,7 +116,7 @@ class Updater extends \Aksara\Laboratory\Core
 						'form_params'				=> array
 						(
 							'version'				=> aksara('version'),
-							'built_version'			=> aksara('built_version')
+							'build_version'			=> aksara('build_version')
 						)
 					)
 				);

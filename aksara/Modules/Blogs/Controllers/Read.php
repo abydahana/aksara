@@ -48,6 +48,7 @@ class Read extends \Aksara\Laboratory\Core
 		(
 			array
 			(
+				/* get similar categories */
 				'categories'						=> $this->model->select
 				('
 					COUNT(blogs.post_id) AS total_data,
@@ -74,6 +75,7 @@ class Read extends \Aksara\Laboratory\Core
 				)
 				->result(),
 				
+				/* get similar articles */
 				'similar'							=> $this->model->select
 				('
 					blogs.post_slug,
@@ -90,6 +92,7 @@ class Read extends \Aksara\Laboratory\Core
 					'blogs__categories.category_id = blogs.post_category'
 				)
 				->order_by('blogs.updated_timestamp', 'DESC')
+				->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 				->limit(10)
 				->get_where
 				(

@@ -73,7 +73,7 @@ class Synchronize extends \Aksara\Laboratory\Core
 					/* push phrase into existing if not exists */
 					if(!isset($phrase[$_key]))
 					{
-						$phrase[$_key]				= ucwords(str_replace('_', ' ', $_key));
+						$phrase[$_key]				= ucfirst(str_replace('_', ' ', $_key));
 					}
 				}
 				

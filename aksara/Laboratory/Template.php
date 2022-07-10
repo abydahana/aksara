@@ -1016,6 +1016,13 @@ class Template
 										'icon'		=> 'mdi mdi-folder-image'
 									)
 								)
+							),
+							array
+							(
+								'id'				=> 0,
+								'label'				=> 'Comments',
+								'slug'				=> 'cms/comments',
+								'icon'				=> 'mdi mdi-comment-multiple-outline'
 							)
 						)
 					),
@@ -1141,7 +1148,7 @@ class Template
 					array
 					(
 						'id'						=> 0,
-						'label'						=> 'Addons',
+						'label'						=> 'add_ons',
 						'slug'						=> 'addons',
 						'icon'						=> 'mdi mdi-puzzle'
 					),
@@ -1201,10 +1208,11 @@ class Template
 					array
 					(
 						'id'						=> 0,
-						'label'						=> 'Aksara ' . aksara('built_version'),
+						'label'						=> 'Aksara ' . aksara('build_version'),
 						'slug'						=> '---',
 						'icon'						=> 'mdi mdi-blank',
-						'class'						=> 'text-sm'
+						'class'						=> 'text-sm',
+						'translate'					=> false
 					),
 				);
 				
@@ -1215,7 +1223,7 @@ class Template
 						'id'						=> 0,
 						'label'						=> 'Main Navigation',
 						'slug'						=> '---',
-						'icon'						=> 'mdi mdi-blank',
+						'icon'						=> null,
 					),
 					array
 					(
@@ -1232,7 +1240,7 @@ class Template
 		
 		array_walk_recursive($menus, function(&$label, $key)
 		{
-			if($key == 'label' && $label)
+			if($key == 'label' && $label && $label != 'Aksara ' . aksara('build_version'))
 			{
 				$label								= phrase($label, true);
 			}

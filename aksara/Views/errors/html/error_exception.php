@@ -114,7 +114,7 @@
 			<p>
 				Displayed at <?= date('H:i:sa') ?> &mdash;
 				PHP: <?= phpversion() ?>  &mdash;
-				Aksara: <?= aksara('built_version') ?>
+				Aksara: <?= aksara('build_version') ?>
 			</p>
 
 		</div>

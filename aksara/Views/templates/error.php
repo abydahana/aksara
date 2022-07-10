@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row bg-dark full-height">
 		<div class="col-12">
-			<div class="pt-3 pb-3 text-success text-monospace">
+			<div class="pt-3 pb-3 text-success font-monospace">
 				<p class="mb-0">
 					[info@localhost ~]# aksara --tell -readonly
 				</p>
