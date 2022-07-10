@@ -64,13 +64,13 @@ class Read extends \Aksara\Laboratory\Core
 				)
 				->order_by('total_data', 'DESC')
 				->group_by('category_id, category_slug, category_title, category_description, category_image')
+				->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
 				->get_where
 				(
 					'blogs__categories',
 					array
 					(
-						'blogs.status'				=> 1,
-						'blogs.language_id'			=> get_userdata('language_id')
+						'blogs.status'				=> 1
 					)
 				)
 				->result(),
@@ -101,8 +101,7 @@ class Read extends \Aksara\Laboratory\Core
 					(
 						'category_slug'				=> ($category ? $category : ''),
 						'post_slug != '				=> ($slug ? $slug : ''),
-						'blogs.status'				=> 1,
-						'blogs.language_id'			=> get_userdata('language_id')
+						'blogs.status'				=> 1
 					)
 				)
 				->result()
