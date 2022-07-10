@@ -50,7 +50,8 @@ class Dashboard extends \Aksara\Laboratory\Core
 					),
 					'visitors'						=> $this->_visitors(),
 					'recent_signed'					=> $this->_recent_signed(),
-					'system_language'				=> $this->_system_language()
+					'system_language'				=> $this->_system_language(),
+					'announcements'					=> $this->_announcements()
 				)
 			);
 		}
@@ -226,6 +227,27 @@ class Dashboard extends \Aksara\Laboratory\Core
 				'app__users.status'					=> 1
 			),
 			7
+		)
+		->result();
+		
+		return $query;
+	}
+	
+	private function _announcements()
+	{
+		$query										= $this->model->order_by('end_date', 'DESC')
+		->order_by('FIELD(language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->get_where
+		(
+			'app__announcements',
+			array
+			(
+				'placement'							=> 0,
+				'status'							=> 1,
+				'start_date <= '					=> date('Y-m-d'),
+				'end_date >= '						=> date('Y-m-d')
+			),
+			5
 		)
 		->result();
 		

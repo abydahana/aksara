@@ -106,9 +106,12 @@ if(!function_exists('asset_loader'))
 				if($val['slug'] == '---')
 				{
 					$output							.= '
-						<li class="' . $li_class . '">
-							<span class="' . $a_class . ' text-sm hide-on-collapse">
-								' . ($val['label'] ? '<i class="mdi mdi-blank"></i> <b>' . $val['label'] . '</b>' : null) . '
+						<li class="' . $li_class . (isset($val['class']) ? ' ' . $val['class'] : null) . '">
+							<span class="' . $a_class . '">
+								' . (isset($val['icon']) && $val['icon'] ? '<i class="' . $val['icon'] . '"></i>' : null) . '
+								<b class="text-sm hide-on-collapse">
+									' . ($val['label'] ? $val['label'] : null) . '
+								</b>
 							</span>
 						</li>
 					';

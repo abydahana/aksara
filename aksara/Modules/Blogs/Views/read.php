@@ -1,14 +1,16 @@
 <div class="bg-light pt-5 pb-5 position-relative" style="background:url(<?php echo get_image('blogs', (isset($results[0]->featured_image) ? $results[0]->featured_image : 'placeholder.png')); ?>) center center no-repeat; background-size:cover">
 	<div class="clip gradient-top"></div>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-8 offset-md-2">
-				<h1 class="text-center text-light">
-					<?php echo $meta->title; ?>
-				</h1>
-				<p class="lead text-center text-light mb-5">
-					<?php echo $meta->description; ?>
-				</p>
+	<div class="position-relative">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<h1 class="text-center text-light">
+						<?php echo $meta->title; ?>
+					</h1>
+					<p class="lead text-center text-light mb-5">
+						<?php echo $meta->description; ?>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -117,6 +119,7 @@
 					';
 				}
 			?>
+			<div role="widget" data-source="<?php echo base_url('xhr/widget/comment', array('type' => 'blog', 'post_id' => $results[0]->post_id)); ?>"></div>
 		</div>
 		<div class="col-lg-4 pt-3 pb-3">
 			<div class="sticky-top">

@@ -2339,8 +2339,13 @@ class Core extends Controller
 		$this->template								= new Template($this->_set_theme, $this->_api_request);
 		
 		// check if given table is exists in database
-		if($this->_table && $this->model->table_exists($this->_table))
+		if($this->_table)
 		{
+			if(!$this->model->table_exists($this->_table))
+			{
+				return throw_exception(501, phrase('the_defined_primary_table_does_not_exists'), current_page('../'));
+			}
+			
 			$this->_field_data						= json_decode(json_encode($this->model->field_data($this->_table)), true);
 			$this->_index_data						= $this->model->index_data($this->_table);
 			$order_by								= array();

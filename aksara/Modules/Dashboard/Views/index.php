@@ -27,6 +27,100 @@
 ?>
 <div class="updater-placeholder"></div>
 <div class="container-fluid">
+	<div class="row border-bottom pt-3 pb-3">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body p-3">
+					<h3>
+						<a href="javascript:void(0)" class="btn btn-close float-end"></a>
+						<?php echo phrase('welcome_to'); ?> Aksara!
+					</h3>
+					<p class="text-muted">
+						<?php echo phrase('we_have_assembled_some_links_to_get_you_started'); ?>
+					</p>
+					<div class="row">
+						<div class="col-md-4">
+							<h5 class="mb-5">
+								<?php echo phrase('getting_started'); ?>
+							</h5>
+							<a href="<?php echo base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 --xhr">
+								<i class="mdi mdi-color-palette"></i>
+								<?php echo phrase('customize_your_app'); ?>
+							</a>
+						</div>
+						<div class="col-md-4">
+							<h5 class="mb-3">
+								<?php echo phrase('next_step'); ?>
+							</h5>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-plus"></i>
+								</div>
+								<div class="col-11">
+									<a href="<?php echo base_url('cms/blogs'); ?>" class="text-primary --xhr">
+										<?php echo phrase('write_a_blog_post'); ?>
+									</a>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-file"></i>
+								</div>
+								<div class="col-11">
+									<a href="<?php echo base_url('cms/pages'); ?>" class="text-primary --xhr">
+										<?php echo phrase('manage_the_pages'); ?>
+									</a>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-monitor-dashboard"></i>
+								</div>
+								<div class="col-11">
+									<a href="<?php echo base_url(); ?>" class="text-primary" target="_blank">
+										<?php echo phrase('view_your_site'); ?>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<h5 class="mb-3">
+								<?php echo phrase('more_actions'); ?>
+							</h5>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-puzzle"></i>
+								</div>
+								<div class="col-11">
+									<?php echo phrase('manage'); ?> <a href="<?php echo base_url('addons'); ?>" class="text-primary --xhr"><?php echo phrase('add_ons'); ?></a> <?php echo phrase('or'); ?> <a href="<?php echo base_url('administrative/menus'); ?>" class="text-primary --xhr"><?php echo phrase('menus'); ?></a>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-comment-multiple-outline"></i>
+								</div>
+								<div class="col-11">
+									<a href="<?php echo base_url('cms/comments'); ?>" class="text-primary --xhr">
+										<?php echo phrase('turn_comments_on_or_off'); ?>
+									</a>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1">
+									<i class="mdi mdi-information-outline"></i>
+								</div>
+								<div class="col-11">
+									<a href="//aksaracms.com/pages/documentation" class="text-primary" target="_blank">
+										<?php echo phrase('learn_more_about'); ?> Aksara
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row border-bottom pt-3">
 		<div class="col-6 col-lg-3 mb-3">
 			<a href="<?php echo base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?php echo phrase('manage_blog_post'); ?>">
@@ -114,7 +208,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-lg-8 bg-white border-end" style="margin-right:-1px">
+		<div class="col-lg-8 bg-white">
 			<div class="sticky-top pt-3">
 				<div class="border rounded p-1 mb-3">
 					<div id="visitor-chart" class="rounded" style="width:100%; height:300px"></div>
@@ -197,79 +291,113 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-4 bg-white border-start" style="margin-left:-1px">
+		<div class="col-lg-4 bg-white">
 			<div class="sticky-top pt-3">
-				<div class="row">
-					<div class="col-6">
-						<div class="mb-3 border-bottom">
+				<?php if($announcements) { ?>
+					<div class="card mb-3">
+						<div class="card-header bg-white border-0">
+							<h5 class="card-title mb-0">
+								<?php echo phrase('announcements'); ?>
+							</h5>
+						</div>
+						<?php
+							$announcement			= null;
+							
+							foreach($announcements as $key => $val)
+							{
+								$announcement		.= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="--xhr">' . $val->title . '</a></li>';
+								$announcement		.= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="--xhr">' . $val->title . '</a></li>';
+							}
+							
+							echo '
+								<ul class="list-group list-group-flush">
+									' . $announcement . '
+								</ul>
+							';
+						?>
+					</div>
+				<?php } ?>
+				
+				<div class="card mb-3">
+					<div class="card-header bg-white border-0">
+						<h5 class="card-title mb-0">
+							<?php echo phrase('application_information'); ?>
+						</h5>
+					</div>
+					<div class="card-body p-3">
+						<div class="row">
+							<div class="col-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										AKSARA
+									</label>
+									<p>
+										<?php echo aksara('version'); ?>
+									</p>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										<?php echo phrase('build_version'); ?>
+									</label>
+									<p>
+										<?php echo aksara('build_version'); ?>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="mb-3">
 							<label class="d-block text-muted mb-0">
-								AKSARA
+								<?php echo phrase('last_modified'); ?>
 							</label>
 							<p>
-								<?php echo aksara('version'); ?>
+								<?php echo aksara('date_modified'); ?>
 							</p>
 						</div>
-					</div>
-					<div class="col-6">
-						<div class="mb-3 border-bottom">
-							<label class="d-block text-muted mb-0">
-								<?php echo phrase('built_version'); ?>
-							</label>
-							<p>
-								<?php echo aksara('built_version'); ?>
-							</p>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										<?php echo phrase('system_language'); ?>
+									</label>
+									<p>
+										<?php echo (isset($system_language) ? $system_language : null); ?>
+									</p>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										<?php echo phrase('membership'); ?>
+									</label>
+									<p>
+										<?php echo (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
+									</p>
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-				<div class="mb-3 border-bottom">
-					<label class="d-block text-muted mb-0">
-						<?php echo phrase('last_modified'); ?>
-					</label>
-					<p>
-						<?php echo aksara('date_modified'); ?>
-					</p>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="mb-3 border-bottom">
-							<label class="d-block text-muted mb-0">
-								<?php echo phrase('system_language'); ?>
-							</label>
-							<p>
-								<?php echo (isset($system_language) ? $system_language : null); ?>
-							</p>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="mb-3 border-bottom">
-							<label class="d-block text-muted mb-0">
-								<?php echo phrase('membership'); ?>
-							</label>
-							<p>
-								<?php echo (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="mb-3 border-bottom">
-							<label class="d-block text-muted mb-0">
-								<?php echo phrase('secure_login_attempt'); ?>
-							</label>
-							<p>
-								<?php echo (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
-							</p>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="mb-3 border-bottom">
-							<label class="d-block text-muted mb-0">
-								<?php echo phrase('blocking_time'); ?>
-							</label>
-							<p>
-								<?php echo (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
-							</p>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										<?php echo phrase('secure_login_attempt'); ?>
+									</label>
+									<p>
+										<?php echo (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
+									</p>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="mb-3">
+									<label class="d-block text-muted mb-0">
+										<?php echo phrase('blocking_time'); ?>
+									</label>
+									<p>
+										<?php echo (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('disabled') . '</span>'); ?>
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

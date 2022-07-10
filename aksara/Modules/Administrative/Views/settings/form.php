@@ -39,7 +39,7 @@
 				<div class="tab-content" id="pills-tabContent">
 					<div class="tab-pane fade show active" id="pills-setting">
 						<h5>
-							Application Indentity
+							<?php echo phrase('application_identity'); ?>
 						</h5>
 						<div class="form-group mb-3">
 							<label class="text-muted d-block" for="app_name_input">
@@ -94,7 +94,7 @@
 						<hr class="border-secondary" />
 						
 						<h5>
-							Contact Information
+							<?php echo phrase('contact_information'); ?>
 						</h5>
 						
 						<div class="form-group mb-3">

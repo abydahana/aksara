@@ -36,10 +36,10 @@
 				<div class="col-6 col-sm-6 col-md-12">
 					<div class="mb-3">
 						<label class="d-block text-muted mb-0">
-							<?php echo phrase('built_version'); ?>
+							<?php echo phrase('build_version'); ?>
 						</label>
 						<label class="d-block">
-							<?php echo aksara('built_version'); ?>
+							<?php echo aksara('build_version'); ?>
 						</label>
 					</div>
 				</div>

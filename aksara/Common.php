@@ -27,7 +27,7 @@ if(! function_exists('aksara'))
 		{
 			return $version;
 		}
-		else if('built_version' == $parameter)
+		else if('build_version' == $parameter)
 		{
 			return $version . \CodeIgniter\CodeIgniter::CI_VERSION;
 		}

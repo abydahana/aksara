@@ -84,8 +84,8 @@
 				<div class="row align-items-center alias-table-header border-bottom">
 					<div class="col-8">
 						<h5 class="text-truncate mb-0">
-							<i class="<?php echo $meta->icon; ?>" id="will-be-replace-with-icon"></i>
-							<span id="will-be-replace-with-title">
+							<i class="<?php echo $meta->icon; ?>" role="icon"></i>
+							<span role="title">
 								<?php echo $meta->title; ?>
 							</span>
 						</h5>

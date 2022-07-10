@@ -93,7 +93,7 @@
 					'<div class="col-lg-12">' +
 						'<div class="alert alert-warning">' +
 							'<i class="mdi mdi-information-outline"></i>' +
-							'<?php echo phrase('no_addons_available_for_your_current_aksara_version'); ?>' +
+							'<?php echo phrase('no_add_ons_available_for_your_current_aksara_version'); ?>' +
 						'</div>' +
 					'</div>'
 				);

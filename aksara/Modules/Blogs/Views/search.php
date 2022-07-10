@@ -1,26 +1,28 @@
 <div class="bg-light pt-5 pb-5 position-relative" style="background: url(<?php echo get_image('blogs', 'cover.jpg'); ?>) center center no-repeat; background-size: cover">
 	<div class="clip gradient-top"></div>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-8 offset-md-2">
-				<h1 class="text-center text-light">
-					<?php echo $meta->title; ?>
-				</h1>
-				<p class="lead text-center text-light mb-5">
-					<?php echo truncate($meta->description, 256); ?>
-				</p>
+	<div class="position-relative">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<h1 class="text-center text-light">
+						<?php echo $meta->title; ?>
+					</h1>
+					<p class="lead text-center text-light mb-5">
+						<?php echo truncate($meta->description, 256); ?>
+					</p>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-				<form action="<?php echo base_url('blogs/search', array('per_page' => null)); ?>" method="POST" class="form-horizontal position-relative --xhr-form">
-					<div class="input-group input-group-lg position-relative rounded-pill overflow-hidden">
-						<input type="text" name="q" class="form-control border-0" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo $keywords; ?>" />
-						<button type="submit" class="btn btn-light border-0">
-							<i class="mdi mdi-magnify"></i>
-						</button>
-					</div>
-				</form>
+			<div class="row">
+				<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+					<form action="<?php echo base_url('blogs/search', array('per_page' => null)); ?>" method="POST" class="form-horizontal position-relative --xhr-form">
+						<div class="input-group input-group-lg position-relative rounded-pill overflow-hidden">
+							<input type="text" name="q" class="form-control border-0" placeholder="<?php echo phrase('search_post'); ?>" value="<?php echo $keywords; ?>" />
+							<button type="submit" class="btn btn-light border-0">
+								<i class="mdi mdi-magnify"></i>
+							</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
