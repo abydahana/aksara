@@ -46,7 +46,7 @@ class Auth extends \Aksara\Laboratory\Core
 		}
 		
 		/* check authentication request */
-		else if(service('request')->getPost('_token') || $this->_api_request)
+		else if($this->valid_token(service('request')->getPost('_token')) || $this->_api_request)
 		{
 			/* apply login attempts limit (prevent bruteforce) */
 			if(get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())

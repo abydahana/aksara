@@ -41,83 +41,83 @@ class Register extends \Aksara\Laboratory\Core
 	public function index()
 	{
 		/* captcha challenge */
-		if(!service('request')->getPost('_token'))
+		if($this->valid_token(service('request')->getPost('_token')))
 		{
-			$string									= '123456789ABCDEF';
-			$length									= 6;
-			$captcha								= array();
-			
-			if(is_writable(UPLOAD_PATH))
+			return $this->_validate_form();
+		}
+		
+		$string										= '123456789ABCDEF';
+		$length										= 6;
+		$captcha									= array();
+		
+		if(is_writable(UPLOAD_PATH))
+		{
+			if(!is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
 			{
-				if(!is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
-				{
-					@mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
-				}
-				
-				if(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
-				{
-					helper('captcha');
-					
-					$captcha						= create_captcha
-					(
-						array
-						(
-							'img_path'				=> UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR,
-							'img_url'				=> base_url(UPLOAD_PATH . '/captcha'),
-							'img_width'				=> 120,
-							'img_height'			=> 30,
-							'expiration'			=> 3600,
-							'word_length'			=> $length,
-							'pool'					=> $string,
-							'colors'				=> array
-							(
-								'background'		=> array(52, 58, 64),
-								'border'			=> array(52, 58, 64),
-								'grid'				=> array(52, 58, 64),
-								'text'				=> array(255, 255, 255)
-							)
-						)
-					);
-				}
+				@mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
 			}
 			
-			if(!$captcha)
+			if(is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha'))
 			{
-				$captcha							= array
+				helper('captcha');
+				
+				$captcha							= create_captcha
 				(
-					'word'							=> substr(str_shuffle(str_repeat($string, ceil($length / strlen($string)))), 1, $length),
-					'filename'						=> null
+					array
+					(
+						'img_path'					=> UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR,
+						'img_url'					=> base_url(UPLOAD_PATH . '/captcha'),
+						'img_width'					=> 120,
+						'img_height'				=> 30,
+						'expiration'				=> 3600,
+						'word_length'				=> $length,
+						'pool'						=> $string,
+						'colors'					=> array
+						(
+							'background'			=> array(52, 58, 64),
+							'border'				=> array(52, 58, 64),
+							'grid'					=> array(52, 58, 64),
+							'text'					=> array(255, 255, 255)
+						)
+					)
 				);
 			}
-			
-			/* set captcha word into session, used to next validation */
-			set_userdata
+		}
+		
+		if(!$captcha)
+		{
+			$captcha								= array
 			(
-				array
-				(
-					'captcha'						=> $captcha['word'],
-					'captcha_file'					=> $captcha['filename']
-				)
-			);
-			
-			$this->set_output
-			(
-				array
-				(
-					'captcha'						=> array
-					(
-						'image'						=> ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
-						'string'					=> (!$captcha['filename'] ? $captcha['word'] : null)
-					)
-				)
+				'word'								=> substr(str_shuffle(str_repeat($string, ceil($length / strlen($string)))), 1, $length),
+				'filename'							=> null
 			);
 		}
+		
+		/* set captcha word into session, used to next validation */
+		set_userdata
+		(
+			array
+			(
+				'captcha'							=> $captcha['word'],
+				'captcha_file'						=> $captcha['filename']
+			)
+		);
+		
+		$this->set_output
+		(
+			array
+			(
+				'captcha'							=> array
+				(
+					'image'							=> ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
+					'string'						=> (!$captcha['filename'] ? $captcha['word'] : null)
+				)
+			)
+		);
 		
 		$this->set_title(phrase('register_an_account'))
 		->set_icon('mdi mdi-account-plus')
 		->set_description(phrase('fill_all_the_required_fields_below_to_register_your_account'))
-		
-		->form_callback('_validate_form')
 		
 		->render();
 	}
