@@ -236,7 +236,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 	private function _announcements()
 	{
 		$query										= $this->model->order_by('end_date', 'DESC')
-		->order_by('FIELD(language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 		->get_where
 		(
 			'app__announcements',

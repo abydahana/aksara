@@ -75,7 +75,7 @@ class Tags extends \Aksara\Laboratory\Core
 			)
 		)
 		
-		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 		
 		->render('blogs');
 	}

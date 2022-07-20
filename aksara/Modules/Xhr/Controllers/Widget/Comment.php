@@ -27,7 +27,7 @@ class Comment extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if(service('request')->getPost('_token'))
+		if($this->valid_token(service('request')->getPost('_token')))
 		{
 			return $this->_validate_form();
 		}
@@ -52,6 +52,138 @@ class Comment extends \Aksara\Laboratory\Core
 		->order_by('comment_id', 'DESC')
 		
 		->render($this->_table);
+	}
+	
+	public function update()
+	{
+	}
+	
+	public function reply()
+	{
+		return make_json
+		(
+			array
+			(
+				'status'							=> 200,
+				'meta'								=> array
+				(
+					'title'							=> phrase('action_warning'),
+					'icon'							=> 'mdi mdi-alert-outline',
+					'popup'							=> true
+				),
+				'html'								=> $html
+			)
+		);
+	}
+	
+	public function approval()
+	{
+		if(1 == service('request')->getPost('report'))
+		{
+			return throw_exception(200, phrase('comment_was_successfully_reported_and_queued_for_review'));
+		}
+		
+		$html										= '
+			<form action="' . current_page() . '" method="POST" class="--validate-form">
+				<input type="hidden" name="report" value="1" />
+				<div class="p-3 pb-0">
+					<div class="form-group text-center">
+						' . phrase('are_you_sure_want_to_report_this_comment') . '
+					</div>
+				</div>
+				<hr />
+				<div class="p-3 pt-0">
+					<div class="row">
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+									<i class="mdi mdi-window-close"></i>
+									' . phrase('cancel') . '
+								</button>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="submit" class="btn btn-danger">
+									<i class="mdi mdi-check"></i>
+									' . phrase('report') . '
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		';
+		
+		return make_json
+		(
+			array
+			(
+				'status'							=> 200,
+				'meta'								=> array
+				(
+					'title'							=> phrase('report_comment'),
+					'icon'							=> 'mdi mdi-alert-outline',
+					'popup'							=> true
+				),
+				'html'								=> $html
+			)
+		);
+	}
+	
+	public function report()
+	{
+		if(1 == service('request')->getPost('report'))
+		{
+			return throw_exception(200, phrase('comment_was_successfully_reported_and_queued_for_review'));
+		}
+		
+		$html										= '
+			<form action="' . current_page() . '" method="POST" class="--validate-form">
+				<input type="hidden" name="report" value="1" />
+				<div class="p-3 pb-0">
+					<div class="form-group text-center">
+						' . phrase('are_you_sure_want_to_report_this_comment') . '
+					</div>
+				</div>
+				<hr />
+				<div class="p-3 pt-0">
+					<div class="row">
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+									<i class="mdi mdi-window-close"></i>
+									' . phrase('cancel') . '
+								</button>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="submit" class="btn btn-danger">
+									<i class="mdi mdi-check"></i>
+									' . phrase('report') . '
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		';
+		
+		return make_json
+		(
+			array
+			(
+				'status'							=> 200,
+				'meta'								=> array
+				(
+					'title'							=> phrase('report_comment'),
+					'icon'							=> 'mdi mdi-alert-outline',
+					'popup'							=> true
+				),
+				'html'								=> $html
+			)
+		);
 	}
 	
 	private function _validate_form()
@@ -83,7 +215,7 @@ class Comment extends \Aksara\Laboratory\Core
 				'created_timestamp'					=> date('Y-m-d H:i:s'),
 				'updated_timestamp'					=> date('Y-m-d H:i:s'),
 				'anonymous'							=> (service('request')->getPost('anonymous') ? 1 : 0),
-				'status'							=> 0
+				'status'							=> (in_array(get_userdata('group_id'), array(1, 2)) ? 1 : 0)
 			)
 		);
 		
@@ -101,17 +233,7 @@ class Comment extends \Aksara\Laboratory\Core
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
 								<li>
 									<a class="dropdown-item" href="#">
-										' . phrase('approve') . '
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item" href="#">
-										' . phrase('report') . '
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item" href="#">
-										' . phrase('hide') . '
+										' . phrase('update') . '
 									</a>
 								</li>
 							</ul>

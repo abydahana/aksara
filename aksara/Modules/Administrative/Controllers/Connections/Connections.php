@@ -30,9 +30,15 @@ class Connections extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
+		if(service('request')->getPost('year'))
+		{
+			$this->set_validation('year', 'valid_year');
+		}
+		
 		$this->set_title(phrase('third_party_connection'))
 		->set_icon('mdi mdi-power-plug')
 		->unset_column('hostname, port, username, password, database_name')
+		->unset_field('id')
 		
 		->add_action('option', 'connect', phrase('check_connection'), 'btn btn-success --xhr show-progress', 'mdi mdi-sync', array('year' => 'year', 'driver' => 'database_driver'))
 		
@@ -43,7 +49,7 @@ class Connections extends \Aksara\Laboratory\Core
 				'description'						=> 'textarea',
 				'username'							=> 'encryption',
 				'password'							=> 'encryption',
-				'port'								=> 'numeric',
+				'port'								=> 'integer',
 				'status'							=> 'boolean'
 			)
 		)
@@ -84,26 +90,22 @@ class Connections extends \Aksara\Laboratory\Core
 			)
 		)
 		->merge_field('hostname, port')
-		->merge_field('username, password')
 		->field_size
 		(
 			array
 			(
 				'hostname'							=> 'col-sm-8',
-				'port'								=> 'col-sm-4',
-				'username'							=> 'col-sm-6',
-				'password'							=> 'col-sm-6'
+				'port'								=> 'col-sm-4'
 			)
 		)
 		->set_validation
 		(
 			array
 			(
-				'year'								=> 'required',
 				'name'								=> 'required',
-				'year'								=> 'required',
 				'database_driver'					=> 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]',
 				'hostname'							=> 'required',
+				'port'								=> 'required|integer',
 				'username'							=> 'required',
 				'database_name'						=> 'required'
 			)
