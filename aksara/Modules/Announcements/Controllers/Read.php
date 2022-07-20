@@ -33,7 +33,7 @@ class Read extends \Aksara\Laboratory\Core
 		$this->set_title('{title}', phrase('announcements'))
 		->set_icon('mdi mdi-bullhorn')
 		->where('announcement_slug', $slug)
-		->order_by('FIELD(language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 		->limit(1)
 		
 		->render($this->_table);

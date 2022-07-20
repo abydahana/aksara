@@ -3,7 +3,7 @@
 		<div class="col-12">
 			<div class="pt-3 pb-3 text-success font-monospace">
 				<p class="mb-0">
-					[info@localhost ~]# aksara --tell -readonly
+					[info@localhost ~]# aksara trace -exception
 				</p>
 				<p class="mb-0 text-danger">
 					<?php echo phrase('no_response_could_be_loaded'); ?>

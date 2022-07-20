@@ -40,7 +40,7 @@ class Testimonials extends \Aksara\Laboratory\Core
 		)
 		
 		->order_by('timestamp', 'desc')
-		->order_by('FIELD(language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 		
 		->render($this->_table);
 	}

@@ -64,7 +64,7 @@ class Read extends \Aksara\Laboratory\Core
 				)
 				->order_by('total_data', 'DESC')
 				->group_by('category_id, category_slug, category_title, category_description, category_image')
-				->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+				->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 				->get_where
 				(
 					'blogs__categories',
@@ -92,7 +92,7 @@ class Read extends \Aksara\Laboratory\Core
 					'blogs__categories.category_id = blogs.post_category'
 				)
 				->order_by('blogs.updated_timestamp', 'DESC')
-				->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+				->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 				->limit(10)
 				->get_where
 				(
@@ -134,7 +134,7 @@ class Read extends \Aksara\Laboratory\Core
 			'app__users',
 			'app__users.user_id = blogs.author'
 		)
-		->order_by('FIELD(blogs.language_id, ' . get_userdata('language_id') . ')', 'DESC', false)
+		->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 		->limit(1)
 		
 		->render($this->_table);

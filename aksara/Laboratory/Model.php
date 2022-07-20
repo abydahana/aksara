@@ -112,38 +112,12 @@ class Model
 		
 		try
 		{
-			// trying to connect
-			$this->db->connect();
-			
-			// check whether the connection was successfully made
-			if(!$this->db->connID)
-			{
-				/**
-				 * Connection couldn't be made, connect through PDO library (emergency connection).
-				 * You're unable to using the query builder when connected through PDO.
-				 */
-				$this->db							= new \Aksara\Libraries\Pdo($parameter['hostname'], $parameter['port'], $parameter['username'], $parameter['password'], $parameter['database']);
-				
-				if(!$this->db->connID)
-				{
-					// connection failed
-					return throw_exception(403, phrase('unable_to_connect_to_the_database_using_the_provided_configuration'));
-				}
-			}
+			// try to initialize the connection
+			$this->db->initialize();
 		}
 		catch(\Throwable $e)
 		{
-			/**
-			 * Connection couldn't be made, connect through PDO library (emergency connection).
-			 * You're unable to using the query builder when connected through PDO.
-			 */
-			$this->db								= new \Aksara\Libraries\Pdo($parameter['hostname'], $parameter['port'], $parameter['username'], $parameter['password'], $parameter['database']);
-			
-			if(!$this->db->connID)
-			{
-				// connection couldn't be made, throw error
-				return throw_exception(403, $e->getMessage());
-			}
+			return throw_exception(403, $e->getMessage());
 		}
 		
 		return $this;
@@ -481,22 +455,26 @@ class Model
 	{
 		if(is_array($field))
 		{
-			// run or where command
+			// run where command
 			foreach($field as $key => $val)
 			{
+				$cast								= $this->_cast_column($key, $val);
+				
 				$this->_prepare[]					= array
 				(
 					'function'						=> 'where',
-					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
+					'arguments'						=> array($cast['column'], $cast['value'], $escape)
 				);
 			}
 		}
 		else
 		{
+			$cast									= $this->_cast_column($field, $value);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'where',
-				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+				'arguments'							=> array($cast['column'], $cast['value'], $escape)
 			);
 		}
 		
@@ -515,19 +493,23 @@ class Model
 			// run or where command
 			foreach($field as $key => $val)
 			{
+				$cast								= $this->_cast_column($key, $val);
+				
 				$this->_prepare[]					= array
 				(
 					'function'						=> 'orWhere',
-					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
+					'arguments'						=> array($cast['column'], $cast['value'], $escape)
 				);
 			}
 		}
 		else
 		{
+			$cast									= $this->_cast_column($field, $value);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orWhere',
-				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+				'arguments'							=> array($cast['column'], $cast['value'], $escape)
 			);
 		}
 		
@@ -696,10 +678,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val['match']);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'like',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -748,10 +732,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val['match']);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -800,10 +786,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val['match']);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'notLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -852,10 +840,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val['match']);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orNotLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -871,22 +861,26 @@ class Model
 	{
 		if(is_array($field))
 		{
-			// run or where command
+			// run having command
 			foreach($field as $key => $val)
 			{
+				$cast								= $this->_cast_column($key, $val);
+				
 				$this->_prepare[]					= array
 				(
 					'function'						=> 'having',
-					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
+					'arguments'						=> array($cast['column'], $cast['value'], $escape)
 				);
 			}
 		}
 		else
 		{
+			$cast									= $this->_cast_column($field, $value);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'having',
-				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+				'arguments'							=> array($cast['column'], $cast['value'], $escape)
 			);
 		}
 		
@@ -902,22 +896,26 @@ class Model
 	{
 		if(is_array($field))
 		{
-			// run or where command
+			// run or having command
 			foreach($field as $key => $val)
 			{
+				$cast								= $this->_cast_column($key, $val);
+				
 				$this->_prepare[]					= array
 				(
 					'function'						=> 'orHaving',
-					'arguments'						=> array($this->_cast_column($key, $val), ($val ? $val : ''), $escape)
+					'arguments'						=> array($cast['column'], $cast['value'], $escape)
 				);
 			}
 		}
 		else
 		{
+			$cast									= $this->_cast_column($field, $value);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orHaving',
-				'arguments'							=> array($this->_cast_column($field, $value), $value, $escape)
+				'arguments'							=> array($cast['column'], $cast['value'], $escape)
 			);
 		}
 		
@@ -1086,10 +1084,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'havingLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -1138,10 +1138,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orHavingLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -1190,10 +1192,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'notHavingLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -1242,10 +1246,12 @@ class Model
 		
 		foreach($column as $key => $val)
 		{
+			$cast									= $this->_cast_column($key, $val);
+			
 			$this->_prepare[]						= array
 			(
 				'function'							=> 'orNotHavingLike',
-				'arguments'							=> array($this->_cast_column($key, $val['match']), ($val['match'] ? $val['match'] : ''), $val['side'], $val['escape'], $val['case_insensitive'])
+				'arguments'							=> array($cast['column'], $cast['value'], $val['side'], $val['side'], $val['escape'], $val['case_insensitive'])
 			);
 		}
 		
@@ -1866,7 +1872,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			$this->_limit							= $limit;
 		}
@@ -2200,33 +2206,33 @@ class Model
 	
 	private function _cast_column($column = null, $value = '')
 	{
-		if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($key, '(') && !stripos($key, ')'))
+		if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($column, '(') && !stripos($column, ')'))
 		{
 			// type casting for PostgreSQL
 			if(in_array(gettype($value), array('integer')))
 			{
 				$cast_type							= 'INTEGER';
-				$value								= (int) $value['value'];
+				$value								= (int) $value;
 			}
 			else if(in_array(gettype($value), array('double')))
 			{
 				$cast_type							= 'DOUBLE';
-				$value								= (double) $value['value'];
+				$value								= (double) $value;
 			}
 			else if(in_array(gettype($value), array('float')))
 			{
 				$cast_type							= 'FLOAT';
-				$value								= (float) $value['value'];
+				$value								= (float) $value;
 			}
-			else if(\DateTime::createFromFormat('Y-m-d H:i:s', $value))
+			else if($value && \DateTime::createFromFormat('Y-m-d H:i:s', $value))
 			{
 				$cast_type							= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
-				$value								= $value;
+				$value								= (string) $value;
 			}
-			else if(\DateTime::createFromFormat('Y-m-d', $value))
+			else if($value && \DateTime::createFromFormat('Y-m-d', $value))
 			{
 				$cast_type							= 'DATE';
-				$value								= $value;
+				$value								= (string) $value;
 			}
 			else if(!is_array(gettype($value)))
 			{
@@ -2247,6 +2253,10 @@ class Model
 			}
 		}
 		
-		return $column;
+		return array
+		(
+			'column'								=> $column,
+			'value'									=> $value
+		);
 	}
 }

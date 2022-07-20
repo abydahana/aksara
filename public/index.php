@@ -18,19 +18,19 @@ else if(!is_writable(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'writable') || !is
 }
 
 // check if configuration file already exists
-if(!file_exists('../config.php'))
+if(!file_exists(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php'))
 {
-	if(!is_dir('../install'))
+	if(!is_dir(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'install'))
 	{
 		exit('<center>The config file or installer does not exists!</center>');
 	}
 	
-	define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+	define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? 'https' : 'http') . '://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost') . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 }
 else
 {
 	// include the configuration file
-	require_once '../config.php';
+	require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php';
 }
 
 // Valid PHP Version?
@@ -58,7 +58,7 @@ chdir(__DIR__);
 
 // Load our paths config file
 // This is the line that might need to be changed, depending on your folder structure.
-require realpath(FCPATH . (file_exists('../config.php') ? '../aksara/Config/Paths.php' : '../install/Config/Paths.php')) ?: FCPATH . (file_exists('../config.php') ? '../aksara/Config/Paths.php' : '../install/Config/Paths.php');
+require realpath((file_exists(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php') ? dirname(__DIR__) . DIRECTORY_SEPARATOR . 'aksara/Config/Paths.php' : dirname(__DIR__) . DIRECTORY_SEPARATOR . 'install/Config/Paths.php')) ?: (file_exists(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php') ? dirname(__DIR__) . DIRECTORY_SEPARATOR . 'aksara/Config/Paths.php' : dirname(__DIR__) . DIRECTORY_SEPARATOR . 'install/Config/Paths.php');
 // ^^^ Change this if you move your application folder
 
 $paths = new Config\Paths();

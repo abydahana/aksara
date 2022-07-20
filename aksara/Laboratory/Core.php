@@ -2933,8 +2933,8 @@ class Core extends Controller
 				}
 			}
 			
-			$title									= preg_replace('/\{.*?\}/', '', $title);
-			$description							= preg_replace('/\{.*?\}/', '', $description);
+			$title									= ($title ? preg_replace('/\{.*?\}/', '', $title) : phrase('untitled'));
+			$description							= ($description ? preg_replace('/\{.*?\}/', '', $description) : null);
 			
 			// if method is create
 			if('create' == $this->_method)
@@ -5478,7 +5478,7 @@ class Core extends Controller
 						}
 					}
 					
-					if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
+					if(array_intersect(array('numeric', 'number_format', 'price_format', 'percent_format'), $type))
 					{
 						if(array_intersect(array('numeric', 'price_format', 'percent_format'), $type))
 						{
@@ -5764,6 +5764,15 @@ class Core extends Controller
 					
 					$dropdown[$key][$_key]			= $_val;
 				}
+			}
+			
+			if(!$this->_api_request)
+			{
+				// remove unnecessary columns
+				$val								= array_intersect_key($val, $columns);
+				
+				// flip columns to match the order
+				$output[$key]						= array_merge(array_flip(array_keys($columns)), $val);
 			}
 		}
 		
