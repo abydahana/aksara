@@ -128,16 +128,20 @@
 					<?php } ?>
 				</div>
 				<div class="col-sm-4">
-					<a href="<?php echo base_url(('backend' == $detail->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $detail->folder, 'integrity_check' => $detail->integrity)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
-						<i class="mdi mdi-magnify"></i>
-						<?php echo phrase('preview'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo base_url(('backend' == $detail->type ? 'dashboard' : null), array('aksara_mode' => 'preview-theme', 'aksara_theme' => $detail->folder, 'integrity_check' => $detail->integrity)); ?>" class="btn btn-outline-primary btn-sm" target="_blank">
+							<i class="mdi mdi-magnify"></i>
+							<?php echo phrase('preview'); ?>
+						</a>
+					</div>
 				</div>
 				<div class="col-sm-4">
-					<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-block btn-sm --modal">
-						<i class="mdi mdi-window-close"></i>
-						<?php echo phrase('delete'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-sm --modal">
+							<i class="mdi mdi-window-close"></i>
+							<?php echo phrase('delete'); ?>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>

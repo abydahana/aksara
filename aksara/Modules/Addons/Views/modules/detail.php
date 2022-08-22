@@ -106,16 +106,20 @@
 		<div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
 			<div class="row">
 				<div class="col-sm-6">
-					<a href="<?php echo current_page('../update', array('item' => $detail->folder)); ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
-						<i class="mdi mdi-auto-fix"></i>
-						<?php echo phrase('update'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo current_page('../update', array('item' => $detail->folder)); ?>" class="btn btn-outline-primary btn-sm" target="_blank">
+							<i class="mdi mdi-auto-fix"></i>
+							<?php echo phrase('update'); ?>
+						</a>
+					</div>
 				</div>
 				<div class="col-sm-6">
-					<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-block btn-sm --modal">
-						<i class="mdi mdi-delete"></i>
-						<?php echo phrase('uninstall'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo current_page('../delete', array('item' => $detail->folder)); ?>" class="btn btn-outline-danger btn-sm --modal">
+							<i class="mdi mdi-delete"></i>
+							<?php echo phrase('uninstall'); ?>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
