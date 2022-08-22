@@ -142,7 +142,7 @@
 					<b class="text-danger">*</b>
 				</label>
 				<div class="input-group input-group-sm">
-					<input type="number" name="icon_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('icon_dimension') ? session()->get('icon_dimension') : 64); ?>" />
+					<input type="number" name="icon_dimension" class="form-control form-control-sm" placeholder="in pixel" value="<?php echo (session()->get('icon_dimension') ? session()->get('icon_dimension') : 80); ?>" />
 					<span class="input-group-text">
 						px
 					</span>

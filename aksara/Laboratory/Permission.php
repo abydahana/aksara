@@ -238,7 +238,7 @@ class Permission
 		)
 		->row('privileges');
 		
-		$privileges									= json_decode($privileges, true);
+		$privileges									= ($privileges ? json_decode($privileges, true) : array());
 		
 		if($privileges)
 		{

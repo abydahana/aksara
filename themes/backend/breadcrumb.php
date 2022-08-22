@@ -1,4 +1,4 @@
-<nav class="position-fixed w-100 bg-white border-bottom" aria-label="breadcrumb" id="breadcrumb-wrapper">
+<nav class="position-fixed w-100 bg-light border-bottom" aria-label="breadcrumb" id="breadcrumb-wrapper">
 	<div class="container-fluid">
 		<ol class="breadcrumb rounded-0 mb-0">
 			<?php

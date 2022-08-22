@@ -32,7 +32,7 @@ class Services extends \Aksara\Laboratory\Core
 	{
 		$this->set_title(phrase('manage_services'))
 		->set_icon('mdi mdi-link-variant')
-		->unset_column('id, api_key, method, ip_range')
+		->unset_column('id, method, ip_range')
 		->unset_field('id')
 		->unset_view('id')
 		->set_field

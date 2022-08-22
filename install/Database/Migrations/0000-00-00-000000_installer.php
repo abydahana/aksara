@@ -1875,12 +1875,14 @@ class Installer extends Migration
 					'type' => 'text',
 					'null' => false
 				),
-				'created_timestamp' => array
+				'edited' => array
 				(
-					'type' => 'timestamp',
+					'type' => 'tinyint',
+					'constraint' => 1,
+					'default' => '0',
 					'null' => false
 				),
-				'updated_timestamp' => array
+				'timestamp' => array
 				(
 					'type' => 'timestamp',
 					'null' => false
@@ -1902,6 +1904,35 @@ class Installer extends Migration
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		
 		$this->forge->createTable('comments');
+		
+		$this->forge->addField
+		(
+			array
+			(
+				'comment_id' => array
+				(
+					'type' => 'bigint',
+					'constraint' => 22,
+					'unsigned' => true,
+					'null' => false
+				),
+				'comments' => array
+				(
+					'type' => 'text',
+					'null' => false
+				),
+				'timestamp' => array
+				(
+					'type' => 'timestamp',
+					'null' => false
+				)
+			)
+		);
+		$this->forge->addKey('comment_id', false, false);
+		
+		$this->forge->addForeignKey('comment_id', 'comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		
+		$this->forge->createTable('comments__updates');
 		
 		$this->forge->addField
 		(
@@ -1952,6 +1983,11 @@ class Installer extends Migration
 					'type' => 'bigint',
 					'constraint' => 22,
 					'unsigned' => true,
+					'null' => false
+				),
+				'message' => array
+				(
+					'type' => 'text',
 					'null' => false
 				),
 				'timestamp' => array

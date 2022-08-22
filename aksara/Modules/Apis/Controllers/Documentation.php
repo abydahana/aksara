@@ -208,6 +208,8 @@ class Documentation extends \Aksara\Laboratory\Core
 		
 		try
 		{
+			helper('cookie');
+			
 			// prepare the cURL
 			$curl									= \Config\Services::curlrequest
 			(
@@ -217,7 +219,7 @@ class Documentation extends \Aksara\Laboratory\Core
 					'http_errors'					=> false,
 					'allow_redirects'				=> array
 					(
-						'max'						=> 2
+						'max'						=> 10
 					),
 					'headers'						=> array
 					(
@@ -372,8 +374,8 @@ class Documentation extends \Aksara\Laboratory\Core
 				
 				if(!in_array($slug, $this->_restricted_resource()))
 				{
-					$this->_collection[]		= $slug;
-					$this->_namespace[$slug]	= $namespace;
+					$this->_collection[]			= $slug;
+					$this->_namespace[$slug]		= $namespace;
 				}
 			}
 		}

@@ -284,6 +284,29 @@ input::-webkit-inner-spin-button
 	font-size: 14px
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove
+{
+	background: transparent;
+	border: none
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice
+{
+	font-size: 12px
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered
+{
+	display: inline-block;
+	width: auto;
+	float: left
+}
+
+.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field
+{
+	padding: 3px 12px
+}
+
 textarea
 {
 	resize: none

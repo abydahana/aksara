@@ -35,6 +35,11 @@ class Comment extends \Aksara\Laboratory\Core
 		$this->set_title('comment')
 		->set_icon('mdi mdi-comment-multiple')
 		
+		->select
+		('
+			(SELECT COUNT(*) FROM comments__likes WHERE comment_id = comments.comment_id) AS upvotes
+		')
+		
 		->set_relation
 		(
 			'user_id',
@@ -54,41 +59,154 @@ class Comment extends \Aksara\Laboratory\Core
 		->render($this->_table);
 	}
 	
-	public function update()
+	public function upvote()
 	{
-	}
-	
-	public function reply()
-	{
+		if(!get_userdata('is_logged'))
+		{
+			return throw_exception(403, phrase('please_sign_in_to_upvote_the_comment'));
+		}
+		
+		$query										= $this->model->get_where
+		(
+			'comments__likes',
+			array
+			(
+				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+				'user_id'							=> get_userdata('user_id')
+			)
+		)
+		->row();
+		
+		if($query)
+		{
+			$query									= $this->model->delete
+			(
+				'comments__likes',
+				array
+				(
+					'comment_id'					=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+					'user_id'						=> get_userdata('user_id')
+				)
+			);
+		}
+		else
+		{
+			$query									= $this->model->insert
+			(
+				'comments__likes',
+				array
+				(
+					'comment_id'					=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+					'user_id'						=> get_userdata('user_id'),
+					'timestamp'						=> date('Y-m-d H:i:s')
+				)
+			);
+		}
+		
+		$upvotes									= $this->model->get_where
+		(
+			'comments__likes',
+			array
+			(
+				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+			)
+		)
+		->num_rows();
+		
+		if($upvotes > 999)
+		{
+			if ($upvotes < 1000000)
+			{
+				$upvotes							= number_format($upvotes / 1000) . 'K';
+			}
+			else if ($upvotes < 1000000000)
+			{
+				$upvotes							= number_format($upvotes / 1000000, 2) . 'M';
+			}
+			else
+			{
+				$upvotes							= number_format($upvotes / 1000000000, 2) . 'B';
+			}
+		}
+		
 		return make_json
 		(
 			array
 			(
-				'status'							=> 200,
-				'meta'								=> array
-				(
-					'title'							=> phrase('action_warning'),
-					'icon'							=> 'mdi mdi-alert-outline',
-					'popup'							=> true
-				),
-				'html'								=> $html
+				'element'							=> '#comment-upvote-' . service('request')->getGet('id'),
+				'html'								=> ($upvotes ? $upvotes : null)
 			)
 		);
 	}
 	
-	public function approval()
+	public function update()
 	{
-		if(1 == service('request')->getPost('report'))
+		if(!get_userdata('is_logged'))
 		{
-			return throw_exception(200, phrase('comment_was_successfully_reported_and_queued_for_review'));
+			return throw_exception(403, phrase('please_sign_in_to_update_the_comment'));
+		}
+		
+		$query										= $this->model->get_where
+		(
+			$this->_table,
+			array
+			(
+				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+			),
+			1
+		)
+		->row();
+		
+		if(!$query)
+		{
+			return throw_exception(404, phrase('the_comment_you_would_to_update_is_not_found'));
+		}
+		
+		if(service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')))
+		{
+			// insert to update history
+			$this->model->insert
+			(
+				'comments__updates',
+				array
+				(
+					'comment_id'					=> $query->comment_id,
+					'comments'						=> $query->comments,
+					'timestamp'						=> $query->timestamp
+				)
+			);
+			
+			// update comment
+			$this->model->update
+			(
+				$this->_table,
+				array
+				(
+					'comments'						=> htmlspecialchars(service('request')->getPost('comments')),
+					'edited'						=> 1
+				),
+				array
+				(
+					'comment_id'					=> service('request')->getGet('id')
+				)
+			);
+			
+			return make_json
+			(
+				array
+				(
+					'element'						=> '#comment-text-' . service('request')->getGet('id'),
+					'html'							=> htmlspecialchars(service('request')->getPost('comments'))
+				)
+			);
 		}
 		
 		$html										= '
 			<form action="' . current_page() . '" method="POST" class="--validate-form">
-				<input type="hidden" name="report" value="1" />
+				<input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
 				<div class="p-3 pb-0">
-					<div class="form-group text-center">
-						' . phrase('are_you_sure_want_to_report_this_comment') . '
+					<div class="form-group">
+						<textarea name="comments" class="form-control" id="comments_input" placeholder="' . phrase('type_a_comment') . '" rows="1">' . (isset($query->comments) ? $query->comments : null) . '</textarea>
 					</div>
 				</div>
 				<hr />
@@ -104,9 +222,9 @@ class Comment extends \Aksara\Laboratory\Core
 						</div>
 						<div class="col-6">
 							<div class="d-grid">
-								<button type="submit" class="btn btn-danger">
+								<button type="submit" class="btn btn-primary">
 									<i class="mdi mdi-check"></i>
-									' . phrase('report') . '
+									' . phrase('update') . '
 								</button>
 							</div>
 						</div>
@@ -122,8 +240,8 @@ class Comment extends \Aksara\Laboratory\Core
 				'status'							=> 200,
 				'meta'								=> array
 				(
-					'title'							=> phrase('report_comment'),
-					'icon'							=> 'mdi mdi-alert-outline',
+					'title'							=> phrase('update_comment'),
+					'icon'							=> 'mdi mdi-square-edit-outline',
 					'popup'							=> true
 				),
 				'html'								=> $html
@@ -133,17 +251,86 @@ class Comment extends \Aksara\Laboratory\Core
 	
 	public function report()
 	{
-		if(1 == service('request')->getPost('report'))
+		if(!get_userdata('is_logged'))
 		{
+			return throw_exception(403, phrase('please_sign_in_to_report_the_comment'));
+		}
+		
+		$query										= $this->model->get_where
+		(
+			$this->_table,
+			array
+			(
+				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+			),
+			1
+		)
+		->row();
+		
+		if(!$query)
+		{
+			return throw_exception(404, phrase('the_comment_you_would_to_report_is_not_found'));
+		}
+		
+		if(service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')))
+		{
+			$checker								= $this->model->get_where
+			(
+				'comments__reports',
+				array
+				(
+					'comment_id'					=> $query->comment_id,
+					'user_id'						=> get_userdata('user_id')
+				),
+				1
+			)
+			->row();
+			
+			if($checker)
+			{
+				// update feedback
+				$this->model->update
+				(
+					'comments__reports',
+					array
+					(
+						'message'					=> htmlspecialchars(service('request')->getPost('message')),
+						'timestamp'					=> $query->timestamp
+					),
+					array
+					(
+						'comment_id'				=> $query->comment_id,
+						'user_id'					=> get_userdata('user_id')
+					)
+				);
+			}
+			else
+			{
+				// insert feedback
+				$this->model->insert
+				(
+					'comments__reports',
+					array
+					(
+						'comment_id'				=> $query->comment_id,
+						'user_id'					=> get_userdata('user_id'),
+						'timestamp'					=> $query->timestamp
+					)
+				);
+			}
+			
 			return throw_exception(200, phrase('comment_was_successfully_reported_and_queued_for_review'));
 		}
 		
 		$html										= '
 			<form action="' . current_page() . '" method="POST" class="--validate-form">
-				<input type="hidden" name="report" value="1" />
+				<input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+				<div class="text-center pt-3 pb-3 border-bottom">
+					' . phrase('are_you_sure_want_to_report_this_comment') . '
+				</div>
 				<div class="p-3 pb-0">
-					<div class="form-group text-center">
-						' . phrase('are_you_sure_want_to_report_this_comment') . '
+					<div class="form-group">
+						<textarea name="message" class="form-control" id="message_input" placeholder="' . phrase('write_a_feedback') . '" rows="1"></textarea>
 					</div>
 				</div>
 				<hr />
@@ -178,6 +365,94 @@ class Comment extends \Aksara\Laboratory\Core
 				'meta'								=> array
 				(
 					'title'							=> phrase('report_comment'),
+					'icon'							=> 'mdi mdi-alert-outline',
+					'popup'							=> true
+				),
+				'html'								=> $html
+			)
+		);
+	}
+	
+	public function hide()
+	{
+		$query										= $this->model->get_where
+		(
+			$this->_table,
+			array
+			(
+				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+			),
+			1
+		)
+		->row();
+		
+		if(!$query)
+		{
+			return throw_exception(404, phrase('the_comment_you_would_to_hide_is_not_found'));
+		}
+		
+		if(service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')))
+		{
+			$this->model->update
+			(
+				$this->_table,
+				array
+				(
+					'status'						=> ($query->status ? 0 : 1)
+				),
+				array
+				(
+					'comment_id'					=> service('request')->getGet('id')
+				)
+			);
+			
+			return make_json
+			(
+				array
+				(
+					'element'						=> '#comment-text-' . service('request')->getGet('id'),
+					'html'							=> ($query->status ? '<i class="text-muted">' . phrase('comment_hidden') . '</i>' : $query->comments)
+				)
+			);
+		}
+		
+		$html										= '
+			<form action="' . current_page() . '" method="POST" class="--validate-form">
+				<input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+				<div class="text-center pt-3 pb-3 mb-3 border-bottom">
+					' . phrase('are_you_sure_want_to_hide_this_comment') . '
+				</div>
+				<div class="p-3 pt-0">
+					<div class="row">
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+									<i class="mdi mdi-window-close"></i>
+									' . phrase('cancel') . '
+								</button>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="d-grid">
+								<button type="submit" class="btn btn-danger">
+									<i class="mdi mdi-check"></i>
+									' . ($query->status ? phrase('hide') : phrase('unhide')) . '
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		';
+		
+		return make_json
+		(
+			array
+			(
+				'status'							=> 200,
+				'meta'								=> array
+				(
+					'title'							=> phrase('action_warning'),
 					'icon'							=> 'mdi mdi-alert-outline',
 					'popup'							=> true
 				),
@@ -212,9 +487,7 @@ class Comment extends \Aksara\Laboratory\Core
 				'user_id'							=> get_userdata('user_id'),
 				'comment_type'						=> service('request')->getPost('comment_type'),
 				'comments'							=> htmlspecialchars(service('request')->getPost('comments')),
-				'created_timestamp'					=> date('Y-m-d H:i:s'),
-				'updated_timestamp'					=> date('Y-m-d H:i:s'),
-				'anonymous'							=> (service('request')->getPost('anonymous') ? 1 : 0),
+				'timestamp'							=> date('Y-m-d H:i:s'),
 				'status'							=> (in_array(get_userdata('group_id'), array(1, 2)) ? 1 : 0)
 			)
 		);
@@ -232,7 +505,7 @@ class Comment extends \Aksara\Laboratory\Core
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
 								<li>
-									<a class="dropdown-item" href="#">
+									<a class="dropdown-item --modal" href="' . current_page('update', array('id' => $val->comment_id)) . '">
 										' . phrase('update') . '
 									</a>
 								</li>
@@ -276,7 +549,8 @@ class Comment extends \Aksara\Laboratory\Core
 			array
 			(
 				'html'								=> $html,
-				'prepend_to'						=> '#comment-container'
+				'prepend_to'						=> (service('request')->getPost('reply_id') ? '#comment-container #comment-reply' : '#comment-container'),
+				'in_context'						=> true
 			)
 		);
 	}

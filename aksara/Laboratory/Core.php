@@ -36,7 +36,6 @@ class Core extends Controller
 	protected $permission;
 	
 	protected $_api_request							= false;
-	protected $_api_request_parameter				= array();
 	
 	private $_language								= null;
 	private $_restrict_on_demo						= false;
@@ -1748,7 +1747,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_relation(string $field, string $selected_value, string $formatting, array $where = array(), array $join = array(), $order_by = array(), string $group_by = null, int $limit = 0, bool $translate = false)
+	public function set_relation(string $field, string $selected_value, string $formatting, $where = array(), array $join = array(), $order_by = array(), string $group_by = null, int $limit = 0, bool $translate = false)
 	{
 		$as_field									= $field;
 		
@@ -1834,6 +1833,20 @@ class Core extends Controller
 		if($join && !isset($join[0]))
 		{
 			$join									= array($join);
+		}
+		
+		if($where)
+		{
+			foreach($where as $key => $val)
+			{
+				if(strpos($key, '.') === false && strpos($key, ' ') === false && strpos($key, '(') === false && strpos($key, ')') === false)
+				{
+					unset($where[$key]);
+					
+					$key							= $relation_table . '.' . $key;
+					$where[$key]					= $val;
+				}
+			}
 		}
 		
 		$this->_set_relation[$as_field]				= array
@@ -2391,7 +2404,7 @@ class Core extends Controller
 			{
 				if('backend' == $this->template->get_theme_property('type'))
 				{
-					$this->set_description('<div class="row bg-danger text-light"><div class="col-12"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code>set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div></div>');
+					$this->set_description('<div class="row bg-danger text-light"><div class="col-12"><b>' . phrase('no_primary_key_found') . '</b> ' . phrase('please_define_it_manually') . ' (' . phrase('refers_to') . ' <code class="text-warning">set_primary()</code>), ' . phrase('otherwise_you_cannot_perform_the_following_action') . ': ' . phrase('read') . ', ' . phrase('update') . ', ' . phrase('delete') . ' ' . phrase('and') . ' ' . phrase('export_to_document') . '</div></div>');
 				}
 				
 				$this->unset_action('read, update, delete, export, print, pdf');
@@ -3012,77 +3025,40 @@ class Core extends Controller
 		}
 		
 		/**
-		 * Indicates requested from the API calls
+		 * Prepare output
 		 */
-		if($this->_api_request)
-		{
-			$results								= (isset($this->_results['table_data']) ? $this->_results['table_data'] : (isset($this->_results['form_data']) ? $this->_results['form_data'] : $result));
-			
-			/**
-			 * Set the output results
-			 */
-			$this->_output							= array
+		$this->_output								= array
+		(
+			'_token'								=> sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')),
+			'method'								=> $this->_method,
+			'breadcrumb'							=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query),
+			'current_page'							=> current_page(null, service('request')->getGet()),
+			'meta'									=> array
 			(
-				'method'							=> $this->_method,
-				'query_string'						=> $this->_set_primary,
-				'results'							=> $results,
-				'total'								=> $this->_total
-			);
-			
-			if(in_array($this->_method, array('create', 'read', 'update')))
-			{
-				unset($this->_output['total']);
-			}
-			
-			if($this->_set_output)
-			{
-				$this->_output						= array_merge($this->_output, $this->_set_output);
-			}
-			
-			if($this->_api_request)
-			{
-				return make_json($this->_output);
-			}
-		}
+				'description'						=> $this->_set_description,
+				'icon'								=> $this->_set_icon,
+				'title'								=> $this->_set_title,
+				'modal_size'						=> $this->_modal_size,
+				'segmentation'						=> array_map(function ($segment = null){return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
+			),
+			'results'								=> $this->_results,
+			'total'									=> $this->_total,
+			'limit'									=> $this->_limit,
+			'pagination'							=> array
+			(
+				'limit'								=> $this->_limit_backup,
+				'offset'							=> $this->_offset,
+				'per_page'							=> $this->_limit,
+				'total_rows'						=> $this->_total,
+				'url'								=> current_page(null, array('per_page' => null))
+			),
+			'query_string'							=> service('request')->getGet(),
+			'elapsed_time'							=> service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time')
+		);
 		
-		/**
-		 * Indicates requested from the browser
-		 */
-		else
+		if(isset($this->_set_template['read']) || isset($this->_set_template['form']))
 		{
-			$this->_output							= array
-			(
-				'_token'							=> sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')),
-				'method'							=> $this->_method,
-				'breadcrumb'						=> $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_query),
-				'current_page'						=> current_page(null, service('request')->getGet()),
-				'meta'								=> array
-				(
-					'description'					=> $this->_set_description,
-					'icon'							=> $this->_set_icon,
-					'title'							=> $this->_set_title,
-					'modal_size'					=> $this->_modal_size,
-					'segmentation'					=> array_map(function ($segment = null){return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
-				),
-				'results'							=> $this->_results,
-				'total'								=> $this->_total,
-				'limit'								=> $this->_limit,
-				'pagination'						=> array
-				(
-					'limit'							=> $this->_limit_backup,
-					'offset'						=> $this->_offset,
-					'per_page'						=> $this->_limit,
-					'total_rows'					=> $this->_total,
-					'url'							=> current_page(null, array('per_page' => null))
-				),
-				'query_string'						=> service('request')->getGet(),
-				'elapsed_time'						=> service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time')
-			);
-			
-			if(isset($this->_set_template['read']) || isset($this->_set_template['form']))
-			{
-				$this->_output['modal_html']		= true;
-			}
+			$this->_output['modal_html']			= true;
 		}
 		
 		/**
@@ -3150,10 +3126,6 @@ class Core extends Controller
 					if(in_array($this->_method, array('create', 'read', 'update')))
 					{
 						unset($this->_output->total, $this->_output->pagination);
-					}
-					else if($this->_api_request && 'POST' != service('request')->getServer('REQUEST_METHOD'))
-					{
-						unset($this->_output->pagination);
 					}
 					
 					if(isset($this->_output->pagination))
@@ -3675,7 +3647,7 @@ class Core extends Controller
 				$type								= $params['type'];
 				$max_length							= $params['max_length'];
 				$content							= (isset($this->_set_default[$field]) ? $this->_set_default[$field] : $params['original']);
-				$original							= ($params['original'] ? $params['original'] : '');
+				$original							= ($params['original'] ? $params['original'] : (is_numeric($params['original']) ? '0' : ''));
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 				$skip								= (isset($this->_set_field[$field]['skip']) ? $this->_set_field[$field]['skip'] : null);
@@ -3702,11 +3674,11 @@ class Core extends Controller
 				
 				if(isset($this->_set_relation[$field]) && !array_intersect(array('custom_format'), $type))
 				{
-					$content						= $this->_get_relation($this->_set_relation[$field], $original);
+					$content						= $this->_get_relation($this->_set_relation[$field], ($original ? $original : $default_value));
 				}
 				else if(isset($this->_set_autocomplete[$field]))
 				{
-					$content						= $this->_autocomplete_input($this->_set_autocomplete[$field], $original);
+					$content						= $this->_autocomplete_input($this->_set_autocomplete[$field], ($original ? $original : $default_value));
 				}
 				else if(array_intersect(array('image'), $type))
 				{
@@ -4274,7 +4246,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('textarea'), $type))
 				{
-					$content						= '<textarea name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" id="' . $field . '_input"' . $attribute . ' maxlength="' . $max_length . '" rows="1"' . (in_array('autocomplete', $type) ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : htmlspecialchars($original)) . '</textarea>';
+					$content						= '<textarea name="' . $field . '" class="form-control' . (in_array('autocomplete', $type) && $extra_params ? ' on-autocomplete-trigger' : null) . $extra_class . '" id="' . $field . '_input" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : null) . '"' . $attribute . ' maxlength="' . $max_length . '" rows="1"' . (in_array('autocomplete', $type) ? ' role="autocomplete" data-href="' . current_page() . '"': '') . ' spellcheck="false"' . $read_only . '>' . ($default_value ? $default_value : htmlspecialchars($original)) . '</textarea>';
 				}
 				else if(array_intersect(array('price_format'), $type))
 				{
@@ -4466,7 +4438,7 @@ class Core extends Controller
 				$fields[$field]						= array
 				(
 					'type'							=> $type,
-					'label'							=> $alias,
+					'label'							=> (!array_intersect(array('boolean', 'radio', 'checkbox'), $type) || (array_intersect(array('boolean', 'radio', 'checkbox'), $type) && !isset($this->_set_option_label[$field])) ? $alias : null),
 					'tooltip'						=> (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
 					'content'						=> $content,
 					'original'						=> $original,
@@ -4571,7 +4543,7 @@ class Core extends Controller
 				$type								= $params['type'];
 				$primary							= $params['primary'];
 				$content							= ($params['content'] ? $params['content'] : '');
-				$original							= ($params['original'] ? $params['original'] : '');
+				$original							= ($params['original'] ? $params['original'] : (is_numeric($params['original']) ? '0' : ''));
 				$parameter							= $params['parameter'];
 				$extra_params						= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 				$another_params						= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
@@ -5197,7 +5169,7 @@ class Core extends Controller
 					$type							= $params['type'];
 					$primary						= $params['primary'];
 					$content						= ($params['content'] ? $params['content'] : '');
-					$original						= ($params['original'] ? $params['original'] : '');
+					$original						= ($params['original'] ? $params['original'] : (is_numeric($params['original']) ? '0' : ''));
 					$parameter						= $params['parameter'];
 					$extra_params					= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
@@ -5764,15 +5736,6 @@ class Core extends Controller
 					
 					$dropdown[$key][$_key]			= $_val;
 				}
-			}
-			
-			if(!$this->_api_request)
-			{
-				// remove unnecessary columns
-				$val								= array_intersect_key($val, $columns);
-				
-				// flip columns to match the order
-				$output[$key]						= array_merge(array_flip(array_keys($columns)), $val);
 			}
 		}
 		
@@ -6969,6 +6932,11 @@ class Core extends Controller
 			$function								= $val['function'];
 			$arguments								= $val['arguments'];
 			
+			if($function == 'where' && strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false)
+			{
+				$arguments[0]						= $this->_table . '.' . $arguments[0];
+			}
+			
 			if(is_array($arguments) && sizeof($arguments) == 7)
 			{
 				$query								= $this->model->$function($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5], $arguments[6]);
@@ -7664,6 +7632,56 @@ class Core extends Controller
 		)
 		->row();
 		
+		if(!$api_service && service('request')->getHeaderLine('X-API-KEY'))
+		{
+			/**
+			 * retrieve the temporary session
+			 */
+			if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
+			{
+				$cookie								= $this->model->select
+				('
+					data
+				')
+				->get_where
+				(
+					'app__sessions',
+					array
+					(
+						'id'						=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
+						'timestamp >= '				=> date('Y-m-d H:i:s', (time() - service('request')->config->sessionExpiration))
+					),
+					1
+				)
+				->row('data');
+				
+				if($cookie)
+				{
+					session_decode($cookie);
+					
+					set_userdata(array_filter($_SESSION));
+					
+					$this->_set_language(get_userdata('language_id'));
+					
+					// set temporary API service
+					$api_service					= (object) array
+					(
+						'ip_range'					=> (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null),
+						'method'					=> json_encode(array(service('request')->getServer('REQUEST_METHOD'))),
+						'status'					=> 1
+					);
+				}
+			}
+			
+			/**
+			 * access token not found
+			 */
+			else if($this->_module != 'auth')
+			{
+				return throw_exception(403, phrase('missing_authentication_token_header') . ' (X-ACCESS-TOKEN)');
+			}
+		}
+		
 		if(!$api_service)
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_module_or_already_expired'));
@@ -7676,52 +7694,12 @@ class Core extends Controller
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_using_the_requested_method') . ': ' . service('request')->getServer('REQUEST_METHOD'));
 		}
-		else if($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range))
+		else if(service('request')->getIPAddress() != (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null) || ($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range)))
 		{
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
 		}
 		
 		$this->_api_request							= true;
-		$this->_api_request_parameter				= json_decode($api_service->method, true);
-		
-		/**
-		 * retrieve the temporary session
-		 */
-		if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
-		{
-			$cookie									= $this->model->select
-			('
-				data
-			')
-			->get_where
-			(
-				'app__sessions',
-				array
-				(
-					'id'							=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
-					'timestamp >= '					=> date('Y-m-d H:i:s', (time() - service('request')->config->sessionExpiration))
-				),
-				1
-			)
-			->row('data');
-			
-			if($cookie)
-			{
-				session_decode($cookie);
-				
-				set_userdata(array_filter($_SESSION));
-				
-				$this->_set_language(get_userdata('language_id'));
-			}
-		}
-		
-		/**
-		 * access token not found
-		 */
-		else if($this->_module != 'auth')
-		{
-			return throw_exception(403, phrase('missing_authentication_token_header') . ' (X-ACCESS-TOKEN)');
-		}
 		
 		return $this;
 	}

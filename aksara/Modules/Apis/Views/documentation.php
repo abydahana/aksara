@@ -541,9 +541,9 @@
 						})
 					}
 					
-					if(typeof val.parameter !== 'undefined')
+					if(typeof val.parameter !== 'undefined' && typeof val.parameter.form_data !== 'undefined')
 					{
-						$.each(val.parameter, function(_key, _val)
+						$.each(val.parameter.form_data, function(_key, _val)
 						{
 							if($('.--parameter-' + key).hasClass('d-none'))
 							{
