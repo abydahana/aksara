@@ -128,25 +128,19 @@ class Validation extends \CodeIgniter\Validation\Rules
 		if($params)
 		{
 			$sliced									= array_slice($params, 2, sizeof($params));
-			$odd									= array();
-			$even									= array();
+			$where									= array();
 			
 			foreach($sliced as $key => $val)
 			{
-				if($key % 2 == 0)
+				if($key % 2 === 0)
 				{
-					$even[]						 	= $val;
-				}
-				else
-				{
-					$odd[]							= $val;
+					$where[$val]					= (isset($sliced[$key + 1]) ? $sliced[$key + 1] : '');
 				}
 			}
 			
-			$sliced									= array_combine($even, $odd);
 			$num									= 0;
 			
-			foreach($sliced as $key => $val)
+			foreach($where as $key => $val)
 			{
 				// check if value not empty
 				if(!$val && !is_numeric($val))

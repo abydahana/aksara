@@ -3,7 +3,7 @@
 namespace Aksara\Modules\Cms\Controllers\Comments;
 
 /**
- * CMS > Reactions > Comments
+ * CMS > Reaactions > Feedback
  *
  * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io
@@ -12,9 +12,9 @@ namespace Aksara\Modules\Cms\Controllers\Comments;
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
-class Comments extends \Aksara\Laboratory\Core
+class Feedback extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'comments';
+	private $_table									= 'comments__reports';
 	
 	public function __construct()
 	{
@@ -24,24 +24,121 @@ class Comments extends \Aksara\Laboratory\Core
 		$this->set_theme('backend');
 		
 		$this->unset_action('create, update, delete');
+		
+		$this->_primary								= (service('request')->getGet('id') ? service('request')->getGet('id') : 0);
 	}
 	
 	public function index()
 	{
+		$query										= $this->model->get_where
+		(
+			'comments',
+			array
+			(
+				'comment_id'						=> $this->_primary
+			),
+			1
+		)
+		->row();
+		
+		if($query)
+		{
+			// blogs type comment
+			if($query->comment_type == 'blog')
+			{
+				$this->model->select
+				('
+					blogs.post_slug,
+					blogs.post_title,
+					
+					blogs__categories.category_slug
+				')
+				->join
+				(
+					'blogs',
+					'blogs.post_id = comments.post_id'
+				)
+				->join
+				(
+					'blogs__categories',
+					'blogs__categories.category_id = blogs.post_category'
+				);
+			}
+		}
+		
+		$query										= $this->model->select
+		('
+			comments.comment_id,
+			
+			app__users.user_id,
+			app__users.first_name,
+			app__users.last_name
+		')
+		->join
+		(
+			'app__users',
+			'app__users.user_id = comments.user_id'
+		)
+		->get_where
+		(
+			'comments',
+			array
+			(
+				'comments.comment_id'				=> $this->_primary
+			),
+			1
+		)
+		->row();
+		
+		if($query)
+		{
+			$this->set_description
+			('
+				<div class="row border-bottom">
+					<div class="col-sm-4 col-md-2">
+						' . phrase('user') . '
+					</div>
+					<div class="col-sm-8 col-md-10">
+						<a href="' . base_url('user', array('user_id' => $query->user_id)) . '" target="_blank">
+							<b>
+								' . $query->first_name . ' ' . $query->last_name . '
+								<i class="mdi mdi-launch"></i>
+							</b>
+						</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4 col-md-2">
+						' . phrase('post') . '
+					</div>
+					<div class="col-sm-8 col-md-10">
+						<a href="' . base_url('blogs/' . $query->category_slug . '/' . $query->post_slug, array('comment_highlight' => $query->comment_id)) . '" target="_blank">
+							<b>
+								' . $query->post_title . '
+								<i class="mdi mdi-launch"></i>
+							</b>
+						</a>
+					</div>
+				</div>
+			');
+		}
+		
 		if(!service('request')->getGet('order'))
 		{
 			$this->order_by('timestamp', 'DESC');
 		}
 		
-		$this->set_title(phrase('comments'))
-		->set_icon('mdi mdi-comment-multiple-outline')
-		->unset_column('reply_id, edited')
-		->unset_field('reply_id, edited')
-		->unset_view('reply_id, edited')
+		$this->set_title(phrase('feedback'))
+		->set_icon('mdi mdi-file-alert-outline')
+		->unset_column('comment_id, reply_id, edited')
+		->unset_field('comment_id, reply_id, edited')
+		->unset_view('comment_id, reply_id, edited')
 		
-		->column_order('first_name, post_id, comments, timestamp, status')
+		->column_order('first_name, message, timestamp')
 		
-		->add_action('option', 'hide', phrase('review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', array('id' => 'comment_id'))
+		->set_primary('comment_id, user_id')
+		
+		->add_action('toolbar', '../hide', phrase('review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', array('id' => $this->_primary))
 		
 		->set_field
 		(
@@ -52,7 +149,6 @@ class Comments extends \Aksara\Laboratory\Core
 			)
 		)
 		->set_field('first_name', 'hyperlink', 'user', array('user_id' => 'user_id'), true)
-		
 		->set_relation
 		(
 			'user_id',
@@ -62,7 +158,14 @@ class Comments extends \Aksara\Laboratory\Core
 		
 		->merge_content('{post_id} {comment_type}', phrase('post'), 'callback_get_post')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
-		->merge_content('{comment_id}', phrase('feedback'), 'callback_get_feedback')
+		
+		->where
+		(
+			array
+			(
+				'comment_id'						=> $this->_primary
+			)
+		)
 		
 		->render($this->_table);
 	}
@@ -71,14 +174,12 @@ class Comments extends \Aksara\Laboratory\Core
 	{
 		$this->permission->must_ajax(current_page('../'));
 		
-		$comment_id									= (service('request')->getGet('id') ? service('request')->getGet('id') : 0);
-		
 		$query										= $this->model->get_where
 		(
-			$this->_table,
+			'comments',
 			array
 			(
-				'comment_id'						=> $comment_id
+				'comment_id'						=> $this->_primary
 			),
 			1
 		)
@@ -89,7 +190,7 @@ class Comments extends \Aksara\Laboratory\Core
 			return throw_exception(404, phrase('the_comment_you_would_to_' . ($query->status ? 'hide' : 'unhide') . '_is_not_found', current_page('../')));
 		}
 		
-		if(service('request')->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated')))
+		if(service('request')->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated')))
 		{
 			$this->model->update
 			(
@@ -100,7 +201,7 @@ class Comments extends \Aksara\Laboratory\Core
 				),
 				array
 				(
-					'comment_id'					=> $comment_id
+					'comment_id'					=> $this->_primary
 				)
 			);
 			
@@ -109,7 +210,7 @@ class Comments extends \Aksara\Laboratory\Core
 		
 		$html										= '
 			<form action="' . current_page() . '" method="POST" class="--validate-form">
-				<input type="hidden" name="comment_id" value="' . sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+				<input type="hidden" name="comment_id" value="' . sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
 				<div class="text-center pt-3 pb-3 mb-3 border-bottom">
 					' . phrase('are_you_sure_want_to_' . ($query->status ? 'hide' : 'unhide') . '_this_comment').  '
 				</div>
@@ -187,27 +288,5 @@ class Comments extends \Aksara\Laboratory\Core
 		}
 		
 		return $output;
-	}
-	
-	public function get_feedback($params = array())
-	{
-		if(!isset($params['comment_id'])) return false;
-		
-		$query										= $this->model->get_where
-		(
-			'comments__reports',
-			array
-			(
-				'comment_id'						=> $params['comment_id']
-			)
-		)
-		->num_rows();
-		
-		if($query)
-		{
-			return '<a href="' . current_page('feedback', array('id' => $params['comment_id'], 'column' => null, 'q' => null, 'per_page' => null, 'order' => null, 'sort' => null)) . '" class="badge bg-danger --xhr">' . number_format($query) . ' ' . ($query > 1 ? phrase('reports') : phrase('report')) . '</a>';
-		}
-		
-		return false;
 	}
 }

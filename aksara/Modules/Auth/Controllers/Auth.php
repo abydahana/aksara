@@ -46,7 +46,7 @@ class Auth extends \Aksara\Laboratory\Core
 		}
 		
 		/* check authentication request */
-		else if($this->valid_token(service('request')->getPost('_token')) || $this->_api_request)
+		else if($this->valid_token(service('request')->getPost('_token')) || ($this->_api_request && service('request')->getServer('REQUEST_METHOD') == 'POST'))
 		{
 			/* apply login attempts limit (prevent bruteforce) */
 			if(get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time())
@@ -229,7 +229,7 @@ class Auth extends \Aksara\Laboratory\Core
 								'id'				=> $session_id,
 								'ip_address'		=> (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
 								'timestamp'			=> date('Y-m-d H:i:s'),
-								'data'				=> session_encode(get_userdata())
+								'data'				=> session_encode()
 							)
 						);
 						

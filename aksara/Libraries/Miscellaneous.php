@@ -26,7 +26,23 @@ class Miscellaneous
 	{
 		$generator									= new \chillerlan\QRCode\QRCode();
 		
-		return $generator->render($params);
+		if(!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png'))
+		{
+			if(!is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode'))
+			{
+				mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode', 0755, true);
+			}
+			
+			$data									= $generator->render($params);
+
+			list($type, $data)						= explode(';', $data);
+			list(, $data)							= explode(',', $data);
+			$data									= base64_decode($data);
+			
+			file_put_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png', $data);
+		}
+		
+		return get_image('_qrcode', sha1(json_encode($params)) . '.png');
 	}
 	
 	/**
@@ -36,7 +52,19 @@ class Miscellaneous
 	{
 		$generator									= new \Picqer\Barcode\BarcodeGeneratorPNG();
 		
-		return 'data:image/png;base64,' . base64_encode($generator->getBarcode($params, $generator::TYPE_CODE_128, 1, 60));
+		if(!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png'))
+		{
+			if(!is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode'))
+			{
+				mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode', 0755, true);
+			}
+			
+			$data									= $generator->getBarcode($params, $generator::TYPE_CODE_128, 1, 60);
+			
+			file_put_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png', $data);
+		}
+		
+		return get_image('_barcode', sha1(json_encode($params)) . '.png');
 	}
 	
 	/**
