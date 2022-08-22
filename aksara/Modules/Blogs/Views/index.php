@@ -86,7 +86,7 @@
 					<p class="text-center text-sm-start text-muted">
 						' . phrase('an_article_spotlight_you_may_want_to_know') . '
 					</p>
-					<div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
+					<div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3" data-autoplay="1">
 						<div class="swiper-wrapper">
 							' . $posts . '
 						</div>
