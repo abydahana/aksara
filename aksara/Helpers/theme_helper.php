@@ -66,7 +66,7 @@ if(!function_exists('asset_loader'))
 		{
 			if(isset($val['file']) && $val['file'] == ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' && isset($val['object']->_theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->_theme . DIRECTORY_SEPARATOR . $data))
 			{
-				return base_url('themes/' . $val['object']->_theme . '/' . $data);
+				return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->_theme . '/' . $data));
 			}
 		}
 		
