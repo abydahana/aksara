@@ -31,9 +31,7 @@ body.sidebar-collapsed .navbar-brand span.badge
 	position: fixed;
 	top: 81px;
 	background: #fafafa;
-	box-shadow: -10px 0 10px -10px rgba(0,0,0,0.25) inset;
-	-webkit-box-shadow: -10px 0 10px -10px rgba(0,0,0,0.25) inset;
-	-moz-box-shadow: -10px 0 10px -10px rgba(0,0,0,0.25) inset;
+	border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
 }
 
 #sidebar-wrapper ul ul
