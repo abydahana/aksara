@@ -3,8 +3,8 @@
 	{
 		foreach($results as $key => $val)
 		{
-			$carousels								= ($val->carousel_content ? json_decode($val->carousel_content) : array());
-			$faqs									= ($val->faq_content ? json_decode($val->faq_content) : array());
+			$carousels								= ($val->carousel_content ? json_decode($val->carousel_content) : null);
+			$faqs									= ($val->faq_content ? json_decode($val->faq_content) : null);
 			
 			if($carousels)
 			{
