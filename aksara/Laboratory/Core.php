@@ -1778,6 +1778,9 @@ class Core extends Controller
 				{
 					$select[]						= $val;
 					$group_by[]						= $val;
+					
+					$this->_unset_column[]			= $val;
+					$this->_unset_view[]			= $val;
 				}
 				
 				$explode							= explode('.', $val);
@@ -1814,7 +1817,7 @@ class Core extends Controller
 			{
 				preg_match_all('#\{(.*?)\}#', $this->_set_attribute[$field], $matches_attributes);
 				
-				$select								= array_merge($matches_attributes[1], $select);
+				$select								= array_merge($select, $matches_attributes[1]);
 			}
 			
 			$selected_value							= explode('.', $selected_value);
@@ -2009,6 +2012,14 @@ class Core extends Controller
 			}
 		}
 		
+		if($self)
+		{
+			$relation_key							= $params['relation_table'] . '.' . $params['relation_key'];
+			$params['limit']						= $limit;
+			$params['where'][$relation_key]			= (strpos($selected, ' ') !== false ? substr($selected, strpos($selected, ' ') + 1) : $selected);
+			
+		}
+		
 		if($params['where'])
 		{
 			foreach($params['where'] as $key => $val)
@@ -2077,7 +2088,7 @@ class Core extends Controller
 			$this->model->group_by($params['group_by']);
 		}
 		
-		$query										= $this->model->limit($params['limit'], $params['offset'])->get($params['relation_table'])->result();
+		$query										= $this->model->get($params['relation_table'], $params['limit'], $params['offset'])->result();
 		
 		if($query)
 		{
@@ -5602,7 +5613,7 @@ class Core extends Controller
 		
 		if($this->_select)
 		{
-			$search_columns							= array_merge($search_columns, $this->_select);
+			$search_columns							= array_merge($this->_select, $search_columns);
 		}
 		
 		if($column_lib)
@@ -5737,11 +5748,9 @@ class Core extends Controller
 					$dropdown[$key][$_key]			= $_val;
 				}
 			}
-		}
-		
-		if($this->_api_request && !$this->_total)
-		{
-			$output									= array();
+			
+			// sort by column order
+			$output[$key]							= array_merge($columns, $val);
 		}
 		
 		$output										= array
