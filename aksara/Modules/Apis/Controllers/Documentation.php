@@ -21,7 +21,9 @@ class Documentation extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
+		$this->set_permission();
 		$this->set_theme('backend');
+		$this->set_method('index');
 		
 		$this->_primary								= service('request')->getGet('slug');
 		
@@ -138,7 +140,6 @@ class Documentation extends \Aksara\Laboratory\Core
 		$output										= array();
 		$session_id									= session_id();
 		$session									= get_userdata();
-		$restore_after								= false;
 		$s											= 'success';
 		$e											= 'error';
 		
@@ -149,8 +150,6 @@ class Documentation extends \Aksara\Laboratory\Core
 		
 		if($group_id != get_userdata('group_id'))
 		{
-			$restore_after							= true;
-			
 			set_userdata('group_id', $group_id);
 		}
 		
@@ -208,8 +207,6 @@ class Documentation extends \Aksara\Laboratory\Core
 		
 		try
 		{
-			helper('cookie');
-			
 			// prepare the cURL
 			$curl									= \Config\Services::curlrequest
 			(
@@ -292,10 +289,15 @@ class Documentation extends \Aksara\Laboratory\Core
 			)
 		);
 		
-		if($restore_after && isset($session['group_id']))
-		{
-			set_userdata('group_id', $session['group_id']);
-		}
+		// restore the session
+		set_userdata
+		(
+			array
+			(
+				'is_logged'							=> (isset($session['is_logged']) ? $session['is_logged'] : 0),
+				'group_id'							=> (isset($session['group_id']) ? $session['group_id'] : 0)
+			)
+		);
 		
 		if(isset($output['export']))
 		{
