@@ -222,7 +222,7 @@ class Core extends Controller
 		/**
 		 * Working with REST API
 		 */
-		if(service('request')->hasHeader('X-API-KEY'))
+		if(service('request')->getHeaderLine('X-API-KEY'))
 		{
 			// handshake betwiin REST client and Aksara
 			$this->_handshake(service('request')->getHeaderLine('X-API-KEY'));
@@ -7641,7 +7641,7 @@ class Core extends Controller
 		)
 		->row();
 		
-		if(!$api_service && service('request')->getHeaderLine('X-API-KEY'))
+		if(!$api_service)
 		{
 			/**
 			 * retrieve the temporary session
