@@ -2024,11 +2024,13 @@ class Core extends Controller
 		{
 			foreach($params['where'] as $key => $val)
 			{
-				if(is_numeric($key) && $val && stripos(trim($val), ' NOT IN') !== false)
+				$field_origin						= (strpos($key, '.') !== false ? substr($key, strpos($key, '.') + 1) : $key);
+				
+				if(is_numeric($field_origin) && $val && stripos(trim($val), ' NOT IN') !== false)
 				{
 					$this->model->where($val, null, false);
 				}
-				else if(is_numeric($key) && $val && stripos(trim($val), ' IN') !== false)
+				else if(is_numeric($field_origin) && $val && stripos(trim($val), ' IN') !== false)
 				{
 					$this->model->where($val, null, false);
 				}
@@ -6830,15 +6832,15 @@ class Core extends Controller
 			/**
 			 * Merge selection
 			 */
-			if($this->_select)
+			if(!in_array($this->_method, array('create', 'update')))
 			{
-				$select								= array_merge($this->_select, $select);
+				$select								= ($this->_select ? array_merge($this->_select, $select) : $select);
 			}
 			
 			/**
-			 * Execute when method is not update or delete
+			 * Execute when method is not delete
 			 */
-			if(!in_array($this->_method, array('update', 'delete')) && is_array($select) && sizeof($select) > 0)
+			if(!in_array($this->_method, array('delete')) && is_array($select) && sizeof($select) > 0)
 			{
 				/**
 				 * Validate the select column to check if column is exist in table
