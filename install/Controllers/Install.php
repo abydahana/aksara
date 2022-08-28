@@ -343,6 +343,7 @@ class Install extends BaseController
 			array
 			(
 				'installation_mode'					=> service('request')->getPost('installation_mode'),
+				'sample_data'						=> (1 == service('request')->getPost('sample_data') ? 1 : 0),
 				'timezone'							=> service('request')->getPost('timezone'),
 				'site_title'						=> service('request')->getPost('site_title'),
 				'site_description'					=> service('request')->getPost('site_description'),
@@ -522,6 +523,13 @@ class Install extends BaseController
 						{
 							// run seeder to insert sample data
 							$seeder->call('DummySeeder');
+						}
+						
+						// import sample data
+						if(session()->get('sample_data'))
+						{
+							// run seeder to import sample data
+							$seeder->call('DummySeeder_' . session()->get('installation_mode'));
 						}
 					}
 					

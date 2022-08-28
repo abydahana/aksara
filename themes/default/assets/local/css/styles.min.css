@@ -17,6 +17,19 @@
 	height: 40px
 }
 
+.navbar-brand .img-icon,
+body.sidebar-expanded .navbar-brand img.img-icon,
+body.sidebar-collapsed .navbar-brand img.img-logo,
+body.sidebar-collapsed .navbar-brand span.badge
+{
+	display: none
+}
+
+body.sidebar-collapsed .navbar-brand img.img-icon
+{
+	display: inline-block
+}
+
 .modal-header
 {
 	padding: .25rem 1rem
