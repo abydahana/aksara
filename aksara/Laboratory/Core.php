@@ -321,7 +321,7 @@ class Core extends Controller
 	public function valid_token($token = null)
 	{
 		// match the token validation
-		if(service('request')->getPost() && ($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request))
+		if(service('request')->getPost() && ($token == sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) || $token == sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) || $this->_api_request))
 		{
 			// token match
 			return true;
