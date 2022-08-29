@@ -108,6 +108,8 @@
 					
 					/* show post content */
 					echo preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $output);
+					
+					echo '<div role="widget" data-source="' . base_url('xhr/widget/comment', array('type' => 'blog', 'post_id' => $results[0]->post_id)) . '"></div>';
 				}
 				else
 				{
@@ -119,7 +121,6 @@
 					';
 				}
 			?>
-			<div role="widget" data-source="<?php echo base_url('xhr/widget/comment', array('type' => 'blog', 'post_id' => $results[0]->post_id)); ?>"></div>
 		</div>
 		<div class="col-lg-4 pt-3 pb-3">
 			<div class="sticky-top">
