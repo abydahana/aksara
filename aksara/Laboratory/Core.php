@@ -4471,6 +4471,13 @@ class Core extends Controller
 			$highest_column							= max($this->_field_position);
 		}
 		
+		$query_string								= array_replace(service('request')->getGet(), $primary_key);
+		
+		if($this->_api_request)
+		{
+			unset($query_string['aksara'], $query_string['limit']);
+		}
+		
 		$output										= array
 		(
 			'column_size'							=> $this->_column_size,
@@ -4485,7 +4492,7 @@ class Core extends Controller
 			'merged_field'							=> $this->_merge_field,
 			'set_heading'							=> $this->_set_heading,
 			'grouped_field'							=> $this->_group_field,
-			'query_string'							=> array_replace(service('request')->getGet(), $primary_key)
+			'query_string'							=> $query_string
 		);
 		
 		return $output;
@@ -5101,6 +5108,13 @@ class Core extends Controller
 			$highest_column							= max($this->_field_position);
 		}
 		
+		$query_string								= array_replace(service('request')->getGet(), $primary_key);
+		
+		if($this->_api_request)
+		{
+			unset($query_string['aksara'], $query_string['limit']);
+		}
+		
 		$output										= array
 		(
 			'column_size'							=> $this->_column_size,
@@ -5109,7 +5123,7 @@ class Core extends Controller
 			'form_data'								=> $fields,
 			'merged_content'						=> $this->_merge_content,
 			'merged_field'							=> $this->_merge_field,
-			'query_string'							=> array_replace(service('request')->getGet(), $primary_key)
+			'query_string'							=> $query_string
 		);
 		
 		return $output;
@@ -5595,7 +5609,7 @@ class Core extends Controller
 				
 				if($this->_api_request)
 				{
-					unset($uri_parameter['aksara']);
+					unset($uri_parameter['aksara'], $uri_parameter['limit']);
 				}
 				
 				$query_string[]						= $uri_parameter;
