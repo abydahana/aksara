@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row align-items-center">
 			<div class="col-3 col-sm-2 col-md-1">
-				<i class="<?php echo $meta->icon; ?> bi-4x"></i>
+				<i class="<?php echo $meta->icon; ?> mdi-4x"></i>
 			</div>
 			<div class="col-9 col-sm-10 col-md-11">
 				<h3 class="mb-0<?php echo (!$meta->description ? ' mt-3' : null); ?>">
