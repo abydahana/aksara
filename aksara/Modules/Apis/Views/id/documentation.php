@@ -492,6 +492,7 @@
 									</tr>
 								</tbody>
 							</table>
+						</div>
 					';
 				}
 			?>
@@ -551,7 +552,7 @@
 								$('.--query-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _val + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
 						})
 					}
 					
@@ -564,7 +565,7 @@
 								$('.--parameter-' + key).removeClass('d-none')
 							}
 							
-							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
+							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + JSON.stringify(_val.type) + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
 						})
 					}
 					

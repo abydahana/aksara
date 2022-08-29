@@ -234,44 +234,36 @@ class Documentation extends \Aksara\Laboratory\Core
 				// decode the response
 				$response							= json_decode($request->getBody());
 				
-				if(isset($response->results) && !in_array($response->method, array('index', 'read', 'delete', 'export', 'print', 'pdf')))
-				{
-					$output[$val]['parameter']		= $response->results;
-				}
-				
-				if(isset($response->query_string) && !in_array($response->method, array('index', 'create')))
-				{
-					$output[$val]['query_string']	= $response->query_string;
-				}
-				
+				// push response
+				$output[$val]['response'][$s]		= $response;
 				$output[$val]['response'][$e]		= $exception;
 				
-				if(isset($response->method) && !in_array($response->method, array('create', 'update', 'delete')))
+				if(isset($response->method) && in_array($response->method, array('create', 'update')) && isset($response->results->form_data))
 				{
-					$output[$val]['response'][$s]	= $response;
-				}
-				else
-				{
-					$output[$val]['response'][$s]	= $exception;
+					$output[$val]['parameter']		= $response->results->form_data;
 					
-					if(isset($response->method) && in_array($response->method, array('create', 'update')) && isset($response->results) && $response->results)
+					$validation_error				= array();
+					
+					foreach($response->results->form_data as $_key => $_val)
 					{
-						$error						= $exception;
-						$error['message']			= array();
+						if(!$_val->required) continue;
 						
-						foreach($response->results as $_key => $_val)
-						{
-							if(!$_val->required) continue;
-							
-							$error['message'][$_key]	= phrase('validation_message');
-						}
-						
-						$error['status']			= 400;
-						
-						unset($error['target']);
-						
-						$output[$val]['response'][$e]	= $error;
+						$validation_error[]			= array
+						(
+							$_key					=> phrase('validation_message')
+						);
 					}
+					
+					$output[$val]['response'][$e]	= array
+					(
+						'status'					=> 400,
+						'message'					=> $validation_error
+					);
+				}
+				
+				if(isset($response->method) && in_array($response->method, array('read', 'update', 'delete')) && isset($response->results->query_string))
+				{
+					$output[$val]['query_string']	= $response->results->query_string;
 				}
 			}
 		}

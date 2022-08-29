@@ -2925,22 +2925,14 @@ class Core extends Controller
 				}
 			}
 			
-			/**
-			 * Indicates requested from the API calls
-			 */
-			if(($this->_api_request && $this->_method == 'create') || (!$this->_api_request && $this->_method == 'create'))
-			{
-				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
-			}
+			$query									= $this->_fetch($this->_table);
+			$result									= $query['results'];
+			$this->_total							= $query['total'];
 			
-			/**
-			 * Indicates requested from the browser
-			 */
-			else
+			if(!$result)
 			{
-				$query								= $this->_fetch($this->_table);
-				$result								= $query['results'];
-				$this->_total						= $query['total'];
+				// no result, list the field properties
+				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
 			}
 			
 			// try to convert the magic string and replace with the result
@@ -4118,7 +4110,7 @@ class Core extends Controller
 								}
 								
 								$options			.= '
-									<div class="form-check form-switch">
+									<div class="form-check form-switch' . (sizeof($parameter) > 1 && sizeof($parameter) <= 3 ? ' d-inline-block me-3' : null) . '">
 										<label class="form-check-label" for="check_' . $num . '">
 											<input type="checkbox" name="' . $field . '[]" value="' . $value . '" class="form-check-input ' . $extra_class . '" id="check_' . $num . '"' . ($default_value == $value || in_array($value, $checker) ? ' checked' : null) . $read_only . ' />
 											' . $label . '
@@ -4130,7 +4122,7 @@ class Core extends Controller
 							else if(array_intersect(array('radio'), $type))
 							{
 								$options			.= '
-									<div class="form-check">
+									<div class="form-check' . (sizeof($parameter) > 1 && sizeof($parameter) <= 3 ? ' d-inline-block me-3' : null) . '">
 										<label class="' . $extra_class . '">
 											<input type="radio" name="' . $field . '" class="form-check-input" value="' . $value . '"' . ($default_value == $value || $value == $original ? ' checked' : null) . $read_only . ' />
 											' . $label . '
@@ -5599,6 +5591,11 @@ class Core extends Controller
 				if($primary_key)
 				{
 					$uri_parameter					= array_merge(array('aksara' => generate_token(array_filter(array_merge($uri_parameter, $primary_key)))), $uri_parameter, $primary_key);
+				}
+				
+				if($this->_api_request)
+				{
+					unset($uri_parameter['aksara']);
 				}
 				
 				$query_string[]						= $uri_parameter;
