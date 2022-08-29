@@ -2929,7 +2929,7 @@ class Core extends Controller
 			$result									= $query['results'];
 			$this->_total							= $query['total'];
 			
-			if(!$result)
+			if(!$result && in_array($this->_method, array('create', 'update')))
 			{
 				// no result, list the field properties
 				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));

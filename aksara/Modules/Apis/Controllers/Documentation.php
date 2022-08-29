@@ -229,7 +229,7 @@ class Documentation extends \Aksara\Laboratory\Core
 			foreach($method as $key => $val)
 			{
 				// make a request
-				$request							= $curl->get(base_url($slug . ('index' != $val ? '/' . $val : null)));
+				$request							= $curl->get(base_url($slug . ('index' != $val ? '/' . $val : null), array('limit' => 1)));
 				
 				// decode the response
 				$response							= json_decode($request->getBody());
