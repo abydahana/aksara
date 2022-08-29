@@ -110,7 +110,7 @@
 				<?php echo $results[0]->gallery_description; ?>
 			</div>
 			<div>
-				<?php echo load_comment_plugin(current_page()); ?>
+				<div role="widget" data-source="<?php echo base_url('xhr/widget/comment', array('type' => 'gallery', 'post_id' => $results[0]->post_id)); ?>"></div>
 			</div>
 		</div>
 	</div>
