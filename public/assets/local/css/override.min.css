@@ -194,11 +194,6 @@ input::-webkit-inner-spin-button
 	background-clip: padding-box
 }
 
-.modal .select2-container--default
-{
-	z-index: 1055;
-}
-
 .form-control:focus,
 .custom-file-input:focus~.custom-file-label,
 .select2-container--default.select2-container--focus .select2-selection,
