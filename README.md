@@ -2,7 +2,7 @@
 Aksara is a CodeIgniter based CRUD Toolkit that you can use to build complex applications become shorter, secure and more reliable in just a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based) just by writing in single controller. Yet it's reusable, scalable and ready to use!
 
 # Server Requirements
-PHP version 7.3 or higher is required, with the following extensions installed:
+PHP version 7.4 or higher is required, with the following extensions installed:
 
 - [intl](http://php.net/manual/en/intl.requirements.php)
 - [libcurl](http://php.net/manual/en/curl.requirements.php) to connect with **[Aksara Market](http://www.aksaracms.com/market)**
