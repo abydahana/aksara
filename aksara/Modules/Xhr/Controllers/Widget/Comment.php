@@ -550,7 +550,7 @@ class Comment extends \Aksara\Laboratory\Core
 			(
 				'html'								=> $html,
 				'prepend_to'						=> (service('request')->getPost('reply_id') ? '#comment-container #comment-reply' : '#comment-container'),
-				'in_context'						=> true
+				'in_context'						=> (service('request')->getPost('reply_id') ? true : false)
 			)
 		);
 	}

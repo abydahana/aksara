@@ -78,7 +78,7 @@
 									</ul>
 								</div>
 							</div>
-							<div class="' . (service('request')->getGet('comment_highlight') == $val->comment_id ? 'bg-warning' : 'bg-light') . ' rounded-4 pt-2 pe-3 pb-2 ps-3 d-inline-block">
+							<div class="' . (service('request')->getGet('comment_highlight') && service('request')->getGet('comment_highlight') == $val->comment_id ? 'bg-warning' : 'bg-light') . ' rounded-4 pt-2 pe-3 pb-2 ps-3 d-inline-block">
 								<a href="' . base_url('user/' . $val->username) . '" class="--xhr">
 									<b>
 										' . $val->first_name . ' ' . $val->last_name . '
@@ -120,7 +120,7 @@
 			if(!$val->reply_id)
 			{
 				$output								.= '
-					<div class="row mb-3 comment-item">
+					<div class="row comment-item">
 						<div class="col-2 col-lg-1 pt-3">
 							<a href="' . base_url('user/' . $val->username) . '" class="--xhr">
 								<img src="' . get_image('users', $val->photo, 'thumb') . '" class="img-fluid rounded-circle" />
@@ -157,7 +157,7 @@
 									</ul>
 								</div>
 							</div>
-							<div class="' . (service('request')->getGet('comment_highlight') == $val->comment_id ? 'bg-warning' : 'bg-light') . ' rounded-4 p-3 d-inline-block">
+							<div class="' . (service('request')->getGet('comment_highlight') && service('request')->getGet('comment_highlight') == $val->comment_id ? 'bg-warning' : 'bg-light') . ' rounded-4 p-3 d-inline-block">
 								<a href="' . base_url('user/' . $val->username) . '" class="--xhr">
 									<b>
 										' . $val->first_name . ' ' . $val->last_name . '
