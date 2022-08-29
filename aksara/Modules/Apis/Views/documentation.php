@@ -496,12 +496,14 @@
 			({
 				autoHideScrollbar: true,
 				axis: 'y',
-				scrollInertia: 200,
-				setHeight: $(window).outerHeight(true) - (($('.navbar').length ? $('.navbar').outerHeight(true) : 0) + ($('#breadcrumb-wrapper').length ? $('#breadcrumb-wrapper').outerHeight(true) : 0) + ($('.alias-table-header').length ? $('.alias-table-header').outerHeight(true) : 0) + 34),
+				scrollInertia: 170,
+				mouseWheelPixels: 170,
+				setHeight: $(window).outerHeight(true) - (($('.navbar').length ? $('.navbar').outerHeight(true) : 0) + ($('.alias-table-header').length ? $('.alias-table-header').outerHeight(true) : 0)),
 				advanced:
 				{
 					updateOnContentResize: true
-				}
+				},
+				autoHideScrollbar: false
 			})
 		}
 		
@@ -541,17 +543,33 @@
 						})
 					}
 					
-					if(typeof val.parameter !== 'undefined' && typeof val.parameter.form_data !== 'undefined')
+					if(typeof val.parameter !== 'undefined')
 					{
-						$.each(val.parameter.form_data, function(_key, _val)
+						if(typeof val.parameter.query_string !== 'undefined')
 						{
-							if($('.--parameter-' + key).hasClass('d-none'))
+							$.each(val.parameter.query_string, function(_key, _val)
 							{
-								$('.--parameter-' + key).removeClass('d-none')
-							}
-							
-							$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
-						})
+								if($('.--query-' + key).hasClass('d-none'))
+								{
+									$('.--query-' + key).removeClass('d-none')
+								}
+								
+								$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>int</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?php echo phrase('required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
+							})
+						}
+						
+						if(typeof val.parameter.form_data !== 'undefined')
+						{
+							$.each(val.parameter.form_data, function(_key, _val)
+							{
+								if($('.--parameter-' + key).hasClass('d-none'))
+								{
+									$('.--parameter-' + key).removeClass('d-none')
+								}
+								
+								$('<tr><td><span style="font-family:Consolas">' + _key + '</span></td><td>' + _val.type + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?php echo phrase('required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
+							})
+						}
 					}
 					
 					if(typeof val.response.success !== 'undefined')
