@@ -1608,6 +1608,21 @@ class Model
 			$this->_offset							= $offset;
 		}
 		
+		if($where && DB_DRIVER == 'Postgre')
+		{
+			foreach($where as $key => $val)
+			{
+				$cast								= $this->_cast_column($key, $val);
+				
+				$where[$cast['column']]				= $cast['value'];
+				
+				if($key != $cast['column'])
+				{
+					unset($where[$key]);
+				}
+			}
+		}
+		
 		$this->_prepare[]							= array
 		(
 			'function'								=> 'getWhere',

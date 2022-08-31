@@ -10,7 +10,7 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
-function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '#ff0000')
+function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '#ff0000', $width = 600, $height = 600)
 {
 	$geojson										= json_decode($geojson);
 	$paths											= '';
@@ -73,7 +73,7 @@ function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '
 	(
 		'key'										=> get_setting('openlayers_search_key'),
 		'zoom'										=> '',
-		'size'										=> '600x600'
+		'size'										=> $width . 'x' . $height
 	);
 	
 	return 'http://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params) . $markers . $paths;

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark aksara-header">
 	<div class="container-fluid">
 		<a class="navbar-brand pt-0 pb-0 d-none d-lg-block" href="<?php echo base_url(); ?>" target="_blank">
 			<img src="<?php echo get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />

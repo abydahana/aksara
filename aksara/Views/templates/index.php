@@ -208,7 +208,7 @@ if(isset($results->extra_action->toolbar))
 							
 							foreach($val as $field => $params)
 							{
-								if($params->primary)
+								if(isset($params->primary) && $params->primary)
 								{
 									$primary[$field]	= $params->primary;
 									
@@ -228,11 +228,11 @@ if(isset($results->extra_action->toolbar))
 									}
 								}
 								
-								if($params->hidden) continue;
+								if(isset($params->hidden) && $params->hidden) continue;
 								
 								$columns				.= '
 									<td id="__c_' . $field . '">
-										' . $params->content . '
+										' . (isset($params->content) ? $params->content : null) . '
 									</td>
 								';
 							}
@@ -296,7 +296,7 @@ if(isset($results->extra_action->toolbar))
 							}
 							
 							echo '
-								<tr id="item__' . $results->query_string[$key]->aksara . '">
+								<tr id="item__' . (isset($results->query_string[$key]->aksara) ? $results->query_string[$key]->aksara : null) . '">
 									' . (isset($results->extra_action->option) || !isset($results->unset_action) || !in_array('read', $results->unset_action) || !in_array('update', $results->unset_action) || !in_array('delete', $results->unset_action) || !in_array('print', $results->unset_action) || !in_array('pdf', $results->unset_action) ? $options : null) . '
 									' . $columns . '
 								</tr>
