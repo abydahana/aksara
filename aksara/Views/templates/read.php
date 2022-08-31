@@ -40,6 +40,7 @@
 				
 				$merged[]							= $val;
 			}
+			
 			if(4 == $params->position)
 			{
 				if(isset($results->set_heading->$field))

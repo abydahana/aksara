@@ -77,7 +77,7 @@ class Miscellaneous
 		$this->model								= new \Aksara\Laboratory\Model();
 		
 		// hash generator
-		$hash										= substr(sha1(uniqid(null, true)), -6);
+		$hash										= substr(sha1(uniqid('', true)), -6);
 		
 		// check if hash already present
 		if($this->model->get_where('app__shortlink', array('hash' => $hash), 1)->row())

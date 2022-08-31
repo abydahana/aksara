@@ -524,7 +524,7 @@ class Core extends Controller
 	 * @access		public
 	 * @return		string
 	 */
-	public function set_title($magic_string = null, string $placeholder = null)
+	public function set_title($magic_string = null, string $placeholder = null, $placement = null)
 	{
 		// check if the magic string is in array format
 		if(is_array($magic_string))
@@ -1824,9 +1824,9 @@ class Core extends Controller
 			$relation_table							= (isset($selected_value[0]) ? $selected_value[0] : null);
 			$relation_key							= (isset($selected_value[1]) ? $selected_value[1] : null);
 			
-			if(!$group_by)
+			if(!$group_by && $relation_table && $relation_key)
 			{
-				$group_by							= (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key;
+				//$group_by							= (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key;
 			}
 			
 			$this->_unset_column[]					= $field;
@@ -1890,6 +1890,8 @@ class Core extends Controller
 				$this->set_validation($field, 'relation_checker[' . (strpos($relation_table, ' ') !== false ? substr($relation_table, 0, strpos($relation_table, ' ')) : $relation_table) . '.' . $relation_key . ']');
 			}
 			
+			$this->_compiled_table[]				= $relation_table;
+			
 			$this->_join[$relation_table]			= array
 			(
 				'condition'							=> ($condition ? $condition : (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key . ' = {primary_table}.' . $field),
@@ -1901,6 +1903,8 @@ class Core extends Controller
 			{
 				foreach($join as $key => $val)
 				{
+					$this->_compiled_table[]		= $val[0];
+					
 					$this->_join[$val[0]]			= array
 					(
 						'condition'					=> $val[1],
@@ -2321,6 +2325,9 @@ class Core extends Controller
 		{
 			// set table when not present
 			$this->_table							= $table;
+			
+			// push to compiled table
+			$this->_compiled_table[]				= $table;
 		}
 		
 		/**
@@ -2383,7 +2390,7 @@ class Core extends Controller
 				foreach($this->_field_data as $key => $val)
 				{
 					// check if the field has primary key
-					if(isset($val['primary_key']) && $val['primary_key'])
+					if((isset($val['primary_key']) && $val['primary_key']) || ($val['default'] && stripos($val['default'], 'nextval(') !== false))
 					{
 						// push primary key
 						$this->_set_primary[]		= $val['name'];
@@ -2925,14 +2932,17 @@ class Core extends Controller
 				}
 			}
 			
-			$query									= $this->_fetch($this->_table);
-			$result									= $query['results'];
-			$this->_total							= $query['total'];
-			
-			if(!$result && in_array($this->_method, array('create', 'update')))
+			if(in_array($this->_method, array('create')))
 			{
-				// no result, list the field properties
+				// list the field properties
 				$result								= array(array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), ''));
+			}
+			else
+			{
+				// run query
+				$query								= $this->_fetch($this->_table);
+				$result								= $query['results'];
+				$this->_total						= $query['total'];
 			}
 			
 			// try to convert the magic string and replace with the result
@@ -4332,7 +4342,7 @@ class Core extends Controller
 				{
 					if(!$default_value)
 					{
-						$type_key					= array_search('{1}', explode('/', $parameter));
+						$type_key					= ($parameter ? array_search('{1}', explode('/', $parameter)) : null);
 						
 						if('create' == $this->_method)
 						{
@@ -4443,7 +4453,7 @@ class Core extends Controller
 				$fields[$field]						= array
 				(
 					'type'							=> $type,
-					'label'							=> (!array_intersect(array('boolean', 'radio', 'checkbox'), $type) || (array_intersect(array('boolean', 'radio', 'checkbox'), $type) && !isset($this->_set_option_label[$field])) ? $alias : null),
+					'label'							=> $alias,
 					'tooltip'						=> (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
 					'content'						=> $content,
 					'original'						=> $original,
@@ -4947,7 +4957,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('boolean'), $type))
 				{
-					$content						= ($content == 1 ? '<span class="badge bg-success">' . phrase('active') . '</span>' : '<span class="badge bg-danger">' . phrase('inactive') . '</span>');
+					$content						= ($content == 1 ? '<span class="badge bg-success">' . (isset($this->_set_option_label[$field]) ? $this->_set_option_label[$field] : phrase('active')) . '</span>' : '<span class="badge bg-danger">' . phrase('inactive') . '</span>');
 				}
 				else if(array_intersect(array('last_insert'), $type))
 				{
@@ -5123,6 +5133,7 @@ class Core extends Controller
 			'form_data'								=> $fields,
 			'merged_content'						=> $this->_merge_content,
 			'merged_field'							=> $this->_merge_field,
+			'set_heading'							=> $this->_set_heading,
 			'query_string'							=> $query_string
 		);
 		
@@ -6093,10 +6104,17 @@ class Core extends Controller
 	 */
 	public function join(string $table, string $condition, string $type = '', bool $escape = true)
 	{
-		if(!in_array($this->_method, array('create', 'update', 'delete')))
+		if(!in_array($this->_method, array('delete')))
 		{
 			$this->_prepare(__FUNCTION__, array($table, $condition, $type, $escape));
 		}
+		
+		if(strpos($table, ' ') !== false)
+		{
+			$table									= substr($table, strrpos($table, ' ') + 1);
+		}
+		
+		$this->_compiled_table[]					= $table;
 		
 		return $this;
 	}
@@ -6552,16 +6570,19 @@ class Core extends Controller
 	 */
 	public function order_by($field = array(), $direction = '', bool $escape = true)
 	{
-		if(is_array($field))
+		if(!service('request')->getGet('order'))
 		{
-			foreach($field as $key => $val)
+			if(is_array($field))
 			{
-				$this->_prepare(__FUNCTION__, array($key, $val, $escape));
+				foreach($field as $key => $val)
+				{
+					$this->_prepare(__FUNCTION__, array($key, $val, $escape));
+				}
 			}
-		}
-		else
-		{
-			$this->_prepare(__FUNCTION__, array($field, $direction, $escape));
+			else
+			{
+				$this->_prepare(__FUNCTION__, array($field, $direction, $escape));
+			}
 		}
 		
 		return $this;
@@ -6930,17 +6951,12 @@ class Core extends Controller
 				{
 					foreach($this->_join as $table => $params)
 					{
-						if(in_array($table, $this->_compiled_table)) continue;
-						
 						// push join to prepared query builder
 						$this->_prepare[]			= array
 						(
 							'function'				=> 'join',
 							'arguments'				=> array($table, str_replace('{primary_table}', $this->_table, $params['condition']), $params['type'], $params['escape'])
 						);
-						
-						// compile table
-						$this->_compiled_table[]	= $table;
 					}
 				}
 			}
@@ -6954,9 +6970,37 @@ class Core extends Controller
 			$function								= $val['function'];
 			$arguments								= $val['arguments'];
 			
-			if($function == 'where' && strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false)
+			if($function == 'select')
 			{
+				// splice unnecessary select
+				if(!is_array($arguments[0]))
+				{
+					$arguments[0]					= array_map('trim', explode(',', $arguments[0]));
+				}
+				
+				foreach($arguments[0] as $_key => $_val)
+				{
+					if(strpos($_val, '(') === false && strpos($_val, ')') === false && strpos($_val, '.') !== false)
+					{
+						$_val						= substr($_val . '.', 0, strpos($_val, '.'));
+						
+						if(!in_array($_val, $this->_compiled_table))
+						{
+							// field doesn't exists on compiled table
+							unset($arguments[0][$_key]);
+						}
+					}
+				}
+			}
+			else if($function == 'where' && strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false)
+			{
+				// add table prefix to field
 				$arguments[0]						= $this->_table . '.' . $arguments[0];
+			}
+			else if($function == 'order_by' && in_array($this->_method, array('create', 'read', 'update', 'delete')))
+			{
+				// prevent order on CRUD
+				continue;
 			}
 			
 			if(is_array($arguments) && sizeof($arguments) == 7)
@@ -7134,6 +7178,28 @@ class Core extends Controller
 					if(in_array('required', $validation))
 					{
 						$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|relation_checker[' . $this->_set_relation[$key]['relation_table'] . '.' . $this->_set_relation[$key]['relation_key'] . ']');
+					}
+					else
+					{
+						// find foreign data
+						$constrained				= false;
+						$foreign_data				= $this->model->foreign_data($this->_table);
+						
+						if($foreign_data)
+						{
+							foreach($foreign_data as $_key => $_val)
+							{
+								if($this->_set_relation[$key]['relation_table'] == $_val->foreign_table_name)
+								{
+									$constrained	= true;
+								}
+							}
+						}
+						
+						if($constrained)
+						{
+							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|relation_checker[' . $this->_set_relation[$key]['relation_table'] . '.' . $this->_set_relation[$key]['relation_key'] . ']');
+						}
 					}
 				}
 				else

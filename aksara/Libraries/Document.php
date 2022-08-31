@@ -145,7 +145,7 @@ class Document
 	public function pageSize($width = '8.5in', $height = '13in')
 	{
 		// explode to get initial setup
-		$widthHeight								= explode(' ', preg_replace('!\s+!', ' ', $width));
+		$widthHeight								= ($width ? array_map('trim', explode(' ', $width)) : array());
 		
 		if(2 == sizeof($widthHeight))
 		{
@@ -244,7 +244,7 @@ class Document
 		if(isset($params['page-width']) && isset($params['page-height']))
 		{
 			// set the page size
-			$params['format']						= array(preg_replace('/[^0-9.]/', '', $params['page-width']) * 25.4, preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4);
+			$params['format']						= array(preg_replace('/[^0-9.]/', '', (float) $params['page-width']) * 25.4, (float) preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4);
 		}
 		
 		// load generator

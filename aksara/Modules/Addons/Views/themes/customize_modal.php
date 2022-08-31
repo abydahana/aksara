@@ -31,7 +31,7 @@
 							<span class="input-group-text">
 								<?php echo phrase('background'); ?>
 							</span>
-							<input type="color" name="colorscheme[page][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : null); ?>" />
+							<input type="color" name="colorscheme[page][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : '#ffffff'); ?>" />
 						</div>
 					</div>
 					<div class="col-6 col-md-3 col-lg-2">
@@ -39,7 +39,34 @@
 							<span class="input-group-text">
 								<?php echo phrase('foreground'); ?>
 							</span>
-							<input type="color" name="colorscheme[page][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#FFFFFF'); ?>" />
+							<input type="color" name="colorscheme[page][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#333333'); ?>" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card mb-3">
+			<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : '#333333'); ?>; color:<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#fafafa'); ?>">
+				<div class="row align-items-center">
+					<div class="col-12 col-md-6 col-lg-8">
+						<b>
+							<?php echo phrase('header_color_scheme'); ?>
+						</b>
+					</div>
+					<div class="col-6 col-md-3 col-lg-2">
+						<div class="input-group input-group-sm">
+							<span class="input-group-text">
+								<?php echo phrase('background'); ?>
+							</span>
+							<input type="color" name="colorscheme[header][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : '#333333'); ?>" />
+						</div>
+					</div>
+					<div class="col-6 col-md-3 col-lg-2">
+						<div class="input-group input-group-sm">
+							<span class="input-group-text">
+								<?php echo phrase('foreground'); ?>
+							</span>
+							<input type="color" name="colorscheme[header][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#fafafa'); ?>" />
 						</div>
 					</div>
 				</div>
@@ -58,7 +85,7 @@
 							<span class="input-group-text">
 								<?php echo phrase('background'); ?>
 							</span>
-							<input type="color" name="colorscheme[sidebar][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : null); ?>" />
+							<input type="color" name="colorscheme[sidebar][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->sidebar->background) ? $detail->colorscheme->sidebar->background : '#fafafa'); ?>" />
 						</div>
 					</div>
 					<div class="col-6 col-md-3 col-lg-2">
@@ -66,34 +93,7 @@
 							<span class="input-group-text">
 								<?php echo phrase('foreground'); ?>
 							</span>
-							<input type="color" name="colorscheme[sidebar][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : '#FFFFFF'); ?>" />
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="card mb-3">
-			<div class="card-body p-2 rounded" style="background:<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : '#ffffff'); ?>; color:<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#333333'); ?>">
-				<div class="row align-items-center">
-					<div class="col-12 col-md-6 col-lg-8">
-						<b>
-							<?php echo phrase('header_color_scheme'); ?>
-						</b>
-					</div>
-					<div class="col-6 col-md-3 col-lg-2">
-						<div class="input-group input-group-sm">
-							<span class="input-group-text">
-								<?php echo phrase('background'); ?>
-							</span>
-							<input type="color" name="colorscheme[header][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->header->background) ? $detail->colorscheme->header->background : null); ?>" />
-						</div>
-					</div>
-					<div class="col-6 col-md-3 col-lg-2">
-						<div class="input-group input-group-sm">
-							<span class="input-group-text">
-								<?php echo phrase('foreground'); ?>
-							</span>
-							<input type="color" name="colorscheme[header][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->header->text) ? $detail->colorscheme->header->text : '#FFFFFF'); ?>" />
+							<input type="color" name="colorscheme[sidebar][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->sidebar->text) ? $detail->colorscheme->sidebar->text : '#333333'); ?>" />
 						</div>
 					</div>
 				</div>
@@ -112,7 +112,7 @@
 							<span class="input-group-text">
 								<?php echo phrase('background'); ?>
 							</span>
-							<input type="color" name="colorscheme[footer][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : null); ?>" />
+							<input type="color" name="colorscheme[footer][background]" class="form-control form-control-color background-color" value="<?php echo (isset($detail->colorscheme->footer->background) ? $detail->colorscheme->footer->background : '#ffffff'); ?>" />
 						</div>
 					</div>
 					<div class="col-6 col-md-3 col-lg-2">
@@ -120,7 +120,7 @@
 							<span class="input-group-text">
 								<?php echo phrase('foreground'); ?>
 							</span>
-							<input type="color" name="colorscheme[footer][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : '#FFFFFF'); ?>" />
+							<input type="color" name="colorscheme[footer][text]" class="form-control form-control-color foreground-color" value="<?php echo (isset($detail->colorscheme->footer->text) ? $detail->colorscheme->footer->text : '#333333'); ?>" />
 						</div>
 					</div>
 				</div>
