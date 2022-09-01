@@ -5211,6 +5211,10 @@ class Core extends Controller
 						
 						continue;
 					}
+					else if(in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type))
+					{
+						continue;
+					}
 					else
 					{
 						$column_lib[]				= $field;
