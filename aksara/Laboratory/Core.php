@@ -5211,7 +5211,7 @@ class Core extends Controller
 						
 						continue;
 					}
-					else if(in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type))
+					else if(in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type) && !$this->_api_request)
 					{
 						continue;
 					}
