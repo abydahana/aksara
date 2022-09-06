@@ -2578,12 +2578,12 @@ class Core extends Controller
 			}
 			else
 			{
-				$offset								= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
+				$this->_offset						= (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
 				
-				if($offset)
+				if($this->_offset)
 				{
 					// push offset to the prepared query builder
-					$this->_prepare('offset', array($offset));
+					$this->_prepare('offset', array($this->_offset));
 				}
 				
 				if(($this->_searchable && !$this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
