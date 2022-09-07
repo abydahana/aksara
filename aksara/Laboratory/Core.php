@@ -5205,14 +5205,10 @@ class Core extends Controller
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
 					
-					if(array_intersect(array('encryption', 'password'), $type))
+					if((in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type) && !$this->_api_request) || array_intersect(array('encryption', 'password'), $type))
 					{
 						$unsets[]					= $field;
 						
-						continue;
-					}
-					else if(in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type) && !$this->_api_request)
-					{
 						continue;
 					}
 					else
