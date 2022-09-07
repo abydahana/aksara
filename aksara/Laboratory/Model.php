@@ -2226,10 +2226,15 @@ class Model
 		
 		if(strpos($column, ' ') !== false)
 		{
+			// get operand if any
 			$get_operand							= substr($column, strrpos($column, ' ') + 1);
 			
 			if(in_array($get_operand, array('!=', '>=', '<=', '>', '<')))
 			{
+				// remove operand from column
+				$column								= substr($column, 0, strrpos($column, ' '));
+				
+				// set operand
 				$operand							= $get_operand;
 			}
 		}
