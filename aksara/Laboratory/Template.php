@@ -600,14 +600,17 @@ class Template
 			/* minify the data */
 			$data->html								= preg_replace(array_keys($minify_pattern), array_values($minify_pattern), $data->html);
 			
-			/* rollback the pre tag */
-			$data->html								= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
-			
-			/* rollback the textarea tag */
-			$data->html								= str_replace(array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $textarea_backup[0], $data->html);
-			
-			/* rollback the script tag */
-			$data->html								= str_replace(array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $script_backup[0]), $data->html);
+			if($data->html)
+			{
+				/* rollback the pre tag */
+				$data->html							= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
+				
+				/* rollback the textarea tag */
+				$data->html							= str_replace(array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $textarea_backup[0], $data->html);
+				
+				/* rollback the script tag */
+				$data->html							= str_replace(array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $script_backup[0]), $data->html);
+			}
 		}
 		
 		/**

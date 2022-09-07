@@ -85,6 +85,8 @@ class Menus extends \Aksara\Laboratory\Core
 		
 		->modal_size('modal-lg')
 		
+		->order_by('menu_id')
+		
 		->render($this->_table);
 	}
 	

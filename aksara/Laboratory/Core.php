@@ -7786,7 +7786,7 @@ class Core extends Controller
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_using_the_requested_method') . ': ' . service('request')->getServer('REQUEST_METHOD'));
 		}
-		else if(service('request')->getIPAddress() != (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null) || ($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range)))
+		else if($api_service->ip_range && (service('request')->getIPAddress() != (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null) || ($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range))))
 		{
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
 		}
