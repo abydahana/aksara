@@ -2221,6 +2221,19 @@ class Model
 	
 	private function _cast_column($column = null, $value = '')
 	{
+		$column										= trim($column);
+		$operand									= null;
+		
+		if(strpos($column, ' ') !== false)
+		{
+			$get_operand							= substr($column, strrpos($column, ' ') + 1);
+			
+			if(in_array($get_operand, array('!=', '>=', '<=', '>', '<')))
+			{
+				$operand							= $get_operand;
+			}
+		}
+		
 		if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($column, '(') && !stripos($column, ')'))
 		{
 			// type casting for PostgreSQL
@@ -2256,21 +2269,20 @@ class Model
 			}
 			
 			$column									= (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
-			$operand								= (stripos($column, ' ') !== false ? substr($column, stripos($column, ' ') + 1) : $column);
 			
 			if(DB_DRIVER == 'SQLSRV')
 			{
-				$column								= 'CONVERT(' . $cast_type . ', ' . $column . ')' . ($column != $operand ? $operand : null);
+				$column								= 'CONVERT(' . $cast_type . ', ' . $column . ')';
 			}
 			else
 			{
-				$column								= 'CAST(' . $column . ' AS ' . $cast_type . ')' . ($column != $operand ? $operand : null);
+				$column								= 'CAST(' . $column . ' AS ' . $cast_type . ')';
 			}
 		}
 		
 		return array
 		(
-			'column'								=> $column,
+			'column'								=> $column . ($operand ? ' ' . $operand : null),
 			'value'									=> $value
 		);
 	}
