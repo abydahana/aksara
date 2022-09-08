@@ -40,11 +40,6 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	top: 56px
 }
 
-.navbar .dropdown-menu .nav-item a.nav-link:hover
-{
-	background: rgba(0, 0, 0, .2)
-}
-
 .navbar .dropdown-menu .dropdown-menu
 {
 	top: 0;
@@ -54,10 +49,11 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-radius: 0
 }
 
-.navbar .dropdown-menu .dropdown-toggle::after
+.navbar-nav .dropdown .dropdown .dropdown-toggle::after
 {
-	float: right;
-	margin-top: 10px
+	position: absolute;
+	top: 1rem;
+	right: 1rem
 }
 
 .navbar-nav .dropdown-menu::before,
@@ -103,6 +99,11 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	color: val(--bs-text-muted)!important
 }
 
+.dropdown-menu .nav-item
+{
+	position: relative
+}
+
 .dropdown-menu .nav-link
 {
 	color: var(--bs-dark);
@@ -111,8 +112,15 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 
 .dropdown-menu .nav-link i
 {
+	position: absolute;
 	width: 1.5rem;
-	display: inline-block
+	line-height: 1.5rem
+}
+
+.dropdown-menu .nav-link span
+{
+	display: block;
+	margin-left: 1.5rem
 }
 
 .text-muted
@@ -123,6 +131,22 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 a
 {
 	text-decoration: none
+}
+
+.MsoTableGrid
+{
+	width: 100%
+}
+
+.MsoTableGrid tr:first-child td
+{
+	font-weight: bold
+}
+
+.MsoTableGrid td
+{
+	border: 1px solid #333;
+	padding: 5px
 }
 
 @media (min-width: 992px) and (min-height: 360px)
@@ -147,13 +171,25 @@ a
 {
 	.navbar .navbar-collapse
 	{
-		overflow-x: hidden
+		overflow-x: hidden;
 	}
 	
-	.navbar .dropdown-toggle::after
+	.navbar .navbar-collapse,
+	.navbar .navbar-nav,
+	.navbar .nav-item.dropdown,
+	.navbar .dropdown-menu.show
 	{
-		float: right;
-		margin-top: 10px
+		margin-left: -1rem!important;
+		margin-right: -1rem!important;
+		padding-left: 1rem!important;
+		padding-right: 1rem!important
+	}
+
+	.navbar-nav .dropdown .dropdown-toggle::after
+	{
+		position: absolute;
+		top: 1rem;
+		right: 1rem
 	}
 	
 	.navbar-nav .dropdown-menu
@@ -161,39 +197,42 @@ a
 		position: relative;
 		top: 0;
 		background-color: transparent;
-		border: none;
-		margin-left: -1rem;
-		margin-right: -1rem
+		border: none
 	}
 	
-	.navbar-nav .dropdown-menu .dropdown-menu
+	.navbar .navbar-nav .dropdown-menu.show
+	{
+		background: rgba(0, 0, 0, .2)
+	}
+	
+	.navbar .navbar-nav .dropdown-menu .dropdown-menu
 	{
 		margin-left: 0;
 		margin-right: 0
 	}
 
-	.navbar-nav .dropdown-menu::before,
-	.navbar-nav .dropdown-menu::after
+	.navbar .navbar-nav .dropdown-menu::before,
+	.navbar .navbar-nav .dropdown-menu::after
 	{
 		display: none
 	}
 	
-	.navbar-nav .dropdown-menu .nav-link
+	.navbar .navbar-nav .dropdown-menu .nav-link
 	{
 		color: var(--bs-nav-link-color)
 	}
 	
-	.navbar .dropdown-menu .nav-item:hover
+	.navbar .navbar-nav .dropdown-menu .nav-item:hover
 	{
 		background: transparent
 	}
 	
-	.navbar-nav .dropdown-menu .dropdown-menu .nav-link
+	.navbar .navbar-nav .dropdown-menu .nav-link
 	{
-		padding: .25rem 1rem
+		padding: .25rem 0!important
 	}
 	
-	.navbar-nav .nav-link i
+	.navbar .navbar-nav .nav-link i
 	{
 		width: 2rem;
 		display: inline-block
