@@ -3240,7 +3240,7 @@ class Core extends Controller
 							$primary				= $this->_set_default[$val->name];
 						}
 						
-						if((isset($field_data->primary_key) && $field_data->primary_key === 1) || (isset($field_data->default) && $field_data->default && stripos($field_data->default, 'nextval(') !== false))
+						if((isset($val->primary_key) && $val->primary_key === 1) || (isset($val->default) && $val->default && stripos($val->default, 'nextval(') !== false))
 						{
 							$auto_increment			= true;
 						}
@@ -4359,6 +4359,15 @@ class Core extends Controller
 								}
 							}
 							
+							if(in_array(DB_DRIVER, array('SQLSRV')))
+							{
+								$cast_field			= 'CONVERT(' . $field . ', SIGNED INTEGER)';
+							}
+							else
+							{
+								$cast_field			= 'CAST(' . $field . ' AS INTEGER)';
+							}
+							
 							if($skip)
 							{
 								if(is_array($parameter))
@@ -4366,16 +4375,19 @@ class Core extends Controller
 									$this->model->where($parameter);
 								}
 								
-								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
+								$last_insert		= $this->model->select((in_array(DB_DRIVER, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
 							}
 							else
 							{
-								$last_insert		= $this->model->select('IFNULL(MAX(CONVERT(' . $field . ', SIGNED INTEGER)), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
+								$last_insert		= $this->model->select((in_array(DB_DRIVER, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
 							}
 							
-							$last_insert			= explode('/', $last_insert);
-							$last_insert			= (isset($last_insert[$type_key]) ? $last_insert[$type_key] : $last_insert[0]);
-							$last_insert			= preg_replace('/[^0-9]/', '', $last_insert);
+							if($last_insert)
+							{
+								$last_insert		= (strpos($last_insert, '/') !== false ? explode('/', $last_insert) : array($last_insert));
+								$last_insert		= (isset($last_insert[$type_key]) ? $last_insert[$type_key] : $last_insert[0]);
+								$last_insert		= preg_replace('/[^0-9]/', '', $last_insert);
+							}
 							
 							if('create' == $this->_method)
 							{
@@ -4453,7 +4465,7 @@ class Core extends Controller
 				$fields[$field]						= array
 				(
 					'type'							=> $type,
-					'label'							=> $alias,
+					'label'							=> (!isset($this->_set_option_label[$field]) || strtolower($alias) != strtolower($this->_set_option_label[$field]) ? $alias : ''),
 					'tooltip'						=> (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
 					'content'						=> $content,
 					'original'						=> $original,
@@ -5094,7 +5106,7 @@ class Core extends Controller
 				(
 					'required'						=> $required,
 					'type'							=> $type,
-					'label'							=> $alias,
+					'label'							=> (!isset($this->_set_option_label[$field]) || strtolower($alias) != strtolower($this->_set_option_label[$field]) ? $alias : ''),
 					'content'						=> $content,
 					'original'						=> $original,
 					'position'						=> $position
