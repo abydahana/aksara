@@ -3808,11 +3808,13 @@ class Core extends Controller
 							</div>
 							<div class="row">
 								<div class="col-4 pe-0">
-									<button type="button" class="btn btn-secondary btn-sm d-block"' . (!$read_only ? ' role="add-attribute"' : null) . ' data-label="' . $field . '[label][]" data-label-placeholder="' . phrase('label') . '" data-value-placeholder="' . phrase('value') . '" data-value="' . $field . '[value][]">
-										<i class="mdi mdi-plus-circle-outline"></i>
-										&nbsp;
-										' . phrase('add') . '
-									</button>
+									<div class="d-grid">
+										<button type="button" class="btn btn-secondary btn-sm d-block"' . (!$read_only ? ' role="add-attribute"' : null) . ' data-label="' . $field . '[label][]" data-label-placeholder="' . phrase('label') . '" data-value-placeholder="' . phrase('value') . '" data-value="' . $field . '[value][]">
+											<i class="mdi mdi-plus-circle-outline"></i>
+											&nbsp;
+											' . phrase('add') . '
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
