@@ -63,7 +63,7 @@ class Read extends \Aksara\Laboratory\Core
 					'blogs.post_category = blogs__categories.category_id'
 				)
 				->order_by('total_data', 'DESC')
-				->group_by('category_id, category_slug, category_title, category_description, category_image')
+				->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
 				->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 				->get_where
 				(
