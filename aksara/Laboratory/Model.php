@@ -1575,7 +1575,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			$this->_limit							= $limit;
 			$this->_offset							= $offset;
@@ -1602,7 +1602,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			$this->_limit							= $limit;
 			$this->_offset							= $offset;
@@ -1671,7 +1671,7 @@ class Model
 	 */
 	public function row($field = 1)
 	{
-		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		if(!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
 		{
 			$this->_limit							= 1;
 		}
@@ -1692,7 +1692,7 @@ class Model
 	 */
 	public function row_array($field = 1)
 	{
-		if(DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		if(!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
 		{
 			$this->_limit							= 1;
 		}
@@ -1979,7 +1979,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (DB_DRIVER !== 'SQLSRV' || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
 		{
 			$this->_limit							= $limit;
 		}
