@@ -32,8 +32,10 @@
 					<ul class="dropdown-menu dropdown-menu-end">
 						<li class="nav-item">
 							<h6 href="javascript:void(0)" class="nav-link dropdown-header text-muted">
-								<i class="mdi  mdi-blank"></i>
-								<?php echo phrase('user_panel'); ?>
+								<i class="mdi mdi-blank"></i>
+								<span>
+									<?php echo phrase('user_panel'); ?>
+								</span>
 							</h6>
 						</li>
 						
@@ -42,13 +44,17 @@
 						<li class="nav-item">
 							<a class="nav-link" href="<?php echo base_url('dashboard'); ?>">
 								<i class="mdi mdi-monitor-dashboard"></i>
-								<?php echo phrase('dashboard'); ?>
+								<span>
+									<?php echo phrase('dashboard'); ?>
+								</span>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="<?php echo base_url('administrative/account'); ?>">
 								<i class="mdi mdi-account-circle-outline"></i>
-								<?php echo phrase('account'); ?>
+								<span>
+									<?php echo phrase('account'); ?>
+								</span>
 							</a>
 						</li>
 						<!-- divider -->
@@ -57,7 +63,9 @@
 						<li class="nav-item">
 							<a class="nav-link text-danger" href="<?php echo base_url('auth/sign_out'); ?>">
 								<i class="mdi mdi-logout"></i>
-								<?php echo phrase('sign_out'); ?>
+								<span>
+									<?php echo phrase('sign_out'); ?>
+								</span>
 							</a>
 						</li>
 					</ul>

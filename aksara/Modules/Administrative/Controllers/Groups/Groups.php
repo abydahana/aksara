@@ -76,7 +76,11 @@ class Groups extends \Aksara\Laboratory\Core
 				'status'							=> phrase('status')
 			)
 		)
+		
 		->modal_size('modal-lg')
+		
+		->order_by('group_id')
+		
 		->render($this->_table);
 	}
 	
