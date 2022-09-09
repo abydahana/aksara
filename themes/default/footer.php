@@ -240,11 +240,11 @@
 			</div>
 		</div>
 		<div class="text-center">
-			<small class="font-weight-bold">
+			<small class="fw-bold">
 				<?php echo phrase('copyright'); ?> &#169;<?php echo date('Y'); ?> - <?php echo get_setting('office_name'); ?>
 			</small>
 			<small>
-				(<a href="<?php echo base_url('pages/about'); ?>" class="font-weight-bold --xhr">Aksara <?php echo aksara('build_version'); ?></a>)
+				(<a href="<?php echo base_url('pages/about'); ?>" class="fw-bold --xhr">Aksara <?php echo aksara('build_version'); ?></a>)
 			</small>
 		</div>
 		<div class="row">

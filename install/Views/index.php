@@ -31,7 +31,7 @@
 								<div class="col-md-4 bg-light border-right pt-3 d-none d-md-block">
 									<div class="sticky-top" style="top:15px">
 										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
-											<h4 class="font-weight-bold mb-3">
+											<h4 class="fw-bold mb-3">
 												<b>
 													Aksara
 												</b>
@@ -73,7 +73,7 @@
 								<div class="col-md-8 pt-3 pb-3">
 									<div class="d-md-none text-center">
 										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
-											<h4 class="font-weight-bold mb-3">
+											<h4 class="fw-bold mb-3">
 												Aksara <small class="text-sm font-weight-light">Installer</small>
 											</h4>
 										</a>

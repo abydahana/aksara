@@ -33,12 +33,12 @@
 				<ol>
 					<li>
 						<p>
-							<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> hanyalah sebuah alat untuk membantu Anda dalam membangun suatu ekosistem sesuai kebutuhan Anda. Namun sesuatu yang Anda bangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> seharusnya tetap melampirkan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> sebagai sesuatu yang berperan di dalamnya;
+							<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> hanyalah sebuah alat untuk membantu Anda dalam membangun suatu ekosistem sesuai kebutuhan Anda. Namun sesuatu yang Anda bangun dengan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> seharusnya tetap melampirkan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> sebagai sesuatu yang berperan di dalamnya;
 						</p>
 					</li>
 					<li>
 						<p>
-							Anda bebas mendistribusikan ulang (baik dijual atau digratiskan) suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;
+							Anda bebas mendistribusikan ulang (baik dijual atau digratiskan) suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;
 						</p>
 					</li>
 					<li>

@@ -43,6 +43,8 @@ class Inquiries extends \Aksara\Laboratory\Core
 			)
 		)
 		
+		->order_by('timestamp', 'DESC')
+		
 		->render($this->_table);
 	}
 }

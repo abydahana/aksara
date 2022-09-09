@@ -59,7 +59,7 @@
 		&nbsp;
 	</div>
 	<div class="col-sm-6">
-		<a href="<?php echo site_url('xhr/boot'); ?>" class="btn btn-warning d-block font-weight-bold">
+		<a href="<?php echo site_url('xhr/boot'); ?>" class="btn btn-warning d-block fw-bold">
 			<i class="mdi mdi-rocket"></i>
 			<?php echo phrase('launch_your_site'); ?>
 		</a>

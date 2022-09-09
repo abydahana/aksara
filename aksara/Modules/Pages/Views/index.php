@@ -29,7 +29,7 @@
 										' : null) . '
 										<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-start d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
 											<div class="pt-5 w-100">
-												<h2 class="font-weight-bold mb-3 text-light">
+												<h2 class="fw-bold mb-3 text-light">
 													' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
 												</h2>
 												<p class="text-light mb-5">

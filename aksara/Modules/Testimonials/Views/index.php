@@ -28,7 +28,7 @@
 									<img src="' . get_image('testimonials', $val->photo, 'thumb') . '" class="img-fluid rounded-4">
 								</div>
 								<div class="col-9 col-md-9">
-									<h4 class="article font-weight-bold">
+									<h4 class="article fw-bold">
 										' . $val->testimonial_title . '
 									</h4>
 									<div class="article mb-4">

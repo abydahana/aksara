@@ -22,7 +22,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group mb-4">
-							<label class="d-block font-weight-bold" for="first_name_input">
+							<label class="d-block fw-bold" for="first_name_input">
 								<?php echo phrase('first_name'); ?>
 							</label>
 							<input type="text" name="first_name" class="form-control" id="first_name_input" placeholder="<?php echo phrase('your_first_name'); ?>" autocomplete="off" maxlength="64" />
@@ -30,7 +30,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group mb-4">
-							<label class="d-block font-weight-bold" for="last_name_input">
+							<label class="d-block fw-bold" for="last_name_input">
 								<?php echo phrase('last_name'); ?>
 							</label>
 							<input type="text" name="last_name" class="form-control" id="last_name_input" placeholder="<?php echo phrase('your_last_name'); ?>" autocomplete="off" maxlength="64" />
@@ -38,7 +38,7 @@
 					</div>
 				</div>
 				<div class="form-group mb-4">
-					<label class="d-block font-weight-bold" for="email_input">
+					<label class="d-block fw-bold" for="email_input">
 						<?php echo phrase('email_address'); ?>
 					</label>
 					<input type="email" name="email" class="form-control" id="email_input" placeholder="<?php echo phrase('enter_your_email_address'); ?>" autocomplete="off" maxlength="128" />
@@ -46,7 +46,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group mb-4">
-							<label class="d-block font-weight-bold" for="username_input">
+							<label class="d-block fw-bold" for="username_input">
 								<?php echo phrase('username'); ?>
 							</label>
 							<input type="text" name="username" class="form-control" id="username_input" placeholder="<?php echo phrase('choose_your_username'); ?>" autocomplete="off" maxlength="32" />
@@ -54,7 +54,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group mb-4 position-relative">
-							<label class="d-block font-weight-bold" for="password_input">
+							<label class="d-block fw-bold" for="password_input">
 								<?php echo phrase('password'); ?>
 							</label>
 							<div class="input-group">
@@ -69,7 +69,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group mb-4">
-							<label class="d-block font-weight-bold" for="email_input">
+							<label class="d-block fw-bold" for="email_input">
 								<?php echo phrase('phone_number'); ?>
 							</label>
 							<input type="phone" name="phone" class="form-control" id="phone_input" placeholder="0812XXXX" autocomplete="off" maxlength="16" />

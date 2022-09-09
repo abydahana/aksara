@@ -119,7 +119,7 @@
 		</div>
 	</div>
 	<p class="text-center">
-		<small class="font-weight-bold">
+		<small class="fw-bold">
 			<?php echo phrase('copyright'); ?> &#169;<?php echo date('Y'); ?> - <?php echo get_setting('app_name'); ?>
 		</small>
 		<small>

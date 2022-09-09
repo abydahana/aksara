@@ -49,6 +49,17 @@ html.fix-scrollbar body
 	background: linear-gradient(to left, rgba(50,50,50,1) 0%, rgba(255,255,255,0) 100%)
 }
 
+.tooltip
+{
+	position: absolute!important;
+	top: 0
+}
+
+.toast-container
+{
+	z-index: 1050!important
+}
+
 .modal-body .mCSB_container
 {
 	padding: 3px
