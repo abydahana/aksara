@@ -37,13 +37,13 @@ return array
 	'system_configuration' => 'System Configuration',
 	'finalizing' => 'Finalizing',
 	'hello_there' => 'Hello there...',
-	'thank_you_for_choosing_aksara' => 'Thank you for choosing <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a>!',
+	'thank_you_for_choosing_aksara' => 'Thank you for choosing <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
 	'before_we_start_the_installation_please_take_a_moment_to_read_this_few_notes' => 'Before we start the installation, please take a moment to read this few notes.',
 	'you_could_check_the_agreement_box_and_skip_reading_as_usual' => 'You could check the "<b>Agreement</b>" box and skip reading as usual, but we still believe there\'s a "<b>Nerd</b>" that would read this notes sentence by sentences.',
 	
-	'article_1' => '<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> is just a tool to build the ecosystems according to your needs. But something you built with <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> should be subjected to it;',
+	'article_1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> is just a tool to build the ecosystems according to your needs. But something you built with <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> should be subjected to it;',
 	
-	'article_2' => 'You\'re allowed to re-distribute the ecosystems you built with <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> without any concern of my permission, however admitting it was built by you as a whole is a shame;',
+	'article_2' => 'You\'re allowed to re-distribute the ecosystems you built with <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> without any concern of my permission, however admitting it was built by you as a whole is a shame;',
 	
 	'article_3' => 'Never disappoint the creative people who share their work for free, or you\'ll find them selling their future idea at prices you can\'t reach.',
 	
@@ -94,7 +94,7 @@ return array
 	'failed_to_write_the_configuration_into_file' => 'Failed to write the configuration into file!',
 	'please_choose_the_correct_database_driver' => 'Please choose the correct database driver!',
 	'congratulations' => 'Congratulations!',
-	'aksara_has_been_successfully_installed_on_your_system' => '<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> has been successfully installed on your system!',
+	'aksara_has_been_successfully_installed_on_your_system' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> has been successfully installed on your system!',
 	'notice' => 'Notice!',
 	'your_configuration_file_or_folder_is_not_writable_or_there_was_a_problem_creating_the_configuration_file' => 'Your configuration file or folder isn\'t writable or there was a problem creating the configuration file.',
 	'you_will_have_to_create_the_following_code_by_hand_manually_and_locate_to_following_directory' => 'You will have to create the following code by hand manually and locate to following directory:',

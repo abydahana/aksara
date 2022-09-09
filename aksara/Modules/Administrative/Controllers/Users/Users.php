@@ -169,10 +169,9 @@ class Users extends \Aksara\Laboratory\Core
 				'group_name'						=> phrase('group')
 			)
 		)
+		
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_field('first_name, last_name', phrase('full_name'))
-		
-		->order_by('registered_date', 'DESC')
 		
 		->render($this->_table);
 	}

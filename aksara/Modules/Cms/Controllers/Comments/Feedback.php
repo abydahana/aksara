@@ -123,11 +123,6 @@ class Feedback extends \Aksara\Laboratory\Core
 			');
 		}
 		
-		if(!service('request')->getGet('order'))
-		{
-			$this->order_by('timestamp', 'DESC');
-		}
-		
 		$this->set_title(phrase('feedback'))
 		->set_icon('mdi mdi-file-alert-outline')
 		->unset_column('comment_id, reply_id, edited')
@@ -166,6 +161,8 @@ class Feedback extends \Aksara\Laboratory\Core
 				'comment_id'						=> $this->_primary
 			)
 		)
+		
+		->order_by('timestamp', 'DESC')
 		
 		->render($this->_table);
 	}

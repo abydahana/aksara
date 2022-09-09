@@ -59,7 +59,7 @@
 			</h6>
 			<div class="mb-3">
 				<label class="d-block text-muted mb-0">
-					<a href="//abydahana.github.io" class="font-weight-bold" target="_blank">
+					<a href="//abydahana.github.io" class="fw-bold" target="_blank">
 						Aby Dahana
 						<i class="mdi mdi-open-in-new"></i>
 					</a>
@@ -72,7 +72,7 @@
 			</h6>
 			<div class="mb-3">
 				<label class="d-block text-muted mb-0">
-					<a href="//ganjar.id" class="font-weight-bold" target="_blank">
+					<a href="//ganjar.id" class="fw-bold" target="_blank">
 						Ganjar Nugraha
 						<i class="mdi mdi-open-in-new"></i>
 					</a>
@@ -219,7 +219,7 @@
 	<div class="row">
 		<div class="col-md-6 offset-md-3">
 			<p class="lead text-center">
-				Terima kasih kepada para pengembang yang membagikan karya mereka secara cuma-cuma. Tanpa mereka, <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tidak akan pernah terwujud.
+				Terima kasih kepada para pengembang yang membagikan karya mereka secara cuma-cuma. Tanpa mereka, <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> tidak akan pernah terwujud.
 				<br />
 				Kita luar biasa!
 				<br />

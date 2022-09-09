@@ -35,7 +35,7 @@
 				</h5>
 				<ul class="mb-5">
 					<li>
-						<?php echo phrase('make_sure_the_package_you_would_to_import_is_downloaded_from_the_official_market'); ?> (<a href="//www.aksaracms.com/market" class="text-primary font-weight-bold" target="_blank">Aksara Market</a>);
+						<?php echo phrase('make_sure_the_package_you_would_to_import_is_downloaded_from_the_official_market'); ?> (<a href="//www.aksaracms.com/market" class="text-primary fw-bold" target="_blank">Aksara Market</a>);
 					</li>
 					<li>
 						<?php echo phrase('the_package_that_you_download_from_outside_the_official_market_may_contain_exploit_tool_that_will_risk_your_server'); ?>;

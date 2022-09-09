@@ -329,12 +329,12 @@ class Updater extends \Aksara\Laboratory\Core
 					</p>
 					<ul>
 						<li>
-							<a href="//github.com/abydahana/aksara/issues" class="font-weight-bold" target="_blank">
+							<a href="//github.com/abydahana/aksara/issues" class="fw-bold" target="_blank">
 								GitHub Issue
 							</a>
 						</li>
 						<li>
-							<a href="//aksaracms.com/forum" class="font-weight-bold" target="_blank">
+							<a href="//aksaracms.com/forum" class="fw-bold" target="_blank">
 								Aksara Forum
 							</a>
 						</li>
@@ -435,12 +435,12 @@ class Updater extends \Aksara\Laboratory\Core
 			</p>
 			<ul>
 				<li>
-					<a href="//github.com/abydahana/aksara/issues" class="font-weight-bold" target="_blank">
+					<a href="//github.com/abydahana/aksara/issues" class="fw-bold" target="_blank">
 						GitHub Issue
 					</a>
 				</li>
 				<li>
-					<a href="//aksaracms.com/forum" class="font-weight-bold" target="_blank">
+					<a href="//aksaracms.com/forum" class="fw-bold" target="_blank">
 						Aksara Forum
 					</a>
 				</li>

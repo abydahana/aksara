@@ -37,13 +37,13 @@ return array
 	'system_configuration' => 'Konfigurasi Sistem',
 	'finalizing' => 'Tahap Akhir',
 	'hello_there' => 'Halo...',
-	'thank_you_for_choosing_aksara' => 'Terima kasih telah memilih <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a>!',
+	'thank_you_for_choosing_aksara' => 'Terima kasih telah memilih <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
 	'before_we_start_the_installation_please_take_a_moment_to_read_this_few_notes' => 'Sebelum kita mulai instalasi, harap <b>luangkan waktu sejenak</b> untuk membaca catatan kecil ini.',
 	'you_could_check_the_agreement_box_and_skip_reading_as_usual' => 'Anda bisa saja langsung menandai kotak "<b>Persetujuan</b>" dan melewati catatan ini seperti biasa. Namun kami meyakini masih ada "<b>Kutu Buku</b>" yang menyempatkan diri untuk membaca catatan ini kalimat demi kalimat.',
 	
-	'article_1' => '<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> hanyalah sebuah alat untuk membantu Anda dalam membangun suatu ekosistem sesuai kebutuhan Anda. Namun sesuatu yang Anda bangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> seharusnya tetap melampirkan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> sebagai sesuatu yang berperan di dalamnya;',
+	'article_1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> hanyalah sebuah alat untuk membantu Anda dalam membangun suatu ekosistem sesuai kebutuhan Anda. Namun sesuatu yang Anda bangun dengan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> seharusnya tetap melampirkan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> sebagai sesuatu yang berperan di dalamnya;',
 	
-	'article_2' => 'Anda bebas mendistribusikan ulang (baik dijual atau digratiskan) suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;',
+	'article_2' => 'Anda bebas mendistribusikan ulang (baik dijual atau digratiskan) suatu ekosistem yang dibangun dengan <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> tanpa mempedulikan izin dari kami, namun mengakui bahwa itu dibangun oleh Anda secara keseluruhan adalah hal yang memalukan;',
 	
 	'article_3' => 'Jangan pernah mengecewakan orang-orang yang mempunyai kreatifitas tinggi dan membagikan apa yang dikembangkannya kepada Anda secara gratis, atau Anda harus membayar pada karya yang dibuat berikutnya.',
 	
@@ -93,7 +93,7 @@ return array
 	'failed_to_open_or_create_the_configuration_file' => 'Gagal dalam menulis atau membuat file konfigurasi!',
 	'failed_to_write_the_configuration_into_file' => 'Gagal dalam menulis konfigurasi ke dalam file!',
 	'congratulations' => 'Selamat!',
-	'aksara_has_been_successfully_installed_on_your_system' => '<a href="//aksaracms.com" class="text-primary font-weight-bold" target="_blank">Aksara</a> berhasil diinstal dalam server Anda!',
+	'aksara_has_been_successfully_installed_on_your_system' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> berhasil diinstal dalam server Anda!',
 	'notice' => 'Peringatan!',
 	'your_configuration_file_or_folder_is_not_writable_or_there_was_a_problem_creating_the_configuration_file' => 'File atau folder konfigurasi Anda tidak dapat ditulis atau ada masalah saat membuat file konfigurasi.',
 	'you_will_have_to_create_the_following_code_by_hand_manually_and_locate_to_following_directory' => 'Anda harus membuat kode berikut secara manual dan ditempatkan dalam direktori berikut:',

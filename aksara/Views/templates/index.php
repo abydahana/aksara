@@ -284,7 +284,7 @@ if(isset($results->extra_action->toolbar))
 										<tr>
 											' . (isset($results->extra_action->option) || !isset($results->unset_action) || !in_array('read', $results->unset_action) || !in_array('update', $results->unset_action) || !in_array('delete', $results->unset_action) || !in_array('print', $results->unset_action) || !in_array('pdf', $results->unset_action) ? '<td>&nbsp;</td>' : null) . '
 											<td colspan="' . ($colspan - (isset($results->extra_action->option) || !isset($results->unset_action) || !in_array('read', $results->unset_action) || !in_array('update', $results->unset_action) || !in_array('delete', $results->unset_action) || !in_array('print', $results->unset_action) || !in_array('pdf', $results->unset_action) ? 1 : 0)) . '">
-												<div class="font-weight-bold text-primary">
+												<div class="fw-bold text-primary">
 													' . $val->$_val->original . '
 												</div>
 											</td>

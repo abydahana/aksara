@@ -50,7 +50,7 @@ class Blogs extends \Aksara\Laboratory\Core
 						<div class="col-4 col-sm-3 col-md-2 text-muted text-uppercase">
 							' . phrase('category') . '
 						</div>
-						<div class="col-8 col-sm-9 col-md-4 font-weight-bold">
+						<div class="col-8 col-sm-9 col-md-4 fw-bold">
 							' . $query->category_title . '
 						</div>
 					</div>
@@ -190,8 +190,6 @@ class Blogs extends \Aksara\Laboratory\Core
 				'author'							=> get_userdata('user_id')
 			)
 		)
-		
-		->order_by('updated_timestamp', 'DESC')
 		
 		->render($this->_table);
 	}

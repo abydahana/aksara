@@ -3,7 +3,7 @@
 		<div class="col-md-3">
 			<div class="sticky-top">
 				<div class="pretty-scrollbar">
-					<a href="<?php echo base_url('apis/documentation'); ?>" class="--xhr<?php echo (!$active ? ' text-primary font-weight-bold' : null); ?>">
+					<a href="<?php echo base_url('apis/documentation'); ?>" class="--xhr<?php echo (!$active ? ' text-primary fw-bold' : null); ?>">
 						<?php echo phrase('get_started'); ?>
 					</a>
 					<br />
@@ -14,7 +14,7 @@
 							foreach($modules as $key => $val)
 							{
 								echo '
-									<a href="' . current_page(null, array('slug' => $val, 'group' => null)) . '" class="--xhr' . ($val == $active ? ' text-primary font-weight-bold' : null) . '">
+									<a href="' . current_page(null, array('slug' => $val, 'group' => null)) . '" class="--xhr' . ($val == $active ? ' text-primary fw-bold' : null) . '">
 										' . str_replace('/', ' &gt; ', $val) . '
 									</a>
 									<br />

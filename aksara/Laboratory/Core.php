@@ -2967,30 +2967,30 @@ class Core extends Controller
 			// if method is create
 			if('create' == $this->_method)
 			{
-				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('add_new_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('please_fill_all_the_required_fields_below_to_add_new_data'));
-				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
+				$this->_set_icon					= (is_array($this->_set_icon) && isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-plus');
+				$this->_set_title					= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $title : phrase('add_new_data'));
+				$this->_set_description				= (is_array($this->_set_description) && isset($this->_set_description[$this->_method]) ? $description : phrase('please_fill_all_the_required_fields_below_to_add_new_data'));
+				$this->_view						= (is_array($this->_set_template) && isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($result);
 			}
 			
 			// if method is read
 			else if('read' == $this->_method)
 			{
-				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('showing_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('showing_the_result_of_the_selected_item'));
-				$this->_view						= (isset($this->_set_template[$this->_method]) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
+				$this->_set_icon					= (is_array($this->_set_icon) && isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-magnify-plus');
+				$this->_set_title					= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $title : phrase('showing_data'));
+				$this->_set_description				= (is_array($this->_set_description) && isset($this->_set_description[$this->_method]) ? $description : phrase('showing_the_result_of_the_selected_item'));
+				$this->_view						= (is_array($this->_set_template) && isset($this->_set_template[$this->_method]) ? $this->_set_template['read'] : ($view && 'index' != $view ? $view : 'read'));
 				$this->_results						= $this->render_read($result);
 			}
 			
 			// if method is update
 			else if('update' == $this->_method)
 			{
-				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
-				$this->_set_title					= (isset($this->_set_title[$this->_method]) ? $title : phrase('update_data'));
-				$this->_set_description				= (isset($this->_set_description[$this->_method]) ? $description : phrase('make_sure_to_check_the_changes_before_submitting'));
-				$this->_view						= (isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
+				$this->_set_icon					= (is_array($this->_set_icon) && isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : 'mdi mdi-square-edit-outline');
+				$this->_set_title					= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $title : phrase('update_data'));
+				$this->_set_description				= (is_array($this->_set_description) && isset($this->_set_description[$this->_method]) ? $description : phrase('make_sure_to_check_the_changes_before_submitting'));
+				$this->_view						= (is_array($this->_set_template) && isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 				$this->_results						= $this->render_form($result);
 			}
 			
@@ -3023,19 +3023,19 @@ class Core extends Controller
 			{
 				$view_exists						= (!in_array($this->template->get_view($this->_view, $this->_query, $this->_table), array('templates/index', 'templates/index_grid', 'templates/index_mobile', 'templates/error')) ? true : false);
 				
-				$this->_set_icon					= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
+				$this->_set_icon					= (is_array($this->_set_icon) && isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-table'));
 				$this->_set_title					= ($title ? $title : (($title && $this->_set_primary) || $this->_query ? phrase('untitled') : ($this->_set_title_placeholder ? $this->_set_title_placeholder : phrase('page_not_found'))));
 				$this->_set_description				= $description;
-				$this->_view						= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
+				$this->_view						= (is_array($this->_set_template) && isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 				$this->_results						= ($this->_set_primary && !$view_exists ? $this->render_table($result) : $result);
 			}
 		}
 		else
 		{
-			$this->_set_icon						= (isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-file-document-outline'));
-			$this->_set_title						= (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) && $this->_set_title ? $this->_set_title : phrase('untitled')));
-			$this->_set_description					= (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
-			$this->_view							= (isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
+			$this->_set_icon						= (is_array($this->_set_icon) && isset($this->_set_icon[$this->_method]) ? $this->_set_icon[$this->_method] : (!is_array($this->_set_icon) ? $this->_set_icon : 'mdi mdi-file-document-outline'));
+			$this->_set_title						= (is_array($this->_set_title) && isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (!is_array($this->_set_title) && $this->_set_title ? $this->_set_title : phrase('untitled')));
+			$this->_set_description					= (is_array($this->_set_description) && isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+			$this->_view							= (is_array($this->_set_template) && isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 			$this->_results							= array();
 		}
 		

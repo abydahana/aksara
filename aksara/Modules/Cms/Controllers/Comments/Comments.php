@@ -28,11 +28,6 @@ class Comments extends \Aksara\Laboratory\Core
 	
 	public function index()
 	{
-		if(!service('request')->getGet('order'))
-		{
-			$this->order_by('timestamp', 'DESC');
-		}
-		
 		$this->set_title(phrase('comments'))
 		->set_icon('mdi mdi-comment-multiple-outline')
 		->unset_column('reply_id, edited')
@@ -63,6 +58,8 @@ class Comments extends \Aksara\Laboratory\Core
 		->merge_content('{post_id} {comment_type}', phrase('post'), 'callback_get_post')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_content('{comment_id}', phrase('feedback'), 'callback_get_feedback')
+		
+		->order_by('timestamp', 'DESC')
 		
 		->render($this->_table);
 	}

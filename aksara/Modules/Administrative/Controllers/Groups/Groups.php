@@ -225,7 +225,7 @@ class Groups extends \Aksara\Laboratory\Core
 					<div class="check-group">
 						<div class="form-check form-switch">
 							' . (in_array($this->_method, array('create', 'update')) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('check_all') . '" role="checker" data-parent=".check-group" />' : '<input type="checkbox" class="form-check-input" checked disabled />') . '
-							<label class="form-check-label font-weight-bold" for="' . $path . '">
+							<label class="form-check-label fw-bold" for="' . $path . '">
 								' . $module_path . '
 							</label>
 							<a href="' . base_url($val->path) . '" target="_blank">
