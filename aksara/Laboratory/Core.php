@@ -5494,7 +5494,7 @@ class Core extends Controller
 						}
 					}
 					
-					if(array_intersect(array('numeric', 'number_format', 'price_format', 'percent_format'), $type))
+					if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type) && !array_intersect(array('text'), $type))
 					{
 						if(array_intersect(array('numeric', 'price_format', 'percent_format'), $type))
 						{
