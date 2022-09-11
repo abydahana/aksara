@@ -92,7 +92,7 @@
 					</div>
 					<div class="col-4 text-end">
 						<div class="btn-group btn-group-sm">
-							<button type="button" class="btn<?php echo (!$meta->description ? ' d-none' : null); ?>" id="description-btn" data-bs-toggle="collapse" data-target="#description-collapse">
+							<button type="button" class="btn<?php echo (!$meta->description ? ' d-none' : null); ?>" id="description-btn" data-bs-toggle="collapse" data-bs-target="#description-collapse">
 								<i class="mdi mdi-information-outline"></i>
 							</button>
 							<a href="<?php echo current_page(); ?>" class="btn --xhr --btn-refresh" id="refresh-btn" data-bs-toggle="tooltip" title="<?php echo phrase('refresh'); ?>">
