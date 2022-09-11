@@ -21,21 +21,21 @@
 			min-height: 100%
 		}
 	</style>
-	<body class="bg-light">
+	<body class="bg-secondary">
 		<div class="container-fluid h-100">
 			<div class="row h-100 align-items-center">
 				<div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2 pt-3 pb-3">
 					<div class="card shadow border-0 rounded-4 overflow-hidden">
 						<div class="card-body pt-0 pe-3 pb-0 ps-3">
 							<div class="row">
-								<div class="col-md-4 bg-light border-right pt-3 d-none d-md-block">
-									<div class="sticky-top" style="top:15px">
+								<div class="col-md-4 bg-light border-right pt-3 d-none d-md-block position-relative">
+									<div class="sticky-top mb-3 pb-5" style="top:15px">
 										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
 											<h4 class="fw-bold mb-3">
 												<b>
 													Aksara
 												</b>
-												<small class="text-sm text-secondary">Installer</small>
+												<small class="text-sm text-secondary fw-light">Installer</small>
 											</h4>
 										</a>
 										<hr class="row" />
@@ -68,19 +68,44 @@
 												<?php echo phrase('finalizing'); ?>
 											</b>
 										</p>
+										<hr class="row" />
+									</div>
+									
+									<div class="position-absolute start-0 end-0 bottom-0 w-100 p-3">
+										<a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm" target="_blank" data-bs-toggle="tooltip" title="<?php echo phrase('subscribe_to_my_channel'); ?>">
+											<i class="mdi mdi-youtube"></i>
+										</a>
+										<a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm" target="_blank" data-bs-toggle="tooltip" title="<?php echo phrase('be_my_friend'); ?>">
+											<i class="mdi mdi-facebook"></i>
+										</a>
+										<a href="//github.com/abydahana" class="btn btn-dark btn-sm" target="_blank" data-bs-toggle="tooltip" title="<?php echo phrase('follow_my_github'); ?>">
+											<i class="mdi mdi-github-circle"></i>
+										</a>
+										<a href="//trakteer.id/aksaralaboratory" class="btn btn-outline-danger btn-sm float-end" target="_blank" data-bs-toggle="tooltip" title="Trakteer!">
+											<i class="mdi mdi-square-inc-cash"></i>
+										</a>
 									</div>
 								</div>
 								<div class="col-md-8 pt-3 pb-3">
 									<div class="d-md-none text-center">
 										<a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
 											<h4 class="fw-bold mb-3">
-												Aksara <small class="text-sm font-weight-light">Installer</small>
+												Aksara <small class="text-sm text-secondary fw-light">Installer</small>
 											</h4>
 										</a>
 										<hr class="row" />
 									</div>
 									<div class="sticky-top step-content" style="top:15px">
 										<form action="<?php echo site_url('requirement'); ?>" method="POST" class="--validate-form">
+											
+											<?php
+												if(!session()->get('timezone'))
+												{
+													// set default timezone
+													echo '<input type="hidden" name="timezone" />';
+												}
+											?>
+											
 											<div class="row">
 												<div class="col-7">
 													<h4>
@@ -136,8 +161,8 @@
 											<div class="--validation-callback"></div>
 											<div class="row align-items-center">
 												<div class="col-md-6">
-													<label>
-														<input type="checkbox" name="agree" value="1" />
+													<label class="mb-3 mb-md-0">
+														<input type="checkbox" name="agree" class="form-check-input" value="1" />
 														<?php echo phrase('pretend_to_agree'); ?>
 													</label>
 												</div>
@@ -166,6 +191,14 @@
 		<script type="text/javascript">
 			$(document).ready(function()
 			{
+				if($('input[name=timezone]').length)
+				{
+					$('input[name=timezone]').val(Intl.DateTimeFormat().resolvedOptions().timeZone)
+				}
+				
+				$('[data-bs-toggle=tooltip]').tooltip(),
+				$('[data-bs-toggle=popover]').popover(),
+				
 				$('body').on('change', 'select[name=language]', function(e)
 				{
 					window.location.href			= '?language=' + $(this).val()
@@ -204,7 +237,9 @@
 						context: this,
 						beforeSend: function()
 						{
-							$('.failure').remove()
+							$('.failure').remove(),
+							$('[data-bs-toggle=tooltip]').tooltip('hide'),
+							$('[data-bs-toggle=popover]').popover('hide')
 						}
 					})
 					.done(function(response)
@@ -226,7 +261,9 @@
 						
 						$('.step' + response.active).addClass('text-warning'),
 						$(response.passed).removeClass('text-warning').addClass('text-success'),
-						$('.step-content').html(response.html)
+						$('.step-content').html(response.html),
+						$('[data-bs-toggle=tooltip]').tooltip(),
+						$('[data-bs-toggle=popover]').popover()
 					})
 					.fail(function(response, status, error)
 					{
@@ -254,7 +291,9 @@
 						{
 							$('.failure').remove(),
 							$('.--validation-callback').removeClass('alert alert-warning pr-3 pl-3').html(''),
-							$(this).find('button[type=submit]').prop('disabled', true).addClass('disabled').find('i.mdi').removeClass('mdi-check').addClass('mdi-loading mdi-spin')
+							$(this).find('button[type=submit]').prop('disabled', true).addClass('disabled').find('i.mdi').removeClass('mdi-check').addClass('mdi-loading mdi-spin'),
+							$('[data-bs-toggle=tooltip]').tooltip('hide'),
+							$('[data-bs-toggle=popover]').popover('hide')
 						},
 						complete: function(progress)
 						{
@@ -294,6 +333,9 @@
 								scrollTop: $('.failure').offset().top - 60
 							}, 500)
 						}
+						
+						$('[data-bs-toggle=tooltip]').tooltip(),
+						$('[data-bs-toggle=popover]').popover()
 					})
 					.fail(function(response, status, error)
 					{

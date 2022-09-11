@@ -5711,6 +5711,12 @@ class Core extends Controller
 			}
 			
 			$columns								= array_replace(array_flip($column_order), $columns);
+			
+			$column_order							= array();
+		}
+		else
+		{
+			$column_order							= $this->model->list_fields($this->_table);
 		}
 		
 		if($unsets)
@@ -5788,7 +5794,19 @@ class Core extends Controller
 			}
 			
 			// sort by column order
-			$output[$key]							= array_merge($columns, $val);
+			$output[$key]							= ($column_order ? array_replace(array_flip($column_order), array_merge($columns, $val)) : array_merge($columns, $val));
+		}
+		
+		// pairs columns with column order
+		$columns									= ($column_order ? array_replace(array_flip($column_order), $columns) : $columns);
+		
+		foreach($columns as $key => $val)
+		{
+			if(!is_array($val))
+			{
+				// unset non-array values (meant the column is unset)
+				unset($columns[$key]);
+			}
 		}
 		
 		$output										= array
@@ -6880,7 +6898,7 @@ class Core extends Controller
 			 */
 			if(!in_array($this->_method, array('create', 'update')))
 			{
-				$select								= ($this->_select ? array_merge($this->_select, $select) : $select);
+				$select								= ($this->_select ? array_merge($select, $this->_select) : $select);
 			}
 			
 			/**

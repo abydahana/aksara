@@ -561,6 +561,31 @@ class Template
 		
 		if(!$this->_api_request)
 		{
+			/**
+			 * Get theme helpers
+			 */
+			if(is_dir('../themes/' . $this->_theme . '/helpers'))
+			{
+				/* load required helper */
+				helper('filesystem');
+				
+				// list available helper files
+				$helpers							= directory_map('../themes/' . $this->_theme . '/helpers', 1);
+				
+				if($helpers)
+				{
+					// check and loop the helper files
+					foreach($helpers as $key => $val)
+					{
+						if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) == 'php')
+						{
+							// check matched helper and load to construct
+							require_once('../themes/' . $this->_theme . '/helpers/' . $val);
+						}
+					}
+				}
+			}
+			
 			// minify pattern
 			$minify_pattern							= array
 			(

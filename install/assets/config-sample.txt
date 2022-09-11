@@ -47,6 +47,13 @@ define('ENCRYPTION_KEY', '%ENCRYPTION_KEY%');
 define('COOKIE_NAME', '%COOKIE_NAME%');
 
 /**
+ * Session expirarion
+ * The number of SECONDS you want the session to last.
+ * Setting to 0 (zero) means expire when the browser is closed.
+ */
+define('SESSION_EXPIRATION', %SESSION_EXPIRATION%);
+
+/**
  * Default database connection
  */
 define('DB_DSN', '%DSN%');

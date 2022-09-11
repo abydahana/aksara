@@ -76,7 +76,7 @@
 			</div>
 			<div class="form-group mb-3">
 				<label>
-					<input type="checkbox" name="database_forge" value="1" />
+					<input type="checkbox" name="database_forge" class="form-check-input" value="1" />
 					<?php echo phrase('create_database_if_not_exists'); ?>
 				</label>
 			</div>

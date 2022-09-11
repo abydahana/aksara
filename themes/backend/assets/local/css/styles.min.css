@@ -43,7 +43,7 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 
 #sidebar-wrapper ul ul
 {
-	background: rgba(0,0,0,.03)
+	background: rgba(0,0,0,.1)
 }
 
 #sidebar-wrapper .nav-link
@@ -273,7 +273,7 @@ a
 	
 	.sticky-top
 	{
-		top: 88px
+		top: 81px
 	}
 	
 	#sidebar-wrapper

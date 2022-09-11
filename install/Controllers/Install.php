@@ -66,6 +66,12 @@ class Install extends BaseController
 			}
 		}
 		
+		if(service('request')->getPost('timezone'))
+		{
+			// set default timezone
+			session()->set('timezone', service('request')->getPost('timezone'));
+		}
+		
 		$extension									= array_map('strtolower', get_loaded_extensions());
 		$mod_rewrite								= ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) ? true : false);
 		
@@ -256,6 +262,7 @@ class Install extends BaseController
 		{
 			service('validation')->setRule('encryption', phrase('encryption_key'), 'required|regex_match[/^[^\'\\\"]*$/]');
 			service('validation')->setRule('cookie_name', phrase('cookie_name'), 'required|regex_match[/^[a-zA-Z0-9]*$/]');
+			service('validation')->setRule('session_expiration', phrase('session_expiration'), 'required|numeric|greater_than_equal_to[0]');
 			service('validation')->setRule('first_name', phrase('first_name'), 'required');
 			service('validation')->setRule('email', phrase('email'), 'required|valid_email');
 			service('validation')->setRule('username', phrase('username'), 'required|alpha_dash');
@@ -280,6 +287,7 @@ class Install extends BaseController
 				(
 					'encryption'					=> 'aksara_' . service('request')->getPost('encryption'),
 					'cookie_name'					=> 'aksara_' . service('request')->getPost('cookie_name'),
+					'session_expiration'			=> service('request')->getPost('session_expiration'),
 					'first_name'					=> service('request')->getPost('first_name'),
 					'last_name'						=> service('request')->getPost('last_name'),
 					'email'							=> service('request')->getPost('email'),
@@ -322,9 +330,9 @@ class Install extends BaseController
 		service('validation')->setRule('file_extension', phrase('file_extension'), 'required');
 		service('validation')->setRule('image_extension', phrase('image_extension'), 'required');
 		service('validation')->setRule('max_upload_size', phrase('max_upload_size'), 'required|numeric|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ($max_filesize_unit == 'g' ? 1024 : ($max_filesize_unit == 't' ? 131072 : 1)) . ']');
-		service('validation')->setRule('image_dimension', phrase('image_dimension'), 'required|numeric');
-		service('validation')->setRule('thumbnail_dimension', phrase('thumbnail_dimension'), 'required|numeric');
-		service('validation')->setRule('icon_dimension', phrase('icon_dimension'), 'required|numeric');
+		service('validation')->setRule('image_dimension', phrase('image_dimension'), 'required|numeric|greater_than_equal_to[600]|less_than_equal_to[2048]');
+		service('validation')->setRule('thumbnail_dimension', phrase('thumbnail_dimension'), 'required|numeric|greater_than_equal_to[250]|less_than_equal_to[600]');
+		service('validation')->setRule('icon_dimension', phrase('icon_dimension'), 'required|numeric|greater_than_equal_to[80]|less_than_equal_to[250]');
 		
 		if(service('validation')->run(service('request')->getPost()) === false)
 		{
@@ -390,6 +398,7 @@ class Install extends BaseController
 				'%OPENTAG%',
 				'%ENCRYPTION_KEY%',
 				'%COOKIE_NAME%',
+				'%SESSION_EXPIRATION%',
 				'%DSN%',
 				'%DB_DRIVER%',
 				'%DB_HOSTNAME%',
@@ -410,6 +419,7 @@ class Install extends BaseController
 				'<?php',
 				session()->get('encryption'),
 				session()->get('cookie_name'),
+				session()->get('session_expiration'),
 				session()->get('database_dsn'),
 				session()->get('database_driver'),
 				session()->get('database_hostname'),

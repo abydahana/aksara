@@ -136,6 +136,9 @@ return array
 	'encryption_key' => 'Kunci Enkripsi',
 	'your_encryption_key' => 'Kunci enkripsi Anda',
 	'cookie_name' => 'Nama Cookie',
+	'session_expiration' => 'Sesi Kadaluwarsa',
+	'session_expiration_description' => 'Jumlah DETIK yang Anda inginkan agar sesi berlangsung. Isi dengan 0 (nol) untuk membuat sesi dihentikan saat browser ditutup.',
+	'in_seconds' => 'Dalam detik',
 	'unique_cookie_name_to_prevent_conflict' => 'Nama cookie unik untuk mencegah konflik',
 	'superuser' => 'Superuser',
 	'first_name' => 'Nama Depan',
@@ -199,5 +202,10 @@ return array
 	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Sesaat setelah berkas konfigurasi diunggah, silakan klik pada tombol "Periksa Ulang" untuk melanjutkan instalasi.',
 	'unable_to_extract_the_sample_module' => 'Tidak dapat mengekstrak contoh modul.',
 	'make_sure_the_following_directory_is_writable' => 'Pastikan bahwa folder berikut dapat ditulisi',
-	'skip_installing_the_sample_module' => 'Lewati instalasi contoh modul'
+	'skip_installing_the_sample_module' => 'Lewati instalasi contoh modul',
+	
+	// Miscellaneous
+	'subscribe_to_my_channel' => 'Berlangganan saluran YouTube',
+	'be_my_friend' => 'Jalin silaturahmi',
+	'follow_my_github' => 'Ikuti pembaruan GitHub'
 );
