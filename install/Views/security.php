@@ -13,12 +13,26 @@
 		</label>
 		<input type="text" name="encryption" class="form-control form-control-sm" placeholder="<?php echo phrase('your_encryption_key'); ?>" value="<?php echo $encryption_key; ?>" />
 	</div>
-	<div class="form-group mb-3">
-		<label class="d-block mb-0">
-			<?php echo phrase('cookie_name'); ?>
-			<b class="text-danger">*</b>
-		</label>
-		<input type="text" name="cookie_name" class="form-control form-control-sm" placeholder="<?php echo phrase('unique_cookie_name_to_prevent_conflict'); ?>" value="<?php echo $cookie_name; ?>" />
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group mb-3">
+				<label class="d-block mb-0">
+					<?php echo phrase('cookie_name'); ?>
+					<b class="text-danger">*</b>
+				</label>
+				<input type="text" name="cookie_name" class="form-control form-control-sm" placeholder="<?php echo phrase('unique_cookie_name_to_prevent_conflict'); ?>" value="<?php echo $cookie_name; ?>" />
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group mb-3">
+				<label class="d-block mb-0">
+					<?php echo phrase('session_expiration'); ?>
+					<b class="text-danger">*</b>
+					<i class="mdi mdi-help-circle-outline" data-bs-toggle="popover" data-bs-content="<?php echo htmlspecialchars(phrase('session_expiration_description')); ?>" data-bs-container="body"></i>
+				</label>
+				<input type="number" name="session_expiration" class="form-control form-control-sm" placeholder="<?php echo phrase('in_seconds'); ?>" value="<?php echo (session()->get('session_expiration') ? session()->get('session_expiration') : 86400); ?>" />
+			</div>
+		</div>
 	</div>
 	<br/>
 	<h5>

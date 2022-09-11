@@ -1,17 +1,4 @@
-<style type="text/css">
-	#breadcrumb-wrapper
-	{
-		z-index: 1024!important
-	}
-	
-	.pretty-scrollbar
-	{
-		height: 100px;
-		overflow-y: hidden
-	}
-</style>
-
-<div class="container-fluid pt-3 pb-3">
+<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="sticky-top">

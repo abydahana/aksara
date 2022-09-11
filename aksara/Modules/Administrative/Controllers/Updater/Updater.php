@@ -105,7 +105,7 @@ class Updater extends \Aksara\Laboratory\Core
 					'https://www.aksaracms.com/updater/update',
 					array
 					(
-						'allow_redirects'				=> array
+						'allow_redirects'			=> array
 						(
 							'max'					=> 2
 						),

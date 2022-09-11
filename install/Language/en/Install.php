@@ -137,6 +137,9 @@ return array
 	'encryption_key' => 'Encryption Key',
 	'your_encryption_key' => 'Your encryption key',
 	'cookie_name' => 'Cookie Name',
+	'session_expiration' => 'Session Expiration',
+	'session_expiration_description' => 'The number of SECONDS you want the session to last. Setting to 0 (zero) means expire when the browser is closed.',
+	'in_seconds' => 'In second(s)',
 	'unique_cookie_name_to_prevent_conflict' => 'Unique cookie name to prevent conflict',
 	'superuser' => 'Superuser',
 	'first_name' => 'First Name',
@@ -200,6 +203,10 @@ return array
 	'once_the_configuration_file_were_uploaded_please_click_the_refresh_button_to_continue_the_installation' => 'Once the configuration file were uploaded, please click the "Refresh" button to continue the installation.',
 	'unable_to_extract_the_sample_module' => 'Unable to extract the sample module.',
 	'make_sure_the_following_directory_is_writable' => 'Make sure the following directory is writable',
-	'skip_installing_the_sample_module' => 'Skip installing the sample module.'
+	'skip_installing_the_sample_module' => 'Skip installing the sample module.',
 	
+	// Miscellaneous
+	'subscribe_to_my_channel' => 'Subscribe to my channel',
+	'be_my_friend' => 'Be my friend',
+	'follow_my_github' => 'Follow my GitHub'
 );
