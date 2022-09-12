@@ -110,19 +110,6 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	padding: .25rem 1rem
 }
 
-.dropdown-menu .nav-link i
-{
-	position: absolute;
-	width: 1.5rem;
-	line-height: 1.5rem
-}
-
-.dropdown-menu .nav-link span
-{
-	display: block;
-	margin-left: 1.5rem
-}
-
 .text-muted
 {
 	color: #aaa!important

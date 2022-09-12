@@ -79,8 +79,9 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 
 #sidebar-wrapper .nav-link.dropdown-toggle:after
 {
-	float: right;
-	margin-top: 0.6rem;
+	position: absolute;
+	top: 12px;
+	right: 6px;
 	transform: rotate(-90deg);
 	transition: all ease-in-out .3s
 }
@@ -114,6 +115,28 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 {
 	margin-top: 81px;
 	word-wrap: break-word
+}
+
+.sidebar-menu .dropdown-toggle
+{
+	white-space: inherit
+}
+
+.sidebar-menu .nav-item
+{
+	position: relative
+}
+
+.sidebar-menu .nav-link .mdi
+{
+	float: left;
+	margin-top: 3px
+}
+
+.sidebar-menu .nav-link span
+{
+	display: block;
+	padding-left: 24px
 }
 
 .btn-group-xs>.btn, .btn-xs
