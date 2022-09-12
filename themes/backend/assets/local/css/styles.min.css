@@ -27,6 +27,11 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	display: inline-block
 }
 
+body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi
+{
+	float: none
+}
+
 #breadcrumb-wrapper
 {
 	top: 56px;
