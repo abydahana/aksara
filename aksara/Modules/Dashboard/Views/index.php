@@ -6,8 +6,8 @@
 				<h5>
 					' . phrase('notice') . '
 				</h5>
-				' . (!$permission->uploads ? '<p class="mb-0"><b>' . FCPATH . UPLOAD_PATH . '/</b> ' . phrase('is_not_writable') . '</p>' : null) . '
-				' . (!$permission->writable ? '<p class="mb-0"><b>' . WRITEPATH . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$permission->uploads ? '<p class="mb-0"><b>' . str_replace('\\', '/', FCPATH . UPLOAD_PATH) . '/</b> ' . phrase('is_not_writable') . '</p>' : null) . '
+				' . (!$permission->writable ? '<p class="mb-0"><b>' . str_replace('\\', '/', WRITEPATH) . '</b> ' . phrase('is_not_writable') . '</p>' : null) . '
 				<br />
 				<a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>' . phrase('click_here') . '</b></a> ' . phrase('to_get_advice_how_to_solve_this_issue') . '
 			</div>
@@ -20,35 +20,37 @@
 				<h5>
 					' . phrase('notice') . '
 				</h5>
-				' . phrase('please_remove_or_rename_the_following_directory_to_secure_your_application') . ' <code>' . ROOTPATH . 'install</code>
+				' . phrase('please_remove_or_rename_the_following_directory_to_secure_your_application') . ' <code>' . str_replace('\\', '/', ROOTPATH) . 'install</code>
 			</div>
 		';
 	}
 ?>
 <div class="updater-placeholder"></div>
 <div class="container-fluid">
-	<div class="row border-bottom pt-3 pb-3">
+	<div class="row border-bottom pt-3 pb-3" id="greeting-card">
 		<div class="col-12">
 			<div class="card">
 				<div class="card-body p-3">
 					<h3>
-						<a href="javascript:void(0)" class="btn btn-close float-end"></a>
+						<a href="javascript:void(0)" class="btn btn-close float-end" onclick="jExec($(this).closest('#greeting-card').slideUp())"></a>
 						<?php echo phrase('welcome_to'); ?> Aksara!
 					</h3>
 					<p class="text-muted">
 						<?php echo phrase('we_have_assembled_some_links_to_get_you_started'); ?>
 					</p>
 					<div class="row">
-						<div class="col-md-4">
-							<h5 class="mb-5">
+						<div class="col-md-4 mb-3 mb-md-0">
+							<h5 class="mb-3 mb-md-5">
 								<?php echo phrase('getting_started'); ?>
 							</h5>
-							<a href="<?php echo base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 --xhr">
-								<i class="mdi mdi-color-palette"></i>
-								<?php echo phrase('customize_your_app'); ?>
-							</a>
+							<div class="text-center text-md-start">
+								<a href="<?php echo base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 --xhr">
+									<i class="mdi mdi-color-palette"></i>
+									<?php echo phrase('customize_your_app'); ?>
+								</a>
+							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-4 mb-3 mb-md-0">
 							<h5 class="mb-3">
 								<?php echo phrase('next_step'); ?>
 							</h5>
@@ -83,7 +85,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-4 mb-3 mb-md-0">
 							<h5 class="mb-3">
 								<?php echo phrase('more_actions'); ?>
 							</h5>

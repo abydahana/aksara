@@ -158,10 +158,10 @@
 					Seperti kebanyakan peneliti lainnya, jika merasa terbantu dengan penelitian yang saya lakukan dan ingin memberikan dukungan moril maupun materil, jangan sungkan untuk menghubungi saya dari <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Website Pengembangan Aksara</b></a>. Saya akan sangat menghargai apapun dukungan Anda, dan tentu saja itu akan membuat saya lebih percaya diri.
 				</p>
 			</div>
-			<h5 class="text-center font-weight-light">
+			<h5 class="text-center fw-light">
 				Sekali lagi, terima kasih.
 			</h5>
-			<h5 class="text-center font-weight-light mb-3">
+			<h5 class="text-center fw-light mb-3">
 				Kita semua luar biasa!
 			</h5>
 			<h4 class="text-center">

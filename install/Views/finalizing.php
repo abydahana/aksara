@@ -11,13 +11,16 @@
 			<?php echo phrase('just_one_more_step'); ?>
 		</b>
 	</p>
-	<p>
+	<p class="mb-0 mb-md-5">
 		<?php echo phrase('make_sure_what_you_filled_in_on_the_previous_form_is_correct'); ?>
 		<?php echo phrase('once_you_have_successfully_run_the_installer_there_is_no_more_back_button'); ?>
 	</p>
-	<p>
+	<p class="mb-0 mb-md-5">
 		<?php echo phrase('click_run_installer_to_applying_your_configuration'); ?>
 	</p>
+	<br />
+	<br />
+	<br />
 	<hr class="row" />
 	<div class="--validation-callback"></div>
 	<div class="row">

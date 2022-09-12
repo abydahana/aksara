@@ -57,7 +57,7 @@ class Privileges extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'path'								=> 'required',
+				'path'								=> 'required|unique[' . $this->_table . '.path.path.' . service('request')->getGet('path') . ']',
 				'privileges'						=> 'required'
 			)
 		)

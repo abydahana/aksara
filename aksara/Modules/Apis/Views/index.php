@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid pt-3 pb-3">
 	<div class="row">
 		<div class="col-md-5">
 			<a href="<?php echo go_to('services'); ?>" class="card text-white bg-secondary mb-3 --xhr">

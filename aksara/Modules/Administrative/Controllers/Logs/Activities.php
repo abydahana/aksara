@@ -1,9 +1,9 @@
 <?php
 
-namespace Aksara\Modules\Administrative\Controllers\Activities;
+namespace Aksara\Modules\Administrative\Controllers\Logs;
 
 /**
- * Administrative > Activities
+ * Administrative > Logs > Activities
  *
  * @author			Aby Dahana <abydahana@gmail.com>
  * @profile			abydahana.github.io

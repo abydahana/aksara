@@ -151,7 +151,7 @@
 											</h6>
 										</a>
 										<a href="' . go_to('../' . $val->people_slug) . '" class="--xhr">
-											<h6 class="card-subtitle font-weight-light text-center mb-2 text-muted text-truncate">
+											<h6 class="card-subtitle fw-light text-center mb-2 text-muted text-truncate">
 												' . truncate($val->position, 22) . '
 											</h6>
 										</a>
