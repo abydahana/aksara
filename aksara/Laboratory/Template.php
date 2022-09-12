@@ -1150,7 +1150,7 @@ class Template
 										'id'		=> 0,
 										'label'		=> 'Years',
 										'slug'		=> 'administrative/years',
-										'icon'		=> 'mdi mdi-calendar-clock'
+										'icon'		=> 'mdi mdi-calendar-multiple-check'
 									),
 									array
 									(
@@ -1164,9 +1164,26 @@ class Template
 							array
 							(
 								'id'				=> 0,
-								'label'				=> 'Activity Logs',
-								'slug'				=> 'administrative/activities',
-								'icon'				=> 'mdi mdi-information-outline'
+								'label'				=> 'Logs',
+								'slug'				=> 'administrative/logs',
+								'icon'				=> 'mdi mdi-information-outline',
+								'children'			=> array
+								(
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Activities',
+										'slug'		=> 'administrative/logs/activities',
+										'icon'		=> 'mdi mdi-calendar-clock'
+									),
+									array
+									(
+										'id'		=> 0,
+										'label'		=> 'Errors',
+										'slug'		=> 'administrative/logs/errors',
+										'icon'		=> 'mdi mdi-bug'
+									)
+								)
 							),
 							array
 							(

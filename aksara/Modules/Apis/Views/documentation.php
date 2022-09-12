@@ -1,4 +1,4 @@
-<div class="container-fluid pt-3 pb-3">
+<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="sticky-top">

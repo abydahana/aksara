@@ -30,7 +30,23 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 #breadcrumb-wrapper
 {
 	top: 56px;
-	z-index: 1020
+	z-index: 1021
+}
+
+#breadcrumb-wrapper .breadcrumb
+{
+	white-space:nowrap;
+	display: inline
+}
+
+#breadcrumb-wrapper .breadcrumb li
+{
+	display: inline
+}
+
+#breadcrumb-wrapper .breadcrumb-item+.breadcrumb-item::before
+{
+	float: none
 }
 
 #sidebar-wrapper
@@ -298,6 +314,11 @@ a
 	#breadcrumb-wrapper
 	{
 		top: 54px
+	}
+	
+	#breadcrumb-wrapper .container-fluid
+	{
+		overflow-x: scroll
 	}
 	
 	#sidebar-wrapper
