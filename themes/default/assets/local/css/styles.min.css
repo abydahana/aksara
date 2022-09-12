@@ -35,12 +35,29 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	padding: .25rem 1rem
 }
 
-.navbar .dropdown-menu
+.navbar-collapse .dropdown-menu .nav-link .mdi
+{
+	float: left;
+	margin-top: 3px
+}
+
+.navbar-collapse .dropdown-menu .nav-link span
+{
+	display: block;
+	padding-left: 36px
+}
+
+.navbar-collapse .dropdown-menu .nav-link.dropdown-toggle
+{
+	padding-right: 2rem
+}
+
+.navbar-collapse .dropdown-menu
 {
 	top: 56px
 }
 
-.navbar .dropdown-menu .dropdown-menu
+.navbar-collapse .dropdown-menu .dropdown-menu
 {
 	top: 0;
 	position: relative;
@@ -49,22 +66,22 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-radius: 0
 }
 
-.navbar-nav .dropdown .dropdown .dropdown-toggle::after
+.navbar-collapse .dropdown .dropdown .dropdown-toggle::after
 {
 	position: absolute;
 	top: 1rem;
 	right: 1rem
 }
 
-.navbar-nav .dropdown-menu::before,
-.navbar-nav .dropdown-menu::after
+.navbar-collapse .dropdown-menu::before,
+.navbar-collapse .dropdown-menu::after
 {
 	position: absolute;
 	display: inline-block;
 	content: ''
 }
 
-.navbar .dropdown-menu::before
+.navbar-collapse .dropdown-menu::before
 {
 	top: -9px;
 	left: 19px;
@@ -73,7 +90,7 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-left: 9px solid transparent
 }
 
-.navbar .dropdown-menu::after
+.navbar-collapse .dropdown-menu::after
 {
 	top: -8px;
 	left: 20px;
@@ -82,13 +99,13 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-left: 8px solid transparent
 }
 
-.navbar .dropdown-menu.dropdown-menu-end:before
+.navbar-collapse .dropdown-menu.dropdown-menu-end:before
 {
 	left: auto;
 	right: 19px
 }
 
-.navbar .dropdown-menu.dropdown-menu-end:after
+.navbar-collapse .dropdown-menu.dropdown-menu-end:after
 {
 	left: auto;
 	right: 20px
