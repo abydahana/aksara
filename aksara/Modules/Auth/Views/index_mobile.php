@@ -72,7 +72,7 @@
 						</div>
 						<div class="mb-3">
 							<div class="d-grid">
-								<button type="submit" class="btn btn-primary btn-block">
+								<button type="submit" class="btn btn-primary">
 									<i class="mdi mdi-check"></i> 
 									<?php echo phrase('sign_in'); ?>
 								</button>

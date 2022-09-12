@@ -162,19 +162,23 @@ class Modules extends \Aksara\Laboratory\Core
 					</div>
 					<hr class="row" />
 					<div class="--validation-callback mb-0"></div>
+					<input type="hidden" name="upgrade" value="' . $upstream->path . '" />
 					<div class="row">
 						<div class="col-6">
-							<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light btn-block">
-								<i class="mdi mdi-window-close"></i>
-								' . phrase('cancel') . '
-							</a>
+							<div class="d-grid">
+								<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light">
+									<i class="mdi mdi-window-close"></i>
+									' . phrase('cancel') . '
+								</a>
+							</div>
 						</div>
 						<div class="col-6">
-							<input type="hidden" name="upgrade" value="' . $upstream->path . '" />
-							<button type="submit" class="btn btn-success btn-block">
-								<i class="mdi mdi-check"></i>
-								' . phrase('update') . '
-							</button>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-success">
+									<i class="mdi mdi-check"></i>
+									' . phrase('update') . '
+								</button>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -637,19 +641,23 @@ class Modules extends \Aksara\Laboratory\Core
 					</div>
 					<hr class="row" />
 					<div class="--validation-callback mb-0"></div>
+					<input type="hidden" name="module" value="' . $this->_primary . '" />
 					<div class="row">
 						<div class="col-6">
-							<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light btn-block">
-								<i class="mdi mdi-window-close"></i>
-								' . phrase('cancel') . '
-							</a>
+							<div class="d-grid">
+								<a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light">
+									<i class="mdi mdi-window-close"></i>
+									' . phrase('cancel') . '
+								</a>
+							</div>
 						</div>
 						<div class="col-6">
-							<input type="hidden" name="module" value="' . $this->_primary . '" />
-							<button type="submit" class="btn btn-danger btn-block">
-								<i class="mdi mdi-check"></i>
-								' . phrase('continue') . '
-							</button>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-danger">
+									<i class="mdi mdi-check"></i>
+									' . phrase('continue') . '
+								</button>
+							</div>
 						</div>
 					</div>
 				</form>
