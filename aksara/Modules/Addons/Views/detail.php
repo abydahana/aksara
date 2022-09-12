@@ -98,16 +98,20 @@
 		<div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
 			<div class="row">
 				<div class="col-sm-6">
-					<a href="<?php echo current_page('../install', array('item' => $detail->path, 'type' => $detail->addon_type)); ?>" class="btn btn-primary btn-block btn-sm --xhr --keep-modal show-progress">
-						<i class="mdi mdi-plus"></i>
-						<?php echo phrase('install'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo current_page('../install', array('item' => $detail->path, 'type' => $detail->addon_type)); ?>" class="btn btn-primary btn-sm --xhr --keep-modal show-progress">
+							<i class="mdi mdi-plus"></i>
+							<?php echo phrase('install'); ?>
+						</a>
+					</div>
 				</div>
 				<div class="col-sm-6">
-					<a href="<?php echo $detail->demo_url; ?>" class="btn btn-outline-primary btn-block btn-sm" target="_blank">
-						<i class="mdi mdi-magnify"></i>
-						<?php echo phrase('preview'); ?>
-					</a>
+					<div class="d-grid">
+						<a href="<?php echo $detail->demo_url; ?>" class="btn btn-outline-primary btn-sm" target="_blank">
+							<i class="mdi mdi-magnify"></i>
+							<?php echo phrase('preview'); ?>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>

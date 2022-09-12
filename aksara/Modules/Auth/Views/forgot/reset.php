@@ -47,7 +47,7 @@
 						</div>
 						<div class="col-6">
 							<div class="d-grid">
-								<button type="submit" class="btn btn-primary btn-block">
+								<button type="submit" class="btn btn-primary">
 									<i class="mdi mdi-check"></i> 
 									<?php echo phrase('reset_password'); ?>
 								</button>

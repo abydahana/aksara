@@ -450,10 +450,12 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary btn-block">
-					<i class="mdi mdi-magnify"></i>
-					<?php echo phrase('search'); ?>
-				</button>
+				<div class="d-grid">
+					<button type="submit" class="btn btn-primary">
+						<i class="mdi mdi-magnify"></i>
+						<?php echo phrase('search'); ?>
+					</button>
+				</div>
 			</div>
 		</form>
 	</div>

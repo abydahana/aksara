@@ -353,16 +353,20 @@ class Updater extends \Aksara\Laboratory\Core
 					<hr class="row" />
 					<div class="row">
 						<div class="col-6">
-							<a href="//www.aksaracms.com/pages/about/donation" class="btn btn-light btn-block" target="_blank">
-								<i class="mdi mdi-launch"></i>
-								' . phrase('donate') . '
-							</a>
+							<div class="d-grid">
+								<a href="//www.aksaracms.com/pages/about/donation" class="btn btn-light" target="_blank">
+									<i class="mdi mdi-launch"></i>
+									' . phrase('donate') . '
+								</a>
+							</div>
 						</div>
 						<div class="col-6">
-							<a href="' . current_page() . '" class="btn btn-primary btn-block">
-								<i class="mdi mdi-reload"></i>
-								' . phrase('refresh') . '
-							</a>
+							<div class="d-grid">
+								<a href="' . current_page() . '" class="btn btn-primary">
+									<i class="mdi mdi-reload"></i>
+									' . phrase('refresh') . '
+								</a>
+							</div>
 						</div>
 					</div>
 				';
@@ -448,16 +452,20 @@ class Updater extends \Aksara\Laboratory\Core
 			<hr class="row" />
 			<div class="row">
 				<div class="col-6">
-					<a href="javascript:void(0)" class="btn btn-light btn-block" data-bs-dismiss="modal">
-						<i class="mdi mdi-window-close"></i>
-						' . phrase('close') . '
-					</a>
+					<div class="d-grid">
+						<a href="javascript:void(0)" class="btn btn-light" data-bs-dismiss="modal">
+							<i class="mdi mdi-window-close"></i>
+							' . phrase('close') . '
+						</a>
+					</div>
 				</div>
 				<div class="col-6">
-					<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark btn-block">
-						<i class="mdi mdi-download"></i>
-						' . phrase('download_updater') . '
-					</a>
+					<div class="d-grid">
+						<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark">
+							<i class="mdi mdi-download"></i>
+							' . phrase('download_updater') . '
+						</a>
+					</div>
 				</div>
 			</div>
 		';
