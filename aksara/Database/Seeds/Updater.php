@@ -16,7 +16,7 @@ class Updater extends Seeder
     public function run()
     {
 		// remove existing privileges
-		$this->db->table('app_groups__privileges')->where('path', 'administrative/activities')->delete();
+		$this->db->table('app__groups_privileges')->where('path', 'administrative/activities')->delete();
 		
 		// add new privileges
 		$this->db->table('app__groups_privileges')->insert(json_decode('{"path":"administrative\/logs","privileges":"[\"index\"]","last_generated":"' . date('Y-m-d H:i:s') . '"}', true));
