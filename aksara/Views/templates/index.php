@@ -127,7 +127,7 @@ if(isset($results->extra_action->toolbar))
 							foreach($results->columns as $key => $val)
 							{
 								echo '
-									<th class="border-top-0' . ('right' == $val->align ? ' text-end' : null) . '">
+									<th class="border-top-0' . ('right' == $val->align ? ' text-end' : null) . (strpos($val->label, ' ') === false ? ' text-nowrap' : null) . '">
 										<a href="' . go_to(null, array('order' => $val->field, 'sort' => get_userdata('sortOrder'))) . '" class="--xhr' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-default') . '">
 											<i class="mdi mdi-sort-' . ($val->field == service('request')->getGet('order') && 'asc' == service('request')->getGet('sort') ? 'ascending' : 'descending') . ' float-end pt-1' . ($val->field == service('request')->getGet('order') ? ' text-primary' : ' text-muted') . '"></i>
 											' . $val->label . '
