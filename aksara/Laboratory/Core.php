@@ -4271,7 +4271,7 @@ class Core extends Controller
 				}
 				else if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'percent_format'), $type))
 				{
-					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . ($default_value ? $default_value : ($original ? $original : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || array_intersect(array('numeric', 'number_format','percent_format'), $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.01"' : '') . $read_only . ' />';
+					$content						= '<input type="number" name="' . $field . '" min="0" class="form-control' . $extra_class . '" value="' . (float) ($default_value ? $default_value : ($original ? $original : 0)) . '" placeholder="' . (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : phrase('number_only')) . '" id="' . $field . '_input" maxlength="' . $max_length . '"' . (is_numeric($parameter) || array_intersect(array('numeric', 'number_format','percent_format'), $type) ? ' pattern="[0-9]+([\.,][0-9]+)?" step="0.0001"' : '') . $read_only . ' />';
 					
 					if(array_intersect(array('percent_format'), $type))
 					{
@@ -5496,12 +5496,14 @@ class Core extends Controller
 					
 					if(array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type) && !array_intersect(array('text'), $type))
 					{
-						if(array_intersect(array('numeric', 'price_format', 'percent_format'), $type))
+						$decimal					= 0;
+						
+						if(array_intersect(array('numeric', 'price_format', 'percent_format'), $type) && is_numeric($content))
 						{
-							$parameter				= (strpos($content, '.00') !== false ? 0 : 2);
+							$decimal				= (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
 						}
 						
-						$content					= '<p class="text-md-end m-0" style="padding-right:15px">' . (array_intersect(array('int', 'integer'), $type) ? $content : (is_numeric($content) ? number_format($content, (is_numeric($parameter) ? $parameter : 0)) : $content)) . '</p>';
+						$content					= '<p class="text-md-end m-0" style="padding-right:15px">' . (array_intersect(array('int', 'integer'), $type) ? $content : (is_numeric($content) ? (float) number_format($content, $decimal) : $content)) . '</p>';
 					}
 					
 					if(array_intersect(array('hyperlink'), $type))
@@ -5692,7 +5694,7 @@ class Core extends Controller
 						'label'						=> (isset($this->_merge_label[$val]) ? $this->_merge_label[$val] : (isset($this->_set_alias[$val]) ? $this->_set_alias[$val] : ucwords(str_replace('_', ' ', $val)))),
 						'aksara'					=> generate_token(($qs ? array_merge($qs, array('order' => $val, 'sort' => get_userdata('sortOrder'))) : array('order' => $val, 'sort' => get_userdata('sortOrder')))),
 						'sort'						=> get_userdata('sortOrder'),
-						'align'						=> (isset($this->_set_field[$val]['field_type']) && array_intersect(array('number_format', 'price_format', 'percent_format'), $this->_set_field[$val]['field_type']) ? 'right' : null)
+						'align'						=> (isset($this->_set_field[$val]['field_type']) && array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $this->_set_field[$val]['field_type']) ? 'right' : null)
 					);
 				}
 			}
@@ -5948,23 +5950,17 @@ class Core extends Controller
 						}
 					}
 					
-					if($content && array_intersect(array('int', 'integer', 'numeric', 'number_format', 'price_format', 'percent_format'), $type))
+					if($content && array_intersect(array('numeric', 'number_format', 'price_format', 'percent_format'), $type) && is_numeric($content))
 					{
-						if(array_intersect(array('int', 'integer'), $type))
+						$decimal					= (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
+						
+						if(array_intersect(array('percent_format'), $type))
 						{
-							$content				= $content;
-						}
-						else if(array_intersect(array('percent_format'), $type))
-						{
-							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content) . '%';
-						}
-						else if(array_intersect(array('numeric', 'price_format'), $type))
-						{
-							$content				= (is_numeric($content) ? number_format($content, (strpos($content, '.00') !== false ? 0 : 2)) : $content);
+							$content				= number_format($content, $decimal) . '%';
 						}
 						else
 						{
-							$content				= (is_numeric($content) ? number_format($content, ($parameter ? $parameter : 0)) : $content);
+							$content				= number_format($content, $decimal);
 						}
 					}
 					
