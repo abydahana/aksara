@@ -19,7 +19,7 @@ class Cms extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
-		$this->set_permission(array(1, 2));
+		$this->set_permission();
 		$this->set_theme('backend');
 		
 		$this->set_method('index');

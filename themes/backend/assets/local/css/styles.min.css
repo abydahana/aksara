@@ -274,7 +274,7 @@ a
 	z-index: 1055
 }
 
-@media (min-width: 992px) and (min-height: 360px)
+@media (min-width: 992px)
 {
 	body.sidebar-collapsed .navbar-brand
 	{

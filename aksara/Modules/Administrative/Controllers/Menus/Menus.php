@@ -22,7 +22,7 @@ class Menus extends \Aksara\Laboratory\Core
 		
 		$this->restrict_on_demo();
 		
-		$this->set_permission(1);
+		$this->set_permission();
 		$this->set_theme('backend');
 		
 		$this->unset_delete('menu_id', array(1));
@@ -276,7 +276,7 @@ class Menus extends \Aksara\Laboratory\Core
 		if($menus)
 		{
 			$output									= '
-				<ul class="list-unstyled ml-4">
+				<ul class="list-unstyled ms-4">
 					' . $menus . '
 				</ul>
 			';

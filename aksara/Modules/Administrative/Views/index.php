@@ -139,7 +139,7 @@
 			</a>
 		</div>
 		<div class="col-md-4">
-			<a href="<?php echo go_to('activities'); ?>" class="card text-white bg-secondary mb-3 --xhr">
+			<a href="<?php echo go_to('logs'); ?>" class="card text-white bg-secondary mb-3 --xhr">
 				<div class="card-body pt-2 pe-3 pb-2 ps-3">
 					<div class="row">
 						<div class="col-3">
@@ -147,10 +147,10 @@
 						</div>
 						<div class="col">
 							<h5 class="card-title mb-0">
-								<?php echo phrase('activity_logs'); ?>
+								<?php echo phrase('logs'); ?>
 							</h5>
 							<p class="card-text">
-								<?php echo phrase('check_activity_logs'); ?>
+								<?php echo phrase('check_app_logs'); ?>
 							</p>
 						</div>
 					</div>

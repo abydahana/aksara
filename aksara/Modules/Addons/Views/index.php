@@ -128,7 +128,7 @@
 								'<a href="' + val.detail_url + '" class="--modal">' +
 									'<div class="position-relative rounded-top bg-dark" style="background:url(' + val.thumbnail.src + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
-										(val.type == 'backend' ? '<span class="badge bg-warning float-end mt-3 mr-3"><?php echo phrase('back_end_theme'); ?></span>' : '<span class="badge bg-success float-end mt-3 mr-3"><?php echo phrase('front_end_theme'); ?></span>') +
+										(val.type == 'backend' ? '<span class="badge bg-warning float-end mt-3 me-3"><?php echo phrase('back_end_theme'); ?></span>' : '<span class="badge bg-success float-end mt-3 me-3"><?php echo phrase('front_end_theme'); ?></span>') +
 										'<div class="absolute w-100 text-center bottom p-3">' +
 											'<b class="text-light">' +
 												val.name +
@@ -165,7 +165,7 @@
 								'<a href="' + val.detail_url + '" class="--modal">' +
 									'<div class="position-relative rounded-top bg-dark" style="background:url(' + val.thumbnail.src + ') center center no-repeat; background-size: cover; height: 256px">' +
 										'<div class="clip gradient-top rounded-top"></div>' +
-										'<span class="badge bg-primary float-end mt-3 mr-3"><?php echo phrase('module'); ?></span>' +
+										'<span class="badge bg-primary float-end mt-3 me-3"><?php echo phrase('module'); ?></span>' +
 										'<div class="absolute w-100 text-center bottom p-3">' +
 											'<b class="text-light">' +
 												val.name +

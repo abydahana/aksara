@@ -23,7 +23,7 @@ class Synchronize extends \Aksara\Laboratory\Core
 			return throw_exception(403, phrase('changes_will_not_saved_in_demo_mode'), current_page('../'));
 		}
 		
-		$this->set_permission(1);
+		$this->set_permission();
 		$this->set_theme('backend');
 	}
 	
