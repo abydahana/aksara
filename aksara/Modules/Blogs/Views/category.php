@@ -45,7 +45,7 @@
 								{
 									$tags			.= '
 										<a href="' . go_to('../tags', array('q' => $badge)) . '" class="--xhr">
-											<span class="badge bg-secondary mr-2">
+											<span class="badge bg-secondary me-2">
 												#' . trim($badge) . '
 											</span>
 										</a>

@@ -73,7 +73,7 @@
 								' . phrase('update_now') . '
 							</button>
 							' . (isset($updater->server_version) ? '
-							<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ml-3">
+							<a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ms-3">
 								<i class="mdi mdi-hammer"></i>
 								' . phrase('manual_update') . '
 							</a>

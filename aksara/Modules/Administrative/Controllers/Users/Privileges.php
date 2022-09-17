@@ -20,7 +20,7 @@ class Privileges extends \Aksara\Laboratory\Core
 	{
 		parent::__construct();
 		
-		$this->set_permission(1);
+		$this->set_permission();
 		$this->set_theme('backend');
 		
 		$this->set_method('update');
@@ -235,7 +235,7 @@ class Privileges extends \Aksara\Laboratory\Core
 				';
 			}
 			$items									= '
-				<ul class="list-unstyled ml-3">
+				<ul class="list-unstyled ms-3">
 					' . $items . '
 				</ul>
 			';

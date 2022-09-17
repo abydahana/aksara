@@ -20,7 +20,7 @@ class Errors extends \Aksara\Laboratory\Core
 		
 		$this->restrict_on_demo();
 		
-		//$this->set_permission(1);
+		$this->set_permission();
 		$this->set_theme('backend');
 	}
 	

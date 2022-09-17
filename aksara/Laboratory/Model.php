@@ -19,6 +19,7 @@ class Model
 	private $builder;
 	
 	private $_prepare								= array();
+	private $_is_query								= false;
 	private $_finished								= false;
 	private $_called								= false;
 	
@@ -280,15 +281,13 @@ class Model
 			$this->_table							= trim(str_replace(array('`', '"', '\''), '', $matches[1]));
 		}
 		
-		// check if query is being execute without calling child method
-		if(true === $params)
-		{
-			$this->_prepare[]						= array
-			(
-				'function'							=> 'query',
-				'arguments'							=> array($query)
-			);
-		}
+		$this->_prepare[]							= array
+		(
+			'function'								=> 'query',
+			'arguments'								=> array($query)
+		);
+		
+		$this->_is_query							= true;
 		
 		return $this;
 	}
@@ -2123,20 +2122,27 @@ class Model
 	{
 		if(!$this->builder)
 		{
-			$this->builder							= $this->db->table($this->_table);
-			
-			if($this->_limit)
+			if($this->_is_query)
 			{
-				$this->builder->limit($this->_limit, $this->_offset);
+				$this->builder						= $this->db;
 			}
-			
-			if(!$this->_select)
+			else
 			{
-				$this->builder->select('*');
+				$this->builder						= $this->db->table($this->_table);
+				
+				if($this->_limit)
+				{
+					$this->builder->limit($this->_limit, $this->_offset);
+				}
+				
+				if(!$this->_select)
+				{
+					$this->builder->select('*');
+				}
 			}
 		}
 		
-		$builder_filter								= array('get', 'getWhere', 'countAll', 'countAllResults', 'insert', 'insertBatch', 'update', 'updateBatch', 'delete', 'deleteBatch', 'truncate', 'emptyTable', 'selectSubQuery');
+		$builder_filter								= array('get', 'getWhere', 'countAll', 'countAllResults', 'insert', 'insertBatch', 'update', 'updateBatch', 'delete', 'deleteBatch', 'truncate', 'emptyTable', 'query', 'selectSubQuery');
 		$result_filter								= array('getFieldCount', 'getFieldName', 'getFieldData', 'getNumRows', 'getResult', 'getResultArray', 'getResultObject', 'getRow', 'getRowArray', 'getRowObject');
 		
 		foreach($this->_prepare as $key => $val)

@@ -56,7 +56,7 @@
 								<a href="' . current_page('detail', array('item' => $val->folder)) . '" class="--modal">
 									<div class="position-relative rounded-top" style="background:url(' . $screenshot . ') center center no-repeat; background-size: cover; height: 256px">
 										<div class="clip gradient-top rounded-top"></div>
-										' . ($val->type == 'backend' ? '<span class="badge bg-dark float-end mt-3 mr-3">' . phrase('back_end') . '</span>' : '<span class="badge bg-success float-end mt-3 mr-3">' . phrase('front_end') . '</span>') . '
+										' . ($val->type == 'backend' ? '<span class="badge bg-dark float-end mt-3 me-3">' . phrase('back_end') . '</span>' : '<span class="badge bg-success float-end mt-3 me-3">' . phrase('front_end') . '</span>') . '
 										<div class="absolute bottom p-3">
 											<h5 class="text-light" data-bs-toggle="tooltip" title="' . $val->name . '">
 												' . truncate($val->name, 80) . '
