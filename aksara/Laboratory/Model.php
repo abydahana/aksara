@@ -648,13 +648,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -667,7 +667,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -702,13 +702,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -721,7 +721,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -756,13 +756,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -775,7 +775,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -810,13 +810,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -829,7 +829,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1054,13 +1054,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1073,7 +1073,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1108,13 +1108,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1127,7 +1127,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1162,13 +1162,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1181,7 +1181,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1216,13 +1216,13 @@ class Model
 		{
 			if(isset($match['match']))
 			{
-				$column[$field]						= $match;
+				$column[$field]						= ($match ? $match : '');
 			}
 			else
 			{
 				$column[$field]						= array
 				(
-					'match'							=> $match,
+					'match'							=> ($match ? $match : ''),
 					'side'							=> $side,
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
@@ -1235,7 +1235,7 @@ class Model
 			{
 				$column[$key]						= array
 				(
-					'match'							=> $val,
+					'match'							=> ($val ? $val : ''),
 					'side'							=> 'both',
 					'escape'						=> $escape,
 					'case_insensitive'				=> $case_insensitive
