@@ -65,8 +65,8 @@ class Summernote extends \Aksara\Laboratory\Core
 		
 		$filename									= $source->getRandomName();
 		$imageinfo									= getimagesize($source);
-		$width										= ($imageinfo[0] > 800 ? 800 : $imageinfo[0]);
-		$height										= ($imageinfo[1] > 800 ? 800 : $imageinfo[1]);
+		$width										= ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
+		$height										= ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
 		$master_dimension							= ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 		$this->image								= \Config\Services::image('gd');
 		
