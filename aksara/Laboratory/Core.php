@@ -7483,9 +7483,6 @@ class Core extends Controller
 								$value				= str_ireplace(array('<noscript', '</noscript>'), array('&lt;noscript', '&lt;/noscript&gt;'), $value);
 								$value				= str_ireplace(array('<style', '</style>'), array('&lt;style', '&lt;/style&gt;'), $value);
 								$value				= str_ireplace('<link', '&lt;link', $value);
-								$value				= str_ireplace(array('<iframe', '</iframe>'), array('&lt;iframe', '&lt;/iframe&gt;'), $value);
-								$value				= str_ireplace(array('<embed', '</embed>'), array('&lt;embed', '&lt;/embed&gt;'), $value);
-								$value				= str_ireplace(array('<object', '</object>'), array('&lt;object', '&lt;/object&gt;'), $value);
 							}
 							
 							// push the boolean field type to data preparation
