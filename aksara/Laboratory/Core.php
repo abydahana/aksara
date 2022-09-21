@@ -7745,6 +7745,17 @@ class Core extends Controller
 		)
 		->row();
 		
+		if(!$api_service && (service('request')->getIPAddress() == (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null)))
+		{
+			// set temporary API service
+			$api_service							= (object) array
+			(
+				'ip_range'							=> (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null),
+				'method'							=> json_encode(array(service('request')->getServer('REQUEST_METHOD'))),
+				'status'							=> 1
+			);
+		}
+		
 		if(!$api_service)
 		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_module_or_already_expired'));
