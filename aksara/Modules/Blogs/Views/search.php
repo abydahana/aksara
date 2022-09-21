@@ -81,7 +81,7 @@
 				else
 				{
 					echo '
-						<div class="pt-5 pb-5">
+						<div class="pt-5 pb-5 text-center">
 							<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
 							<h2>
 								' . phrase('your_keyword_did_not_match_any_result') . '

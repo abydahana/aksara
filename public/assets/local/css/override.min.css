@@ -7,7 +7,8 @@
  */
 body
 {
-	overflow-x: hidden
+	overflow-x: hidden;
+	position: relative
 }
 
 html.fix-scrollbar body
@@ -224,6 +225,13 @@ input::-webkit-inner-spin-button
 	cursor: pointer;
 	height: .75rem;
 	background-clip: padding-box
+}
+
+.form-control[readonly],
+.form-control:focus[readonly]
+{
+	background: #e9ecef;
+	opacity: 1
 }
 
 .form-control:focus,

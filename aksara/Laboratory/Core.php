@@ -1747,7 +1747,7 @@ class Core extends Controller
 	 *
 	 * @access		public
 	 */
-	public function set_relation(string $field, string $selected_value, string $formatting, $where = array(), array $join = array(), $order_by = array(), string $group_by = null, int $limit = 0, bool $translate = false)
+	public function set_relation(string $field, string $selected_value, string $formatting, $where = array(), $join = array(), $order_by = array(), $group_by = null, int $limit = 0, bool $translate = false)
 	{
 		$as_field									= $field;
 		
@@ -7750,56 +7750,6 @@ class Core extends Controller
 		
 		if(!$api_service)
 		{
-			/**
-			 * retrieve the temporary session
-			 */
-			if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
-			{
-				$cookie								= $this->model->select
-				('
-					data
-				')
-				->get_where
-				(
-					'app__sessions',
-					array
-					(
-						'id'						=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
-						'timestamp >= '				=> date('Y-m-d H:i:s', (time() - service('request')->config->sessionExpiration))
-					),
-					1
-				)
-				->row('data');
-				
-				if($cookie)
-				{
-					session_decode($cookie);
-					
-					set_userdata(array_filter($_SESSION));
-					
-					$this->_set_language(get_userdata('language_id'));
-					
-					// set temporary API service
-					$api_service					= (object) array
-					(
-						'ip_range'					=> (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null),
-						'method'					=> json_encode(array(service('request')->getServer('REQUEST_METHOD'))),
-						'status'					=> 1
-					);
-				}
-			}
-			
-			/**
-			 * access token not found
-			 */
-			else if($this->_module != 'auth')
-			{
-				return throw_exception(403, phrase('missing_authentication_token_header') . ' (X-ACCESS-TOKEN)');
-			}
-		}
-		
-		if(!$api_service)
-		{
 			return throw_exception(403, phrase('your_api_key_is_not_eligible_to_access_the_requested_module_or_already_expired'));
 		}
 		else if(!$api_service->status)
@@ -7813,6 +7763,47 @@ class Core extends Controller
 		else if($api_service->ip_range && (service('request')->getIPAddress() != (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null) || ($api_service->ip_range && !$this->_ip_in_range($api_service->ip_range))))
 		{
 			return throw_exception(403, phrase('this_source_is_not_accessible_from_your_device'));
+		}
+		
+		/**
+		 * retrieve the temporary session
+		 */
+		if(service('request')->getHeaderLine('X-ACCESS-TOKEN'))
+		{
+			if(session_status() === PHP_SESSION_NONE)
+			{
+				session_start();
+			}
+			
+			$cookie									= $this->model->select
+			('
+				data
+			')
+			->get_where
+			(
+				'app__sessions',
+				array
+				(
+					'id'							=> service('request')->getHeaderLine('X-ACCESS-TOKEN'),
+					'timestamp >= '					=> date('Y-m-d H:i:s', (time() - service('request')->config->sessionExpiration))
+				),
+				1
+			)
+			->row('data');
+			
+			if($cookie && session_decode($cookie))
+			{
+				// set the cookie to session
+				set_userdata(array_filter($_SESSION));
+				
+				// set the user language session
+				$this->_set_language(get_userdata('language_id'));
+			}
+			else
+			{
+				// cookie not found
+				return throw_exception(403, phrase('the_access_token_is_invalid_or_already_expired'));
+			}
 		}
 		
 		$this->_api_request							= true;
