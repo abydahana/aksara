@@ -420,7 +420,7 @@ class Addons extends \Aksara\Laboratory\Core
 						try
 						{
 							// push module namespace to filelocator
-							$loader					= \CodeIgniter\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+							$loader					= \Config\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 							
 							// run install migration
 							$migration				= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
