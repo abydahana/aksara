@@ -131,13 +131,7 @@ class Themes extends \Aksara\Laboratory\Core
 		}
 		catch(\Throwable $e)
 		{
-			return make_json
-			(
-				array
-				(
-					'error'							=> $e->getMessage()
-				)
-			);
+			return throw_excetion(404, $e->getMessage());
 		}
 		
 		$upstream									= json_decode($response->getBody());
