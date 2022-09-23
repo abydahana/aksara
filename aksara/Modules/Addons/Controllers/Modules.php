@@ -131,13 +131,7 @@ class Modules extends \Aksara\Laboratory\Core
 		}
 		catch(\Throwable $e)
 		{
-			return make_json
-			(
-				array
-				(
-					'error'							=> $e->getMessage()
-				)
-			);
+			return throw_excetion(404, $e->getMessage());
 		}
 		
 		$upstream									= json_decode($response->getBody());
@@ -379,7 +373,7 @@ class Modules extends \Aksara\Laboratory\Core
 					try
 					{
 						// push module namespace to filelocator
-						$loader						= \CodeIgniter\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+						$loader						= \Config\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 						
 						// run install migration
 						$migration					= \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
@@ -713,7 +707,7 @@ class Modules extends \Aksara\Laboratory\Core
 					try
 					{
 						// push module namespace to filelocator
-						$loader						= \CodeIgniter\Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
+						$loader						= \Config\Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
 						
 						// run uninstall migration
 						$migration					= \Config\Services::migrations()->setNameSpace($query->namespace);
