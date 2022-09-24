@@ -489,6 +489,9 @@ class Addons extends \Aksara\Laboratory\Core
 									// check if obtained links is populated
 									if($serialized)
 									{
+										// make links unique
+										$serialized	= $this->_array_unique($serialized, 'slug', $package_path);
+										
 										// merge the old link with new one
 										$links		= array_merge($serialized, $links);
 									}
@@ -647,7 +650,7 @@ class Addons extends \Aksara\Laboratory\Core
 						// remove temporary directory
 						$this->_rmdir($tmp_path);
 						
-						return throw_exception(301, phrase('the_selected_' . $type . '_package_was_successfully_installed'), current_page('../', array('item' => null, 'type' => null)));
+						return throw_exception(301, phrase('the_selected_' . $type . '_package_was_successfully_installed'), current_page('../' . $type, array('item' => null, 'type' => null)));
 					}
 					else
 					{
@@ -889,5 +892,23 @@ class Addons extends \Aksara\Laboratory\Core
 		
 		// delete directory
 		ftp_rmdir($connection, $directory);
+	}
+	
+	/**
+	 * Make array unique by value
+	 */
+	private function _array_unique($array = array(), $key = null, $value = null)
+	{
+		$value										= strtolower($value);
+		
+		foreach($array as $subKey => $subArray)
+		{
+			if(isset($subArray[$key]) && $subArray[$key] == $value)
+			{
+				unset($array[$subKey]);
+			}
+		}
+		
+		return $array;
 	}
 }
