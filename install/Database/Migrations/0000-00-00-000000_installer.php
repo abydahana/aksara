@@ -1843,7 +1843,7 @@ class Installer extends Migration
 					'auto_increment' => true,
 					'null' => false
 				),
-				'reply_id' => array
+				'user_id' => array
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
@@ -1857,22 +1857,35 @@ class Installer extends Migration
 					'unsigned' => true,
 					'null' => false
 				),
-				'user_id' => array
+				'post_type' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 20,
+					'null' => false
+				),
+				'reply_id' => array
 				(
 					'type' => 'bigint',
 					'constraint' => 22,
 					'unsigned' => true,
 					'null' => false
 				),
-				'comment_type' => array
+				'mention_id' => array
 				(
-					'type' => 'varchar',
-					'constraint' => 20,
+					'type' => 'bigint',
+					'constraint' => 22,
+					'unsigned' => true,
 					'null' => false
 				),
 				'comments' => array
 				(
 					'type' => 'text',
+					'null' => false
+				),
+				'attachment' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 255,
 					'null' => false
 				),
 				'edited' => array
@@ -1897,13 +1910,12 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('comment_id', true, true);
-		$this->forge->addKey('reply_id', false, false);
-		$this->forge->addKey('post_id', false, false);
 		$this->forge->addKey('user_id', false, false);
-		
+		$this->forge->addKey('post_id', false, false);
+		$this->forge->addKey('reply_id', false, false);
+		$this->forge->addKey('mention_id', false, false);
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
-		
-		$this->forge->createTable('comments');
+		$this->forge->createTable('post__comments');
 		
 		$this->forge->addField
 		(
@@ -1921,6 +1933,12 @@ class Installer extends Migration
 					'type' => 'text',
 					'null' => false
 				),
+				'attachment' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 255,
+					'null' => false
+				),
 				'timestamp' => array
 				(
 					'type' => 'timestamp',
@@ -1929,10 +1947,8 @@ class Installer extends Migration
 			)
 		);
 		$this->forge->addKey('comment_id', false, false);
-		
-		$this->forge->addForeignKey('comment_id', 'comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
-		
-		$this->forge->createTable('comments__updates');
+		$this->forge->addForeignKey('comment_id', 'post__comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		$this->forge->createTable('post__comments_updates');
 		
 		$this->forge->addField
 		(
@@ -1961,11 +1977,9 @@ class Installer extends Migration
 		);
 		$this->forge->addKey('comment_id', false, false);
 		$this->forge->addKey('user_id', false, false);
-		
-		$this->forge->addForeignKey('comment_id', 'comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		$this->forge->addForeignKey('comment_id', 'post__comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
-		
-		$this->forge->createTable('comments__likes');
+		$this->forge->createTable('post__comments_likes');
 		
 		$this->forge->addField
 		(
@@ -1999,11 +2013,45 @@ class Installer extends Migration
 		);
 		$this->forge->addKey('comment_id', false, false);
 		$this->forge->addKey('user_id', false, false);
-		
-		$this->forge->addForeignKey('comment_id', 'comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		$this->forge->addForeignKey('comment_id', 'post__comments', 'comment_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		$this->forge->createTable('post__comments_reports');
 		
-		$this->forge->createTable('comments__reports');
+		$this->forge->addField
+		(
+			array
+			(
+				'user_id' => array
+				(
+					'type' => 'bigint',
+					'constraint' => 22,
+					'unsigned' => true,
+					'null' => false
+				),
+				'post_id' => array
+				(
+					'type' => 'bigint',
+					'constraint' => 22,
+					'unsigned' => true,
+					'null' => false
+				),
+				'post_type' => array
+				(
+					'type' => 'varchar',
+					'constraint' => 20,
+					'null' => false
+				),
+				'timestamp' => array
+				(
+					'type' => 'timestamp',
+					'null' => false
+				)
+			)
+		);
+		$this->forge->addKey('comment_id', false, false);
+		$this->forge->addKey('user_id', false, false);
+		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
+		$this->forge->createTable('post__likes');
     }
 	
 	public function down()

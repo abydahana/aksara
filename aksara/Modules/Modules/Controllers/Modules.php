@@ -22,6 +22,7 @@ class Modules extends \Aksara\Laboratory\Core
 	public function index()
 	{
 		$segments									= implode(DIRECTORY_SEPARATOR, service('uri')->getSegments());
+		$segments									= str_replace('modules' . DIRECTORY_SEPARATOR . 'aksara', 'aksara' . DIRECTORY_SEPARATOR . 'modules', $segments);
 		
 		if($segments)
 		{

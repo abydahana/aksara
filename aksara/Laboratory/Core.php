@@ -3704,6 +3704,9 @@ class Core extends Controller
 								<div class="fileupload-new text-center">
 									<img class="img-fluid upload_preview" src="' . get_image($this->_set_upload_path, ($original ? $original : $parameter), 'thumb') . '" alt="' . ($original ? $original : $parameter) . '" />
 								</div>
+								<button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.fileupload\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.fileupload\').find(\'img\').attr(\'src\', \'' . get_image($this->_set_upload_path, 'placeholder.png', 'thumb') . '\'))">
+									<i class="mdi mdi-window-close"></i>
+								</button>
 							</span>
 						</div>
 					';
@@ -5219,7 +5222,7 @@ class Core extends Controller
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
 					
-					if((in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg'), $type) && !$this->_api_request) || array_intersect(array('encryption', 'password'), $type))
+					if((in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg', 'custom_format'), $type) && !$this->_api_request) || array_intersect(array('encryption', 'password'), $type))
 					{
 						$unsets[]					= $field;
 						

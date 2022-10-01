@@ -9,4 +9,5 @@
  * @copyright		(c) 2021 - Aksara Laboratory
  */
 
+$routes->get('modules/aksara/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');
 $routes->get('modules/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');

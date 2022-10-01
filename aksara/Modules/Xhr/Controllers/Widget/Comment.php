@@ -14,7 +14,7 @@ namespace Aksara\Modules\Xhr\Controllers\Widget;
 
 class Comment extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'comments';
+	private $_table									= 'post__comments';
 	
 	public function __construct()
 	{
@@ -35,9 +35,37 @@ class Comment extends \Aksara\Laboratory\Core
 		$this->set_title('comment')
 		->set_icon('mdi mdi-comment-multiple')
 		
+		->set_output
+		(
+			array
+			(
+				'likes_count'						=> $this->model->get_where
+				(
+					'post__likes',
+					array
+					(
+						'post_id'					=> service('request')->getGet('post_id'),
+						'post_type'					=> service('request')->getGet('type')
+					)
+				)
+				->num_rows(),
+				
+				'comments_count'					=> $this->model->get_where
+				(
+					'post__comments',
+					array
+					(
+						'post_id'					=> service('request')->getGet('post_id'),
+						'post_type'					=> service('request')->getGet('type')
+					)
+				)
+				->num_rows()
+			)
+		)
+		
 		->select
 		('
-			(SELECT COUNT(*) FROM comments__likes WHERE comment_id = comments.comment_id) AS upvotes
+			(SELECT COUNT(*) FROM post__comments_likes WHERE comment_id = post__comments.comment_id) AS upvotes
 		')
 		
 		->set_relation
@@ -51,12 +79,95 @@ class Comment extends \Aksara\Laboratory\Core
 			array
 			(
 				'post_id'							=> service('request')->getGet('post_id'),
-				'comment_type'						=> service('request')->getGet('type')
+				'post_type'							=> service('request')->getGet('type')
 			)
 		)
-		->order_by('comment_id', 'DESC')
 		
 		->render($this->_table);
+	}
+	
+	public function repute()
+	{
+		if(!get_userdata('is_logged'))
+		{
+			return throw_exception(403, phrase('please_sign_in_to_repute_the_post'));
+		}
+		
+		$query										= $this->model->get_where
+		(
+			'post__likes',
+			array
+			(
+				'post_id'							=> (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
+				'post_type'							=> (service('request')->getGet('type') ? service('request')->getGet('type') : ''),
+				'user_id'							=> get_userdata('user_id')
+			)
+		)
+		->row();
+		
+		if($query)
+		{
+			$query									= $this->model->delete
+			(
+				'post__likes',
+				array
+				(
+					'post_id'						=> (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
+					'post_type'						=> (service('request')->getGet('type') ? service('request')->getGet('type') : ''),
+					'user_id'						=> get_userdata('user_id')
+				)
+			);
+		}
+		else
+		{
+			$query									= $this->model->insert
+			(
+				'post__likes',
+				array
+				(
+					'post_id'						=> (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
+					'post_type'						=> (service('request')->getGet('type') ? service('request')->getGet('type') : ''),
+					'user_id'						=> get_userdata('user_id'),
+					'timestamp'						=> date('Y-m-d H:i:s')
+				)
+			);
+		}
+		
+		$upvotes									= $this->model->get_where
+		(
+			'post__likes',
+			array
+			(
+				'post_id'						=> (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
+				'post_type'						=> (service('request')->getGet('type') ? service('request')->getGet('type') : '')
+			)
+		)
+		->num_rows();
+		
+		if($upvotes > 999)
+		{
+			if ($upvotes < 1000000)
+			{
+				$upvotes							= number_format($upvotes / 1000) . 'K';
+			}
+			else if ($upvotes < 1000000000)
+			{
+				$upvotes							= number_format($upvotes / 1000000, 2) . 'M';
+			}
+			else
+			{
+				$upvotes							= number_format($upvotes / 1000000000, 2) . 'B';
+			}
+		}
+		
+		return make_json
+		(
+			array
+			(
+				'element'							=> '.likes-count',
+				'html'								=> ($upvotes ? $upvotes : null)
+			)
+		);
 	}
 	
 	public function upvote()
@@ -68,7 +179,7 @@ class Comment extends \Aksara\Laboratory\Core
 		
 		$query										= $this->model->get_where
 		(
-			'comments__likes',
+			'post__comments_likes',
 			array
 			(
 				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
@@ -81,7 +192,7 @@ class Comment extends \Aksara\Laboratory\Core
 		{
 			$query									= $this->model->delete
 			(
-				'comments__likes',
+				'post__comments_likes',
 				array
 				(
 					'comment_id'					=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
@@ -93,7 +204,7 @@ class Comment extends \Aksara\Laboratory\Core
 		{
 			$query									= $this->model->insert
 			(
-				'comments__likes',
+				'post__comments_likes',
 				array
 				(
 					'comment_id'					=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
@@ -105,7 +216,7 @@ class Comment extends \Aksara\Laboratory\Core
 		
 		$upvotes									= $this->model->get_where
 		(
-			'comments__likes',
+			'post__comments_likes',
 			array
 			(
 				'comment_id'						=> (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
@@ -164,14 +275,37 @@ class Comment extends \Aksara\Laboratory\Core
 		
 		if(service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')))
 		{
+			$this->form_validation->setRule('comments', phrase('comments'), 'required');
+			$this->form_validation->setRule('attachment', phrase('attachment'), 'validate_upload[attachment.image]');
+			
+			if($this->form_validation->run(service('request')->getPost()) === false)
+			{
+				return throw_exception(400, $this->form_validation->getErrors());
+			}
+			
+			$this->_upload_data						= (get_userdata('_upload_data') ? get_userdata('_upload_data') : array());
+			$attachment								= '';
+			
+			// check if the uploaded file is valid
+			if(isset($this->_upload_data['attachment']) && is_array($this->_upload_data['attachment']))
+			{
+				// loop to get source from unknown array key
+				foreach($this->_upload_data['attachment'] as $key => $src)
+				{
+					// set new source
+					$attachment						= $src;
+				}
+			}
+			
 			// insert to update history
 			$this->model->insert
 			(
-				'comments__updates',
+				'post__comments_updates',
 				array
 				(
 					'comment_id'					=> $query->comment_id,
 					'comments'						=> $query->comments,
+					'attachment'					=> $query->attachment,
 					'timestamp'						=> $query->timestamp
 				)
 			);
@@ -183,6 +317,7 @@ class Comment extends \Aksara\Laboratory\Core
 				array
 				(
 					'comments'						=> htmlspecialchars(service('request')->getPost('comments')),
+					'attachment'					=> $attachment,
 					'edited'						=> 1
 				),
 				array
@@ -196,7 +331,7 @@ class Comment extends \Aksara\Laboratory\Core
 				array
 				(
 					'element'						=> '#comment-text-' . service('request')->getGet('id'),
-					'html'							=> htmlspecialchars(service('request')->getPost('comments'))
+					'html'							=> ($attachment ? '<div><a href="' . get_image('widget', $attachment) . '" target="_blank"><img src="' . get_image('widget', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="..." /></a></div>' : null) . nl2br(htmlspecialchars(service('request')->getPost('comments')))
 				)
 			);
 		}
@@ -205,8 +340,27 @@ class Comment extends \Aksara\Laboratory\Core
 			<form action="' . current_page() . '" method="POST" class="--validate-form">
 				<input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
 				<div class="p-3 pb-0">
-					<div class="form-group">
+					<div class="form-group mb-3">
+						<label class="d-block text-muted" for="comments_input">
+							'. phrase('comments') . '
+						</label>
 						<textarea name="comments" class="form-control" id="comments_input" placeholder="' . phrase('type_a_comment') . '" rows="1">' . (isset($query->comments) ? $query->comments : null) . '</textarea>
+					</div>
+					<div class="form-group">
+						<label class="d-block text-muted" for="comments_input">
+							'. phrase('atachment') . '
+						</label>
+						<div data-provides="fileupload" class="fileupload fileupload-new">
+							<span class="btn btn-file d-block">
+								<input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="attachment_input" />
+								<div class="fileupload-new text-center">
+									<img class="img-fluid upload_preview" src="' . get_image('widget', $query->attachment, 'thumb'). '" alt="..." />
+								</div>
+								<button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.btn-file\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.btn-file\').find(\'img\').attr(\'src\', \'' . get_image('widget', 'placeholder.png', 'icon') . '\'))">
+									<i class="mdi mdi-window-close"></i>
+								</button>
+							</span>
+						</div>
 					</div>
 				</div>
 				<hr />
@@ -276,7 +430,7 @@ class Comment extends \Aksara\Laboratory\Core
 		{
 			$checker								= $this->model->get_where
 			(
-				'comments__reports',
+				'post__comments_reports',
 				array
 				(
 					'comment_id'					=> $query->comment_id,
@@ -291,7 +445,7 @@ class Comment extends \Aksara\Laboratory\Core
 				// update feedback
 				$this->model->update
 				(
-					'comments__reports',
+					'post__comments_reports',
 					array
 					(
 						'message'					=> htmlspecialchars(service('request')->getPost('message')),
@@ -309,11 +463,12 @@ class Comment extends \Aksara\Laboratory\Core
 				// insert feedback
 				$this->model->insert
 				(
-					'comments__reports',
+					'post__comments_reports',
 					array
 					(
 						'comment_id'				=> $query->comment_id,
 						'user_id'					=> get_userdata('user_id'),
+						'message'					=> htmlspecialchars(service('request')->getPost('message')),
 						'timestamp'					=> $query->timestamp
 					)
 				);
@@ -467,34 +622,86 @@ class Comment extends \Aksara\Laboratory\Core
 		{
 			return throw_exception(400, array('comments' => phrase('please_sign_in_to_comment')));
 		}
+		else if(!service('request')->getGet('post_id') || !service('request')->getGet('type'))
+		{
+			return throw_exception(400, array('comments' => phrase('unable_to_reply_to_invalid_thread')));
+		}
 		
-		$this->form_validation->setRule('post_id', phrase('post'), 'required');
-		$this->form_validation->setRule('comment_type', phrase('comment_type'), 'required');
 		$this->form_validation->setRule('comments', phrase('comments'), 'required');
+		$this->form_validation->setRule('attachment', phrase('attachment'), 'validate_upload[attachment.image]');
 		
 		if($this->form_validation->run(service('request')->getPost()) === false)
 		{
 			return throw_exception(400, $this->form_validation->getErrors());
 		}
 		
+		$this->_upload_data							= (get_userdata('_upload_data') ? get_userdata('_upload_data') : array());
+		$attachment									= '';
+		
+		// check if the uploaded file is valid
+		if(isset($this->_upload_data['attachment']) && is_array($this->_upload_data['attachment']))
+		{
+			// loop to get source from unknown array key
+			foreach($this->_upload_data['attachment'] as $key => $src)
+			{
+				// set new source
+				$attachment							= $src;
+			}
+		}
+		
+		$reply_id									= (service('request')->getGet('reply') ? service('request')->getGet('reply') : 0);
+		$mention_id									= (service('request')->getGet('mention') ? service('request')->getGet('mention') : 0);
+		
 		$this->model->insert
 		(
 			$this->_table,
 			array
 			(
-				'reply_id'							=> (service('request')->getPost('reply_id') ? service('request')->getPost('reply_id') : 0),
-				'post_id'							=> service('request')->getPost('post_id'),
 				'user_id'							=> get_userdata('user_id'),
-				'comment_type'						=> service('request')->getPost('comment_type'),
+				'post_id'							=> service('request')->getGet('post_id'),
+				'post_type'							=> service('request')->getGet('type'),
+				'reply_id'							=> $reply_id,
+				'mention_id'						=> $mention_id,
 				'comments'							=> htmlspecialchars(service('request')->getPost('comments')),
+				'attachment'						=> $attachment,
 				'timestamp'							=> date('Y-m-d H:i:s'),
 				'status'							=> (in_array(get_userdata('group_id'), array(1, 2)) ? 1 : 0)
 			)
 		);
 		
+		$comment_id									= $this->model->insert_id();
+		
+		$query										= $this->model->select
+		('
+			post__comments.comment_id,
+			post__comments.reply_id,
+			post__comments.mention_id,
+			post__comments.comments,
+			post__comments.attachment,
+			post__comments.timestamp,
+			
+			app__users.first_name,
+			app__users.last_name
+		')
+		->join
+		(
+			'app__users',
+			'app__users.user_id = post__comments.user_id'
+		)
+		->get_where
+		(
+			'post__comments',
+			array
+			(
+				'comment_id'						=> $mention_id
+			),
+			1
+		)
+		->row();
+		
 		$html										= '
-			<div class="row mb-3">
-				<div class="col-2 col-lg-1 pt-3">
+			<div class="row g-0 mb-2 ' . (!$reply_id ? 'comment-item' : null) . '">
+				<div class="col-2 col-lg-1 pt-1 pe-3">
 					<img src="' . get_image('users', get_userdata('photo'), 'thumb') . '" class="img-fluid rounded-circle" />
 				</div>
 				<div class="col-10 col-lg-11">
@@ -505,7 +712,7 @@ class Comment extends \Aksara\Laboratory\Core
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
 								<li>
-									<a class="dropdown-item --modal" href="' . current_page('update', array('id' => $val->comment_id)) . '">
+									<a class="dropdown-item --modal" href="' . current_page('update', array('id' => $comment_id)) . '">
 										' . phrase('update') . '
 									</a>
 								</li>
@@ -519,18 +726,23 @@ class Comment extends \Aksara\Laboratory\Core
 							</b>
 						</a>
 						<br />
-						<div>
-							' . htmlspecialchars(service('request')->getPost('comments')) . '
+						<div id="comment-text-' . $comment_id . '">
+							' . ($query ? '<div class="ps-2 text-muted" style="border-left:1px dashed rgba(0,0,0,.3)">' . phrase('replying_to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 32) . '</div>' : null) . '
+							
+							' . nl2br(htmlspecialchars(service('request')->getPost('comments'))) . '
+							' . ($attachment ? '<div><a href="' . get_image('widget', $attachment) . '" target="_blank"><img src="' . get_image('widget', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="..." /></a></div>' : null) . '
 						</div>
 					</div>
 					<div class="ps-3 pe-3">
-						<a href="' . current_page('like') . '" class="--xhr text-sm">
+						<a href="' . current_page('upvote', array('id' => $comment_id)) . '" class="--modify text-sm">
+							<b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
+							&nbsp;
 							<b>
-								' . phrase('like') . '
+								' . phrase('upvote') . '
 							</b>
 						</a>
 						 &middot; 
-						<a href="' . current_page('reply') . '" class="--xhr text-sm">
+						<a href="' . current_page(null, array('type' => service('request')->getGet('type'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null))) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'thumb') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
 							<b>
 								' . phrase('reply') . '
 							</b>
@@ -540,17 +752,28 @@ class Comment extends \Aksara\Laboratory\Core
 							' . time_ago(date('Y-m-d H:i:s')) . '
 						</span>
 					</div>
+					
+					' . (!$reply_id ? '<div id="comment-reply" class="text-sm"></div>' : null) . '
 				</div>
 			</div>
 		';
+		
+		if($reply_id)
+		{
+			$insert_method							= 'insert_before';
+		}
+		else
+		{
+			$insert_method							= 'prepend_to';
+		}
 		
 		return make_json
 		(
 			array
 			(
 				'html'								=> $html,
-				'prepend_to'						=> (service('request')->getPost('reply_id') ? '#comment-container #comment-reply' : '#comment-container'),
-				'in_context'						=> (service('request')->getPost('reply_id') ? true : false)
+				$insert_method						=> ($reply_id ? '#comment-container #comment-reply form' : '#comment-container'),
+				'in_context'						=> ($reply_id ? true : false)
 			)
 		);
 	}

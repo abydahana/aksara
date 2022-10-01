@@ -84,9 +84,16 @@ if(!function_exists('asset_loader'))
 		
 		$module										= $matches[1];
 		
-		if($module && file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data))
+		if($module)
 		{
-			return base_url('modules/' . $module . '/assets/' . $data);
+			if(file_exists(ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data))
+			{
+				return base_url('modules/aksara/' . $module . '/assets/' . $data);
+			}
+			else if(file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data))
+			{
+				return base_url('modules/' . $module . '/assets/' . $data);
+			}
 		}
 		
 		return '#';
