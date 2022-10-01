@@ -14,7 +14,7 @@ namespace Aksara\Modules\Cms\Controllers\Comments;
 
 class Feedback extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'comments__reports';
+	private $_table									= 'post__comments_reports';
 	
 	public function __construct()
 	{
@@ -32,7 +32,7 @@ class Feedback extends \Aksara\Laboratory\Core
 	{
 		$query										= $this->model->get_where
 		(
-			'comments',
+			'post__comments',
 			array
 			(
 				'comment_id'						=> $this->_primary
@@ -44,7 +44,7 @@ class Feedback extends \Aksara\Laboratory\Core
 		if($query)
 		{
 			// blogs type comment
-			if($query->comment_type == 'blog')
+			if($query->post_type == 'blog')
 			{
 				$this->model->select
 				('
@@ -56,7 +56,7 @@ class Feedback extends \Aksara\Laboratory\Core
 				->join
 				(
 					'blogs',
-					'blogs.post_id = comments.post_id'
+					'blogs.post_id = post__comments.post_id'
 				)
 				->join
 				(
@@ -68,7 +68,7 @@ class Feedback extends \Aksara\Laboratory\Core
 		
 		$query										= $this->model->select
 		('
-			comments.comment_id,
+			post__comments.comment_id,
 			
 			app__users.user_id,
 			app__users.first_name,
@@ -77,14 +77,14 @@ class Feedback extends \Aksara\Laboratory\Core
 		->join
 		(
 			'app__users',
-			'app__users.user_id = comments.user_id'
+			'app__users.user_id = post__comments.user_id'
 		)
 		->get_where
 		(
-			'comments',
+			'post__comments',
 			array
 			(
-				'comments.comment_id'				=> $this->_primary
+				'post__comments.comment_id'			=> $this->_primary
 			),
 			1
 		)
@@ -151,7 +151,7 @@ class Feedback extends \Aksara\Laboratory\Core
 			'{app__users.first_name} {app__users.last_name}'
 		)
 		
-		->merge_content('{post_id} {comment_type}', phrase('post'), 'callback_get_post')
+		->merge_content('{post_id} {post_type}', phrase('post'), 'callback_get_post')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		
 		->where
@@ -173,7 +173,7 @@ class Feedback extends \Aksara\Laboratory\Core
 		
 		$query										= $this->model->get_where
 		(
-			'comments',
+			'post__comments',
 			array
 			(
 				'comment_id'						=> $this->_primary
@@ -254,7 +254,7 @@ class Feedback extends \Aksara\Laboratory\Core
 	{
 		$output										= null;
 		
-		if($params['comment_type'] == 'blog')
+		if($params['post_type'] == 'blog')
 		{
 			$query									= $this->model->select
 			('

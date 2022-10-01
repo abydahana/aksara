@@ -14,7 +14,7 @@ namespace Aksara\Modules\Cms\Controllers\Comments;
 
 class Comments extends \Aksara\Laboratory\Core
 {
-	private $_table									= 'comments';
+	private $_table									= 'post__comments';
 	
 	public function __construct()
 	{
@@ -30,9 +30,9 @@ class Comments extends \Aksara\Laboratory\Core
 	{
 		$this->set_title(phrase('comments'))
 		->set_icon('mdi mdi-comment-multiple-outline')
-		->unset_column('reply_id, edited')
-		->unset_field('reply_id, edited')
-		->unset_view('reply_id, edited')
+		->unset_column('reply_id, mention_id, edited, attachment')
+		->unset_field('reply_id, mention_id, edited, attachment')
+		->unset_view('reply_id, mention_id, edited, attachment')
 		
 		->column_order('first_name, post_id, comments, timestamp, status')
 		
@@ -55,7 +55,7 @@ class Comments extends \Aksara\Laboratory\Core
 			'{app__users.first_name} {app__users.last_name}'
 		)
 		
-		->merge_content('{post_id} {comment_type}', phrase('post'), 'callback_get_post')
+		->merge_content('{post_id} {post_type}', phrase('post'), 'callback_get_post')
 		->merge_content('{first_name} {last_name}', phrase('full_name'))
 		->merge_content('{comment_id}', phrase('feedback'), 'callback_get_feedback')
 		
@@ -153,7 +153,7 @@ class Comments extends \Aksara\Laboratory\Core
 	{
 		$output										= null;
 		
-		if($params['comment_type'] == 'blog')
+		if($params['post_type'] == 'blog')
 		{
 			$query									= $this->model->select
 			('
@@ -192,7 +192,7 @@ class Comments extends \Aksara\Laboratory\Core
 		
 		$query										= $this->model->get_where
 		(
-			'comments__reports',
+			'post__comments_reports',
 			array
 			(
 				'comment_id'						=> $params['comment_id']

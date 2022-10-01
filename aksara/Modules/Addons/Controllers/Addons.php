@@ -581,7 +581,7 @@ class Addons extends \Aksara\Laboratory\Core
 											'app__groups_privileges',
 											array
 											(
-												$gp	=> json_encode(array_merge(json_decode($privileges, true), json_decode(json_encode($_val), true))),
+												$gp	=> json_encode(array_unique(array_merge(json_decode($privileges, true), json_decode(json_encode($_val), true)))),
 												$lg	=> date('Y-m-d H:i:s')
 											),
 											array
@@ -604,7 +604,7 @@ class Addons extends \Aksara\Laboratory\Core
 											array
 											(
 												$pt	=> $_key,
-												$gp	=> json_encode($_val),
+												$gp	=> json_encode(array_unique($_val)),
 												$lg	=> date('Y-m-d H:i:s')
 											)
 										);

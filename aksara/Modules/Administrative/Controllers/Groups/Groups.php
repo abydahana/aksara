@@ -86,6 +86,8 @@ class Groups extends \Aksara\Laboratory\Core
 	
 	private function _privileges()
 	{
+		if(!in_array($this->_method, array('create', 'read', 'update'))) return false;
+		
 		$modules_collection							= $this->model->select
 		('
 			path,

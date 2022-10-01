@@ -160,6 +160,14 @@ a
 	border-radius: 0.375rem
 }
 
+.modal-body > .alert
+{
+	margin-left: -1rem;
+	margin-right: -1rem;
+	border-radius: 0;
+	border: 0
+}
+
 @media (min-width: 992px) and (min-height: 360px)
 {
 	.navbar-expand-lg .navbar-nav .dropdown-menu
