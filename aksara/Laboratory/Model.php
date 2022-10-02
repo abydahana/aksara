@@ -2138,7 +2138,7 @@ class Model
 	 */
 	private function _run_query()
 	{
-		if(!$this->_ordered && $this->_table == 'BPK')
+		if(!$this->_ordered)
 		{
 			$fields									= $this->db->getFieldNames($this->_table);
 			
