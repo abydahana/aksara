@@ -21,6 +21,7 @@ class Model
 	private $_prepare								= array();
 	private $_is_query								= false;
 	private $_finished								= false;
+	private $_ordered								= false;
 	private $_called								= false;
 	
 	private $_select								= array();
@@ -46,50 +47,53 @@ class Model
 			return false;
 		}
 		
-		// check if "default" connection (from app__connections) is selected
-		if('default' == $driver && !$this->_called)
+		// check if "default" or given connection number (from app__connections) is selected
+		if((is_numeric($driver) || 'default' == $driver) && !$this->_called)
 		{
-			$this->_called							= true;
-			$this->db								= \Config\Database::connect();
-			
-			$parameter								= $this->db->table('app__connections')->getWhere
-			(
-				array
-				(
-					'year'							=> (get_userdata('year') ? get_userdata('year') : date('Y')),
-					'status'						=> 1
-				),
-				1
-			)
-			->getRow();
-			
-			if($parameter)
+			try
 			{
-				try
+				$builder							= $this->db->table('app__connections');
+				
+				if('default' == $driver)
 				{
-					// try to decrypting the parameter
-					$parameter->hostname			= $parameter->hostname;
-					$parameter->port				= $parameter->port;
-					$parameter->username			= service('encrypter')->decrypt(base64_decode($parameter->username));
-					$parameter->password			= service('encrypter')->decrypt(base64_decode($parameter->password));
-					$parameter->database_name		= $parameter->database_name;
+					$builder->where('year', (get_userdata('year') ? get_userdata('year') : date('Y')));
 				}
-				catch(\Throwable $e)
+				else
 				{
-					// decrypt error
-					return throw_exception(403, $e->getMessage());
+					$builder->where('id', $driver);
 				}
+				
+				$parameter							= $builder->getWhere
+				(
+					array
+					(
+						'status'					=> 1
+					),
+					1
+				)
+				->getRow();
 				
 				$driver								= array
 				(
 					'DBDriver'						=> $parameter->database_driver,
 					'hostname'						=> $parameter->hostname,
-					'port'							=> $parameter->port,
-					'username'						=> $parameter->username,
-					'password'						=> $parameter->password,
+					'username'						=> service('encrypter')->decrypt(base64_decode($parameter->username)),
+					'password'						=> service('encrypter')->decrypt(base64_decode($parameter->password)),
 					'database'						=> $parameter->database_name,
 					'DBDebug'						=> (ENVIRONMENT !== 'production')
 				);
+				
+				if($parameter->port)
+				{
+					$driver['port']					= $parameter->port;
+				}
+				
+				$this->_called						= true;
+			}
+			catch(\Throwable $e)
+			{
+				// decrypt error
+				return throw_exception(403, $e->getMessage());
 			}
 		}
 		else if($driver && $hostname && $username && $database)
@@ -98,12 +102,16 @@ class Model
 			(
 				'DBDriver'							=> $driver,
 				'hostname'							=> $hostname,
-				'port'								=> $port,
 				'username'							=> $username,
 				'password'							=> $password,
 				'database'							=> $database,
 				'DBDebug'							=> (ENVIRONMENT !== 'production')
 			);
+			
+			if($port)
+			{
+				$driver['port']						= $port;
+			}
 		}
 		
 		$parameter									= $driver;
@@ -122,6 +130,14 @@ class Model
 		}
 		
 		return $this;
+	}
+	
+	/**
+	 * Gett the database driver
+	 */
+	public function db_driver()
+	{
+		return $this->db->DBDriver;
 	}
 	
 	/**
@@ -1264,7 +1280,7 @@ class Model
 	 */
 	public function group_by($column = null)
 	{
-		if(in_array(DB_DRIVER, array('SQLSRV')))
+		if(in_array($this->db->DBDriver, array('SQLSRV')))
 		{
 			$column									= array_map('trim', explode(',', $by));
 			
@@ -1308,6 +1324,8 @@ class Model
 	 */
 	public function order_by($column = null, $direction = '', $escape = true)
 	{
+		$this->_ordered								= true;
+		
 		if(is_array($column))
 		{
 			foreach($column as $key => $val)
@@ -1574,7 +1592,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10)))
 		{
 			$this->_limit							= $limit;
 			$this->_offset							= $offset;
@@ -1601,13 +1619,13 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10)))
 		{
 			$this->_limit							= $limit;
 			$this->_offset							= $offset;
 		}
 		
-		if($where && DB_DRIVER == 'Postgre')
+		if($where && $this->db->DBDriver == 'Postgre')
 		{
 			foreach($where as $key => $val)
 			{
@@ -1670,7 +1688,7 @@ class Model
 	 */
 	public function row($field = 1)
 	{
-		if(!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		if(!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10))
 		{
 			$this->_limit							= 1;
 		}
@@ -1691,7 +1709,7 @@ class Model
 	 */
 	public function row_array($field = 1)
 	{
-		if(!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11))
+		if(!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10))
 		{
 			$this->_limit							= 1;
 		}
@@ -1782,7 +1800,7 @@ class Model
 		
 		$set										= array_merge($this->_set, $set);
 		
-		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
+		if($this->db->DBDriver == 'SQLite3' && $table && $this->db->tableExists($table))
 		{
 			$index_data								= $this->db->getIndexData($table);
 			
@@ -1826,7 +1844,7 @@ class Model
 		
 		$set										= array_merge($this->_set, $set);
 		
-		if(DB_DRIVER == 'SQLite3' && $table && $this->db->tableExists($table))
+		if($this->db->DBDriver == 'SQLite3' && $table && $this->db->tableExists($table))
 		{
 			$index_data								= $this->db->getIndexData($table);
 			
@@ -1886,7 +1904,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10)))
 		{
 			$this->_limit							= $limit;
 		}
@@ -1908,7 +1926,7 @@ class Model
 		$this->_prepare[]							= array
 		(
 			'function'								=> 'update',
-			'arguments'								=> array($set, $where, (!in_array(DB_DRIVER, array('Postgre', 'SQLite3')) ? $this->_limit : null))
+			'arguments'								=> array($set, $where, (!in_array($this->db->DBDriver, array('Postgre', 'SQLite3')) ? $this->_limit : null))
 		);
 		
 		return $this->_run_query();
@@ -1978,7 +1996,7 @@ class Model
 			$this->_table							= $table;
 		}
 		
-		if($limit && (!in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) || (DB_DRIVER === 'SQLSRV' && $this->db->getVersion() >= 11)))
+		if($limit && (!in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) || ($this->db->DBDriver === 'SQLSRV' && $this->db->getVersion() >= 10)))
 		{
 			$this->_limit							= $limit;
 		}
@@ -1986,7 +2004,7 @@ class Model
 		$this->_prepare[]							= array
 		(
 			'function'								=> 'delete',
-			'arguments'								=> array($where, (!in_array(DB_DRIVER, array('Postgre')) ? $this->_limit : null))
+			'arguments'								=> array($where, (!in_array($this->db->DBDriver, array('Postgre')) ? $this->_limit : null))
 		);
 		
 		return $this->_run_query();
@@ -2120,6 +2138,26 @@ class Model
 	 */
 	private function _run_query()
 	{
+		if(!$this->_ordered && $this->_table == 'BPK')
+		{
+			$fields									= $this->db->getFieldNames($this->_table);
+			
+			foreach($fields as $key => $val)
+			{
+				array_unshift
+				(
+					$this->_prepare,
+					array
+					(
+						'function'					=> 'orderBy',
+						'arguments'					=> array($val, 'ASC', true)
+					)
+				);
+				
+				break;
+			}
+		}
+		
 		if(!$this->builder)
 		{
 			if($this->_is_query)
@@ -2210,6 +2248,7 @@ class Model
 			$this->builder							= null;
 			$this->_prepare							= array();
 			$this->_finished						= false;
+			$this->_ordered							= false;
 			$this->_select							= array();
 			$this->_from							= null;
 			$this->_table							= null;
@@ -2245,7 +2284,7 @@ class Model
 			}
 		}
 		
-		if(in_array(DB_DRIVER, array('SQLSRV', 'Postgre')) && !stripos($column, '(') && !stripos($column, ')'))
+		if(in_array($this->db->DBDriver, array('SQLSRV', 'Postgre')) && !stripos($column, '(') && !stripos($column, ')'))
 		{
 			// type casting for PostgreSQL
 			if(in_array(gettype($value), array('integer')))
@@ -2265,7 +2304,7 @@ class Model
 			}
 			else if($value && \DateTime::createFromFormat('Y-m-d H:i:s', $value))
 			{
-				$cast_type							= (DB_DRIVER == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
+				$cast_type							= ($this->db->DBDriver == 'SQLSRV' ? 'DATETIME' : 'TIMESTAMP');
 				$value								= (string) $value;
 			}
 			else if($value && \DateTime::createFromFormat('Y-m-d', $value))
@@ -2275,13 +2314,13 @@ class Model
 			}
 			else if(!is_array(gettype($value)))
 			{
-				$cast_type							= 'VARCHAR' . (DB_DRIVER == 'SQLSRV' ? '(MAX)' : null);
+				$cast_type							= 'VARCHAR' . ($this->db->DBDriver == 'SQLSRV' ? '(MAX)' : null);
 				$value								= (string) $value;
 			}
 			
 			$column									= (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
 			
-			if(DB_DRIVER == 'SQLSRV')
+			if($this->db->DBDriver == 'SQLSRV')
 			{
 				$column								= 'CONVERT(' . $cast_type . ', ' . $column . ')';
 			}

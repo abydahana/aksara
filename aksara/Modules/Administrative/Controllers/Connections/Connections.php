@@ -151,28 +151,32 @@ class Connections extends \Aksara\Laboratory\Core
 			// try to decrypting the parameter
 			$connection								= array
 			(
-				'DBDriver'						=> $query->database_driver,
-				'hostname'						=> $query->hostname,
-				'port'							=> $query->port,
-				'username'						=> service('encrypter')->decrypt(base64_decode($query->username)),
-				'password'						=> service('encrypter')->decrypt(base64_decode($query->password)),
-				'database'						=> $query->database_name,
-				'DBDebug'						=> (ENVIRONMENT !== 'production')
+				'DBDriver'							=> $query->database_driver,
+				'hostname'							=> $query->hostname,
+				'username'							=> service('encrypter')->decrypt(base64_decode($query->username)),
+				'password'							=> service('encrypter')->decrypt(base64_decode($query->password)),
+				'database'							=> $query->database_name,
+				'DBDebug'							=> (ENVIRONMENT !== 'production')
 			);
+			
+			if($query->port)
+			{
+				$connection['port']					= $query->port;
+			}
+			
+			$this->connector						= $this->model->database_config($connection);
+			
+			if(is_array($this->connector) && isset($this->connector['code']))
+			{
+				return throw_exception(403, $this->connector['message']);
+			}
+			
+			return throw_exception(200, phrase('the_database_was_successfully_connected'));
 		}
 		catch(\Throwable $e)
 		{
 			// decrypt error
 			return throw_exception(403, $e->getMessage());
 		}
-		
-		$this->connector							= $this->model->database_config($connection);
-		
-		if(is_array($this->connector) && isset($this->connector['code']))
-		{
-			return throw_exception(403, $this->connector['message']);
-		}
-		
-		return throw_exception(200, phrase('the_database_was_successfully_connected'));
 	}
 }

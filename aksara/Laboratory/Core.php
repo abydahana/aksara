@@ -159,6 +159,9 @@ class Core extends Controller
 		// load model class
 		$this->model								= new Model();
 		
+		// get database driver
+		$this->_db_driver							= $this->model->db_driver();
+		
 		// load permission class
 		$this->permission							= new Permission();
 		
@@ -3228,7 +3231,7 @@ class Core extends Controller
 				$auto_increment						= true;
 				$primary							= 0;
 				
-				if(DB_DRIVER == 'Postgre')
+				if($this->_db_driver == 'Postgre')
 				{
 					$auto_increment					= false;
 					$field_data						= $this->model->field_data($table);
@@ -4364,7 +4367,7 @@ class Core extends Controller
 								}
 							}
 							
-							if(in_array(DB_DRIVER, array('SQLSRV')))
+							if(in_array($this->_db_driver, array('SQLSRV')))
 							{
 								$cast_field			= 'CONVERT(' . $field . ', SIGNED INTEGER)';
 							}
@@ -4380,11 +4383,11 @@ class Core extends Controller
 									$this->model->where($parameter);
 								}
 								
-								$last_insert		= $this->model->select((in_array(DB_DRIVER, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
+								$last_insert		= $this->model->select((in_array($this->_db_driver, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
 							}
 							else
 							{
-								$last_insert		= $this->model->select((in_array(DB_DRIVER, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
+								$last_insert		= $this->model->select((in_array($this->_db_driver, array('Postgre')) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
 							}
 							
 							if($last_insert)
@@ -5222,17 +5225,6 @@ class Core extends Controller
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
 					
-					if((in_array($field, $this->_unset_column) && array_intersect(array('text', 'longtext', 'wysiwyg', 'custom_format'), $type) && !$this->_api_request) || array_intersect(array('encryption', 'password'), $type))
-					{
-						$unsets[]					= $field;
-						
-						continue;
-					}
-					else
-					{
-						$column_lib[]				= $field;
-					}
-					
 					if(isset($this->_set_relation[$field]))
 					{
 						$content					= $this->_get_relation($this->_set_relation[$field], $original);
@@ -5659,11 +5651,6 @@ class Core extends Controller
 			$search_columns							= array_merge($this->_select, $search_columns);
 		}
 		
-		if($column_lib)
-		{
-			$search_columns							= array_merge($search_columns, $column_lib);
-		}
-		
 		if($search_columns)
 		{
 			$qs										= service('request')->getGet();
@@ -5722,17 +5709,6 @@ class Core extends Controller
 		else
 		{
 			$column_order							= $this->model->list_fields($this->_table);
-		}
-		
-		if($unsets)
-		{
-			foreach($unsets as $key => $val)
-			{
-				if(isset($columns[$val]))
-				{
-					unset($columns[$val]);
-				}
-			}
 		}
 		
 		$option										= array();
@@ -5796,6 +5772,11 @@ class Core extends Controller
 					
 					$dropdown[$key][$_key]			= $_val;
 				}
+			}
+			
+			if(in_array($key, $this->_unset_column))
+			{
+				continue;
 			}
 			
 			// sort by column order
@@ -7886,7 +7867,7 @@ class Core extends Controller
 			'timestamp'								=> date('Y-m-d H:i:s')
 		);
 		
-		if(in_array(DB_DRIVER, array('Postgre', 'SQLSRV')))
+		if(in_array($this->_db_driver, array('Postgre', 'SQLSRV')))
 		{
 			$this->model->where('CAST(timestamp AS DATE)', date('Y-m-d'));
 		}
