@@ -2138,23 +2138,43 @@ class Model
 	 */
 	private function _run_query()
 	{
-		if(!$this->_ordered)
+		if(!$this->_ordered && $this->_table)
 		{
-			$fields									= $this->db->getFieldNames($this->_table);
-			
-			foreach($fields as $key => $val)
+			if($this->_select)
 			{
-				array_unshift
-				(
-					$this->_prepare,
-					array
+				foreach($this->_select as $key =>$val)
+				{
+					array_unshift
 					(
-						'function'					=> 'orderBy',
-						'arguments'					=> array($val, 'ASC', true)
-					)
-				);
+						$this->_prepare,
+						array
+						(
+							'function'				=> 'orderBy',
+							'arguments'				=> array($val, 'ASC', true)
+						)
+					);
+					
+					break;
+				}
+			}
+			else
+			{
+				$fields								= $this->db->getFieldNames($this->_table);
 				
-				break;
+				foreach($fields as $key => $val)
+				{
+					array_unshift
+					(
+						$this->_prepare,
+						array
+						(
+							'function'				=> 'orderBy',
+							'arguments'				=> array($val, 'ASC', true)
+						)
+					);
+					
+					break;
+				}
 			}
 		}
 		
