@@ -300,7 +300,7 @@ class Model
 		$this->_prepare[]							= array
 		(
 			'function'								=> 'query',
-			'arguments'								=> array($query)
+			'arguments'								=> array($query, $params)
 		);
 		
 		$this->_is_query							= true;
