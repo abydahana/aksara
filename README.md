@@ -28,6 +28,13 @@ There are two installation methods that you can choose:
 - Access your project from the browser and;
 - Follow the installation wizard.
 
+### Installation with Docker
+- clone source code with git clone "`https://github.com/abydahana/aksara.git`";
+- Run "`docker-compose up -d --build`" from the root of Aksara project directory;
+- Access root of Aksara project directory from terminal and run "`docker-compose exec aksara composer install`";
+- Access your project from the browser and;
+- Follow the installation wizard.
+
 **Yes, as simple as that!**
 
 # Some Screenshot

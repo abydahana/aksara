@@ -1,0 +1,7 @@
+config.php
+.env
+composer.lock
+/vendor
+/node_modules	 
+/writable/logs
+/writable/session
