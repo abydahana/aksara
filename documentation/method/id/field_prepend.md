@@ -20,8 +20,8 @@ $this->field_prepend
 (
 	array
 	(
-		'harga'		=> 'Rp.',
-		'url'		=> 'http://'
+		'harga' => 'Rp.',
+		'url' => 'http://'
 	)
 );
 ```
