@@ -22,9 +22,9 @@ $this->field_position
 (
 	array
 	(
-		'alamat'		=> 2,
-		'telepon'		=> 2,
-		'status'		=> 3
+		'alamat' => 2,
+		'telepon' => 2,
+		'status' => 3
 	)
 );
 ```
