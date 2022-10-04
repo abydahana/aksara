@@ -23,12 +23,12 @@ $this->database_config
 (
 	array
 	(
-		'driver'		=> 'sqlsrv',
-		'hostname'		=> '127.0.0.1',
-		'port'			=> 1433,
-		'username'		=> 'sa',
-		'password'		=> 'MyStrongPassword!',
-		'database'		=> 'master'
+		'driver' => 'SQLSRV',
+		'hostname' => '127.0.0.1',
+		'port' => 1433,
+		'username' => 'sa',
+		'password' => 'MyStrongPassword!',
+		'database' => 'master'
 	)
 );
 ```
