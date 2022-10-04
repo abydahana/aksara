@@ -23,8 +23,8 @@ $this->default_value
 (
 	array
 	(
-		'nama_lengkap'			=> 'John Doe',
-		'usia'					=> 20
+		'nama_lengkap' => 'John Doe',
+		'usia' => 20
 	)
 );
 ```
