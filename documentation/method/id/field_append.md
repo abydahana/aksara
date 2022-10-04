@@ -20,8 +20,8 @@ $this->field_append
 (
 	array
 	(
-		'pajak'		=> '%',
-		'ukuran'	=> 'cm'
+		'pajak' => '%',
+		'ukuran' => 'cm'
 	)
 );
 ```
