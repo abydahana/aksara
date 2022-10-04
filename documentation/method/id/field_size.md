@@ -20,8 +20,8 @@ $this->field_size
 (
 	array
 	(
-		'hostname'		=> 'col-md-8',
-		'port'			=> 'col-md-4'
+		'hostname' => 'col-md-8',
+		'port' => 'col-md-4'
 	)
 );
 ```
