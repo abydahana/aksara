@@ -24,8 +24,8 @@ $this->group_field
 (
 	array
 	(
-		'nama_depan'		=> 'nama',
-		'nama_belakang'		=> 'nama'
+		'nama_depan' => 'nama',
+		'nama_belakang' => 'nama'
 	)
 );
 ```
