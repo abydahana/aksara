@@ -23,8 +23,8 @@ $this->column_size
 (
 	array
 	(
-		1				=> 'col-md-8',
-		2				=> 'col-md-4'
+		1 => 'col-md-8',
+		2 => 'col-md-4'
 	)
 );
 ```
