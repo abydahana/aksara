@@ -2144,6 +2144,11 @@ class Model
 			{
 				foreach($this->_select as $key =>$val)
 				{
+					if($val && stripos($val, ' AS ') !== false)
+					{
+						$val						= substr($val, 0, stripos($val, ' AS '));
+					}
+					
 					array_unshift
 					(
 						$this->_prepare,
