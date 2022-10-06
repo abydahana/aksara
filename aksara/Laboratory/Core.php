@@ -1997,11 +1997,11 @@ class Core extends Controller
 			{
 				if($num)
 				{
-					$this->model->or_like($key, $val);
+					$this->model->or_like($key, $val, 'both', true, true);
 				}
 				else
 				{
-					$this->model->like($key, $val);
+					$this->model->like($key, $val, 'both', true, true);
 				}
 				$num++;
 			}
@@ -2702,11 +2702,11 @@ class Core extends Controller
 						
 						if($num > 0)
 						{
-							$this->model->or_like($val, $keyword);
+							$this->model->or_like($val, $keyword, 'both', true, true);
 						}
 						else
 						{
-							$this->model->like($val, $keyword);
+							$this->model->like($val, $keyword, 'both', true, true);
 						}
 						
 						$this->model->group_end();
@@ -7908,11 +7908,11 @@ class Core extends Controller
 			{
 				if($key)
 				{
-					$this->model->or_like('locale', $val);
+					$this->model->or_like('locale', $val, 'both', true, true);
 				}
 				else
 				{
-					$this->model->like('locale', $val);
+					$this->model->like('locale', $val, 'both', true, true);
 				}
 			}
 			

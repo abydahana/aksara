@@ -2146,7 +2146,7 @@ class Model
 				{
 					if($val && stripos($val, ' AS ') !== false)
 					{
-						$val						= substr($val, 0, stripos($val, ' AS '));
+						$val						=  substr($val, strripos($val, ' AS ') + 4);
 					}
 					
 					array_unshift
