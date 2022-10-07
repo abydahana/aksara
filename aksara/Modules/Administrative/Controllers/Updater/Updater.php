@@ -69,10 +69,15 @@ class Updater extends \Aksara\Laboratory\Core
 		}
 		catch(\Throwable $e)
 		{
-			$response								= $e;
+			$response								= null;
 		}
 		
-		return json_decode($response->getBody());
+		if($response)
+		{
+			return json_decode($response->getBody());
+		}
+		
+		return false;
 	}
 	
 	public function index()
