@@ -3663,6 +3663,7 @@ class Core extends Controller
 			foreach($serialized as $field => $params)
 			{
 				$type								= $params['type'];
+				$primary							= $params['primary'];
 				$max_length							= $params['max_length'];
 				$content							= (isset($this->_set_default[$field]) ? $this->_set_default[$field] : $params['original']);
 				$original							= ($params['original'] ? $params['original'] : (is_numeric($params['original']) ? '0' : ''));
@@ -3683,12 +3684,16 @@ class Core extends Controller
 				/**
 				 * save primary key to be generated as token
 				 */
-				if($params['primary'])
+				if($primary)
 				{
-					$primary_key[$field]			= null;
+					$primary_key[$field]			= $original;
 				}
 				
-				if($hidden || array_intersect(array('current_timestamp'), $type)) continue;
+				if($hidden || array_intersect(array('current_timestamp'), $type))
+				{
+					// skip field
+					continue;
+				}
 				
 				if(isset($this->_set_relation[$field]) && !array_intersect(array('custom_format'), $type))
 				{
@@ -4600,12 +4605,16 @@ class Core extends Controller
 				/**
 				 * save primary key to be generated as token
 				 */
-				if($params['primary'])
+				if($primary)
 				{
-					$primary_key[$field]			= null;
+					$primary_key[$field]			= $original;
 				}
 				
-				if($hidden) continue;
+				if($hidden)
+				{
+					// skip field
+					continue;
+				}
 				
 				if(isset($this->_set_relation[$field]))
 				{
@@ -5188,7 +5197,6 @@ class Core extends Controller
 		$serialized									= $this->serialize($data);
 		$output										= array();
 		$query_string								= array();
-		$unsets										= array();
 		
 		if($serialized)
 		{
@@ -5224,6 +5232,20 @@ class Core extends Controller
 					$extra_params					= (isset($this->_set_field[$field]['extra_params']) ? $this->_set_field[$field]['extra_params'] : null);
 					$another_params					= (isset($this->_set_field[$field]['another_params']) ? $this->_set_field[$field]['another_params'] : null);
 					$hidden							= $params['hidden'];
+					
+					/**
+					 * save primary key to be generated as token
+					 */
+					if($primary)
+					{
+						$primary_key[$field]		= $original;
+					}
+					
+					if($hidden)
+					{
+						// skip field
+						continue;
+					}
 					
 					if(isset($this->_set_relation[$field]))
 					{
@@ -5711,6 +5733,14 @@ class Core extends Controller
 			$column_order							= $this->model->list_fields($this->_table);
 		}
 		
+		foreach($column_order as $key => $val)
+		{
+			if(in_array($val, $this->_unset_column))
+			{
+				unset($column_order[$key]);
+			}
+		}
+		
 		$option										= array();
 		$dropdown									= array();
 		
@@ -5772,11 +5802,6 @@ class Core extends Controller
 					
 					$dropdown[$key][$_key]			= $_val;
 				}
-			}
-			
-			if(in_array($key, $this->_unset_column))
-			{
-				continue;
 			}
 			
 			// sort by column order
