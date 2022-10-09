@@ -118,6 +118,8 @@ class Core extends Controller
 	private $_default_value							= array();
 	private $_set_relation							= array();
 	
+	private $_parameter								= array();
+	
 	private $_prepare								= array();
 	
 	private $_table;
@@ -812,6 +814,11 @@ class Core extends Controller
 			);
 		}
 		
+		if($parameter && is_array($parameter))
+		{
+			$this->_parameter						= array_merge($this->_parameter, array_keys($parameter));
+		}
+		
 		return $this;
 	}
 	
@@ -978,6 +985,11 @@ class Core extends Controller
 					'order'							=> $order
 				);
 			}
+		}
+		
+		if($parameter && is_array($parameter) && in_array('hyperlink', $type))
+		{
+			$this->_parameter						= array_merge($this->_parameter, array_keys($parameter));
 		}
 		
 		return $this;
@@ -5241,7 +5253,7 @@ class Core extends Controller
 						$primary_key[$field]		= $original;
 					}
 					
-					if($hidden)
+					if($hidden && !in_array($field, $this->_parameter))
 					{
 						// skip field
 						continue;
