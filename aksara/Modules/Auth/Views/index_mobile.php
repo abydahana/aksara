@@ -37,7 +37,7 @@
 						</div>
 						<div class="mb-3">
 							<div class="input-group">
-								<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_yor_password'); ?>" autocomplete="new-password" style="border-right:0" />
+								<input type="password" name="password" class="form-control" id="password_input" placeholder="<?php echo phrase('enter_your_password'); ?>" autocomplete="new-password" style="border-right:0" />
 								<span class="input-group-text bg-white" style="border-left:0">
 									<i class="mdi mdi-eye-outline" style="width:22px"></i>
 								</span>
