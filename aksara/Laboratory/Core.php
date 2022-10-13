@@ -987,9 +987,9 @@ class Core extends Controller
 			}
 		}
 		
-		if($parameter && is_array($parameter) && in_array('hyperlink', $type))
+		if($extra_params && is_array($extra_params) && in_array('hyperlink', $type))
 		{
-			$this->_parameter						= array_merge($this->_parameter, array_keys($parameter));
+			$this->_parameter						= array_merge($this->_parameter, array_values($extra_params));
 		}
 		
 		return $this;
@@ -7340,6 +7340,9 @@ class Core extends Controller
 						{
 							// set the default value
 							$source					= 'placeholder.png';
+							
+							// push to data preparation
+							$prepare[$field]		= $source;
 							
 							// check if the uploaded file is valid
 							if(isset($this->_upload_data[$field]) && is_array($this->_upload_data[$field]))
