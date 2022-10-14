@@ -47,6 +47,9 @@ class Model
 			return false;
 		}
 		
+		// define config
+		$config										= array();
+		
 		// check if "default" or given connection number (from app__connections) is selected
 		if((is_numeric($driver) || 'default' == $driver) && !$this->_called)
 		{
@@ -73,7 +76,7 @@ class Model
 				)
 				->getRow();
 				
-				$driver								= array
+				$config								= array
 				(
 					'DBDriver'						=> $parameter->database_driver,
 					'hostname'						=> $parameter->hostname,
@@ -85,8 +88,14 @@ class Model
 				
 				if($parameter->port)
 				{
-					$driver['port']					= $parameter->port;
+					$config['port']					= $parameter->port;
 				}
+				
+				// initialize parameter to new connection
+				$this->db							= \Config\Database::connect($config);
+				
+				// try to initialize the connection
+				$this->db->initialize();
 				
 				$this->_called						= true;
 			}
@@ -98,7 +107,7 @@ class Model
 		}
 		else if($driver && $hostname && $username && $database)
 		{
-			$driver									= array
+			$config									= array
 			(
 				'DBDriver'							=> $driver,
 				'hostname'							=> $hostname,
@@ -110,23 +119,22 @@ class Model
 			
 			if($port)
 			{
-				$driver['port']						= $port;
+				$config['port']						= $port;
 			}
-		}
-		
-		$parameter									= $driver;
-		
-		// initialize parameter to new connection
-		$this->db									= \Config\Database::connect($parameter);
-		
-		try
-		{
-			// try to initialize the connection
-			$this->db->initialize();
-		}
-		catch(\Throwable $e)
-		{
-			return throw_exception(403, $e->getMessage());
+			
+			try
+			{
+			
+				// initialize parameter to new connection
+				$this->db							= \Config\Database::connect($config);
+				
+				// try to initialize the connection
+				$this->db->initialize();
+			}
+			catch(\Throwable $e)
+			{
+				return throw_exception(403, $e->getMessage());
+			}
 		}
 		
 		return $this;
