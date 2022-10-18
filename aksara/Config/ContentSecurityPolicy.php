@@ -122,7 +122,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]|null
      */
-    public $frameAncestors = 'self';
+    public $frameAncestors;
 
     /**
      * The frame-src directive restricts the URLs which may
@@ -130,7 +130,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var array|string|null
      */
-    public $frameSrc = '*';
+    public $frameSrc;
 
     /**
      * Restricts the origins allowed to deliver video and audio.
