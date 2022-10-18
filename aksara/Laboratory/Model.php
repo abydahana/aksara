@@ -2365,6 +2365,7 @@ class Model
 			if(strpos($cast_type, 'VARCHAR') !== false)
 			{
 				$column								= 'LOWER(' . $column . ')';
+				$value								= strtolower($value);
 			}
 		}
 		
