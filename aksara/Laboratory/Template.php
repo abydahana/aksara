@@ -531,6 +531,14 @@ class Template
 						// export mode
 						$this->_view				= 'templates/export';
 					}
+					else if(file_exists('../themes/' . $this->_theme . '/' . $view . $suffix . '.php'))
+					{
+						$this->_view					= '../../themes/' . $this->_theme . '/' . $view . $suffix;
+					}
+					else if(file_exists('../themes/' . $this->_theme . '/' . $view . '.php'))
+					{
+						$this->_view					= '../../themes/' . $this->_theme . '/' . $view;
+					}
 					else
 					{
 						// no mode
@@ -542,7 +550,14 @@ class Template
 			// no route were found
 			else
 			{
-				$this->_view						= 'templates/404';
+				if(file_exists('../themes/' . $this->_theme . '/404.php'))
+				{
+					$this->_view					= '../../themes/' . $this->_theme . '/404';
+				}
+				else
+				{
+					$this->_view					= 'templates/404';
+				}
 			}
 		}
 		

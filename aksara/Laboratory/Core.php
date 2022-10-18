@@ -152,6 +152,12 @@ class Core extends Controller
 			// throw compatibility mode
 			die('The ' . service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion() . ' is no longer supported...');
 		}
+		else if(!filter_var((service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()), FILTER_VALIDATE_IP))
+		{
+			exit(header('Location: https://google.com?q=' . (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())));
+		}
+		
+		service('response')->setHeader('x-frame-options', 'deny');
 		
 		helper(array('url', 'file', 'theme', 'security', 'main', 'string'));
 		
@@ -1874,7 +1880,7 @@ class Core extends Controller
 			'primary_key'							=> $field,
 			'relation_table'						=> $relation_table,
 			'relation_key'							=> $relation_key,
-			'where'									=> ($where ? array_filter($where) : null),
+			'where'									=> ($where ? array_filter($where, 'strlen') : null),
 			'join'									=> $join,
 			'order_by'								=> $order_by,
 			'group_by'								=> $group_by,
@@ -2271,7 +2277,7 @@ class Core extends Controller
 			'primary_key'							=> $field,
 			'relation_table'						=> $relation_table,
 			'relation_key'							=> $relation_key,
-			'where'									=> ($where ? array_filter($where) : null),
+			'where'									=> ($where ? array_filter($where, 'strlen') : null),
 			'join'									=> $join,
 			'order_by'								=> $order_by,
 			'group_by'								=> $group_by,
@@ -3190,7 +3196,7 @@ class Core extends Controller
 			}
 			
 			// Display to the browser
-			return $this->template->build($this->_view, $this->_output, $this->_set_breadcrumb, $this->_table, $this->_language);
+			return $this->template->build((isset($this->_set_template['index']) ? $this->_set_template['index'] : $this->_view), $this->_output, $this->_set_breadcrumb, $this->_table, $this->_language);
 		}
 	}
 	
@@ -7162,7 +7168,7 @@ class Core extends Controller
 				$type								= $val['type'];
 				
 				// skip field when it's disabled and has no default value
-				if(in_array($key, $this->_unset_field) || isset($this->_set_default[$key]) || array_intersect(array('to_slug', 'current_timestamp'), $type)) continue;
+				if(in_array($key, $this->_unset_field) || isset($this->_set_default[$key]) || array_intersect(array('current_timestamp'), $type)) continue;
 				
 				if(array_intersect(array('image'), $type))
 				{
@@ -7593,6 +7599,11 @@ class Core extends Controller
 								$prepare[$field]	= '';
 							}
 						}
+						
+						if(!array_intersect(array('wysiwyg', 'encryption'), $type) && isset($prepare[$field]))
+						{
+							$prepare[$field]		= str_replace(['<', '>'], ['&lt;', '&gt;'], $prepare[$field]);
+						}
 					}
 					
 					// check if the field is sets to use the default value
@@ -7929,7 +7940,14 @@ class Core extends Controller
 		
 		if(!$query)
 		{
-			$this->model->insert('app__visitor_logs', $prepare);
+			try
+			{
+				$this->model->insert('app__visitor_logs', $prepare);
+			}
+			catch(\Throwable $e)
+			{
+				file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL , FILE_APPEND | LOCK_EX);
+			}
 		}
 	}
 	

@@ -118,6 +118,7 @@ class Pages extends \Aksara\Laboratory\Core
 				->result()
 			)
 		)
+		->set_template('index', '404')
 		->render();
 	}
 }
