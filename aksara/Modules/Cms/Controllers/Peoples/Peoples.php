@@ -56,6 +56,8 @@ class Peoples extends \Aksara\Laboratory\Core
 			array
 			(
 				'first_name'						=> 'required|string',
+				'last_name'							=> 'string',
+				'people_slug'						=> 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . service('request')->getGet('people_id') . ']',
 				'status'							=> 'boolean'
 			)
 		)

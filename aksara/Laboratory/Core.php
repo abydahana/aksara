@@ -822,7 +822,7 @@ class Core extends Controller
 		
 		if($parameter && is_array($parameter))
 		{
-			$this->_parameter						= array_merge($this->_parameter, array_keys($parameter));
+			$this->_parameter						= array_merge($this->_parameter, array_values($parameter));
 		}
 		
 		return $this;
@@ -2977,8 +2977,8 @@ class Core extends Controller
 					if(!$magic) continue;
 					
 					// replace the magic string to query result
-					$title							= str_replace('{' . $do . '}', $magic, $title);
-					$description					= str_replace('{' . $do . '}', $magic, $description);
+					$title							= ($title ? str_replace('{' . $do . '}', $magic, $title) : $title);
+					$description					= ($description ? str_replace('{' . $do . '}', $magic, $description) : $description);
 				}
 			}
 			

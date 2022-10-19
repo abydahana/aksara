@@ -95,6 +95,7 @@ class Pages extends \Aksara\Laboratory\Core
 			array
 			(
 				'page_title'						=> 'required|max_length[64]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
+				'page_slug'							=> 'max_length[64]|unique[' . $this->_table . '.page_slug.page_id.' . service('request')->getGet('page_id') . ']',
 				'page_content'						=> 'required',
 				'status'							=> 'boolean'
 			)
