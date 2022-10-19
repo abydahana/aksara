@@ -112,7 +112,8 @@ class Blogs extends \Aksara\Laboratory\Core
 		(
 			array
 			(
-				'post_title'						=> 'required|max_length[256]|is_unique[' . $this->_table . '.post_title,post_id,' . service('request')->getGet('post_id') . ']',
+				'post_title'						=> 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
+				'post_slug'							=> 'max_length[256]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . ']',
 				'post_content'						=> 'required',
 				'post_category'						=> 'required',
 				'headline'							=> 'boolean',

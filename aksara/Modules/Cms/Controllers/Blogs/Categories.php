@@ -65,6 +65,7 @@ class Categories extends \Aksara\Laboratory\Core
 			array
 			(
 				'category_title'					=> 'required|max_length[64]|unique[' . $this->_table . '.category_title.category_id.' . service('request')->getGet('category_id') . ']',
+				'category_slug'						=> 'max_length[64]|unique[' . $this->_table . '.category_slug.category_id.' . service('request')->getGet('category_id') . ']',
 				'category_description'				=> 'required',
 				'status'							=> 'boolean'
 			)
