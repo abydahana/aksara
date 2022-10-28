@@ -305,6 +305,12 @@ class Model
 			$this->_table							= trim(str_replace(array('`', '"', '\''), '', $matches[1]));
 		}
 		
+		if($return)
+		{
+			// returning the query
+			return $this->db->query($query, $params);
+		}
+		
 		$this->_prepare[]							= array
 		(
 			'function'								=> 'query',
@@ -2146,7 +2152,7 @@ class Model
 	 */
 	private function _run_query()
 	{
-		if(!$this->_ordered && $this->_table)
+		if(!$this->_is_query && !$this->_ordered && $this->_table)
 		{
 			if($this->_select)
 			{
@@ -2234,13 +2240,18 @@ class Model
 				{
 					$this->builder					= $this->builder->get();
 				}
-				else
+				else if(isset($query))
 				{
 					$this->builder					= $query;
 				}
 				
 				// indicates that query builder has finished
 				$this->_finished					= true;
+			}
+			
+			if(!method_exists($this->builder, $function))
+			{
+				continue;
 			}
 			
 			if(is_array($arguments) && sizeof($arguments) == 7)
@@ -2275,7 +2286,7 @@ class Model
 		
 		if($this->_finished)
 		{
-			$output									= $query;
+			$output									= (isset($query) ? $query : array());
 			
 			// reset properties
 			$this->builder							= null;
