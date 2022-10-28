@@ -1880,7 +1880,7 @@ class Core extends Controller
 			'primary_key'							=> $field,
 			'relation_table'						=> $relation_table,
 			'relation_key'							=> $relation_key,
-			'where'									=> ($where ? array_filter($where, 'strlen') : null),
+			'where'									=> $where,
 			'join'									=> $join,
 			'order_by'								=> $order_by,
 			'group_by'								=> $group_by,
@@ -2221,12 +2221,19 @@ class Core extends Controller
 		}
 		else if(in_array($this->_method, array('create', 'update')))
 		{
-			$output									= '
-				<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
-					' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="' . (isset($this->_set_validation[$primary_key]) && stripos($this->_set_validation[$primary_key], 'required') !== false ? null : 0) . '">' . phrase('please_choose') . '</option>') . '
-					' . $output . '
-				</select>
-			';
+			if($self)
+			{
+				$output								= ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="' . (isset($this->_set_validation[$primary_key]) && stripos($this->_set_validation[$primary_key], 'required') !== false ? null : 0) . '">' . phrase('please_choose') . '</option>');
+			}
+			else
+			{
+				$output								= '
+					<select name="' . $primary_key . '" class="form-control' . (isset($this->_add_class[$primary_key]) ? ' ' . $this->_add_class[$primary_key] : null) . '" placeholder="' . (isset($this->_set_placeholder[$primary_key]) ? $this->_set_placeholder[$primary_key] : phrase('please_choose')) . '" id="' . $primary_key . '_input"' . (isset($this->_set_attribute[$primary_key]) ? ' ' . $this->_set_attribute[$primary_key] : null) . (isset($params['limit']) && $params['limit'] > 1 ? ' data-limit="' . $params['limit'] . '" data-href="' . current_page() . '"' : null) . (isset($this->_set_field[$primary_key]['field_type']) && in_array('disabled', $this->_set_field[$primary_key]['field_type']) ? ' disabled' : null) . '>
+						' . ($query && !$is_selected_exist && $selected ? '<option value="' . $selected . '">' . $this->_get_relation($params, $selected, 1, true) . '</option>' : '<option value="' . (isset($this->_set_validation[$primary_key]) && stripos($this->_set_validation[$primary_key], 'required') !== false ? null : 0) . '">' . phrase('please_choose') . '</option>') . '
+						' . $output . '
+					</select>
+				';
+			}
 		}
 		
 		return $output;
@@ -2277,7 +2284,7 @@ class Core extends Controller
 			'primary_key'							=> $field,
 			'relation_table'						=> $relation_table,
 			'relation_key'							=> $relation_key,
-			'where'									=> ($where ? array_filter($where, 'strlen') : null),
+			'where'									=> $where,
 			'join'									=> $join,
 			'order_by'								=> $order_by,
 			'group_by'								=> $group_by,
@@ -2340,6 +2347,10 @@ class Core extends Controller
 		if($this->_api_request && in_array(service('request')->getServer('REQUEST_METHOD'), array('POST', 'DELETE')) && !in_array($this->_method, array('create', 'update', 'delete')))
 		{
 			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
+		}
+		else if($table && !$this->_set_permission && in_array($this->_method, array('create', 'update', 'delete')))
+		{
+			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . strtoupper($this->_method). ')', (!$this->_api_request ? $this->_redirect_back : null));
 		}
 		
 		if(!$this->_table)
@@ -5259,7 +5270,7 @@ class Core extends Controller
 						$primary_key[$field]		= $original;
 					}
 					
-					if($hidden && !in_array($field, $this->_parameter))
+					if($hidden && !in_array($field, $this->_parameter) && !isset($this->_set_relation[$field]))
 					{
 						// skip field
 						continue;
@@ -5269,7 +5280,8 @@ class Core extends Controller
 					{
 						$content					= $this->_get_relation($this->_set_relation[$field], $original);
 					}
-					else if(isset($this->_set_autocomplete[$field]))
+					
+					if(isset($this->_set_autocomplete[$field]))
 					{
 						$content					= $this->_autocomplete_input($this->_set_autocomplete[$field], $original);
 					}
