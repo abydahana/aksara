@@ -288,7 +288,7 @@ class Model
 	/**
 	 * Run the SQL command string
 	 */
-	public function query($query = null, $params = array())
+	public function query($query = null, $params = array(), $return = false)
 	{
 		// convert multiple line to single line
 		$query										= trim(preg_replace('/\s+/S', ' ', $query));
@@ -2301,6 +2301,7 @@ class Model
 			$this->_offset							= null;
 			$this->_set								= array();
 			$this->_get								= false;
+			$this->_is_query						= false;
 			
 			return $output;
 		}

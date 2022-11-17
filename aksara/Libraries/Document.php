@@ -275,6 +275,8 @@ class Document
 		
 		if(isset($attachment[1]) && $attachment[1])
 		{
+			ini_set('user_agent', 'spider');
+			
 			/**
 			 * Import attachment
 			 */
@@ -282,12 +284,26 @@ class Document
 			{
 				//$pdf->SetImportUse(); // only with mPDF <8.0
 				
-				$pdf->AddPage();
-				
-				$pagecount							= $pdf->SetSourceFile(str_replace(base_url(), '', $val));
-				$templateId							= $pdf->importPage($pagecount);
-				
-				$pdf->useTemplate($templateId);
+				try
+				{
+					$file_content					= copy(str_replace(base_url(), '', $val), FCPATH . 'uploads/krk/' . basename($val));
+					$pagecount						= $pdf->SetSourceFile(FCPATH . 'uploads/krk/' . basename($val));
+					
+					for ($i=1; $i <= ($pagecount); $i++)
+					{
+						$pdf->AddPage();
+						
+						$template_id				= $pdf->ImportPage($i);
+						
+						$pdf->UseTemplate($template_id);
+					}
+					
+					unlink(FCPATH . 'uploads/krk/' . basename($val));
+				}
+				catch(\Throwable $e)
+				{
+					// debug
+				}
 			}
 		}
 		
