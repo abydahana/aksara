@@ -2629,8 +2629,12 @@ class Core extends Controller
 					
 					if($column && 'all' != $column)
 					{
+						$this->group_start();
+						
 						// push like to the prepared query builder
 						$this->_prepare('like', array($column, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
+						
+						$this->group_end();
 					}
 					else
 					{
@@ -2638,6 +2642,8 @@ class Core extends Controller
 						
 						if($columns)
 						{
+							$this->or_group_start();
+							
 							foreach($columns as $key => $val)
 							{
 								// add the table prefix to prevent ambiguous
@@ -2646,11 +2652,15 @@ class Core extends Controller
 								// push like an or like to the prepared query builder
 								$this->_prepare(($key ? 'or_like' : 'like'), array($val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))));
 							}
+							
+							$this->group_end();
 						}
 						
 						if($this->_select)
 						{
 							$compiled_like			= array();
+							
+							$this->or_group_start();
 							
 							foreach($this->_select as $key => $val)
 							{
@@ -2686,6 +2696,8 @@ class Core extends Controller
 								
 								$compiled_like[]	= $field_origin;
 							}
+							
+							$this->group_end();
 						}
 					}
 				}
@@ -3352,6 +3364,16 @@ class Core extends Controller
 		
 		if($table && $this->model->table_exists($table))
 		{
+			foreach($where as $key => $val)
+			{
+				$keyword							= substr($key . '.', 0, strpos($key, '.'));
+				
+				if($keyword && !in_array($keyword, $this->_compiled_table))
+				{
+					unset($where[$key]);
+				}
+			}
+			
 			if(is_array($where) && sizeof($where) > 0 && $this->model->get_where($table, $where, 1)->num_rows() > 0)
 			{
 				if(method_exists($this, 'before_update'))
@@ -3459,6 +3481,16 @@ class Core extends Controller
 		// check if targeted table is exists
 		if($table && $this->model->table_exists($table))
 		{
+			foreach($where as $key => $val)
+			{
+				$keyword							= substr($key . '.', 0, strpos($key, '.'));
+				
+				if($keyword && !in_array($keyword, $this->_compiled_table))
+				{
+					unset($where[$key]);
+				}
+			}
+			
 			$query									= $this->model->get_where($table, $where, $limit)->result();
 			
 			// check if the item is exists
@@ -7064,10 +7096,18 @@ class Core extends Controller
 					}
 				}
 			}
-			else if($function == 'where' && strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false)
+			else if($function == 'where')
 			{
-				// add table prefix to field
-				$arguments[0]						= $this->_table . '.' . $arguments[0];
+				$keyword							= (isset($arguments[0]) ? $arguments[0] : null);
+				$keyword							= substr($keyword . '.', 0, strpos($keyword, '.'));
+				
+				if($keyword && !in_array($keyword, $this->_compiled_table)) continue;
+				
+				if(strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false)
+				{
+					// add table prefix to field
+					$arguments[0]					= $this->_table . '.' . $arguments[0];
+				}
 			}
 			else if($function == 'order_by' && in_array($this->_method, array('create', 'read', 'update', 'delete')))
 			{
