@@ -277,6 +277,12 @@ class Document
 		{
 			ini_set('user_agent', 'spider');
 			
+			if(!is_dir(UPLOAD_PATH . '/tmp'))
+			{
+				// create new directory
+				mkdir(UPLOAD_PATH . '/tmp', 0755, true);
+			}
+			
 			/**
 			 * Import attachment
 			 */
@@ -284,10 +290,12 @@ class Document
 			{
 				//$pdf->SetImportUse(); // only with mPDF <8.0
 				
+				$filename							= basename($val);
+				
 				try
 				{
-					$file_content					= copy(str_replace(base_url(), '', $val), FCPATH . 'uploads/krk/' . basename($val));
-					$pagecount						= $pdf->SetSourceFile(FCPATH . 'uploads/krk/' . basename($val));
+					$file_content					= copy(str_replace(base_url(), '', $val), UPLOAD_PATH . '/tmp' . '/' . $filename);
+					$pagecount						= $pdf->SetSourceFile(UPLOAD_PATH . '/tmp' . '/' . $filename);
 					
 					for ($i=1; $i <= ($pagecount); $i++)
 					{
@@ -298,7 +306,7 @@ class Document
 						$pdf->UseTemplate($template_id);
 					}
 					
-					unlink(FCPATH . 'uploads/krk/' . basename($val));
+					unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
 				}
 				catch(\Throwable $e)
 				{
