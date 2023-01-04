@@ -79,7 +79,20 @@ if(! function_exists('get_userdata'))
 			$model									= new \Aksara\Laboratory\Model;
 			$user_id								= service('session')->get('user_id');
 			
-			if($model->field_exists($key, 'app__users'))
+			if($model->field_exists($key, 'app__users_privileges'))
+			{
+				return $model->select($key)->get_where
+				(
+					'app__users_privileges',
+					array
+					(
+						'user_id'						=> $user_id
+					),
+					1
+				)
+				->row($key);
+			}
+			else if($model->field_exists($key, 'app__users'))
 			{
 				return $model->select
 				(

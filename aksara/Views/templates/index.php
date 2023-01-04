@@ -152,6 +152,7 @@ if(isset($results->extra_action->toolbar))
 							$extra_dropdown				= null;
 							$reading					= true;
 							$updating					= true;
+							$cloning					= true;
 							$deleting					= true;
 							
 							if(isset($results->extra_action->option[$key]))
@@ -222,6 +223,11 @@ if(isset($results->extra_action->toolbar))
 										$updating		= false;
 									}
 									
+									if(isset($results->unset_clone->$field) && is_array($results->unset_clone->$field) && in_array($params->original, $results->unset_clone->$field))
+									{
+										$cloning		= false;
+									}
+									
 									if(isset($results->unset_delete->$field) && is_array($results->unset_delete->$field) && in_array($params->original, $results->unset_delete->$field))
 									{
 										$deleting		= false;
@@ -252,6 +258,11 @@ if(isset($results->extra_action->toolbar))
 										' . ($updating && (!isset($results->unset_action) || !in_array('update', $results->unset_action)) ? '
 											<a href="' . go_to('update', $results->query_string[$key]) . '" class="btn btn-info btn-xs ' . (isset($modal_html) ? '--modal' : '--open-modal-form') . '" data-bs-toggle="tooltip" title="' . phrase('update') . '">
 												<i class="mdi mdi-square-edit-outline"></i>
+											</a>
+										' : null) . '
+										' . ($cloning && (!isset($results->unset_action) || !in_array('clone', $results->unset_action)) ? '
+											<a href="' . go_to('clone', $results->query_string[$key]) . '" class="btn btn-dark btn-xs ' . (isset($modal_html) ? '--modal' : '--open-modal-form') . '" data-bs-toggle="tooltip" title="' . phrase('clone') . '">
+												<i class="mdi mdi-content-duplicate"></i>
 											</a>
 										' : null) . '
 										' . $extra_option . '

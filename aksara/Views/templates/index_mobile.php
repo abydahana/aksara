@@ -107,6 +107,7 @@
 				$extra_option						= array();
 				$reading							= true;
 				$updating							= true;
+				$cloning							= true;
 				$deleting							= true;
 				
 				if(isset($results->extra_action->option[$key]))
@@ -160,6 +161,11 @@
 						if(isset($results->unset_update->$field) && is_array($results->unset_update->$field) && in_array($params->original, $results->unset_update->$field))
 						{
 							$updating				= false;
+						}
+						
+						if(isset($results->unset_clone->$field) && is_array($results->unset_clone->$field) && in_array($params->original, $results->unset_clone->$field))
+						{
+							$cloning				= false;
 						}
 						
 						if(isset($results->unset_delete->$field) && is_array($results->unset_delete->$field) && in_array($params->original, $results->unset_delete->$field))
@@ -258,6 +264,18 @@
 						'class'						=> 'btn --xhr',
 						'icon'						=> 'mdi mdi-square-edit-outline',
 						'label'						=> phrase('update'),
+						'new_tab'					=> false
+					);
+				}
+				
+				if($cloning && !in_array('clone', $results->unset_action))
+				{
+					$extra_option[]					= array
+					(
+						'url'						=> go_to('clone', $results->query_string[$key]),
+						'class'						=> 'btn --xhr',
+						'icon'						=> 'mdi mdi-content-duplicate',
+						'label'						=> phrase('clone'),
 						'new_tab'					=> false
 					);
 				}

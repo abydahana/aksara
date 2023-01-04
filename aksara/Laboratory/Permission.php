@@ -29,6 +29,10 @@ class Permission
 		{
 			$method									= 'index';
 		}
+		else if($method == 'clone')
+		{
+			$method									= 'update';
+		}
 		
 		$user										= $this->model->select
 		('
@@ -109,6 +113,10 @@ class Permission
 		{
 			$method									= 'index';
 		}
+		else if($method == 'clone')
+		{
+			$method									= 'update';
+		}
 		
 		$privileges									= $this->model->select
 		('
@@ -146,6 +154,10 @@ class Permission
 		{
 			$method									= 'index';
 		}
+		else if($method == 'clone')
+		{
+			$method									= 'update';
+		}
 		
 		$privileges									= $this->model->select
 		('
@@ -180,6 +192,10 @@ class Permission
 		if(!$method)
 		{
 			$method									= 'index';
+		}
+		else if($method == 'clone')
+		{
+			$method									= 'update';
 		}
 		
 		$privileges									= $this->model->select
