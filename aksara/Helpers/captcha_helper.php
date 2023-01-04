@@ -117,18 +117,24 @@ if ( ! function_exists('create_captcha'))
 		// -----------------------------------
 
 		$now = microtime(TRUE);
-
-		$current_dir = @opendir($img_path);
-		while ($filename = @readdir($current_dir))
+		
+		try
 		{
-			if (in_array(substr($filename, -4), array('.jpg', '.png'))
-				&& (str_replace(array('.jpg', '.png'), '', $filename) + $expiration) < $now)
+			$current_dir = @opendir($img_path);
+			while ($filename = @readdir($current_dir))
 			{
-				@unlink($img_path.$filename);
+				if (in_array(substr($filename, -4), array('.jpg', '.png'))
+					&& (str_replace(array('.jpg', '.png'), '', $filename) + $expiration) < $now)
+				{
+					@unlink($img_path.$filename);
+				}
 			}
-		}
 
-		@closedir($current_dir);
+			@closedir($current_dir);
+		}
+		catch(\Throwable $e)
+		{
+		}
 		
 		if ( ! is_string($word))
 		{

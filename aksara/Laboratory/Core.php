@@ -73,6 +73,7 @@ class Core extends Controller
 	private $_unset_delete							= array();
 	private $_unset_read							= array();
 	private $_unset_update							= array();
+	private $_unset_clone							= array();
 	private $_add_button							= null;
 	private $_add_class								= array();
 	private $_extra_toolbar							= array();
@@ -137,6 +138,7 @@ class Core extends Controller
 	private $_total									= 0;
 	private $_insert_on_update_fail					= false;
 	private $_searchable							= true;
+	private $_cloning								= false;
 	
 	public $_method									= null;
 	public $_insert_id								= 0;
@@ -1197,6 +1199,30 @@ class Core extends Controller
 		}
 		
 		$this->_unset_update						= array_merge($this->_unset_update, $params);
+		
+		return $this;
+	}
+	
+	/**
+	 * unset_clone
+	 * The function to disable clone the selected items
+	 *
+	 * @access		public
+	 * @param		mixed		$params
+	 * @param		string		$value
+	 * @return		mixed
+	 */
+	public function unset_clone($params = array(), array $value = array())
+	{
+		if(!is_array($params))
+		{
+			$params									= array
+			(
+				$params								=> $value
+			);
+		}
+		
+		$this->_unset_clone							= array_merge($this->_unset_clone, $params);
 		
 		return $this;
 	}
@@ -2344,6 +2370,12 @@ class Core extends Controller
 	 */
 	public function render(string $table = null, string $view = null)
 	{
+		if('clone' == $this->_method)
+		{
+			$this->_method							= 'update';
+			$this->_cloning							= true;
+		}
+		
 		if($this->_api_request && in_array(service('request')->getServer('REQUEST_METHOD'), array('POST', 'DELETE')) && !in_array($this->_method, array('create', 'update', 'delete')))
 		{
 			return throw_exception(403, phrase('the_method_you_requested_is_not_acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (!$this->_api_request ? $this->_redirect_back : null));
@@ -5892,6 +5924,7 @@ class Core extends Controller
 			'unset_action'							=> $this->_unset_action,
 			'unset_read'							=> $this->_unset_read,
 			'unset_update'							=> $this->_unset_update,
+			'unset_clone'							=> $this->_unset_clone,
 			'unset_delete'							=> $this->_unset_delete,
 			'filter'								=> ($this->_add_filter ? $this->_add_filter : ''),
 			'merged_content'						=> $this->_merge_content,
@@ -7345,11 +7378,11 @@ class Core extends Controller
 						
 						if(is_array(service('request')->getPost($key)))
 						{
-							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) || ($val['validation'] && strpos($val['validation'], 'callback_') !== false) ? 'trim|' : null) . $val['validation']);
+							$this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation']);
 						}
 						else
 						{
-							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) || ($val['validation'] && strpos($val['validation'], 'callback_') !== false) ? 'trim|' : null) . $val['validation'] . $validation_suffix);
+							$this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . $val['validation'] . $validation_suffix);
 						}
 					}
 					else if($validation_suffix)
@@ -7688,8 +7721,16 @@ class Core extends Controller
 				// if data preparation is ready and the method is update
 				else if($prepare && in_array('update', array($this->_method, $this->_set_method)))
 				{
-					// update the old data
-					$this->update_data($this->_table, $prepare, $this->_where);
+					if($this->_cloning)
+					{
+						// insert new data
+						$this->insert_data($this->_table, $prepare);
+					}
+					else
+					{
+						// update the old data
+						$this->update_data($this->_table, $prepare, $this->_where);
+					}
 				}
 				
 				// otherwise
