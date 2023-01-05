@@ -7402,8 +7402,14 @@ class Core extends Controller
 			else
 			{
 				$prepare							= array();
+				$clone								= array();
 				$batch_data							= array();
 				$this->_upload_data					= (get_userdata('_upload_data') ? get_userdata('_upload_data') : array());
+				
+				if($this->_cloning)
+				{
+					$clone							= $this->model->get_where($this->_table, $this->_where, 1)->row_array();
+				}
 				
 				foreach($serialized[0] as $field => $value)
 				{
@@ -7421,6 +7427,13 @@ class Core extends Controller
 							{
 								// store new password
 								$prepare[$field]	= password_hash(service('request')->getPost($field) . ENCRYPTION_KEY, PASSWORD_DEFAULT);
+							}
+							
+							// cloning
+							else if($this->_cloning && isset($clone[$field]))
+							{
+								// sclone value
+								$prepare[$field]	= $clone[$field];
 							}
 						}
 						else if(array_intersect(array('encryption'), $type))
@@ -7456,10 +7469,17 @@ class Core extends Controller
 							else
 							{
 								// check if the method is not create
-								if('create' != $this->_method)
+								if('create' != $this->_method && !$this->_cloning)
 								{
 									// unset the field for update preparation
 									unset($prepare[$field]);
+								}
+								
+								// cloning
+								else if($this->_cloning && isset($clone[$field]))
+								{
+									// clone value
+									$prepare[$field]= $clone[$field];
 								}
 							}
 						}
