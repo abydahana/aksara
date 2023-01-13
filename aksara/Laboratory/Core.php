@@ -2657,6 +2657,11 @@ class Core extends Controller
 				
 				if(($this->_searchable && !$this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q')))
 				{
+					if('autocomplete' != service('request')->getPost('method'))
+					{
+						$this->group_start();
+					}
+					
 					$column							= (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
 					
 					if($column && 'all' != $column)
@@ -2731,6 +2736,11 @@ class Core extends Controller
 							
 							$this->group_end();
 						}
+					}
+					
+					if('autocomplete' != service('request')->getPost('method'))
+					{
+						$this->group_end();
 					}
 				}
 			}
