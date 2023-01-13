@@ -2163,6 +2163,11 @@ class Model
 						$val						=  substr($val, strripos($val, ' AS ') + 4);
 					}
 					
+					if($val != '*')
+					{
+						continue;
+					}
+					
 					array_unshift
 					(
 						$this->_prepare,
