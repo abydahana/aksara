@@ -2048,8 +2048,8 @@ class Installer extends Migration
 				)
 			)
 		);
-		$this->forge->addKey('comment_id', false, false);
 		$this->forge->addKey('user_id', false, false);
+		$this->forge->addKey('post_id', false, false);
 		$this->forge->addForeignKey('user_id', 'app__users', 'user_id', ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'CASCADE'), ($this->db->DBDriver == 'SQLSRV' ? 'NO ACTION' : 'RESTRICT'));
 		$this->forge->createTable('post__likes');
     }
