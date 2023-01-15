@@ -15,38 +15,32 @@ use CodeIgniter\Config\BaseConfig;
  */
 class ContentSecurityPolicy extends BaseConfig
 {
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Broadbrush CSP management
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      * Default CSP report context
-     *
-     * @var bool
      */
-    public $reportOnly = false;
+    public bool $reportOnly = false;
 
     /**
      * Specifies a URL where a browser will send reports
      * when a content security policy is violated.
-     *
-     * @var string|null
      */
-    public $reportURI;
+    public ?string $reportURI = null;
 
     /**
      * Instructs user agents to rewrite URL schemes, changing
      * HTTP to HTTPS. This directive is for websites with
      * large numbers of old URLs that need to be rewritten.
-     *
-     * @var bool
      */
-    public $upgradeInsecureRequests = false;
+    public bool $upgradeInsecureRequests = false;
 
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Sources allowed
     // Note: once you set a policy to 'none', it cannot be further restricted
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      * Will default to self if not overridden
@@ -144,7 +138,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]
      */
-    public $objectSrc;
+    public $objectSrc = 'self';
 
     /**
      * @var string|string[]|null
@@ -167,22 +161,16 @@ class ContentSecurityPolicy extends BaseConfig
 
     /**
      * Nonce tag for style
-     *
-     * @var string
      */
-    public $styleNonceTag = '{csp-style-nonce}';
+    public string $styleNonceTag = '{csp-style-nonce}';
 
     /**
      * Nonce tag for script
-     *
-     * @var string
      */
-    public $scriptNonceTag = '{csp-script-nonce}';
+    public string $scriptNonceTag = '{csp-script-nonce}';
 
     /**
      * Replace nonce tag automatically
-     *
-     * @var bool
      */
-    public $autoNonce = true;
+    public bool $autoNonce = true;
 }

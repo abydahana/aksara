@@ -2,8 +2,8 @@
 
 namespace Config;
 
-use CodeIgniter\Log\Handlers\FileHandler;
 use CodeIgniter\Config\BaseConfig;
+use CodeIgniter\Log\Handlers\FileHandler;
 
 class Logger extends BaseConfig
 {
@@ -38,7 +38,7 @@ class Logger extends BaseConfig
      *
      * @var array|int
      */
-    public $threshold = 4;
+    public $threshold = (ENVIRONMENT === 'production') ? 4 : 9;
 
     /**
      * --------------------------------------------------------------------------
@@ -47,10 +47,8 @@ class Logger extends BaseConfig
      *
      * Each item that is logged has an associated date. You can use PHP date
      * codes to set your own date formatting
-     *
-     * @var string
      */
-    public $dateFormat = 'Y-m-d H:i:s';
+    public string $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * --------------------------------------------------------------------------
@@ -74,10 +72,8 @@ class Logger extends BaseConfig
      *
      * Handlers are executed in the order defined in this array, starting with
      * the handler on top and continuing down.
-     *
-     * @var array
      */
-    public $handlers = [
+    public array $handlers = [
 
         /*
          * --------------------------------------------------------------------
@@ -141,14 +137,14 @@ class Logger extends BaseConfig
          * Uncomment this block to use it.
          */
         // 'CodeIgniter\Log\Handlers\ErrorlogHandler' => [
-        // 		/* The log levels this handler can handle. */
-        // 		'handles' => ['critical', 'alert', 'emergency', 'debug', 'error', 'info', 'notice', 'warning'],
+        //     /* The log levels this handler can handle. */
+        //     'handles' => ['critical', 'alert', 'emergency', 'debug', 'error', 'info', 'notice', 'warning'],
         //
-        // 		/*
-        // 		 * The message type where the error should go. Can be 0 or 4, or use the
-        // 		 * class constants: `ErrorlogHandler::TYPE_OS` (0) or `ErrorlogHandler::TYPE_SAPI` (4)
-        // 		 */
-        // 		'messageType' => 0,
+        //     /*
+        //     * The message type where the error should go. Can be 0 or 4, or use the
+        //     * class constants: `ErrorlogHandler::TYPE_OS` (0) or `ErrorlogHandler::TYPE_SAPI` (4)
+        //     */
+        //     'messageType' => 0,
         // ],
     ];
 }
