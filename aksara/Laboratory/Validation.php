@@ -72,13 +72,16 @@ class Validation extends \CodeIgniter\Validation\Rules
 						// check if callback were called
 						if(stripos($_val, 'callback_') !== false)
 						{
+							// unset the callback validation
+							unset($rules[$_key]);
+							
 							// callback found, find method if exists
 							$method					= preg_replace('/callback_/', '', $_val, 1);
 							
 							if(!method_exists($class, $method))
 							{
 								// validation method does not exists
-								return throw_exception(400, array($key => $method . ': ' . phrase('function_does_not_exists')));
+								$this->form_validation->setError($key, $method . ': ' . phrase('function_does_not_exists'));
 							}
 							
 							// find the validation parameter
@@ -103,16 +106,21 @@ class Validation extends \CodeIgniter\Validation\Rules
 							if($validate !== true)
 							{
 								// validation error, throw exception
-								return throw_exception(400, array($key => $validate));
+								$this->form_validation->setError($key, $validate);
 							}
-							
-							// unset the callback validation
-							unset($rules[$_key]);
 						}
 					}
 					
-					// reinitialize the validation rules for current field
-					$this->form_validation->setRule($key, $val['label'], implode('|', $rules));
+					if($rules)
+					{
+						// reinitialize the validation rules for current field
+						$this->form_validation->setRule($key, $val['label'], implode('|', $rules));
+					}
+					else
+					{
+						// use empty validation
+						$this->form_validation->setRule($key, $val['label'], 'trim');
+					}
 				}
 			}
 		}

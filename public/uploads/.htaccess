@@ -1,0 +1,5 @@
+# Deny access php file and it's variant
+<FilesMatch "(?i)\.(php|ph.+|asp|aspx|shtml|cshtml|pgif|inc|jsp|jspx|hphp|pl|py|module|sh)$">
+	Order Deny,Allow
+	Deny from All
+</FilesMatch>
