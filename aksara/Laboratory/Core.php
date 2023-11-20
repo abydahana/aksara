@@ -24,6 +24,7 @@ use Aksara\Laboratory\Model;
 use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
+
 use Aksara\Libraries\Document;
 
 /**
