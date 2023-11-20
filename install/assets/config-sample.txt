@@ -1,15 +1,19 @@
 %OPENTAG%
 /**
  * Configuration file
- * Parameter commented with UPPERCASE must be followed
  *
- * @author			Aby Dahana
- * @profile			abydahana.github.io
- * @website			www.aksaracms.com
- * @since			version 4.0.0
- * @copyright		(c) 2021 - Aksara Laboratory
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
  * -------------------------------------------------------------------
- * Sometimes you need a fool to complete a complicated job :)
+ * Sometimes you needed a fool to complete a complicated job :)
  * -------------------------------------------------------------------
  */
 
@@ -22,7 +26,7 @@ define('TIMEZONE', '%TIMEZONE%');
  * Set the environment
  * Available option: development, production
  */
-define('ENVIRONMENT', 'production');
+define('ENVIRONMENT', 'development');
 
 /**
  * Set the default site url
@@ -68,9 +72,9 @@ define('DB_DATABASE', '%DB_DATABASE%');
  * Upload config
  */
 define('UPLOAD_PATH', 'uploads'); // NO TRAILING SLASH
-define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%); // in kilobytes
+define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%); // In kilobytes
 define('DOCUMENT_FORMAT_ALLOWED', '%DOCUMENT_EXTENSION%');
 define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');
-define('IMAGE_DIMENSION', %IMAGE_DIMENSION%); // in pixels
-define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%); // in pixels
-define('ICON_DIMENSION', %ICON_DIMENSION%); // in pixels
+define('IMAGE_DIMENSION', %IMAGE_DIMENSION%); // In pixels
+define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%); // In pixels
+define('ICON_DIMENSION', %ICON_DIMENSION%); // In pixels

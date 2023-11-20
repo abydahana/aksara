@@ -1,0 +1,7 @@
+<span class="badge {% if value %} bg-success {% else %} bg-danger {% endif %}">
+    {% if value %}
+        {{ 'Active' | phrase }}
+    {% else %}
+        {{ 'Inactive' | phrase }}
+    {% endif %}
+</span>

@@ -1,14 +1,19 @@
+html.dark-mode {
+  filter: invert(100%);
+}
+
+html.dark-mode img {
+    filter: invert(100%);
+}
+
 #content-wrapper
 {
 	margin-top: 56px;
 	word-wrap: break-word
 }
 
-#footer-wrapper
-{
-	box-shadow: 1px 15px 15px -15px rgba(0,0,0,.2) inset;
-	-webkit-box-shadow: 1px 15px 15px -15px rgba(0,0,0,.2) inset;
-	-moz-box-shadow: 1px 15px 15px -15px rgba(0,0,0,.2) inset
+.navbar-brand {
+	max-width: 260px;
 }
 
 .navbar-brand .img-logo,
@@ -111,6 +116,12 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	right: 20px
 }
 
+.rounded-top-4
+{
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem
+}
+
 .dropdown-menu .dropdown-header
 {
 	color: val(--bs-text-muted)!important
@@ -130,6 +141,16 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 .text-muted
 {
 	color: #aaa!important
+}
+
+.ms-n5
+{
+	margin-left: -4rem
+}
+
+.me-n5
+{
+	margin-right: -4rem
 }
 
 a
@@ -168,6 +189,25 @@ a
 	border: 0
 }
 
+.background-clip,
+.background-clip > * {
+	position: relative
+}
+
+.background-clip::before {
+	content: '';
+	background: linear-gradient(
+		to top,
+		rgba(50, 50, 50, 1) 0%,
+		rgba(255, 255, 255, 0) 100%
+	);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0
+}
+
 @media (min-width: 992px) and (min-height: 360px)
 {
 	.navbar-expand-lg .navbar-nav .dropdown-menu
@@ -188,6 +228,10 @@ a
 
 @media (max-width: 991px)
 {
+	.offcanvas {
+		max-width: 320px;
+	}
+
 	.navbar .navbar-collapse
 	{
 		overflow-x: hidden;

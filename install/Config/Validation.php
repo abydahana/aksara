@@ -1,17 +1,33 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
-use CodeIgniter\Validation\CreditCardRules;
-use CodeIgniter\Validation\FileRules;
-use CodeIgniter\Validation\FormatRules;
-use CodeIgniter\Validation\Rules;
+use CodeIgniter\Config\BaseConfig;
+use CodeIgniter\Validation\StrictRules\CreditCardRules;
+use CodeIgniter\Validation\StrictRules\FileRules;
+use CodeIgniter\Validation\StrictRules\FormatRules;
+use CodeIgniter\Validation\StrictRules\Rules;
 
-class Validation
+class Validation extends BaseConfig
 {
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
     // Setup
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Stores the classes that contain the
@@ -19,7 +35,7 @@ class Validation
      *
      * @var string[]
      */
-    public $ruleSets = [
+    public array $ruleSets = [
         Rules::class,
         FormatRules::class,
         FileRules::class,
@@ -32,12 +48,12 @@ class Validation
      *
      * @var array<string, string>
      */
-    public $templates = [
-        'list'   => 'CodeIgniter\Validation\Views\list',
+    public array $templates = [
+        'list' => 'CodeIgniter\Validation\Views\list',
         'single' => 'CodeIgniter\Validation\Views\single',
     ];
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
     // Rules
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 }

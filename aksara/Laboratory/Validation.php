@@ -1,560 +1,443 @@
 <?php
 
-namespace Aksara\Laboratory;
-
 /**
- * Form Validation
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
  *
- * @author			Aby Dahana <abydahana@gmail.com>
- * @profile			abydahana.github.io
- * @website			www.aksaracms.com
- * @since			version 4.0.0
- * @copyright		(c) 2021 - Aksara Laboratory
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
-use Aksara\Laboratory\Model;
+namespace Aksara\Laboratory;
 
-class Validation extends \CodeIgniter\Validation\Rules
+use Aksara\Laboratory\Model;
+use Config\Mimes;
+
+class Validation
 {
-	public $_upload_data							= array();
-	
-	private $_upload_error;
-	
-	public function __construct()
-	{
-		$this->model								= new Model();
-		$this->form_validation						= \Config\Services::validation();
-		$this->_set_upload_path						= get_userdata('_set_upload_path');
-		
-		// check wether the rules calling the callback validation
-		$this->_callback();
-	}
-	
-	/**
-	 * Callback validation
-	 */
-	private function _callback()
-	{
-		// check if validation has rules
-		if($this->form_validation->getRules())
-		{
-			$class									= null;
-			
-			/**
-			 * Getting the class that calling the function
-			 */
-			foreach(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10) as $key => $val)
-			{
-				// check if class is the type of modules
-				if(stripos($val['class'], 'Modules\\') !== false && stripos($val['class'], '\Controllers\\') !== false)
-				{
-					// class found
-					$class							= new $val['class'];
-					
-					break;
-				}
-			}
-			
-			// extract the validation to getting the callback function
-			foreach($this->form_validation->getRules() as $key => $val)
-			{
-				// skip non-callable rules
-				if(stripos($val['rules'], 'callback_') === false) continue;
-				
-				// destructure the rules
-				$rules								= array_map('trim', explode('|', $val['rules']));
-				
-				if($rules)
-				{
-					// rules found, find the callback
-					foreach($rules as $_key => $_val)
-					{
-						// check if callback were called
-						if(stripos($_val, 'callback_') !== false)
-						{
-							// unset the callback validation
-							unset($rules[$_key]);
-							
-							// callback found, find method if exists
-							$method					= preg_replace('/callback_/', '', $_val, 1);
-							
-							if(!method_exists($class, $method))
-							{
-								// validation method does not exists
-								$this->form_validation->setError($key, $method . ': ' . phrase('function_does_not_exists'));
-							}
-							
-							// find the validation parameter
-							if(strpos($method, '[') !== false && strpos($method, ']') !== false)
-							{
-								// parameter found, destructure the parameter
-								preg_match('#\[(.*?)\]#', $method, $params);
-								
-								$params				= explode('.', $params[1]);
-								$method				= preg_replace('/\[([^\[\]]++|(?R))*+\]/', '', $method);
-								
-								// call the validation method
-								$validate			= $class->$method(service('request')->getVar($key), $params);
-							}
-							else
-							{
-								// call the validation method
-								$validate			= $class->$method(service('request')->getVar($key));
-							}
-							
-							// check if validation success
-							if($validate !== true)
-							{
-								// validation error, throw exception
-								$this->form_validation->setError($key, $validate);
-							}
-						}
-					}
-					
-					if($rules)
-					{
-						// reinitialize the validation rules for current field
-						$this->form_validation->setRule($key, $val['label'], implode('|', $rules));
-					}
-					else
-					{
-						// use empty validation
-						$this->form_validation->setRule($key, $val['label'], 'trim');
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Check if data is already exist in the database table
-	 */
-	public function unique($value = null, $params = null, $data = array()) : bool
-	{
-		$params										= explode('.', str_replace(',', '.', $params));
-		
-		if($params)
-		{
-			$sliced									= array_slice($params, 2, sizeof($params));
-			$where									= array();
-			
-			foreach($sliced as $key => $val)
-			{
-				if($key % 2 === 0)
-				{
-					$where[$val]					= (isset($sliced[$key + 1]) ? $sliced[$key + 1] : '');
-				}
-			}
-			
-			$num									= 0;
-			
-			foreach($where as $key => $val)
-			{
-				// check if value not empty
-				if(!$val && !is_numeric($val))
-				{
-					// change the loop number
-					$num++;
-					
-					// value is empty, continue next loops
-					continue;
-				}
-				
-				// check if not first loop
-				if(!$num)
-				{
-					// where value is not in statement
-					$this->model->where($key . ' != ', $val);
-				}
-				else
-				{
-					// where value is in statement
-					$this->model->where($key, $val);
-				}
-				
-				$num++;
-			}
-			
-			return $this->model->select($params[1])->get_where($params[0], array($params[1] => $value))->num_rows() === 0;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Check if field is valid boolean
-	 */
-	public function boolean($value = null)
-	{
-		if(null != $value && 1 != $value)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check if field is valid currency
-	 */
-	public function currency($value = null)
-	{
-		if(!preg_match('/^\s*[$]?\s*((\d+)|(\d{1,3}(\,\d{3})+))(\.\d{2})?\s*$/', $value))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check if field is valid date
-	 */
-	public function valid_date($value = null)
-	{
-		// convert value to standardzitation
-		$value										= date('Y-m-d', strtotime($value));
-		
-		$valid_date									= \DateTime::createFromFormat('Y-m-d', $value);
-		
-		if(!$valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check if field is valid date and time
-	 */
-	public function valid_datetime($value = null)
-	{
-		// convert value to standardzitation
-		$value										= date('Y-m-d H:i:s', strtotime($value));
-		
-		$valid_datetime								= \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-		
-		if(!$valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check if field is valid year
-	 */
-	public function valid_year($value = null)
-	{
-		$valid_year									= range(1970, 2100);
-		
-		if(!in_array($value, $valid_year))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check if field is valid hex
-	 */
-	public function valid_hex($value = null)
-	{
-		if(!preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Check relation table
-	 */
-	public function relation_checker($value = 0, $params = null)
-	{
-		list($table, $field)						= array_pad(explode('.', $params), 2, null);
-		
-		/* check table existence */
-		if(!$this->model->table_exists($table))
-		{
-			$this->form_validation->setError('relation_checker', phrase('the_relation_table_does_not_exist'));
-		}
-		
-		/* check field existence */
-		else if(!$this->model->field_exists($field, $table))
-		{
-			$this->form_validation->setError('relation_checker', phrase('the_field_for_this_relation_table_does_not_exist'));
-		}
-		
-		/* check if relation data is exists */
-		else if(!$this->model->select($field)->get_where($table, array($field => $value))->row($field))
-		{
-			$this->form_validation->setError('relation_checker', phrase('the_selected_data_for_this_relation_does_not_exist'));
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * We used to extract image in traditional way because of possibility
-	 * of multiple image can be uploaded with different field name
-	 *
-	 * @access		public
-	 */
-	public function validate_upload($value = null, $params = null, $reset = false)
-	{
-		if(is_bool($reset) && $reset)
-		{
-			// reset previously uploaded data
-			$this->_upload_data						= array();
-			
-			unset_userdata('_upload_data');
-		}
-		
-		$exploded									= explode('.', $params);
-		$field										= (isset($exploded[0]) ? $exploded[0] : null);
-		$type										= (isset($exploded[1]) ? $exploded[1] : null);
-		
-		if(!empty($_FILES[$field]['name']))
-		{
-			if(is_array($_FILES[$field]['name']))
-			{
-				$files								= $_FILES[$field];
-				
-				foreach($files['name'] as $key => $val)
-				{
-					if(is_array($val))
-					{
-						foreach($val as $_key => $_val)
-						{
-							if(!isset($files['type'][$key][$_key])) continue;
-							
-							$filename				= $field . '.' . $key . '.' . $_key;
-							
-							$_FILES[$filename]		= array
-							(
-								'name'				=> $_val,
-								'type'				=> $files['type'][$key][$_key],
-								'tmp_name'			=> $files['tmp_name'][$key][$_key],
-								'error'				=> $files['error'][$key][$_key],
-								'size'				=> $files['size'][$key][$_key]
-							);
-							
-							$this->_do_upload($filename, $field, $type, $key, $_key);
-						}
-					}
-					else
-					{
-						$filename					= $field . '.' . $key;
-						
-						$_FILES[$filename]			= array
-						(
-							'name'					=> $val,
-							'type'					=> $files['type'][$key],
-							'tmp_name'				=> $files['tmp_name'][$key],
-							'error'					=> $files['error'][$key],
-							'size'					=> $files['size'][$key]
-						);
-						
-						$this->_do_upload($filename, $field, $type, $key);
-					}
-				}
-			}
-			else
-			{
-				$filename							= $field;
-				
-				$this->_do_upload($filename, $field, $type);
-			}
-			
-			if($this->_upload_error)
-			{
-				$this->form_validation->setError('validate_upload', $this->_upload_error);
-			}
-		}
-		
-		/**
-		 * because the property isn't accessible from its parent, put
-		 * the upload data collection to temporary session instead
-		 */
-		set_userdata('_upload_data', $this->_upload_data);
-		
-		return true;
-	}
-	
-	/**
-	 * do_upload
-	 * Execute the file upload
-	 *
-	 * @access		private
-	 */
-	private function _do_upload($filename = null, $f = null, $type = null, $_key = null, $__key = null)
-	{
-		$source										= service('request')->getFile($filename);
-		
-		if(!$source->isValid() || $source->hasMoved())
-		{
-			// return if file is invalid and has been moved
-			return false;
-		}
-		
-		$mime_type									= new \Config\Mimes;
-		$valid_mime									= array();
-		
-		if('image' == $type)
-		{
-			// the selected file is image format
-			$filetype								= array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
-			
-			foreach($filetype as $key => $val)
-			{
-				$valid_mime[]						= $mime_type->guessTypeFromExtension($val);
-			}
-		}
-		else
-		{
-			// the selected file is non-image format
-			$filetype								= array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED));
-			
-			foreach($filetype as $key => $val)
-			{
-				$valid_mime[]						= $mime_type->guessTypeFromExtension($val);
-			}
-		}
-		
-		if(!$source->getName())
-		{
-			//$this->_upload_error					= phrase('please_choose_the_file_to_upload');
-			
-			return false;
-		}
-		else if(!in_array($source->getMimeType(), $valid_mime))
-		{
-			// mime is invalid
-			$this->_upload_error					= phrase('the_selected_file_format_is_not_allowed_to_upload');
-			
-			return false;
-		}
-		else if((float) str_replace(',', '', $source->getSizeByUnit('kb')) > MAX_UPLOAD_SIZE)
-		{
-			// size is exceeded the maximum allocation
-			$this->_upload_error					= phrase('the_selected_file_size_exceeds_the_maximum_allocation');
-			
-			return false;
-		}
-		else if(!is_dir(UPLOAD_PATH) || !is_writable(UPLOAD_PATH))
-		{
-			// upload directory is unwritable
-			$this->_upload_error					= phrase('the_upload_folder_is_not_writable');
-			
-			return false;
-		}
-		
-		if(!is_dir(UPLOAD_PATH . '/' . $this->_set_upload_path))
-		{
-			// create new directory
-			if(@mkdir(UPLOAD_PATH . '/' . $this->_set_upload_path, 0755, true))
-			{
-				copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $this->_set_upload_path . '/placeholder.png');
-			}
-		}
-		
-		if(!is_dir(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs'))
-		{
-			// create thumbnail directory
-			if(@mkdir(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs', 0755, true))
-			{
-				copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/placeholder.png');
-			}
-		}
-		
-		if(!is_dir(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons'))
-		{
-			// create icon directory
-			if(@mkdir(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons', 0755, true))
-			{
-				copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/placeholder.png');
-			}
-		}
-		
-		// get encrypted filename
-		$filename									= $source->getRandomName();
-		
-		if(in_array($source->getMimeType(), array('image/gif', 'image/jpeg', 'image/png')))
-		{
-			// uploaded file is image format, prepare image manipulation
-			$imageinfo								= getimagesize($source);
-			$master_dimension						= ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-			$original_dimension						= (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-			$thumbnail_dimension					= (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-			$icon_dimension							= (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
-			
-			if($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension)
-			{
-				// resize image for non-gif format
-				$width			     				= $original_dimension;
-				$height			     				= $original_dimension;
-				
-				// load image manipulation library
-				$this->image						= \Config\Services::image('gd');
-				
-				// resize image and move to upload directory
-				$this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $filename);
-			}
-			else
-			{
-				// move file to upload directory
-				$source->move(UPLOAD_PATH . '/' . $this->_set_upload_path, $filename);
-			}
-			
-			// create thumbnail and icon of image
-			$this->_resize_image($this->_set_upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-			$this->_resize_image($this->_set_upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
-		}
-		else
-		{
-			// non-image format, move directly to upload directory
-			$source->move(UPLOAD_PATH . '/' . $this->_set_upload_path, $filename);
-		}
-		
-		if($__key !== null)
-		{
-			// collect uploaded data (has sub-name)
-			$this->_upload_data[$f][$_key][$__key]	= $filename;
-		}
-		else
-		{
-			// collect uploaded data (single name)
-			$this->_upload_data[$f][$_key]			= $filename;
-		}
-	}
-	
-	/**
-	 * _resize_image
-	 * Generate the thumbnail of uploaded image
-	 *
-	 * @access		private
-	 */
-	private function _resize_image($path = null, $filename = null, $type = null, $width = 0, $height = 0)
-	{
-		$source										= UPLOAD_PATH . '/' . $path . '/' . $filename;
-		$target										= UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
-		
-		$imageinfo									= getimagesize($source);
-		$master_dimension							= ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-		
-		// load image manipulation library
-		$this->image								= \Config\Services::image('gd');
-		
-		// resize image
-		if($this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target))
-		{
-			// crop image after resized
-			$this->image->withFile($target)->fit($width, $height, 'center')->save($target);
-		}
-	}
+    private $_uploaded_files = [];
+
+    private $_upload_error;
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * Check if data is already exist in the database table
+     *
+     * @param   mixed|null $value
+     * @param   string $params
+     * @param   array $data
+     */
+    public function unique($value = null, $params = null, $data = []): bool
+    {
+        $params = explode('.', str_replace(',', '.', $params));
+
+        if ($params) {
+            $sliced = array_slice($params, 2, sizeof($params));
+            $where = [];
+
+            foreach ($sliced as $key => $val) {
+                if ($key % 2 === 0) {
+                    $where[$val] = (isset($sliced[$key + 1]) ? $sliced[$key + 1] : '');
+                }
+            }
+
+            $num = 0;
+            $model = new Model();
+
+            foreach ($where as $key => $val) {
+                // Check if value not empty
+                if (! $val && ! is_numeric($val)) {
+                    // Change the loop number
+                    $num++;
+
+                    // Value is empty, continue next loops
+                    continue;
+                }
+
+                // Check if not first loop
+                if (! $num) {
+                    // Where value is not in statement
+                    $model->where($key . ' != ', $val);
+                } else {
+                    // Where value is in statement
+                    $model->where($key, $val);
+                }
+
+                $num++;
+            }
+
+            return $model->select($params[1])->get_where($params[0], [$params[1] => $value])->num_rows() === 0;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if field is valid boolean
+     *
+     * @param   mixed|null $value
+     */
+    public function boolean($value = null): bool
+    {
+        if (null != $value && 1 != $value) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid currency
+     *
+     * @param mixed|null $value
+     */
+    public function currency($value = null): bool
+    {
+        if (! preg_match('/^\s*[$]?\s*((\d+)|(\d{1,3}(\,\d{3})+))(\.\d{2})?\s*$/', $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid date
+     *
+     * @param   mixed|null $value
+     */
+    public function valid_date($value = null): bool
+    {
+        // Convert value to standardzitation
+        $value = date('Y-m-d', strtotime($value));
+
+        $valid_date = \DateTime::createFromFormat('Y-m-d', $value);
+
+        if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid date and time
+     *
+     * @param   mixed|null $value
+     */
+    public function valid_datetime($value = null): bool
+    {
+        // Convert value to standardzitation
+        $value = date('Y-m-d H:i:s', strtotime($value));
+
+        $valid_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+
+        if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid year
+     *
+     * @param   mixed|null $value
+     */
+    public function valid_year($value = null): bool
+    {
+        $valid_year = range(1970, 2100);
+
+        if (! in_array($value, $valid_year)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid hex
+     *
+     * @param   mixed|null $value
+     */
+    public function valid_hex($value = null): bool
+    {
+        if (! preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check relation table
+     *
+     * @param   mixed|null $params
+     */
+    public function relation_checker($value = 0, $params = null): bool
+    {
+        $validation = \Config\Services::validation();
+        $model = new Model();
+
+        list($table, $field) = array_pad(explode('.', $params), 2, null);
+
+        if (strpos($table, ' ') !== false) {
+            $table = substr($table, 0, strrpos($table, ' '));
+        }
+
+        if (! $model->table_exists($table)) {
+            // Check table existence
+            $validation->setError('relation_checker', phrase('The relation table does not exist'));
+
+            return false;
+        } elseif (! $model->field_exists($field, $table)) {
+            // Check field existence
+            $validation->setError('relation_checker', phrase('The field for this relation table does not exist'));
+
+            return false;
+        } elseif (! $model->select($field)->get_where($table, [$field => $value])->row($field)) {
+            // Check if relation data is exists
+            $validation->setError('relation_checker', phrase('The selected data for this relation does not exist'));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * We used to extract image in traditional way because of possibility
+     * of multiple image can be uploaded with different field name
+     *
+     * @param   mixed|null $value
+     * @param   mixed|null $params
+     */
+    public function validate_upload($value = null, $params = null): bool
+    {
+        list($field, $type) = array_pad(explode('.', $params), 2, null);
+        $files = service('request')->getFile($field) ?? service('request')->getFileMultiple($field);
+
+        if ($files) {
+            if (is_array($files)) {
+                foreach ($files as $key => $val) {
+                    if (is_array($val)) {
+                        foreach ($val as $_key => $_val) {
+                            // Typically using nested input like field[foo][bar]
+                            $this->_do_upload($field . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
+                        }
+                    } else {
+                        // Typically using nested input like field[foo]
+                        $this->_do_upload($field . '.' . $key, $field, $type, $key);
+                    }
+                }
+            } else {
+                $this->_do_upload($field, $field, $type);
+            }
+        }
+
+        $validation = \Config\Services::validation();
+
+        if ($this->_upload_error) {
+            // Validation error
+            $validation->setError($field, $this->_upload_error);
+
+            return false;
+        } elseif (! $this->_uploaded_files) {
+            // Find required
+            $rules = $validation->getRules();
+
+            if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
+                // Field is required
+                $validation->setError($field, phrase('Please choose the file to upload'));
+
+                return false;
+            }
+        }
+
+        /**
+         * Because the property isn't accessible from its parent, put
+         * the upload data collection to temporary session instead
+         */
+        set_userdata('_uploaded_files', $this->_uploaded_files);
+
+        return true;
+    }
+
+    /**
+     * Execute the file upload
+     *
+     * @param   string|null $filename
+     * @param   string|null $field
+     * @param   string|null $type
+     * @param   mixed|null $index
+     * @param   mixed|null $_index
+     */
+    private function _do_upload($filename = null, $field = null, $type = null, $index = 0, $_index = null)
+    {
+        $upload_path = get_userdata('_set_upload_path');
+
+        if (! $upload_path) {
+            $upload_path = strtolower(substr(strstr(service('router')->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
+            $upload_path = array_pad(explode('\\', $upload_path), 2, null);
+            $upload_path = $upload_path[1] ?? $upload_path[0];
+        }
+
+        $source = service('request')->getFile($filename);
+        $mime_type = new Mimes();
+        $valid_mime = [];
+
+        if (! $source->getName()) {
+            // No file are selected
+            return false;
+        }
+
+        if ('image' == $type) {
+            // The selected file is image format
+            $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
+
+            foreach ($filetype as $key => $val) {
+                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+            }
+        } else {
+            // The selected file is non-image format
+            $filetype = array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED));
+
+            foreach ($filetype as $key => $val) {
+                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+            }
+        }
+
+        if (! in_array($source->getMimeType(), $valid_mime)) {
+            // Mime is invalid
+            $this->_upload_error = phrase('The selected file format is not allowed to upload');
+
+            return false;
+        } elseif ((float) str_replace(',', '', $source->getSizeByUnit('kb')) > MAX_UPLOAD_SIZE) {
+            // Size is exceeded the maximum allocation
+            $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
+
+            return false;
+        } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+            // Upload directory is unwritable
+            $this->_upload_error = phrase('The upload folder is not writable');
+
+            return false;
+        }
+
+        if (! is_dir(UPLOAD_PATH . '/' . $upload_path)) {
+            // Attempt to new directory
+            try {
+                mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
+                copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
+            } catch(\Throwable $e) {
+                $this->_upload_error = $e->getMessage();
+
+                return false;
+            }
+        }
+
+        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/thumbs')) {
+            // Attempt to new directory
+            try {
+                mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
+                copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
+            } catch(\Throwable $e) {
+                $this->_upload_error = $e->getMessage();
+
+                return false;
+            }
+        }
+
+        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/icons')) {
+            // Attempt to new directory
+            try {
+                mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
+                copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
+            } catch(\Throwable $e) {
+                $this->_upload_error = $e->getMessage();
+
+                return false;
+            }
+        }
+
+        // Get encrypted filename
+        $filename = $source->getRandomName();
+
+        if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'])) {
+            // Uploaded file is image format, prepare image manipulation
+            $imageinfo = getimagesize($source);
+            $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+            $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+            $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+            $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+
+            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+                // Resize image for non-gif format
+                $width = $original_dimension;
+                $height = $original_dimension;
+
+                // Load image manipulation library
+                $image = \Config\Services::image('gd');
+
+                // Resize image and move to upload directory
+                $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
+            } else {
+                // Move file to upload directory
+                $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+            }
+
+            // Create thumbnail and icon of image
+            $this->_resize_image($upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
+            $this->_resize_image($upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
+        } else {
+            // Non-image format, move directly to upload directory
+            $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+        }
+
+        if (null !== $_index) {
+            // Collect uploaded data (has sub-name)
+            $this->_uploaded_files[$field][$index][$_index] = $filename;
+        } else {
+            // Collect uploaded data (single name)
+            $this->_uploaded_files[$field][$index] = $filename;
+        }
+    }
+
+    /**
+     * Generate the thumbnail of uploaded image
+     *
+     * @param   string|null $path
+     * @param   string|null $filename
+     * @param   string|null $type
+     * @param   int $width
+     * @param   int $height
+     */
+    private function _resize_image($path = null, $filename = null, $type = null, $width = 0, $height = 0)
+    {
+        $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
+        $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
+
+        $imageinfo = getimagesize($source);
+        $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+
+        // Load image manipulation library
+        $image = \Config\Services::image('gd');
+
+        // Resize image
+        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+            // Crop image after resized
+            $image->withFile($target)
+                ->fit($width, $height, 'center')
+                ->save($target);
+        }
+    }
 }

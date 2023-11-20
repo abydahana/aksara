@@ -1,7 +1,23 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
+use CodeIgniter\Cache\CacheInterface;
 use CodeIgniter\Cache\Handlers\DummyHandler;
 use CodeIgniter\Cache\Handlers\FileHandler;
 use CodeIgniter\Cache\Handlers\MemcachedHandler;
@@ -53,12 +69,12 @@ class Cache extends BaseConfig
      * Whether to take the URL query string into consideration when generating
      * output cache files. Valid options are:
      *
-     *    false      = Disabled
-     *    true       = Enabled, take all query parameters into account.
-     *                 Please be aware that this may result in numerous cache
-     *                 files generated for the same page over and over again.
-     *    array('q') = Enabled, but only take into account the specified list
-     *                 of query parameters.
+     *    false = Disabled
+     *    true  = Enabled, take all query parameters into account.
+     *            Please be aware that this may result in numerous cache
+     *            files generated for the same page over and over again.
+     *    ['q'] = Enabled, but only take into account the specified list
+     *            of query parameters.
      *
      * @var bool|string[]
      */
@@ -95,7 +111,8 @@ class Cache extends BaseConfig
      * A string of reserved characters that will not be allowed in keys or tags.
      * Strings that violate this restriction will cause handlers to throw.
      * Default: {}()/\@:
-     * Note: The default set is required for PSR-6 compliance.
+     *
+     * NOTE: The default set is required for PSR-6 compliance.
      */
     public string $reservedCharacters = '{}()/\@:';
 
@@ -110,7 +127,7 @@ class Cache extends BaseConfig
      */
     public array $file = [
         'storePath' => WRITEPATH . 'cache/',
-        'mode'      => 0640,
+        'mode' => 0640,
     ];
 
     /**
@@ -125,10 +142,10 @@ class Cache extends BaseConfig
      * @var array<string, bool|int|string>
      */
     public array $memcached = [
-        'host'   => '127.0.0.1',
-        'port'   => 11211,
+        'host' => '127.0.0.1',
+        'port' => 11211,
         'weight' => 1,
-        'raw'    => false,
+        'raw' => false,
     ];
 
     /**
@@ -141,10 +158,10 @@ class Cache extends BaseConfig
      * @var array<string, int|string|null>
      */
     public array $redis = [
-        'host'     => '127.0.0.1',
+        'host' => '127.0.0.1',
         'password' => null,
-        'port'     => 6379,
-        'timeout'  => 0,
+        'port' => 6379,
+        'timeout' => 0,
         'database' => 0,
     ];
 
@@ -157,13 +174,14 @@ class Cache extends BaseConfig
      * that are listed here are allowed to be used.
      *
      * @var array<string, string>
+     * @phpstan-var array<string, class-string<CacheInterface>>
      */
     public array $validHandlers = [
-        'dummy'     => DummyHandler::class,
-        'file'      => FileHandler::class,
+        'dummy' => DummyHandler::class,
+        'file' => FileHandler::class,
         'memcached' => MemcachedHandler::class,
-        'predis'    => PredisHandler::class,
-        'redis'     => RedisHandler::class,
-        'wincache'  => WincacheHandler::class,
+        'predis' => PredisHandler::class,
+        'redis' => RedisHandler::class,
+        'wincache' => WincacheHandler::class,
     ];
 }

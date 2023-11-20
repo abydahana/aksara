@@ -1,0 +1,4 @@
+You can override the module view here;
+Both .twig or .php file are allowed;
+The view path should be referred to the module structure;
+The i18n view should be placed inside the folder named with language code;

@@ -1,0 +1,48 @@
+
+.note-editor.note-airframe,
+.note-editor.note-frame {
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+  border-radius: var(--bs-border-radius);
+}
+.note-modal .modal-dialog .modal-content {
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+}
+.note-editor.note-frame .note-editing-area .note-editable,
+.note-editor.note-airframe .note-editing-area .note-editable {
+  padding: 0.375rem 0.75rem !important;
+  color: var(--bs-body-color) !important;
+}
+.note-editing-area {
+  cursor: text;
+}
+.note-popover.bottom {
+  bottom: auto !important;
+}
+.note-popover .popover-content,
+.note-editor .note-toolbar {
+  padding: 0.25rem 0.75rem !important;
+  background: transparent !important;
+}
+.note-popover .popover-content > .note-btn-group,
+.note-editor .note-toolbar > .note-btn-group {
+  margin-top: 0 !important;
+}
+.note-btn-group .note-btn {
+  padding: 0.15rem 0.5rem !important;
+  font-size: 12px !important;
+}
+.note-statusbar {
+  display: none;
+}
+.note-modal .modal-dialog {
+  box-shadow: none !important;
+}
+.note-modal .modal-dialog .modal-body {
+  overflow-x: hidden!important;
+}
+.note-form-group {
+  margin-bottom: 1rem;
+}
+.note-form-label {
+  margin-bottom: 0 !important;
+}

@@ -1,4 +1,4 @@
-<div id="footer-wrapper" class="bg-light pt-5">
+<footer id="footer-wrapper" class="pt-5">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-2 text-sm-center">
@@ -16,33 +16,38 @@
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
-							<h6>
-								<?php echo phrase('featured'); ?>
+							<h6 class="fw-bold">
+								<?php echo phrase('Featured'); ?>
 							</h6>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('blogs'); ?>" class="text-dark --xhr">
-								<?php echo phrase('news'); ?>
+								<?php echo phrase('News'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('galleries'); ?>" class="text-dark --xhr">
-								<?php echo phrase('galleries'); ?>
+								<?php echo phrase('Galleries'); ?>
+							</a>
+						</li>
+						<li class="pt-1 pb-1">
+							<a href="<?php echo base_url('videos'); ?>" class="text-dark --xhr">
+								<?php echo phrase('Videos'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('peoples'); ?>" class="text-dark --xhr">
-								<?php echo phrase('peoples'); ?>
+								<?php echo phrase('Peoples'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('announcements'); ?>" class="text-dark --xhr">
-								<?php echo phrase('announcements'); ?>
+								<?php echo phrase('Announcements'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('testimonials'); ?>" class="text-dark --xhr">
-								<?php echo phrase('testimonials'); ?>
+								<?php echo phrase('Testimonials'); ?>
 							</a>
 						</li>
 					</ul>
@@ -52,33 +57,33 @@
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
-							<h6>
-								<?php echo phrase('knowledge_center'); ?>
+							<h6 class="fw-bold">
+								<?php echo phrase('Knowledge Center'); ?>
 							</h6>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/documentation" target="_blank" class="text-dark">
-								<?php echo phrase('documentation'); ?>
+								<?php echo phrase('Documentation'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/features" target="_blank" class="text-dark">
-								<?php echo phrase('features'); ?>
+								<?php echo phrase('Features'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/faqs" target="_blank" class="text-dark">
-								<?php echo phrase('faqs'); ?>
+								<?php echo phrase('FAQs'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/terms-and-conditions" target="_blank" class="text-dark">
-								<?php echo phrase('terms_and_conditions'); ?>
+								<?php echo phrase('Terms and Conditions'); ?>
 							</a>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/privacy-policy" target="_blank" class="text-dark">
-								<?php echo phrase('privacy_policy'); ?>
+								<?php echo phrase('Privacy Policy'); ?>
 							</a>
 						</li>
 					</ul>
@@ -88,8 +93,8 @@
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
-							<h6>
-								<?php echo phrase('links'); ?>
+							<h6 class="fw-bold">
+								<?php echo phrase('Links'); ?>
 							</h6>
 						</li>
 						<li class="pt-1 pb-1">
@@ -130,14 +135,15 @@
 										<i class="mdi mdi-home-city-outline text-primary"></i>
 									</div>
 									<div class="col-10 col-sm-11">
-										<h6>
-											<?php echo (get_setting('office_name') ? get_setting('office_name') : 'Non Profit'); ?>
+										<h6 class="fw-bold">
+											<?php echo(get_setting('office_name') ? get_setting('office_name') : 'Non Profit'); ?>
 										</h6>
 									</div>
 								</div>
 							</a>
 						</li>
-						<?php if(get_setting('office_address')) { ?>
+						<?php if (get_setting('office_address'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="<?php echo base_url('pages/contact'); ?>" class="--xhr">
 								<div class="row no-gutters">
@@ -151,7 +157,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('office_email')) { ?>
+						<?php if (get_setting('office_email'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="mailto:<?php echo get_setting('office_email'); ?>">
 								<div class="row no-gutters">
@@ -165,7 +172,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('office_phone')) { ?>
+						<?php if (get_setting('office_phone'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="tel:<?php echo get_setting('office_phone'); ?>">
 								<div class="row no-gutters">
@@ -179,7 +187,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('office_fax')) { ?>
+						<?php if (get_setting('office_fax'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="fax:<?php echo get_setting('office_fax'); ?>">
 								<div class="row no-gutters">
@@ -193,9 +202,10 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('whatsapp_number')) { ?>
+						<?php if (get_setting('whatsapp_number'))
+						{ ?>
 						<li class="pt-1 pb-1">
-							<a href="https://api.whatsapp.com/send?phone=<?php echo str_replace(array('+', '-', ' '), array(null, null, null), get_setting('whatsapp_number')); ?>&text=<?php echo phrase('hello') . '%20' . get_setting('app_name'); ?>...">
+							<a href="https://api.whatsapp.com/send?phone=<?php echo str_replace(['+', '-', ' '], [null, null, null], get_setting('whatsapp_number')); ?>&text=<?php echo phrase('Hello') . '%20' . get_setting('app_name'); ?>...">
 								<div class="row no-gutters">
 									<div class="col-2 col-sm-1 text-success">
 										<i class="mdi mdi-whatsapp"></i>
@@ -207,7 +217,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('twitter_username')) { ?>
+						<?php if (get_setting('twitter_username'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="https://www.twitter.com/<?php echo get_setting('twitter_username'); ?>">
 								<div class="row no-gutters">
@@ -221,7 +232,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						<?php if(get_setting('instagram_username')) { ?>
+						<?php if (get_setting('instagram_username'))
+						{ ?>
 						<li class="pt-1 pb-1">
 							<a href="https://www.instagram.com/<?php echo get_setting('instagram_username'); ?>">
 								<div class="row no-gutters">
@@ -241,7 +253,7 @@
 		</div>
 		<div class="text-center">
 			<small class="fw-bold">
-				<?php echo phrase('copyright'); ?> &#169;<?php echo date('Y'); ?> - <?php echo get_setting('office_name'); ?>
+				<?php echo phrase('Copyright'); ?> &#169;<?php echo date('Y'); ?> - <?php echo get_setting('office_name'); ?>
 			</small>
 			<small>
 				(<a href="<?php echo base_url('pages/about'); ?>" class="fw-bold --xhr">Aksara <?php echo aksara('build_version'); ?></a>)
@@ -257,4 +269,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</footer>

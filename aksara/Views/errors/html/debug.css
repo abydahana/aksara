@@ -30,7 +30,7 @@ p.lead {
     padding: 1rem;
 }
 .header {
-    background: #85271f;
+    background: #4e67ba;
     color: #fff;
 }
 .header h1 {
@@ -47,7 +47,7 @@ p.lead {
     display: none;
     text-decoration: none;
 }
-.header:hover a {
+.header a {
     display: inline;
 }
 
@@ -57,13 +57,13 @@ p.lead {
 }
 
 .source {
-    background: #333;
+    background: #212529;
     color: #c7c7c7;
     padding: 0.5em 1em;
     border-radius: 5px;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     margin: 0;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 .source span.line {
     line-height: 1.4;

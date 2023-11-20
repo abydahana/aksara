@@ -1,5 +1,16 @@
 <?php
 
-// On the CLI, we still want errors in productions
-// so just use the exception template.
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+// So just use the exception template.
 include __DIR__ . '/error_exception.php';

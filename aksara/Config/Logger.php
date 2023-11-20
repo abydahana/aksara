@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -38,7 +53,7 @@ class Logger extends BaseConfig
      *
      * @var array|int
      */
-    public $threshold = (ENVIRONMENT === 'production') ? 4 : 9;
+    public $threshold = (ENVIRONMENT === 'production') ? 4 : [1, 2, 3, 4, 5, 6];
 
     /**
      * --------------------------------------------------------------------------
@@ -74,14 +89,12 @@ class Logger extends BaseConfig
      * the handler on top and continuing down.
      */
     public array $handlers = [
-
         /*
          * --------------------------------------------------------------------
          * File Handler
          * --------------------------------------------------------------------
          */
         FileHandler::class => [
-
             // The log levels that this handler will handle.
             'handles' => [
                 'critical',
@@ -99,7 +112,7 @@ class Logger extends BaseConfig
              * An extension of 'php' allows for protecting the log files via basic
              * scripting, when they are to be stored under a publicly accessible directory.
              *
-             * Note: Leaving it blank will default to 'log'.
+             * NOTE: Leaving it blank will default to 'log'.
              */
             'fileExtension' => '',
 

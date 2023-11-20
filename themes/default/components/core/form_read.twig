@@ -1,0 +1,25 @@
+<div class="mb-3">
+    {% if params.label and params.type != 'geospatial' %}
+        <label class="form-label text-muted mb-0">
+            {{ params.label }}
+            {% if params.tooltip %}
+                <i class="mdi mdi-information-outline text-info" data-bs-toggle="tooltip" title="{{ params.tooltip }}"></i>
+            {% endif %}
+            {% if params.required %}
+                <span class="text-danger font-weight-bold">*</span>
+            {% endif %}
+        </label>
+    {% endif %}
+    <div class="input-group">
+        {% if params.prepend %}
+            <span class="input-group-text"> {{ params.prepend }} </span>
+        {% endif %}
+
+        {# Include form component #}
+        {% include 'view/' ~ params.type ~ '.twig' with params %}
+        
+        {% if params.append %}
+            <span class="input-group-text"> {{ params.append }} </span>
+        {% endif %}
+    </div>
+</div>

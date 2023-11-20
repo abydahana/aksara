@@ -1,1357 +1,1040 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Aksara\Laboratory;
 
-/**
- * Template
- *
- * @author			Aby Dahana <abydahana@gmail.com>
- * @profile			abydahana.github.io
- * @website			www.aksaracms.com
- * @since			version 4.0.0
- * @copyright		(c) 2021 - Aksara Laboratory
- */
+use Aksara\Laboratory\Model;
+use Aksara\Libraries\Beautifier;
+use Aksara\Libraries\Html_dom;
+
+use Aksara\Laboratory\Renderer\Parser;
 
 class Template
 {
-	private $_api_request;
-	private $_css;
-	private $_js;
-	
-	public function __construct($theme = 'frontend', $_api_request = null)
-	{
-		$this->model								= new \Aksara\Laboratory\Model();
-		
-		$this->_api_request							= $_api_request;
-		$this->_theme								= $theme;
-		
-		if(!$this->_theme)
-		{
-			// throwback the default theme from site configuration
-			$site_id								= get_setting('id');
-			
-			$this->_theme							= $this->model->select('frontend_theme')->get_where
-			(
-				'app__settings',
-				array
-				(
-					'id'							=> $site_id
-				),
-				1
-			)
-			->row('frontend_theme');
-		}
-	}
-	
-	public function get_theme()
-	{
-		if(!in_array($this->_theme, array('frontend', 'backend'))) return false;
-		
-		$site_id									= get_setting('id');
-		
-		$query										= $this->model->select($this->_theme . '_theme')->get_where
-		(
-			'app__settings',
-			array
-			(
-				'id'								=> $site_id
-			),
-			1
-		)
-		->row($this->_theme . '_theme');
-		
-		return $query;
-	}
-	
-	/**
-	 * Getting the theme property
-	 */
-	public function get_theme_property($parameter = null)
-	{
-		if(file_exists('../themes/' . $this->_theme . '/package.json') )
-		{
-			/**
-			 * check if active theme has a property
-			 */
-			$property								= json_decode(@file_get_contents('../themes/' . $this->_theme . '/package.json'));
-			
-			if($parameter && isset($property->$parameter))
-			{
-				return $property->$parameter;
-			}
-			else
-			{
-				return $property;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Scan the view file location both camelized string and lowercase
-	 */
-	public function get_view($view = 'index', $data = array(), $table = null)
-	{
-		// route namespace controller to view
-		$base_view									= preg_replace('/modules\//i', '', ltrim(lcfirst(ltrim(str_replace('\\', '/', preg_replace('/\\\\Controllers\\\\/', '\Views\\', service('router')->controllerName(), 1) . '\\' . $view), '/')), 'aksara/'), 1);
-		
-		// get parent module classname
-		$parent_module								= strtok($base_view, '/');
-		
-		// get current module classname
-		$current_module								= substr(service('router')->controllerName(), strrpos(service('router')->controllerName(), '\\') + 1);
-		
-		// get current module classname
-		$current_method								= (in_array($view, array('index', 'form', 'read')) ? service('router')->methodName() : $view);
-		
-		// strip view folder if parent current module matches with parent module
-		$base_view									= str_replace('/Views/' . $parent_module . '/', '/Views/', $base_view);
-		$base_view									= str_replace('/' . $current_module . '/' . $current_module . '/', '/' . $current_module . '/', $base_view);
-		
-		if(strtolower($current_module) == $view)
-		{
-			$base_view								= str_replace($current_module . '/' . $view, $view, $base_view);
-		}
-		
-		/* add suffix to view to detect if mobile or modal template is sets */
-		$suffix										= (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_SERVER['GRID_VIEW']) && $_SERVER['GRID_VIEW'] ? '_grid' : null)));
-		
-		// generate theme view
-		$theme_view									= '../themes/' . $this->_theme . '/views/' . preg_replace('/\/Views\//', '/', $base_view, 1) . '.php';
-		
-		// generate module view
-		$module_view								= '../modules/' . $base_view . '.php';
-		
-		// generate core view
-		$core_view									= '../aksara/Modules/' . $base_view . '.php';
-		
-		/**
-		 * -----------------------------------------------------------
-		 * Theme based view
-		 * -----------------------------------------------------------
-		 */
-		if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $theme_view)))))
-		{
-			// view matches with method of active theme with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $theme_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $theme_view))))
-		{
-			// view matches with method of active theme with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $theme_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1)))))
-		{
-			// view matches with method of active theme with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1)))))
-		{
-			// view matches with method of active theme with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1)));
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $theme_view))))
-		{
-			// view matches with method of active theme and suffix
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $theme_view));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', $theme_view)))
-		{
-			// view matches with method of active theme
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', $theme_view);
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1))))
-		{
-			// view matches with method of active theme and suffix but in lowercase
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1))))
-		{
-			// view matches with method of active theme but in lowercase
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $theme_view))))
-		{
-			// view matches with active theme with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $theme_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $theme_view)))
-		{
-			// view matches with active theme with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $theme_view);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1))))
-		{
-			// view matches with active theme with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1))))
-		{
-			// view matches with active theme with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $theme_view)))
-		{
-			// view matches with active theme and suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $theme_view);
-		}
-		else if(file_exists($theme_view))
-		{
-			// view matches with active theme
-			$this->_view							= '../' . $theme_view;
-		}
-		else if(file_exists(preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1)))
-		{
-			// view matches with active theme and suffix but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $theme_view), 1);
-		}
-		else if(file_exists(preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1)))
-		{
-			// view matches with active theme but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $theme_view, 1);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)))))
-		{
-			// view matches with active theme with suffix and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($theme_view))))
-		{
-			// view matches with active theme with suffix and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($theme_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)), 1))))
-		{
-			// view matches with active theme with suffix and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($theme_view), 1))))
-		{
-			// view matches with active theme with suffix and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($theme_view), 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $this->_class_view($theme_view))))
-		{
-			// view matches with active theme with suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $this->_class_view($theme_view));
-		}
-		else if(file_exists($this->_class_view($theme_view)))
-		{
-			// view matches with active theme
-			$this->_view							= '../' . $this->_class_view($theme_view);
-		}
-		else if(file_exists(preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)), 1)))
-		{
-			// view matches with active theme with suffix but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($theme_view)), 1);
-		}
-		else if(file_exists(preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($theme_view), 1)))
-		{
-			// view matches with active theme but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($theme_view), 1);
-		}
-		
-		/**
-		 * -----------------------------------------------------------
-		 * Module based view
-		 * -----------------------------------------------------------
-		 */
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $module_view)))))
-		{
-			// view matches with method of public module with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $module_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $module_view))))
-		{
-			// view matches with method of public module with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $module_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1)))))
-		{
-			// view matches with method of public module with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1)))))
-		{
-			// view matches with method of public module with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1)));
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $module_view))))
-		{
-			// view matches with method of public module and suffix
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $module_view));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', $module_view)))
-		{
-			// view matches with method of public module
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', $module_view);
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1))))
-		{
-			// view matches with method of public module and suffix but in lowercase
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1))))
-		{
-			// view matches with method of public module but in lowercase
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $module_view))))
-		{
-			// view matches with public module with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $module_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $module_view)))
-		{
-			// view matches with public module with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $module_view);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1))))
-		{
-			// view matches with public module with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1))))
-		{
-			// view matches with public module with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $module_view)))
-		{
-			// view matches with public module and suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $module_view);
-		}
-		else if(file_exists($module_view))
-		{
-			// view matches with public module
-			$this->_view							= '../' . $module_view;
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1)))
-		{
-			// view matches with public module and suffix but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $module_view), 1);
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1)))
-		{
-			// view matches with public module but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $module_view, 1);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)))))
-		{
-			// view matches with public module with suffix and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($module_view))))
-		{
-			// view matches with public module and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($module_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)), 1))))
-		{
-			// view matches with public module with suffix and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($module_view), 1))))
-		{
-			// view matches with public module and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($module_view), 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $this->_class_view($module_view))))
-		{
-			// view matches with public module with suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $this->_class_view($module_view));
-		}
-		else if(file_exists($this->_class_view($module_view)))
-		{
-			// view matches with public module
-			$this->_view							= '../' . $this->_class_view($module_view);
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)), 1)))
-		{
-			// view matches with public module with suffix but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($module_view)), 1);
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($module_view), 1)))
-		{
-			// view matches with public module but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($module_view), 1);
-		}
-		
-		/**
-		 * -----------------------------------------------------------
-		 * Core module based view
-		 * -----------------------------------------------------------
-		 */
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $core_view)))))
-		{
-			// view matches with method of core module with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $core_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $core_view))))
-		{
-			// view matches with method of core module with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', $core_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1)))))
-		{
-			// view matches with method of core module with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1)))))
-		{
-			// view matches with method of core module with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1)));
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $core_view))))
-		{
-			// view matches with method of core module and suffix
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', str_replace('.php', $suffix . '.php', $core_view));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', $core_view)))
-		{
-			// view matches with method of core module
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', $core_view);
-		}
-		else if(file_exists(str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1))))
-		{
-			// view matches with method of core module and suffix but in lowercase
-			$this->_view							= '../' . str_replace($view . $suffix . '.php', $current_method . $suffix . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1));
-		}
-		else if(file_exists(str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1))))
-		{
-			// view matches with method of core module but in lowercase
-			$this->_view							= '../' . str_replace($view . '.php', $current_method . '.php', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $core_view))))
-		{
-			// view matches with core module with language and suffix
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $core_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $core_view)))
-		{
-			// view matches with core module with language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $core_view);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1))))
-		{
-			// view matches with core module with language and suffix but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $core_view), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1))))
-		{
-			// view matches with core module with language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $core_view)))
-		{
-			// view matches with core module and suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $core_view);
-		}
-		else if(file_exists($core_view))
-		{
-			// view matches with core module
-			$this->_view							= '../' . $core_view;
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1)))
-		{
-			// view matches with core module but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $core_view, 1);
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)))))
-		{
-			// view matches with core module with suffix and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($core_view))))
-		{
-			// view matches with core module and language
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', $this->_class_view($core_view));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)), 1))))
-		{
-			// view matches with core module with suffix and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)), 1));
-		}
-		else if(file_exists(preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($core_view), 1))))
-		{
-			// view matches with core module and language but in lowercase
-			$this->_view							= '../' . preg_replace('~\/(?!.*\/)~', '/' . get_userdata('language') . '/', preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($core_view), 1));
-		}
-		else if(file_exists(str_replace('.php', $suffix . '.php', $this->_class_view($core_view))))
-		{
-			// view matches with core module with suffix
-			$this->_view							= '../' . str_replace('.php', $suffix . '.php', $this->_class_view($core_view));
-		}
-		else if(file_exists($this->_class_view($core_view)))
-		{
-			// view matches with core module
-			$this->_view							= '../' . $this->_class_view($core_view);
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)), 1)))
-		{
-			// view matches with core module with suffix but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', str_replace('.php', $suffix . '.php', $this->_class_view($core_view)), 1);
-		}
-		else if(file_exists(preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($core_view), 1)))
-		{
-			// view matches with core module but in lowercase
-			$this->_view							= '../' . preg_replace_callback('/(\/Views\/(.*))/', 'self::_strtolower_callback', $this->_class_view($core_view), 1);
-		}
-		
-		/**
-		 * -----------------------------------------------------------
-		 * Template based view
-		 * -----------------------------------------------------------
-		 */
-		else
-		{
-			// no matches view, use template instead
-			if(service('router')->getMatchedRoute())
-			{
-				if($data && $table)
-				{
-					if(file_exists(APPPATH . 'Views/templates/' . $view . $suffix . '.php'))
-					{
-						// view matches with suffix
-						$this->_view				= 'templates/' . $view . $suffix;
-					}
-					else
-					{
-						$this->_view				= 'templates/' . $view;
-					}
-				}
-				
-				// no view were found
-				else
-				{
-					// check request mode
-					if(in_array($view, array('export', 'print', 'pdf')))
-					{
-						// export mode
-						$this->_view				= 'templates/export';
-					}
-					else if(file_exists('../themes/' . $this->_theme . '/' . $view . $suffix . '.php'))
-					{
-						$this->_view					= '../../themes/' . $this->_theme . '/' . $view . $suffix;
-					}
-					else if(file_exists('../themes/' . $this->_theme . '/' . $view . '.php'))
-					{
-						$this->_view					= '../../themes/' . $this->_theme . '/' . $view;
-					}
-					else
-					{
-						// no mode
-						$this->_view				= 'templates/error';
-					}
-				}
-			}
-			
-			// no route were found
-			else
-			{
-				if(file_exists('../themes/' . $this->_theme . '/404.php'))
-				{
-					$this->_view					= '../../themes/' . $this->_theme . '/404';
-				}
-				else
-				{
-					$this->_view					= 'templates/404';
-				}
-			}
-		}
-		
-		// remove duplicate slash
-		$this->_view								= str_replace('//', '/', $this->_view);
-		
-		return $this->_view;
-	}
-	
-	public function build($view = null, $data = array(), $breadcrumb = array(), $table = null, $language = null)
-	{
-		if(!$data)
-		{
-			$data									= new \stdClass();
-		}
-		
-		if(!$this->_api_request)
-		{
-			/**
-			 * Get theme helpers
-			 */
-			if(is_dir('../themes/' . $this->_theme . '/helpers'))
-			{
-				/* load required helper */
-				helper('filesystem');
-				
-				// list available helper files
-				$helpers							= directory_map('../themes/' . $this->_theme . '/helpers', 1);
-				
-				if($helpers)
-				{
-					// check and loop the helper files
-					foreach($helpers as $key => $val)
-					{
-						if(strtolower(pathinfo($val, PATHINFO_EXTENSION)) == 'php')
-						{
-							// check matched helper and load to construct
-							require_once('../themes/' . $this->_theme . '/helpers/' . $val);
-						}
-					}
-				}
-			}
-			
-			// minify pattern
-			$minify_pattern							= array
-			(
-				'/[ \t]+/'							=> ' ',
-				'/(\>)\s*(\<)/m'					=> '$1 $2',
-				'/<!--(.|\s)*?-->/'					=> ''
-			);
-			
-			if(isset($data->pagination))
-			{
-				$data->template						= (object) array
-				(
-					'pagination'					=> $this->pagination($data->pagination)
-				);
-			}
-			
-			$this->_view							= $this->get_view($view, $data, $table);
-			
-			// generate the html from the view
-			$data->html								= view($this->_view, (array) $data);
-			
-			/* make a backup of "pre" tag */
-			preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $data->html, $pre_backup);
-			
-			$data->html								= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $data->html);
-			
-			/* make a backup of "textarea" tag */
-			preg_match_all('#\<textarea.*\>(.*)\<\/textarea\>#Uis', $data->html, $textarea_backup);
-			
-			$data->html								= str_replace($textarea_backup[0], array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $data->html);
-			
-			/* make a backup of "script" tag */
-			preg_match_all('#\<script.*\>(.*)\<\/script\>#Uis', $data->html, $script_backup);
-			
-			$data->html								= str_replace($script_backup[0], array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), $data->html);
-			
-			/* minify the data */
-			$data->html								= preg_replace(array_keys($minify_pattern), array_values($minify_pattern), $data->html);
-			
-			if($data->html)
-			{
-				/* rollback the pre tag */
-				$data->html							= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $data->html);
-				
-				/* rollback the textarea tag */
-				$data->html							= str_replace(array_map(function($element){return '<textarea>' . $element . '</textarea>';}, array_keys($textarea_backup[0])), $textarea_backup[0], $data->html);
-				
-				/* rollback the script tag */
-				$data->html							= str_replace(array_map(function($element){return '<script type="text/javascript">' . $element . '</script>';}, array_keys($script_backup[0])), preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $script_backup[0]), $data->html);
-			}
-		}
-		
-		/**
-		 * Build the result and send to client
-		 */
-		if((service('request')->isAJAX() && service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) || $this->_api_request)
-		{
-			unset($data->template, $data->pagination);
-			
-			return make_json($data);
-		}
-		else
-		{
-			$content								= $data->html;
-			
-			$output									= array
-			(
-				'template'							=> (object) array
-				(
-					'meta'							=> (object) array
-					(
-						'title'						=> truncate($data->meta->title),
-						'description'				=> truncate($data->meta->description)
-					),
-					'menu'							=> $this->_get_menu(),
-					'breadcrumb'					=> (object) array
-					(
-					),
-					'content'						=> $content
-				)
-			);
-			
-			$output									= $this->_minify(view('../../themes/' . $this->_theme . '/layout', $output));
-			
-			return service('response')->setBody($output)->send();
-		}
-	}
-	
-	public function breadcrumb($data = array(), $title = null, $found = null)
-	{
-		$slug										= null;
-		$checker									= service('request')->uri->getSegments();
-		$params										= service('request')->getGet();
-		$params['per_page']							= null;
-		$params['q']								= null;
-		$params['order']							= null;
-		$params['sort']								= null;
-		
-		if(!$data || !is_array($data))
-		{
-			foreach($checker as $key => $val)
-			{
-				$data[$val]							= array
-				(
-					'label'							=> $val,
-					'translated'					=> false
-				);
-			}
-		}
-		
-		$current_slug								= end($checker);
-		$slug										= null;
-		
-		if($this->get_theme_property('type') == 'backend')
-		{
-			$output									= array
-			(
-				array
-				(
-					'url'							=> base_url('dashboard'),
-					'label'							=> phrase('dashboard'),
-					'icon'							=> 'mdi mdi-home'
-				)
-			);
-		}
-		else
-		{
-			$output									= array
-			(
-				array
-				(
-					'url'							=> base_url(),
-					'label'							=> phrase('homepage'),
-					'icon'							=> 'mdi mdi-home'
-				)
-			);
-		}
-		
-		foreach($data as $key => $val)
-		{
-			$slug									.= $key . '/';
-			
-			if($key && isset($val['label']))
-			{
-				if($key != $current_slug)
-				{
-					$output[]						= array
-					(
-						'url'						=> base_url($slug, $params),
-						'label'						=> ($found ? ($val['translated'] ? $val['label'] : phrase($val['label'], true, true)) : ucwords(str_replace('_', ' ', $val['label']))),
-						'icon'						=> null
-					);
-				}
-			}
-		}
-		
-		$output[]									= array
-		(
-			'url'									=> '',
-			'label'									=> $title,
-			'icon'									=> ''
-		);
-		
-		/*  remove the last element of array */
-		array_pop($output);
-		
-		return $output;
-	}
-	
-	public function pagination($data = array(), $return = true)
-	{
-		if(!$data)
-		{
-			$data									= new \stdClass();
-		}
-		
-		if(is_array($data))
-		{
-			$data									= (object) $data;
-		}
-		
-		if(!isset($data->total_rows))
-		{
-			/* if there's no result, set to 0 */
-			$data->total_rows						= 0;
-		}
-		
-		if(!isset($data->per_page))
-		{
-			/* if no per_page setting, set default */
-			$data->per_page							= 25;
-		}
-		
-		if(!isset($data->offset))
-		{
-			/* if there's no offset, set to 0 */
-			$data->offset							= 0;
-		}
-		
-		$this->pagination							= \Config\Services::pager();
-		
-		/* create result */
-		$last_page									= ($data->total_rows > $data->per_page ? (int) ceil($data->total_rows / $data->per_page) : 1);
-		$results									= $this->pagination->makeLinks(1, $data->per_page, $data->total_rows, 'pagination');
-		
-		if($results)
-		{
-			$output									= $results;
-		}
-		else
-		{
-			$output									= '
-				<ul class="pagination pagination-sm mb-0">
-					<li class="page-item disabled">
-						<a href="javascript:void(0)" tabindex="-1" class="page-link">
-							' . phrase('previous') . '
-						</a>
-					</li>
-					<li class="page-item active">
-						<a href="javascript:void(0)" class="page-link">
-							1
-						</a>
-					</li>
-					<li class="page-item disabled">
-						<a href="javascript:void(0)" class="page-link">
-							' . phrase('next') . '
-						</a>
-					</li>
-				</ul>
-			';
-		}
-		
-		if($return)
-		{
-			$query_string							= null;
-			
-			foreach(service('request')->getGet() as $key => $val)
-			{
-				$key								= preg_replace('/[^\w-]/', '', $key);
-				
-				if(!$key || in_array($key, array('q', 'per_page'))) continue;
-				
-				$query_string						.= '<input type="hidden" name="' . $key . '" value="' . htmlspecialchars($val) . '" />';
-			}
-			
-			$output									= '
-				<div class="row align-items-center">
-					<div class="col-sm-6 text-center text-sm-start">
-						<label class="text-muted mb-0">
-							<small class="result-for">
-								<i class="mdi mdi-information-outline"></i>
-								&nbsp;
-								' . phrase('showing') . ' ' . ($data->offset ? number_format($data->offset) : number_format(($data->total_rows > 0 ? 1 : 0))) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries_found') : phrase('entry_found')) . '
-							</small>
-						</label>
-					</div>
-					<div class="col-sm-6">
-						<nav class="d-flex justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end" aria-label="Page navigation">
-							' . $output . '
-							' . ($data->total_rows > $data->limit ? '
-							<form action="' . current_page(null, array('per_page' => null)) . '" method="POST" class="--xhr-form ml-2 d-none d-sm-none d-md-block d-lg-block d-xl-block">
-								' . $query_string . '
-								<div class="input-group input-group-sm">
-									<select name="limit" class="form-control">
-										<option value="' . $data->limit . '"' . (!$data->per_page ? ' selected' : null) . '>' . $data->limit . '</option>
-										' . ($data->total_rows > ($data->limit * 2) ? '<option value="' . ($data->limit * 2) . '"' . (($data->limit * 2) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 2) . '</option>' : null) . '
-										' . ($data->total_rows > ($data->limit * 4) ? '<option value="' . ($data->limit * 4) . '"' . (($data->limit * 4) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 4) . '</option>' : null) . '
-										' . ($data->total_rows > ($data->limit * 8) ? '<option value="' . ($data->limit * 8) . '"' . (($data->limit * 8) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 8) . '</option>' : null) . '
-										' . ($data->total_rows > ($data->limit * 20) ? '<option value="' . ($data->limit * 20) . '"' . (($data->limit * 20) == $data->per_page ? ' selected' : null) . '>' . ($data->limit * 20) . '</option>' : null) . '
-									</select>
-									<input type="number" name="per_page" class="form-control text-center" value="' . (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1) . '" min="1" max="' . $last_page . '" />
-									<button type="submit" class="btn btn-primary">
-										' . phrase('go') . '
-									</button>
-								</div>
-							</form>
-							' : null) . '
-						</nav>
-					</div>
-				</div>
-			';
-		}
-		else
-		{
-			$dom									= new \Aksara\Libraries\Html_dom;
-			$html									= $dom->str_get_html($output);
-			$output									= array
-			(
-				'url'								=> current_page(null, array('per_page' => null)),
-				'total_rows'						=> $data->total_rows,
-				'limit'								=> $data->limit,
-				'per_page'							=> $data->per_page,
-				'last_page'							=> $last_page,
-				'text'								=> phrase('showing') . ' ' . ($data->offset ? number_format($data->offset) : number_format(($data->total_rows > 0 ? 1 : 0))) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries_found') : phrase('entry_found'))
-			);
-			
-			foreach($html->find('ul li') as $li)
-			{
-				$output['results'][]				= array
-				(
-					'parentClass'					=> $li->class,
-					'class'							=> $li->find('a', 0)->class,
-					'href'							=> $li->find('a', 0)->href,
-					'label'							=> str_replace('&amp;', '&', htmlspecialchars($li->find('a', 0)->innertext))
-				);
-			}
-			
-			return $output;
-		}
-		
-		return $output;
-	}
-	
-	private function _class_view($view = null)
-	{
-		$view										= substr($view, 0, strrpos($view, '/'));
-		$view										= substr($view, 0, strrpos($view, '/')) . '/' . strtolower(substr($view, strrpos($view, '/') + 1)) . '.php';
-		
-		return $view;
-	}
-	
-	private function _get_menu($menus = array())
-	{
-		if(!$menus)
-		{
-			$group_id								= get_userdata('group_id');
-			
-			$menus									= $this->model->select
-			('
-				serialized_data
-			')
-			->group_start()
-			->where('group_id', $group_id)
-			->or_where('group_id', 0)
-			->group_end()
-			->get_where
-			(
-				'app__menus',
-				array
-				(
-					'menu_placement'				=> ('frontend' == $this->get_theme_property('type') ? 'header' : 'sidebar')
-				),
-				1
-			)
-			->row('serialized_data');
-			
-			$menus									= ($menus ? json_decode($menus, true) : array());
-			
-			if(get_userdata('group_id') == 1 && $this->get_theme_property('type') == 'backend')
-			{
-				$core_menus							= array
-				(
-					array
-					(
-						'id'						=> 0,
-						'label'						=> '',
-						'slug'						=> '---'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'CMS',
-						'slug'						=> 'cms',
-						'icon'						=> 'mdi mdi-dropbox',
-						'children'					=> array
-						(
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Blogs',
-								'slug'				=> 'cms/blogs',
-								'icon'				=> 'mdi mdi-newspaper',
-								'children'			=> array
-								(
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Posts',
-										'slug'		=> 'cms/blogs',
-										'icon'		=> 'mdi mdi-pencil'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Categories',
-										'slug'		=> 'cms/blogs/categories',
-										'icon'		=> 'mdi mdi-sitemap'
-									)
-								)
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Pages',
-								'slug'				=> 'cms/pages',
-								'icon'				=> 'mdi mdi-book-open-page-variant'
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Galleries',
-								'slug'				=> 'cms/galleries',
-								'icon'				=> 'mdi mdi-folder-multiple-image'
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Peoples',
-								'slug'				=> 'cms/peoples',
-								'icon'				=> 'mdi mdi-account-group-outline'
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Partial Content',
-								'slug'				=> 'cms/partials',
-								'icon'				=> 'mdi mdi-file-image',
-								'children'			=> array
-								(
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Carousels',
-										'slug'		=> 'cms/partials/carousels',
-										'icon'		=> 'mdi mdi-image-multiple'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'FAQs',
-										'slug'		=> 'cms/partials/faqs',
-										'icon'		=> 'mdi mdi-file-question'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Announcements',
-										'slug'		=> 'cms/partials/announcements',
-										'icon'		=> 'mdi mdi-bullhorn-outline'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Testimonials',
-										'slug'		=> 'cms/partials/testimonials',
-										'icon'		=> 'mdi mdi-comment-account-outline'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Inquiries',
-										'slug'		=> 'cms/partials/inquiries',
-										'icon'		=> 'mdi mdi-message-text'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Media',
-										'slug'		=> 'cms/partials/media',
-										'icon'		=> 'mdi mdi-folder-image'
-									)
-								)
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Comments',
-								'slug'				=> 'cms/comments',
-								'icon'				=> 'mdi mdi-comment-multiple-outline'
-							)
-						)
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> '',
-						'slug'						=> '---'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'Core Tools',
-						'slug'						=> '---'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'Administrative',
-						'slug'						=> 'administrative',
-						'icon'						=> 'mdi mdi-cogs',
-						'children'					=> array
-						(
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Users and Groups',
-								'slug'				=> 'administrative/users',
-								'icon'				=> 'mdi mdi-account-group-outline',
-								'children'			=> array
-								(
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Users',
-										'slug'		=> 'administrative/users',
-										'icon'		=> 'mdi mdi-account-group'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Groups',
-										'slug'		=> 'administrative/groups',
-										'icon'		=> 'mdi mdi-sitemap'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Privileges',
-										'slug'		=> 'administrative/groups/privileges',
-										'icon'		=> 'mdi mdi-account-check-outline'
-									)
-								)
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Configurations',
-								'slug'				=> 'administrative',
-								'icon'				=> 'mdi mdi-wrench-outline',
-								'children'			=> array
-								(
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Site Settings',
-										'slug'		=> 'administrative/settings',
-										'icon'		=> 'mdi mdi-settings'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Menus',
-										'slug'		=> 'administrative/menus',
-										'icon'		=> 'mdi mdi-menu'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Translations',
-										'slug'		=> 'administrative/translations',
-										'icon'		=> 'mdi mdi-translate'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Countries',
-										'slug'		=> 'administrative/countries',
-										'icon'		=> 'mdi mdi-map-legend'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Years',
-										'slug'		=> 'administrative/years',
-										'icon'		=> 'mdi mdi-calendar-multiple-check'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Connections',
-										'slug'		=> 'administrative/connections',
-										'icon'		=> 'mdi mdi-power-plug'
-									)
-								)
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Logs',
-								'slug'				=> 'administrative/logs',
-								'icon'				=> 'mdi mdi-information-outline',
-								'children'			=> array
-								(
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Activities',
-										'slug'		=> 'administrative/logs/activities',
-										'icon'		=> 'mdi mdi-calendar-clock'
-									),
-									array
-									(
-										'id'		=> 0,
-										'label'		=> 'Errors',
-										'slug'		=> 'administrative/logs/errors',
-										'icon'		=> 'mdi mdi-bug'
-									)
-								)
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Session Cleaner',
-								'slug'				=> 'administrative/cleaner',
-								'icon'				=> 'mdi mdi-trash-can'
-							)
-						)
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'add_ons',
-						'slug'						=> 'addons',
-						'icon'						=> 'mdi mdi-puzzle'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'APIs',
-						'slug'						=> 'apis',
-						'icon'						=> 'mdi mdi-code-braces',
-						'children'					=> array
-						(
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Services',
-								'slug'				=> 'apis/services',
-								'icon'				=> 'mdi mdi-link-variant'
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Debug Tool',
-								'slug'				=> 'apis/debug_tool',
-								'icon'				=> 'mdi mdi-android-debug-bridge'
-							),
-							array
-							(
-								'id'				=> 0,
-								'label'				=> 'Documentation',
-								'slug'				=> 'apis/documentation',
-								'icon'				=> 'mdi mdi mdi-book-open-page-variant'
-							)
-						)
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> '',
-						'slug'						=> '---'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'About',
-						'slug'						=> 'pages/about',
-						'icon'						=> 'mdi mdi-blank',
-						'class'						=> 'text-sm'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'License',
-						'slug'						=> 'pages/license',
-						'icon'						=> 'mdi mdi-blank',
-						'class'						=> 'text-sm'
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'Aksara ' . aksara('build_version'),
-						'slug'						=> '---',
-						'icon'						=> 'mdi mdi-blank',
-						'class'						=> 'text-sm',
-						'translate'					=> false
-					),
-				);
-				
-				$dashboard							= array
-				(
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'Main Navigation',
-						'slug'						=> '---',
-						'icon'						=> null,
-					),
-					array
-					(
-						'id'						=> 0,
-						'label'						=> 'Dashboard',
-						'slug'						=> 'dashboard',
-						'icon'						=> 'mdi mdi-monitor-dashboard',
-					)
-				);
-				
-				$menus								= array_merge($dashboard, $menus, $core_menus);
-			}
-		}
-		
-		array_walk_recursive($menus, function(&$label, $key)
-		{
-			if($key == 'label' && $label && $label != 'Aksara ' . aksara('build_version'))
-			{
-				$label								= phrase($label, true);
-			}
-		});
-		
-		return $menus;
-	}
-	
-	private function _strtolower_callback($string = array())
-	{
-		if(!isset($string[1])) return false;
-		
-		$rest										= substr($string[1], strpos($string[1], '/views/') + 7);
-		
-		return str_replace($rest, strtolower($rest), $string[1]);
-	}
-	
-	private function _minify($buffer = null)
-	{
-		// make a backup of "pre" tag
-		preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $buffer, $pre_backup);
-		
-		$buffer										= str_replace($pre_backup[0], array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $buffer);
-		
-		$search										= array
-		(
-			'/[\n\t\s]+/',			// replace end of line by space
-			'/\>[^\S ]+/s',			// strip whitespaces after tags, except space
-			'/[^\S ]+\</s',			// strip whitespaces before tags, except space
-			'/(\s)+/s',				// shorten multiple whitespace sequences
-			'/<!--(.|\s)*?-->/'		//remove HTML comments
-		);
+    public $theme;
 
-		$replace									= array
-		(
-			' ',
-			'>',
-			'<',
-			'\\1',
-			''
-		);
-		
-		$buffer										= preg_replace($search, $replace, $buffer);
-		
-		// rollback the pre tag
-		$buffer										= str_replace(array_map(function($element){return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $buffer);
-		
-		return $buffer;
-	}
+    private $_css;
+
+    private $_js;
+
+    private $_model;
+
+    private $_partial_view;
+
+    private $_method;
+
+    public function __construct($theme = 'frontend', $method = 'index')
+    {
+        $this->theme = $theme;
+        $this->_method = $method;
+
+        $this->_model = new Model();
+
+        if (! $this->theme) {
+            // Throwback the default theme from site configuration
+            $site_id = get_setting('id');
+
+            $this->theme = $this->_model->select('frontend_theme')->get_where(
+                'app__settings',
+                [
+                    'id' => $site_id
+                ],
+                1
+            )
+            ->row('frontend_theme');
+        }
+    }
+
+    /**
+     * Getting active theme
+     */
+    public function get_theme()
+    {
+        if (! in_array($this->theme, ['frontend', 'backend'])) {
+            return false;
+        }
+
+        $site_id = get_setting('id');
+
+        $query = $this->_model->select($this->theme . '_theme')->get_where(
+            'app__settings',
+            [
+                'id' => $site_id
+            ],
+            1
+        )
+        ->row($this->theme . '_theme');
+
+        return $query;
+    }
+
+    /**
+     * Getting the theme property
+     *
+     * @param   mixed|null $parameter
+     * @param   null|mixed $parameter
+     */
+    public function get_theme_property($parameter = null)
+    {
+        if (file_exists('../themes/' . $this->theme . '/package.json')) {
+            // Check if active theme has a property
+            $property = new \stdClass();
+
+            try {
+                $property = json_decode(file_get_contents('../themes/' . $this->theme . '/package.json'));
+            } catch(\Throwable $e) {
+                // Safe abstraction
+            }
+
+            if ($parameter && isset($property->$parameter)) {
+                return $property->$parameter;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Scan the view file location both camelized string and lowercase
+     */
+    public function get_view(string $view = 'index')
+    {
+        // Get current controller namespace
+        $view_path = preg_replace(['/\\\\aksara\\\\/i', '/\\\\modules\\\\/i', '/\\\\controllers\\\\/i'], ['\\', '\\', '\Views\\'], service('router')->controllerName(), 1);
+
+        // Get parent module classname
+        $parent_module = strtok($view_path, '\\');
+
+        // Get current module classname
+        $current_module = substr($view_path, strrpos($view_path, '\\') + 1);
+
+        if (strtolower($parent_module) === strtolower($current_module)) {
+            // Slice out the module path when the parent module has same name
+            $view_path = substr($view_path, 0, strrpos($view_path, '\\'));
+        }
+
+        // Replace backslash to match with directory separator
+        $view_path = str_replace([$current_module . '\\' . $current_module, '\\'], [strtolower($current_module), DIRECTORY_SEPARATOR], $view_path);
+
+        // List module and view path
+        list($modules, $views) = array_pad(explode(DIRECTORY_SEPARATOR . 'Views', $view_path), 2, null);
+
+        // Convert view path as lowercase
+        $view_path = $modules . '/Views' . ($views ? strtolower($views) : null);
+
+        // Theme based viewfinder
+        $theme_viewfinder = ROOTPATH . 'themes/' . $this->theme . '/views/' . strtolower(preg_replace('/\/views/i', '', $view_path, 1));
+
+        // Theme based viewfinder fallback
+        $fallback_theme_viewfinder = ROOTPATH . 'themes/' . $this->theme . '/components/core';
+
+        // Module based viewfinder
+        $module_viewfinder = ROOTPATH . 'modules' . $view_path;
+
+        // Core module based viewfinder
+        $core_viewfinder = ROOTPATH . 'aksara/Modules' . $view_path;
+
+        // Core based viewfinder
+        $fallback_viewfinder = ROOTPATH . 'aksara/Views/core';
+
+        // View suffix
+        $suffix = (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (env('GRID_VIEW') ? '_grid' : null)));
+
+        // Get user language for i18n view
+        $language = get_userdata('language');
+
+        // Method name to force as view when exists
+        $method = ('404' !== $view ? service('router')->methodName() : $view);
+
+        /**
+         * ---------------------------------------------------------------------
+         * Find view from theme
+         * ---------------------------------------------------------------------
+         */
+        if (file_exists($theme_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $method. '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view. '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.twig') || file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix);
+        } elseif (file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . '.twig') || file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder));
+        } elseif (file_exists($theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $method . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($theme_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $view . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($theme_viewfinder . '/' . $method . '.twig') || file_exists($theme_viewfinder . '/' . $method . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $method);
+        } elseif (file_exists($theme_viewfinder . '/' . $view . '.twig') || file_exists($theme_viewfinder . '/' . $view . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $view);
+        } elseif (file_exists($theme_viewfinder . $suffix . '.twig') || file_exists($theme_viewfinder . $suffix . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . $suffix);
+        } elseif (file_exists($theme_viewfinder . $suffix . '.twig') || file_exists($theme_viewfinder . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder);
+        }
+
+        /**
+         * ---------------------------------------------------------------------
+         * Find view from user modules
+         * ---------------------------------------------------------------------
+         */
+        elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix . '.twig') || file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix);
+        } elseif (file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . '.twig') || file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder));
+        } elseif (file_exists($module_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $method . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($module_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $view . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($module_viewfinder . '/' . $method . '.twig') || file_exists($module_viewfinder . '/' . $method . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $method);
+        } elseif (file_exists($module_viewfinder . '/' . $view . '.twig') || file_exists($module_viewfinder . '/' . $view . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $view);
+        } elseif (file_exists($module_viewfinder . $suffix . '.twig') || file_exists($module_viewfinder . $suffix . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . $suffix);
+        } elseif (file_exists($module_viewfinder . '.twig') || file_exists($module_viewfinder . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $module_viewfinder);
+        }
+
+        /**
+         * ---------------------------------------------------------------------
+         * Find view from core modules
+         * ---------------------------------------------------------------------
+         */
+        elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            // View is found under i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix . '.twig') || file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix);
+        } elseif (file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . '.twig') || file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . '.php')) {
+            // View is found under i18n path of current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder));
+        } elseif (file_exists($core_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $view . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($core_viewfinder . '/' . $method . '.twig') || file_exists($core_viewfinder . '/' . $method . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $method);
+        } elseif (file_exists($core_viewfinder . '/' . $view . '.twig') || file_exists($core_viewfinder . '/' . $view . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $view);
+        } elseif (file_exists($core_viewfinder . $suffix . '.twig') || file_exists($core_viewfinder . $suffix . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . $suffix);
+        } elseif (file_exists($core_viewfinder . '.twig') || file_exists($core_viewfinder . '.php')) {
+            // View is found and same as current classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $core_viewfinder);
+        }
+
+        /**
+         * ---------------------------------------------------------------------
+         * Find fallback view if doesn't match anything from above occurrence
+         * ---------------------------------------------------------------------
+         */
+        elseif (file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($fallback_theme_viewfinder . '/' . $method . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $method);
+        } elseif (file_exists($fallback_theme_viewfinder . '/' . $view . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $view . '.php')) {
+            // View is found without i18n path
+            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $view);
+        } elseif (file_exists($fallback_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_viewfinder . '/' . $method . $suffix . '.php')) {
+            // View fallback is found
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($fallback_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallback_viewfinder . '/' . $view . $suffix . '.php')) {
+            // View fallback is found
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($fallback_viewfinder . '/' . $method . '.twig') || file_exists($fallback_viewfinder . '/' . $method . '.php')) {
+            // View fallback is found
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $method);
+        } elseif (file_exists($fallback_viewfinder . '/' . $view . '.twig') || file_exists($fallback_viewfinder . '/' . $view . '.php')) {
+            // View fallback is found
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $view);
+        } elseif (file_exists($fallback_viewfinder . $suffix . '.twig') || file_exists($fallback_viewfinder . $suffix . '.php')) {
+            // View fallback is found and same as classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . $suffix);
+        } elseif (file_exists($fallback_viewfinder . '.twig') || file_exists($fallback_viewfinder . '.php')) {
+            // View fallback is found and same as classname (lowercase)
+            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder);
+        } else {
+            // No matches view, check fallback
+            if (service('router')->getMatchedRoute()) {
+                // No mode
+                $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/error');
+            } else {
+                // No router found
+                if (file_exists(dirname($theme_viewfinder) . '/404.twig') || file_exists(dirname($theme_viewfinder) . '/404.php')) {
+                    // Use theme view
+                    $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/404');
+                } elseif (file_exists($fallback_theme_viewfinder . '/404.twig') || file_exists($fallback_theme_viewfinder . '/404.php')) {
+                    // Use theme component
+                    $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/404');
+                } else {
+                    // Use core view
+                    $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/404');
+                }
+            }
+        }
+
+        // Remove duplicate directory separator
+        $view = str_replace('//', '/', $view);
+
+        return $view;
+    }
+
+    /**
+     * Build output view or object
+     * @param   null|mixed $view
+     * @param   null|mixed $table
+     */
+    public function build($view = null, $data = [], $table = null)
+    {
+        // Fix encoding
+        $data = encoding_fixer($data);
+
+        // Convert array to object
+        $data = json_decode(json_encode($data));
+
+        // Get view
+        $view = $this->get_view($view);
+
+        // Load active theme helper if any
+        if (is_dir(ROOTPATH . 'themes/' . $this->theme . '/helpers')) {
+            // Load filesystem helper
+            helper('filesystem');
+
+            // List available helper files
+            $helpers = directory_map(ROOTPATH . 'themes/' . $this->theme . '/helpers', 1);
+
+            foreach ($helpers as $key => $helper) {
+                if (strtolower(pathinfo($val, PATHINFO_EXTENSION)) === 'php') {
+                    // Load helper
+                    helper('themes/' . $this->theme . '/helpers/' . $helper);
+                }
+            }
+        }
+
+        // Main templates definition
+        $main_templates = [
+            '../../aksara/Views/core/index',
+            '../../themes/' . $this->theme . '/components/core/index',
+            '../../aksara/Views/core/index_grid',
+            '../../themes/' . $this->theme . '/components/core/index_grid',
+            '../../aksara/Views/core/index_mobile',
+            '../../themes/' . $this->theme . '/components/core/index_mobile',
+            '../../aksara/Views/core/form',
+            '../../themes/' . $this->theme . '/components/core/form',
+            '../../aksara/Views/core/form_modal',
+            '../../themes/' . $this->theme . '/components/core/form_modal',
+            '../../aksara/Views/core/read',
+            '../../themes/' . $this->theme . '/components/core/read',
+            '../../aksara/Views/core/read_modal',
+            '../../themes/' . $this->theme . '/components/core/read_modal',
+            '../../aksara/Views/core/error',
+            '../../themes/' . $this->theme . '/components/core/error'
+        ];
+
+        // Set view to response
+        $data->view = basename($view);
+
+        if (! service('request')->isAJAX() || ((file_exists(str_replace('../../', ROOTPATH, $view . '.twig')) || file_exists(str_replace('../../', ROOTPATH, $view . '.php'))) && ! in_array($view, $main_templates))) {
+            if (file_exists(str_replace('../../', ROOTPATH, $view . '.twig'))) {
+                // Load Twig template parser
+                $parser = new Parser($this->theme);
+
+                // Build html from result object
+                $data->content = $parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data);
+            } else {
+                // Build html from result object
+                $data->content = view($view, (array) $data);
+            }
+
+            // Intersection key to keep property from unset
+            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_string', 'elapsed_time', 'content', '_token'];
+
+            foreach ($data as $key => $val) {
+                if (! in_array($key, $intersection_key)) {
+                    // Unset rendered object
+                    unset($data->$key);
+                }
+            }
+        }
+
+        if (service('request')->isAJAX() && service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) {
+            // Send to client
+            return make_json($data);
+        } else {
+            // Add core menus into data object
+            $data->menus = $this->_core_menus();
+
+            // Convert array to object
+            $data = json_decode(json_encode($data));
+
+            if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/layout.twig')) {
+                // Load Twig template parser
+                $parser = new Parser($this->theme);
+
+                // Build html from result object
+                $parsed_view = $parser->parse(ROOTPATH . 'themes/' . $this->theme . '/layout.twig', (array) $data);
+            } else {
+                // Build html from result object
+                $parsed_view = view('../../themes/' . $this->theme . '/layout', (array) $data);
+            }
+
+            // Minify output
+            $output = $this->_beautify($parsed_view);
+
+            return service('response')->setBody($output)->send();
+        }
+    }
+
+    /**
+     * Generate breadcrumb
+     *
+     * @param   mixed|array $data
+     * @param   string $title
+     */
+    public function breadcrumb($data = [], $title = null, bool $translate = false)
+    {
+        $slug = null;
+        $checker = service('request')->uri->getSegments();
+        $params = service('request')->getGet();
+        $params['per_page'] = null;
+        $params['q'] = null;
+        $params['order'] = null;
+        $params['sort'] = null;
+
+        if (! $data || ! is_array($data)) {
+            foreach ($checker as $key => $val) {
+                $data[$val] = ucwords($val);
+            }
+        }
+
+        if ($this->get_theme_property('type') == 'backend') {
+            $output = [
+                [
+                    'url' => base_url('dashboard'),
+                    'label' => phrase('Dashboard'),
+                    'icon' => 'mdi mdi-home'
+                ]
+            ];
+        } else {
+            $output = [
+                [
+                    'url' => base_url(),
+                    'label' => phrase('Homepage'),
+                    'icon' => 'mdi mdi-home'
+                ]
+            ];
+        }
+
+        $current_slug = end($checker);
+        $slug = null;
+
+        foreach ($data as $key => $val) {
+            $slug .= ($slug ? '/' : null) . $key;
+
+            if ($key && $val) {
+                if ($key != $current_slug) {
+                    $output[] = [
+                        'url' => base_url($slug, $params),
+                        'label' => ($translate ? phrase($val) : $val),
+                        'icon' => ''
+                    ];
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Generate pagination
+     *
+     * @param   mixed|array $data
+     */
+    public function pagination($data = [], bool $api_client = false)
+    {
+        if (! $data) {
+            // Safe abstraction
+            $data = new \stdClass();
+        } elseif (is_array($data)) {
+            // Convert array to object
+            $data = json_decode(json_encode($data));
+        }
+
+        if (! isset($data->total_rows)) {
+            // If there's no result, set to 0
+            $data->total_rows = 0;
+        }
+
+        if (! isset($data->per_page)) {
+            // If no per_page setting, set default
+            $data->per_page = 25;
+        }
+
+        if (! isset($data->offset)) {
+            // If there's no offset, set to 0
+            $data->offset = 0;
+        }
+
+        $output = null;
+
+        $pager = \Config\Services::pager();
+
+        // Get last page
+        $last_page = ($data->total_rows > $data->per_page ? (int) ceil($data->total_rows / $data->per_page) : 1);
+
+        // Make pagination links
+        $pagination = $pager->makeLinks(1, $data->per_page, $data->total_rows, 'pagination');
+
+        // Parse HTML
+        $parser = new \Aksara\Libraries\Html_dom();
+        $buffer = $parser->str_get_html($pagination);
+
+        $query_string = [];
+
+        foreach (service('request')->getGet() as $key => $val) {
+            $key = preg_replace('/[^\w-]/', '', $key);
+
+            if (! $key || in_array($key, ['q', 'per_page'])) {
+                continue;
+            }
+
+            $query_string[] = [
+                'name' => $key,
+                'value' => htmlspecialchars($val)
+            ];
+        }
+
+        $output = [
+            'total_rows' => $data->total_rows,
+            'per_page' => $data->per_page,
+            'action' => current_page(null, ['per_page' => null]),
+            'filters' => [
+                'hidden' => $query_string,
+                'select' => [
+                    [
+                        'name' => 'limit',
+                        'values' => [
+                            [
+                                'value' => $data->per_page,
+                                'label' => $data->per_page,
+                                'selected' => ! $data->per_page
+                            ],
+                            [
+                                'value' => ($data->per_page * 2),
+                                'label' => ($data->per_page * 2),
+                                'selected' => ($data->per_page * 2) === $data->per_page
+                            ],
+                            [
+                                'value' => ($data->per_page * 4),
+                                'label' => ($data->per_page * 4),
+                                'selected' => ($data->per_page * 4) === $data->per_page
+                            ],
+                            [
+                                'value' => ($data->per_page * 8),
+                                'label' => ($data->per_page * 8),
+                                'selected' => ($data->per_page * 8) === $data->per_page
+                            ],
+                            [
+                                'value' => ($data->per_page * 20),
+                                'label' => ($data->per_page * 20),
+                                'selected' => ($data->per_page * 20) === $data->per_page
+                            ]
+                        ]
+                    ]
+                ],
+                'number' => [
+                    [
+                        'name' => 'per_page',
+                        'value' => (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1),
+                        'min' => 1,
+                        'max' => $last_page
+                    ]
+                ]
+            ],
+            'information' => phrase('Showing') . ' ' . ($data->offset ? number_format($data->offset) : ($data->total_rows ? 1 : 0)) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries found') : phrase('entry found'))
+        ];
+
+        foreach ($buffer->find('ul li') as $key => $val) {
+            $output['links'][] = [
+                'parent_class' => $val->class,
+                'class' => $val->find('a', 0)->class,
+                'href' => $val->find('a', 0)->href,
+                'label' => trim(str_replace('&amp;', '&', htmlspecialchars($val->find('a', 0)->innertext)))
+            ];
+        }
+
+        return $output;
+    }
+
+    /**
+     * Function to beautify HTML
+     * @param null|mixed $buffer
+     */
+    private function _beautify($buffer = null)
+    {
+        $beautifier = new Beautifier([
+            'indent_inner_html' => true,
+            'indent_char' => ' ',
+            'indent_size' => 4,
+            'wrap_line_length' => 32786,
+            'unformatted' => ['code', 'pre', 'textarea'],
+            'preserve_newlines' => false,
+            'max_preserve_newlines' => 32786,
+            'indent_scripts' => 'normal' // keep|separate|normal
+        ]);
+
+        // Beautify output
+        return $beautifier->beautify($buffer);
+    }
+
+    /**
+     * Function to minify HTML
+     * @param null|mixed $buffer
+     */
+    private function _minify($buffer = null)
+    {
+        // Beautify buffer
+        $buffer = $this->_beautify($buffer);
+
+        // Make a backup regex
+        $buffer = str_replace('\\//', '_BACKUP_', $buffer);
+
+        // Remove comments from buffer
+        $buffer = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $buffer);
+
+        // Restore backup
+        $buffer = str_replace('_BACKUP_', '\//', $buffer);
+
+        // Make a backup of "pre" tag
+        preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $buffer, $pre_backup);
+
+        $buffer = str_replace($pre_backup[0], array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $buffer);
+
+        $pattern = [
+            '/[\r|\n|\t]+/' => ' ',     // Replace end of line by space
+            '/(\s)+/s' => '$1',         // Shorten multiple whitespace sequences
+            '/<!--(.|\s)*?-->/' => ''   //remove HTML comments
+        ];
+
+        $buffer = preg_replace(array_keys($pattern), array_values($pattern), $buffer);
+
+        // Rollback the pre tag
+        $buffer = str_replace(array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $buffer);
+
+        return $buffer;
+    }
+
+    /**
+     * Default core menus
+     */
+    private function _core_menus(array $menus = [])
+    {
+        if (! $menus) {
+            $group_id = get_userdata('group_id');
+
+            $menus = $this->_model->select('
+                serialized_data
+            ')
+            ->group_start()
+            ->where('group_id', $group_id)
+            ->or_where('group_id', 0)
+            ->group_end()
+            ->get_where(
+                'app__menus',
+                [
+                    'menu_placement' => ('frontend' == $this->get_theme_property('type') ? 'header' : 'sidebar')
+                ],
+                1
+            )
+            ->row('serialized_data');
+
+            $menus = ($menus ? json_decode($menus, true) : []);
+
+            if (get_userdata('group_id') == 1 && $this->get_theme_property('type') == 'backend') {
+                $core_menus = [
+                    [
+                        'id' => 0,
+                        'label' => '',
+                        'slug' => '---'
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => 'CMS',
+                        'slug' => 'cms',
+                        'icon' => 'mdi mdi-dropbox',
+                        'children' => [
+                            [
+                                'id' => 0,
+                                'label' => 'Blogs',
+                                'slug' => 'cms/blogs',
+                                'icon' => 'mdi mdi-newspaper',
+                                'children' => [
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Posts',
+                                        'slug' => 'cms/blogs',
+                                        'icon' => 'mdi mdi-pencil'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Categories',
+                                        'slug' => 'cms/blogs/categories',
+                                        'icon' => 'mdi mdi-sitemap'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Pages',
+                                'slug' => 'cms/pages',
+                                'icon' => 'mdi mdi-book-open-page-variant'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Galleries',
+                                'slug' => 'cms/galleries',
+                                'icon' => 'mdi mdi-folder-multiple-image'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Videos',
+                                'slug' => 'cms/videos',
+                                'icon' => 'mdi mdi-youtube'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Peoples',
+                                'slug' => 'cms/peoples',
+                                'icon' => 'mdi mdi-account-group-outline'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Partial Content',
+                                'slug' => 'cms/partials',
+                                'icon' => 'mdi mdi-file-image',
+                                'children' => [
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Carousels',
+                                        'slug' => 'cms/partials/carousels',
+                                        'icon' => 'mdi mdi-image-multiple'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'FAQs',
+                                        'slug' => 'cms/partials/faqs',
+                                        'icon' => 'mdi mdi-file-question'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Announcements',
+                                        'slug' => 'cms/partials/announcements',
+                                        'icon' => 'mdi mdi-bullhorn-outline'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Testimonials',
+                                        'slug' => 'cms/partials/testimonials',
+                                        'icon' => 'mdi mdi-comment-account-outline'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Inquiries',
+                                        'slug' => 'cms/partials/inquiries',
+                                        'icon' => 'mdi mdi-message-text'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Media',
+                                        'slug' => 'cms/partials/media',
+                                        'icon' => 'mdi mdi-folder-image'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Comments',
+                                'slug' => 'cms/comments',
+                                'icon' => 'mdi mdi-comment-multiple-outline'
+                            ]
+                        ]
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => '',
+                        'slug' => '---'
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => 'Core Tools',
+                        'slug' => '---'
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => 'Administrative',
+                        'slug' => 'administrative',
+                        'icon' => 'mdi mdi-cogs',
+                        'children' => [
+                            [
+                                'id' => 0,
+                                'label' => 'Users and Groups',
+                                'slug' => 'administrative/users',
+                                'icon' => 'mdi mdi-account-group-outline',
+                                'children' => [
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Users',
+                                        'slug' => 'administrative/users',
+                                        'icon' => 'mdi mdi-account-group'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Groups',
+                                        'slug' => 'administrative/groups',
+                                        'icon' => 'mdi mdi-sitemap'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Privileges',
+                                        'slug' => 'administrative/groups/privileges',
+                                        'icon' => 'mdi mdi-account-check-outline'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Configurations',
+                                'slug' => 'administrative',
+                                'icon' => 'mdi mdi-wrench-outline',
+                                'children' => [
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Site Settings',
+                                        'slug' => 'administrative/settings',
+                                        'icon' => 'mdi mdi-settings'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Menus',
+                                        'slug' => 'administrative/menus',
+                                        'icon' => 'mdi mdi-menu'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Translations',
+                                        'slug' => 'administrative/translations',
+                                        'icon' => 'mdi mdi-translate'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Countries',
+                                        'slug' => 'administrative/countries',
+                                        'icon' => 'mdi mdi-map-legend'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Years',
+                                        'slug' => 'administrative/years',
+                                        'icon' => 'mdi mdi-calendar-multiple-check'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Connections',
+                                        'slug' => 'administrative/connections',
+                                        'icon' => 'mdi mdi-power-plug'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Logs',
+                                'slug' => 'administrative/logs',
+                                'icon' => 'mdi mdi-information-outline',
+                                'children' => [
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Activities',
+                                        'slug' => 'administrative/logs/activities',
+                                        'icon' => 'mdi mdi-calendar-clock'
+                                    ],
+                                    [
+                                        'id' => 0,
+                                        'label' => 'Errors',
+                                        'slug' => 'administrative/logs/errors',
+                                        'icon' => 'mdi mdi-bug'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Session Cleaner',
+                                'slug' => 'administrative/cleaner',
+                                'icon' => 'mdi mdi-trash-can'
+                            ]
+                        ]
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => 'Add-Ons',
+                        'slug' => 'addons',
+                        'icon' => 'mdi mdi-puzzle'
+                    ],
+                    [
+                        'id' => 0,
+                        'label' => 'APIs',
+                        'slug' => 'apis',
+                        'icon' => 'mdi mdi-code-braces',
+                        'children' => [
+                            [
+                                'id' => 0,
+                                'label' => 'Services',
+                                'slug' => 'apis/services',
+                                'icon' => 'mdi mdi-link-variant'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Debug Tool',
+                                'slug' => 'apis/debug_tool',
+                                'icon' => 'mdi mdi-android-debug-bridge'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Documentation',
+                                'slug' => 'apis/documentation',
+                                'icon' => 'mdi mdi mdi-book-open-page-variant'
+                            ]
+                        ]
+                    ]
+                ];
+
+                $menus = array_merge($menus, $core_menus);
+            }
+        }
+
+        if ($this->get_theme_property('type') == 'backend') {
+            $dashboard = [
+                [
+                    'id' => 0,
+                    'label' => 'Main Navigation',
+                    'slug' => '---',
+                    'icon' => null,
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Dashboard',
+                    'slug' => 'dashboard',
+                    'icon' => 'mdi mdi-monitor-dashboard',
+                ]
+            ];
+
+            $credits = [
+                [
+                    'id' => 0,
+                    'label' => '',
+                    'slug' => '---',
+                    'icon' => null,
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'About',
+                    'slug' => 'pages/about',
+                    'icon' => 'mdi mdi-blank',
+                    'class' => 'text-sm'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'License',
+                    'slug' => 'pages/license',
+                    'icon' => 'mdi mdi-blank',
+                    'class' => 'text-sm'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Aksara ' . aksara('build_version'),
+                    'slug' => '---',
+                    'icon' => 'mdi mdi-blank',
+                    'class' => 'text-sm',
+                    'translate' => false
+                ]
+            ];
+
+            $menus = array_merge($dashboard, $menus, $credits);
+        }
+
+        array_walk_recursive($menus, function (&$label, $key) {
+            if ('label' == $key && $label && 'Aksara ' . aksara('build_version') != $label) {
+                $label = phrase($label, true);
+            }
+        });
+
+        return $menus;
+    }
 }

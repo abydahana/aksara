@@ -1,20 +1,26 @@
 <?php
 
 /**
- * This file is part of the CodeIgniter 4 framework.
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
  *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
  *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
 // Cast language settings
 return [
-	'jsonErrorDepth'         => 'Kedalaman tumpukan maksimum terlampaui',
-	'jsonErrorStateMismatch' => 'Di bawah aliran atau mode tidak cocok',
-	'jsonErrorCtrlChar'      => 'Ditemukan karakter kontrol tak terduga',
-	'jsonErrorSyntax'        => 'Kesalahan sintaksis, JSON salah format',
-	'jsonErrorUtf8'          => 'Karakter UTF-8 salah bentuk, mungkin disandikan salah',
-	'jsonErrorUnknown'       => 'Kesalahan yang tidak diketahui',
+    'jsonErrorDepth' => 'Kedalaman tumpukan maksimum terlampaui',
+    'jsonErrorStateMismatch' => 'Di bawah aliran atau mode tidak cocok',
+    'jsonErrorCtrlChar' => 'Ditemukan karakter kontrol tak terduga',
+    'jsonErrorSyntax' => 'Kesalahan sintaksis, JSON salah format',
+    'jsonErrorUtf8' => 'Karakter UTF-8 salah bentuk, mungkin disandikan salah',
+    'jsonErrorUnknown' => 'Kesalahan yang tidak diketahui',
 ];

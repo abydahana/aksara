@@ -1,0 +1,73 @@
+<div class="container-fluid">
+    <div role="toolbar" class="alias-table-toolbar py-1 border-bottom">
+        {# Include toolbar component #}
+        {% include 'core/toolbar.twig' with results.toolbar %}
+    </div>
+    <div role="table" class="table-responsive alias-table-index">
+        <table class="table table-sm table-hover mb-0">
+            <thead>
+                <tr>
+                    <th width="1">
+                        <div class="mb-0">
+                            <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" role="checker" data-parent="table">
+                        </div>
+                    </th>
+                    <th>
+                        {{ phrase('Options') }}
+                    </th>
+                    {% for column in results.columns %}
+                        <th align="{{ column.align }}">
+                            {% if column.url %}
+                                <a href="{{ column.url }}" class="fw-bold {{ column.class }}" data-bs-toggle="tooltip" title="{{ column.label }}">
+                                    {{ column.label }}
+                                    <i class="{{ column.icon }}"></i>
+                                </a>
+                            {% else %}
+                                <span class="fw-bold">
+                                    {{ column.label }}
+                                </span>
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, row in results.table_data %}
+                    <tr id="row_{{ key }}">
+                        <td>
+                            {% if row.deleting %}
+                                <div class="mb-0">
+                                    <input type="checkbox" name="bulk_delete[]" value="{{ row.primary | json_encode | escape }}" class="form-check-input">
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-xs">
+                                {% for button in row.buttons %}
+                                    <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                        <i class="{{ button.icon }}"></i>
+                                    </a>
+                                {% endfor %}
+                                {% if row.dropdowns | length > 0 %}
+                                    <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                        <i class="mdi mdi-format-list-bulleted"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% for field in row.field_data %}
+                            <td colspan="{{ field.colspan }}">
+                                {# Include table component #}
+                                {% include 'table/' ~ field.type ~ '.twig' with field %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div role="pagination" class="alias-pagination border-top py-2">
+        {# Include pagination component #}
+        {% include 'core/pagination.twig' with pagination %}
+    </div>
+</div>

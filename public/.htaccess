@@ -1,5 +1,5 @@
 # Disable directory browsing
-Options All -Indexes
+Options -Indexes
 
 # ----------------------------------------------------------------------
 # Rewrite engine
@@ -17,31 +17,36 @@ Options All -Indexes
 	# RewriteBase /
 
 	# Redirect Trailing Slashes...
-	# RewriteCond %{REQUEST_FILENAME} !-d
-	# RewriteRule ^(.*)/$ /$1 [L,R=301]
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_URI} (.+)/$
+	RewriteRule ^ %1 [L,R=301]
 
 	# Rewrite "www.example.com -> example.com"
-	# RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTPS} !=on
 	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
 	# Checks to see if the user is attempting to access a valid file,
-    # such as an image or css document, if this isn't true it sends the
-    # request to the front controller, index.php
+	# such as an image or css document, if this isn't true it sends the
+	# request to the front controller, index.php
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^([\s\S]*)$ index.php/$1 [L,NC,QSA]
 
 	# Ensure Authorization header is passed along
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	RewriteCond %{HTTP:Authorization} .
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
-    # If we don't have mod_rewrite installed, all 404's
-    # can be sent to index.php, and everything works as normal.
-    ErrorDocument 404 index.php
+	# If we don't have mod_rewrite installed, all 404's
+	# can be sent to index.php, and everything works as normal.
+	ErrorDocument 404 index.php
 </IfModule>
+
+# Disable server signature start
+	ServerSignature Off
+# Disable server signature end
 
 <IfModule mod_headers.c>
 	Header set X-XSS-Protection "1; mode=block"
@@ -51,7 +56,3 @@ Options All -Indexes
 	Header set Referrer-Policy "same-origin"
 	Header set Feature-Policy "geolocation 'self'"
 </IfModule>
-
-# Disable server signature start
-ServerSignature Off
-# Disable server signature end

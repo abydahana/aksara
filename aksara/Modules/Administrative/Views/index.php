@@ -1,183 +1,183 @@
-<div class="container-fluid pt-3 pb-3">
-	<?php if(1 == get_userdata('group_id')) { ?>
-	<div class="row">
-		<div class="col-md-4">
-			<a href="<?php echo go_to('users'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-account-group mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('users'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_users'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-		<div class="col-md-4">
-			<a href="<?php echo go_to('groups'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-sitemap mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('groups'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_groups'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-		<div class="col-md-4">
-			<a href="<?php echo go_to('groups/privileges'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-account-check-outline mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('privileges'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_group_privileges'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-4">
-			<a href="<?php echo go_to('settings'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-wrench mdi-flip-h mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('site_settings'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('update_site_configuration'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-		<div class="col-md-4">
-			<a href="<?php echo go_to('menus'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-menu mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('menus'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_menus'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-		<div class="col-md-4">
-			<a href="<?php echo go_to('translations'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-translate mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('translations'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_translations'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-4">
-			<a href="<?php echo go_to('countries'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-account-edit mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('countries'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('manage_countries'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-		<div class="col-md-4">
-			<a href="<?php echo go_to('logs'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-information-outline mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('logs'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('check_app_logs'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-	</div>
-	<?php } ?>
-	<div class="row">
-		<div class="col-md-4">
-			<a href="<?php echo go_to('account'); ?>" class="card text-white bg-secondary mb-3 --xhr">
-				<div class="card-body pt-2 pe-3 pb-2 ps-3">
-					<div class="row">
-						<div class="col-3">
-							<i class="mdi mdi-cogs mdi-3x"></i>
-						</div>
-						<div class="col">
-							<h5 class="card-title mb-0">
-								<?php echo phrase('account'); ?>
-							</h5>
-							<p class="card-text">
-								<?php echo phrase('update_your_profile_info'); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			</a>
-		</div>
-	</div>
+<div class="container-fluid py-3">
+    <?php if (get_userdata('group_id') == 1): ?>
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('users'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-account-group mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Users'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Users'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('groups'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-sitemap mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Groups'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Groups'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('groups/privileges'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-account-check-outline mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Privileges'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Group Privileges'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('settings'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-wrench mdi-flip-h mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Site Settings'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Update Site Configuration'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('menus'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-menu mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Menus'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Menus'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('translations'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-translate mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Translations'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Translations'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('countries'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-account-edit mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Countries'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Manage Countries'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('logs'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-information-outline mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Logs'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Check Application Logs'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+            <a href="<?= go_to('account'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-cogs mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Account'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Update Your Account'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>

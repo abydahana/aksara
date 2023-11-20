@@ -20,7 +20,7 @@ function init()
 	}
 
 	// Assign onclick events to the tab links, and
-	// highlight the first tab
+	// Highlight the first tab
 	var i = 0;
 
 	for (var id in tabLinks)

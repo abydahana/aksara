@@ -1,67 +1,74 @@
 <h4>
-	<?php echo phrase('congratulations'); ?>
+    <?= phrase('Congratulations!'); ?>
 </h4>
 <p>
-	<?php echo phrase('aksara_has_been_successfully_installed_on_your_system'); ?>
+    <?= phrase('Aksara has been successfully installed on your system.'); ?>
 </p>
-<hr class="row" />
+<div class="text-muted opacity-50">
+    <hr class="row" />
+</div>
 <p class="mb-0">
-	<?php echo phrase('you_can_login_as_superuser_using_following_credential'); ?>
+    <?= phrase('You can login as superuser using following credential'); ?>:
 </p>
 <div class="row">
-	<div class="col-4">
-		<b>
-			<?php echo phrase('username'); ?>
-		</b>
-	</div>
-	<div class="col-8">
-		<?php echo session()->get('username'); ?>
-	</div>
+    <div class="col-4">
+        <b>
+            <?= phrase('Username'); ?>
+        </b>
+    </div>
+    <div class="col-8">
+        <?= session()->get('username'); ?>
+    </div>
 </div>
 <div class="row form-group mb-3">
-	<div class="col-4">
-		<b>
-			<?php echo phrase('password'); ?>
-		</b>
-	</div>
-	<div class="col-8">
-		<?php echo session()->get('password'); ?>
-	</div>
+    <div class="col-4">
+        <b>
+            <?= phrase('Password'); ?>
+        </b>
+    </div>
+    <div class="col-8">
+        <?= session()->get('password'); ?>
+    </div>
 </div>
-<hr />
-<div class="row">
-	<div class="col-md-4">
-		<img src="assets/like-a-boss.png" class="img-fluid" alt="Like a boss..." />
-	</div>
-	<div class="col-md-8">
-		<p>
-			<?php echo phrase('follow_our_updates_to_get_our_other_works_if_you_find_this_useful'); ?>
-		</p>
-		<p>
-			<?php echo phrase('just_to_remind_you'); ?>
-			<?php echo phrase('we_also_collect_donations_from_people_like_you_to_support_our_research'); ?>
-		</p>
-		<p>
-			<?php echo phrase('regardless_of_the_amount_will_be_very_useful'); ?>
-		</p>
-		<p>
-			<?php echo phrase('cheers'); ?>,
-			<br />
-			<a href="//abydahana.github.io" class="text-primary text-decoration-none" target="_blank">
-				<b>Aby Dahana</b>
-			</a>
-		</p>
-	</div>
+<div class="text-muted opacity-50">
+    <hr />
 </div>
-<hr class="row" />
 <div class="row">
-	<div class="col-sm-6">
-		&nbsp;
-	</div>
-	<div class="col-sm-6">
-		<a href="<?php echo site_url('xhr/boot'); ?>" class="btn btn-warning d-block fw-bold">
-			<i class="mdi mdi-rocket"></i>
-			<?php echo phrase('launch_your_site'); ?>
-		</a>
-	</div>
+    <div class="col-md-4">
+        <img src="assets/like-a-boss.png" class="img-fluid" alt="Like a boss..." />
+    </div>
+    <div class="col-md-8">
+        <p>
+            <?= phrase('Follow our updates to get our other works if you find this useful.'); ?>
+        </p>
+        <p>
+            <?= phrase('Just to remind you, we also collect donations from people like you to support our research.'); ?>
+        </p>
+        <p>
+            <?= phrase('Regardless of the amount will be very useful.'); ?>
+        </p>
+        <p>
+            <?= phrase('Cheers'); ?>,
+            <br />
+            <a href="//abydahana.github.io" class="text-primary text-decoration-none" target="_blank">
+                <b>Aby Dahana</b>
+            </a>
+        </p>
+    </div>
+</div>
+<div class="text-muted opacity-50">
+    <hr class="row" />
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        &nbsp;
+    </div>
+    <div class="col-sm-6">
+        <div class="d-grid">
+            <a href="<?= site_url('xhr/boot'); ?>" class="btn btn-outline-success btn-sm rounded-pill fw-bold">
+                <i class="mdi mdi-rocket"></i>
+                <?= phrase('Launch Site'); ?>
+            </a>
+        </div>
+    </div>
 </div>
