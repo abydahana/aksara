@@ -24,11 +24,10 @@ use Aksara\Laboratory\Model;
 use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
-
 use Aksara\Libraries\Document;
 
 /**
- * If it's works, it's ain't stupid ;)
+ * If it works, it ain't stupid ;)
  */
 class Core extends Controller
 {
