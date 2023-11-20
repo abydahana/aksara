@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\AutoloadConfig;
@@ -13,7 +28,12 @@ use CodeIgniter\Config\AutoloadConfig;
  * can find the files as needed.
  *
  * NOTE: If you use an identical key in $psr4 or $classmap, then
- * the values in this file will overwrite the framework's values.
+ *       the values in this file will overwrite the framework's values.
+ *
+ * NOTE: This class is required prior to Autoloader instantiation,
+ *       and does not extend BaseConfig.
+ *
+ * @immutable
  */
 class Autoload extends AutoloadConfig
 {
@@ -31,18 +51,17 @@ class Autoload extends AutoloadConfig
      * else you will need to modify all of those classes for this to work.
      *
      * Prototype:
-     *```
      *   $psr4 = [
      *       'CodeIgniter' => SYSTEMPATH,
-     *       'App'	       => APPPATH
+     *       'App'         => APPPATH
      *   ];
-     *```
      *
-     * @var array<string, string>
+     * @var array<string, array<int, string>|string>
+     * @phpstan-var array<string, string|list<string>>
      */
     public $psr4 = [
         APP_NAMESPACE => APPPATH, // For custom app namespace
-        'Config'      => APPPATH . 'Config',
+        'Config' => APPPATH . 'Config',
     ];
 
     /**
@@ -56,11 +75,9 @@ class Autoload extends AutoloadConfig
      * were being autoloaded through a namespace.
      *
      * Prototype:
-     *```
      *   $classmap = [
      *       'MyClass'   => '/path/to/class/file.php'
      *   ];
-     *```
      *
      * @var array<string, string>
      */
@@ -75,13 +92,26 @@ class Autoload extends AutoloadConfig
      * or for loading functions.
      *
      * Prototype:
-     * ```
-     *	  $files = [
-     *	 	   '/path/to/my/file.php',
-     *    ];
-     * ```
+     *   $files = [
+     *       '/path/to/my/file.php',
+     *   ];
      *
-     * @var array<int, string>
+     * @var string[]
+     * @phpstan-var list<string>
      */
     public $files = [];
+
+    /**
+     * -------------------------------------------------------------------
+     * Helpers
+     * -------------------------------------------------------------------
+     * Prototype:
+     *   $helpers = [
+     *       'form',
+     *   ];
+     *
+     * @var string[]
+     * @phpstan-var list<string>
+     */
+    public $helpers = [];
 }

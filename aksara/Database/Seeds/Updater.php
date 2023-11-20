@@ -1,10 +1,18 @@
 <?php
+
 /**
- * @author			Aby Dahana <abydahana@gmail.com>
- * @profile			abydahana.github.io
- * @website			www.aksaracms.com
- * @copyright		(c) 2021 - Aksara Laboratory
- * @since			version 4.2.8
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
 namespace Aksara\Database\Seeds;
@@ -15,6 +23,6 @@ class Updater extends Seeder
 {
     public function run()
     {
-		// run query to seed new data to the database
-	}
+        // Run query to seed new data to the database
+    }
 }

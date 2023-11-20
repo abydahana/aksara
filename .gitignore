@@ -1,0 +1,95 @@
+#-------------------------
+# Operating Specific Junk Files
+#-------------------------
+
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# OS X Thumbnails
+._*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Linux
+*~
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+#-------------------------
+# Environment Files
+#-------------------------
+# These should never be under version control,
+# as it poses a security risk.
+.env
+.vagrant
+Vagrantfile
+
+#-------------------------
+# Config Files
+#-------------------------
+config.php
+
+#-------------------------
+# Temporary Files
+#-------------------------
+writable/cache/*
+!writable/cache/index.html
+
+writable/debugbar/*
+!writable/debugbar/.gitkeep
+
+writable/logs/*
+!writable/logs/index.html
+
+writable/session/*
+!writable/session/index.html
+
+writable/translations/*
+!writable/translations/index.html
+
+writable/uploads/*
+!writable/uploads/index.html
+
+writable/**/*.db
+writable/**/*.sqlite
+
+public/uploads/*
+!public/uploads/_extension
+!public/uploads/.htaccess
+!public/uploads/index.html
+!public/uploads/placeholder.png
+!public/uploads/placeholder_icon.png
+!public/uploads/placeholder_thumb.png
+
+#-------------------------
+# Composer
+#-------------------------
+vendor/
+composer.lock
+
+#-------------------------
+# Extra file
+#-------------------------
+.vscode/
+.php-cs-fixer.php

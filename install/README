@@ -1,0 +1,11 @@
+DATABASE MIGRATION NOTES:
+1. The migration files are executed ascending;
+2. You don't need to remove or modify existing migration files;
+3. Name your file with prefix, greater than existing migration files;
+4. Make sure your migration syntax are executed from top table (when there's contain foreign key);
+
+DATABASE SEEDER NOTES:
+1. Name your seeder file with "EcosystemSeeder.php";
+2. You can add dummy data seeder to separate installation version;
+3. Add suffix number to represent installation version number after underscore;
+4. Just like "EcosystemSeeder_2.php" and "EcosystemSeeder_3.php";

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 use CodeIgniter\CLI\CLI;
 
 // The main Exception
@@ -12,37 +24,48 @@ CLI::write('at ' . CLI::color(clean_path($exception->getFile()) . ':' . $excepti
 CLI::newLine();
 
 // The backtrace
-if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
+if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE)
+{
     $backtraces = $exception->getTrace();
 
-    if ($backtraces) {
+    if ($backtraces)
+    {
         CLI::write('Backtrace:', 'green');
     }
 
-    foreach ($backtraces as $i => $error) {
-        $padFile  = '    '; // 4 spaces
+    foreach ($backtraces as $i => $error)
+    {
+        $padFile = '    '; // 4 spaces
         $padClass = '       '; // 7 spaces
-        $c        = str_pad($i + 1, 3, ' ', STR_PAD_LEFT);
+        $c = str_pad($i + 1, 3, ' ', STR_PAD_LEFT);
 
-        if (isset($error['file'])) {
+        if (isset($error['file']))
+        {
             $filepath = clean_path($error['file']) . ':' . $error['line'];
 
             CLI::write($c . $padFile . CLI::color($filepath, 'yellow'));
-        } else {
+        }
+        else
+        {
             CLI::write($c . $padFile . CLI::color('[internal function]', 'yellow'));
         }
 
         $function = '';
 
-        if (isset($error['class'])) {
+        if (isset($error['class']))
+        {
             $type = ($error['type'] === '->') ? '()' . $error['type'] : $error['type'];
             $function .= $padClass . $error['class'] . $type . $error['function'];
-        } elseif (! isset($error['class']) && isset($error['function'])) {
+        }
+        elseif (! isset($error['class']) && isset($error['function']))
+        {
             $function .= $padClass . $error['function'];
         }
 
-        $args = implode(', ', array_map(static function ($value) {
-            switch (true) {
+        $args = implode(', ', array_map(static function ($value)
+        {
+            switch (true)
+            {
                 case is_object($value):
                     return 'Object(' . get_class($value) . ')';
 
@@ -50,7 +73,7 @@ if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
                     return count($value) ? '[...]' : '[]';
 
                 case $value === null:
-                    return 'null'; // return the lowercased version
+                    return 'null'; // Return the lowercased version
 
                 default:
                     return var_export($value, true);

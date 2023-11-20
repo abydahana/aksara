@@ -6,12 +6,21 @@
 	"website": "https://abydahana.github.io",
 	"demo_url": "https://www.aksaracms.com",
 	"type": "backend",
-	"compatibility":
-	[
+	"compatibility": [
 		"4.1"
 	],
-	"screenshot":
-	[
+	"configs": {
+		"wrapper": {
+			"page": "#page-wrapper",
+			"content": "#content-wrapper",
+			"header": "#header-wrapper",
+			"footer": "#footer-wrapper",
+			"title": "#title-wrapper",
+			"breadcrumb": "#breadcrumb-wrapper",
+			"sidebar": "#sidebar-wrapper"
+		}
+	},
+	"screenshot": [
 		{
 			"src": "assets/screenshot.png",
 			"alt": "Screenshot"

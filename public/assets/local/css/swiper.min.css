@@ -1,0 +1,54 @@
+.swiper-container {
+  margin-left: -1rem !important;
+  margin-right: -1rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+.swiper-button-prev {
+  position: absolute !important;
+  top: 38% !important;
+  left: 0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-top-right-radius: 50% !important;
+  border-bottom-right-radius: 50% !important;
+  color: #333 !important;
+  background: #fff !important;
+  font-size: 20px !important;
+  font-weight: bold;
+  border: 1px solid #ddd !important;
+}
+.swiper-button-next {
+  position: absolute !important;
+  top: 38% !important;
+  right: 0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-top-left-radius: 50% !important;
+  border-bottom-left-radius: 50% !important;
+  color: #333 !important;
+  background: #fff !important;
+  font-size: 20px !important;
+  font-weight: bold;
+  border: 1px solid #ddd !important;
+}
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 10px !important;
+}
+.swiper-button-prev.swiper-button-disabled,
+.swiper-button-next.swiper-button-disabled {
+  display: none !important;
+}
+.swiper-horizontal > .swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal,
+.swiper-pagination-custom,
+.swiper-pagination-fraction {
+  bottom: 60px !important;
+}
+.swiper-pagination-bullet {
+  background: #fff !important;
+}
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background: #09f !important;
+}

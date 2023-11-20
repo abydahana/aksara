@@ -1,0 +1,5 @@
+<select name="{{ name }}" role="select" data-relation="{{ relation }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" {{ readonly }}>
+    {% for option in content %}
+        <option value="{{ option.value }}" {% if option.selected %} selected {% endif %}>{{ option.label }}</option>
+    {% endfor %}
+</select>

@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -88,4 +103,31 @@ class Toolbar extends BaseConfig
      * `$maxQueries` defines the maximum amount of queries that will be stored.
      */
     public int $maxQueries = 100;
+
+    /**
+     * --------------------------------------------------------------------------
+     * Watched Directories
+     * --------------------------------------------------------------------------
+     *
+     * Contains an array of directories that will be watched for changes and
+     * used to determine if the hot-reload feature should reload the page or not.
+     * We restrict the values to keep performance as high as possible.
+     *
+     * NOTE: The ROOTPATH will be prepended to all values.
+     */
+    public array $watchedDirectories = [
+        'app',
+    ];
+
+    /**
+     * --------------------------------------------------------------------------
+     * Watched File Extensions
+     * --------------------------------------------------------------------------
+     *
+     * Contains an array of file extensions that will be watched for changes and
+     * used to determine if the hot-reload feature should reload the page or not.
+     */
+    public array $watchedExtensions = [
+        'php', 'css', 'js', 'html', 'svg', 'json', 'env',
+    ];
 }

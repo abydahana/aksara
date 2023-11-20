@@ -1,23 +1,29 @@
 <?php
 
 /**
- * This file is part of the CodeIgniter 4 framework.
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
  *
- * (c) CodeIgniter Foundation <admin@codeigniter.com>
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
  *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
 // Pager language settings
 return [
-	'pageNavigation'         => 'Navigasi halaman',
-	'first'                  => 'Pertama',
-	'previous'               => 'Sebelumnya',
-	'next'                   => 'Berikutnya',
-	'last'                   => 'Terakhir',
-	'older'                  => 'Lebih lama',
-	'newer'                  => 'Lebih baru',
-	'invalidTemplate'        => '{0} bukan sebuah template Pager yang valid.',
-	'invalidPaginationGroup' => '{0} bukan sebuah grup Pagination yang valid.',
+    'pageNavigation' => 'Navigasi halaman',
+    'first' => 'Pertama',
+    'previous' => 'Sebelumnya',
+    'next' => 'Berikutnya',
+    'last' => 'Terakhir',
+    'older' => 'Lebih lama',
+    'newer' => 'Lebih baru',
+    'invalidTemplate' => '{0} bukan sebuah template Pager yang valid.',
+    'invalidPaginationGroup' => '{0} bukan sebuah grup Pagination yang valid.',
 ];

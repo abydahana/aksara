@@ -1,104 +1,122 @@
-<form action="<?php echo site_url('security'); ?>" method="POST" class="--validate-form">
-	<h4>
-		<?php echo phrase('database_configuration'); ?>
-	</h4>
-	<p>
-		<?php echo phrase('fill_the_requested_fields_below_with_your_database_connection'); ?>
-	</p>
-	<hr class="row" />
-	<?php
-		$driver_list								= null;
-		
-		foreach($driver as $key => $val)
-		{
-			$driver_list							.= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
-		}
-	?>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('database_driver'); ?>
-					<b class="text-danger">*</b>
-				</label>
-				<select name="database_driver" class="form-select form-select-sm">
-					<?php echo $driver_list; ?>
-				</select>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-8">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('hostname'); ?>
-					<b class="text-danger">*</b>
-				</label>
-				<input type="text" name="database_hostname" class="form-control form-control-sm" placeholder="e.g: localhost" value="<?php echo session()->get('database_hostname'); ?>" />
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('port'); ?>
-				</label>
-				<input type="number" name="database_port" class="form-control form-control-sm" placeholder="e.g: 3306" value="<?php echo session()->get('database_port'); ?>" />
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('username'); ?>
-					<b class="text-danger">*</b>
-				</label>
-				<input type="text" name="database_username" class="form-control form-control-sm" placeholder="e.g: root" value="<?php echo session()->get('database_username'); ?>" />
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('password'); ?>
-				</label>
-				<input type="password" name="database_password" class="form-control form-control-sm" value="<?php echo session()->get('database_password'); ?>" />
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<div class="form-group mb-3">
-				<label class="d-block mb-0">
-					<?php echo phrase('initial_database'); ?>
-					<b class="text-danger">*</b>
-				</label>
-				<input type="text" name="database_initial" class="form-control form-control-sm" value="<?php echo session()->get('database_initial'); ?>" />
-			</div>
-			<div class="form-group mb-3">
-				<label>
-					<input type="checkbox" name="database_forge" class="form-check-input" value="1" />
-					<?php echo phrase('create_database_if_not_exists'); ?>
-				</label>
-			</div>
-		</div>
-	</div>
-	<hr class="row" />
-	<div class="--validation-callback"></div>
-	<div class="row">
-		<div class="col-6">
-			<a href="<?php echo site_url('requirement'); ?>" class="btn btn-light d-block --xhr">
-				<i class="mdi mdi-arrow-left"></i>
-				<?php echo phrase('back'); ?>
-			</a>
-		</div>
-		<div class="col-6">
-			<div class="d-grid">
-				<input type="hidden" name="_token" value="<?php echo sha1(time()); ?>" />
-				<button type="submit" class="btn btn-primary">
-					<i class="mdi mdi-check"></i>
-					<?php echo phrase('continue'); ?>
-				</button>
-			</div>
-		</div>
-	</div>
+<?php
+    // Database driver options
+    $driver_list = null;
+
+    foreach ($driver as $key => $val)
+    {
+        $driver_list .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+    }
+?>
+<form action="<?= site_url('security'); ?>" method="POST" class="--validate-form">
+    <h4>
+        <?= phrase('Database Configuration'); ?>
+    </h4>
+    <p>
+        <?= phrase('Fill the requested fields below with your database connection.'); ?>
+    </p>
+    <div class="text-muted opacity-50">
+        <hr class="row" />
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Database Driver'); ?>
+                    <b class="text-danger">*</b>
+                </label>
+                <select name="database_driver" class="form-select form-select-sm rounded-pill">
+                    <?= $driver_list; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('DSN'); ?> (<?= phrase('Optional'); ?>)
+                </label>
+                <input type="text" name="database_dsn" class="form-control form-control-sm rounded-pill" placeholder="e.g: dblib:host=localhost;" value="<?= session()->get('database_dsn'); ?>" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Hostname'); ?>
+                    <b class="text-danger">*</b>
+                </label>
+                <input type="text" name="database_hostname" class="form-control form-control-sm rounded-pill" placeholder="e.g: localhost" value="<?= session()->get('database_hostname'); ?>" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Port'); ?>
+                </label>
+                <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" placeholder="e.g: 3306" value="<?= session()->get('database_port'); ?>" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Username'); ?>
+                    <b class="text-danger">*</b>
+                </label>
+                <input type="text" name="database_username" class="form-control form-control-sm rounded-pill" placeholder="e.g: root" value="<?= session()->get('database_username'); ?>" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Password'); ?>
+                </label>
+                <input type="password" name="database_password" class="form-control form-control-sm rounded-pill" value="<?= session()->get('database_password'); ?>" />
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-block mb-0">
+                    <?= phrase('Database Initial'); ?>
+                    <b class="text-danger">*</b>
+                </label>
+                <input type="text" name="database_initial" class="form-control form-control-sm rounded-pill" placeholder="e.g: aksara_cms" value="<?= session()->get('database_initial'); ?>" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="d-none d-md-block mb-0">&nbsp;</label>
+                <label class="form-check form-switch">
+                    <input type="checkbox" name="database_forge" class="form-check-input" value="1" />
+                    <?= phrase('Create database if not exist'); ?>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="text-muted opacity-50">
+        <hr class="row" />
+    </div>
+    <div class="--validation-callback"></div>
+    <div class="row">
+        <div class="col-6">
+            <div class="d-grid">
+                <a href="<?= site_url('requirement'); ?>" class="btn btn-light btn-sm rounded-pill --xhr">
+                    <i class="mdi mdi-arrow-left"></i>
+                    <?= phrase('Back'); ?>
+                </a>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="d-grid">
+                <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="mdi mdi-check"></i>
+                    <?= phrase('Continue'); ?>
+                </button>
+            </div>
+        </div>
+    </div>
 </form>

@@ -10,6 +10,17 @@
 	[
 		"4.1"
 	],
+	"configs": {
+		"wrapper": {
+			"page": "#page-wrapper",
+			"content": "#content-wrapper",
+			"header": "#header-wrapper",
+			"footer": "#footer-wrapper",
+			"title": "#title-wrapper",
+			"breadcrumb": "#breadcrumb-wrapper",
+			"sidebar": "#sidebar-wrapper"
+		}
+	},
 	"screenshot":
 	[
 		{

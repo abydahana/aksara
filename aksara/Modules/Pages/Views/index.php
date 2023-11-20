@@ -1,222 +1,155 @@
-<?php
-	if($results)
-	{
-		foreach($results as $key => $val)
-		{
-			$carousels								= ($val->carousel_content ? json_decode($val->carousel_content) : null);
-			$faqs									= ($val->faq_content ? json_decode($val->faq_content) : null);
-			
-			if($carousels)
-			{
-				$navigation							= null;
-				$carousel_items						= null;
-				
-				foreach($carousels as $_key => $_val)
-				{
-					$navigation						.= '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $_key . '"' . ($_key == 0 ? ' class="active"' : '') . '></button>';
-					$carousel_items					.= '
-						<div class="carousel-item' . ($_key == 0 || sizeof((array) $carousels) == 1 ? ' active' : '') . '" style="min-height:360px; background:#333 url(\'' . get_image('carousels', (isset($_val->background) ? $_val->background : 'placeholder.png')) . '\') center center no-repeat;background-size:cover;background-attachment:fixed">
-							<div class="clip gradient-top"></div>
-							<div class="carousel-caption">
-								<div class="container">
-									<div class="row align-items-center">
-										' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? '
-										<div class="col-lg-4 offset-lg-1 text-center text-lg-start d-none d-md-block">
-											<div class="pt-5 w-100">
-												<img src="' . get_image('carousels', $_val->thumbnail, 'thumb') . '" class="img-fluid rounded-4" />
-											</div>
-										</div>
-										' : null) . '
-										<div class="' . ($_val->thumbnail && $_val->thumbnail != 'placeholder.png' ? 'col-lg-6 text-center text-lg-start d-flex align-items-center justify-content-center' : 'col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center') . '">
-											<div class="pt-5 w-100">
-												<h2 class="fw-bold mb-3 text-light">
-													' . (isset($_val->title) ? $_val->title : phrase('untitled')) . '
-												</h2>
-												<p class="text-light mb-5">
-													' . (isset($_val->description) ? truncate($_val->description, 260) : phrase('description_was_not_set')) . '
-												</p>
-												' . (isset($_val->link) && $_val->link ? '
-												<div class="row">
-													<div class="col-sm-6 offset-sm-3 col-md-12 offset-md-0">
-														<a href="' . $_val->link . '" class="btn btn-outline-light btn-lg rounded-pill">
-															' . (isset($_val->label) && $_val->label ? $_val->label : phrase('read_more')) . '
-															<i class="mdi mdi-chevron-right"></i>
-														</a>
-													</div>
-												</div>
-												' : null) . '
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					';
-				}
-				
-				echo '
-					<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-						' . (sizeof((array) $carousels) > 1 ? '
-						<div class="carousel-indicators">
-							' . $navigation . '
-						</div>
-						' : '') . '
-						<div class="carousel-inner">
-							' . $carousel_items . '
-						</div>
-						' . (sizeof((array) $carousels) > 1 ? '
-						<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-						</a>
-						<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-						</a>
-						' : '') . '
-					</div>
-				';
-			}
-			
-			if($faqs)
-			{
-				$output								= null;
-				
-				foreach($faqs as $_key => $_val)
-				{
-					if(!isset($_val->question) || !$_val->answer) continue;
-					
-					$output							.= '
-						<div class="accordion-item">
-							<div class="accordion-header" id="heading_' . $_key . '">
-								<button type="button" class="accordion-button' . (!$_key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $_key . '" aria-expanded="' . (!$_key ? 'true' : 'false') . '" aria-controls="collapse_' . $_key . '">
-									' . $_val->question . '
-								</a>
-							</div>
-							<div id="collapse_' . $_key . '" class="collapse' . (!$_key ? ' show' : null) . '" aria-labelledby="heading_' . $_key . '" data-bs-parent="#accordionExample">
-								<div class="accordion-body">
-									' . $_val->answer . '
-								</div>
-							</div>
-						</div>
-					';
-				}
-				
-				$faqs								= '
-					<div class="accordion" id="accordionExample">
-						' . $output . '
-					</div>
-				';
-			}
-			
-			echo '
-				<div class="bg-light gradient pt-5 pb-5">
-					<div class="container">
-						<div class="text-center text-sm-start">
-							<h3 class="mb-0' . (!$meta->description ? ' mt-3' : null) . '">
-								' . $meta->title . '
-							</h3>
-							<p class="lead mb-0">
-								' . truncate($meta->description, 256) . '
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="container pt-3 pb-3">
-					<div class="text-justify mb-3">
-						' . preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $val->page_content)) . '
-					</div>
-					<div class="mb-3">
-						' . $faqs . '
-					</div>
-					<p>
-						<i class="text-muted text-sm">
-							' . phrase('updated_at') . ' ' . phrase(strtolower(date('l', strtotime($val->updated_timestamp)))) . ', ' . $val->updated_timestamp . '
-						</i>
-					</p>
-				</div>
-			';
-		}
-	}
-	else
-	{
-		$link_left									= null;
-		$link_right									= null;
-		
-		if(isset($suggestions) && $suggestions)
-		{
-			$num									= 1;
-			
-			foreach($suggestions as $key => $val)
-			{
-				if($num % 2 == 0)
-				{
-					$link_right						.= '
-						<li>
-							<a href="' . base_url('pages/' . $val->page_slug) . '" class="--xhr">
-								' . $val->page_title . '
-							</a>
-						</li>
-					';
-				}
-				else
-				{
-					$link_left						.= '
-						<li>
-							<a href="' . base_url('pages/' . $val->page_slug) . '" class="--xhr">
-								' . $val->page_title . '
-							</a>
-						</li>
-					';
-				}
-				
-				$num++;
-			}
-		}
-		
-		echo '
-			<div class="container pt-5">
-				<div class="text-center pt-5 pb-5">
-					<h1 class="text-muted">
-						404
-					</h1>
-					<i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-				</div>
-				<div class="row mb-5">
-					<div class="col-md-6 offset-md-3">
-						<h2 class="text-center">
-							' . phrase('page_not_found') . '
-						</h2>
-						<p class="lead text-center mb-5">
-							' . phrase('the_page_you_requested_does_not_exist') . '
-						</p>
-						<div class="text-center mt-5">
-							<a href="' . base_url() . '" class="btn btn-outline-primary rounded-pill --xhr">
-								<i class="mdi mdi-arrow-left"></i>
-								' . phrase('back_to_home') . '
-							</a>
-						</div>
-					</div>
-				</div>
-				<div class="row mb-2">
-					<div class="col-md-10 offset-md-1">
-						<h5>
-							<i class="mdi mdi-lightbulb-on-outline"></i>
-							' . phrase('our_suggestions') . '
-							<blink>_</blink>
-						</h5>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-5 offset-md-1">
-						<ul>
-							' . $link_left . '
-						</ul>
-					</div>
-					<div class="col-md-5">
-						<ul>
-							' . $link_right . '
-						</ul>
-					</div>
-				</div>
-			</div>
-		';
-	}
+<?php if (isset($results[0])): ?>
+    <?php
+        $page = $results[0];
+        $carousel = ($page->carousel_content ? json_decode($page->carousel_content) : null);
+        $accordion = ($page->faq_content ? json_decode($page->faq_content) : null);
+
+        if ($carousel) {
+            $navigation = null;
+            $carousel_items = null;
+
+            foreach ($carousel as $key => $val) {
+                $navigation .= '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $key . '"' . ($key == 0 ? ' class="active"' : '') . '></button>';
+                $carousel_items .= '
+                    <div class="carousel-item' . ($key == 0 || sizeof((array) $carousel) == 1 ? ' active' : '') . '" >
+                        <img src="' . get_image('carousels', (isset($val->background) ? $val->background : 'placeholder.png')) . '" alt="..." class="d-block w-100" style="max-height:640px;object-fit: cover" />
+                        <div class="clip gradient-top"></div>
+                        <div class="carousel-caption">
+                            <h2 class="fw-bold mb-3 text-light">
+                                ' . (isset($val->title) ? $val->title : phrase('Untitled')) . '
+                            </h2>
+                            <p class="text-light mb-5">
+                                ' . (isset($val->description) ? truncate($val->description, 260) : phrase('Description was not set')) . '
+                            </p>
+                            ' . (isset($val->link) && $val->link ? '
+                            <a href="' . $val->link . '" class="btn btn-sm btn-outline-light btn-lg rounded-pill px-5">
+                                ' . (isset($val->label) && $val->label ? $val->label : phrase('Read More')) . '
+                                <i class="mdi mdi-chevron-right"></i>
+                            </a>
+                            ' : null) . '
+                        </div>
+                    </div>
+                ';
+            }
+
+            echo '
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    ' . (sizeof((array) $carousel) > 1 ? '
+                    <div class="carousel-indicators">
+                        ' . $navigation . '
+                    </div>
+                    ' : '') . '
+                    <div class="carousel-inner">
+                        ' . $carousel_items . '
+                    </div>
+                    ' . (sizeof((array) $carousel) > 1 ? '
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </a>
+                    ' : '') . '
+                </div>
+            ';
+        }
+
+        if ($accordion) {
+            $output = null;
+
+            foreach ($accordion as $key => $val) {
+                if (! isset($val->title) || ! $val->body) {
+                    continue;
+                }
+
+                $output .= '
+                    <div class="accordion-item">
+                        <div class="accordion-header" id="heading_' . $key . '">
+                            <button type="button" class="accordion-button' . (! $key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $key . '" aria-expanded="' . (! $key ? 'true' : 'false') . '" aria-controls="collapse_' . $key . '">
+                                ' . $val->title . '
+                            </a>
+                        </div>
+                        <div id="collapse_' . $key . '" class="collapse' . (! $key ? ' show' : null) . '" aria-labelledby="heading_' . $key . '" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                ' . $val->body . '
+                            </div>
+                        </div>
+                    </div>
+                ';
+            }
+
+            $accordion = '
+                <div class="accordion" id="accordionExample">
+                    ' . $output . '
+                </div>
+            ';
+        }
+    ?>
+    
+    <div class="py-3 py-md-5 bg-light gradient">
+        <div class="container">
+            <div class="text-center text-sm-start">
+                <h3 class="mb-0">
+                    <?= $meta->title; ?>
+                </h3>
+                <p class="lead mb-0">
+                    <?= truncate($meta->description, 256); ?>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container py-3">
+        <div class="text-justify mb-3">
+            <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
+        </div>
+        <div class="mb-3">
+            <?= $accordion; ?>
+        </div>
+        <p>
+            <i class="text-muted text-sm">
+                <?= phrase('Updated at') . ' ' . phrase(strtolower(date('l', strtotime($page->updated_timestamp)))) . ', ' . $page->updated_timestamp; ?>
+            </i>
+        </p>
+    </div>
+<?php else: ?>
+    <div class="py-3 py-md-5 container">
+        <div class="text-center py-5">
+            <h1 class="text-muted">
+                404
+            </h1>
+            <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center">
+                    <?= phrase('Page not found'); ?>
+                </h2>
+                <p class="lead text-center mb-5">
+                    <?= phrase('The page you requested does not exist.'); ?>
+                </p>
+                <div class="text-center mt-5">
+                    <a href="<?= base_url(); ?>" class="btn btn-sm btn-outline-primary rounded-pill px-lg-5 --xhr">
+                        <i class="mdi mdi-arrow-left"></i>
+                        <?= phrase('Back to Homepage'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php if (isset($suggestions) && $suggestions): ?>
+            <div class="row mb-2">
+                <div class="col-md-10 offset-md-1">
+                    <h5>
+                        <?= phrase('Our Suggestions'); ?>
+                        <blink>_</blink>
+                    </h5>
+                    <?php foreach ($suggestions as $index => $page): ?>
+                        <?php if ($index): ?> &middot; <?php endif; ?>
+                        <a href="<?= base_url('pages/' . $page->page_slug); ?>">
+                            <?= $page->page_title; ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

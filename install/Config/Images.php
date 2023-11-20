@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -10,26 +25,22 @@ class Images extends BaseConfig
 {
     /**
      * Default handler used if no other handler is specified.
-     *
-     * @var string
      */
-    public $defaultHandler = 'gd';
+    public string $defaultHandler = 'gd';
 
     /**
      * The path to the image library.
      * Required for ImageMagick, GraphicsMagick, or NetPBM.
-     *
-     * @var string
      */
-    public $libraryPath = '/usr/local/bin/convert';
+    public string $libraryPath = '/usr/local/bin/convert';
 
     /**
      * The available handler classes.
      *
      * @var array<string, string>
      */
-    public $handlers = [
-        'gd'      => GDHandler::class,
+    public array $handlers = [
+        'gd' => GDHandler::class,
         'imagick' => ImageMagickHandler::class,
     ];
 }

@@ -1,0 +1,62 @@
+<div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
+        <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
+                    <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
+                    <span class="modal-title-text">{{ meta.title }}</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
+            </div>
+            <div class="modal-body">
+                {% for name, params in results.field_data %}
+                    {% if params.type == 'geospatial' %}
+                        {# Include form input component #}
+                        {% include 'core/form_input.twig' with params %}
+                    {% endif %}
+                {% endfor %}
+                <div class="row">
+                    {# Find index within column total #}
+                    {% for index in 1..results.column_total %}
+                        <div class="col {{ results.column_size[index] }}">
+                            {# Loop field data for matching column position by index #}
+                            {% for name, params in results.field_data %}
+                                {% if index == params.position and params.type != 'geospatial' %}
+                                    {% if results.merged_field[name] %}
+                                        <div class="row">
+                                            <div class="col {{ results.field_size[name] }}">
+                                                {# Include form input component #}
+                                                {% include 'core/form_input.twig' with params %}
+                                            </div>
+
+                                            {% for merged_field in results.merged_field[name] %}
+                                                <div class="col {{ results.field_size[merged_field] }}">
+                                                    {# Include form input component #}
+                                                    {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% elseif not params.merged %}
+                                        {# Include form input component #}
+                                        {% include 'core/form_input.twig' with params %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light me-1" data-bs-dismiss="modal">
+                    {{ phrase('Cancel') }}
+                    <em class="text-sm d-none d-lg-inline">(esc)</em>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="mdi mdi-check"></i> 
+                    {{ phrase('Submit') }}
+                    <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

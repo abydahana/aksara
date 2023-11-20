@@ -63,12 +63,15 @@
 							<!-- Trace info -->
 							<?php if (isset($row['file']) && is_file($row['file'])) :?>
 								<?php
-                                if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true)) {
+                                if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true))
+                                {
                                     echo esc($row['function'] . ' ' . static::cleanPath($row['file']));
-                                } else {
-                                    echo esc(static::cleanPath($row['file']) . ' : ' . $row['line']);
                                 }
-                                ?>
+							else
+							{
+							    echo esc(static::cleanPath($row['file']) . ' : ' . $row['line']);
+							}
+				    ?>
 							<?php else : ?>
 								{PHP internal code}
 							<?php endif; ?>
@@ -83,14 +86,15 @@
 										<table cellspacing="0">
 
 										<?php
-                                        $params = null;
-                                        // Reflection by name is not available for closure function
-                                        if (substr($row['function'], -1) !== '}') {
-                                            $mirror = isset($row['class']) ? new \ReflectionMethod($row['class'], $row['function']) : new \ReflectionFunction($row['function']);
-                                            $params = $mirror->getParameters();
-                                        }
+				            $params = null;
+								    // Reflection by name is not available for closure function
+								    if (substr($row['function'], -1) !== '}')
+								    {
+								        $mirror = isset($row['class']) ? new \ReflectionMethod($row['class'], $row['function']) : new \ReflectionFunction($row['function']);
+								        $params = $mirror->getParameters();
+								    }
 
-                                        foreach ($row['args'] as $key => $value) : ?>
+								    foreach ($row['args'] as $key => $value) : ?>
 											<tr>
 												<td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
 												<td><pre><?= esc(print_r($value, true)) ?></pre></td>
@@ -126,7 +130,8 @@
 			<div class="content" id="server">
 				<?php foreach (['_SERVER', '_SESSION'] as $var) : ?>
 					<?php
-                    if (empty($GLOBALS[$var]) || ! is_array($GLOBALS[$var])) {
+                    if (empty($GLOBALS[$var]) || ! is_array($GLOBALS[$var]))
+                    {
                         continue;
                     } ?>
 
@@ -229,7 +234,8 @@
 				<?php $empty = true; ?>
 				<?php foreach (['_GET', '_POST', '_COOKIE'] as $var) : ?>
 					<?php
-                    if (empty($GLOBALS[$var]) || ! is_array($GLOBALS[$var])) {
+                    if (empty($GLOBALS[$var]) || ! is_array($GLOBALS[$var]))
+                    {
                         continue;
                     } ?>
 
@@ -285,11 +291,13 @@
 						<tbody>
 						<?php foreach ($headers as $value) : ?>
 							<?php
-                            if (empty($value)) {
+                            if (empty($value))
+                            {
                                 continue;
                             }
 
-                            if (! is_array($value)) {
+                            if (! is_array($value))
+                            {
                                 $value = [$value];
                             } ?>
 							<?php foreach ($value as $h) : ?>
@@ -308,8 +316,8 @@
 			<!-- Response -->
 			<?php
                 $response = \Config\Services::response();
-                $response->setStatusCode(http_response_code());
-            ?>
+$response->setStatusCode(http_response_code());
+?>
 			<div class="content" id="response">
 				<table>
 					<tr>

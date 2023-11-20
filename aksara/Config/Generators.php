@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -26,15 +41,17 @@ class Generators extends BaseConfig
      * @var array<string, string>
      */
     public array $views = [
-        'make:command'      => 'CodeIgniter\Commands\Generators\Views\command.tpl.php',
-        'make:config'       => 'CodeIgniter\Commands\Generators\Views\config.tpl.php',
-        'make:controller'   => 'CodeIgniter\Commands\Generators\Views\controller.tpl.php',
-        'make:entity'       => 'CodeIgniter\Commands\Generators\Views\entity.tpl.php',
-        'make:filter'       => 'CodeIgniter\Commands\Generators\Views\filter.tpl.php',
-        'make:migration'    => 'CodeIgniter\Commands\Generators\Views\migration.tpl.php',
-        'make:model'        => 'CodeIgniter\Commands\Generators\Views\model.tpl.php',
-        'make:seeder'       => 'CodeIgniter\Commands\Generators\Views\seeder.tpl.php',
-        'make:validation'   => 'CodeIgniter\Commands\Generators\Views\validation.tpl.php',
+        'make:cell' => 'CodeIgniter\Commands\Generators\Views\cell.tpl.php',
+        'make:cell_view' => 'CodeIgniter\Commands\Generators\Views\cell_view.tpl.php',
+        'make:command' => 'CodeIgniter\Commands\Generators\Views\command.tpl.php',
+        'make:config' => 'CodeIgniter\Commands\Generators\Views\config.tpl.php',
+        'make:controller' => 'CodeIgniter\Commands\Generators\Views\controller.tpl.php',
+        'make:entity' => 'CodeIgniter\Commands\Generators\Views\entity.tpl.php',
+        'make:filter' => 'CodeIgniter\Commands\Generators\Views\filter.tpl.php',
+        'make:migration' => 'CodeIgniter\Commands\Generators\Views\migration.tpl.php',
+        'make:model' => 'CodeIgniter\Commands\Generators\Views\model.tpl.php',
+        'make:seeder' => 'CodeIgniter\Commands\Generators\Views\seeder.tpl.php',
+        'make:validation' => 'CodeIgniter\Commands\Generators\Views\validation.tpl.php',
         'session:migration' => 'CodeIgniter\Commands\Generators\Views\migration.tpl.php',
     ];
 }

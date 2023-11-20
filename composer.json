@@ -1,7 +1,7 @@
 {
 	"name": "abydahana/aksara",
 	"type": "project",
-	"description": "Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based) just by writing single controller. Yet it's reusable, scalable and ready to use!",
+	"description": "Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based), just by writing single controller. Yet it's reusable, scalable and ready to use!",
 	"homepage": "https://www.aksaracms.com",
 	"license": "MIT",
 	"authors": [
@@ -19,13 +19,23 @@
         "ext-json": "*",
         "ext-mbstring": "*",
 		"codeigniter4/framework": "^4.3",
+		"twig/twig": "^3.7",
+        "hybridauth/hybridauth": "^3.10",
 		"mpdf/mpdf": "^8.0",
-		"abydahana/facebook-php-sdk": "^5.7",
-		"google/apiclient": "^2.8",
 		"chillerlan/php-qrcode": "^3.3",
 		"picqer/php-barcode-generator": "^2.1",
-		"halaxa/json-machine": "^0.7.0",
-		"phpoffice/phpspreadsheet": "^1.19",
-		"phayes/geophp": "^1.2"
+		"phpoffice/phpspreadsheet": "^1.19"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "phpstan/phpdoc-parser": "^1.16"
+    },
+    "scripts": {
+        "cs-fix": [
+            "php-cs-fixer fix --ansi"
+        ]
+    },
+    "scripts-descriptions": {
+        "cs-fix": "Fixing the coding style"
     }
 }

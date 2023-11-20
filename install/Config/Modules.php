@@ -1,9 +1,32 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Modules\Modules as BaseModules;
 
+/**
+ * Modules Configuration.
+ *
+ * NOTE: This class is required prior to Autoloader instantiation,
+ *       and does not extend BaseConfig.
+ *
+ * @immutable
+ */
 class Modules extends BaseModules
 {
     /**
@@ -30,6 +53,29 @@ class Modules extends BaseModules
      * @var bool
      */
     public $discoverInComposer = true;
+
+    /**
+     * The Composer package list for Auto-Discovery
+     * This setting is optional.
+     *
+     * E.g.:
+     *   [
+     *       'only' => [
+     *           // List up all packages to auto-discover
+     *           'codeigniter4/shield',
+     *       ],
+     *   ]
+     *   or
+     *   [
+     *       'exclude' => [
+     *           // List up packages to exclude.
+     *           'pestphp/pest',
+     *       ],
+     *   ]
+     *
+     * @var array
+     */
+    public $composerPackages = [];
 
     /**
      * --------------------------------------------------------------------------

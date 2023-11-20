@@ -1,0 +1,34 @@
+.mCSB_container_wrapper {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+.mCSB_inside > .mCSB_container {
+  margin-right: 0!important;
+  box-sizing: border-box;
+}
+.mCSB_container_wrapper > .mCSB_container {
+  padding-right: 0;
+  padding-bottom: 0;
+}
+.mCSB_scrollTools {
+  width: 8px;
+}
+.mCSB_scrollTools.mCSB_scrollTools_horizontal {
+  height: 8px;
+}
+.mCSB_vertical_horizontal > .mCSB_scrollTools.mCSB_scrollTools_horizontal {
+  right: 10px;
+}
+.mCSB_scrollTools.mCSB_scrollTools_vertical .mCSB_draggerRail {
+  width: 6px !important;
+}
+.mCSB_scrollTools.mCSB_scrollTools_horizontal .mCSB_draggerRail {
+  height: 6px !important;
+}
+.mCSB_scrollTools.mCSB_scrollTools_horizontal .mCSB_dragger .mCSB_dragger_bar,
+.mCSB_scrollTools.mCSB_scrollTools_horizontal .mCSB_draggerRail {
+  margin: 0;
+}
+.mCSB_scrollTools.mCSB_scrollTools_horizontal .mCSB_dragger .mCSB_dragger_bar {
+  margin-top: 1px;
+}

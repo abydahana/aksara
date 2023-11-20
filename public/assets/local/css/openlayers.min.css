@@ -1,0 +1,209 @@
+.ol-viewport {
+  position: inherit !important;
+  touch-action: auto !important;
+}
+.ol-touch {
+  touch-action: none;
+  cursor: pointer;
+}
+.ol-geocoder.gcd-txt-container {
+  top: 1rem !important;
+  padding: 0 1rem !important;
+}
+.ol-geocoder.gcd-txt-container .gcd-txt-glass {
+  right: 0;
+}
+.ol-geocoder.gcd-txt-container *,
+.ol-geocoder.gcd-txt-container :after,
+.ol-geocoder.gcd-txt-container :before {
+  position: relative;
+}
+.ol-geocoder ul.gcd-txt-result {
+  right: 1rem !important;
+  left: 1rem !important;
+  top: 38px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  z-index: 1;
+}
+.ol-zoom {
+  top: 1rem !important;
+  right: 1rem !important;
+  left: auto !important;
+}
+.ol-track {
+  top: 6rem !important;
+  right: 1rem !important;
+  left: auto !important;
+}
+.ol-zoom-extent {
+  top: 8.5rem !important;
+  right: 1rem !important;
+  left: auto !important;
+}
+.ol-full-screen {
+  top: 11rem !important;
+  right: 1rem !important;
+  left: auto !important;
+}
+.ol-mouse-position {
+  top: auto !important;
+  bottom: 2rem !important;
+  left: 1rem !important;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  text-shadow: 1px 1px 1px #fff;
+}
+.ol-scale-line {
+  left: 1rem !important;
+}
+.ol-attribution {
+  right: 1rem !important;
+}
+.ol-popup {
+  border-radius: 1rem !important;
+}
+.ol-popup-title {
+  margin-bottom: 0;
+  border-bottom: 0 !important;
+}
+.ol-popup-closer {
+  top: 0.5rem !important;
+  right: 1rem !important;
+  color: rgba(0, 0, 0, 0.5);
+  z-index: 10
+}
+.ol-popup-content {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}
+.ol-popup:after {
+  margin-top: -1px;
+}
+.drawing-placeholder {
+  z-index: 1;
+}
+div[data-drawing-manager] .gm-style-cc .gmnoprint {
+  top: 1px !important;
+  margin: 10px !important;
+  padding: 6px !important;
+  background: #fff !important;
+  border-radius: 0.25rem !important;
+}
+.routing-icon {
+  background-image: url("../images/osrm.directions.icons.color.svg");
+  -webkit-background-size: 455px 20px;
+  background-size: 455px 20px;
+  background-repeat: no-repeat;
+  margin: 0;
+  content: "";
+  display: inline-block;
+  vertical-align: top;
+  width: 20px;
+  height: 20px;
+}
+.routing-icon.straight {
+  background-position: 2px 0px;
+}
+.routing-icon.exit-roundabout.right,
+.routing-icon.end-of-road.right,
+.routing-icon.turn.right {
+  background-position: -50px 0px;
+}
+.routing-icon.slight-right {
+  background-position: -74px 0px;
+}
+.routing-icon.sharp-right {
+  background-position: -24px 0px;
+}
+.routing-icon.exit-roundabout.left,
+.routing-icon.end-of-road.left,
+.routing-icon.turn.left {
+  background-position: -150px 0px;
+}
+.routing-icon.slight-left {
+  background-position: -175px 0px;
+}
+.routing-icon.sharp-left {
+  background-position: -127px 0px;
+}
+.routing-icon.uturn {
+  background-position: -101px 0px;
+}
+.routing-icon.depart {
+  background-position: -202px 0px;
+}
+.routing-icon.roundabout {
+  background-position: -227px 0px;
+}
+.routing-icon.arrive {
+  background-position: -253px 0px;
+}
+.routing-icon-fork {
+  background-position: -305px 0px;
+}
+.routing-icon.ramp.right {
+  background-position: -331px 0px;
+}
+.routing-icon.ramp.left {
+  background-position: -352px 0px;
+}
+.routing-icon.merge.left {
+  background-position: -376px 0px;
+}
+.routing-icon.merge.right {
+  background-position: -403px 0px;
+}
+ol.entry-content {
+  counter-reset: li;
+  list-style: none;
+}
+ol.entry-content li {
+  position: relative;
+  padding-left: 60px;
+  min-height: 60px;
+}
+ol.entry-content li:before {
+  content: counter(li);
+  counter-increment: li;
+  color: #333;
+  background: #aaa;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.pac-container {
+  z-index: 1060 !important;
+}
+.pac-container {
+  z-index: 1060 !important;
+}
+.gm-style .gm-style-iw-c {
+  padding: 0 !important;
+  border-radius: 0.25rem !important;
+}
+.gm-style .gm-style-iw-t::after {
+  top: -1px !important;
+}
+.gm-style-iw,
+.gm-style-iw > div {
+  max-height: inherit !important;
+  overflow: hidden !important;
+}
+@media (max-width: 639px) {
+  .ol-control {
+    display: none;
+  }
+  .ol-geocoder.gcd-txt-container {
+    left: 5% !important;
+    right: 5% !important;
+  }
+}

@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -39,7 +54,7 @@ class ContentSecurityPolicy extends BaseConfig
 
     // -------------------------------------------------------------------------
     // Sources allowed
-    // Note: once you set a policy to 'none', it cannot be further restricted
+    // NOTE: once you set a policy to 'none', it cannot be further restricted
     // -------------------------------------------------------------------------
 
     /**
@@ -47,28 +62,28 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]|null
      */
-    public $defaultSrc = ['*', 'unsafe-eval', 'unsafe-inline'];
+    public $defaultSrc;
 
     /**
      * Lists allowed scripts' URLs.
      *
      * @var string|string[]
      */
-    public $scriptSrc = ['*', 'unsafe-eval', 'unsafe-inline'];
+    public $scriptSrc = 'self';
 
     /**
      * Lists allowed stylesheets' URLs.
      *
      * @var string|string[]
      */
-    public $styleSrc = ['*', 'self', 'unsafe-inline'];
+    public $styleSrc = 'self';
 
     /**
      * Defines the origins from which images can be loaded.
      *
      * @var string|string[]
      */
-    public $imageSrc = ['*', 'self', 'data:'];
+    public $imageSrc = 'self';
 
     /**
      * Restricts the URLs that can appear in a page's `<base>` element.
@@ -92,14 +107,14 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]
      */
-    public $connectSrc = ['*', 'data:', 'blob:'];
+    public $connectSrc = 'self';
 
     /**
      * Specifies the origins that can serve web fonts.
      *
      * @var string|string[]
      */
-    public $fontSrc = ['*', 'data:'];
+    public $fontSrc;
 
     /**
      * Lists valid endpoints for submission from `<form>` tags.

@@ -1,12 +1,20 @@
 <?php
 
-/*
- |--------------------------------------------------------------------------
- | ERROR DISPLAY
- |--------------------------------------------------------------------------
- | Don't show ANY in production environments. Instead, let the system catch
- | it and display a generic error message.
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
 

@@ -1,12 +1,18 @@
 <?php
+
 /**
- * Extra route of current module
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
  *
- * @author			Aby Dahana <abydahana@gmail.com>
- * @profile			abydahana.github.io
- * @website			www.aksaracms.com
- * @since			version 4.0.0
- * @copyright		(c) 2021 - Aksara Laboratory
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
 $routes->get('modules/aksara/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');

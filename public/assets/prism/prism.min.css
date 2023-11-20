@@ -6,128 +6,128 @@
  */
 code[class*="language-"],
 pre[class*="language-"] {
-	color: #f5e84e;
-	font-family: monospace;
-	text-align: left;
-	white-space: pre;
-	word-spacing: normal;
-	word-break: normal;
-	word-wrap: normal;
-	-moz-tab-size: 4;
-	-o-tab-size: 4;
-	tab-size: 4;
-	-webkit-hyphens: none;
-	-moz-hyphens: none;
-	-ms-hyphens: none;
-	hyphens: none;
-	line-height: 25px;
-	font-size: 16px;
-	margin: 5px 0;
+    color: #f5e84e;
+    font-family: monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+    line-height: 25px;
+    font-size: 16px;
+    margin: 5px 0;
 }
 
 pre[class*="language-"] * {
-	font-family: monospace;
+    font-family: monospace;
 }
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-	color: white;
-	background: #0a143c;
-	padding: 22px;
+    color: white;
+    background: #0a143c;
+    padding: 22px;
 }
 
 /* Code blocks */
 pre[class*="language-"] {
-	padding: 1em;
-	margin: 0.5em 0;
-	overflow: auto;
+    padding: 1em;
+    margin: 0.5em 0;
+    overflow: auto;
 }
 
 pre[class*="language-"]::-moz-selection,
 pre[class*="language-"] ::-moz-selection,
 code[class*="language-"]::-moz-selection,
 code[class*="language-"] ::-moz-selection {
-	text-shadow: none;
-	background: rgba(29, 59, 83, 0.99);
+    text-shadow: none;
+    background: rgba(29, 59, 83, 0.99);
 }
 
 pre[class*="language-"]::selection,
 pre[class*="language-"] ::selection,
 code[class*="language-"]::selection,
 code[class*="language-"] ::selection {
-	text-shadow: none;
-	background: rgba(29, 59, 83, 0.99);
+    text-shadow: none;
+    background: rgba(29, 59, 83, 0.99);
 }
 
 @media print {
-	code[class*="language-"],
-	pre[class*="language-"] {
-		text-shadow: none;
-	}
+    code[class*="language-"],
+    pre[class*="language-"] {
+        text-shadow: none;
+    }
 }
 
 :not(pre) > code[class*="language-"] {
-	padding: 0.1em;
-	border-radius: 0.3em;
-	white-space: normal;
+    padding: 0.1em;
+    border-radius: 0.3em;
+    white-space: normal;
 }
 
 .token.comment,
 .token.prolog,
 .token.cdata {
-	color: rgb(99, 119, 119);
-	font-style: italic;
+    color: rgb(99, 119, 119);
+    font-style: italic;
 }
 
 .token.punctuation {
-	color: rgb(199, 146, 234);
+    color: rgb(199, 146, 234);
 }
 
 .namespace {
-	color: rgb(178, 204, 214);
+    color: rgb(178, 204, 214);
 }
 
 .token.deleted {
-	color: rgba(239, 83, 80, 0.56);
-	font-style: italic;
+    color: rgba(239, 83, 80, 0.56);
+    font-style: italic;
 }
 
 .token.symbol,
 .token.property {
-	color: rgb(128, 203, 196);
+    color: rgb(128, 203, 196);
 }
 
 .token.tag,
 .token.operator,
 .token.keyword {
-	color: rgb(127, 219, 202);
+    color: rgb(127, 219, 202);
 }
 
 .token.boolean {
-	color: rgb(255, 88, 116);
+    color: rgb(255, 88, 116);
 }
 
 .token.number {
-	color: rgb(247, 140, 108);
+    color: rgb(247, 140, 108);
 }
 
 .token.constant,
 .token.function,
 .token.builtin,
 .token.char {
-	color: rgb(255, 81, 73);
+    color: rgb(255, 81, 73);
 }
 
 .token.selector,
 .token.doctype {
-	color: rgb(199, 146, 234);
-	font-style: italic;
+    color: rgb(199, 146, 234);
+    font-style: italic;
 }
 
 .token.attr-name,
 .token.inserted {
-	color: rgb(173, 219, 103);
-	font-style: italic;
+    color: rgb(173, 219, 103);
+    font-style: italic;
 }
 
 .token.string,
@@ -135,26 +135,26 @@ code[class*="language-"] ::selection {
 .token.entity,
 .language-css .token.string,
 .style .token.string {
-	color: rgb(173, 219, 103);
+    color: rgb(173, 219, 103);
 }
 
 .token.class-name,
 .token.atrule,
 .token.attr-value {
-	color: rgb(255, 203, 139);
+    color: rgb(255, 203, 139);
 }
 
 .token.class-name-fully-qualified
 {
-	text-decoration: underline
+    text-decoration: underline
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-	color: rgb(214, 222, 235);
+    color: rgb(214, 222, 235);
 }
 
 .token.italic {
-	font-style: italic;
+    font-style: italic;
 }

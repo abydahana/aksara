@@ -1,11 +1,3 @@
-/**
- * Fix the css attributes that not supported in IE
- *
- * @version			1.0
- * @author			Aby Dahana
- * @profile			abydahana.github.io
- */
-.fileupload-new .img-fluid
-{
-	width: 100%
+.fileupload-new .img-fluid {
+    width: 100%
 }
