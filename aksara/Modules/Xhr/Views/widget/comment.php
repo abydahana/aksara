@@ -29,7 +29,7 @@
         </div>
     </div>
     <?php endif; ?>
-    <form action="<?= current_page(); ?>" method="POST" enctype="multipart/form-data" class="--validate-form border-bottom pb-3 mb-3">
+    <form action="<?= current_page(); ?>" method="POST" class="--validate-form border-bottom pb-3 mb-3" enctype="multipart/form-data">
         <div class="form-group">
             <div class="row g-0 align-items-center">
                 <div class="col-1">

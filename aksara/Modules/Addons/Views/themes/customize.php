@@ -12,7 +12,7 @@
     </div>
 <?php endif; ?>
 <div class="container-fluid py-3">
-    <form action="<?= current_page(); ?>" method="POST">
+    <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <div class="row">
             <div class="col-md-8">
                 <div class="card mb-3">
