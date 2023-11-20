@@ -51,6 +51,12 @@ Vagrantfile
 config.php
 
 #-------------------------
+# Modules Files
+#-------------------------
+modules/*
+!modules/README
+
+#-------------------------
 # Temporary Files
 #-------------------------
 writable/cache/*
@@ -76,6 +82,7 @@ writable/**/*.sqlite
 
 public/uploads/*
 !public/uploads/_extension
+!public/uploads/settings
 !public/uploads/.htaccess
 !public/uploads/index.html
 !public/uploads/placeholder.png
@@ -89,7 +96,8 @@ vendor/
 composer.lock
 
 #-------------------------
-# Extra file
+# Extra Files
 #-------------------------
 .vscode/
 .php-cs-fixer.php
+.php-cs-fixer.cache
