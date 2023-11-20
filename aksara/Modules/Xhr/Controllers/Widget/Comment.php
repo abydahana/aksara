@@ -292,7 +292,7 @@ class Comment extends \Aksara\Laboratory\Core
         }
 
         $html = '
-            <form action="' . current_page() . '" method="POST" class="--validate-form">
+            <form action="' . current_page() . '" method="POST" class="--validate-form" enctype="multipart/form-data">
                 <input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
                 <div class="form-group mb-3">
                     <label class="d-block text-muted" for="comments_input">

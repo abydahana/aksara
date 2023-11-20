@@ -27,7 +27,7 @@
             </li>
         </ul>
     </div>
-    <form action="<?= current_page(); ?>" method="POST" enctype="multipart/form-data">
+    <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <div class="row">

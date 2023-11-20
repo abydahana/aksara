@@ -29,7 +29,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <form action="<?= current_page(); ?>" method="POST" enctype="multipart/form-data">
+            <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                 <h5>
                     <?= phrase('Notes before you import'); ?>
                 </h5>

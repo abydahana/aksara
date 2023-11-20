@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <form action="<?= current_page(); ?>" method="POST" enctype="multipart/form-data">
+    <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row border-bottom bg-white sticky-top" style="overflow-x:auto">
             <ul class="nav nav-pills" style="flex-wrap: nowrap">
                 <li class="nav-item">
