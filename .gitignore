@@ -93,3 +93,4 @@ composer.lock
 #-------------------------
 .vscode/
 .php-cs-fixer.php
+.php-cs-fixer.cache
