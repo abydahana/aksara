@@ -98,6 +98,5 @@ composer.lock
 #-------------------------
 # Extra Files
 #-------------------------
-.vscode/
 .php-cs-fixer.php
 .php-cs-fixer.cache
