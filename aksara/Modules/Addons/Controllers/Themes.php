@@ -51,7 +51,13 @@ class Themes extends \Aksara\Laboratory\Core
      */
     public function detail()
     {
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+        $package = [];
+
+        try {
+            $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+        } catch(\Throwable $e) {
+            // Safe abstraction
+        }
 
         if ($package) {
             $package->folder = $this->_primary;
