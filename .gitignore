@@ -71,9 +71,6 @@ writable/logs/*
 writable/session/*
 !writable/session/index.html
 
-writable/translations/*
-!writable/translations/index.html
-
 writable/uploads/*
 !writable/uploads/index.html
 
