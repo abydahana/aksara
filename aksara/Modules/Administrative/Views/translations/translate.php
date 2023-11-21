@@ -91,7 +91,7 @@
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <div class="input-group">
-                            <input type="text" name="phrases['<?= $key; ?>']" class="form-control" value="<?= $val; ?>" placeholder="<?= $key; ?>" data-bs-toggle="tooltip" title="<?= $key; ?>" autocomplete="off" />
+                            <input type="text" name="phrases[<?= $key; ?>]" class="form-control" value="<?= $val; ?>" placeholder="<?= $key; ?>" data-bs-toggle="tooltip" title="<?= $key; ?>" autocomplete="off" />
                             <a href="<?= current_page('delete_phrase', ['phrase' => $key]); ?>" class="btn border --open-delete-confirm" data-bs-toggle="tooltip" title="<?= phrase('Delete Phrase'); ?>">
                                 <i class="mdi mdi-trash-can-outline"></i>
                             </a>

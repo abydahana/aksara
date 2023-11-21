@@ -31,7 +31,7 @@ class Modules extends \Aksara\Laboratory\Core
 
         if ($segments) {
             if ('php' == strtolower(pathinfo($segments, PATHINFO_EXTENSION)) || ! is_file(ROOTPATH . dirname($segments) . DIRECTORY_SEPARATOR . basename($segments)) || ! file_exists(ROOTPATH . dirname($segments) . DIRECTORY_SEPARATOR . basename($segments))) {
-                return throw_exception(404, phrase('The page you requested was not found or already been archived.'), base_url('not_found'));
+                return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url('not_found'));
             }
 
             $path = ROOTPATH . dirname($segments);

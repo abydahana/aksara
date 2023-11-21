@@ -149,9 +149,6 @@
                                 <div class="col-md-6">
                                     <?= form_input($results->field_data->google_analytics_key); ?>
                                 </div>
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->disqus_site_domain); ?>
-                                </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="pills-oauth">

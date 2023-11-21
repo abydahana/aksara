@@ -489,7 +489,7 @@ class Form
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="text-muted">
-                                {{ phrase('Bakground') }}
+                                {{ phrase('Background') }}
                             </label>
                             <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center mb-3">
                                 <span class="btn btn-file d-block">

@@ -55,7 +55,7 @@
             <div class="row mb-5">
                 <div class="col-md-6 offset-md-3">
                     <h2 class="text-center">
-                        <?= phrase('Album not found'); ?>
+                        <?= phrase('Album not found!'); ?>
                     </h2>
                     <p class="lead text-center mb-5">
                         <?= phrase('The album you requested was not found or already been archived.'); ?>

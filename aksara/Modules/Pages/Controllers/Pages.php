@@ -30,7 +30,7 @@ class Pages extends \Aksara\Laboratory\Core
 
     public function index($slug = null)
     {
-        $this->set_title('{{ page_title }}', phrase('Page not found'))
+        $this->set_title('{{ page_title }}', phrase('Page not found!'))
         ->set_description('{{ page_description }}')
         ->set_icon('mdi mdi-file-document-outline')
         ->set_output([
@@ -77,8 +77,8 @@ class Pages extends \Aksara\Laboratory\Core
 
     public function not_found()
     {
-        $this->set_title(phrase('Page not found'))
-        ->set_description(phrase('The page you requested does not exists or already been archived'))
+        $this->set_title(phrase('Page not found!'))
+        ->set_description(phrase('The page you requested does not exist or already been archived.'))
         ->set_output([
             'suggestions' => $this->model->select('
                 page_slug,
