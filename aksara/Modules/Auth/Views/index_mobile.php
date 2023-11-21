@@ -27,7 +27,7 @@
                         </div>
                         <div class="mb-3">
                             <p class="text-center text-muted">
-                                <?= phrase('Please enter your ccount information to sign in.'); ?>
+                                <?= phrase('Please enter your account information to sign in.'); ?>
                             </p>
                         </div>
                         <div class="form-group mb-3">

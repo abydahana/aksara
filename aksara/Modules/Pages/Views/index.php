@@ -122,10 +122,10 @@
         <div class="row mb-5">
             <div class="col-md-6 offset-md-3">
                 <h2 class="text-center">
-                    <?= phrase('Page not found'); ?>
+                    <?= phrase('Page not found!'); ?>
                 </h2>
                 <p class="lead text-center mb-5">
-                    <?= phrase('The page you requested does not exist.'); ?>
+                    <?= phrase('The page you requested does not exist or already been archived.'); ?>
                 </p>
                 <div class="text-center mt-5">
                     <a href="<?= base_url(); ?>" class="btn btn-sm btn-outline-primary rounded-pill px-lg-5 --xhr">

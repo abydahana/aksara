@@ -154,11 +154,6 @@ class AppSettings extends Migration
                 'constraint' => 255,
                 'null' => false
             ],
-            'disqus_site_domain' => [
-                'type' => 'varchar',
-                'constraint' => 128,
-                'null' => false
-            ],
             'facebook_app_id' => [
                 'type' => 'varchar',
                 'constraint' => 22,

@@ -39,7 +39,7 @@ class Category extends \Aksara\Laboratory\Core
             $slug = service('request')->getGet('gallery_slug');
         }
 
-        $this->set_title('{{ gallery_title }}', phrase('Album was not found!'))
+        $this->set_title('{{ gallery_title }}', phrase('Album not found!'))
         ->set_description('{{ gallery_description }}')
         ->set_icon('mdi mdi-image')
         ->where('gallery_slug', $slug)

@@ -2593,10 +2593,10 @@ class Core extends Controller
                 $this->_set_icon = ($icon ? $icon : 'mdi mdi-table');
 
                 // Set title property
-                $this->_set_title = ($results ? $title : ($this->_set_title_fallback ?? phrase('Page is not found!')));
+                $this->_set_title = ($results ? $title : ($this->_set_title_fallback ?? phrase('Page not found!')));
 
                 // Set description property
-                $this->_set_description = ($results ? $description : ($this->_set_description_fallback ?? phrase('The page you requested was not found or already been archived.')));
+                $this->_set_description = ($results ? $description : ($this->_set_description_fallback ?? phrase('The page you requested does not exist or already been archived.')));
             }
         } else {
             /**
@@ -2658,7 +2658,7 @@ class Core extends Controller
                 'modal_size' => ($this->_modal_size ? $this->_modal_size : ''),
                 'segmentation' => array_map(function ($segment = null) {return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
             ],
-            'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, ($this->_query ? true : false)),
+            'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, ($total ? true : false)),
             'query_string' => service('request')->getGet(),
             'results' => $results,
             'total' => $total,
