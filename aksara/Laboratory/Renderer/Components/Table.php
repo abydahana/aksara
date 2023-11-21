@@ -291,16 +291,22 @@ class Table
 
         if (! $agent->isMobile()) {
             if (! in_array('read', $this->_unset_method) && ! in_array('export', $this->_unset_method)) {
+                $query_string['keep_query'] = true;
+                
                 // Add export button toolbar
                 $buttons[] = $this->_set_link('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $query_string, true);
             }
 
             if (! in_array('read', $this->_unset_method) && ! in_array('print', $this->_unset_method)) {
+                $query_string['keep_query'] = true;
+
                 // Add print button toolbar
                 $buttons[] = $this->_set_link('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $query_string, true);
             }
 
             if (! in_array('read', $this->_unset_method) && ! in_array('pdf', $this->_unset_method)) {
+                $query_string['keep_query'] = true;
+                
                 // Add PDF button toolbar
                 $buttons[] = $this->_set_link('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $query_string, true);
             }
@@ -475,7 +481,7 @@ class Table
 
         foreach (service('request')->getGet() as $key => $val) {
             // Slice non primary query string
-            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! in_array($path, ['print', 'export', 'pdf'])) {
+            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! isset($query_string['keep_query'])) {
                 $query_string[$key] = null;
             }
         }
