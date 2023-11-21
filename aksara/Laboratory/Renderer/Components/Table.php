@@ -475,7 +475,7 @@ class Table
 
         foreach (service('request')->getGet() as $key => $val) {
             // Slice non primary query string
-            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort'])) {
+            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! in_array($path, ['print', 'export', 'pdf'])) {
                 $query_string[$key] = null;
             }
         }
