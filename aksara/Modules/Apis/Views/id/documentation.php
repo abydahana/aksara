@@ -472,7 +472,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        if (UA !== 'mobile') {
+        if (UA !== 'mobile' && typeof mCustomScrollbar !== 'undefined') {
             $('.pretty-scrollbar').mCustomScrollbar({
                 autoHideScrollbar: true,
                 axis: 'y',
