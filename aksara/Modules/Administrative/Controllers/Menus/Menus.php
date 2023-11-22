@@ -149,7 +149,7 @@ class Menus extends \Aksara\Laboratory\Core
                             </button>
                             <button class="btn btn-secondary menu-icon ignore-sort" type="button" role="iconpicker" data-iconset="materialdesign" data-icon="mdi mdi-radiobox-blank"></button>
                             <input type="text" class="form-control menu-label ignore-sort" placeholder="' . phrase('Menu Label') . '" value="' . phrase('Menu Label') . '" />
-                            <input type="text" class="form-control menu-slug ignore-sort" placeholder="' . phrase('menu_slug') . '" value="" />
+                            <input type="text" class="form-control menu-slug ignore-sort" placeholder="' . phrase('Menu Slug') . '" value="" />
                             <div class="input-group-text bg-secondary border-0 ignore-sort pt-0" data-bs-toggle="tooltip" title="' . phrase('Open in new tab') . '">
                                 <input type="checkbox" class="form-check-input menu-newtab" />
                             </div>
