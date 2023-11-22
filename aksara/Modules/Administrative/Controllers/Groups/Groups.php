@@ -121,31 +121,31 @@ class Groups extends \Aksara\Laboratory\Core
 
                 foreach ($privileges as $key => $privilege) {
                     if ('index' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-primary';
                     } elseif ('create' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-success';
                     } elseif ('read' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-info';
                     } elseif ('update' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-warning';
                     } elseif ('delete' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-danger';
                     } elseif ('export' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-success';
                     } elseif ('print' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(ucfirst($privilege));
                         $badge_color = 'bg-warning';
                     } elseif ('pdf' == $privilege) {
-                        $label = phrase($privilege);
+                        $label = phrase(strtoupper($privilege));
                         $badge_color = 'bg-danger';
                     } else {
-                        $label = phrase($privilege);
+                        $label = phrase(ucwords(str_replace('_', ' ', $privilege)));
                         $badge_color = 'bg-secondary';
                     }
 
@@ -178,7 +178,7 @@ class Groups extends \Aksara\Laboratory\Core
                 $module_path = null;
 
                 foreach ($paths as $_key => $_val) {
-                    $module_path .= ($_key ? ' &gt; ' : null) . phrase($_val);
+                    $module_path .= ($_key ? ' &gt; ' : null) . phrase(ucwords(str_replace('_', ' ', $_val)));
                 }
 
                 $output .= '
@@ -188,7 +188,7 @@ class Groups extends \Aksara\Laboratory\Core
                         <b>
                             <i class="mdi mdi-puzzle-outline"></i>
                             &nbsp;
-                            ' . phrase('Module') . ': ' . phrase($module) . '
+                            ' . phrase('Module') . ': ' . phrase(ucwords(str_replace('_', ' ', $module))) . '
                         </b>
                     </a>
                     ' : '') . '
