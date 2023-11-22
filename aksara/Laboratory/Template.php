@@ -470,8 +470,10 @@ class Template
         $params['sort'] = null;
 
         if (! $data || ! is_array($data)) {
+            $data = [];
+            
             foreach ($checker as $key => $val) {
-                $data[$val] = ucwords($val);
+                $data[$val] = ($translate ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
             }
         }
 
@@ -503,7 +505,7 @@ class Template
                 if ($key != $current_slug) {
                     $output[] = [
                         'url' => base_url($slug, $params),
-                        'label' => ($translate ? phrase($val) : $val),
+                        'label' => $val,
                         'icon' => ''
                     ];
                 }
