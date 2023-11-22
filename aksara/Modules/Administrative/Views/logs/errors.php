@@ -95,18 +95,20 @@
                 borderLeft: '1px solid rgba(0,0,0,.2)'
             });
             
-            $('.pretty-scrollbar').mCustomScrollbar({
-                autoHideScrollbar: true,
-                axis: 'y',
-                scrollInertia: 170,
-                mouseWheelPixels: 170,
-                setHeight:  $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
-                advanced:
-                {
-                    updateOnContentResize: true
-                },
-                autoHideScrollbar: false
-            })
+            if (typeof mCustomScrollbar === 'function') {
+                $('.pretty-scrollbar').mCustomScrollbar({
+                    autoHideScrollbar: true,
+                    axis: 'y',
+                    scrollInertia: 170,
+                    mouseWheelPixels: 170,
+                    setHeight:  $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
+                    advanced:
+                    {
+                        updateOnContentResize: true
+                    },
+                    autoHideScrollbar: false
+                })
+            }
         }
     })
 </script>

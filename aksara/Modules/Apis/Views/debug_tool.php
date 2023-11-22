@@ -180,7 +180,7 @@
                 $('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4));
                 Prism.highlightAll();
                 
-                if (UA !== 'mobile') {
+                if (UA !== 'mobile' && typeof mCustomScrollbar === 'function') {
                     $('.pane-wrapper').mCustomScrollbar({
                         autoHideScrollbar: true,
                         axis: 'y',
