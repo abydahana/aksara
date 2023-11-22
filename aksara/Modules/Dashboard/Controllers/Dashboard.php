@@ -129,7 +129,10 @@ class Dashboard extends \Aksara\Laboratory\Core
             $date = new \DateTime();
             $date->add(new \DateInterval('P' . $val . 'D'));
 
-            $day = phrase(strtolower($date->format('l')));
+            // Translate day name
+            $day = phrase($date->format('l'));
+
+            // Push day name to visits
             $output['days'][] = $day;
             $output['visits'][$day] = 0;
         }
@@ -146,8 +149,10 @@ class Dashboard extends \Aksara\Laboratory\Core
 
         if ($visitors) {
             foreach ($visitors as $key => $val) {
+                // Translate day name
                 $date = phrase(date('l', strtotime($val->timestamp)));
 
+                // Increase number of visits based with its day name
                 $output['visits'][$date]++;
 
                 if (stripos($val->browser, 'chrome') !== false) {
