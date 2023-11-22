@@ -94,14 +94,6 @@ class Parser
             return truncate($string, $length, $delimeter);
         }));
 
-        $twig->addFunction(new TwigFunction('go_to', function ($slug = null, $query_string = []) {
-            return go_to($slug, $query_string);
-        }));
-
-        $twig->addFunction(new TwigFunction('current_page', function ($slug = null, $query_string = []) {
-            return current_page($slug, $query_string);
-        }));
-
         // Convert replacement object into array
         $replacement = json_decode(json_encode($replacement), true);
 
