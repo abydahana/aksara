@@ -457,6 +457,12 @@ class Install extends BaseController
                         if (session()->get('installation_mode') > 0) {
                             // Run seeder to insert sample data
                             $seeder->call('DummySeeder');
+
+                            // Run ecosystem seeder
+                            if (session()->get('installation_mode') > 1) {
+                                // Required by current ecosystem, suffixed with installation id
+                                $seeder->call('EcosystemSeeder_' . session()->get('installation_mode'));
+                            }
                         }
                     }
 
