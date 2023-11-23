@@ -91,7 +91,7 @@
                                     <i class="mdi mdi-puzzle"></i>
                                 </div>
                                 <div class="col-11">
-                                    <?= phrase('Manage'); ?> <a href="<?= base_url('addons'); ?>" class="text-primary --xhr"><?= phrase('add-ons'); ?></a> <?= phrase('or'); ?> <a href="<?= base_url('administrative/menus'); ?>" class="text-primary --xhr"><?= phrase('menus'); ?></a>
+                                    <?= phrase('Manage'); ?> <a href="<?= base_url('addons'); ?>" class="text-primary --xhr"><?= phrase('Add-Ons'); ?></a> <?= phrase('or'); ?> <a href="<?= base_url('administrative/menus'); ?>" class="text-primary --xhr"><?= phrase('Menus'); ?></a>
                                 </div>
                             </div>
                             <div class="row">
@@ -234,7 +234,7 @@
                                                     </div>
                                                     <div class="col-9 col-sm-10 ps-3">
                                                         <b>
-                                                            ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('unknown'))))))) . '
+                                                            ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
                                                         </b>
                                                         <p class="mb-0 text-sm text-muted">
                                                             ' . number_format($val) . ' ' . phrase('usage in a week') . '
