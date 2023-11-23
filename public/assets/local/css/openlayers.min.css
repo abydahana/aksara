@@ -13,10 +13,13 @@
 .ol-geocoder.gcd-txt-container .gcd-txt-glass {
   right: 0;
 }
-.ol-geocoder.gcd-txt-container *,
+.ol-geocoder.gcd-txt-container > *,
 .ol-geocoder.gcd-txt-container :after,
 .ol-geocoder.gcd-txt-container :before {
   position: relative;
+}
+.ol-geocoder .gcd-txt-reset {
+  right: 1.5rem!important
 }
 .ol-geocoder ul.gcd-txt-result {
   right: 1rem !important;

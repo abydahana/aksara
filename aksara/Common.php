@@ -134,7 +134,7 @@ if (! function_exists('phrase')) {
     function phrase(string $phrase = null, bool $check = false)
     {
         // Make sure the phrase and language is valid
-        if (! $phrase) {
+        if (! $phrase || is_numeric($phrase)) {
             // Otherwise, throwback the null result
             return false;
         }
