@@ -214,9 +214,9 @@
                             <?= get_setting('office_address'); ?>
                         </p>
                         <p class="text-sm no-margin">
-                            <?= phrase('phone'); ?>: <?= get_setting('office_phone'); ?>
+                            <?= phrase('Phone'); ?>: <?= get_setting('office_phone'); ?>
                             /
-                            <?= phrase('fax'); ?>: <?= get_setting('office_fax'); ?>
+                            <?= phrase('Fax'); ?>: <?= get_setting('office_fax'); ?>
                             /
                             <?= get_setting('office_email'); ?>
                         </p>
