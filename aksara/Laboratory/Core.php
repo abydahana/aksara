@@ -2144,12 +2144,13 @@ class Core extends Controller
                     $column = (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
 
                     if ($column && 'all' != $column) {
-                        $this->group_start();
-
-                        // Push like to the prepared query builder
-                        $this->_prepare('like', [$column, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
-
-                        $this->group_end();
+                        foreach ($this->_compiled_table as $key => $val) {
+                            // Make sure column is exist in compiled table
+                            if ($this->model->field_exists($column, $val)) {
+                                // Push like to the prepared query builder
+                                $this->_prepare('like', [$val . '.' . $column, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
+                            }
+                        }
                     } else {
                         $columns = $this->model->list_fields($this->_table);
 
