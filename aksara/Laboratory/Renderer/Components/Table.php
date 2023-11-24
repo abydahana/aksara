@@ -183,15 +183,19 @@ class Table
                     $content = '*****';
                 }
 
-                if (isset($this->_merge_content[$field]) && $this->_merge_content[$field]['callback']) {
-                    // Get formatted content of merged field (with callback)
-                    $namespace = service('router')->controllerName();
-                    $class = new $namespace();
-                    $callback = $this->_merge_content[$field]['callback'];
-
-                    if (method_exists($class, $callback)) {
-                        // Get callback method of current controller
-                        $content = $class->$callback($replacement);
+                if (isset($this->_merge_content[$field])) {
+                    if ($this->_merge_content[$field]['callback']) {
+                        // Get formatted content of merged field (with callback)
+                        $namespace = service('router')->controllerName();
+                        $class = new $namespace();
+                        $callback = $this->_merge_content[$field]['callback'];
+    
+                        if (method_exists($class, $callback)) {
+                            // Get callback method of current controller
+                            $content = $class->$callback($replacement);
+                        }
+                    } else {
+                        $content = $this->parser->parse($this->_merge_content[$field]['parameter'], $replacement);
                     }
                 } else {
                     // Get formatted content
@@ -221,6 +225,12 @@ class Table
                     $field_data[$field]['content'] = truncate($field_data[$field]['content'], 64);
                 }
 
+                // Find and replace Twig formatted content
+                if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false && strpos($field_data[$field]['content'], '}}')) {
+                    // Replace content
+                    $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
+                }
+
                 if ($this->_grid_view && $this->_grid_view['hyperlink'] && ($this->_grid_view['hyperlink'] && (stripos($this->_grid_view['hyperlink'], '://') === false)) && $this->_grid_view['parameter'] && ! isset($this->_grid_view['url'][$key])) {
                     $grid_query = [];
 
@@ -229,12 +239,6 @@ class Table
                     }
 
                     $this->_grid_view['url'][$key] = base_url($this->_grid_view['hyperlink'], $grid_query);
-                }
-
-                // Find and replace Twig formatted content
-                if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false && strpos($field_data[$field]['content'], '}}')) {
-                    // Replace content
-                    $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
                 }
 
                 // Parse content if request is made through non-promise request

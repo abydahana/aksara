@@ -165,15 +165,19 @@ class View
                 $content = '*****';
             }
 
-            if (isset($this->_merge_content[$field]) && $this->_merge_content[$field]['callback']) {
-                // Get formatted content of merged field (with callback)
-                $namespace = service('router')->controllerName();
-                $class = new $namespace();
-                $callback = $this->_merge_content[$field]['callback'];
+            if (isset($this->_merge_content[$field])) {
+                if ($this->_merge_content[$field]['callback']) {
+                    // Get formatted content of merged field (with callback)
+                    $namespace = service('router')->controllerName();
+                    $class = new $namespace();
+                    $callback = $this->_merge_content[$field]['callback'];
 
-                if (method_exists($class, $callback)) {
-                    // Get callback method of current controller
-                    $content = $class->$callback($replacement);
+                    if (method_exists($class, $callback)) {
+                        // Get callback method of current controller
+                        $content = $class->$callback($replacement);
+                    }
+                } else {
+                    $content = $this->parser->parse($this->_merge_content[$field]['parameter'], $replacement);
                 }
             } else {
                 // Get formatted content
