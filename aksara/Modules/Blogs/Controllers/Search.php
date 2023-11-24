@@ -23,7 +23,7 @@ class Search extends \Aksara\Laboratory\Core
     {
         parent::__construct();
 
-        $this->_keywords = (service('request')->getGet('q') || service('request')->getPost('q') ? htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'))) : null);
+        $this->_keywords = htmlspecialchars(service('request')->getGet('q') ?? service('request')->getPost('q') ?? '');
     }
 
     public function index()

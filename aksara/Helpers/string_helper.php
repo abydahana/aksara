@@ -29,19 +29,7 @@ if (! function_exists('truncate')) {
             return false;
         }
 
-        $string = str_ireplace(['<?php', '?>'], ['&lt;?php', '?&gt;'], $string);
-        $string = str_ireplace(['<html', '</html>'], ['&lt;html', '&lt;/html&gt;'], $string);
-        $string = str_ireplace(['<body', '</body>'], ['&lt;body', '&lt;/body&gt;'], $string);
-        $string = str_ireplace(['<script', '</script>'], ['&lt;script', '&lt;/script&gt;'], $string);
-        $string = str_ireplace(['<noscript', '</noscript>'], ['&lt;noscript', '&lt;/noscript&gt;'], $string);
-        $string = str_ireplace(['<style', '</style>'], ['&lt;style', '&lt;/style&gt;'], $string);
-        $string = str_ireplace(['<meta', '<link'], ['&lt;meta', '&lt;link'], $string);
-        $string = str_ireplace(['<iframe', '</iframe>'], ['&lt;iframe', '&lt;/iframe&gt;'], $string);
-        $string = str_ireplace(['<embed', '</embed>'], ['&lt;embed', '&lt;/embed&gt;'], $string);
-        $string = str_ireplace(['<object', '</object>'], ['&lt;object', '&lt;/object&gt;'], $string);
         $string = strip_tags($string);
-        $string = str_replace('&nbsp;', ' ', $string);
-        $string = htmlspecialchars(str_replace(["\r", "\n"], '', strip_tags($string)));
 
         if ($limit && strlen($string) >= $limit) {
             $string = substr($string, 0, $limit) . $pad;
@@ -55,16 +43,14 @@ if (! function_exists('is_json')) {
     /**
      * Check if JSON is valid
      *
-     * @params        string        $string
-     *
-     * @param mixed|null $string
+     * @param   mixed|null $string
      */
     function is_json($string = null)
     {
         if ($string && is_string($string)) {
             $string = json_decode($string, true);
 
-            if (json_last_error() == JSON_ERROR_NONE) {
+            if (json_last_error() === JSON_ERROR_NONE) {
                 return true;
             }
         }
@@ -142,15 +128,8 @@ if (! function_exists('encoding_fixer')) {
     function encoding_fixer($data = [])
     {
         if (is_string($data)) {
-            //$data = mb_convert_encoding($data, 'HTML-ENTITIES', mb_detect_encoding($data));
-            $data = mb_encode_numericentity(
-                htmlspecialchars_decode(
-                    htmlentities($data, ENT_NOQUOTES, 'UTF-8', false),
-                    ENT_NOQUOTES
-                ),
-                [0x80, 0x10FFFF, 0, ~0],
-                'UTF-8'
-            );
+            $encoding = mb_detect_encoding($data);
+            $data = mb_convert_encoding($data, 'UTF-8', $encoding);
         } elseif (is_array($data)) {
             foreach ($data as $key => $val) {
                 $data[$key] = encoding_fixer($val);
