@@ -118,17 +118,10 @@ class Privileges extends \Aksara\Laboratory\Core
      */
     private function _sub_level_1()
     {
-        // Remove below line when you has own sub level table
+        /**
+         * Replace below line with query builder.
+         */
         $query = [];
-
-        // Query to get the sub level data
-        $query = $this->model->get_where(
-            'sub_level_table',
-            [
-                'status' => 1
-            ]
-        )
-        ->result();
 
         return $query;
     }
