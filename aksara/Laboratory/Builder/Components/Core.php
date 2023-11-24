@@ -47,7 +47,7 @@ class Core
                             {% for column in results.columns %}
                                 <th align="{{ column.align }}">
                                     {% if column.url %}
-                                        <a href="{{ column.url }}" class="fw-bold {{ column.class }}" data-bs-toggle="tooltip" title="{{ column.label }}">
+                                        <a href="{{ column.url }}" class="fw-bold {{ column.class }}">
                                             {{ column.label }}
                                             <i class="{{ column.icon }}"></i>
                                         </a>
