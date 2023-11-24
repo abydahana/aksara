@@ -204,7 +204,7 @@ if (! function_exists('phrase')) {
             $phrases = (is_json($buffer) ? json_decode($buffer, true) : []);
 
             // Check if language property is valid
-            if (! isset($phrases[$phrase]) || ! $phrases[$phrase]) {
+            if (! isset($phrases[$phrase])) {
                 // Set new phrase and push into existing
                 $phrases[$phrase] = $phrase;
 
