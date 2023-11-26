@@ -313,7 +313,7 @@ class Core
                 </div>
             </div>
             <div class="col">
-                <form action="{{ links.current_page }}" method="GET" class="form-horizontal">
+                <form action="{{ action }}" method="GET" class="form-horizontal">
                     <div class="input-group input-group-sm">
                         {% for name, filter in filters %}
                             {% if filter.type == 'text' %}
@@ -371,8 +371,8 @@ class Core
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ links.current_page }}" method="GET">
-                            {% for name, filter in results.toolbar.filters %}
+                        <form action="{{ action }}" method="GET">
+                            {% for name, filter in filters %}
                                 {% if filter.type == 'text' %}
                                     <div class="mb-3">
                                         <input type="text" name="{{ name }}" value="{{ filter.values }}" placeholder="{{ filter.label }}" class="form-control">
@@ -480,6 +480,9 @@ class Core
                                         {# Loop field data for matching column position by index #}
                                         {% for name, params in results.field_data %}
                                             {% if index == params.position and params.type != 'geospatial' %}
+                                                {% if results.set_heading[name] %}
+                                                    <h5> {{ results.set_heading[name] }} </h5>
+                                                {% endif %}
                                                 {% if results.merged_field[name] %}
                                                     <div class="row">
                                                         <div class="col {{ results.field_size[name] }}">
@@ -559,6 +562,9 @@ class Core
                                     {# Loop field data for matching column position by index #}
                                     {% for name, params in results.field_data %}
                                         {% if index == params.position and params.type != 'geospatial' %}
+                                            {% if results.set_heading[name] %}
+                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% endif %}
                                             {% if results.merged_field[name] %}
                                                 <div class="row">
                                                     <div class="col {{ results.field_size[name] }}">
@@ -625,6 +631,9 @@ class Core
                                     {# Loop field data for matching column position by index #}
                                     {% for name, params in results.field_data %}
                                         {% if index == params.position and params.type != 'geospatial' %}
+                                            {% if results.set_heading[name] %}
+                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% endif %}
                                             {% if results.merged_field[name] %}
                                                 <div class="row">
                                                     <div class="col {{ results.field_size[name] }}">
@@ -696,6 +705,9 @@ class Core
                                     {# Loop field data for matching column position by index #}
                                     {% for name, params in results.field_data %}
                                         {% if index == params.position and params.type != 'geospatial' %}
+                                            {% if results.set_heading[name] %}
+                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% endif %}
                                             {% if results.merged_field[name] %}
                                                 <div class="row">
                                                     <div class="col {{ results.field_size[name] }}">

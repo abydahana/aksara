@@ -185,34 +185,6 @@
                                     <?= form_input($results->field_data->update_check); ?>
                                 </div>
                             </div>
-                            <hr class="border-secondary" />
-                            <h5 class="mb-3">
-                                <?= phrase('Email Notifier'); ?>
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->smtp_email_masking); ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->smtp_sender_masking); ?>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <?= form_input($results->field_data->smtp_host); ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <?= form_input($results->field_data->smtp_port); ?>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->smtp_username); ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->smtp_password); ?>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

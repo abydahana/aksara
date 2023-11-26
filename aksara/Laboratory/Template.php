@@ -402,7 +402,7 @@ class Template
         // Set view to response
         $data->view = basename($view);
 
-        if (! service('request')->isAJAX() || ((file_exists(str_replace('../../', ROOTPATH, $view . '.twig')) || file_exists(str_replace('../../', ROOTPATH, $view . '.php'))) && ! in_array($view, $main_templates))) {
+        if ((file_exists(str_replace('../../', ROOTPATH, $view . '.twig')) || file_exists(str_replace('../../', ROOTPATH, $view . '.php'))) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && ! service('request')->isAJAX()))) {
             if (file_exists(str_replace('../../', ROOTPATH, $view . '.twig'))) {
                 // Load Twig template parser
                 $parser = new Parser($this->theme);
@@ -471,7 +471,7 @@ class Template
 
         if (! $data || ! is_array($data)) {
             $data = [];
-            
+
             foreach ($checker as $key => $val) {
                 $data[$val] = ($translate ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
             }
@@ -945,6 +945,12 @@ class Template
                     ],
                     [
                         'id' => 0,
+                        'label' => 'Notifications',
+                        'slug' => 'notifications',
+                        'icon' => 'mdi mdi-bullhorn'
+                    ],
+                    [
+                        'id' => 0,
                         'label' => 'Add-Ons',
                         'slug' => 'addons',
                         'icon' => 'mdi mdi-puzzle'
@@ -981,7 +987,7 @@ class Template
             }
         }
 
-        if ($this->get_theme_property('type') == 'backend') {
+        if ($this->get_theme_property('type') === 'backend') {
             $dashboard = [
                 [
                     'id' => 0,

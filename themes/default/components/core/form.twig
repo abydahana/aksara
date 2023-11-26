@@ -16,6 +16,9 @@
                                 {# Loop field data for matching column position by index #}
                                 {% for name, params in results.field_data %}
                                     {% if index == params.position and params.type != 'geospatial' %}
+                                        {% if results.set_heading[name] %}
+                                            <h5> {{ results.set_heading[name] }} </h5>
+                                        {% endif %}
                                         {% if results.merged_field[name] %}
                                             <div class="row">
                                                 <div class="col {{ results.field_size[name] }}">
@@ -39,6 +42,7 @@
                             </div>
                         {% endfor %}
                     </div>
+                    <div role="validation-callback"></div>
                 </div>
             </div>
             <div class="opt-btn-overlap-fix"></div>

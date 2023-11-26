@@ -25,8 +25,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ links.current_page }}" method="GET">
-                    {% for name, filter in results.toolbar.filters %}
+                <form action="{{ action }}" method="GET">
+                    {% for name, filter in filters %}
                         {% if filter.type == 'text' %}
                             <div class="mb-3">
                                 <input type="text" name="{{ name }}" value="{{ filter.values }}" placeholder="{{ filter.label }}" class="form-control">

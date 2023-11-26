@@ -189,7 +189,7 @@ class Table
                         $namespace = service('router')->controllerName();
                         $class = new $namespace();
                         $callback = $this->_merge_content[$field]['callback'];
-    
+
                         if (method_exists($class, $callback)) {
                             // Get callback method of current controller
                             $content = $class->$callback($replacement);
@@ -296,7 +296,7 @@ class Table
         if (! $agent->isMobile()) {
             if (! in_array('read', $this->_unset_method) && ! in_array('export', $this->_unset_method)) {
                 $query_string['keep_query'] = true;
-                
+
                 // Add export button toolbar
                 $buttons[] = $this->_set_link('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $query_string, true);
             }
@@ -310,7 +310,7 @@ class Table
 
             if (! in_array('read', $this->_unset_method) && ! in_array('pdf', $this->_unset_method)) {
                 $query_string['keep_query'] = true;
-                
+
                 // Add PDF button toolbar
                 $buttons[] = $this->_set_link('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $query_string, true);
             }
@@ -351,6 +351,7 @@ class Table
             'item_reference' => $this->_item_reference,
             'query_string' => $query_string,
             'toolbar' => [
+                'action' => current_page(null, ['per_page' => null]),
                 'buttons' => $buttons,
                 'filters' => $filters
             ]

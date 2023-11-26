@@ -45,8 +45,6 @@ class Settings extends \Aksara\Laboratory\Core
         $required_facebook_app_secret = null;
         $required_google_client_id = null;
         $required_google_client_secret = null;
-        $required_email_masking = null;
-        $required_smtp_host = null;
 
         if (service('request')->getPost('openlayers_search_provider') && in_array(service('request')->getPost('openlayers_search_provider'), ['google', 'osm'])) {
             $required_api_key = 'required|';
@@ -72,10 +70,6 @@ class Settings extends \Aksara\Laboratory\Core
             $required_google_client_id = 'required';
         }
 
-        if (service('request')->getPost('smtp_email_masking')) {
-            $required_email_masking = 'valid_email';
-        }
-
         $this->set_title(phrase('Application Settings'))
         ->set_icon('mdi mdi-wrench-outline')
         ->set_primary('id')
@@ -96,8 +90,7 @@ class Settings extends \Aksara\Laboratory\Core
             'facebook_app_secret' => 'encryption',
             'google_client_secret' => 'encryption',
             'action_sound' => 'boolean',
-            'update_check' => 'boolean',
-            'smtp_password' => 'encryption'
+            'update_check' => 'boolean'
         ])
         ->set_field(
             'openlayers_search_provider',
@@ -171,9 +164,7 @@ class Settings extends \Aksara\Laboratory\Core
 
             /* NOTIFIER */
             'action_sound' => 'boolean',
-            'update_check' => 'boolean',
-            'smtp_email_masking' => $required_email_masking,
-            'smtp_port' => 'numeric|max_length[5]'
+            'update_check' => 'boolean'
         ])
         ->set_alias([
             'app_name' => phrase('Application Name'),
@@ -215,13 +206,7 @@ class Settings extends \Aksara\Laboratory\Core
 
             /* NOTIFIER */
             'action_sound' => phrase('Action Sound'),
-            'update_check' => phrase('Update Check'),
-            'smtp_email_masking' => phrase('SMTP Email Masking'),
-            'smtp_sender_masking' => phrase('SMTP Sender Masking'),
-            'smtp_host' => phrase('SMTP Host'),
-            'smtp_port' => phrase('SMTP Port'),
-            'smtp_username' => phrase('SMTP Username'),
-            'smtp_password' => phrase('SMTP Password')
+            'update_check' => phrase('Update Check')
         ])
         ->where([
             'id' => 1

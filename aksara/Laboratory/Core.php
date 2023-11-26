@@ -1411,6 +1411,7 @@ class Core extends Controller
      * new data
      *
      * @param   array|string $field
+     * @param null|mixed $value
      */
     public function default_value($field = [], $value = null)
     {
@@ -1882,7 +1883,7 @@ class Core extends Controller
 
             if (in_array($this->_method, ['create', 'update', 'delete'])) {
                 // Throw exception about the method
-                return throw_exception(403, phrase('The method you requested is not acceptable') . ' (' . strtoupper($this->_method). ')', (! $this->api_client ? go_to() : null));
+                return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page') . ' (' . strtoupper($this->_method). ')', (! $this->api_client ? go_to() : null));
             }
         }
 
@@ -1996,7 +1997,7 @@ class Core extends Controller
                 }
 
                 // Unset method
-                $this->unset_method('read, update, delete, export, print, pdf');
+                $this->unset_method('update, delete');
             }
 
             // Get query string
@@ -2588,7 +2589,7 @@ class Core extends Controller
                 $this->_view = (is_array($this->_set_template) && isset($this->_set_template['index']) ? $this->_set_template['index'] : ($view && 'index' != $view ? $view : 'index'));
 
                 // Get formatted results
-                $results = ($this->_set_primary && ! $view_exist ? $this->render_table($results) : $results);
+                $results = (! $view_exist ? $this->render_table($results) : $results);
 
                 // Set icon property
                 $this->_set_icon = ($icon ? $icon : 'mdi mdi-table');
@@ -2734,7 +2735,7 @@ class Core extends Controller
     {
         if (! $this->_set_primary) {
             // Merge method to unset from request because primary key not found
-            $this->_unset_method = array_merge($this->_unset_method, ['create', 'update', 'clone', 'delete']);
+            $this->_unset_method = array_merge($this->_unset_method, ['update', 'delete']);
         }
 
         $table_data = [];

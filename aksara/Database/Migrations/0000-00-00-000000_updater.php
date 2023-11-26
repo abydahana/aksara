@@ -23,11 +23,48 @@ class Updater extends Migration
 {
     public function up()
     {
-        // Modify or create new table properties
+        // Rename notifications table
+        $forge->renameTable('app__notifications', 'notifications');
+
+        // Add columns to table
+        $this->forge->addField([
+            'site_id' => [
+                'type' => 'int',
+                'constraint' => 11,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'whatsapp_api_url' => [
+                'type' => 'varchar'
+            ],
+            'whatsapp_api_key' => [
+                'type' => 'varchar'
+            ],
+            'smtp_hostname' => [
+                'type' => 'varchar'
+            ],
+            'smtp_port' => [
+                'type' => 'int',
+                'constraint' => 6
+            ],
+            'smtp_username' => [
+                'type' => 'varchar'
+            ],
+            'smtp_password' => [
+                'type' => 'varchar'
+            ]
+        ]);
+
+        // Add primary and unique index
+        $this->forge->addKey('site_id', true, true);
+
+        // Create table
+        $this->forge->createTable('notifications__settings');
     }
 
     public function down()
     {
-        // Drop unused tables properties
+        // Drop unused columns from settings table
+        $forge->dropColumn('app__settings', 'smtp_sender_masking, smtp_email_masking, smtp_host, smtp_port, smtp_username, smtp_password');
     }
 }
