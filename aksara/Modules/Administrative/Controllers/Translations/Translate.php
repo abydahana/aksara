@@ -148,7 +148,7 @@ class Translate extends \Aksara\Laboratory\Core
                         $phrases[$key] = $val;
                     }
                 }
-                
+
                 file_put_contents($this->_translation_file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());

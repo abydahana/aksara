@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="col">
-        <form action="{{ links.current_page }}" method="GET" class="form-horizontal">
+        <form action="{{ action }}" method="GET" class="form-horizontal">
             <div class="input-group input-group-sm">
                 {% for name, filter in filters %}
                     {% if filter.type == 'text' %}

@@ -25,49 +25,38 @@ class AppNotifications extends Migration
     {
         // Add columns to table
         $this->forge->addField([
-            'id' => [
+            'site_id' => [
                 'type' => 'int',
                 'constraint' => 11,
                 'unsigned' => true,
-                'auto_increment' => true,
                 'null' => false
             ],
-            'phone' => [
-                'type' => 'varchar',
-                'constraint' => 14,
-                'null' => false
+            'whatsapp_api_url' => [
+                'type' => 'varchar'
             ],
-            'email' => [
-                'type' => 'varchar',
-                'constraint' => 128,
-                'null' => false
+            'whatsapp_api_key' => [
+                'type' => 'varchar'
             ],
-            'title' => [
-                'type' => 'varchar',
-                'constraint' => 128,
-                'null' => false
+            'smtp_hostname' => [
+                'type' => 'varchar'
             ],
-            'message' => [
-                'type' => 'text',
-                'null' => false
+            'smtp_port' => [
+                'type' => 'int',
+                'constraint' => 6
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
+            'smtp_username' => [
+                'type' => 'varchar'
             ],
-            'status' => [
-                'type' => 'tinyint',
-                'constraint' => 1,
-                'default' => '0',
-                'null' => false
+            'smtp_password' => [
+                'type' => 'varchar'
             ]
         ]);
 
         // Add primary and unique index
-        $this->forge->addKey('id', true, true);
+        $this->forge->addKey('site_id', true, true);
 
         // Create table
-        $this->forge->createTable('app__notifications');
+        $this->forge->createTable('notifications__settings');
     }
 
     public function down()

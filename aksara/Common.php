@@ -148,7 +148,7 @@ if (! function_exists('phrase')) {
         // Remove multiple whitespace
         $phrase = preg_replace('/\s+/', ' ', $phrase);
 
-        // Replace sequare braces to 
+        // Replace sequare braces to
         $phrase = str_replace(['[', ']'], ['(', ')'], $phrase);
 
         // Get locale by session

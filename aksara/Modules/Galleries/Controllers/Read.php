@@ -42,7 +42,7 @@ class Read extends \Aksara\Laboratory\Core
             // No album found
             return throw_exception(404, phrase('Album not found!'), current_page('../'));
         }
-        
+
         $this->set_title('{{ gallery_title }}', phrase('Album not found!'))
         ->set_description('{{ gallery_description }}')
         ->set_icon('mdi mdi-image')

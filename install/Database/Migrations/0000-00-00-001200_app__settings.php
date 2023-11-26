@@ -189,36 +189,6 @@ class AppSettings extends Migration
                 'constraint' => 16,
                 'null' => false
             ],
-            'smtp_email_masking' => [
-                'type' => 'varchar',
-                'constraint' => 255,
-                'null' => false
-            ],
-            'smtp_sender_masking' => [
-                'type' => 'varchar',
-                'constraint' => 64,
-                'null' => false
-            ],
-            'smtp_host' => [
-                'type' => 'varchar',
-                'constraint' => 255,
-                'null' => false
-            ],
-            'smtp_port' => [
-                'type' => 'int',
-                'constraint' => 5,
-                'null' => false
-            ],
-            'smtp_username' => [
-                'type' => 'varchar',
-                'constraint' => 32,
-                'null' => false
-            ],
-            'smtp_password' => [
-                'type' => 'varchar',
-                'constraint' => 512,
-                'null' => false
-            ],
             'action_sound' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
