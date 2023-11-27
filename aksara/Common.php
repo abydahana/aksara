@@ -22,13 +22,14 @@ if (! function_exists('aksara')) {
     function aksara(string $parameter = null)
     {
         $version = '5.0.3';
-        $modified = filemtime(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php');
 
         if ('version' == $parameter) {
             return $version;
         } elseif ('build_version' == $parameter) {
             return $version . \CodeIgniter\CodeIgniter::CI_VERSION;
         } elseif ('date_modified' == $parameter) {
+            $modified = filemtime(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php');
+            
             return date('F d Y H:i:s', $modified);
         }
 
