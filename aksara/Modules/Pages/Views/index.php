@@ -107,7 +107,7 @@
         </div>
         <p>
             <i class="text-muted text-sm">
-                <?= phrase('Updated at') . ' ' . phrase(strtolower(date('l', strtotime($page->updated_timestamp)))) . ', ' . $page->updated_timestamp; ?>
+                <?= phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp; ?>
             </i>
         </p>
     </div>
