@@ -1950,7 +1950,7 @@ class Core extends Controller
         if ($this->_table) {
             // Check if table is exists
             if (! $this->model->table_exists($this->_table)) {
-                return throw_exception(501, phrase('The defined primary table does not exist'), current_page('../'));
+                return throw_exception(404, phrase('The defined primary table does not exist'), current_page('../'));
             }
 
             // Retrieve primary key
