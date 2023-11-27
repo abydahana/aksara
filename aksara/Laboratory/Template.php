@@ -463,6 +463,8 @@ class Template
     {
         $slug = null;
         $checker = service('request')->uri->getSegments();
+        $matched_route = service('router')->getMatchedRoute();
+        $matched_route = (isset($matched_route[0]) ? explode('/', $matched_route[0]) : []);
         $params = service('request')->getGet();
         $params['per_page'] = null;
         $params['q'] = null;
@@ -473,7 +475,7 @@ class Template
             $data = [];
 
             foreach ($checker as $key => $val) {
-                $data[$val] = ($translate ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
+                $data[$val] = ($translate && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
             }
         }
 
