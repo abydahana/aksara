@@ -214,7 +214,7 @@ if (! function_exists('phrase')) {
 
                 // Put new phrase into existing language
                 if (file_exists($translation_file) && is_writable($translation_file)) {
-                    file_put_contents($translation_file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE));
+                    file_put_contents($translation_file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
                 }
             }
 

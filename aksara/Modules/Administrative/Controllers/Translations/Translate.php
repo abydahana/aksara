@@ -117,7 +117,7 @@ class Translate extends \Aksara\Laboratory\Core
                     ksort($phrases);
 
                     // Attempt to update the translation file
-                    file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                    file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
                 } catch(\Throwable $e) {
                     // Failed to write file, increase error counts
                     $error++;
