@@ -29,6 +29,9 @@ class MainSeeder extends Seeder
         // Insert main language (Indonesia)
         $this->db->table('app__languages')->insert(json_decode('{"language":"Bahasa Indonesia","description":"Terjemahan bahasa Indonesia","code":"id","locale":"id-ID,id_ID,id_ID.UTF8,id-id,id,indonesian","status":"1"}', true));
 
+        // Insert main language (Russian)
+        $this->db->table('app__languages')->insert(json_decode('{"language":"Русский","description":"Русский перевод","code":"ru","locale":"ru-RU,ru_RU,ru_RU.UTF8,ru-ru,ru,russian","status":"1"}', true));
+
         // Insert the main configuration to app__settings
         $this->db->table('app__settings')->insert(json_decode('{"app_name":"' . htmlspecialchars(trim(session()->get('site_title'))) . '","app_description":"' . htmlspecialchars(trim(session()->get('site_description'))) . '","app_logo":"logo.png","app_icon":"logo.png","frontend_theme":"default","backend_theme":"backend","app_language":"' . htmlspecialchars(trim((session()->get('language') == 'id' ? 2 : 1))) . '","office_name":"Aksara Laboratory","office_phone":"+6281381614558","office_email":"info@example.com","office_fax":"","office_address":"2nd Floor Example Tower Building, Some Road Name, Any Region","office_map":"[]","one_device_login":"0","username_change":"1","frontend_registration":"1","default_membership_group":"3","auto_active_registration":"1","google_analytics_key":"","openlayers_search_provider":"openlayers","openlayers_search_key":"","default_map_tile":"","facebook_app_id":"","facebook_app_secret":"","google_client_id":"","google_client_secret":"","twitter_username":"","instagram_username":"","whatsapp_number":"","action_sound":"1"}', true));
 
