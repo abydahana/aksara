@@ -34,7 +34,7 @@ class Notifications extends \Aksara\Laboratory\Core
         $this->unset_method('create, update')
         ->set_title(phrase('Notifications'))
         ->set_icon('mdi mdi-bullhorn')
-        
+
         ->add_toolbar('send', phrase('Resend'), 'btn-primary --xhr show-progress', 'mdi mdi-send')
         ->add_toolbar('setting', phrase('Setting'), 'btn-dark --modal', 'mdi mdi-cogs')
 

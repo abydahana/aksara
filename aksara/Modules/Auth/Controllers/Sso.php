@@ -206,7 +206,7 @@ class Sso extends \Aksara\Laboratory\Core
 
     private function _send_welcome_email($params = [])
     {
-        $messaging = new \Aksara\Libraries\Messaging;
+        $messaging = new \Aksara\Libraries\Messaging();
 
         $messaging->set_email($params->email)
         ->set_subject(phrase('Welcome to') . ' ' . get_setting('app_name'))

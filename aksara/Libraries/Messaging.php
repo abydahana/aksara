@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
 namespace Aksara\Libraries;
 
 class Messaging
@@ -16,6 +31,7 @@ class Messaging
 
     /**
      * Set recipient email
+     * @param   null|mixed $email
      */
     public function set_email($email = null)
     {
@@ -26,6 +42,7 @@ class Messaging
 
     /**
      * Set recipient phone
+     * @param   null|mixed $phone
      */
     public function set_phone($phone = null)
     {
@@ -36,6 +53,7 @@ class Messaging
 
     /**
      * Set subject
+     * @param   null|mixed $subject
      */
     public function set_subject($subject = null)
     {
@@ -46,6 +64,7 @@ class Messaging
 
     /**
      * Set message
+     * @param   null|mixed $message
      */
     public function set_message($message = null)
     {

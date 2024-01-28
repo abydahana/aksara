@@ -47,7 +47,7 @@ class Formatter
                 if (in_array($this->_method, ['create', 'update'])) {
                     $checked = $value;
                     $value = [];
-    
+
                     foreach ($val['parameter'] as $key => $val) {
                         // Iterate array key pairs
                         $value[] = [

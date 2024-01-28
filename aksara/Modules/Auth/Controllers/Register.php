@@ -258,8 +258,8 @@ class Register extends \Aksara\Laboratory\Core
                 'hash' => $token
             ]
         );
-        
-        $messaging = new \Aksara\Libraries\Messaging;
+
+        $messaging = new \Aksara\Libraries\Messaging();
 
         $messaging->set_email($params['email'])
         ->set_subject(phrase('Account Activation') . ' - ' . get_setting('app_name'))
@@ -292,7 +292,7 @@ class Register extends \Aksara\Laboratory\Core
 
     private function _send_welcome_email($params = [])
     {
-        $messaging = new \Aksara\Libraries\Messaging;
+        $messaging = new \Aksara\Libraries\Messaging();
 
         $messaging->set_email($params['email'])
         ->set_subject(phrase('Account Activated') . ' - ' . get_setting('app_name'))

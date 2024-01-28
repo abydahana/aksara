@@ -361,7 +361,7 @@ class Beautifier
 
             if (isset($content[1]) && '!' === $content[1]) { //if we're in a comment, do something special
                 // We treat all comments as literals, even more than preformatted tags
-                                        // we just look for the appropriate close tag
+                                            // we just look for the appropriate close tag
                     $content = [$this->get_comment($tag_start)];
                 break;
             }

@@ -116,7 +116,8 @@ class Send extends \Aksara\Laboratory\Core
             // Send email
             if ($email->send()) {
                 // Update delivery status
-                $this->model->update($this->_table,
+                $this->model->update(
+                    $this->_table,
                     [
                         'status' => 1
                     ],
@@ -150,16 +151,18 @@ class Send extends \Aksara\Laboratory\Core
         if (! $notifier_config || ! $notifier_config->whatsapp_api_url) {
             return false;
         }
-        
+
         try {
             $headers = [];
             $payloads = [];
             $api_headers = json_decode($notifier_config->whatsapp_api_header ?? '[]', true) ?? [];
             $api_payloads = json_decode($notifier_config->whatsapp_api_payload ?? '[]', true) ?? [];
-            
+
             foreach ($api_payloads as $key => $val) {
-                if (! isset($val['label']) || ! isset($val['value'])) continue;
-                
+                if (! isset($val['label']) || ! isset($val['value'])) {
+                    continue;
+                }
+
                 // Replace recipient parameter
                 $val['value'] = preg_replace("/\{\{(\s+)?(recipient)(\s+)?\}\}/", '+62' . (int) str_replace(' ', '', $data->phone), $val['value']);
 
@@ -169,9 +172,11 @@ class Send extends \Aksara\Laboratory\Core
                 // Re-assign payloads
                 $payloads[$val['label']] = $val['value'];
             }
-            
+
             foreach ($api_headers as $key => $val) {
-                if (! isset($val['label']) || ! isset($val['value'])) continue;
+                if (! isset($val['label']) || ! isset($val['value'])) {
+                    continue;
+                }
 
                 // Re-assign headers
                 $headers[$val['label']] = $val['value'];
@@ -179,16 +184,17 @@ class Send extends \Aksara\Laboratory\Core
 
             // Load cURL library
             $client = \Config\Services::curlrequest();
-    
+
             $response = $client->request('POST', $notifier_config->whatsapp_api_url, [
                 'verify' => false,
                 'headers' => $headers,
                 'json' => $payloads
             ]);
-            
+
             if ($response->getBody() == 'success') {
                 // Update delivery status
-                $this->model->update($this->_table,
+                $this->model->update(
+                    $this->_table,
                     [
                         'status' => 2
                     ],
