@@ -108,11 +108,14 @@ class Pages extends \Aksara\Laboratory\Core
         ])
         ->field_position([
             'carousel_id' => 2,
+            'carousel_title' => 2,
             'faq_id' => 2,
+            'faq_title' => 2,
             'created_timestamp' => 2,
             'updated_timestamp' => 2,
             'status' => 2,
-            'language_id' => 2
+            'language_id' => 2,
+            'language' => 2
         ])
         ->column_size([
             1 => 'col-md-8',

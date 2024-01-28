@@ -274,10 +274,10 @@ class Core extends Controller
             return throw_exception(403, phrase('Your session has been expired'), ($redirect ? $redirect : base_url()), true);
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect)) {
             // User been signed in but blocked by group privilege
-            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : $this->_redirect_back ?? base_url()));
+            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
         } elseif ($permissive_user && ! in_array(get_userdata('group_id'), $permissive_user)) {
             // User been signed in but blocked by group privilege
-            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : $this->_redirect_back ?? base_url()));
+            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
         }
     }
 
@@ -286,9 +286,6 @@ class Core extends Controller
      */
     public function set_method(string $method = 'index')
     {
-        // Update set method flag
-        $this->_set_method = $method;
-
         // Set the method property
         $this->_method = $method;
 
@@ -2128,13 +2125,13 @@ class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (gettype($this->_offset) !== 'integer') {
-                    $this->_offset = (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') - 1 : 0) * $this->_limit;
+                if (! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page')) {
+                    $this->_offset = service('request')->getGet('per_page') * $this->_limit;
+                }
 
-                    if ($this->_offset) {
-                        // Push offset to the prepared query builder
-                        $this->_prepare('offset', [$this->_offset]);
-                    }
+                if ($this->_offset) {
+                    // Push offset to the prepared query builder
+                    $this->_prepare('offset', [$this->_offset]);
                 }
 
                 if (($this->_searchable && ! $this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))) {
@@ -2504,13 +2501,13 @@ class Core extends Controller
                 $results = $this->render_form($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-plus');
+                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-plus');
 
                 // Set title property
-                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Add New Data'));
+                $this->_set_title = ($this->_method && $title ? $title : phrase('Add New Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Please fill all required field below to add new data'));
+                $this->_set_description = ($this->_method && $description ? $description : phrase('Please fill all required field below to add new data'));
             } elseif ('read' == $this->_method) {
                 /**
                  * -------------------------------------------------------------
@@ -2524,13 +2521,13 @@ class Core extends Controller
                 $results = $this->render_read($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-magnify');
+                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-magnify');
 
                 // Set title property
-                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Showing Data'));
+                $this->_set_title = ($this->_method && $title ? $title : phrase('Showing Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Showing the result of requested data'));
+                $this->_set_description = ($this->_method && $description ? $description : phrase('Showing the result of requested data'));
             } elseif ('update' == $this->_method) {
                 /**
                  * -------------------------------------------------------------
@@ -2544,13 +2541,13 @@ class Core extends Controller
                 $results = $this->render_form($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-square-edit-outline');
+                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-square-edit-outline');
 
                 // Set title property
-                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Update Data'));
+                $this->_set_title = ($this->_method && $title ? $title : phrase('Update Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Make sure to check the changes before submitting'));
+                $this->_set_description = ($this->_method && $description ? $description : phrase('Make sure to check the changes before submitting'));
             } elseif (in_array($this->_method, ['export', 'print', 'pdf'])) {
                 /**
                  * -------------------------------------------------------------
@@ -3211,7 +3208,7 @@ class Core extends Controller
                             $value = str_ireplace(['<noscript', '</noscript>'], ['&lt;noscript', '&lt;/noscript&gt;'], $value);
                             $value = str_ireplace(['<style', '</style>'], ['&lt;style', '&lt;/style&gt;'], $value);
                             $value = str_ireplace('<link', '&lt;link', $value);
-                            $value = str_ireplace('onclick="', 'xss-clean="', $value);
+                            $value = str_ireplace(['onclick="', 'onerror="'], 'xss-clean="', $value);
                         }
 
                         // Push the boolean field type to data preparation
@@ -3246,9 +3243,9 @@ class Core extends Controller
                         if (service('request')->getPost($field)) {
                             // Use its own data as slug
                             $title = service('request')->getPost($field);
-                        } elseif (service('request')->getPost($value['parameter'])) {
+                        } elseif (service('request')->getPost($value['type']['to_slug']['parameter'])) {
                             // Or match other field from given parameter
-                            $title = service('request')->getPost($value['parameter']);
+                            $title = service('request')->getPost($value['type']['to_slug']['parameter']);
                         } else {
                             // Otherwise, use the time instead
                             $title = time();

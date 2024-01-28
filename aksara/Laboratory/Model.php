@@ -41,7 +41,7 @@ class Model
 
     private $_selection;
 
-    private $_set;
+    private $_set = [];
 
     private $_table;
 
@@ -115,6 +115,16 @@ class Model
                 $this->_called = true;
             } catch(\Throwable $e) {
                 // Decrypt error
+                return throw_exception(403, $e->getMessage());
+            }
+        } elseif (isset($driver['DBDriver']) && isset($driver['hostname']) && isset($driver['username']) && isset($driver['database'])) {
+            try {
+                // Initialize parameter to new connection
+                $this->db = \Config\Database::connect($driver);
+
+                // Try to initialize the connection
+                $this->db->initialize();
+            } catch(\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
         } elseif ($driver && $hostname && $username && $database) {
@@ -1620,7 +1630,9 @@ class Model
             $this->_table = $table;
         }
 
-        $set = array_merge($this->_set, $set);
+        if ($this->_set) {
+            $set = array_merge($this->_set, $set);
+        }
 
         if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
             $index_data = $this->db->getIndexData($table);

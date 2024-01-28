@@ -158,7 +158,7 @@ class Template
         $language = get_userdata('language');
 
         // Method name to force as view when exists
-        $method = ('404' !== $view ? service('router')->methodName() : $view);
+        $method = (! in_array(service('router')->methodName(), ['404', 'index', 'create', 'read', 'update']) ? service('router')->methodName() : $view);
 
         /**
          * ---------------------------------------------------------------------

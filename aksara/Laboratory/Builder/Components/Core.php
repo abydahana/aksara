@@ -549,6 +549,11 @@ class Core
                         <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
                     </div>
                     <div class="modal-body">
+                        {% if meta.description %}
+                            <div class="pb-3 mb-3 border-bottom">
+                                {{ meta.description }}
+                            </div>
+                        {% endif %}
                         {% for name, params in results.field_data %}
                             {% if params.type == 'geospatial' %}
                                 {# Include form input component #}

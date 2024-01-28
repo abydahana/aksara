@@ -391,6 +391,10 @@ class Table
             ];
         }
 
+        if ($this->_add_button) {
+            array_splice($buttons, 2, 0, $this->_add_button);
+        }
+
         if (! in_array('delete', $this->_unset_method)) {
             $buttons[] = [
                 'url' => 'delete',
@@ -400,10 +404,6 @@ class Table
                 'parameter' => $query_string,
                 'new_tab' => false
             ];
-        }
-
-        if ($this->_add_button) {
-            array_splice($buttons, 2, 0, $this->_add_button);
         }
 
         foreach ($buttons as $key => $val) {

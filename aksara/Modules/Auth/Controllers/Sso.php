@@ -206,78 +206,33 @@ class Sso extends \Aksara\Laboratory\Core
 
     private function _send_welcome_email($params = [])
     {
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : (service('request')->getServer('SERVER_ADMIN') ? service('request')->getServer('SERVER_ADMIN') : 'webmaster@' . service('request')->getServer('SERVER_NAME')));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+        $messaging = new \Aksara\Libraries\Messaging;
 
-        $this->email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $this->email->initialize($config);
-
-        $this->email->setFrom($sender_email, $sender_name);
-        $this->email->setTo($params->email);
-
-        $this->email->setSubject(phrase('Welcome to') . ' ' . get_setting('app_name'));
-        $this->email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Welcome to') . ' ' . get_setting('app_name') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
-                    </p>
-                    <p>
-                        ' . phrase('You are successfully registered to our website.') . ' ' . phrase('Now you can sign in to our website using your ' . $provider . ' account.') . ' ' . phrase('Make sure to set your password and username to secure your account.') . '
-                    </p>
-                    <p>
-                        ' . phrase('Please contact us directly if you still unable to signing in.') . '
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
-        if (! $this->email->send()) {
-            //return throw_exception(400, array('message' => $this->email->printDebugger()));
-        }
+        $messaging->set_email($params->email)
+        ->set_subject(phrase('Welcome to') . ' ' . get_setting('app_name'))
+        ->set_message('
+            <p>
+                ' . phrase('Hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
+            </p>
+            <p>
+                ' . phrase('You are successfully registered to our website.') . ' ' . phrase('Now you can sign in to our website using your ' . $provider . ' account.') . ' ' . phrase('Make sure to set your password and username to secure your account.') . '
+            </p>
+            <p>
+                ' . phrase('If you unable to sign in, please contact us immediately.') . '
+            </p>
+            <br />
+            <br />
+            <p>
+                <b>
+                    ' . get_setting('office_name') . '
+                </b>
+                <br />
+                ' . get_setting('office_address') . '
+                <br />
+                ' . get_setting('office_phone') . '
+            </p>
+        ')
+        ->send(true);
     }
 
     /**

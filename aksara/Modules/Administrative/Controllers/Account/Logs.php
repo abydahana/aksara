@@ -53,10 +53,11 @@ class Logs extends \Aksara\Laboratory\Core
     public function kick()
     {
         if (service('request')->getGet('session')) {
-            if (file_exists(WRITEPATH . 'session/' . service('request')->getGet('session'))) {
+            if (service('request')->getGet('session') && file_exists(WRITEPATH . 'session/' . service('request')->getGet('session'))) {
                 unlink(WRITEPATH . 'session/' . service('request')->getGet('session'));
             }
 
+            // Update table to skip getting session_id on next execution
             $this->model->update($this->_table, ['session_id' => ''], ['session_id' => service('request')->getGet('session')]);
 
             return throw_exception(301, phrase('The device was successfully kicked'), current_page('../', ['session' => null]));
@@ -96,7 +97,7 @@ class Logs extends \Aksara\Laboratory\Core
 
     private function _get_ip_info($ip_address = null, $key = null)
     {
-        if (! $ip_address || '::1' == $ip_address) {
+        if (! $ip_address || '::1' === $ip_address) {
             return false;
         }
 

@@ -162,8 +162,6 @@ trait Traits
 
     private $_set_messages = [];
 
-    private $_set_method;
-
     private $_set_option_label = [];
 
     private $_set_output = [];

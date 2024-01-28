@@ -258,163 +258,67 @@ class Register extends \Aksara\Laboratory\Core
                 'hash' => $token
             ]
         );
+        
+        $messaging = new \Aksara\Libraries\Messaging;
 
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : (service('request')->getServer('SERVER_ADMIN') ? service('request')->getServer('SERVER_ADMIN') : 'webmaster@' . service('request')->getServer('SERVER_NAME')));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
-
-        $email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $email->initialize($config);
-
-        $email->setFrom($sender_email, $sender_name);
-        $email->setTo($params['email']);
-
-        $email->setSubject(phrase('Account Activation'));
-        $email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Account Activation') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
-                    </p>
-                    <p>
-                        ' . phrase('You are recently register your account using this email on our website.') . ' ' . phrase('Your account need to be activated.') . '
-                    </p>
-                    <p>
-                        <a href="' . current_page('activate', ['hash' => $token]) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
-                            ' . phrase('Activate your account') . '
-                        </a>
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
-        try {
-            // Send email
-            $email->send();
-        } catch(\Throwable $e) {
-            // return throw_exception(400, array('message' => $email->printDebugger()));
-        }
+        $messaging->set_email($params['email'])
+        ->set_subject(phrase('Account Activation') . ' - ' . get_setting('app_name'))
+        ->set_message('
+            <p>
+                ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
+            </p>
+            <p>
+                ' . phrase('You are recently register your account using this email on our website.') . ' ' . phrase('Your account need to be activated.') . ' ' . phrase('Click link below to activate your account.') . '
+            </p>
+            <p>
+                <a href="' . current_page('activate', ['hash' => $token]) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
+                    ' . phrase('Activate your account') . '
+                </a>
+            </p>
+            <br />
+            <br />
+            <p>
+                <b>
+                    ' . get_setting('office_name') . '
+                </b>
+                <br />
+                ' . get_setting('office_address') . '
+                <br />
+                ' . get_setting('office_phone') . '
+            </p>
+        ')
+        ->send(true);
     }
 
     private function _send_welcome_email($params = [])
     {
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : service('request')->getServer('SERVER_ADMIN'));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+        $messaging = new \Aksara\Libraries\Messaging;
 
-        $email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $email->initialize($config);
-
-        $email->setFrom($sender_email, $sender_name);
-        $email->setTo($params['email']);
-
-        $email->setSubject(phrase('Account Registered'));
-        $email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Account Registered') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
-                    </p>
-                    <p>
-                        <b>
-                            ' . phrase('Congratulations!') . ',
-                        </b>
-                        <br />
-                        ' . phrase('Your account was successfully registered to our website.') . ' ' . phrase('You can use your email or username to sign in to your dashboard.') . '
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
-        try {
-            // Send email
-            $email->send();
-        } catch(\Throwable $e) {
-            // return throw_exception(400, array('message' => $email->printDebugger()));
-        }
+        $messaging->set_email($params['email'])
+        ->set_subject(phrase('Account Activated') . ' - ' . get_setting('app_name'))
+        ->set_message('
+            <p>
+                ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
+            </p>
+            <p>
+                <b>
+                    ' . phrase('Congratulations!') . ',
+                </b>
+                <br />
+                ' . phrase('Your account was successfully registered to our website and already been activated.') . ' ' . phrase('You can use your email or username to sign in to your dashboard.') . '
+            </p>
+            <br />
+            <br />
+            <p>
+                <b>
+                    ' . get_setting('office_name') . '
+                </b>
+                <br />
+                ' . get_setting('office_address') . '
+                <br />
+                ' . get_setting('office_phone') . '
+            </p>
+        ')
+        ->send(true);
     }
 }

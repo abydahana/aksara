@@ -126,7 +126,7 @@ class Table
     {
         $component = <<<EOF
         <span>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </span>
         EOF;
 
@@ -140,7 +140,7 @@ class Table
     {
         $component = <<<EOF
         <span>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </span>
         EOF;
 
@@ -154,7 +154,7 @@ class Table
     {
         $component = <<<EOF
         <span>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </span>
         EOF;
 
@@ -431,7 +431,7 @@ class Table
     public function attribution($type = null)
     {
         $component = <<<EOF
-        <span>
+        <span class="badge bg-secondary">
             {{ content | length }} {{ content | length > 1 ? phrase('attributes') : phrase('attribute') }}
         </span>
         EOF;
@@ -445,7 +445,7 @@ class Table
     public function accordion($type = null)
     {
         $component = <<<EOF
-        <span>
+        <span class="badge bg-secondary">
             {{ content | length }} {{ content | length > 1 ? phrase('items') : phrase('item') }}
         </span>
         EOF;

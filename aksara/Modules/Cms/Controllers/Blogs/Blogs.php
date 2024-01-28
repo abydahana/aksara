@@ -89,7 +89,7 @@ class Blogs extends \Aksara\Laboratory\Core
             'featured_image' => 'image',
             'status' => 'boolean'
         ])
-        ->set_field('post_slug', 'slug', 'post_title')
+        ->set_field('post_slug', 'to_slug', 'post_title')
         ->set_field('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
         ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
 
@@ -140,11 +140,13 @@ class Blogs extends \Aksara\Laboratory\Core
         ])
         ->field_position([
             'post_category' => 2,
+            'category_title' => 2,
             'post_tags' => 2,
             'status' => 2,
             'headline' => 2,
             'featured_image' => 2,
-            'language_id' => 2
+            'language_id' => 2,
+            'language' => 2
         ])
         ->column_size([
             1 => 'col-md-8',

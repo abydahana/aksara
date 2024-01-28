@@ -160,14 +160,39 @@ class Auth extends \Aksara\Laboratory\Core
                         1
                     );
 
-                    // Check session store
-                    if (1 == service('request')->getPost('remember_session')) {
-                        // Store session to the current device
-                    }
-
                     // Check if system apply one device login
                     if (get_setting('one_device_login')) {
-                        // Under research
+                        // Get older sessions
+                        $sessions = $this->model->select('
+                            session_id,
+                            timestamp
+                        ')
+                        ->group_by('session_id')
+                        ->get_where(
+                            'app__log_activities',
+                            [
+                                'user_id' => $execute->user_id
+                            ]
+                        )
+                        ->result();
+
+                        if ($sessions) {
+                            // Older sessions exist
+                            foreach ($sessions as $key => $val) {
+                                if ($val->session_id && file_exists(WRITEPATH . 'session/' . $val->session_id)) {
+                                    // Older session found
+                                    try {
+                                        // Unlink older session
+                                        if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
+                                            // Update table to skip getting session_id on next execution
+                                            $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' =>  $val->session_id]);
+                                        }
+                                    } catch (\Throwable $e) {
+                                        // Safe abstraction
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     // Set the user credential into session
@@ -202,6 +227,9 @@ class Auth extends \Aksara\Laboratory\Core
                             'access_token' => $session_id
                         ]);
                     } else {
+                        // Send notification
+                        $this->_send_notification($execute->user_id);
+
                         $referrer = service('request')->getUserAgent()->getReferrer();
                         $redirect = service('request')->getGet('redirect');
 
@@ -223,12 +251,6 @@ class Auth extends \Aksara\Laboratory\Core
                 // Throw the validation messages
                 return throw_exception(400, ['password' => phrase('Username or email and password combination does not match.')]);
             }
-        } elseif (service('request')->getGet('code') && service('request')->getGet('scope') && service('request')->getGet('prompt')) {
-            // Google login authentication
-            return $this->google_auth();
-        } elseif (service('request')->getGet('code') && service('request')->getGet('state') && get_userdata('FBRLH_state')) {
-            // Facebook login authentication
-            return $this->facebook_auth();
         }
 
         $this->set_title(phrase('Dashboard Access'))
@@ -361,82 +383,34 @@ class Auth extends \Aksara\Laboratory\Core
         return false;
     }
 
-    private function _send_welcome_email($params = [])
+    /**
+     * Send notification
+     */
+    private function _send_notification($user_id = 0)
     {
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : (service('request')->getServer('SERVER_ADMIN') ? service('request')->getServer('SERVER_ADMIN') : 'webmaster@' . service('request')->getServer('SERVER_NAME')));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+        $query = $this->model->get_where(
+            'app__users',
+            [
+                'user_id' => $user_id
+            ],
+            1
+        )
+        ->row();
+        
+        if ($query) {
+            $messaging = new \Aksara\Libraries\Messaging;
 
-        $email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $email->initialize($config);
-
-        $email->setFrom($sender_email, $sender_name);
-        $email->setTo($params->email);
-
-        $email->setSubject(phrase('Welcome to') . ' ' . get_setting('app_name'));
-        $email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Welcome to') . ' ' . get_setting('app_name') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
-                    </p>
-                    <p>
-                        ' . phrase('You are successfully registered to our website.') . ' ' . phrase('Now you can sign in to our website using your ' . $params->oauth_provider . ' account.') . ' ' . phrase('Make sure to set your password and username to secure your account.') . '
-                    </p>
-                    <p>
-                        ' . phrase('Please contact us directly if you still unabl to signing in.') . '
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
-        try {
-            // Send email
-            $email->send();
-        } catch(\Throwable $e) {
-            // return throw_exception(400, array('message' => $email->printDebugger()));
+            $messaging->set_email($query->email)
+            ->set_phone($query->phone)
+            ->set_subject(phrase('Login Activity'))
+            ->set_message(
+                phrase('Hello') . ', ' . get_userdata('first_name') . '.' .
+                "\n" .
+                phrase('There is a login activity recently made from your account.') . ' ' . phrase('You can restore your account if the login action was not carried out by you.') .
+                "\n\n" .
+                phrase('You can ignore this message if the login was made by yourself.')
+            )
+            ->send(true);
         }
     }
 }
