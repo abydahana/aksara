@@ -34,7 +34,7 @@
             <div class="col-md-5 offset-md-1">
                 {% for index, page in suggestions %}
                     {% if index %} &middot; {% endif %}
-                    <a href="{{ links.base_url }}pages/{{ page.page_slug }}">
+                    <a href="{{ links.base_url }}pages/{{ page.page_slug }}" class="--xhr">
                         {{ page.page_title }}
                     </a>
                 {% endfor %}

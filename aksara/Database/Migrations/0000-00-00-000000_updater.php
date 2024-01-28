@@ -23,23 +23,8 @@ class Updater extends Migration
 {
     public function up()
     {
-        // Rename notifications table
-        $forge->renameTable('app__notifications', 'notifications');
-
-        // Add columns to table
-        $this->forge->addField([
-            'site_id' => [
-                'type' => 'int',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => false
-            ],
-            'whatsapp_api_url' => [
-                'type' => 'varchar'
-            ],
-            'whatsapp_api_key' => [
-                'type' => 'varchar'
-            ],
+        // Add columns to global setting's table
+        $this->forge->addColumn('app__settings', [
             'smtp_hostname' => [
                 'type' => 'varchar'
             ],
@@ -55,16 +40,23 @@ class Updater extends Migration
             ]
         ]);
 
-        // Add primary and unique index
-        $this->forge->addKey('site_id', true, true);
-
-        // Create table
-        $this->forge->createTable('notifications__settings');
+        // Add columns to global notification's table
+        $this->forge->addColumn('app__settings', [
+            'whatsapp_api_url' => [
+                'type' => 'varchar'
+            ],
+            'whatsapp_api_header' => [
+                'type' => 'text'
+            ],
+            'whatsapp_api_payload' => [
+                'type' => 'text'
+            ]
+        ]);
     }
 
     public function down()
     {
         // Drop unused columns from settings table
-        $forge->dropColumn('app__settings', 'smtp_sender_masking, smtp_email_masking, smtp_host, smtp_port, smtp_username, smtp_password');
+        $this->forge->dropColumn('notifications__settings', ['whatsapp_api_key', 'smtp_hostname', 'smtp_port', 'smtp_usernane', 'smtp_password']);
     }
 }

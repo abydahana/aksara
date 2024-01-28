@@ -90,7 +90,9 @@ class Settings extends \Aksara\Laboratory\Core
             'facebook_app_secret' => 'encryption',
             'google_client_secret' => 'encryption',
             'action_sound' => 'boolean',
-            'update_check' => 'boolean'
+            'update_check' => 'boolean',
+            'smtp_port' => 'integer',
+            'smtp_password' => 'encryption'
         ])
         ->set_field(
             'openlayers_search_provider',
@@ -164,7 +166,8 @@ class Settings extends \Aksara\Laboratory\Core
 
             /* NOTIFIER */
             'action_sound' => 'boolean',
-            'update_check' => 'boolean'
+            'update_check' => 'boolean',
+            'smtp_port' => 'integer'
         ])
         ->set_alias([
             'app_name' => phrase('Application Name'),
@@ -206,7 +209,11 @@ class Settings extends \Aksara\Laboratory\Core
 
             /* NOTIFIER */
             'action_sound' => phrase('Action Sound'),
-            'update_check' => phrase('Update Check')
+            'update_check' => phrase('Update Check'),
+            'smtp_hostname' => phrase('SMTP Hostname'),
+            'smtp_port' => phrase('SMTP Port'),
+            'smtp_username' => phrase('SMTP Username'),
+            'smtp_password' => phrase('SMTP Password')
         ])
         ->where([
             'id' => 1

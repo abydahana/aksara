@@ -163,7 +163,6 @@
                                     <?= form_input($results->field_data->facebook_app_secret); ?>
                                 </div>
                             </div>
-                            <hr class="border-secondary" />
                             <div class="row">
                                 <div class="col-md-5">
                                     <?= form_input($results->field_data->google_client_id); ?>
@@ -178,11 +177,31 @@
                                 <?= phrase('Application Notifier'); ?>
                             </h5>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-sm-6">
                                     <?= form_input($results->field_data->action_sound); ?>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-sm-6">
                                     <?= form_input($results->field_data->update_check); ?>
+                                </div>
+                            </div>
+                            <hr class="border-secondary" />
+                            <h5>
+                                <?= phrase('Email Notifier'); ?>
+                            </h5>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <?= form_input($results->field_data->smtp_hostname); ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= form_input($results->field_data->smtp_port); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <?= form_input($results->field_data->smtp_username); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <?= form_input($results->field_data->smtp_password); ?>
                                 </div>
                             </div>
                         </div>

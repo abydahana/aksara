@@ -37,6 +37,10 @@ class Dashboard extends \Aksara\Laboratory\Core
     {
         if (get_userdata('group_id') > 2) {
             $this->set_template('index', 'index_subscriber');
+
+            $this->set_output([
+                'announcements' => $this->_announcements()
+            ]);
         } elseif (get_userdata('group_id') > 1) {
             $this->set_template('index', 'index_technical');
 
@@ -246,7 +250,7 @@ class Dashboard extends \Aksara\Laboratory\Core
         ->get_where(
             'announcements',
             [
-                'placement' => 2,
+                'placement' => 1,
                 'status' => 1,
                 'start_date <= ' => date('Y-m-d'),
                 'end_date >= ' => date('Y-m-d')

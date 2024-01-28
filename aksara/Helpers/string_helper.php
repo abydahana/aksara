@@ -26,7 +26,7 @@ if (! function_exists('truncate')) {
     function truncate($string = null, $limit = 0, $pad = '...')
     {
         if (! $string) {
-            return false;
+            return;
         }
 
         $string = strip_tags($string);

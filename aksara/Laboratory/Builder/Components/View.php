@@ -140,11 +140,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {% for option in content %}
-                <p>
-                    {{ option.label }}
-                </p>
-            {% endfor %}
+            {{ escape ? content : content | raw }}
         </div>
         EOF;
 
@@ -158,11 +154,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {% for option in content %}
-                <p>
-                    {{ option.label }}
-                </p>
-            {% endfor %}
+            {{ escape ? content : content | raw }}
         </div>
         EOF;
 

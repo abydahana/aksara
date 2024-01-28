@@ -44,28 +44,44 @@ class Formatter
     {
         foreach ($type as $key => $val) {
             if (in_array($key, ['checkbox', 'radio']) && $val['parameter']) {
-                $checked = $value;
-                $value = [];
-
-                foreach ($val['parameter'] as $key => $val) {
-                    // Iterate array key pairs
-                    $value[] = [
-                        'value' => $key,
-                        'label' => $val,
-                        'checked' => $key == $checked
-                    ];
+                if (in_array($this->_method, ['create', 'update'])) {
+                    $checked = $value;
+                    $value = [];
+    
+                    foreach ($val['parameter'] as $key => $val) {
+                        // Iterate array key pairs
+                        $value[] = [
+                            'value' => $key,
+                            'label' => $val,
+                            'checked' => $key == $checked
+                        ];
+                    }
+                } else {
+                    if (isset($val['parameter'][$value])) {
+                        $value = $val['parameter'][$value];
+                    } else {
+                        $value = null;
+                    }
                 }
             } elseif (in_array($key, ['select']) && $val['parameter']) {
-                $selected = $value;
-                $value = [];
+                if (in_array($this->_method, ['create', 'update'])) {
+                    $selected = $value;
+                    $value = [];
 
-                foreach ($val['parameter'] as $key => $val) {
-                    // Iterate array key pairs
-                    $value[] = [
-                        'value' => $key,
-                        'label' => $val,
-                        'selected' => $key == $selected
-                    ];
+                    foreach ($val['parameter'] as $key => $val) {
+                        // Iterate array key pairs
+                        $value[] = [
+                            'value' => $key,
+                            'label' => $val,
+                            'selected' => $key == $selected
+                        ];
+                    }
+                } else {
+                    if (isset($val['parameter'][$value])) {
+                        $value = $val['parameter'][$value];
+                    } else {
+                        $value = null;
+                    }
                 }
             } elseif (in_array($key, ['files', 'images'])) {
                 if (is_json($value)) {

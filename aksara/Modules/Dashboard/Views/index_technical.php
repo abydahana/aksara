@@ -179,8 +179,7 @@
                             $announcement = null;
 
                             foreach ($announcements as $key => $val) {
-                                $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="--xhr">' . $val->title . '</a></li>';
-                                $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="--xhr">' . $val->title . '</a></li>';
+                                $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
                             }
 
                             echo '

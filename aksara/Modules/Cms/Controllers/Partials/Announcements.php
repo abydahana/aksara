@@ -63,7 +63,7 @@ class Announcements extends \Aksara\Laboratory\Core
                 1 => phrase('Back End')
             ]
         )
-        ->set_field('announcement_slug', 'slug', 'title')
+        ->set_field('announcement_slug', 'to_slug', 'title')
         ->set_field('announcement_title', 'hyperlink', 'announcements', ['announcement_slug' => 'announcement_slug'], true)
 
         ->add_button('../../../announcements/get', phrase('View Announcement'), 'btn-success', 'mdi mdi-eye', ['announcement_slug' => 'announcement_slug'], true)

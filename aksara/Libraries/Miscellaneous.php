@@ -28,9 +28,9 @@ class Miscellaneous
     }
 
     /**
-     * qrcode generator
+     * QR Code generator
      *
-     * @param mixed|null $params
+     * @param   mixed|null $params
      */
     public function qrcode_generator($params = null)
     {
@@ -54,9 +54,9 @@ class Miscellaneous
     }
 
     /**
-     * barcode generator
+     * Barcode generator
      *
-     * @param mixed|null $params
+     * @param   mixed|null $params
      */
     public function barcode_generator($params = null)
     {
@@ -76,10 +76,10 @@ class Miscellaneous
     }
 
     /**
-     * shortlink generator
+     * Shortlink generator
      *
-     * @param mixed|null $params
-     * @param mixed|null $slug
+     * @param   mixed|null $params
+     * @param   mixed|null $slug
      */
     public function shortlink_generator($params = null, $slug = null, $data = [])
     {

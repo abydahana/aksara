@@ -42,6 +42,30 @@ class Forgot extends \Aksara\Laboratory\Core
         ->render();
     }
 
+    public function reset()
+    {
+        $query = $this->model->get_where(
+            'app__users_hashes',
+            [
+                'hash' => service('request')->getGet('hash')
+            ],
+            1
+        )
+        ->row();
+
+        if (! $query) {
+            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+        }
+
+        $this->set_title(phrase('Reset Password'))
+        ->set_description(phrase('Change your password with a new one.'))
+        ->set_icon('mdi mdi-account-key-outline')
+
+        ->form_callback('_reset_password')
+
+        ->render(null, 'reset');
+    }
+
     private function _validate_form()
     {
         // Set validation rules
@@ -76,131 +100,71 @@ class Forgot extends \Aksara\Laboratory\Core
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
 
-        $token = sha1(service('request')->getPost('username') . time());
-
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : (service('request')->getServer('SERVER_ADMIN') ? service('request')->getServer('SERVER_ADMIN') : 'webmaster@' . service('request')->getServer('SERVER_NAME')));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
-
-        $email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $email->initialize($config);
-
-        $email->setFrom($sender_email, $sender_name);
-        $email->setTo($query->email);
-
-        $email->setSubject(phrase('Reset Password'));
-        $email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Request new password') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
-                    </p>
-                    <p>
-                        ' . phrase('Someone is recently asked to reset the password for an account linked to your email.') . ' ' . phrase('Please click the button below to reset your password.') . '
-                    </p>
-                    <p>
-                        <a href="' . current_page('reset', ['hash' => $token]) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
-                            ' . phrase('Reset Password') . '
-                        </a>
-                    </p>
-                    <p>
-                        ' . phrase('If this action is not requested by yourself, you can just ignore this email.') . '
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
-        // Delete previous password request
-        $this->model->delete(
-            'app__users_hashes',
-            [
-                'user_id' => $query->user_id
-            ]
-        );
-
-        // Insert new request
-        $this->model->insert(
-            'app__users_hashes',
-            [
-                'user_id' => $query->user_id,
-                'hash' => $token
-            ]
-        );
-
-        try {
-            // Send email
-            $email->send();
-        } catch(\Throwable $e) {
-            // return throw_exception(400, array('message' => $email->printDebugger()));
-        }
-
-        return throw_exception(301, phrase('The password reset link has been sent to') . ' ' . $query->email, base_url('auth'));
-    }
-
-    public function reset()
-    {
         $query = $this->model->get_where(
-            'app__users_hashes',
+            'app__users',
             [
-                'hash' => service('request')->getGet('hash')
+                'user_id' => $user_id
             ],
             1
         )
         ->row();
+        
+        if ($query) {
+            $token = sha1($query->username . time());
 
-        if (! $query) {
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+            $messaging = new \Aksara\Libraries\Messaging;
+
+            $messaging->set_email($query->email)
+            ->set_phone($query->phone)
+            ->set_subject(phrase('Request new password'))
+            ->set_message('
+                <p>
+                    ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
+                </p>
+                <p>
+                    ' . phrase('Someone is recently asked to reset the password for an account linked to your email.') . ' ' . phrase('Please click the button below to reset your password.') . '
+                </p>
+                <p>
+                    <a href="' . current_page('reset', ['hash' => $token]) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
+                        ' . phrase('Reset Password') . '
+                    </a>
+                </p>
+                <p>
+                    ' . phrase('If this action is not requested by yourself, you can just ignore this email.') . '
+                </p>
+                <br />
+                <br />
+                <p>
+                    <b>
+                        ' . get_setting('office_name') . '
+                    </b>
+                    <br />
+                    ' . get_setting('office_address') . '
+                    <br />
+                    ' . get_setting('office_phone') . '
+                </p>
+            ')
+            ->send(true);
+
+            // Delete previous password request
+            $this->model->delete(
+                'app__users_hashes',
+                [
+                    'user_id' => $query->user_id
+                ]
+            );
+    
+            // Insert new request
+            $this->model->insert(
+                'app__users_hashes',
+                [
+                    'user_id' => $query->user_id,
+                    'hash' => $token
+                ]
+            );
         }
 
-        $this->set_title(phrase('Reset Password'))
-        ->set_description(phrase('Change your password with a new one.'))
-        ->set_icon('mdi mdi-account-key-outline')
-
-        ->form_callback('_reset_password')
-
-        ->render(null, 'reset');
+        return throw_exception(301, phrase('The password reset link has been sent to') . ' ' . $query->email, base_url('auth'));
     }
 
     public function _reset_password()
@@ -237,6 +201,35 @@ class Forgot extends \Aksara\Laboratory\Core
         } elseif (! $query->status) {
             return throw_exception(400, ['password' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
+        
+        $messaging = new \Aksara\Libraries\Messaging;
+
+        $messaging->set_email($query->email)
+        ->set_phone($query->phone)
+        ->set_subject(phrase('Password Reset Successfully'))
+        ->set_message('
+            <p>
+                ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
+            </p>
+            <p>
+                ' . phrase('You have successfully reset your password.') . ' ' . phrase('Now you can sign in to our website using your new password.') . '
+            </p>
+            <p>
+                ' . phrase('Please contact us directly if you still unable to signing in.') . '
+            </p>
+            <br />
+            <br />
+            <p>
+                <b>
+                    ' . get_setting('office_name') . '
+                </b>
+                <br />
+                ' . get_setting('office_address') . '
+                <br />
+                ' . get_setting('office_phone') . '
+            </p>
+        ')
+        ->send(true);
 
         $this->model->update(
             'app__users',
@@ -248,88 +241,12 @@ class Forgot extends \Aksara\Laboratory\Core
             ]
         );
 
-        // To working with Google SMTP, make sure to activate less secure apps setting
-        $host = get_setting('smtp_host');
-        $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-        $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : service('request')->getServer('SERVER_ADMIN'));
-        $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
-
-        $email = \Config\Services::email();
-
-        if ($host && $username && $password) {
-            $config['userAgent'] = 'Aksara';
-            $config['protocol'] = 'smtp';
-            $config['SMTPCrypto'] = 'ssl';
-            $config['SMTPTimeout'] = 5;
-            $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-            $config['SMTPPort'] = get_setting('smtp_port');
-            $config['SMTPUser'] = $username;
-            $config['SMTPPass'] = $password;
-        } else {
-            $config['protocol'] = 'mail';
-        }
-
-        $config['charset'] = 'utf-8';
-        $config['newline'] = "\r\n";
-        $config['mailType'] = 'html'; // Text or html
-        $config['wordWrap'] = true;
-        $config['validation'] = true; // Bool whether to validate email or not
-
-        $email->initialize($config);
-
-        $email->setFrom($sender_email, $sender_name);
-        $email->setTo($query->email);
-
-        $email->setSubject(phrase('Password Reset Successfully'));
-        $email->setMessage('
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width" />
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <title>
-                        ' . phrase('Password Reset Successfully') . '
-                    </title>
-                </head>
-                <body>
-                    <p>
-                        ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
-                    </p>
-                    <p>
-                        ' . phrase('You have successfully reset your password.') . ' ' . phrase('Now you can sign in to our website with your new password.') . '
-                    </p>
-                    <p>
-                        ' . phrase('Please contact us directly if you still unable to signing in.') . '
-                    </p>
-                    <br />
-                    <br />
-                    <p>
-                        <b>
-                            ' . get_setting('office_name') . '
-                        </b>
-                        <br />
-                        ' . get_setting('office_address') . '
-                        <br />
-                        ' . get_setting('office_phone') . '
-                    </p>
-                </body>
-            </html>
-        ');
-
         $this->model->delete(
             'app__users_hashes',
             [
                 'user_id' => $query->user_id
             ]
         );
-
-        try {
-            // Send email
-            $email->send();
-        } catch(\Throwable $e) {
-            // return throw_exception(400, array('message' => $email->printDebugger()));
-        }
 
         return throw_exception(301, phrase('You have successfully reset your password.'), base_url('auth', ['hash' => null]));
     }

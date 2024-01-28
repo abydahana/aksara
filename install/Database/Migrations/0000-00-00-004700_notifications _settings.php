@@ -34,21 +34,11 @@ class AppNotifications extends Migration
             'whatsapp_api_url' => [
                 'type' => 'varchar'
             ],
-            'whatsapp_api_key' => [
-                'type' => 'varchar'
+            'whatsapp_api_header' => [
+                'type' => 'text'
             ],
-            'smtp_hostname' => [
-                'type' => 'varchar'
-            ],
-            'smtp_port' => [
-                'type' => 'int',
-                'constraint' => 6
-            ],
-            'smtp_username' => [
-                'type' => 'varchar'
-            ],
-            'smtp_password' => [
-                'type' => 'varchar'
+            'whatsapp_api_payload' => [
+                'type' => 'text'
             ]
         ]);
 
