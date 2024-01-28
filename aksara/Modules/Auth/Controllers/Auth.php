@@ -185,7 +185,7 @@ class Auth extends \Aksara\Laboratory\Core
                                         // Unlink older session
                                         if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
                                             // Update table to skip getting session_id on next execution
-                                            $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' =>  $val->session_id]);
+                                            $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                         }
                                     } catch (\Throwable $e) {
                                         // Safe abstraction
@@ -396,9 +396,9 @@ class Auth extends \Aksara\Laboratory\Core
             1
         )
         ->row();
-        
+
         if ($query) {
-            $messaging = new \Aksara\Libraries\Messaging;
+            $messaging = new \Aksara\Libraries\Messaging();
 
             $messaging->set_email($query->email)
             ->set_phone($query->phone)

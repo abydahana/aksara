@@ -108,11 +108,11 @@ class Forgot extends \Aksara\Laboratory\Core
             1
         )
         ->row();
-        
+
         if ($query) {
             $token = sha1($query->username . time());
 
-            $messaging = new \Aksara\Libraries\Messaging;
+            $messaging = new \Aksara\Libraries\Messaging();
 
             $messaging->set_email($query->email)
             ->set_phone($query->phone)
@@ -153,7 +153,7 @@ class Forgot extends \Aksara\Laboratory\Core
                     'user_id' => $query->user_id
                 ]
             );
-    
+
             // Insert new request
             $this->model->insert(
                 'app__users_hashes',
@@ -201,8 +201,8 @@ class Forgot extends \Aksara\Laboratory\Core
         } elseif (! $query->status) {
             return throw_exception(400, ['password' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
-        
-        $messaging = new \Aksara\Libraries\Messaging;
+
+        $messaging = new \Aksara\Libraries\Messaging();
 
         $messaging->set_email($query->email)
         ->set_phone($query->phone)
