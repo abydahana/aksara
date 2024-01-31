@@ -323,6 +323,14 @@ class Auth extends \Aksara\Laboratory\Core
             }
         }
 
+        // Remove session from database
+        $this->model->delete(
+            'app__sessions',
+            [
+                'id' => session_id()
+            ]
+        );
+
         // Destroy session
         service('session')->destroy();
 
