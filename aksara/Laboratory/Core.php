@@ -81,10 +81,7 @@ class Core extends Controller
             // Block invalid browser header
             exit(header('Location: https://google.com?q=' . (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())));
         }
-
-        // Deny access from iframe access
-        service('response')->setHeader('x-frame-options', 'deny');
-
+        
         // Load helpers
         helper(['url', 'file', 'theme', 'security', 'main', 'string', 'widget']);
 
@@ -1867,13 +1864,48 @@ class Core extends Controller
             $this->_cloning = true;
         }
 
-        if (
-            $this->api_client &&
-            in_array(service('request')->getServer('REQUEST_METHOD'), ['POST', 'DELETE']) &&
-            ! in_array($this->_method, ['create', 'update', 'delete'])
-        ) {
-            // Check if request is made from promise
-            return throw_exception(403, phrase('The method you requested is not acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? go_to() : null));
+        if ($this->api_client) {
+            // Validate API request
+            if ($this->_set_permission) {
+                if (! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+                    // Access token is not set
+                    return throw_exception(403, phrase('This service is require an access token.'));
+                }
+    
+                if (session_status() === PHP_SESSION_NONE) {
+                    // Start session
+                    session_start();
+                }
+    
+                // Get cookie
+                $cookie = $this->model->select('
+                    data
+                ')
+                ->get_where(
+                    'app__sessions',
+                    [
+                        'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN'),
+                        'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
+                    ],
+                    1
+                )
+                ->row('data');
+    
+                if ($cookie && session_decode($cookie)) {
+                    // Set the cookie to session
+                    set_userdata(array_filter($_SESSION));
+    
+                    // Set the user language session
+                    $this->_set_language(get_userdata('language_id'));
+                } else {
+                    // Cookie not found
+                    return throw_exception(403, phrase('The access token is invalid or already expired'));
+                }
+            } elseif (in_array(service('request')->getServer('REQUEST_METHOD'), ['POST', 'DELETE']) &&
+            ! in_array($this->_method, ['create', 'update', 'delete'])) {
+                // Check if request is made from promise
+                return throw_exception(403, phrase('The method you requested is not acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? go_to() : null));
+            }
         } elseif ($table && ! $this->_set_permission) {
             // Unset database modification because no permission is set
             $this->unset_method('create, update, delete');
@@ -5094,39 +5126,6 @@ class Core extends Controller
         } elseif ($client->ip_range && (($client->ip_range && ! $this->_ip_in_range($client->ip_range)) || service('request')->getIPAddress() != service('request')->getServer('SERVER_ADDR'))) {
             // Client IP blocked
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source'));
-        }
-
-        // Retrieve temporary session
-        if (service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
-            if (session_status() === PHP_SESSION_NONE) {
-                // Start session
-                session_start();
-            }
-
-            // Get cookie
-            $cookie = $this->model->select('
-                data
-            ')
-            ->get_where(
-                'app__sessions',
-                [
-                    'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN'),
-                    'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
-                ],
-                1
-            )
-            ->row('data');
-
-            if ($cookie && session_decode($cookie)) {
-                // Set the cookie to session
-                set_userdata(array_filter($_SESSION));
-
-                // Set the user language session
-                $this->_set_language(get_userdata('language_id'));
-            } else {
-                // Cookie not found
-                return throw_exception(403, phrase('The access token is invalid or already expired'));
-            }
         }
 
         // Update property state
