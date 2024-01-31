@@ -425,6 +425,15 @@ class Template
             }
         }
 
+        // Add security headers
+        service('response')->setHeader('X-XSS-Protection', '1; mode=block');
+        service('response')->setHeader('X-Frame-Options', 'SAMEORIGIN');
+        service('response')->setHeader('X-Content-Type-Options', 'nosniff');
+        service('response')->setHeader('Referrer-Policy', 'same-origin');
+        service('response')->setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        service('response')->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
+        service('response')->setHeader('Set-Cookie', 'HttpOnly; Secure');
+
         if (service('request')->isAJAX() && service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) {
             // Send to client
             return make_json($data);

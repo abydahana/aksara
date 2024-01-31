@@ -35,7 +35,7 @@ class Permission
      * @param   mixed|null $method
      * @param   mixed|null $redirect
      */
-    public function allow($path = null, $method = null, int $user_id = 0, $redirect = null)
+    public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
     {
         if (! $method || ! method_exists(service('router')->controllerName(), $method)) {
             $method = 'index';

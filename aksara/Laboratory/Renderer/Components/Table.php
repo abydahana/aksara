@@ -491,7 +491,7 @@ class Table
             }
         }
 
-        if (strpos($path, '://') === false) {
+        if ($path && strpos($path, '://') === false) {
             $url = go_to($path, $query_string);
         } else {
             $url = $path;

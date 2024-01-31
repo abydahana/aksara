@@ -21,8 +21,6 @@ use Hybridauth\Hybridauth;
 
 class Auth extends \Aksara\Laboratory\Core
 {
-    private $_api_request;
-
     public function __construct()
     {
         parent::__construct();
@@ -38,7 +36,7 @@ class Auth extends \Aksara\Laboratory\Core
         // Check if use is already signed in
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
-            if ($this->_api_request) {
+            if ($this->api_client) {
                 // Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
@@ -207,7 +205,7 @@ class Auth extends \Aksara\Laboratory\Core
                     ]);
 
                     // Check if request is made through API or not
-                    if ($this->_api_request) {
+                    if ($this->api_client) {
                         $session_id = session_id();
 
                         $this->model->insert(
