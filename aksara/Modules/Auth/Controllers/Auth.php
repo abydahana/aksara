@@ -327,7 +327,7 @@ class Auth extends \Aksara\Laboratory\Core
         $this->model->delete(
             'app__sessions',
             [
-                'id' => session_id()
+                'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? session_id()
             ]
         );
 
