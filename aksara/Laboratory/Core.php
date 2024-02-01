@@ -63,6 +63,11 @@ class Core extends Controller
      */
     public $template;
 
+    /**
+     * A flag wheter API token is valid or not
+     */
+    private $_api_token;
+
     public function __construct()
     {
         // Start benchmarking
@@ -1870,35 +1875,8 @@ class Core extends Controller
                 if (! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
                     // Access token is not set
                     return throw_exception(403, phrase('This service is require an access token.'));
-                }
-    
-                if (session_status() === PHP_SESSION_NONE) {
-                    // Start session
-                    session_start();
-                }
-    
-                // Get cookie
-                $cookie = $this->model->select('
-                    data
-                ')
-                ->get_where(
-                    'app__sessions',
-                    [
-                        'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN'),
-                        'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
-                    ],
-                    1
-                )
-                ->row('data');
-    
-                if ($cookie && session_decode($cookie)) {
-                    // Set the cookie to session
-                    set_userdata(array_filter($_SESSION));
-    
-                    // Set the user language session
-                    $this->_set_language(get_userdata('language_id'));
-                } else {
-                    // Cookie not found
+                } elseif (! $this->_api_token) {
+                    // Access token is not valid
                     return throw_exception(403, phrase('The access token is invalid or already expired'));
                 }
             } elseif (in_array(service('request')->getServer('REQUEST_METHOD'), ['POST', 'DELETE']) &&
@@ -5126,6 +5104,38 @@ class Core extends Controller
         } elseif ($client->ip_range && (($client->ip_range && ! $this->_ip_in_range($client->ip_range)) || service('request')->getIPAddress() != service('request')->getServer('SERVER_ADDR'))) {
             // Client IP blocked
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source'));
+        }
+                
+        if (session_status() === PHP_SESSION_NONE) {
+            // Start session
+            session_start();
+        }
+
+        // Get cookie
+        $cookie = $this->model->select('data')->get_where(
+            'app__sessions',
+            [
+                'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? 0,
+                'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
+            ],
+            1
+        )
+        ->row('data');
+		
+		if($cookie && $this->_db_driver === 'Postgre') {
+			// Un-escape bytea from PostgreSQL result
+			$cookie = pg_unescape_bytea($cookie);
+		}
+
+        if ($cookie && session_decode($cookie)) {
+            // Set API token as valid
+            $this->_api_token = true;
+
+            // Set the cookie to session
+            set_userdata(array_filter($_SESSION));
+
+            // Set the user language session
+            $this->_set_language(get_userdata('language_id'));
         }
 
         // Update property state
