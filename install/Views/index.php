@@ -122,6 +122,7 @@
                                                     <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>">
                                                         <option value="en"<?= (session()->get('language') == 'en' ? ' selected' : null); ?>>English</option>
                                                         <option value="id"<?= (session()->get('language') == 'id' ? ' selected' : null); ?>>Indonesia</option>
+                                                        <option value="ru"<?= (session()->get('language') == 'ru' ? ' selected' : null); ?>>Русский</option>
                                                     </select>
                                                 </div>
                                             </div>
