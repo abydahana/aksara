@@ -70,7 +70,7 @@ if (! function_exists('get_theme_asset')) {
         $backtrace = debug_backtrace();
 
         foreach ($backtrace as $key => $val) {
-            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $val['object']->template->theme . DIRECTORY_SEPARATOR . $data)) {
+            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->template->theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
                 return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->template->theme . '/assets/' . $data));
             }
         }
