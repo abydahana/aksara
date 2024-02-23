@@ -130,6 +130,25 @@ class Validation
     }
 
     /**
+     * Check if field is valid time
+     *
+     * @param   mixed|null $value
+     */
+    public function valid_time($value = null): bool
+    {
+        $validation = \Config\Services::validation();
+
+        //Assume $value SHOULD be entered as HH:MM
+        list($hh, $mm) = array_pad(explode(':', $value), 2, '00');
+
+        if (! is_numeric($hh) || ! is_numeric($mm) || (int) $hh > 24 || (int) $mm > 59 || mktime((int) $hh, (int) $mm) === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Check if field is valid date and time
      *
      * @param   mixed|null $value
