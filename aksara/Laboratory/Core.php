@@ -2135,7 +2135,7 @@ class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1) {
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && ! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1) {
                     $this->_offset = (service('request')->getGet('per_page') - 1) * ($this->_limit ?? $this->_limit_backup);
                 }
 
