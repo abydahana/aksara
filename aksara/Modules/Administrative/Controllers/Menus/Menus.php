@@ -45,7 +45,7 @@ class Menus extends \Aksara\Laboratory\Core
         ->set_field('serialized_data', 'custom_format', $this->_menus())
         ->set_field(
             'menu_placement',
-            'dropdown',
+            'select',
             [
                 'header' => phrase('Header'),
                 'sidebar' => phrase('Sidebar')
