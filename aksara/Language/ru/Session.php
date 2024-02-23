@@ -14,6 +14,7 @@
  * When the signs is coming, those who don't believe at "that time"
  * have only two choices, commit suicide or become brutal.
  */
+
 // Настройки языка Session
 return [
     'missingDatabaseTable' => '`sessionSavePath` должен содержать имя таблицы для работы обработчика сессий в базе данных.',

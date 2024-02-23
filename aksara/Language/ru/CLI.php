@@ -34,4 +34,3 @@ return [
     'generateFileError' => 'Ошибка создания файла: ',
     'namespaceNotDefined' => 'Пространство имен "{0}" не определено.',
 ];
-
