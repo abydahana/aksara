@@ -41,6 +41,8 @@ class Themes extends \Aksara\Laboratory\Core
                 $mime = 'text/css';
             } elseif ('js' == strtolower(pathinfo($filename, PATHINFO_EXTENSION))) {
                 $mime = 'text/javascript';
+            } elseif ('svg' == strtolower(pathinfo($filename, PATHINFO_EXTENSION))) {
+                $mime = 'image/svg+xml';
             }
 
             service('response')->setContentType($mime);
