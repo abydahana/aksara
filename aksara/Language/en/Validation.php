@@ -25,5 +25,6 @@ return [
     'valid_time' => 'The {field} must be contain valid time.',
     'valid_datetime' => 'The {field} must be contain valid date and time.',
     'valid_year' => 'The {field} must be contain valid year.',
-    'valid_hex' => 'The {field} must be contain only hex color code.'
+    'valid_hex' => 'The {field} must be contain only hex color code.',
+    'relation_checker' => 'The relation data of {field} is not found.'
 ];
