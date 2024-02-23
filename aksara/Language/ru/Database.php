@@ -14,6 +14,7 @@
  * When the signs is coming, those who don't believe at "that time"
  * have only two choices, commit suicide or become brutal.
  */
+
 // Настройки языка для базы данных
 return [
     'invalidEvent' => '{0} не является допустимым обратным вызовом события модели.',
@@ -33,4 +34,3 @@ return [
     'forEmptyInputGiven' => 'Для поля `{0}` предоставлено пустое выражение',
     'forFindColumnHaveMultipleColumns' => 'Разрешена только одна колонка в названии столбца.',
 ];
-

@@ -30,4 +30,3 @@ return [
     'trillion' => ' триллионов',
     'quadrillion' => ' квадрильонов',
 ];
-

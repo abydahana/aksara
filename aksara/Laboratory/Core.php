@@ -86,7 +86,7 @@ class Core extends Controller
             // Block invalid browser header
             exit(header('Location: https://google.com?q=' . (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())));
         }
-        
+
         // Load helpers
         helper(['url', 'file', 'theme', 'security', 'main', 'string', 'widget']);
 
@@ -2135,8 +2135,8 @@ class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page')) {
-                    $this->_offset = service('request')->getGet('per_page') * $this->_limit;
+                if (! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1) {
+                    $this->_offset = (service('request')->getGet('per_page') - 1) * ($this->_limit ?? $this->_limit_backup);
                 }
 
                 if ($this->_offset) {
@@ -5105,7 +5105,7 @@ class Core extends Controller
             // Client IP blocked
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source'));
         }
-                
+
         if (session_status() === PHP_SESSION_NONE) {
             // Start session
             session_start();
@@ -5121,11 +5121,11 @@ class Core extends Controller
             1
         )
         ->row('data');
-		
-		if($cookie && $this->_db_driver === 'Postgre') {
-			// Un-escape bytea from PostgreSQL result
-			$cookie = pg_unescape_bytea($cookie);
-		}
+
+        if ($cookie && 'Postgre' === $this->_db_driver) {
+            // Un-escape bytea from PostgreSQL result
+            $cookie = pg_unescape_bytea($cookie);
+        }
 
         if ($cookie && session_decode($cookie)) {
             // Set API token as valid
