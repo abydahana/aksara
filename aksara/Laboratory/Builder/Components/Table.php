@@ -56,7 +56,7 @@ class Table
     {
         $component = <<<EOF
         <span>
-            {{ truncate(value, 64) }}
+            {{ content }}
         </span>
         EOF;
 
