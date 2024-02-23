@@ -53,9 +53,9 @@ class Contact extends \Aksara\Laboratory\Core
             'inquiries',
             [
                 'sender_email' => service('request')->getPost('email'),
-                'sender_full_name' => service('request')->getPost('full_name'),
-                'subject' => service('request')->getPost('subject'),
-                'messages' => service('request')->getPost('messages'),
+                'sender_full_name' => htmlspecialchars(service('request')->getPost('full_name')),
+                'subject' => htmlspecialchars(service('request')->getPost('subject')),
+                'messages' => htmlspecialchars(service('request')->getPost('messages')),
                 'timestamp' => date('Y-m-d H:i:s')
             ]
         );
