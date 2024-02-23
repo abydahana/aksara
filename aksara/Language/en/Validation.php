@@ -22,6 +22,7 @@ return [
     'boolean' => 'The {field} must be checked or rather ignored.',
     'currency' => 'The {field} must be contain valid currency.',
     'valid_date' => 'The {field} must be contain valid date.',
+    'valid_time' => 'The {field} must be contain valid time.',
     'valid_datetime' => 'The {field} must be contain valid date and time.',
     'valid_year' => 'The {field} must be contain valid year.',
     'valid_hex' => 'The {field} must be contain only hex color code.'
