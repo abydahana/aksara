@@ -487,11 +487,11 @@ class Table
         foreach (service('request')->getGet() as $key => $val) {
             // Slice non primary query string
             if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! isset($query_string['keep_query'])) {
-                $query_string[$key] = null;
+                //$query_string[$key] = null;
             }
         }
 
-        if ($path && strpos($path, '://') === false) {
+        if (strpos($path, '://') === false) {
             $url = go_to($path, $query_string);
         } else {
             $url = $path;
