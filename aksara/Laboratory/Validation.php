@@ -136,8 +136,6 @@ class Validation
      */
     public function valid_time($value = null): bool
     {
-        $validation = \Config\Services::validation();
-
         //Assume $value SHOULD be entered as HH:MM
         list($hh, $mm) = array_pad(explode(':', $value), 2, '00');
 
@@ -204,7 +202,6 @@ class Validation
      */
     public function relation_checker($value = 0, $params = null): bool
     {
-        $validation = \Config\Services::validation();
         $model = new Model();
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
@@ -213,20 +210,7 @@ class Validation
             $table = substr($table, 0, strrpos($table, ' '));
         }
 
-        if (! $model->table_exists($table)) {
-            // Check table existence
-            $validation->setError('relation_checker', phrase('The relation table does not exist'));
-
-            return false;
-        } elseif (! $model->field_exists($field, $table)) {
-            // Check field existence
-            $validation->setError('relation_checker', phrase('The field for this relation table does not exist'));
-
-            return false;
-        } elseif (! $model->select($field)->get_where($table, [$field => $value])->row($field)) {
-            // Check if relation data is exists
-            $validation->setError('relation_checker', phrase('The selected data for this relation does not exist'));
-
+        if (! $model->table_exists($table) || ! $model->field_exists($field, $table) || ! $model->select($field)->get_where($table, [$field => $value])->row($field)) {
             return false;
         }
 
