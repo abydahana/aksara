@@ -2011,7 +2011,7 @@ class Core extends Controller
             $query_string = service('request')->getGet();
 
             foreach ($query_string as $key => $val) {
-                if (in_array($this->_method, ['read', 'update']) && in_array($key, $this->_set_primary)) {
+                if (in_array($this->_method, ['read', 'update', 'delete']) && in_array($key, $this->_set_primary)) {
                     // Remove query parameter from URL
                     $query_string[$key] = null;
                 }
