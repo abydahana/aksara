@@ -2897,7 +2897,6 @@ class Core extends Controller
 
                     // Carousel upload validation rules
                     $this->form_validation->setRule($key . '.background.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . '.image]');
-                    $this->form_validation->setRule($key . '.thumbnail.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . '.image]');
                 } elseif (array_intersect(['accordion'], $type)) {
                     $validation = true;
 
@@ -3150,21 +3149,12 @@ class Core extends Controller
                             ];
 
                             // Check if the carousel has uploaded background
-                            if (isset($this->_uploaded_files[$field]['background'][$key]) && $this->_uploaded_files[$field]['background'][$key]) {
+                            if (isset($this->_uploaded_files[$field][$key]) && $this->_uploaded_files[$field][$key]) {
                                 // Pair with newer uploaded background
-                                $items[$key]['background'] = $this->_uploaded_files[$field]['background'][$key];
+                                $items[$key]['background'] = $this->_uploaded_files[$field][$key];
                             } else {
                                 // Use default background instead
                                 $items[$key]['background'] = (isset($carousel['default_background'][$key]) ? $carousel['default_background'][$key] : 'placeholder.png');
-                            }
-
-                            // Check if carousel has uploaded thumbnail
-                            if (isset($this->_uploaded_files[$field]['thumbnail'][$key]) && $this->_uploaded_files[$field]['thumbnail'][$key]) {
-                                // Pair with newer uploaded background
-                                $items[$key]['thumbnail'] = $this->_uploaded_files[$field]['thumbnail'][$key];
-                            } else {
-                                // Use default thumbnail instead
-                                $items[$key]['thumbnail'] = (isset($carousel['default_thumbnail'][$key]) ? $carousel['default_thumbnail'][$key] : 'placeholder.png');
                             }
                         }
 

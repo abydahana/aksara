@@ -174,7 +174,7 @@ class Formatter
                         // Format image source
                         $carousel->src = [];
                         $carousel->src['background'] = get_image($this->_set_upload_path, $carousel->background);
-                        $carousel->src['thumbnail'] = get_image($this->_set_upload_path, $carousel->thumbnail, 'thumb');
+                        $carousel->src['thumbnail'] = get_image($this->_set_upload_path, $carousel->background, 'thumb');
                         $carousel->src['placeholder'] = get_image($this->_set_upload_path, 'placeholder.png', 'thumb');
 
                         $carousels[] = $carousel;
