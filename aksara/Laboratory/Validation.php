@@ -227,7 +227,15 @@ class Validation
     public function validate_upload($value = null, $params = null): bool
     {
         list($field, $type) = array_pad(explode('.', $params), 2, null);
-        $files = service('request')->getFile($field) ?? service('request')->getFileMultiple($field);
+
+        // Typically the suffix used for carousel or future addition
+        if (isset($_FILES[$field]['name']['background'])) {
+            $suffix = '.background';
+        } else {
+            $suffix = null;
+        }
+
+        $files = service('request')->getFile($field . $suffix) ?? service('request')->getFileMultiple($field . $suffix);
 
         if ($files) {
             if (is_array($files)) {
@@ -235,15 +243,15 @@ class Validation
                     if (is_array($val)) {
                         foreach ($val as $_key => $_val) {
                             // Typically using nested input like field[foo][bar]
-                            $this->_do_upload($field . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
+                            $this->_do_upload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
                         }
                     } else {
                         // Typically using nested input like field[foo]
-                        $this->_do_upload($field . '.' . $key, $field, $type, $key);
+                        $this->_do_upload($field . $suffix . '.' . $key, $field, $type, $key);
                     }
                 }
             } else {
-                $this->_do_upload($field, $field, $type);
+                $this->_do_upload($field . $suffix, $field, $type);
             }
         }
 
