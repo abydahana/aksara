@@ -19,7 +19,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AppNotifications extends Migration
+class AppNotificationsSettings extends Migration
 {
     public function up()
     {
@@ -32,7 +32,8 @@ class AppNotifications extends Migration
                 'null' => false
             ],
             'whatsapp_api_url' => [
-                'type' => 'varchar'
+                'type' => 'varchar',
+                'constraint' => 255
             ],
             'whatsapp_api_header' => [
                 'type' => 'text'
