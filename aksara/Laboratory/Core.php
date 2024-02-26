@@ -1015,8 +1015,16 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_validation = array_merge($this->_set_validation, $params);
+        // Find existing field validation and merge
+        foreach ($params as $key => $val) {
+            if (isset($this->_set_validation[$key]) && $val) {
+                // Merge validation
+                $this->_set_validation[$key] = $this->_set_validation[$key] . '|' . $val;
+            } else {
+                // Set new validation
+                $this->_set_validation[$key] = $val;
+            }
+        }
 
         return $this;
     }
@@ -3019,7 +3027,7 @@ class Core extends Controller
                             $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                         } else {
                             // Input validation rules
-                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . $validation_suffix);
+                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] : null) . ($validation_suffix ? '|' . $validation_suffix : null));
                         }
                     } elseif ($validation_suffix) {
                         // Validate only when no default set to field
