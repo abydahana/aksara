@@ -2982,7 +2982,7 @@ class Core extends Controller
                             $callback = preg_replace('/callback_/', '', $callback, 1);
 
                             if (method_exists($this, $callback)) {
-                                $validate = $this->$callback(service('request')->getVar($key));
+                                $validate = $this->$callback(service('request')->getVar($key) ?? '');
 
                                 if (true !== $validate) {
                                     // Validation error, throw exception
