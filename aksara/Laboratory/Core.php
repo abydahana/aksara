@@ -1015,8 +1015,16 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_validation = array_merge($this->_set_validation, $params);
+        // Find existing field validation and merge
+        foreach ($params as $key => $val) {
+            if (isset($this->_set_validation[$key]) && $val) {
+                // Merge validation
+                $this->_set_validation[$key] = $this->_set_validation[$key] . '|' . $val;
+            } else {
+                // Set new validation
+                $this->_set_validation[$key] = $val;
+            }
+        }
 
         return $this;
     }
@@ -1862,6 +1870,18 @@ class Core extends Controller
      */
     public function render(string $table = null, string $view = null)
     {
+        // Debugger
+        if (in_array($this->_debugging, ['params', 'parameter'])) {
+            // Debug requested
+            if (ENVIRONMENT === 'production') {
+                // Print debugger
+                exit('<pre>' . print_r($this->_prepare, true) . '</pre>');
+            }
+
+            // Print debugger
+            dd($this->_prepare);
+        }
+
         // Check if method is cloning
         if ('clone' == $this->_method) {
             // Switch method to update
@@ -2966,7 +2986,7 @@ class Core extends Controller
 
                                 if (true !== $validate) {
                                     // Validation error, throw exception
-                                    $this->form_validation->setError($key, $validate);
+                                    $this->form_validation->setError($key, $validate ?? '');
                                 }
 
                                 // Unset valid callback from validation
@@ -3007,7 +3027,7 @@ class Core extends Controller
                             $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                         } else {
                             // Input validation rules
-                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . $validation_suffix);
+                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] : null) . ($validation_suffix ? '|' . $validation_suffix : null));
                         }
                     } elseif ($validation_suffix) {
                         // Validate only when no default set to field
@@ -4657,26 +4677,21 @@ class Core extends Controller
      */
     private function _fetch($table = null)
     {
-        // Debugging
-        if (isset($this->_debugging)) {
-            if (in_array($this->_debugging, ['params', 'parameter'])) {
-                // Return debug parameter
-                dd($this->_prepare);
-            }
-
+        // Debugger
+        if ($this->_debugging) {
             // Run query
             $query = $this->_run_query($table)->limit($this->_limit, $this->_offset)->result();
 
             if ('query' == $this->_debugging) {
-                // Return as last executed query
+                // Print debugger
                 exit(nl2br($this->model->last_query()));
             } else {
-                if (ENVIRONMENT == 'production') {
-                    // Return the result of query using print_r
+                if (ENVIRONMENT === 'production') {
+                    // Print debugger
                     exit('<pre>' . print_r($query, true) . '</pre>');
                 }
 
-                // Return the result of query
+                // Print debugger
                 dd($query);
             }
         }
