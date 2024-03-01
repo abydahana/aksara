@@ -374,7 +374,7 @@ class Template
             foreach ($helpers as $key => $helper) {
                 if (strtolower(pathinfo($helper, PATHINFO_EXTENSION)) === 'php') {
                     // Load helper
-                    helper('themes/' . $this->theme . '/helpers/' . $helper);
+                    include_once ROOTPATH . 'themes/' . $this->theme . '/helpers/' . $helper;
                 }
             }
         }
