@@ -372,7 +372,7 @@ class Template
             $helpers = directory_map(ROOTPATH . 'themes/' . $this->theme . '/helpers', 1);
 
             foreach ($helpers as $key => $helper) {
-                if (strtolower(pathinfo($val, PATHINFO_EXTENSION)) === 'php') {
+                if (strtolower(pathinfo($helper, PATHINFO_EXTENSION)) === 'php') {
                     // Load helper
                     helper('themes/' . $this->theme . '/helpers/' . $helper);
                 }
