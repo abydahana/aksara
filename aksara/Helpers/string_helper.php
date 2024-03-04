@@ -108,11 +108,20 @@ if (! function_exists('make_json')) {
 
         http_response_code(200);
 
+        header('Content-Type: application/json');
+
         if ($filename) {
-            header('Content-disposition: attachment; filename=' . $filename . (stripos($filename, '.json') === false ? '.json' : null));
+            header('Content-Disposition: attachment; filename=' . $filename . (stripos($filename, '.json') === false ? '.json' : null));
         }
 
-        header('Content-Type: application/json');
+        // Add security headers
+        header('Permissions-Policy: geolocation=(self "' . base_url() . '")');
+        header('Referrer-Policy: same-origin');
+        header('Set-Cookie: HttpOnly; Secure');
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: SAMEORIGIN');
+        header('X-XSS-Protection: 1; mode=block');
 
         exit($output);
     }

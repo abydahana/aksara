@@ -36,6 +36,12 @@ Options -Indexes
 	# Ensure Authorization header is passed along
 	RewriteCond %{HTTP:Authorization} .
 	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+	# Redirect directory access
+	RewriteCond %{REQUEST_URI} /uploads/?$ [OR]
+	RewriteCond %{REQUEST_URI} /uploads/\w+/?$ [OR]
+	RewriteCond %{REQUEST_URI} /uploads/\w+/\w+/?$
+	RewriteRule ^(.*)$ index.php/404 [L,NC,QSA]
 </IfModule>
 
 <IfModule !mod_rewrite.c>

@@ -45,7 +45,13 @@ class Formatter
         foreach ($type as $key => $val) {
             if (in_array($key, ['checkbox', 'radio']) && $val['parameter']) {
                 if (in_array($this->_method, ['create', 'update'])) {
-                    $checked = $value;
+                    if ('checkbox' === $key && is_json($value)) {
+                        // Indicates the value is JSON format
+                        $checked = json_decode($value, true);
+                    } else {
+                        $checked = $value;
+                    }
+
                     $value = [];
 
                     foreach ($val['parameter'] as $key => $val) {
@@ -53,7 +59,7 @@ class Formatter
                         $value[] = [
                             'value' => $key,
                             'label' => $val,
-                            'checked' => $key == $checked
+                            'checked' => is_array($checked) && in_array($key, $checked) || $key === $checked
                         ];
                     }
                 } else {
