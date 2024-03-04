@@ -1,27 +1,31 @@
-<?php
-    if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)) {
-        echo '
-            <div class="alert alert-danger px-3 rounded-0 mb-0">
-                <h5>
-                    ' . phrase('Notice') . '
-                </h5>
-                ' . (! $permission->uploads ? '<p class="mb-0"><b>' . str_replace('\\', '/', FCPATH . UPLOAD_PATH) . '/</b> ' . phrase('is not writable.') . '</p>' : null) . '
-                ' . (! $permission->writable ? '<p class="mb-0"><b>' . str_replace('\\', '/', WRITEPATH) . '</b> ' . phrase('is not writable.') . '</p>' : null) . '
-                <br />
-                <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>' . phrase('Click here') . '</b></a> ' . phrase('to get an advice to solve this problem.') . '
-            </div>
-        ';
-    } elseif (in_array(get_userdata('group_id'), [1]) && is_dir(ROOTPATH . 'install')) {
-        echo '
-            <div class="alert alert-warning px-3 rounded-0 mb-0">
-                <h5>
-                    ' . phrase('Notice') . '
-                </h5>
-                ' . phrase('Please remove or rename the following directory to secure your application:') . ' <code>' . str_replace('\\', '/', ROOTPATH) . 'install</code>
-            </div>
-        ';
-    }
-?>
+<?php if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
+    <div class="alert alert-danger px-3 rounded-0 mb-0">
+        <h5>
+            <?= phrase('Notice'); ?>
+        </h5>
+        <?php if (! $permission->uploads): ?>
+            <p class="mb-0">
+                <b><?= str_replace('\\', '/', FCPATH . UPLOAD_PATH); ?></b> <?= phrase('is not writable.'); ?>
+            </p>
+        <?php endif; ?>
+        <?php if (! $permission->uploads): ?>
+            <p class="mb-0">
+                <b><?= str_replace('\\', '/', WRITEPATH); ?></b> <?= phrase('is not writable.'); ?>
+            </p>
+        <?php endif; ?>
+        <br />
+        <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here'); ?></b></a> <?= phrase('to get an advice to solve this problem.'); ?>
+    </div>
+<?php else: ?>
+    <div class="alert alert-warning px-3 rounded-0 mb-0">
+        <h5>
+            <?= phrase('Notice'); ?>
+        </h5>
+        <?= phrase('Please remove or rename the following directory to secure your application:'); ?>
+        <code><?= str_replace('\\', '/', ROOTPATH); ?>install</code>
+    </div>
+<?php endif; ?>
+
 <div class="updater-placeholder"></div>
 <div class="container-fluid py-3">
     <div class="row" id="greeting-card">

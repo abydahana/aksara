@@ -447,7 +447,7 @@ class Template
             }
 
             // Minify output
-            $output = $this->_beautify($parsed_view);
+            $output = $this->_minify($parsed_view);
 
             // Add security headers
             service('response')->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
@@ -649,7 +649,7 @@ class Template
 
     /**
      * Function to beautify HTML
-     * @param null|mixed $buffer
+     * @param   null|mixed $buffer
      */
     private function _beautify($buffer = null)
     {
@@ -670,37 +670,12 @@ class Template
 
     /**
      * Function to minify HTML
-     * @param null|mixed $buffer
+     * @param   null|mixed $buffer
      */
     private function _minify($buffer = null)
     {
-        // Beautify buffer
-        $buffer = $this->_beautify($buffer);
-
-        // Make a backup regex
-        $buffer = str_replace('\\//', '_BACKUP_', $buffer);
-
-        // Remove comments from buffer
-        $buffer = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $buffer);
-
-        // Restore backup
-        $buffer = str_replace('_BACKUP_', '\//', $buffer);
-
-        // Make a backup of "pre" tag
-        preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $buffer, $pre_backup);
-
-        $buffer = str_replace($pre_backup[0], array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $buffer);
-
-        $pattern = [
-            '/[\r|\n|\t]+/' => ' ',     // Replace end of line by space
-            '/(\s)+/s' => '$1',         // Shorten multiple whitespace sequences
-            '/<!--(.|\s)*?-->/' => ''   //remove HTML comments
-        ];
-
-        $buffer = preg_replace(array_keys($pattern), array_values($pattern), $buffer);
-
-        // Rollback the pre tag
-        $buffer = str_replace(array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $buffer);
+        // Replace possible tag
+        $buffer = preg_replace('/(?>[^\S ]\s*| \s{2,})(?=[^<]*+(?:<(?!\/?(?:textarea|pre|script)\b)[^<]*+)*+(?:<(?>textarea|pre|script)\b| \z))/', '', $buffer);
 
         return $buffer;
     }

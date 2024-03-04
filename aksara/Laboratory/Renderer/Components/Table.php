@@ -271,8 +271,8 @@ class Table
                 'primary' => $primary_key,
                 'buttons' => $this->_get_buttons($primary_key, $replacement),
                 'dropdowns' => $this->_get_dropdowns($primary_key, $replacement),
-                'deleting' => $deleting,
-                'field_data' => $field_data
+                'field_data' => $field_data,
+                'deleting' => $deleting
             ];
         }
 
