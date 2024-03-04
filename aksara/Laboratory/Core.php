@@ -4563,6 +4563,17 @@ class Core extends Controller
             }
         }
 
+        // Format compiled select
+        if ($this->_compiled_select) {
+            foreach ($this->_compiled_select as $key => $val) {
+                // Check if column should be unset
+                if (in_array($val, $this->_unset_select)) {
+                    // Unset selected compiled select
+                    unset($this->_compiled_select[$key]);
+                }
+            }
+        }
+
         // Run generated query builder
         foreach ($this->_prepare as $key => $val) {
             $function = $val['function'];
@@ -4575,10 +4586,21 @@ class Core extends Controller
                     $arguments[0] = array_map('trim', explode(',', $arguments[0]));
                 }
 
+                // Prevent duplicate entries
+                $arguments[0] = array_unique($arguments[0]);
+
                 // Looping the argument
                 foreach ($arguments[0] as $_key => $_val) {
                     $column = $_val;
                     $alias = null;
+
+                    // Check whether generated selected columns need to unset
+                    if (in_array($column, $this->_unset_select)) {
+                        // Unset unselected columns
+                        unset($arguments[0][$_key]);
+
+                        continue;
+                    }
 
                     // Find bracket wrapper or continue on void
                     if (strpos($_val, '(') === false && strpos($_val, ')') === false) {
@@ -4609,12 +4631,7 @@ class Core extends Controller
                         $source_table = substr($_val . '.', 0, strpos($_val, '.'));
 
                         // Check whether table or columns has compiled
-                        if (! in_array($source_table, $this->_compiled_table) || in_array($column, $this->_unset_select)) {
-                            if ($alias) {
-                                // Continue loop because alias is set
-                                continue;
-                            }
-
+                        if (! in_array($source_table, $this->_compiled_table) && ! $alias) {
                             // Field doesn't exists on compiled table
                             unset($arguments[0][$_key]);
                         }
