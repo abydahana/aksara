@@ -1931,7 +1931,6 @@ class Core extends Controller
 
             // Validate token
             if (
-                ! $this->api_client &&
                 $this->_set_permission &&
                 $query_string &&
                 generate_token($query_string) != $token
