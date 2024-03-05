@@ -37,3 +37,8 @@ There are two installation methods that you can choose:
 | ![frame_generic_light (6)](https://user-images.githubusercontent.com/10624446/110242384-6ca58a00-7f88-11eb-9992-e90779dd2eeb.png) | ![frame_generic_light (7)](https://user-images.githubusercontent.com/10624446/110242386-6d3e2080-7f88-11eb-9e6e-de40f620feb8.png) | ![frame_generic_light (8)](https://user-images.githubusercontent.com/10624446/110242387-6e6f4d80-7f88-11eb-8c81-3e505eb2fd1d.png) |
 | ![frame_generic_light (9)](https://user-images.githubusercontent.com/10624446/110242389-6f07e400-7f88-11eb-9089-5cd5cc3f2ec2.png) | ![frame_generic_light (10)](https://user-images.githubusercontent.com/10624446/110242390-70391100-7f88-11eb-9734-a20b9e9005eb.png) | ![frame_generic_light (11)](https://user-images.githubusercontent.com/10624446/110242391-70d1a780-7f88-11eb-8d04-69128749b6e0.png) |
 | ![frame_generic_light (12)](https://user-images.githubusercontent.com/10624446/110242392-7202d480-7f88-11eb-8f23-6c1c3edf9ea2.png) | * | * |
+
+# Contributing
+We **are** accepting contributions from the community! It doesn't matter whether you can code, write documentation, or help find bugs, all contributions are welcome.
+
+Please read the [*Contributing to Aksara*](contributing/README.md).
