@@ -362,7 +362,7 @@ class Document
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         header('Content-Type: application/vnd.ms-word');
-        header('Content-Disposition: attachment; filename=' . $filename . '.doc');
+        header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.doc"');
 
         echo $html;
     }
