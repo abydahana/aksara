@@ -3869,13 +3869,13 @@ class Core extends Controller
     {
         if (! in_array($this->_method, ['delete'])) {
             $this->_prepare(__FUNCTION__, [$table, $condition, $type, $escape]);
-        }
 
-        if (strpos($table, ' ') !== false) {
-            $table = substr($table, strrpos($table, ' ') + 1);
-        }
+            if (strpos($table, ' ') !== false) {
+                $table = substr($table, strrpos($table, ' ') + 1);
+            }
 
-        $this->_compiled_table[] = $table;
+            $this->_compiled_table[] = $table;
+        }
 
         return $this;
     }
