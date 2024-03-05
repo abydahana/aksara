@@ -1,3 +1,11 @@
+# Language detection
+aksara/* linguist-vendored
+public/assets/* linguist-vendored
+themes/* linguist-vendored
+
+# Ignore export
 .git* export-ignore
-README.md export-ignore
+.php-cs-fixer.php export-ignore
+contributing export-ignore
 documentation export-ignore
+README.md export-ignore
