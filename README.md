@@ -1,22 +1,28 @@
 # About Aksara
-Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based) just by writing single controller. Yet it's reusable, scalable and ready to use!
+Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based), just by writing single controller. Yet it's reusable, scalable and ready to use!
 
 # Server Requirements
 PHP version 7.4 or higher is required, with the following extensions installed:
 
 - [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) to connect with **[Aksara Market](http://www.aksaracms.com/market)**
 - [mbstring](http://php.net/manual/en/mbstring.installation.php)
+- [libcurl](http://php.net/manual/en/curl.requirements.php) to connect with **[Aksara Market](http://www.aksaracms.com/market)**
+
+> [!WARNING]
+> The end of life date for PHP 7.4 was November 28, 2022.
+> The end of life date for PHP 8.0 was November 26, 2023.
+> If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
+> The end of life date for PHP 8.1 will be November 25, 2024.
 
 Additionally, make sure that the following extensions are enabled in your PHP:
 
 - json (enabled by default - don't turn it off)
 - xml (enabled by default - don't turn it off)
 
-**[Aksara](http://www.aksaracms.com)** can be run under the **MySQLi**, **PostgreSQL**, **SQL Server** and **SQLite3** or **BOTH OF IT** without changing any single code. The installer will guide you well when picking up the database type during installation, so follow the step carefully and make sure you reads every highlighted notes.
+**[Aksara](http://www.aksaracms.com)** can be run under the **MySQLi**, **PostgreSQL**, **SQL Server**, **Oracle (OCI8)** and **SQLite3** or **BOTH OF IT** without changing any single code. The installer will guide you well when picking up the database type during the installation, so follow the step carefully and make sure you reads every highlighted notes.
 
 # Installation
-There are two installation methods that you can choose:
+There are two installation methods you can choose:
 ### Composer Installation
 - Run "`composer create-project abydahana/aksara aksaracms`" anywhere inside your root directory of your web server. The command will create "`aksaracms`" folder. If you omit the "`aksaracms`" argument, the command will create an "`aksara`" folder instead, which can be renamed as appropriate;
 - Access your project from the browser and;
