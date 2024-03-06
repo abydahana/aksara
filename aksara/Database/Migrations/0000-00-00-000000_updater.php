@@ -23,40 +23,11 @@ class Updater extends Migration
 {
     public function up()
     {
-        // Add columns to global setting's table
-        $this->forge->addColumn('app__settings', [
-            'smtp_hostname' => [
-                'type' => 'varchar'
-            ],
-            'smtp_port' => [
-                'type' => 'int',
-                'constraint' => 6
-            ],
-            'smtp_username' => [
-                'type' => 'varchar'
-            ],
-            'smtp_password' => [
-                'type' => 'varchar'
-            ]
-        ]);
-
-        // Add columns to global notification's table
-        $this->forge->addColumn('app__settings', [
-            'whatsapp_api_url' => [
-                'type' => 'varchar'
-            ],
-            'whatsapp_api_header' => [
-                'type' => 'text'
-            ],
-            'whatsapp_api_payload' => [
-                'type' => 'text'
-            ]
-        ]);
+        // Preserved for upgrade
     }
 
     public function down()
     {
-        // Drop unused columns from settings table
-        $this->forge->dropColumn('notifications__settings', ['whatsapp_api_key', 'smtp_hostname', 'smtp_port', 'smtp_usernane', 'smtp_password']);
+        // Preserved for downgrade
     }
 }
