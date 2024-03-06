@@ -162,6 +162,13 @@ class Blogs extends \Aksara\Laboratory\Core
 
     private function _filter()
     {
+        $all_categories = [
+            [
+                'id' => 0,
+                'label' => phrase('All categories')
+            ]
+        ];
+
         $categories = $this->model->select('
             category_id AS id,
             category_title AS label
@@ -202,7 +209,7 @@ class Blogs extends \Aksara\Laboratory\Core
         return [
             'category' => [
                 'label' => phrase('Category'),
-                'values' => $categories
+                'values' => array_merge($all_categories, $categories)
             ],
             'language' => [
                 'label' => phrase('Language'),
