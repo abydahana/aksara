@@ -44,7 +44,7 @@ class Groups extends \Aksara\Laboratory\Core
                 <div class="col-12">
                     ' . phrase('The listed privileges below is created automatically from') . '
                     &nbsp;
-                    <a href="' . go_to('privileges', ['per_page' => null]) . '" class="badge bg-secondary --xhr">
+                    <a href="' . go_to('privileges', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr">
                         <i class="mdi mdi-arrow-right"></i>
                         ' . phrase('Privileges Adjustment') . '
                     </a>

@@ -20,18 +20,52 @@ if (! function_exists('generate_token')) {
      * Generate security token to validate the query string values
      *
      * @param   array $data
+     * @param   string $path
      */
-    function generate_token($data = [])
+    function generate_token($data = [], $path = null)
     {
         if (isset($data['aksara'])) {
+            // Unset previous token
             unset($data['aksara']);
         }
 
         if (is_array($data)) {
+            // Build query
             $data = http_build_query(array_filter($data));
         }
 
-        return substr(sha1($data . ENCRYPTION_KEY . get_userdata('session_generated')), 6, 6);
+        // Get absolute path and trailing slash
+        $path = rtrim(get_absolute_path($path), '/');
+
+        return substr(sha1($path . $data . ENCRYPTION_KEY . get_userdata('session_generated')), 12, 12);
+    }
+}
+
+if (! function_exists('get_absolute_path')) {
+    /**
+     * Get absolute path
+     *
+     * @param   string $path
+     */
+    function get_absolute_path($path = '')
+    {
+        $path = str_replace(['/', '\\'], '/', $path);
+        $parts = array_filter(explode('/', $path), 'strlen');
+        $absolutes = [];
+
+        foreach ($parts as $key => $val) {
+            if ('.' === $val) {
+                continue;
+            }
+
+            if ('..' === $val) {
+                array_pop($absolutes);
+            } else {
+                $absolutes[] = $val;
+            }
+        }
+
+        return implode('/', $absolutes);
     }
 }
 
@@ -45,7 +79,9 @@ if (! function_exists('get_theme')) {
         $backtrace = debug_backtrace();
 
         foreach ($backtrace as $key => $val) {
+            // Find active theme
             if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme)) {
+                // Active theme found
                 $theme = $val['object']->template->theme;
             }
         }
@@ -101,19 +137,19 @@ if (! function_exists('throw_exception')) {
      */
     function throw_exception(int $code = 500, $data = [], $target = null, bool $redirect = false)
     {
-        /* check if the request isn't through xhr */
+        // Check if the request isn't through xhr
         if (! service('request')->isAJAX()) {
-            /* check if data isn't an array */
+            // Check if data isn't an array
             if ($data && ! is_array($data)) {
-                /* set the flashdata */
+                // Set the flashdata
                 if (in_array($code, [200, 301])) {
-                    /* success */
+                    // Success
                     service('session')->setFlashdata('success', $data);
                 } elseif (in_array($code, [403, 404])) {
-                    /* warning */
+                    // Warning
                     service('session')->setFlashdata('warning', $data);
                 } else {
-                    /* unexpected error */
+                    // Unexpected error
                     service('session')->setFlashdata('error', $data);
                 }
             }
@@ -144,6 +180,7 @@ if (! function_exists('throw_exception')) {
             'redirect' => $redirect
         ]);
 
+        // Set header response code
         http_response_code($code);
 
         header('Content-Type: application/json');
@@ -227,11 +264,13 @@ if (! function_exists('array_sort')) {
                 if (! $sort) {
                     $sort = 'asc';
                 }
+
                 $diff = strcmp((is_object($a) ? $a->$column : $a[$column]), (is_object($b) ? $b->$column : $b[$column]));
                 if (0 !== $diff) {
                     if ('asc' === strtolower($sort)) {
                         return $diff;
                     }
+
                     return $diff * -1;
                 }
             }
@@ -244,7 +283,9 @@ if (! function_exists('array_sort')) {
         if (! is_array($order_by) && is_string($order_by)) {
             $order_by = [$order_by => $sort];
         }
+
         usort($data, make_cmp($order_by));
+
         return $data;
     }
 }
