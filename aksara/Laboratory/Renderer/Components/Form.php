@@ -136,9 +136,15 @@ class Form
             if (in_array('readonly', array_keys($type))) {
                 // Readonly
                 $readonly = 'readonly';
+
+                // Slice readonly field type
+                unset($type['readonly']);
             } elseif (in_array('disabled', array_keys($type))) {
                 // Disabled
                 $readonly = 'disabled';
+
+                // Slice readonly field type
+                unset($type['disabled']);
             }
 
             // Valid field type definition
@@ -199,6 +205,7 @@ class Form
                 'placeholder' => $placeholder,
                 'required' => $required,
                 'checked' => $checked,
+                'readonly' => $readonly,
                 'accept' => gettype($value),
                 'relation' => isset($this->_set_relation[$field]),
                 'tooltip' => (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
