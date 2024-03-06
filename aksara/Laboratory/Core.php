@@ -770,19 +770,31 @@ class Core extends Controller
 
         // Add default field's parameter
         foreach ($field as $key => $type) {
-            $field[$key] = [
-                $type => [
+            if (strpos($type, ',')) {
+                // Explode multiple field type into array
+                $types = array_map('trim', explode(',', $type));
+
+                // Loop multiple field type
+                foreach ($types as $_key => $_type) {
+                    $this->_set_field[$key][$_type] = [
+                        'parameter' => (isset($field[$_type]['parameter']) ? $field[$_type]['parameter'] : $parameter),
+                        'alpha' => (isset($field[$_type]['alpha']) ? $field[$_type]['alpha'] : $alpha),
+                        'beta' => (isset($field[$_type]['beta']) ? $field[$_type]['beta'] : $beta),
+                        'charlie' => (isset($field[$_type]['charlie']) ? $field[$_type]['charlie'] : $charlie),
+                        'delta' => (isset($field[$_type]['delta']) ? $field[$_type]['delta'] : $delta)
+                    ];
+                }
+            } else {
+                // Single field type
+                $this->_set_field[$key][$type] = [
                     'parameter' => (isset($field[$type]['parameter']) ? $field[$type]['parameter'] : $parameter),
                     'alpha' => (isset($field[$type]['alpha']) ? $field[$type]['alpha'] : $alpha),
                     'beta' => (isset($field[$type]['beta']) ? $field[$type]['beta'] : $beta),
                     'charlie' => (isset($field[$type]['charlie']) ? $field[$type]['charlie'] : $charlie),
                     'delta' => (isset($field[$type]['delta']) ? $field[$type]['delta'] : $delta)
-                ]
-            ];
+                ];
+            }
         }
-
-        // Merge array and store to property
-        $this->_set_field = array_merge($this->_set_field, $field);
 
         return $this;
     }

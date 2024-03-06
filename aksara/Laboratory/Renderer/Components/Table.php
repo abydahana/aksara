@@ -257,7 +257,7 @@ class Table
             }
 
             // Default deletion permission
-            $deleting = true;
+            $deleting = (! in_array('delete', $this->_unset_method) ? true : false);
 
             // Getting deletion permission
             foreach ($primary_key as $field => $value) {
