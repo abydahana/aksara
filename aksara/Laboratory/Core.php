@@ -770,7 +770,7 @@ class Core extends Controller
 
         // Add default field's parameter
         foreach ($field as $key => $type) {
-            if (strpos($type, ',')) {
+            if (strpos($type, ',') !== false) {
                 // Explode multiple field type into array
                 $types = array_map('trim', explode(',', $type));
 
@@ -1945,7 +1945,7 @@ class Core extends Controller
             if (
                 $this->_set_permission &&
                 $query_string &&
-                generate_token($query_string) != $token
+                generate_token($query_string, uri_string()) != $token
             ) {
                 // Token is missmatch, throw an exception
                 return throw_exception(403, phrase('The submitted token has been expired or the request is made from restricted source'), base_url());
@@ -2503,7 +2503,7 @@ class Core extends Controller
             $title = (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (isset($this->_set_title['index']) ? $this->_set_title['index'] : null));
 
             // Default description property
-            $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+            $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : ('index' === $this->_method && isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 
             if (isset($results[0])) {
                 // Extract magic string

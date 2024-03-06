@@ -44,7 +44,7 @@ class Privileges extends \Aksara\Laboratory\Core
                 <div class="col-12">
                     ' . phrase('You may review') . '
                     &nbsp;
-                    <a href="' . go_to('../', ['per_page' => null]) . '" class="badge bg-secondary --xhr">
+                    <a href="' . go_to('../', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr">
                         <i class="mdi mdi-arrow-right"></i>
                         ' . phrase('Group Privileges') . '
                     </a>

@@ -811,6 +811,7 @@
     "export": "export",
     "hour": "jam",
     "hours": "jam",
+    "import": "import",
     "index": "index",
     "install": "install",
     "items": "item",

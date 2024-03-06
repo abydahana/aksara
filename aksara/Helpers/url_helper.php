@@ -49,23 +49,23 @@ if (! function_exists('base_url')) {
         }
 
         if (is_array($params) && sizeof($params) > 0) {
-            $q = [];
+            $query_string = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $q[$key] = $val;
+                $query_string[$key] = $val;
             }
 
-            unset($q['aksara']);
+            unset($query_string['aksara']);
 
-            if ($q) {
-                $q = array_merge(['aksara' => generate_token($q)], $q);
+            if ($query_string) {
+                $query_string = array_merge(['aksara' => generate_token($query_string, $method)], $query_string);
             }
 
-            $uri = $method . ($q ? '?' . http_build_query($q) : null);
+            $uri = $method . ($query_string ? '?' . http_build_query($query_string) : null);
         } else {
             $uri = $method;
         }
@@ -75,23 +75,6 @@ if (! function_exists('base_url')) {
         }
 
         return service('request')->config->baseURL . (service('request')->config->indexPage ? service('request')->config->indexPage . '/' : null) . ($uri ? rtrim($uri, '/') : '');
-    }
-}
-
-if (! function_exists('asset_url')) {
-    /**
-     * Asset URL
-     *
-     * Create a local URL based on your basepath.
-     * Segments can be passed in as a string or an array, same as site_url
-     * or a URL to a file can be passed in, e.g. to an image file.
-     *
-     *
-     * @return  string
-     */
-    function asset_url($file = '')
-    {
-        return base_url('assets/' . $file);
     }
 }
 
@@ -124,23 +107,23 @@ if (! function_exists('current_page')) {
         $params = array_merge(service('request')->getGet(), $params);
 
         if (is_array($params) && sizeof($params) > 0) {
-            $q = [];
+            $query_string = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $q[$key] = $val;
+                $query_string[$key] = $val;
             }
 
-            unset($q['aksara']);
+            unset($query_string['aksara']);
 
-            if ($q) {
-                $q = array_merge(['aksara' => generate_token($q)], $q);
+            if ($query_string) {
+                $query_string = array_merge(['aksara' => generate_token($query_string, uri_string() . ($method ? '/' . $method : null))], $query_string);
             }
 
-            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($q ? '?' . http_build_query($q) : null);
+            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($query_string ? '?' . http_build_query($query_string) : null);
         } else {
             return base_url(uri_string()) . ($method ? '/' . $method : null);
         }
@@ -195,27 +178,43 @@ if (! function_exists('go_to')) {
         $params = array_merge(service('request')->getGet(), $params);
 
         if (is_array($params) && sizeof($params) > 0) {
-            $q = [];
+            $query_string = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $q[$key] = $val;
+                $query_string[$key] = $val;
             }
 
-            unset($q['aksara']);
+            unset($query_string['aksara']);
 
-            if ($q) {
-                $q = array_merge(['aksara' => generate_token($q)], $q);
+            if ($query_string) {
+                $query_string = array_merge(['aksara' => generate_token($query_string, $final_slug . ($method ? '/' . $method : null))], $query_string);
             }
 
-            $uri = $final_slug . ($method ? '/' . $method : null) . ($q ? '?' . http_build_query($q) : null);
+            $uri = $final_slug . ($method ? '/' . $method : null) . ($query_string ? '?' . http_build_query($query_string) : null);
         } else {
             $uri = $final_slug . ($method ? '/' . $method : null);
         }
 
         return base_url($uri);
+    }
+}
+
+if (! function_exists('asset_url')) {
+    /**
+     * Asset URL
+     *
+     * Create a local URL based on your basepath.
+     * Segments can be passed in as a string or an array, same as site_url
+     * or a URL to a file can be passed in, e.g. to an image file.
+     *
+     * @return  string
+     */
+    function asset_url($file = '')
+    {
+        return base_url('assets/' . $file);
     }
 }
