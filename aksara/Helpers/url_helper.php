@@ -44,7 +44,7 @@ if (! function_exists('base_url')) {
             $params = [];
         }
 
-        if ($params || ('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir('../themes/' . $request->getGet('aksara_theme')))) {
+        if ($params || ('preview-theme' == $request->getGet('aksara_mode') && sha1($request->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == $request->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . $request->getGet('aksara_theme')))) {
             $params = array_merge($request->getGet(), $params);
         }
 
