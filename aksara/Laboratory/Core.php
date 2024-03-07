@@ -2985,7 +2985,7 @@ class Core extends Controller
                         }
                     }
                 } else {
-                    if ($val['validation'] && stripos($val['validation'], 'callback_') !== false) {
+                    if ($val['validation'] && strncmp('callback_', $val['validation'], 9) !== false) {
                         // Callback validation, old is gold :)
                         $validation = explode('|', $val['validation']);
 
@@ -5149,6 +5149,7 @@ class Core extends Controller
             'app__sessions',
             [
                 'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? 0,
+                'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()) ?? 0,
                 'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
             ],
             1

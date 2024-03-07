@@ -42,11 +42,11 @@ class Router
 
         helper('filesystem');
 
-        $this->_directory_route($routes, directory_map('../modules'), '\Modules\\');
+        $this->_directory_route($routes, directory_map(ROOTPATH . 'modules'), '\Modules\\');
 
         if (! $this->_found) {
             // Public module (module overwriter) not found core module instead
-            $this->_directory_route($routes, directory_map('../aksara/Modules'), '\Aksara\Modules\\');
+            $this->_directory_route($routes, directory_map(ROOTPATH . 'aksara/Modules'), '\Aksara\Modules\\');
         }
 
         if ($this->_collection) {
@@ -64,7 +64,7 @@ class Router
             $second_file = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method) . '.php'), '\\')));
 
             // Check if priority file is exists
-            if (file_exists('../' . $file)) {
+            if (file_exists(ROOTPATH . $file)) {
                 // File exists, apply to route
                 $namespace = str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method));
 
@@ -73,7 +73,7 @@ class Router
             }
 
             // Check if second file is exists
-            elseif (file_exists('../' . $second_file)) {
+            elseif (file_exists(ROOTPATH . $second_file)) {
                 // File exists, apply to route
                 $namespace = str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));
 
@@ -108,9 +108,9 @@ class Router
                     // Apply route from module route config
                     $extra_route = lcfirst(ltrim(str_replace('\\', '/', $namespace), '/')) . 'Routes.php';
 
-                    if (file_exists('../' . $extra_route)) {
+                    if (file_exists(ROOTPATH . $extra_route)) {
                         // Add route of public module
-                        require '../' . $extra_route;
+                        require ROOTPATH . $extra_route;
                     }
                 }
 
@@ -139,7 +139,7 @@ class Router
                     // Check if module is matched with current slug
                     if ($module == $this->_uri_string) {
                         // Check if file is exist
-                        if ('../' . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
+                        if (ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
                             $x = substr_count($namespace . $val, '\\');
                             $this->_collection[$x] = $namespace . $val;
                         } else {
@@ -148,7 +148,7 @@ class Router
                         }
 
                         $this->_found = true;
-                    } elseif ($module. '/' . $method == $this->_uri_string && '../' . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
+                    } elseif ($module. '/' . $method == $this->_uri_string && ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
                         $x = substr_count($namespace . $val, '\\');
                         $this->_collection[$x] = $namespace . $val;
 
@@ -166,7 +166,7 @@ class Router
      */
     private function _theme_route($routes = null)
     {
-        if ($this->_request->uri->getTotalSegments() >= 2 && $this->_request->uri->getSegment(2) && is_string($this->_request->uri->getSegment(2)) && is_dir('../themes/' . $this->_request->uri->getSegment(2)) && 'themes' == $this->_request->uri->getSegment(1)) {
+        if ($this->_request->uri->getTotalSegments() >= 2 && $this->_request->uri->getSegment(2) && is_string($this->_request->uri->getSegment(2)) && is_dir(ROOTPATH . 'themes/' . $this->_request->uri->getSegment(2)) && 'themes' == $this->_request->uri->getSegment(1)) {
             // Add route to theme asset
             $routes->get($this->_uri_string, '\Aksara\Modules\Assets\Controllers\Assets::themes');
         }

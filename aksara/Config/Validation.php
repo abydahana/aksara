@@ -22,7 +22,7 @@ use CodeIgniter\Validation\StrictRules\CreditCardRules;
 use CodeIgniter\Validation\StrictRules\FileRules;
 use CodeIgniter\Validation\StrictRules\FormatRules;
 use CodeIgniter\Validation\StrictRules\Rules;
-use Aksara\Laboratory\Validation as AksaraValidation;
+use Aksara\Laboratory\Validation as AksaraRules;
 
 class Validation extends BaseConfig
 {
@@ -41,7 +41,7 @@ class Validation extends BaseConfig
         FormatRules::class,
         FileRules::class,
         CreditCardRules::class,
-        AksaraValidation::class
+        AksaraRules::class
     ];
 
     /**

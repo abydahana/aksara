@@ -90,12 +90,12 @@ class Template
      */
     public function get_theme_property($parameter = null)
     {
-        if (file_exists('../themes/' . $this->theme . '/package.json')) {
+        if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/package.json')) {
             // Check if active theme has a property
             $property = new \stdClass();
 
             try {
-                $property = json_decode(file_get_contents('../themes/' . $this->theme . '/package.json'));
+                $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/package.json'));
             } catch(\Throwable $e) {
                 // Safe abstraction
             }
