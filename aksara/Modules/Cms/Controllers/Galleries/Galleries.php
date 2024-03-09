@@ -48,7 +48,7 @@ class Galleries extends \Aksara\Laboratory\Core
         ->view_order('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, created_timestamp, updated_timestamp, status')
         ->set_field([
             'gallery_images' => 'images',
-            'gallery_description' => 'wysiwyg',
+            'gallery_description' => 'textarea',
             'gallery_attributes' => 'attribution',
             'created_timestamp' => 'current_timestamp',
             'updated_timestamp' => 'current_timestamp',

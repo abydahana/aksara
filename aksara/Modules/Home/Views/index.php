@@ -64,7 +64,7 @@
                 <?php else: ?>
                     <div class="mb-5">
                         <p>
-                            You are viewing this page because you installing <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> as "<b>DEVELOPER MODE</b>". There\'s no example content that been created. Just like popular PHP framework, you must build your own modules by referencing the function served by <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. You can still login and add your content to the built-in module (<b>CMS</b> a.k.a <b>Content Management System</b>) such <b>Blogs</b>, <b>Pages</b>, <b>Galleries</b> and many more.
+                            You are viewing this page because you installing <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> as "<b>DEVELOPER MODE</b>". There's no example content that been created. Just like popular PHP framework, you must build your own modules by referencing the function served by <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. You can still login and add your content to the built-in module (<b>CMS</b> a.k.a <b>Content Management System</b>) such a <b>Blogs</b>, <b>Pages</b>, <b>Galleries</b> and many more.
                         </p>
                         <p>
                             This module is located in
@@ -107,23 +107,13 @@
                         You can open discussion related to the features, bugs or suggestions to the following community forum:
                     </p>
                     <p class="mb-1">
-                        <a href="https://github.com/abydahana/Aksara/issues" class="text-primary" target="blank">
-                            https://github.com/abydahana/Aksara/issues<i class="mdi mdi-open-in-new"></i>
+                        <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank">
+                            https://github.com/abydahana/aksara/issues<i class="mdi mdi-open-in-new"></i>
                         </a>
                     </p>
                     <p class="mb-1">
-                        <a href="https://www.facebook.com/groups/Codeigniterdev" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/Codeigniterdev<i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </p>
-                    <p class="mb-1">
-                        <a href="https://www.facebook.com/groups/codeigniter.id" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/codeigniter.id<i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </p>
-                    <p>
-                        <a href="https://www.facebook.com/groups/phpid" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/phpid<i class="mdi mdi-open-in-new"></i>
+                        <a href="https://github.com/abydahana/aksara/discussions" class="text-primary" target="blank">
+                            https://github.com/abydahana/aksara/discussions<i class="mdi mdi-open-in-new"></i>
                         </a>
                     </p>
                     <p>

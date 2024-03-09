@@ -41,7 +41,7 @@ class Videos extends \Aksara\Laboratory\Core
 
         ->set_field([
             'cover' => 'image',
-            'description' => 'wysiwyg',
+            'description' => 'textarea',
             'featured' => 'boolean',
             'status' => 'boolean'
         ])
@@ -53,7 +53,7 @@ class Videos extends \Aksara\Laboratory\Core
         ])
 
         ->set_validation([
-            'title' => 'required',
+            'title' => 'required|callback_validate_title',
             'description' => 'required',
             'video_url' => 'valid_url',
             'featured' => 'boolean',
