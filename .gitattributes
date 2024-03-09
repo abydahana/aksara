@@ -1,7 +1,5 @@
 # Language detection
-aksara/* linguist-vendored
-public/assets/* linguist-vendored
-themes/* linguist-vendored
+* linguist-detectable
 
 # Ignore export
 .git* export-ignore
