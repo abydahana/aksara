@@ -108,23 +108,13 @@
                         Anda bisa membuka diskusi terkait fitur, bug atau saran ke forum komunitas berikut:
                     </p>
                     <p class="mb-1">
-                        <a href="https://github.com/abydahana/Aksara/issues" class="text-primary" target="blank">
-                            https://github.com/abydahana/Aksara/issues<i class="mdi mdi-open-in-new"></i>
+                        <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank">
+                            https://github.com/abydahana/aksara/issues<i class="mdi mdi-open-in-new"></i>
                         </a>
                     </p>
                     <p class="mb-1">
-                        <a href="https://www.facebook.com/groups/Codeigniterdev" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/Codeigniterdev<i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </p>
-                    <p class="mb-1">
-                        <a href="https://www.facebook.com/groups/codeigniter.id" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/codeigniter.id<i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </p>
-                    <p>
-                        <a href="https://www.facebook.com/groups/phpid" class="text-primary" target="blank">
-                            https://www.facebook.com/groups/phpid<i class="mdi mdi-open-in-new"></i>
+                        <a href="https://github.com/abydahana/aksara/discussions" class="text-primary" target="blank">
+                            https://github.com/abydahana/aksara/discussions<i class="mdi mdi-open-in-new"></i>
                         </a>
                     </p>
                     <p>
