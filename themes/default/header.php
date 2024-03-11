@@ -1,11 +1,11 @@
 <header role="header" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top navbar">
     <div class="container">
-        <a class="navbar-brand pt-0 pb-0 d-none d-lg-block" href="<?= base_url(); ?>">
+        <a class="navbar-brand pt-0 pb-0 d-none d-lg-block --xhr" href="<?= base_url(); ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
             <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
             <?= (get_userdata('year') ? '<span class="badge bg-warning">' . get_userdata('year') . '</span>' : ''); ?>
         </a>
-        <a href="<?= current_page(); ?>" class="navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" role="title">
+        <a href="<?= current_page(); ?>" class="navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate --xhr" role="title">
             <?= $meta->title; ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark">
