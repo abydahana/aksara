@@ -65,6 +65,9 @@ class Model
             // No config provided, use default connection instead
             $this->db = \Config\Database::connect();
 
+            // Unset environment variables
+            unset($_ENV['DBDriver'], $_ENV['hostname'], $_ENV['port'], $_ENV['username'], $_ENV['password'], $_ENV['database']);
+
             return false;
         }
 
@@ -96,15 +99,12 @@ class Model
                 $config = [
                     'DBDriver' => $parameter->database_driver,
                     'hostname' => $parameter->hostname,
+                    'port' => $port,
                     'username' => service('encrypter')->decrypt(base64_decode($parameter->username)),
                     'password' => service('encrypter')->decrypt(base64_decode($parameter->password)),
                     'database' => $parameter->database_name,
                     'DBDebug' => (ENVIRONMENT !== 'production')
                 ];
-
-                if ($parameter->port) {
-                    $config['port'] = $parameter->port;
-                }
 
                 // Initialize parameter to new connection
                 $this->db = \Config\Database::connect($config);
@@ -113,6 +113,14 @@ class Model
                 $this->db->initialize();
 
                 $this->_called = true;
+
+                // Store environment variables
+				$_ENV['DBDriver'] = $config['DBDriver'];
+				$_ENV['hostname'] = $config['hostname'];
+				$_ENV['port'] = $config['port'];
+				$_ENV['username'] = $config['username'];
+				$_ENV['password'] = $config['password'];
+				$_ENV['database'] = $config['database'];
             } catch(\Throwable $e) {
                 // Decrypt error
                 return throw_exception(403, $e->getMessage());
@@ -131,15 +139,12 @@ class Model
             $config = [
                 'DBDriver' => $driver,
                 'hostname' => $hostname,
+                'port' => $port,
                 'username' => $username,
                 'password' => $password,
                 'database' => $database,
                 'DBDebug' => (ENVIRONMENT !== 'production')
             ];
-
-            if ($port) {
-                $config['port'] = $port;
-            }
 
             try {
                 // Initialize parameter to new connection
@@ -147,6 +152,14 @@ class Model
 
                 // Try to initialize the connection
                 $this->db->initialize();
+
+                // Store environment variables
+				$_ENV['DBDriver'] = $config['DBDriver'];
+				$_ENV['hostname'] = $config['hostname'];
+				$_ENV['port'] = $config['port'];
+				$_ENV['username'] = $config['username'];
+				$_ENV['password'] = $config['password'];
+				$_ENV['database'] = $config['database'];
             } catch(\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
