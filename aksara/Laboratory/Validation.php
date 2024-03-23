@@ -42,6 +42,13 @@ class Validation
         $params = explode('.', str_replace(',', '.', $params));
 
         if ($params) {
+            $model = new Model();
+
+            if (isset($_ENV['DBDriver'])) {
+                // Cross database connection
+                $model->database_config($_ENV);
+            }
+            
             $sliced = array_slice($params, 2, sizeof($params));
             $where = [];
 
@@ -52,7 +59,6 @@ class Validation
             }
 
             $num = 0;
-            $model = new Model();
 
             foreach ($where as $key => $val) {
                 // Check if value not empty
@@ -203,6 +209,11 @@ class Validation
     public function relation_checker($value = 0, $params = null): bool
     {
         $model = new Model();
+
+		if (isset($_ENV['DBDriver'])) {
+            // Cross database connection
+			$model->database_config($_ENV);
+		}
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
 
