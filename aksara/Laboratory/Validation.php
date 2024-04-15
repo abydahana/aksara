@@ -48,7 +48,7 @@ class Validation
                 // Cross database connection
                 $model->database_config($_ENV);
             }
-            
+
             $sliced = array_slice($params, 2, sizeof($params));
             $where = [];
 
@@ -210,10 +210,10 @@ class Validation
     {
         $model = new Model();
 
-		if (isset($_ENV['DBDriver'])) {
+        if (isset($_ENV['DBDriver'])) {
             // Cross database connection
-			$model->database_config($_ENV);
-		}
+            $model->database_config($_ENV);
+        }
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
 

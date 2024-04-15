@@ -115,12 +115,12 @@ class Model
                 $this->_called = true;
 
                 // Store environment variables
-				$_ENV['DBDriver'] = $config['DBDriver'];
-				$_ENV['hostname'] = $config['hostname'];
-				$_ENV['port'] = $config['port'];
-				$_ENV['username'] = $config['username'];
-				$_ENV['password'] = $config['password'];
-				$_ENV['database'] = $config['database'];
+                $_ENV['DBDriver'] = $config['DBDriver'];
+                $_ENV['hostname'] = $config['hostname'];
+                $_ENV['port'] = $config['port'];
+                $_ENV['username'] = $config['username'];
+                $_ENV['password'] = $config['password'];
+                $_ENV['database'] = $config['database'];
             } catch(\Throwable $e) {
                 // Decrypt error
                 return throw_exception(403, $e->getMessage());
@@ -154,12 +154,12 @@ class Model
                 $this->db->initialize();
 
                 // Store environment variables
-				$_ENV['DBDriver'] = $config['DBDriver'];
-				$_ENV['hostname'] = $config['hostname'];
-				$_ENV['port'] = $config['port'];
-				$_ENV['username'] = $config['username'];
-				$_ENV['password'] = $config['password'];
-				$_ENV['database'] = $config['database'];
+                $_ENV['DBDriver'] = $config['DBDriver'];
+                $_ENV['hostname'] = $config['hostname'];
+                $_ENV['port'] = $config['port'];
+                $_ENV['username'] = $config['username'];
+                $_ENV['password'] = $config['password'];
+                $_ENV['database'] = $config['database'];
             } catch(\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
