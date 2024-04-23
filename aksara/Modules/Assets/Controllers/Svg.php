@@ -26,8 +26,8 @@ class Svg extends \Aksara\Laboratory\Core
     {
         parent::__construct();
 
-        $this->_fill = (service('request')->getGet('fill') ? service('request')->getGet('fill') : '#ff0000');
-        $this->_stroke = (service('request')->getGet('stroke') ? service('request')->getGet('stroke') : '#880000');
+        $this->_fill = $this->_validate_hex(service('request')->getGet('fill'));
+        $this->_stroke = $this->_validate_hex(service('request')->getGet('stroke'));
     }
 
     public function index()
@@ -78,5 +78,14 @@ class Svg extends \Aksara\Laboratory\Core
         service('response')->setContentType('image/svg+xml');
         service('response')->setBody($output);
         service('response')->send();
+    }
+
+    private function _validate_hex($hexColor = '')
+    {
+        if(preg_match('/#([a-f0-9]{3}){1,2}\b/i', $hexColor)) {
+            return $hexColor;
+        }
+
+        return '#ff0000';
     }
 }
