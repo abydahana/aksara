@@ -18,7 +18,7 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-		"codeigniter4/framework": "^4.4",
+		"codeigniter4/framework": "4.4.*",
 		"twig/twig": "^3.7",
         "hybridauth/hybridauth": "^3.10",
 		"mpdf/mpdf": "^8.0",

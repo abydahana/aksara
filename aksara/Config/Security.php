@@ -95,7 +95,7 @@ class Security extends BaseConfig
      *
      * Redirect to previous page with error on failure.
      */
-    public bool $redirect = (ENVIRONMENT === 'production');
+    public bool $redirect = false;
 
     /**
      * --------------------------------------------------------------------------
