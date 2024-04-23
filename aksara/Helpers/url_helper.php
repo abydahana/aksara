@@ -15,6 +15,13 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+use CodeIgniter\HTTP\CLIRequest;
+use CodeIgniter\HTTP\IncomingRequest;
+use CodeIgniter\HTTP\SiteURI;
+use CodeIgniter\HTTP\URI;
+use CodeIgniter\Router\Exceptions\RouterException;
+use Config\App;
+
 if (! function_exists('base_url')) {
     /**
      * Base URL
@@ -70,11 +77,15 @@ if (! function_exists('base_url')) {
             $uri = $method;
         }
 
+        $currentURI = service('request')->getUri();
+
+        assert($currentURI instanceof SiteURI);
+
         if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi' || file_exists($uri)) {
-            return service('request')->config->baseURL . ($uri ? rtrim($uri, '/') : '');
+            return $currentURI->baseUrl(($uri ? rtrim($uri, '/') : ''));
         }
 
-        return service('request')->config->baseURL . (service('request')->config->indexPage ? service('request')->config->indexPage . '/' : null) . ($uri ? rtrim($uri, '/') : '');
+        return $currentURI->baseUrl((service('request')->config->indexPage ? service('request')->config->indexPage . '/' : null) . ($uri ? rtrim($uri, '/') : ''));
     }
 }
 
