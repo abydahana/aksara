@@ -16,7 +16,7 @@
         <br />
         <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here'); ?></b></a> <?= phrase('to get an advice to solve this problem.'); ?>
     </div>
-<?php else: ?>
+<?php elseif (in_array(get_userdata('group_id'), array(1)) && is_dir(ROOTPATH . 'install')): ?>
     <div class="alert alert-warning px-3 rounded-0 mb-0">
         <h5>
             <?= phrase('Notice'); ?>
