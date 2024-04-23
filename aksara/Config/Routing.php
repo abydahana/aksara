@@ -105,14 +105,6 @@ class Routing extends BaseRouting
     public bool $prioritize = false;
 
     /**
-     * For Defined Routes.
-     * If TRUE, matched multiple URI segments will be passed as one parameter.
-     *
-     * Default: false
-     */
-    public bool $multipleSegmentsOneParam = false;
-
-    /**
      * Map of URI segments and namespaces. For Auto Routing (Improved).
      *
      * The key is the first URI segment. The value is the controller namespace.
@@ -124,15 +116,4 @@ class Routing extends BaseRouting
      * @var array [ uri_segment => namespace ]
      */
     public array $moduleRoutes = [];
-
-    /**
-     * For Auto Routing (Improved).
-     * Whether to translate dashes in URIs for controller/method to CamelCase.
-     * E.g., blog-controller -> BlogController
-     *
-     * If you enable this, $translateURIDashes is ignored.
-     *
-     * Default: false
-     */
-    public bool $translateUriToCamelCase = false;
 }

@@ -38,13 +38,11 @@ class Generators extends BaseConfig
      *
      * YOU HAVE BEEN WARNED!
      *
-     * @var array<string, array<string, string>|string>
+     * @var array<string, string>
      */
     public array $views = [
-        'make:cell' => [
-            'class' => 'CodeIgniter\Commands\Generators\Views\cell.tpl.php',
-            'view' => 'CodeIgniter\Commands\Generators\Views\cell_view.tpl.php',
-        ],
+        'make:cell' => 'CodeIgniter\Commands\Generators\Views\cell.tpl.php',
+        'make:cell_view' => 'CodeIgniter\Commands\Generators\Views\cell_view.tpl.php',
         'make:command' => 'CodeIgniter\Commands\Generators\Views\command.tpl.php',
         'make:config' => 'CodeIgniter\Commands\Generators\Views\config.tpl.php',
         'make:controller' => 'CodeIgniter\Commands\Generators\Views\controller.tpl.php',
