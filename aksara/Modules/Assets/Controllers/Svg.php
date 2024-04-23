@@ -82,7 +82,7 @@ class Svg extends \Aksara\Laboratory\Core
 
     private function _validate_hex($hexColor = '')
     {
-        if(preg_match('/#([a-f0-9]{3}){1,2}\b/i', $hexColor)) {
+        if (preg_match('/#([a-f0-9]{3}){1,2}\b/i', $hexColor)) {
             return $hexColor;
         }
 

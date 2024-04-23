@@ -2,7 +2,7 @@
     $count = 0;
     $images = (isset($results[0]) ? json_decode($results[0]->gallery_images) : []);
     $attributes = (isset($results[0]) ? json_decode($results[0]->gallery_attributes) : []);
-    $current = service('request')->uri->getSegment(3);
+    $current = service('uri')->getSegment(3);
     $carousel = null;
 
     if ($images) {

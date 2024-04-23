@@ -44,10 +44,10 @@ class Assets extends \Aksara\Laboratory\Core
      */
     public function themes()
     {
-        $extension = strtolower(pathinfo(service('request')->uri->getPath(), PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo(service('uri')->getPath(), PATHINFO_EXTENSION));
 
         // Sanitize input to prevent hack
-        $path = str_replace(['../', './'], '', service('request')->uri->getPath());
+        $path = str_replace(['../', './'], '', service('uri')->getPath());
 
         if (in_array($extension, ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'bmp', 'avif', 'webp', 'mp3', 'mp4', 'avi']) && file_exists('../' . $path)) {
             helper('download');

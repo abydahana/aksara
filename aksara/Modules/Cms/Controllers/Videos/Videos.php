@@ -53,7 +53,7 @@ class Videos extends \Aksara\Laboratory\Core
         ])
 
         ->set_validation([
-            'title' => 'required|callback_validate_title',
+            'title' => 'required|unique[' . $this->_table . '.title.id.' . service('request')->getGet('id') . ']',
             'description' => 'required',
             'video_url' => 'valid_url',
             'featured' => 'boolean',

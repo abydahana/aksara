@@ -471,7 +471,7 @@ class Template
     public function breadcrumb($data = [], $title = null, bool $translate = false)
     {
         $slug = null;
-        $checker = service('request')->uri->getSegments();
+        $checker = service('uri')->getSegments();
         $matched_route = service('router')->getMatchedRoute();
         $matched_route = (isset($matched_route[0]) ? explode('/', $matched_route[0]) : []);
         $params = service('request')->getGet();

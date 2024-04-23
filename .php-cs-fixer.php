@@ -53,10 +53,8 @@ return $config->setRules
     ],
     'not_operator_with_successor_space' => true,
     'method_chaining_indentation' => false,
-    'comment_to_phpdoc' => [],
     'phpdoc_indent' => true,
     'phpdoc_trim' => true,
-    'general_phpdoc_tag_rename' => [],
     'no_blank_lines_after_phpdoc' => true,
     'no_superfluous_phpdoc_tags' => [
         'remove_inheritdoc' => true
