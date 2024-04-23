@@ -166,7 +166,7 @@ class Router
      */
     private function _theme_route($routes = null)
     {
-        if ($this->_request->uri->getTotalSegments() >= 2 && $this->_request->uri->getSegment(2) && is_string($this->_request->uri->getSegment(2)) && is_dir(ROOTPATH . 'themes/' . $this->_request->uri->getSegment(2)) && 'themes' == $this->_request->uri->getSegment(1)) {
+        if (service('uri')->getTotalSegments() >= 2 && service('uri')->getSegment(2) && is_string(service('uri')->getSegment(2)) && is_dir(ROOTPATH . 'themes/' . service('uri')->getSegment(2)) && 'themes' == service('uri')->getSegment(1)) {
             // Add route to theme asset
             $routes->get($this->_uri_string, '\Aksara\Modules\Assets\Controllers\Assets::themes');
         }

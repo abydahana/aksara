@@ -17,7 +17,6 @@
 
 namespace Config;
 
-use CodeIgniter\Config\BaseConfig;
 use Kint\Parser\ConstructablePluginInterface;
 use Kint\Renderer\AbstractRenderer;
 use Kint\Renderer\Rich\TabPluginInterface;
@@ -33,7 +32,7 @@ use Kint\Renderer\Rich\ValuePluginInterface;
  *
  * @see https://kint-php.github.io/kint/ for details on these settings.
  */
-class Kint extends BaseConfig
+class Kint
 {
     /*
     |--------------------------------------------------------------------------
@@ -42,8 +41,7 @@ class Kint extends BaseConfig
     */
 
     /**
-     * @var array<int, ConstructablePluginInterface|string>
-     * @phpstan-var list<class-string<ConstructablePluginInterface>|ConstructablePluginInterface>
+     * @var list<class-string<ConstructablePluginInterface>|ConstructablePluginInterface>|null
      */
     public $plugins;
 
@@ -61,14 +59,12 @@ class Kint extends BaseConfig
     public int $richSort = AbstractRenderer::SORT_FULL;
 
     /**
-     * @var array<string, string>
-     * @phpstan-var array<string, class-string<ValuePluginInterface>>
+     * @var array<string, class-string<ValuePluginInterface>>|null
      */
     public $richObjectPlugins;
 
     /**
-     * @var array<string, string>
-     * @phpstan-var array<string, class-string<TabPluginInterface>>
+     * @var array<string, class-string<TabPluginInterface>>|null
      */
     public $richTabPlugins;
 
