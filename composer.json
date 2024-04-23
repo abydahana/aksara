@@ -14,11 +14,11 @@
 	],
 	"keywords": ["aksara", "aksaracms", "aksara cms", "restful", "api", "codeigniter", "framework", "crud", "crud generator"],
     "require": {
-        "php": "^7.4.0 || ^8.0",
+        "php": "^8.1",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-		"codeigniter4/framework": "4.4.*",
+		"codeigniter4/framework": "^4.5",
 		"twig/twig": "^3.7",
         "hybridauth/hybridauth": "^3.10",
 		"mpdf/mpdf": "^8.0",
