@@ -5172,6 +5172,20 @@ class Core extends Controller
             $this->_set_language(get_userdata('language_id'));
         }
 
+        if (service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+            // Update expiration time
+            $this->model->update(
+                'app__sessions',
+                [
+                    'data' => session_encode(),
+                    'timestamp' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN')
+                ]
+            );
+        }
+
         // Update property state
         $this->api_client = true;
 

@@ -66,7 +66,7 @@ class Model
             $this->db = \Config\Database::connect();
 
             // Unset environment variables
-            unset($_ENV['DBDriver'], $_ENV['hostname'], $_ENV['port'], $_ENV['username'], $_ENV['password'], $_ENV['database']);
+            unset($_ENV['DBDriver'], $_ENV['hostname'], $_ENV['port'], $_ENV['username'], $_ENV['password'], $_ENV['database'], $_ENV['DBDebug']);
 
             return false;
         }
@@ -121,6 +121,7 @@ class Model
                 $_ENV['username'] = $config['username'];
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
+                $_ENV['DBDebug'] = (ENVIRONMENT !== 'production');
             } catch(\Throwable $e) {
                 // Decrypt error
                 return throw_exception(403, $e->getMessage());
@@ -160,6 +161,7 @@ class Model
                 $_ENV['username'] = $config['username'];
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
+                $_ENV['DBDebug'] = (ENVIRONMENT !== 'production');
             } catch(\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
@@ -1778,6 +1780,100 @@ class Model
         $this->_prepare[] = [
             'function' => 'updateBatch',
             'arguments' => [$set, '', $batch_size]
+        ];
+
+        return $this->_run_query();
+    }
+
+    /**
+     * Update data or insert if record is not exists
+     *
+     * @param   mixed|null $table
+     */
+    public function upsert($table = null, $set = [], $escape = true)
+    {
+        if (! $this->_table && $table) {
+            $this->_table = $table;
+        }
+
+        if ($this->_set) {
+            $set = array_merge($this->_set, $set);
+        }
+
+        if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
+            $index_data = $this->db->getIndexData($table);
+
+            // Set the default primary if the table have any primary column
+            if ($index_data) {
+                // Loops to get the primary key
+                foreach ($index_data as $key => $val) {
+                    // Check if the field has primary key
+                    if ('PRIMARY' == $val->type) {
+                        $set[$val->fields[0]] = ($this->db->table($table)->selectMax($val->fields[0])->get()->getRow($val->fields[0]) + 1);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        $this->_prepare[] = [
+            'function' => 'upsert',
+            'arguments' => [$set, $escape]
+        ];
+
+        return $this->_run_query();
+    }
+
+    /**
+     * Batch update data or insert if record is not exists
+     *
+     * @param   mixed|null $table
+     */
+    public function upsert_batch($table = null, $set = [], $batch_size = 1, $escape = true)
+    {
+        if (! $this->_table && $table) {
+            $this->_table = $table;
+        }
+
+        $set = array_merge($this->_set, $set);
+
+        if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
+            $index_data = $this->db->getIndexData($table);
+
+            // Set the default primary if the table have any primary column
+            if ($index_data) {
+                // Loops to get the primary key
+                foreach ($index_data as $key => $val) {
+                    // Check if the field has primary key
+                    if ('PRIMARY' == $val->type) {
+                        $primary = $val->fields[0];
+                        $auto_increment = ($this->db->table($table)->selectMax($val->fields[0])->get()->getRow($val->fields[0]) + 1);
+
+                        break;
+                    }
+                }
+            }
+
+            $new_set = [];
+
+            foreach ($set as $key => $val) {
+                foreach ($val as $_key => $_val) {
+                    $_val[$primary] = $auto_increment;
+                    $val = $_val;
+
+                    $auto_increment++;
+                }
+
+                $new_set[] = $val;
+            }
+
+            $set = $new_set;
+        }
+
+        $this->_prepare[] = [
+            'function' => 'upsertBatch',
+            'arguments' => [$set, $escape, $batch_size]
         ];
 
         return $this->_run_query();

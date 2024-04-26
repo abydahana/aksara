@@ -37,11 +37,11 @@ class Auth extends \Aksara\Laboratory\Core
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
             if ($this->api_client) {
-                // Requested through API, provide the access token
+				// Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
-                    'message' => phrase('You were signed in.'),
-                    'access_token' => session_id()
+                    'message' => phrase('You are already logged in.'),
+                    'access_token' => get_userdata('access_token')
                 ]);
             } else {
                 // Requested through browser
@@ -201,17 +201,16 @@ class Auth extends \Aksara\Laboratory\Core
                         'group_id' => $execute->group_id,
                         'language_id' => $execute->language_id,
                         'year' => ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
-                        'session_generated' => time()
+                        'session_generated' => time(),
+                        'access_token' => session_id()
                     ]);
 
                     // Check if request is made through API or not
                     if ($this->api_client) {
-                        $session_id = session_id();
-
                         $this->model->insert(
                             'app__sessions',
                             [
-                                'id' => $session_id,
+                                'id' => get_userdata('access_token'),
                                 'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
                                 'timestamp' => date('Y-m-d H:i:s'),
                                 'data' => session_encode()
@@ -221,8 +220,8 @@ class Auth extends \Aksara\Laboratory\Core
                         // Requested through API, provide the access token
                         return make_json([
                             'status' => 200,
-                            'message' => phrase('You were signed in.'),
-                            'access_token' => $session_id
+                            'message' => phrase('You were logged in successfully.'),
+                            'access_token' => get_userdata('access_token')
                         ]);
                     } else {
                         // Send notification
