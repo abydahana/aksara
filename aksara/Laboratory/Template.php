@@ -152,7 +152,7 @@ class Template
         $fallback_viewfinder = ROOTPATH . 'aksara/Views/core';
 
         // View suffix
-        $suffix = (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (env('GRID_VIEW') ? '_grid' : null)));
+        $suffix = (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
 
         // Get user language for i18n view
         $language = get_userdata('language');

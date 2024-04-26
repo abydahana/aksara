@@ -37,7 +37,7 @@ class Auth extends \Aksara\Laboratory\Core
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
             if ($this->api_client) {
-				// Requested through API, provide the access token
+                // Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
                     'message' => phrase('You are already logged in.'),
