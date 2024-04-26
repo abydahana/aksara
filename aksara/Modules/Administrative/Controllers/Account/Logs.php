@@ -75,7 +75,6 @@ class Logs extends \Aksara\Laboratory\Core
             platform,
             timestamp
         ')
-        ->group_by('ip_address')
         ->order_by('timestamp', 'DESC')
         ->get_where(
             $this->_table,
@@ -87,9 +86,16 @@ class Logs extends \Aksara\Laboratory\Core
         ->result();
 
         $output = [];
+        $ip_addresses = [];
 
         foreach ($query as $key => $val) {
+            // Unique by IP Address
+            if (in_array($val->ip_address, $ip_addresses)) continue;
+
             $output[$val->platform][] = $val;
+
+            // Add IP Address into collections
+            $ip_addresses[] = $val->ip_address;
         }
 
         return $output;
