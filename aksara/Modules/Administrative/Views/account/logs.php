@@ -1,7 +1,6 @@
 <div class="container-fluid py-3">
     <p>
-        <?= phrase('You are signed in on these devices or have been recently in.'); ?>
-        <?= phrase('There might be multiple activity sessions from the same device.'); ?>
+        <?= phrase('You are signed in on these devices or have been recently in.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
     </p>
     <div class="row">
         <div class="col-md-7 col-xxl-6">
