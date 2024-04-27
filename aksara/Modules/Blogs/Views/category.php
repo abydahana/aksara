@@ -23,7 +23,9 @@
             </div>
             <div class="col-lg-4 offset-lg-2">
                 <div class="d-none d-lg-block">
-                    <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-4" alt="..." />
+                    <?php if($category): ?>
+                        <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-4" alt="..." />
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

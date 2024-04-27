@@ -109,7 +109,7 @@ class Table
                     $primary_key[$field] = $value;
                 }
 
-                if ($hidden && (! $this->api_client && ! $primary)) {
+                if ($hidden && (! $this->api_client || ($this->api_client && ! $primary))) {
                     // Skip showing field
                     continue;
                 }

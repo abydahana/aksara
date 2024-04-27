@@ -80,9 +80,14 @@ if (! function_exists('get_theme')) {
 
         foreach ($backtrace as $key => $val) {
             // Find active theme
-            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme)) {
-                // Active theme found
-                $theme = $val['object']->template->theme;
+            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file']) {
+                if (isset($val['object']->template->theme)) {
+                    // Active theme found
+                    $theme = $val['object']->template->theme;
+                } elseif (isset($val['object']->theme)) {
+                    // Active theme found
+                    $theme = $val['object']->theme;
+                }
             }
         }
 
