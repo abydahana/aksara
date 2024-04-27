@@ -27,8 +27,15 @@ if (! function_exists('asset_loader')) {
         $backtrace = debug_backtrace();
 
         foreach ($backtrace as $key => $val) {
-            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme)) {
-                $theme = $val['object']->template->theme;
+            // Find active theme
+            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file']) {
+                if (isset($val['object']->template->theme)) {
+                    // Active theme found
+                    $theme = $val['object']->template->theme;
+                } elseif (isset($val['object']->theme)) {
+                    // Active theme found
+                    $theme = $val['object']->theme;
+                }
             }
         }
 
@@ -72,6 +79,8 @@ if (! function_exists('get_theme_asset')) {
         foreach ($backtrace as $key => $val) {
             if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->template->theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
                 return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->template->theme . '/assets/' . $data));
+            } elseif (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
+                return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->theme . '/assets/' . $data));
             }
         }
 

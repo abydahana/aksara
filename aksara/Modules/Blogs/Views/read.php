@@ -100,7 +100,7 @@
                         echo comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]);
                     } else {
                         echo '
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning my-5">
                                 <i class="mdi mdi-alert-outline"></i>
                                 ' . phrase('The post you requested does not exist or already been archived') . '
                             </div>

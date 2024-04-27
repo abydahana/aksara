@@ -90,7 +90,9 @@ class Logs extends \Aksara\Laboratory\Core
 
         foreach ($query as $key => $val) {
             // Unique by IP Address
-            if (in_array($val->ip_address, $ip_addresses)) continue;
+            if (in_array($val->ip_address, $ip_addresses)) {
+                continue;
+            }
 
             $output[$val->platform][] = $val;
 

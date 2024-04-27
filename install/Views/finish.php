@@ -2,13 +2,13 @@
     <?= phrase('Congratulations!'); ?>
 </h4>
 <p>
-    <?= phrase('Aksara has been successfully installed on your system.'); ?>
+    <?= phrase('Aksara has been successfully installed on your system!'); ?>
 </p>
 <div class="text-muted opacity-50">
     <hr class="row" />
 </div>
 <p class="mb-0">
-    <?= phrase('You can login as superuser using following credential'); ?>:
+    <?= phrase('You can login as superuser using following credential:'); ?>:
 </p>
 <div class="row">
     <div class="col-4">
