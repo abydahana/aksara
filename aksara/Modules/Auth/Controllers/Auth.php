@@ -201,12 +201,14 @@ class Auth extends \Aksara\Laboratory\Core
                         'group_id' => $execute->group_id,
                         'language_id' => $execute->language_id,
                         'year' => ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
-                        'session_generated' => time(),
-                        'access_token' => session_id()
+                        'session_generated' => time()
                     ]);
 
                     // Check if request is made through API or not
                     if ($this->api_client) {
+                        // Set access token
+                        set_userdata('access_token', session_id());
+
                         $this->model->insert(
                             'app__sessions',
                             [
