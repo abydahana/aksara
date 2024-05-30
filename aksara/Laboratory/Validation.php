@@ -237,6 +237,8 @@ class Validation
      */
     public function validate_upload($value = null, $params = null): bool
     {
+        $validation = \Config\Services::validation();
+
         list($field, $type) = array_pad(explode('.', $params), 2, null);
 
         // Typically the suffix used for carousel or future addition
@@ -247,32 +249,26 @@ class Validation
         }
 
         $files = service('request')->getFile($field . $suffix) ?? service('request')->getFileMultiple($field . $suffix);
-
-        if ($files) {
-            if (is_array($files)) {
-                foreach ($files as $key => $val) {
-                    if (is_array($val)) {
-                        foreach ($val as $_key => $_val) {
-                            // Typically using nested input like field[foo][bar]
-                            $this->_do_upload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
-                        }
-                    } else {
-                        // Typically using nested input like field[foo]
-                        $this->_do_upload($field . $suffix . '.' . $key, $field, $type, $key);
+        
+        if (is_array($files)) {
+            foreach ($files as $key => $val) {
+                if (is_array($val)) {
+                    foreach ($val as $_key => $_val) {
+                        // Typically using nested input like field[foo][bar]
+                        $this->_do_upload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
                     }
+                } else {
+                    // Typically using nested input like field[foo]
+                    $this->_do_upload($field . $suffix . '.' . $key, $field, $type, $key);
                 }
-            } else {
-                $this->_do_upload($field . $suffix, $field, $type);
             }
+        } else {
+            $this->_do_upload($field . $suffix, $field, $type);
         }
-
-        $validation = \Config\Services::validation();
 
         if ($this->_upload_error) {
             // Validation error
             $validation->setError($field, $this->_upload_error);
-
-            return false;
         } elseif (! $this->_uploaded_files) {
             // Find required
             $rules = $validation->getRules();
@@ -280,8 +276,6 @@ class Validation
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
                 $validation->setError($field, phrase('Please choose the file to upload'));
-
-                return false;
             }
         }
 
