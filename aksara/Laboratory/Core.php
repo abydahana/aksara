@@ -3137,7 +3137,28 @@ class Core extends Controller
                                 $prepare[$field] = $clone[$field];
                             }
                         }
-                    } elseif (array_intersect(['images', 'file', 'files'], $type)) {
+                    } elseif (array_intersect(['file'], $type)) {
+                        // Check if the uploaded file is valid
+                        if (isset($this->_uploaded_files[$field]) && is_array($this->_uploaded_files[$field])) {
+                            // Loop to get source from unknown array key
+                            foreach ($this->_uploaded_files[$field] as $key => $src) {
+                                // Set new source
+                                $source = $src;
+                            }
+
+                            // Push to data preparation
+                            $prepare[$field] = $source;
+                        } else {
+                            // Check if the method is not create
+                            if ('create' != $this->_method && ! $this->_cloning) {
+                                // Unset the field for update preparation
+                                unset($prepare[$field]);
+                            } elseif ($this->_cloning && isset($clone[$field])) {
+                                // Clone value
+                                $prepare[$field] = $clone[$field];
+                            }
+                        }
+                    } elseif (array_intersect(['images', 'files'], $type)) {
                         $files = [];
 
                         if (is_array(service('request')->getPost($field . '_label'))) {
