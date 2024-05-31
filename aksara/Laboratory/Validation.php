@@ -249,7 +249,7 @@ class Validation
         }
 
         $files = service('request')->getFile($field . $suffix) ?? service('request')->getFileMultiple($field . $suffix);
-        
+
         if (is_array($files)) {
             foreach ($files as $key => $val) {
                 if (is_array($val)) {
