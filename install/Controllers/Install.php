@@ -146,6 +146,8 @@ class Install extends BaseController
             $_ENV['database.default.port'] = service('request')->getPost('database_port');
             $_ENV['database.default.username'] = service('request')->getPost('database_username');
             $_ENV['database.default.password'] = service('request')->getPost('database_password');
+            $_ENV['database.default.charset'] = 'utf8';
+            $_ENV['database.default.DBCollat'] = 'utf8_general_ci';
             $_ENV['database.default.DBDebug'] = true;
 
             // Create database when not available
@@ -393,6 +395,8 @@ class Install extends BaseController
             $_ENV['database.default.username'] = session()->get('database_username');
             $_ENV['database.default.password'] = session()->get('database_password');
             $_ENV['database.default.database'] = session()->get('database_initial');
+            $_ENV['database.default.charset'] = 'utf8';
+            $_ENV['database.default.DBCollat'] = 'utf8_general_ci';
             $_ENV['database.default.DBDebug'] = true;
 
             try {

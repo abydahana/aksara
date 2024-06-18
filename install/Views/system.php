@@ -105,7 +105,7 @@
         <div class="col-md-4">
             <div class="form-group mb-3">
                 <label class="d-block mb-0">
-                    <?= phrase('Upload Limit'); ?> (KB)
+                    <?= phrase('Upload Limit'); ?>
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
