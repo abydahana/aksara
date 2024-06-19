@@ -169,6 +169,9 @@ class Install extends BaseController
             }
 
             try {
+                // Set database name
+                $_ENV['database.default.database'] = service('request')->getPost('database_initial');
+
                 // Connect to database
                 $db = \Config\Database::connect();
 
