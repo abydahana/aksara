@@ -1,4 +1,5 @@
 %OPENTAG%
+
 /**
  * Configuration file
  *
@@ -63,7 +64,7 @@ define('SESSION_EXPIRATION', %SESSION_EXPIRATION%);
 define('DB_DSN', '%DSN%');
 define('DB_DRIVER', '%DB_DRIVER%');
 define('DB_HOSTNAME', '%DB_HOSTNAME%');
-define('DB_PORT', '%DB_PORT%');
+define('DB_PORT', %DB_PORT%);
 define('DB_USERNAME', '%DB_USERNAME%');
 define('DB_PASSWORD', '%DB_PASSWORD%');
 define('DB_DATABASE', '%DB_DATABASE%');
