@@ -52,6 +52,7 @@
             <div class="form-group mb-3">
                 <label class="d-block mb-0">
                     <?= phrase('Port'); ?>
+                    <b class="text-danger">*</b>
                 </label>
                 <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" placeholder="e.g: 3306" value="<?= session()->get('database_port'); ?>" />
             </div>

@@ -127,6 +127,7 @@ class Install extends BaseController
             // Set validation rules
             service('validation')->setRule('database_driver', phrase('Database Driver'), 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]');
             service('validation')->setRule('database_hostname', phrase('Hostname'), 'required');
+            service('validation')->setRule('database_port', phrase('Port'), 'required|integer');
             service('validation')->setRule('database_username', phrase('Username'), 'required');
             service('validation')->setRule('database_initial', phrase('Database Initial'), 'required');
 
@@ -289,10 +290,10 @@ class Install extends BaseController
         service('validation')->setRule('site_description', phrase('Site Description'), 'required');
         service('validation')->setRule('file_extension', phrase('File Extension'), 'required');
         service('validation')->setRule('image_extension', phrase('Image Extension'), 'required');
-        service('validation')->setRule('max_upload_size', phrase('Max Upload Size'), 'required|numeric|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ('g' == $max_filesize_unit ? 1024 : ('t' == $max_filesize_unit ? 131072 : 1)) . ']');
-        service('validation')->setRule('image_dimension', phrase('Image Dimension'), 'required|numeric|greater_than_equal_to[600]|less_than_equal_to[2048]');
-        service('validation')->setRule('thumbnail_dimension', phrase('Thumbnail Dimension'), 'required|numeric|greater_than_equal_to[250]|less_than_equal_to[600]');
-        service('validation')->setRule('icon_dimension', phrase('Icon Dimension'), 'required|numeric|greater_than_equal_to[80]|less_than_equal_to[250]');
+        service('validation')->setRule('max_upload_size', phrase('Max Upload Size'), 'required|integer|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ('g' == $max_filesize_unit ? 1024 : ('t' == $max_filesize_unit ? 131072 : 1)) . ']');
+        service('validation')->setRule('image_dimension', phrase('Image Dimension'), 'required|integer|greater_than_equal_to[600]|less_than_equal_to[2048]');
+        service('validation')->setRule('thumbnail_dimension', phrase('Thumbnail Dimension'), 'required|integer|greater_than_equal_to[250]|less_than_equal_to[600]');
+        service('validation')->setRule('icon_dimension', phrase('Icon Dimension'), 'required|integer|greater_than_equal_to[80]|less_than_equal_to[250]');
 
         // Validate submitted data
         if (service('validation')->run(service('request')->getPost()) === false) {
