@@ -430,7 +430,7 @@ class Template
             return make_json($data);
         } else {
             // Add core menus into data object
-            $data->menus = $this->_core_menus();
+            $data->menus = encoding_fixer($this->_core_menus());
 
             // Convert array to object
             $data = json_decode(json_encode($data));
