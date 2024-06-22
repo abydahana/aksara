@@ -144,7 +144,7 @@ if (! function_exists('phrase')) {
         $model = new \Aksara\Laboratory\Model();
 
         // Transform the phrase into safe-string
-        $phrase = preg_replace('/[^\w\s\p{P}]/', ' ', $phrase);
+        $phrase = preg_replace('/[^\w\s\p{P}\pL]/', ' ', $phrase);
 
         // Remove multiple whitespace
         $phrase = preg_replace('/\s+/', ' ', $phrase);
