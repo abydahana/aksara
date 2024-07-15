@@ -631,7 +631,7 @@ class Core extends Controller
         // Add default field's parameter
         foreach ($url as $key => $val) {
             $url[$key] = [
-                'url' => (isset($val['url']) ? $val['url'] : $val),
+                'url' => (isset($val['url']) ? $val['url'] : null),
                 'label' => (isset($val['label']) ? $val['label'] : $label),
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
@@ -671,7 +671,7 @@ class Core extends Controller
         // Add default field's parameter
         foreach ($url as $key => $val) {
             $url[$key] = [
-                'url' => (isset($val['url']) ? $val['url'] : $val),
+                'url' => (isset($val['url']) ? $val['url'] : null),
                 'label' => (isset($val['label']) ? $val['label'] : $label),
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
@@ -711,7 +711,7 @@ class Core extends Controller
         // Add default field's parameter
         foreach ($url as $key => $val) {
             $url[$key] = [
-                'url' => (isset($val['url']) ? $val['url'] : $val),
+                'url' => (isset($val['url']) ? $val['url'] : null),
                 'label' => (isset($val['label']) ? $val['label'] : $label),
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
