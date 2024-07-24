@@ -29,6 +29,153 @@ class Permission
     }
 
     /**
+     * API Authorization
+     */
+    public function authorize($username = '', $password = '')
+    {
+        $query = $this->_model->select('
+            user_id,
+            username,
+            password,
+            group_id,
+            language_id,
+            status
+        ')
+        ->where('username', $username)
+        ->or_where('email', $username)
+        ->get(
+            'app__users',
+            1
+        )
+        ->row();
+
+        // Check if user is inactive
+        if ($query && 1 != $query->status) {
+            return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
+        } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
+            // Check if login attempts failed from the previous session
+            $blocking_check = $this->_model->get_where(
+                'app__users_blocked',
+                [
+                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                ],
+                1
+            )
+            ->row();
+
+            if ($blocking_check) {
+                // Check if blocking time is still available
+                if (strtotime($blocking_check->blocked_until) >= time()) {
+                    // Throw the blocking messages
+                    return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
+                } else {
+                    // Remove the record from blocking table
+                    $this->_model->delete(
+                        'app__users_blocked',
+                        [
+                            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                        ]
+                    );
+                }
+            }
+
+            // Update the last login timestamp
+            $this->_model->update(
+                'app__users',
+                [
+                    'last_login' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'user_id' => $query->user_id
+                ],
+                1
+            );
+
+            // Check if system apply one device login
+            if (get_setting('one_device_login')) {
+                // Get older sessions
+                $sessions = $this->_model->select('
+                    session_id,
+                    timestamp
+                ')
+                ->group_by('session_id')
+                ->get_where(
+                    'app__log_activities',
+                    [
+                        'user_id' => $query->user_id
+                    ]
+                )
+                ->result();
+
+                if ($sessions) {
+                    // Older sessions exist
+                    foreach ($sessions as $key => $val) {
+                        if ($val->session_id && file_exists(WRITEPATH . 'session/' . $val->session_id)) {
+                            // Older session found
+                            try {
+                                // Unlink older session
+                                if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
+                                    // Update table to skip getting session_id on next execution
+                                    $this->_model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
+                                }
+                            } catch (\Throwable $e) {
+                                // Safe abstraction
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Set the user credential into session
+            set_userdata([
+                'is_logged' => true,
+                'user_id' => $query->user_id,
+                'username' => $query->username,
+                'group_id' => $query->group_id,
+                'language_id' => $query->language_id,
+                'session_generated' => time(),
+                'access_token' => session_id()
+            ]);
+
+            if (service('request')->getPost('year')) {
+                set_userdata('year', service('request')->getPost('year'));
+            }
+
+            // Get existing session
+            $session_exists = $this->_model->get_where(
+                'app__sessions',
+                [
+                    'id' => get_userdata('access_token')
+                ]
+            )
+            ->row();
+
+            if ($session_exists) {
+                // Session exists, delete record
+                $this->_model->delete(
+                    'app__sessions',
+                    [
+                        'id' => get_userdata('access_token')
+                    ]
+                );
+            }
+
+            // Store session to database
+            return $this->_model->insert(
+                'app__sessions',
+                [
+                    'id' => get_userdata('access_token'),
+                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'timestamp' => date('Y-m-d H:i:s'),
+                    'data' => session_encode()
+                ]
+            );
+        } else {
+            return throw_exception(400, ['password' => phrase('Username or email and password combination does not match.')]);
+        }
+    }
+
+    /**
      * Allow to accessing method
      *
      * @param   mixed|null $path

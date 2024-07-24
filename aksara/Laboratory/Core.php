@@ -38,7 +38,7 @@ class Core extends Controller
     use Traits;
 
     /**
-     * A flag wheter request is sent from API Client or not
+     * A flag whether request is sent from API Client or not
      */
     protected $api_client = false;
 
@@ -64,7 +64,7 @@ class Core extends Controller
     public $template;
 
     /**
-     * A flag wheter API token is valid or not
+     * A flag whether API token is valid or not
      */
     private $_api_token;
 
@@ -261,6 +261,21 @@ class Core extends Controller
      */
     public function set_permission($permissive_user = [], string $redirect = null)
     {
+        if ($this->api_client && ! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+            // Basic Auth
+            $account = base64_decode(str_ireplace('Basic ', '', service('request')->getHeaderLine('Authorization')));
+            list($username, $password) = array_pad(explode(':', $account), 2, '');
+
+            if ($username && $password) {
+                // Get authorization
+                $authorize = $this->permission->authorize($username, $password);
+
+                if (is_bool($authorize) && $authorize) {
+                    $this->_api_token = true;
+                }
+            }
+        }
+
         // This mean the permission is set as true
         $this->_set_permission = true;
 
@@ -1904,7 +1919,7 @@ class Core extends Controller
         if ($this->api_client) {
             // Validate API request
             if ($this->_set_permission) {
-                if (! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+                if (! get_userdata('access_token') && ! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
                     // Access token is not set
                     return throw_exception(403, phrase('This service is require an access token.'));
                 } elseif (! $this->_api_token) {
@@ -2197,6 +2212,10 @@ class Core extends Controller
                             $this->or_group_start();
 
                             foreach ($columns as $key => $val) {
+                                if (! $key) {
+                                    continue;
+                                }
+
                                 // Add the table prefix to prevent ambiguous
                                 $val = $this->_table . '.' . $val;
 
@@ -2219,7 +2238,7 @@ class Core extends Controller
 
                                 $field_origin = (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
 
-                                if (in_array($field_origin, $compiled_like)) {
+                                if (! $key || in_array($field_origin, $compiled_like)) {
                                     continue;
                                 }
 
@@ -2371,7 +2390,7 @@ class Core extends Controller
 
                         $field_origin = (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
 
-                        if (in_array($field_origin, $compiled_like)) {
+                        if (! $key || in_array($field_origin, $compiled_like)) {
                             continue;
                         }
 
@@ -5169,7 +5188,7 @@ class Core extends Controller
         $cookie = $this->model->select('data')->get_where(
             'app__sessions',
             [
-                'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? 0,
+                'id' => get_userdata('access_token') ?? service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? 0,
                 'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()) ?? 0,
                 'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
             ],
@@ -5193,7 +5212,7 @@ class Core extends Controller
             $this->_set_language(get_userdata('language_id'));
         }
 
-        if (service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+        if (get_userdata('access_token') || service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
             // Update expiration time
             $this->model->update(
                 'app__sessions',
@@ -5202,7 +5221,7 @@ class Core extends Controller
                     'timestamp' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN')
+                    'id' => get_userdata('access_token') ?? service('request')->getHeaderLine('X-ACCESS-TOKEN')
                 ]
             );
         }
