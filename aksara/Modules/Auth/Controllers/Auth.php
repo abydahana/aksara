@@ -118,7 +118,7 @@ class Auth extends \Aksara\Laboratory\Core
 
                 // Check if user is inactive
                 if ($execute && 1 != $execute->status) {
-                    return throw_exception(404, phrase('Your account is temporary disabled or not yet activated.'));
+                    return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
                 } elseif ($execute && password_verify($password . ENCRYPTION_KEY, $execute->password)) {
                     // Check if login attempts failed from the previous session
                     $blocking_check = $this->model->get_where(
