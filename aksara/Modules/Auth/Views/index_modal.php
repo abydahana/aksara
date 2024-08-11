@@ -1,3 +1,8 @@
+<style type="text/css">
+    .modal-body {
+        padding: 0
+    }
+</style>
 <div class="card-group">
     <div class="card border-top-0 border-bottom-0 border-start-0">
         <div class="card-body">

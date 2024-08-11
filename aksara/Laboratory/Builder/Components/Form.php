@@ -74,22 +74,10 @@ class Form
         ];
     }
 
-    public function decimal($type = null)
+    public function money($type = null)
     {
         $component = <<<EOF
-        <input type="number" name="{{ name }}" role="decimal" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
-        EOF;
-
-        return [
-            'type' => __FUNCTION__,
-            'component' => $component
-        ];
-    }
-
-    public function currency($type = null)
-    {
-        $component = <<<EOF
-        <input type="text" name="{{ name }}" role="currency" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
+        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
         EOF;
 
         return [
@@ -101,7 +89,7 @@ class Form
     public function percent($type = null)
     {
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="currency" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
+        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
         EOF;
 
         return [

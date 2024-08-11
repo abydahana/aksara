@@ -80,25 +80,11 @@ class View
         ];
     }
 
-    public function decimal($type = null)
+    public function money($type = null)
     {
         $component = <<<EOF
         <div>
-            {{ content | number_format }}
-        </div>
-        EOF;
-
-        return [
-            'type' => __FUNCTION__,
-            'component' => $component
-        ];
-    }
-
-    public function currency($type = null)
-    {
-        $component = <<<EOF
-        <div>
-            {{ content | format_currency('ID') }}
+            {{ escape ? content : content | raw }}
         </div>
         EOF;
 
@@ -378,7 +364,7 @@ class View
     {
         $component = <<<EOF
         <div class="text-sm-center">
-            <a href="{{ content }}" target="_blank">
+            <a href="{{ content | replace({'/thumbs/': '/'}) }}" target="_blank">
                 <img src="{{ content }}" alt="{{ label }}" class="rounded img-fluid" />
             </a>
         </div>

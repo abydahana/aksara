@@ -662,7 +662,7 @@
     "The session garbage was successfully cleaned": "Мусор сессии успешно очищен",
     "The session garbage was successfully cleaned!": "Мусор сессии успешно очищен!",
     "The sub level can be accessed": "Подуровень можно получить доступ",
-    "The submitted token has been expired or the request is made from restricted source": "Отправленный токен истек или запрос сделан из ограниченного источника",
+    "The submitted token has been expired or the request is made from the restricted source": "Отправленный токен истек или запрос сделан из ограниченного источника",
     "The user you requested does not exist.": "Запрашиваемого пользователя не существует.",
     "The user you requested does not exists.": "The user you requested does not exists.",
     "Theme Customization": "Настройка темы",

@@ -147,7 +147,7 @@ class Core
                                         
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
-                                        <a href="{{ field.url }}" target="_blank">
+                                        <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                             <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                         </a>
                                         
@@ -236,7 +236,7 @@ class Core
                                         
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
-                                        <a href="{{ field.url }}" target="_blank">
+                                        <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                             <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                         </a>
                                         
@@ -807,14 +807,14 @@ class Core
             {% endif %}
             <div class="input-group">
                 {% if params.prepend %}
-                    <span class="input-group-text"> {{ params.prepend }} </span>
+                    <span class="input-group-text-unformatted me-2"> {{ params.prepend }} </span>
                 {% endif %}
 
                 {# Include form component #}
                 {% include 'view/' ~ params.type ~ '.twig' with params %}
                 
                 {% if params.append %}
-                    <span class="input-group-text"> {{ params.append }} </span>
+                    <span class="input-group-text-unformatted ms-2"> {{ params.append }} </span>
                 {% endif %}
             </div>
         </div>
