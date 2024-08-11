@@ -1,0 +1,16 @@
+<div class="accordion" id="accordion_{{ name }}">
+    {% for key, accordion in content %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_{{ key }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ key }}" aria-controls="collapse_{{ key }}">
+                    {{ accordion.title }}
+                </button>
+            </h2>
+            <div id="collapse_{{ key }}" class="accordion-collapse collapse" aria-labelledby="heading_{{ key }}" data-bs-parent="#accordion_{{ name }}">
+                <div class="accordion-body">
+                    {{ accordion.body }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

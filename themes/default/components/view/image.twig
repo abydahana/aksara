@@ -1,5 +1,5 @@
 <div class="text-sm-center">
-    <a href="{{ content }}" target="_blank">
+    <a href="{{ content | replace({'/thumbs/': '/'}) }}" target="_blank">
         <img src="{{ content }}" alt="{{ label }}" class="rounded img-fluid" />
     </a>
 </div>

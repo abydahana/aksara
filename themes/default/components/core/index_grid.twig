@@ -34,7 +34,7 @@
                                 
                                 {% set break = true %}
                             {% elseif not break and field.type == 'image' %}
-                                <a href="{{ field.url }}" target="_blank">
+                                <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                     <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                 </a>
                                 

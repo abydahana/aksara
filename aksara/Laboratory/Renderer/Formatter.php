@@ -194,6 +194,16 @@ class Formatter
                 }
             } elseif (in_array($key, ['custom_format'])) {
                 $value = $val['parameter'];
+            } elseif (in_array($key, ['date'])) {
+                $timestamp = strtotime($value);
+                $month = date('F', $timestamp);
+                $month = phrase($month);
+                $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp);
+            } elseif (in_array($key, ['datetime'])) {
+                $timestamp = strtotime($value);
+                $month = date('F', $timestamp);
+                $month = phrase($month);
+                $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
             }
         }
 

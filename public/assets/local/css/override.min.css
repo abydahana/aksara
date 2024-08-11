@@ -24,6 +24,9 @@ body.content-expanded [role=content] {
   bottom: 0 !important;
   overflow-y: hidden;
 }
+th[align=right] {
+  text-align: right!important
+}
 .clip {
   position: absolute;
   top: 0;
@@ -71,7 +74,7 @@ body.content-expanded [role=content] {
   top: 0;
 }
 .toast-container {
-  z-index: 1050 !important;
+  z-index: 1090 !important;
 }
 .modal-backdrop.show ~ .modal-backdrop.show {
   z-index: 1055 !important;

@@ -1,0 +1,60 @@
+<div class="w-100">
+    {% for key, carousel in content %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted">
+                        {{ phrase('Background') }}
+                    </label>
+                    <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center mb-3">
+                        <span class="btn btn-file d-block">
+                            <input type="file" name="{{ name }}[background][{{ key }}]" accept="{{ accept }}" role="image-upload" id="{{ name }}_input" {{ readonly }} />
+                            <div class="fileupload-new text-center">
+                                <img class="img-fluid upload_preview rounded" src="{{ carousel.src.background }}" alt="..." />
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '{{ carousel.src.placeholder }}'))"><i class="mdi mdi-delete"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="{{ name }}[title][{{ key }}]" class="form-control" placeholder="{{ phrase('Title') }}" value="{{ carousel.title }}" id="{{ name }}_input" spellcheck="false" {{ readonly }} />
+                </div>
+                <div class="mb-3">
+                    <textarea name="{{ name }}[description][{{ key }}]" class="form-control" placeholder="{{ phrase('Description') }}" id="{{ name }}_input" rows="1" spellcheck="false" {{ readonly }}>{{ carousel.description }}</textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <input type="text" name="{{ name }}[link][{{ key }}]" class="form-control" placeholder="{{ phrase('Target URL') }}" value="{{ carousel.link }}" id="{{ name }}_input" spellcheck="false" {{ readonly }} />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <input type="text" name="{{ name }}[label][{{ key }}]" class="form-control" placeholder="{{ phrase('Button Label') }}" value="{{ carousel.label }}" id="{{ name }}_input" spellcheck="false" {{ readonly }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer pt-1 pb-1">
+                <input type="hidden" name="{{ name }}[default_background][{{ key }}]" value="{{ carousel.background }}" {{ readonly }} />
+                <div class="btn-group btn-group-sm">
+                    <a href="javascript:void(0)" class="btn btn-secondary {% if readonly is empty %} --move-up {% endif %}" data-element=".card" data-bs-toggle="tooltip" title="{{ phrase('Move Up') }}">
+                        <i class="mdi mdi-arrow-collapse-up"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-secondary {% if readonly is empty %} --move-down {% endif %}" data-element=".card" data-bs-toggle="tooltip" title="{{ phrase('Move Down') }}">
+                        <i class="mdi mdi-arrow-collapse-down"></i>
+                    </a>
+                </div>
+                <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm float-end" {% if readonly is empty %} role="remove-carousel" {% endif %} data-element=".card">
+                    <i class="mdi mdi-delete" data-bs-toggle="tooltip" title="{{ phrase('Remove') }}"></i>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="d-grid">
+        <a href="javascript:void(0)" class="btn btn-light d-block" {% if readonly is empty %} role="add-carousel" {% endif %} data-field="{{ name }}" data-image-placeholder="{{ placeholder }}" style="border:2px dashed #ddd">
+            <i class="mdi mdi-plus-circle-outline"></i>
+            {{ phrase('Add') }}
+        </a>
+    </div>
+</div>

@@ -31,7 +31,8 @@ class Validation
     }
 
     /**
-     * Check if data is already exist in the database table
+     * Check if data is already exist in the database table. It's similar to
+     * is_unique but it's most advanced.
      *
      * @param   mixed|null $value
      * @param   string $params

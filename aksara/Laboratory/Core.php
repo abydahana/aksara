@@ -64,6 +64,11 @@ class Core extends Controller
     public $template;
 
     /**
+     * CSRF Token
+     */
+    private $_token;
+
+    /**
      * A flag whether API token is valid or not
      */
     private $_api_token;
@@ -234,7 +239,7 @@ class Core extends Controller
     public function valid_token(string $token = null)
     {
         // Match the token validation
-        if (service('request')->getPost() && (sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) === $token || sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token || $this->api_client)) {
+        if (service('request')->getPost() && (($token && get_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY)) === $token) || ($token && sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) || $this->api_client)) {
             // Token match
             return true;
         }
@@ -1044,9 +1049,13 @@ class Core extends Controller
 
         // Find existing field validation and merge
         foreach ($params as $key => $val) {
+            if (! is_array($val)) {
+                $val = array_map('trim', explode('|', $val));
+            }
+
             if (isset($this->_set_validation[$key]) && $val) {
                 // Merge validation
-                $this->_set_validation[$key] = $this->_set_validation[$key] . '|' . $val;
+                $this->_set_validation[$key] = array_merge($this->_set_validation[$key], $val);
             } else {
                 // Set new validation
                 $this->_set_validation[$key] = $val;
@@ -1787,7 +1796,11 @@ class Core extends Controller
                     $type = 'number';
                 } elseif (in_array($type, ['decimal', 'float', 'double', 'real'])) {
                     // Field type decimal
-                    $type = 'decimal';
+                    if (in_array($type, ['percent'])) {
+                        $type = 'percent';
+                    } else {
+                        $type = 'money';
+                    }
                 } elseif (in_array($type, ['tinytext', 'text'])) {
                     // Field type textarea
                     $type = 'textarea';
@@ -1827,7 +1840,7 @@ class Core extends Controller
                 $maxlength = (isset($field_data[$field]->max_length) ? $field_data[$field]->max_length : null);
 
                 // Attempt to get the field validation
-                $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : null);
+                $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : []);
 
                 // Attempt to get field translation
                 $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
@@ -1855,7 +1868,7 @@ class Core extends Controller
                     $content = $this->_get_relation($this->_set_relation[$field], $value);
                 }
 
-                if ($content && array_intersect(['number', 'numeric', 'price', 'percent'], [$type]) && is_numeric($content)) {
+                if ($content && array_intersect(['number', 'numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
                     // Get decimal fractional
                     $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
 
@@ -1873,6 +1886,10 @@ class Core extends Controller
                     $content = sprintf(($parameter && ! is_array($parameter) ? $parameter : '%02d'), $content);
                 }
 
+                if ($maxlength) {
+                    $validation[] = 'max_length[' . $maxlength . ']';
+                }
+
                 $results[$field] = [
                     'type' => $this->_set_field[$field],
                     'primary' => (in_array($field, $this->_set_primary) ? 1 : 0),
@@ -1880,7 +1897,7 @@ class Core extends Controller
                     'content' => $content,
                     'maxlength' => $maxlength,
                     'hidden' => $hidden,
-                    'validation' => ($maxlength ? 'max_length[' . $maxlength . ']' : null) . ($maxlength && $validation ? '|' : null) . ($validation ? $validation : null)
+                    'validation' => $validation
                 ];
             }
 
@@ -1941,12 +1958,21 @@ class Core extends Controller
             }
         }
 
+        // Set CSRF Token
+        $this->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+
         if (! $this->_table) {
             // Set table when not present
             $this->_table = $table;
 
             // Push to compiled table
             $this->_compiled_table[] = $table;
+        }
+
+        if (! $this->_table) {
+            // There may be a form without using form renderer
+            // Set CSRF Token into unique session key
+            set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $this->_token);
         }
 
         /**
@@ -1963,7 +1989,7 @@ class Core extends Controller
                 generate_token($query_string, uri_string()) != $token
             ) {
                 // Token is missmatch, throw an exception
-                return throw_exception(403, phrase('The submitted token has been expired or the request is made from restricted source'), base_url());
+                return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source'), base_url());
             }
         }
 
@@ -2154,7 +2180,7 @@ class Core extends Controller
                     }
                 } else {
                     // Token isn't valid, throw exception
-                    return throw_exception(403, phrase('The submitted token has been expired or the request is made from restricted source'), $this->_redirect_back);
+                    return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source'), $this->_redirect_back);
                 }
             } elseif ($this->api_client && 'POST' == service('request')->getServer('REQUEST_METHOD') && (in_array($this->_method, ['create', 'update']) || ($this->_form_callback && method_exists($this, $this->_form_callback)))) {
                 // Request is sent from REST
@@ -2722,7 +2748,7 @@ class Core extends Controller
             'results' => $results,
             'total' => $total,
             'elapsed_time' => service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time'),
-            '_token' => sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'))
+            '_token' => $this->_token
         ];
 
         if ($output['results']) {
@@ -2849,6 +2875,9 @@ class Core extends Controller
             $field_data = $renderer->render($serialized);
         }
 
+        // Set CSRF Token into unique session key
+        set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $this->_token);
+
         return $field_data;
     }
 
@@ -2923,36 +2952,66 @@ class Core extends Controller
                     continue;
                 }
 
+                foreach ($val['validation'] as $index => $callback) {
+                    if (! $callback) {
+                        // Unset empty validation
+                        unset($val['validation'][$index]);
+
+                        continue;
+                    }
+
+                    // Validation callback finder
+                    if (strncmp('callback_', $callback, 9) === 0) {
+                        // Validation callback found
+                        preg_match('/callback_(.*?)\[/', $callback, $callback_match);
+
+                        if (isset($callback_match[1]) && method_exists($this, $callback_match[1])) {
+                            // Apply callback only when method is exists
+                            $val['validation'][$index] = [$this, $callback_match[1]];
+                        }
+                    }
+                }
+
                 if (array_intersect(['image'], $type)) {
                     $validation = true;
 
-                    if (in_array('required', explode('|', $val['validation'])) && isset($_FILES[$key]['error']) && 0 === $_FILES[$key]['error']) {
-                        $val['validation'] = implode('|', array_diff(explode('|', $val['validation']), ['required']));
+                    if (in_array('required', $val['validation']) && isset($_FILES[$key]['error']) && 0 === $_FILES[$key]['error']) {
+                        $val['validation'] = array_diff($val['validation'], ['required']);
                     }
 
+                    $val['validation'][] = 'validate_upload[' . $key . '.image]';
+
                     // Single upload validation rules
-                    $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . '.image]');
+                    $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['images'], $type)) {
                     $validation = true;
 
+                    $val['validation'][] = 'validate_upload[' . $key . '.image]';
+
                     // Images upload validation rules
-                    $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . '.image]');
+                    $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['file', 'files'], $type)) {
                     $validation = true;
 
+                    $val['validation'][] = 'validate_upload[' . $key . ']';
+
                     // Files upload validation rules
-                    $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . ']');
+                    $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['carousel'], $type)) {
                     $validation = true;
 
+                    $val['validation'][] = 'validate_upload[' . $key . '.image]';
+
                     // Carousel upload validation rules
-                    $this->form_validation->setRule($key . '.background.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] . '|' : null) . 'validate_upload[' . $key . '.image]');
+                    $this->form_validation->setRule($key . '.background.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['accordion'], $type)) {
                     $validation = true;
 
+                    $val['validation'][] = 'required';
+
                     // Accordion upload validation rules
-                    $this->form_validation->setRule($key . '.title.*', phrase('Accordion Title') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . 'required');
-                    $this->form_validation->setRule($key . '.body.*', phrase('Accordion Body') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), (service('request')->getPost($key) ? 'trim|' : null) . 'required');
+                    $this->form_validation->setRule($key . '.title.*', phrase('Accordion Title') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
+                    $this->form_validation->setRule($key . '.body.*', phrase('Accordion Body') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['password'], $type)) {
                     $validation = true;
 
@@ -2968,7 +3027,7 @@ class Core extends Controller
                     // Encryption type field validation
                     if ('update' == $this->_method) {
                         // Rules on update method
-                        $val['validation'] = implode('|', array_diff(explode('|', $val['validation']), ['required']));
+                        $val['validation'] = array_diff($val['validation'], ['required']);
                     }
 
                     if ($val['validation']) {
@@ -2979,9 +3038,9 @@ class Core extends Controller
                     $validation = true;
 
                     // Relation table validation
-                    if (in_array('required', explode('|', $val['validation']))) {
+                    if (in_array('required', $val['validation'])) {
                         // Apply rules only when it's required
-                        $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|relation_checker[' . (strpos($this->_set_relation[$key]['relation_table'], ' ') !== false ? substr($this->_set_relation[$key]['relation_table'], 0, strpos($this->_set_relation[$key]['relation_table'], ' ')) : $this->_set_relation[$key]['relation_table']) . '.' . $this->_set_relation[$key]['relation_key'] . ']');
+                        $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_set_relation[$key]['relation_table'], ' ') !== false ? substr($this->_set_relation[$key]['relation_table'], 0, strpos($this->_set_relation[$key]['relation_table'], ' ')) : $this->_set_relation[$key]['relation_table']) . '.' . $this->_set_relation[$key]['relation_key'] . ']']);
                     } else {
                         // Find foreign data
                         $constrained = false;
@@ -3000,71 +3059,44 @@ class Core extends Controller
 
                         if ($constrained) {
                             // Apply only for constrained table relation
-                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'required|relation_checker[' . (strpos($this->_set_relation[$key]['relation_table'], ' ') !== false ? substr($this->_set_relation[$key]['relation_table'], 0, strpos($this->_set_relation[$key]['relation_table'], ' ')) : $this->_set_relation[$key]['relation_table']) . '.' . $this->_set_relation[$key]['relation_key'] . ']');
+                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_set_relation[$key]['relation_table'], ' ') !== false ? substr($this->_set_relation[$key]['relation_table'], 0, strpos($this->_set_relation[$key]['relation_table'], ' ')) : $this->_set_relation[$key]['relation_table']) . '.' . $this->_set_relation[$key]['relation_key'] . ']']);
                         }
                     }
                 } else {
-                    if ($val['validation'] && strncmp('callback_', $val['validation'], 9) !== false) {
-                        // Callback validation, old is gold :)
-                        $validation = explode('|', $val['validation']);
-
-                        foreach ($validation as $index => $callback) {
-                            $callback = preg_replace('/callback_/', '', $callback, 1);
-
-                            if (method_exists($this, $callback)) {
-                                $validate = $this->$callback(service('request')->getVar($key));
-
-                                if (true !== $validate) {
-                                    // Validation error, throw exception
-                                    $this->form_validation->setError($key, $validate ?? '');
-                                }
-
-                                // Unset valid callback from validation
-                                unset($validation[$index]);
-                            }
-                        }
-
-                        // Restructure new validation
-                        $val['validation'] = implode('|', $validation);
-                    }
-
-                    // Default suffix
-                    $validation_suffix = null;
-
                     if (array_intersect(['yearpicker'], $type)) {
                         // Year validation rules
-                        $validation_suffix = 'valid_year';
-                    } elseif (array_intersect(['hour'], $type)) {
+                        $val['validation'][] = 'valid_year';
+                    } elseif (array_intersect(['hour', 'date_only'], $type)) {
                         // Hour validation rules
-                        $validation_suffix = 'numeric|max_length[2]';
-                    } elseif (array_intersect(['date_only'], $type)) {
-                        // Only date (MM) validation rules
-                        $validation_suffix = 'numeric|max_length[2]';
+                        $val['validation'][] = 'numeric';
+                        $val['validation'][] = 'max_length[2]';
                     } elseif (array_intersect(['date', 'datepicker'], $type)) {
                         // Date (YYYY-MM-DD) validation rules
-                        $validation_suffix = 'valid_date';
+                        $val['validation'][] = 'valid_date';
                     } elseif (array_intersect(['timestamp', 'datetime', 'datetimepicker'], $type)) {
                         // Full timestamp validation rules
-                        $validation_suffix = 'valid_datetime';
+                        $val['validation'][] = 'valid_datetime';
                     }
 
-                    if ($val['validation'] && ! isset($this->_set_default[$key])) {
-                        // Validate only when no default set to field
-                        $validation = true;
+                    if ($val['validation']) {
+                        if (! isset($this->_set_default[$key])) {
+                            // Validate only when no default set to field
+                            $validation = true;
 
-                        if (is_array(service('request')->getPost($key))) {
-                            // Array validation rules
-                            $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
+                            if (is_array(service('request')->getPost($key))) {
+                                // Array validation rules
+                                $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
+                            } else {
+                                // Input validation rules
+                                $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
+                            }
                         } else {
-                            // Input validation rules
-                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ($val['validation'] ? $val['validation'] : null) . ($validation_suffix ? '|' . $validation_suffix : null));
-                        }
-                    } elseif ($validation_suffix) {
-                        // Validate only when no default set to field
-                        $validation = true;
+                            // Validate only when no default set to field
+                            $validation = true;
 
-                        // Apply rules suffix
-                        $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $validation_suffix);
+                            // Apply rules suffix
+                            $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
+                        }
                     }
                 }
             }
@@ -3299,8 +3331,8 @@ class Core extends Controller
                     } elseif (array_intersect(['monthpicker'], $type)) {
                         // Push the month field type to data preparation
                         $prepare[$field] = get_userdata('year') . '-' . service('request')->getPost($field) . '-01';
-                    } elseif (array_intersect(['price_format'], $type)) {
-                        // Push the price field type to data preparation
+                    } elseif (array_intersect(['money'], $type)) {
+                        // Push the money field type to data preparation
                         $value = trim(service('request')->getPost($field));
                         $value = str_replace(',', '', $value);
                         $prepare[$field] = $value;
@@ -3445,6 +3477,9 @@ class Core extends Controller
                 // Unset uploaded files string from session
                 unset_userdata('_uploaded_files');
 
+                // Unset CSRF token
+                unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
+
                 if (method_exists($this, 'after_insert')) {
                     // Call user function after insert
                     $this->after_insert();
@@ -3538,6 +3573,9 @@ class Core extends Controller
                 if ($this->model->update($table, $data, $where)) {
                     // Unset uploaded files string from session
                     unset_userdata('_uploaded_files');
+
+                    // Unset CSRF token
+                    unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
 
                     // Unlink old files
                     $this->_unlink_files($old_files);

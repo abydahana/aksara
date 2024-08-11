@@ -96,7 +96,7 @@ class Table
                 $content = $params['content'];
                 $maxlength = $params['maxlength'];
                 $hidden = $params['hidden'];
-                $validation = explode('|', $params['validation']);
+                $validation = $params['validation'];
                 $required = in_array('required', $validation);
 
                 $label = ucwords(str_replace('_', ' ', $field));
@@ -125,7 +125,7 @@ class Table
                 // Valid field type definition
                 $valid_type = [
                     'text', 'textarea', 'wysiwyg',
-                    'number', 'decimal', 'currency', 'percent',
+                    'number', 'money', 'percent',
                     'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
                     'date', 'datetime', 'time', 'week', 'month',
                     'hidden', 'email', 'password', 'encryption',
@@ -154,7 +154,7 @@ class Table
                     'label' => $label,
                     'url' => go_to(null, array_merge($query_string, ['order' => $field, 'sort' => get_userdata('sortOrder')])),
                     'icon' => 'mdi mdi-sort-' . ('asc' == get_userdata('sortOrder') ? 'ascending' : 'descending'),
-                    'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'price', 'percent'], $field_type) ? 'right' : 'left')
+                    'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $field_type) ? 'right' : 'left')
                 ];
 
                 if (! $search_columns_rendered) {

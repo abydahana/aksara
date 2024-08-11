@@ -1,25 +1,16 @@
-<div class="container-fluid">
-    <?php
-        if ($languages) {
-            foreach ($languages as $key => $val) {
-                if ($key) {
-                    echo '<hr />';
-                }
-
-                if ($val->code == get_userdata('language')) {
-                    echo '
-                        <b class="d-block">
-                            ' . $val->language . '
-                        </b>
-                    ';
-                } else {
-                    echo '
-                        <a href="' . base_url('xhr/language/' . $val->code) . '" class="d-block --xhr">
-                            ' . $val->language . '
-                        </a>
-                    ';
-                }
-            }
-        }
-    ?>
+<div>
+    <?php foreach ($languages as $key => $val): ?>
+        <?php if ($key): ?>
+            <hr />
+        <?php endif; ?>
+        <?php if ($val->code == get_userdata('language')): ?>
+            <b class="d-block">
+                <?= $val->language; ?>
+            </b>
+        <?php else: ?>
+            <a href="<?= base_url('xhr/language/' . $val->code); ?>" class="d-block --xhr">
+                <?= $val->language; ?>
+            </a>
+        <?php endif; ?>
+    <?php endforeach; ?>
 </div>

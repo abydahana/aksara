@@ -96,7 +96,7 @@ class Form
             $content = $params['content'];
             $maxlength = $params['maxlength'];
             $hidden = $params['hidden'];
-            $validation = explode('|', $params['validation']);
+            $validation = $params['validation'];
             $required = in_array('required', $validation);
 
             $label = ucwords(str_replace('_', ' ', $field));
@@ -150,7 +150,7 @@ class Form
             // Valid field type definition
             $valid_type = [
                 'text', 'textarea', 'wysiwyg',
-                'number', 'decimal', 'currency', 'percent',
+                'number', 'money', 'percent',
                 'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
                 'date', 'datetime', 'time', 'week', 'month',
                 'hidden', 'email', 'password', 'encryption',

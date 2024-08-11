@@ -663,7 +663,7 @@
     "The session garbage was successfully cleaned": "Residu sesi berhasil dibersihkan",
     "The session garbage was successfully cleaned!": "Residu sesi berhasil dibersihkan!",
     "The sub level can be accessed": "Level sub yang dapat diakses",
-    "The submitted token has been expired or the request is made from restricted source": "Token yang dikirim telah kadaluwarsa atau dibuat dari sumber yang dilarang",
+    "The submitted token has been expired or the request is made from the restricted source": "Token yang dikirim telah kadaluwarsa atau dibuat dari sumber yang dilarang",
     "The user you requested does not exist.": "The user you requested does not exist.",
     "The user you requested does not exists.": "Pengguna yang Anda minta tidak ditemukan",
     "Theme Customization": "Penyesuaian Tema",

@@ -277,11 +277,14 @@ class Document
                     $pagecount = $pdf->SetSourceFile(UPLOAD_PATH . '/tmp' . '/' . $filename);
 
                     for ($i = 1; $i <= ($pagecount); $i++) {
-                        $pdf->AddPage();
-
                         $template_id = $pdf->ImportPage($i);
+                        $size = $pdf->getTemplateSize($template_id);
 
-                        $pdf->UseTemplate($template_id);
+                        $pdf->UseTemplate($template_id, 0, 0, $size['width'], $size['height'], true);
+
+                        if ($i < $pagecount) {
+                            $pdf->AddPage();
+                        }
                     }
 
                     unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
