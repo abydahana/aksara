@@ -332,8 +332,20 @@ class Auth extends \Aksara\Laboratory\Core
             ]
         );
 
+        // Backup session items
+        $_login_attempt = get_userdata('_login_attempt');
+        $_login_attempt_time = get_userdata('_login_attempt_time');
+        $_spam_timer = get_userdata('_spam_timer');
+
         // Destroy session
         service('session')->destroy();
+
+        // Rollback login attempt config
+        set_userdata([
+            '_login_attempt' => $_login_attempt,
+            '_login_attempt_time' => $_login_attempt_time,
+            '_spam_timer' => $_spam_timer
+        ]);
 
         return throw_exception(301, phrase('You were signed out.'), base_url(), true);
     }

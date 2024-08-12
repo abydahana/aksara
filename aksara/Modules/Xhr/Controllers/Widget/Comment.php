@@ -641,6 +641,10 @@ class Comment extends \Aksara\Laboratory\Core
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread')]);
         }
 
+        if (time() <= get_userdata('_spam_timer')) {
+            return throw_exception(400, ['comments' => phrase('Please wait for previous comments to be processed')]);
+        }
+
         $this->form_validation->setRule('comments', phrase('Comments'), 'required');
         $this->form_validation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
@@ -679,6 +683,9 @@ class Comment extends \Aksara\Laboratory\Core
         );
 
         $comment_id = $this->model->insert_id();
+
+        // Set spam timer
+        set_userdata('_spam_timer', strtotime('+10 seconds'));
 
         $query = $this->model->select('
             post__comments.comment_id,
