@@ -69,7 +69,7 @@ class Parser
 
             if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig') || ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.php')) {
                 // Copy master views
-                copy(APPPATH . 'Views/core/404.twig', ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig');
+                copy(APPPATH . 'Views/components/core/404.twig', ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig');
             }
         } catch (\Throwable $e) {
             // Directory creation failed, stop operation
