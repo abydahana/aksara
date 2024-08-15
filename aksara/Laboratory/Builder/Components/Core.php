@@ -472,7 +472,7 @@ class Core
                         {% endif %}
                     {% endfor %}
                     <div class="row">
-                        <div class="{% if results.column_total == 2 %} col-md-10 col-xxl-8 {% elseif results.column_total > 2 %} col-md-12 col-xxl-12 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                             <div class="row">
                                 {# Find index within column total #}
                                 {% for index in 1..results.column_total %}
@@ -511,7 +511,7 @@ class Core
                     </div>
                     <div class="opt-btn-overlap-fix"></div>
                     <div class="row opt-btn">
-                        <div class="{% if results.column_total == 2 %} col-md-10 col-xxl-8 {% elseif results.column_total > 2 %} col-md-12 col-xxl-10 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                             <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back') }}
@@ -628,7 +628,7 @@ class Core
                     {% endif %}
                 {% endfor %}
                 <div class="row">
-                    <div class="{% if results.column_total == 2 %} col-md-10 col-xxl-8 {% elseif results.column_total > 2 %} col-md-12 col-xxl-12 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                         <div class="row">
                             {# Find index within column total #}
                             {% for index in 1..results.column_total %}
@@ -666,7 +666,7 @@ class Core
                 </div>
                 <div class="opt-btn-overlap-fix"></div>
                 <div class="row opt-btn">
-                    <div class="{% if results.column_total == 2 %} col-md-10 col-xxl-8 {% elseif results.column_total > 2 %} col-md-12 col-xxl-10 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                         <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                             <i class="mdi mdi-arrow-left"></i>
                             {{ phrase('Back') }}

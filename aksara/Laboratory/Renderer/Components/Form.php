@@ -252,6 +252,7 @@ class Form
             'extra_action' => [
                 'submit' => $this->_extra_submit
             ],
+            'form_size' => ($this->_modal_size ? str_replace('modal', 'form', $this->_modal_size) : ''),
             'field_size' => $this->_field_size,
             'field_data' => $field_data,
             'merged_content' => $this->_merge_content,
