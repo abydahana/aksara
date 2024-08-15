@@ -2862,7 +2862,7 @@ class Core extends Controller
 
         if ($serialized) {
             // Splice only required property as config
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_default_value', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client']));
+            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_default_value', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client']));
 
             // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
@@ -2900,7 +2900,7 @@ class Core extends Controller
 
         if ($serialized) {
             // Splice only required property as config
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order', '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content', '_merge_field', '_merge_label', '_method', '_set_alias', '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path', '_table', 'api_client']));
+            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order', '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path', '_table', 'api_client']));
 
             // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
