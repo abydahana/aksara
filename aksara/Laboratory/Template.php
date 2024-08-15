@@ -149,7 +149,7 @@ class Template
         $core_viewfinder = ROOTPATH . 'aksara/Modules' . $view_path;
 
         // Core based viewfinder
-        $fallback_viewfinder = ROOTPATH . 'aksara/Views/core';
+        $fallback_viewfinder = ROOTPATH . 'aksara/Views/components/core';
 
         // View suffix
         $suffix = (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
