@@ -144,6 +144,10 @@ if (! function_exists('throw_exception')) {
     {
         // Check if the request isn't through xhr
         if (! service('request')->isAJAX()) {
+            if (! $target) {
+                $target = base_url();
+            }
+
             // Check if data isn't an array
             if ($data && ! is_array($data)) {
                 // Set the flashdata
@@ -159,12 +163,8 @@ if (! function_exists('throw_exception')) {
                 }
             }
 
-            if ($target) {
-                // Redirect to target
-                exit(header('Location: ' . $target));
-            } else {
-                exit($data);
-            }
+            // Redirect to target
+            exit(header('Location: ' . $target));
         }
 
         $exception = [];
