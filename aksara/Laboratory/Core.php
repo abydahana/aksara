@@ -3139,7 +3139,7 @@ class Core extends Controller
                     continue;
                 }
 
-                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousel', 'accordion'])) {
+                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
                         if (service('request')->getPost($field)) {
