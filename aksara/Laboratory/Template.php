@@ -468,23 +468,18 @@ class Template
      * @param   mixed|array $data
      * @param   string $title
      */
-    public function breadcrumb($data = [], $title = null, bool $translate = false)
+    public function breadcrumb($data = [], $title = null, array $primary = [])
     {
         $slug = null;
         $checker = service('uri')->getSegments();
         $matched_route = service('router')->getMatchedRoute();
         $matched_route = (isset($matched_route[0]) ? explode('/', $matched_route[0]) : []);
-        $params = service('request')->getGet();
-        $params['per_page'] = null;
-        $params['q'] = null;
-        $params['order'] = null;
-        $params['sort'] = null;
 
         if (! $data || ! is_array($data)) {
             $data = [];
 
             foreach ($checker as $key => $val) {
-                $data[$val] = ($translate && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
+                $data[$val] = (end($matched_route) !== service('router')->methodName() && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
             }
         }
 
@@ -508,6 +503,13 @@ class Template
 
         $current_slug = end($checker);
         $slug = null;
+        $params = service('request')->getGet();
+
+        foreach ($params as $key => $val) {
+            if (in_array($key, array_merge($primary, ['per_page', 'q', 'order', 'sort', 'limit', 'offset']))) {
+                $params[$key] = null;
+            }
+        }
 
         foreach ($data as $key => $val) {
             $slug .= ($slug ? '/' : null) . $key;

@@ -2743,7 +2743,7 @@ class Core extends Controller
                 'modal_size' => ($this->_modal_size ? $this->_modal_size : ''),
                 'segmentation' => array_map(function ($segment = null) {return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
             ],
-            'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, ($total && ! $this->_set_breadcrumb ? true : false)),
+            'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_set_primary),
             'query_string' => service('request')->getGet(),
             'results' => $results,
             'total' => $total,
