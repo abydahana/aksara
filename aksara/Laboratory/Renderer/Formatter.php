@@ -194,13 +194,13 @@ class Formatter
                 }
             } elseif (in_array($key, ['custom_format'])) {
                 $value = $val['parameter'];
-            } elseif (in_array($key, ['date'])) {
-                $timestamp = strtotime($value);
+            } elseif (in_array($key, ['date']) && $value && '0000-00-00' !== $value) {
+                $timestamp = strtotime($value ?? '0000-00-00');
                 $month = date('F', $timestamp);
                 $month = phrase($month);
                 $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp);
-            } elseif (in_array($key, ['datetime'])) {
-                $timestamp = strtotime($value);
+            } elseif (in_array($key, ['datetime']) && $value && '0000-00-00 00:00:00' !== $value) {
+                $timestamp = strtotime($value ?? '0000-00-00 00:00:00');
                 $month = date('F', $timestamp);
                 $month = phrase($month);
                 $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
