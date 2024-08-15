@@ -49,7 +49,7 @@ if (! function_exists('get_absolute_path')) {
      */
     function get_absolute_path($path = '')
     {
-        $path = str_replace(['/', '\\'], '/', $path);
+        $path = str_replace(['/', '\\'], '/', $path ?? '');
         $parts = array_filter(explode('/', $path), 'strlen');
         $absolutes = [];
 
