@@ -90,6 +90,9 @@ th[align=right] {
   margin-right: -1rem!important;
   margin-bottom: -1rem !important;
 }
+.card-body .list-group .list-group-item span.float-end {
+  float: inherit!important
+}
 .sortable {
   cursor: pointer;
 }
@@ -363,5 +366,11 @@ blink {
   to {
     -webkit-transform: scale(24);
     opacity: 0;
+  }
+}
+@media (max-width: 575.98px) {
+  .card a>img.rounded.w-100 {
+    max-height: 200px;
+    object-fit: cover;
   }
 }

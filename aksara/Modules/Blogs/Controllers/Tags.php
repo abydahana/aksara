@@ -19,6 +19,8 @@ namespace Aksara\Modules\Blogs\Controllers;
 
 class Tags extends \Aksara\Laboratory\Core
 {
+    private $_keywords;
+
     public function __construct()
     {
         parent::__construct();
