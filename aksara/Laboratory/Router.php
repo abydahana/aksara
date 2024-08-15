@@ -17,6 +17,8 @@
 
 namespace Aksara\Laboratory;
 
+use Config\App;
+
 class Router
 {
     private $_request;
@@ -26,6 +28,18 @@ class Router
 
     public function __construct($routes = null)
     {
+        $config = config(App::class);
+
+        if (isset($config->permittedURIChars) && $config->permittedURIChars) {
+            foreach (explode('/', uri_string()) as $key => $val) {
+                // Validate URI
+                if ($val && ! preg_match('/\A[' . $config->permittedURIChars . ']+\z/iu', $val)) {
+                    // Invalid URI Chars
+                    exit(header('Location:' . base_url('404')));
+                }
+            }
+        }
+
         $this->_request = \Config\Services::request();
         $this->_uri_string = trim(uri_string(), '/');
 
