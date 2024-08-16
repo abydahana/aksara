@@ -232,7 +232,7 @@ class Auth extends \Aksara\Laboratory\Core
                         $referrer = service('request')->getUserAgent()->getReferrer();
                         $redirect = service('request')->getGet('redirect');
 
-                        if (stripos($referrer, base_url()) !== false) {
+                        if (! $redirect && stripos($referrer, base_url()) !== false) {
                             $redirect = str_replace(base_url(), '', $referrer);
                         }
 
