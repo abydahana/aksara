@@ -34,7 +34,7 @@ class Read extends \Aksara\Laboratory\Core
         ->set_description('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
         ->set_icon('mdi mdi-newspaper')
         ->set_output([
-            /* category detail */
+            // Category detail
             'category' => $this->model->get_where(
                 'blogs__categories',
                 [
@@ -44,11 +44,14 @@ class Read extends \Aksara\Laboratory\Core
             )
             ->row(),
 
-            /* get similar categories */
+            // Get similar categories
             'categories' => $this->_get_categories(),
 
-            /* get similar articles */
-            'similar' => $this->_get_similar($category, $slug)
+            // Get similar articles
+            'recommendations' => $this->_get_recommendations($category, $slug),
+
+            // Read other articles
+            'related' => $this->_get_related($category, $slug)
         ])
         ->select('
             blogs.post_slug,
@@ -112,7 +115,7 @@ class Read extends \Aksara\Laboratory\Core
         return $query;
     }
 
-    private function _get_similar($category = 0, $slug = '')
+    private function _get_recommendations($category = 0, $slug = '')
     {
         $query = $this->model->select('
             blogs.post_slug,
@@ -142,5 +145,77 @@ class Read extends \Aksara\Laboratory\Core
         ->result();
 
         return $query;
+    }
+
+    private function _get_related($category = 0, $slug = '')
+    {
+        $post_tags = $this->model->select('
+            blogs.post_tags
+        ')
+        ->join(
+            'blogs__categories',
+            'blogs__categories.category_id = blogs.post_category'
+        )
+        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->get_where(
+            'blogs',
+            [
+                'category_slug' => ($category ? $category : ''),
+                'post_slug' => ($slug ? $slug : ''),
+                'blogs.status' => 1
+            ],
+            1
+        )
+        ->row('post_tags');
+
+        $post_tags = array_map('trim', explode(',', $post_tags));
+
+        if ($post_tags) {
+            $this->model->group_start();
+
+            foreach ($post_tags as $key => $tag) {
+                if ($key) {
+                    $this->model->or_like('post_tags', $tag);
+                } else {
+                    $this->model->like('post_tags', $tag);
+                }
+            }
+
+            $this->model->group_end();
+        }
+
+        $query = $this->model->select('
+            blogs.post_title,
+            blogs.post_slug,
+            blogs__categories.category_slug
+        ')
+        ->join(
+            'blogs__categories',
+            'blogs__categories.category_id = blogs.post_category'
+        )
+        ->order_by('blogs.post_title', 'RANDOM')
+        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->limit(5)
+        ->get_where(
+            'blogs',
+            [
+                'blogs.post_slug != ' => ($slug ? $slug : ''),
+                'blogs.status' => 1
+            ]
+        )
+        ->result();
+
+        $output = [];
+
+        if ($query) {
+            foreach ($query as $key => $val) {
+                $output[] = [
+                    'link' => base_url('blogs/' . $val->category_slug . '/' . $val->post_slug),
+                    'title' => $val->post_title
+                ];
+            }
+        }
+
+        return $output;
     }
 }
