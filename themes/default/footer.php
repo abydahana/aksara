@@ -1,9 +1,9 @@
 <footer id="footer-wrapper" class="pt-5">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-2 text-sm-center">
+			<div class="col-lg-3 text-sm-center">
 				<div class="row">
-					<div class="col-4 offset-4 col-sm-4 offset-sm-4 col-md-4 offset-md-4 col-lg-8 offset-lg-0">
+					<div class="col-4 offset-4 col-sm-4 offset-sm-4 col-md-4 offset-md-4 col-lg-6 offset-lg-3">
 						<p>
 							<a href="<?= base_url(); ?>">
 								<img src="<?= get_image('settings', get_setting('app_icon'), 'thumb'); ?>" class="img-fluid grayscale mt-2 --xhr" />
@@ -12,13 +12,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-6 col-sm-4 col-lg-2">
+			<div class="col-6 col-sm-4 col-lg-3">
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
-							<h6 class="fw-bold">
+							<h5 class="fw-bold">
 								<?= phrase('Featured'); ?>
-							</h6>
+							</h5>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="<?= base_url('blogs'); ?>" class="text-dark --xhr">
@@ -53,13 +53,13 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-6 col-sm-4 col-lg-2">
+			<div class="col-6 col-sm-4 col-lg-3">
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
-							<h6 class="fw-bold">
+							<h5 class="fw-bold">
 								<?= phrase('Knowledge Center'); ?>
-							</h6>
+							</h5>
 						</li>
 						<li class="pt-1 pb-1">
 							<a href="//www.aksaracms.com/pages/documentation" target="_blank" class="text-dark">
@@ -89,43 +89,7 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-6 col-sm-4 col-lg-2">
-				<div class="mb-5">
-					<ul class="list-unstyled">
-						<li class="pt-1 pb-1 mb-3">
-							<h6 class="fw-bold">
-								<?= phrase('Links'); ?>
-							</h6>
-						</li>
-						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/company" target="_blank" class="text-dark">
-								About Aksara
-							</a>
-						</li>
-						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/goals" target="_blank" class="text-dark">
-								Aksara Goals
-							</a>
-						</li>
-						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/awards" target="_blank" class="text-dark">
-								Aksara Awards
-							</a>
-						</li>
-						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/sponsors" target="_blank" class="text-dark">
-								Become a Sponsor
-							</a>
-						</li>
-						<li class="pt-1 pb-1">
-							<a href="//www.aksaracms.com/pages/about/donation" target="_blank" class="text-dark">
-								Donation Program
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="col-12 col-sm-12 col-lg-4">
+			<div class="col-12 col-sm-12 col-lg-3">
 				<div class="mb-5">
 					<ul class="list-unstyled">
 						<li class="pt-1 pb-1 mb-3">
@@ -135,9 +99,9 @@
 										<i class="mdi mdi-home-city-outline text-primary"></i>
 									</div>
 									<div class="col-10 col-sm-11">
-										<h6 class="fw-bold">
+										<h5 class="fw-bold">
 											<?= (get_setting('office_name') ? get_setting('office_name') : 'Non Profit'); ?>
-										</h6>
+										</h5>
 									</div>
 								</div>
 							</a>

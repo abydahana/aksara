@@ -7,7 +7,7 @@
 		<meta name="msapplication-navbutton-color" content="#007bff" />
 		<meta name="theme-color" content="#007bff" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="#007bff" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 		<meta name="description" content="<?= truncate($meta->description); ?>" />
 		<link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
