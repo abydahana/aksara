@@ -70,30 +70,35 @@
                                     </div>
                                     <div class="col-9">
                                         <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                            <h5 class="card-title">
-                                            <?= $val->post_title; ?>
-                                            </h5>
+                                            <h4 class="card-title">
+                                                <?= $val->post_title; ?>
+                                            </h4>
                                         </a>
-                                        <p class="d-none d-md-inline text-muted">
-                                        <?= truncate($val->post_excerpt, 100); ?>
+                                        <p class="d-none d-md-block text-muted">
+                                            <?= truncate($val->post_excerpt, 100); ?>
                                         </p>
                                         <div class="row g-0 align-items-center">
-                                            <div class="col-1">
+                                            <div class="col-2 col-sm-1">
                                                 <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
                                                     <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                                 </a>
                                             </div>
-                                            <div class="col-6">
-                                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary ps-2 --xhr">
-                                                    <b>
-                                                        <?= $val->first_name . ' ' . $val->last_name; ?>
-                                                    </b>
-                                                </a>
-                                            </div>
-                                            <div class="col-5 text-end">
-                                                <small class="text-muted text-sm">
+                                            <div class="col-7 col-sm-8">
+                                                <p class="ps-2 m-0 text-muted">
+                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark --xhr">
+                                                        <b>
+                                                            <?= $val->first_name . ' ' . $val->last_name; ?>
+                                                        </b>
+                                                    </a>
+                                                </p>
+                                                <p class="ps-2 m-0 text-sm text-muted">
                                                     <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
-                                                </small>
+                                                </p>
+                                            </div>
+                                            <div class="col-3 col-sm-3 text-end">
+                                                <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger">
+                                                    <i class="mdi mdi-heart"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

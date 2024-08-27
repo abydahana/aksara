@@ -28,63 +28,43 @@
         <div class="container">
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
-                    <?php
-                        $item_tags = array_map('trim', explode(',', $val->post_tags));
-                        $tags = null;
-
-                        if (sizeof($item_tags) > 0) {
-                            foreach ($item_tags as $label => $badge) {
-                                if ($label == 2) {
-                                    break;
-                                }
-
-                                if ($badge) {
-                                    $tags .= '
-                                        <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
-                                            <span class="badge bg-secondary me-2">
-                                                #' . trim($badge) . '
-                                            </span>
-                                        </a>
-                                    ';
-                                }
-                            }
-                        }
-                    ?>
                     <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
-                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
+                        <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
                                 <div class="position-relative" style="background:url(<?= get_image('blogs', $val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                     <div class="clip gradient-top"></div>
                                     <div class="position-absolute bottom-0 p-3">
-                                        <b class="text-light" data-bs-toggle="tooltip" title="<?= $val->post_title; ?>">
-                                        <?= truncate($val->post_title, 64); ?>
-                                        </b>
+                                        <h4 class="text-light" data-toggle="tooltip" title="<?= $val->post_title; ?>">
+                                            <?= truncate($val->post_title, 64); ?>
+                                        </h4>
+                                        <p class="text-white">
+                                            <i class="mdi mdi-clock-outline"></i>
+                                            <?= time_ago($val->updated_timestamp); ?>
+                                        </p>
                                     </div>
                                 </div>
                             </a>
                             <div class="card-body">
-                                <p class="card-text">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
-                                    <?= truncate($val->post_excerpt, 80); ?>
-                                    </a>
+                                <p class="lead card-text text-secondary">
+                                    <?= truncate($val->post_excerpt, 64); ?>
                                 </p>
                                 <div class="row g-0 align-items-center">
                                     <div class="col-1">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary">
                                             <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                         </a>
                                     </div>
-                                    <div class="col-6">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary ps-2 --xhr">
+                                    <div class="col-8 overflow-hidden">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2">
                                             <b>
-                                            <?= $val->first_name . ' ' . $val->last_name; ?>
+                                                <?= $val->first_name . ' ' . $val->last_name; ?>
                                             </b>
                                         </a>
                                     </div>
-                                    <div class="col-5 text-end">
-                                        <small class="text-muted text-sm">
-                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
-                                        </small>
+                                    <div class="col-3 text-end">
+                                        <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
+                                            <i class="mdi mdi-heart"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -97,15 +77,26 @@
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5 bg-light">
+    <div class="py-3 py-md-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3 text-center">
                     <div class="py-5">
-                        <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-                        <h2>
-                            <?= phrase('Your tag search does not match any result'); ?>
+                        <div class="text-center">
+                            <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('No post is found!'); ?>
                         </h2>
+                        <p class="lead">
+                            <?= phrase('Your tag search does not match any result.'); ?>
+                        </p>
+                        <div class="text-center mt-5">
+                            <a href="<?= go_to('../', ['q' => null]); ?>" class="btn btn-outline-primary rounded-pill --xhr">
+                                <i class="mdi mdi-arrow-left"></i>
+                                <?= phrase('Back to Index'); ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
