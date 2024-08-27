@@ -21,7 +21,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter = null)
     {
-        $version = '5.1.1';
+        $version = '5.1.2';
 
         if ('version' == $parameter) {
             return $version;
@@ -132,7 +132,7 @@ if (! function_exists('phrase')) {
     /**
      * Get phrase of translation
      */
-    function phrase(string $phrase = null, bool $check = false)
+    function phrase(string $phrase = null, array $replacement = [])
     {
         // Make sure the phrase and language is valid
         if (! $phrase || is_numeric($phrase)) {
@@ -173,7 +173,7 @@ if (! function_exists('phrase')) {
 
         $translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
 
-        if (! $check && ! file_exists($translation_file)) {
+        if (! file_exists($translation_file)) {
             // Translation file not exists
             if (! is_dir(WRITEPATH . 'translations')) {
                 // Translation directory not exists
@@ -218,12 +218,41 @@ if (! function_exists('phrase')) {
                 }
             }
 
-            // Sanitize translation from XSS
-            $phrase = preg_replace('/"([^<>]*?)"(?=[^>]*?<)/', '&raquo;\1&laquo', str_replace(['"', '\''], ['&quot;', '&apos;'], $phrases[$phrase]));
+            $phrase = htmlspecialchars($phrases[$phrase]);
         } catch(\Throwable $e) {
             // Safe abstraction
         }
 
+        if ($replacement) {
+            // Find and replace
+            foreach ($replacement as $keyword => $replace) {
+                // Replace string between double braces
+                $phrase = preg_replace("/\{\{(\s+)?($keyword)(\s+)?\}\}/", $replace, $phrase);
+            }
+        }
+
         return $phrase;
+    }
+}
+
+if (! function_exists('is_liked')) {
+    /**
+     * Get if post is liked
+     */
+    function is_liked(int $post_id = 0, string $post_path = null)
+    {
+        // Load model
+        $model = new \Aksara\Laboratory\Model();
+
+        return $model->get_where(
+            'post__likes',
+            [
+                'user_id' => get_userdata('user_id'),
+                'post_id' => $post_id,
+                'post_path' => $post_path
+            ],
+            1
+        )
+        ->num_rows() > 0;
     }
 }
