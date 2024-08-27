@@ -24,6 +24,13 @@ class Updater extends Migration
     public function up()
     {
         // Preserved for upgrade
+        $this->forge->addColumn('announcements', [
+            'cover' => [
+                'type' => 'varchar',
+                'constraint' => 255,
+                'after' => 'content'
+            ]
+        ]);
     }
 
     public function down()
