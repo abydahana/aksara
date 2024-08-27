@@ -40,29 +40,29 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	padding: .25rem 1rem
 }
 
-.navbar-collapse .dropdown-menu .nav-link .mdi
+.offcanvas .dropdown-menu .nav-link .mdi
 {
 	float: left;
 	margin-top: 3px
 }
 
-.navbar-collapse .dropdown-menu .nav-link span
+.offcanvas .dropdown-menu .nav-link span
 {
 	display: block;
 	padding-left: 36px
 }
 
-.navbar-collapse .dropdown-menu .nav-link.dropdown-toggle
+.offcanvas .dropdown-menu .nav-link.dropdown-toggle
 {
 	padding-right: 2rem
 }
 
-.navbar-collapse .dropdown-menu
+.offcanvas .dropdown-menu
 {
 	top: 56px
 }
 
-.navbar-collapse .dropdown-menu .dropdown-menu
+.offcanvas .dropdown-menu .dropdown-menu
 {
 	top: 0;
 	position: relative;
@@ -71,22 +71,22 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-radius: 0
 }
 
-.navbar-collapse .dropdown .dropdown .dropdown-toggle::after
+.offcanvas .dropdown .dropdown .dropdown-toggle::after
 {
 	position: absolute;
 	top: 1rem;
 	right: 1rem
 }
 
-.navbar-collapse .dropdown-menu::before,
-.navbar-collapse .dropdown-menu::after
+.offcanvas .dropdown-menu::before,
+.offcanvas .dropdown-menu::after
 {
 	position: absolute;
 	display: inline-block;
 	content: ''
 }
 
-.navbar-collapse .dropdown-menu::before
+.offcanvas .dropdown-menu::before
 {
 	top: -9px;
 	left: 19px;
@@ -95,7 +95,7 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-left: 9px solid transparent
 }
 
-.navbar-collapse .dropdown-menu::after
+.offcanvas .dropdown-menu::after
 {
 	top: -8px;
 	left: 20px;
@@ -104,22 +104,26 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 	border-left: 8px solid transparent
 }
 
-.navbar-collapse .dropdown-menu.dropdown-menu-end:before
+.offcanvas .dropdown-menu.dropdown-menu-end:before
 {
 	left: auto;
 	right: 19px
 }
 
-.navbar-collapse .dropdown-menu.dropdown-menu-end:after
+.offcanvas .dropdown-menu.dropdown-menu-end:after
 {
 	left: auto;
 	right: 20px
 }
 
-.rounded-top-4
+.navbar-expand-lg .navbar-nav .dropdown-menu
 {
-	border-top-left-radius: 1rem;
-	border-top-right-radius: 1rem
+	min-width: 240px
+}
+
+.navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-menu
+{
+	min-width: 238px
 }
 
 .dropdown-menu .dropdown-header
@@ -141,6 +145,12 @@ body.sidebar-collapsed .navbar-brand img.img-icon
 .text-muted
 {
 	color: #aaa!important
+}
+
+.rounded-top-4
+{
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem
 }
 
 .ms-n5
@@ -210,16 +220,6 @@ a
 
 @media (min-width: 992px) and (min-height: 360px)
 {
-	.navbar-expand-lg .navbar-nav .dropdown-menu
-	{
-		min-width: 240px
-	}
-	
-	.navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-menu
-	{
-		min-width: 238px
-	}
-	
 	.sticky-top
 	{
 		top: 88px

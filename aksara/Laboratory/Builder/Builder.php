@@ -86,7 +86,7 @@ class Builder
             }
         } catch(\Throwable $e) {
             // Safe abstraction
-            return throw_exception(403, $e->getMessage());
+            exit($e->getMessage());
         }
 
         return $component;

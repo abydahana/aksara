@@ -38,8 +38,7 @@ class Announcements extends \Aksara\Laboratory\Core
 
         ->where([
             'status' => 1,
-            'end_date > ' => date('Y-m-d'),
-            'language_id' => get_userdata('language_id')
+            'end_date > ' => date('Y-m-d')
         ])
 
         ->order_by('end_date', 'DESC')

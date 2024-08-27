@@ -1,6 +1,4 @@
 <?php
-    $user = (isset($results[0]) ? $results[0] : []);
-
     if (! $user) {
         $link_left = null;
         $link_right = null;
@@ -38,7 +36,7 @@
                 <div class="col-lg-10">
                     <div class="text-center text-lg-start">
                         <h2 class="mb-0">
-                            <?= $meta->title; ?>
+                            <?= $user->first_name . ' ' . $user->last_name; ?>
                         </h2>
                         <p class="lead">
                             @<?= $user->username; ?>
@@ -51,17 +49,17 @@
     <div class="border-top border-bottom bg-white pt-1 pb-1">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
+                <div class="col-lg-10 offset-lg-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a href="<?= go_to($user->username, ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr active">
+                            <a href="<?= go_to($user->username, ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
                                 <i class="mdi mdi-information-outline"></i>
                                 &nbsp;
                                 <?= phrase('About'); ?>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= go_to($user->username . '/activity', ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
+                            <a href="<?= go_to($user->username . '/activity', ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr active">
                                 <i class="mdi mdi-account-clock-outline"></i>
                                 &nbsp;
                                 <?= phrase('Activity'); ?>
@@ -82,31 +80,52 @@
     <div class="py-3">
         <div class="container">
             <div class="row">
-                <div class="col-lg-10 offset-lg-2">
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Email'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= $user->email; ?>
-                        </p>
-                    </div>
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Biography'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= ($user->bio ? $user->bio : '-'); ?>
-                        </p>
-                    </div>
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Last Activity'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= time_ago($user->last_activity); ?>
-                        </p>
-                    </div>
+                <div class="col-lg-8 offset-lg-2">
+                    <?php if (! $results): ?>
+                        <div class="alert alert-warning">
+                            <i class="mdi mdi-information-outline"></i> <?= phrase('User activity will be shown here if they have made some interaction.'); ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php foreach ($results as $key => $val): ?>
+                        <?php
+                            $metadata = fetch_metadata($val->post_path);
+                        ?>
+                        <div class="activity-item mb-3">
+                            <div class="card rounded-4 border-light-subtle mb-3">
+                                <div class="card-body">
+                                    <div class="row g-0 align-items-center">
+                                        <div class="col-2 col-lg-1 pe-3">
+                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                        </div>
+                                        <div class="col-10 col-lg-9">
+                                            <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
+                                            <span class="d-none d-sm-inline"> &middot; </span>
+                                            <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="d-none d-sm-inline" target="_blank"> <?= phrase('Commented'); ?> </a>
+                                            <p class="text-muted mb-0">
+                                                <?= time_ago($val->timestamp); ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p class="lead mb-0"><?= truncate($val->comments, 160); ?></p>
+                                    <?php if ($val->attachment): ?>
+                                        <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
+                                            <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="..." />
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (isset($metadata->title)): ?>
+                                        <hr class="border-secondary-subtle" />
+                                        <h4>
+                                            <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="text-dark" target="_blank">
+                                                <?= $metadata->title; ?>
+                                            </a>
+                                        </h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <?= pagination($pagination); ?>
                 </div>
             </div>
         </div>

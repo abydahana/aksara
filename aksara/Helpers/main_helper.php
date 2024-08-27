@@ -142,25 +142,25 @@ if (! function_exists('throw_exception')) {
      */
     function throw_exception(int $code = 500, $data = [], $target = null, bool $redirect = false)
     {
+        // Check if data isn't an array
+        if ($data && ! is_array($data)) {
+            // Set the flashdata
+            if (in_array($code, [200, 301])) {
+                // Success
+                service('session')->setFlashdata('success', $data);
+            } elseif (in_array($code, [403, 404])) {
+                // Warning
+                service('session')->setFlashdata('warning', $data);
+            } else {
+                // Unexpected error
+                service('session')->setFlashdata('error', $data);
+            }
+        }
+
         // Check if the request isn't through xhr
         if (! service('request')->isAJAX()) {
             if (! $target) {
                 $target = base_url();
-            }
-
-            // Check if data isn't an array
-            if ($data && ! is_array($data)) {
-                // Set the flashdata
-                if (in_array($code, [200, 301])) {
-                    // Success
-                    service('session')->setFlashdata('success', $data);
-                } elseif (in_array($code, [403, 404])) {
-                    // Warning
-                    service('session')->setFlashdata('warning', $data);
-                } else {
-                    // Unexpected error
-                    service('session')->setFlashdata('error', $data);
-                }
             }
 
             // Redirect to target
@@ -418,7 +418,7 @@ if (! function_exists('pagination')) {
      */
     function pagination($params = [])
     {
-        if (! $params || $params->total_rows <= $params->per_page) {
+        if (! $params || ($params->total_rows <= $params->per_page && ! service('request')->getGet('limit'))) {
             return false;
         }
 

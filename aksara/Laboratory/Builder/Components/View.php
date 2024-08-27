@@ -28,7 +28,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -42,7 +42,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -70,7 +70,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -84,7 +84,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -112,7 +112,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -126,7 +126,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -140,7 +140,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -202,7 +202,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -216,7 +216,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -230,7 +230,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -244,7 +244,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -258,7 +258,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -286,7 +286,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -328,7 +328,7 @@ class View
     {
         $component = <<<EOF
         <div>
-            {{ escape ? content : content | raw }}
+            {{ content | raw }}
         </div>
         EOF;
 
@@ -432,15 +432,15 @@ class View
     {
         $component = <<<EOF
         <div class="w-100">
-            {% for attribute in content %}
+            {% for label, value in content %}
                 <div class="row mb-1 border-top">
                     <div class="col-12 col-sm-4">
                         <label class="text-muted">
-                            {{ attribute.label }}
+                            {{ label }}
                         </label>
                     </div>
                     <div class="col-12 col-sm-8">
-                        {{ attribute.value }}
+                        {{ value }}
                     </div>
                 </div>
             {% endfor %}

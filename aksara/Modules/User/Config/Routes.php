@@ -15,26 +15,5 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Database\Migrations;
-
-use CodeIgniter\Database\Migration;
-
-class Updater extends Migration
-{
-    public function up()
-    {
-        // Preserved for upgrade
-        $this->forge->addColumn('announcements', [
-            'cover' => [
-                'type' => 'varchar',
-                'constraint' => 255,
-                'after' => 'content'
-            ]
-        ]);
-    }
-
-    public function down()
-    {
-        // Preserved for downgrade
-    }
-}
+$routes->add('user/(:any)/activity', '\Aksara\Modules\User\Controllers\User::activity/$1');
+$routes->add('user/(:any)/likes', '\Aksara\Modules\User\Controllers\User::likes/$1');

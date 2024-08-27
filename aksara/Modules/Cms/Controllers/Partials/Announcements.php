@@ -47,8 +47,10 @@ class Announcements extends \Aksara\Laboratory\Core
         ->unset_column('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
         ->unset_field('announcement_id')
         ->unset_view('announcement_id')
+        ->column_order('cover')
         ->set_field([
             'content' => 'wysiwyg',
+            'cover' => 'image',
             'start_date' => 'date',
             'end_date' => 'date',
             'created_timestamp' => 'current_timestamp',
@@ -78,6 +80,15 @@ class Announcements extends \Aksara\Laboratory\Core
                 'app__languages.status' => 1
             ]
         )
+        ->field_position([
+            'cover' => 2,
+            'language_id' => 2,
+            'status' => 2
+        ])
+        ->column_size([
+            1 => 'col-md-8',
+            2 => 'col-md-4'
+        ])
         ->set_validation([
             'title' => 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . service('request')->getGet('announcement_id') . ']',
             'content' => 'required',
@@ -101,7 +112,7 @@ class Announcements extends \Aksara\Laboratory\Core
 
         ->order_by('updated_timestamp', 'DESC')
 
-        ->modal_size('modal-lg')
+        ->modal_size('modal-xl')
 
         ->render($this->_table);
     }

@@ -290,8 +290,10 @@ class Core extends Controller
             $permissive_user = array_map('trim', explode(',', $permissive_user));
         }
 
-        // Check if permissions is sets and make sure the user is signed in or requested from restful
-        if ($this->_set_permission && ! get_userdata('is_logged') && ! $this->api_client) {
+        if (in_array($this->_method, $this->_unset_method)) {
+            // Method is restricted
+            return throw_exception(403, phrase('The method you requested is not acceptable'), ($redirect ? $redirect : base_url()), true);
+        } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->api_client) {
             // User isn't signed in
             return throw_exception(403, phrase('Your session has been expired'), ($redirect ? $redirect : base_url()), true);
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect)) {
@@ -325,7 +327,8 @@ class Core extends Controller
     }
 
     /**
-     * Unset the method
+     * Unset the method from being accessed. The function should be called
+     * before the "set_permission()"
      *
      * @param   array|string $params
      */
@@ -1958,9 +1961,6 @@ class Core extends Controller
             }
         }
 
-        // Set CSRF Token
-        $this->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
-
         if (! $this->_table) {
             // Set table when not present
             $this->_table = $table;
@@ -1969,7 +1969,10 @@ class Core extends Controller
             $this->_compiled_table[] = $table;
         }
 
-        if (! $this->_table) {
+        if (! service('request')->getPost('_token')) {
+            // Set CSRF Token
+            $this->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+
             // There may be a form without using form renderer
             // Set CSRF Token into unique session key
             set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $this->_token);
@@ -2574,6 +2577,14 @@ class Core extends Controller
                 }
             }
 
+            if (service('request')->getGet('__fetch_metadata') && ENCRYPTION_KEY === service('request')->getHeaderLine('X-API-KEY')) {
+                return make_json([
+                    'title' => $title,
+                    'description' => $description,
+                    'icon' => $icon
+                ]);
+            }
+
             if ('create' == $this->_method) {
                 /**
                  * -------------------------------------------------------------
@@ -2751,25 +2762,23 @@ class Core extends Controller
             '_token' => $this->_token
         ];
 
-        if ($output['results']) {
-            if (in_array($this->_method, ['create', 'read', 'update'])) {
-                unset($output['total']);
-            } else {
-                // Add limit
-                $output['limit'] = $this->_limit;
+        if (in_array($this->_method, ['create', 'read', 'update'])) {
+            unset($output['total']);
+        } else {
+            // Add limit
+            $output['limit'] = $this->_limit;
 
-                // Add pagination
-                $output['pagination'] = $this->template->pagination(
-                    [
-                        'limit' => $this->_limit_backup,
-                        'offset' => $this->_offset,
-                        'per_page' => $this->_limit,
-                        'total_rows' => $total,
-                        'url' => current_page(null, ['per_page' => null])
-                    ],
-                    ($this->api_client || service('request')->isAJAX())
-                );
-            }
+            // Add pagination
+            $output['pagination'] = $this->template->pagination(
+                [
+                    'limit' => $this->_limit_backup,
+                    'offset' => $this->_offset,
+                    'per_page' => $this->_limit,
+                    'total_rows' => $total,
+                    'url' => current_page(null, ['per_page' => null])
+                ],
+                ($this->api_client || service('request')->isAJAX())
+            );
         }
 
         // Merge user defined output
@@ -2861,8 +2870,8 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            // Splice only required property as config
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_default_value', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client']));
+            // Slice only required property as config
+            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_class', '_column_order', '_column_size', '_default_value', '_db_driver', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client', 'model']));
 
             // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
@@ -2874,9 +2883,6 @@ class Core extends Controller
 
             $field_data = $renderer->render($serialized);
         }
-
-        // Set CSRF Token into unique session key
-        set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $this->_token);
 
         return $field_data;
     }
@@ -2899,7 +2905,7 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            // Splice only required property as config
+            // Slice only required property as config
             $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order', '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path', '_table', 'api_client']));
 
             // Safe abstraction to reduce unnecessary property
@@ -2961,9 +2967,9 @@ class Core extends Controller
                     }
 
                     // Validation callback finder
-                    if (strncmp('callback_', $callback, 9) === 0) {
+                    if (is_string($callback) && strncmp('callback_', $callback, 9) === 0) {
                         // Validation callback found
-                        preg_match('/callback_(.*?)\[/', $callback, $callback_match);
+                        preg_match('/callback_(.*?)(\[|$)/', $callback, $callback_match);
 
                         if (isset($callback_match[1]) && method_exists($this, $callback_match[1])) {
                             // Apply callback only when method is exists
@@ -2986,12 +2992,20 @@ class Core extends Controller
                 } elseif (array_intersect(['images'], $type)) {
                     $validation = true;
 
+                    if (in_array('required', $val['validation']) && isset($_FILES[$key]['error'][0]) && 0 === $_FILES[$key]['error'][0]) {
+                        $val['validation'] = array_diff($val['validation'], ['required']);
+                    }
+
                     $val['validation'][] = 'validate_upload[' . $key . '.image]';
 
                     // Images upload validation rules
                     $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['file', 'files'], $type)) {
                     $validation = true;
+
+                    if (in_array('required', $val['validation']) && ((isset($_FILES[$key]['error']) && 0 === $_FILES[$key]['error']) || (isset($_FILES[$key]['error'][0]) && 0 === $_FILES[$key]['error'][0]))) {
+                        $val['validation'] = array_diff($val['validation'], ['required']);
+                    }
 
                     $val['validation'][] = 'validate_upload[' . $key . ']';
 
@@ -3291,11 +3305,12 @@ class Core extends Controller
                         if ($attribution && isset($attribution['label']) && sizeof($attribution['label']) > 0) {
                             // Loops the submitted attribution
                             foreach ($attribution['label'] as $key => $val) {
+                                if (! $val) {
+                                    continue;
+                                }
+
                                 // Collect the attribution
-                                $items[] = [
-                                    'label' => $val,
-                                    'value' => (isset($attribution['value'][$key]) ? $attribution['value'][$key] : null)
-                                ];
+                                $items[$val] = (isset($attribution['value'][$key]) ? $attribution['value'][$key] : null);
                             }
                         }
 
@@ -3480,6 +3495,7 @@ class Core extends Controller
                 // Unset CSRF token
                 unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
 
+
                 if (method_exists($this, 'after_insert')) {
                     // Call user function after insert
                     $this->after_insert();
@@ -3576,6 +3592,7 @@ class Core extends Controller
 
                     // Unset CSRF token
                     unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
+
 
                     // Unlink old files
                     $this->_unlink_files($old_files);
@@ -3904,6 +3921,16 @@ class Core extends Controller
     }
 
     /**
+     * Select from subquery
+     */
+    public function select_subquery($subquery, string $alias)
+    {
+        $this->_prepare(__FUNCTION__, [$subquery, $alias]);
+
+        return $this;
+    }
+
+    /**
      * Prevent column to be selected
      *
      * Possible to use comma separated
@@ -3936,6 +3963,16 @@ class Core extends Controller
     public function from(string $table)
     {
         $this->_table = $table;
+
+        return $this;
+    }
+
+    /**
+     * Select from subquery
+     */
+    public function from_subquery($subquery, string $alias)
+    {
+        $this->_prepare(__FUNCTION__, [$subquery, $alias]);
 
         return $this;
     }
@@ -4373,8 +4410,8 @@ class Core extends Controller
             $this->_limit = 1;
             $this->_offset = 0;
         } else {
-            $this->_limit = $limit;
-            $this->_offset = $offset;
+            $this->_limit = (is_numeric(service('request')->getGet('limit')) ? service('request')->getGet('limit') : $limit);
+            $this->_offset = (is_numeric(service('request')->getGet('offset')) ? service('request')->getGet('offset') : $offset);
         }
 
         $this->_prepare(__FUNCTION__, [$limit, $offset]);
@@ -4388,7 +4425,7 @@ class Core extends Controller
     public function offset(int $offset)
     {
         if (! in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
-            $this->_offset = $offset;
+            $this->_offset = (is_numeric(service('request')->getGet('offset')) ? service('request')->getGet('offset') : $offset);
         }
 
         $this->_prepare(__FUNCTION__, [$offset]);
@@ -4670,7 +4707,7 @@ class Core extends Controller
             $arguments = $val['arguments'];
 
             if ('select' == $function) {
-                // Splice unnecessary select
+                // Slice unnecessary select
                 if (! is_array($arguments[0])) {
                     // Explode comma sparated string to array
                     $arguments[0] = array_map('trim', explode(',', $arguments[0]));
@@ -4744,6 +4781,9 @@ class Core extends Controller
                     // Add table prefix to field
                     $arguments[0] = $this->_table . '.' . $arguments[0];
                 }
+            } elseif ('select_subquery' == $function) {
+                // Free query builder
+                $this->model->reset_query();
             } elseif ('order_by' == $function && in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
                 // Prevent order on CRUD
                 continue;
@@ -5172,9 +5212,9 @@ class Core extends Controller
     /**
      * Do handshake between API client and API endpoint
      *
-     * @param   string|int $API_KEY
+     * @param   string|int $api_key
      */
-    private function _handshake($API_KEY = 0)
+    private function _handshake($api_key = 0)
     {
         // Set client header
         service('request')->setHeader('X-Requested-With', 'XMLHttpRequest');
@@ -5184,7 +5224,7 @@ class Core extends Controller
             'app__rest_clients',
             [
                 'status' => 1,
-                'api_key' => $API_KEY,
+                'api_key' => $api_key,
                 'valid_until >= ' => date('Y-m-d')
             ],
             1
@@ -5193,7 +5233,7 @@ class Core extends Controller
 
         if (! $client) {
             // Client doesn't exist, check if request is from self app
-            if (ENCRYPTION_KEY === $API_KEY) {
+            if (ENCRYPTION_KEY === $api_key) {
                 // Add temporary API client
                 $client = (object) [
                     'ip_range' => service('request')->getServer('SERVER_ADDR'),

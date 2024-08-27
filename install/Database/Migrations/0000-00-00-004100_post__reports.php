@@ -39,7 +39,8 @@ class PostReports extends Migration
             ],
             'post_path' => [
                 'type' => 'varchar',
-                'constraint' => 255
+                'constraint' => 255,
+                'null' => false
             ],
             'message' => [
                 'type' => 'text',
@@ -53,6 +54,7 @@ class PostReports extends Migration
 
         // Add primary and unique index
         $this->forge->addKey('user_id', false, false);
+        $this->forge->addKey('post_id', false, false);
 
         // Add foreign key to parent table
         $this->forge->addForeignKey('user_id', 'app__users', 'user_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));

@@ -600,7 +600,7 @@ class Template
                             [
                                 'value' => $data->per_page,
                                 'label' => $data->per_page,
-                                'selected' => ! $data->per_page
+                                'selected' => true
                             ],
                             [
                                 'value' => ($data->per_page * 2),
@@ -636,6 +636,18 @@ class Template
             ],
             'information' => phrase('Showing') . ' ' . ($data->offset ? number_format($data->offset) : ($data->total_rows ? 1 : 0)) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries found') : phrase('entry found'))
         ];
+
+        if (25 != $data->per_page) {
+            $default_limit = [
+                [
+                    'value' => 25,
+                    'label' => 25,
+                    'selected' => 25 === $data->per_page
+                ]
+            ];
+
+            $output['filters']['select'][0]['values'] = array_merge($default_limit, $output['filters']['select'][0]['values']);
+        }
 
         foreach ($buffer->find('ul li') as $key => $val) {
             $output['links'][] = [
@@ -1027,7 +1039,7 @@ class Template
 
         array_walk_recursive($menus, function (&$label, $key) {
             if ('label' == $key && $label && 'Aksara ' . aksara('build_version') != $label) {
-                $label = phrase($label, true);
+                $label = phrase($label);
             }
         });
 

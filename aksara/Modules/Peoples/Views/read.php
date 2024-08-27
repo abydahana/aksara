@@ -22,45 +22,44 @@
                         <img src="<?= get_image('peoples', $people->photo, 'thumb'); ?>" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="<?= $people->first_name . ' ' . $people->last_name; ?>" />
                     </a>
                 </div>
-                <div class="mb-5">
-                    <label class="text-muted d-block">
+                <div class="mb-3">
+                    <h4 class="text-muted mb-0">
                         <?= phrase('Full Name'); ?>
-                    </label>
-                    <h6 class="mb-3">
+                    </h4>
+                    <p class="lead">
                         <?= $people->first_name . ' ' . $people->last_name; ?>
-                    </h6>
+                    </p>
                 </div>
-                <div class="mb-5">
-                    <label class="text-muted d-block">
+                <div class="mb-3">
+                    <h4 class="text-muted mb-0">
                         <?= phrase('Position'); ?>
-                    </label>
-                    <h6 class="mb-3">
+                    </h4>
+                    <p class="lead">
                         <?= $people->position; ?>
-                    </h6>
+                    </p>
                 </div>
-                <div class="row mb-3 mb-5">
+                <div class="row mb-3">
                     <div class="col-sm-6">
-                        <label class="text-muted d-block">
+                        <h4 class="text-muted mb-0">
                             <?= phrase('Email'); ?>
-                        </label>
-                        <h6 class="mb-3">
+                        </h4>
+                        <p class="lead">
                             <?= $people->email; ?>
-                        </h6>
+                        </p>
                     </div>
                     <div class="col-sm-6">
-                        <label class="text-muted d-block">
+                        <h4 class="text-muted mb-0">
                             <?= phrase('Mobile'); ?>
-                        </label>
-                        <h6 class="mb-3">
+                        </h4>
+                        <p class="lead">
                             <?= $people->mobile; ?>
-                        </h6>
+                        </p>
                     </div>
                 </div>
-                <div class="mb-5">
-                    <div class="article text-secondary">
-                        <i class="mdi mdi-format-quote-close mdi-3x text-muted"></i>
+                <div class="mb-3">
+                    <blockquote class="blockquote text-secondary">
                         <?= $people->biography; ?>
-                    </div>
+                    </blockquote>
                 </div>
                 <div class="mb-3">
                     <div class="row">

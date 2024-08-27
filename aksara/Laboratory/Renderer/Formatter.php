@@ -124,19 +124,42 @@ class Formatter
                 // Prepare query string
                 $query_string = [];
 
-                if (is_string($val['alpha']) && strpos($val['alpha'], '{{') !== false && strpos($val['alpha'], '}}')) {
-                    preg_match('/\{\{(.*?)\}\}/', $val['alpha'], $matches);
+                if (is_string($val['parameter']) && strpos($val['parameter'], '{{') !== false && strpos($val['parameter'], '}}') !== false) {
+                    // Extract magic string
+                    preg_match_all('/\{\{(.*?)\}\}/', $val['parameter'], $matches);
 
-                    // Trim whitespace for matches string
-                    $matches = array_map('trim', $matches);
+                    if (isset($matches[1]) && $matches[1]) {
+                        foreach ($matches[1] as $_key => $_val) {
+                            // Trim whitespace for matches string
+                            $_val = trim($_val);
 
-                    if (isset($replacement[$matches[1]])) {
-                        if (is_json($replacement[$matches[1]])) {
-                            // Decode JSON data
-                            $val['alpha'] = json_decode($replacement[$matches[1]], true);
-                        } else {
-                            $val['alpha'] = $replacement[$matches[1]];
+                            if (isset($replacement[$_val])) {
+                                // Replace magic string
+                                $val['parameter'] = str_replace($matches[0][$_key], $replacement[$_val], $val['parameter']);
+                            }
                         }
+                    }
+                }
+
+                if (is_string($val['alpha']) && strpos($val['alpha'], '{{') !== false && strpos($val['alpha'], '}}') !== false) {
+                    // Extract magic string
+                    preg_match_all('/\{\{(.*?)\}\}/', $val['alpha'], $matches);
+
+                    if (isset($matches[1]) && $matches[1]) {
+                        foreach ($matches[1] as $_key => $_val) {
+                            // Trim whitespace for matches string
+                            $_val = trim($_val);
+
+                            if (isset($replacement[$_val])) {
+                                // Replace magic string
+                                $val['alpha'] = str_replace($matches[0][$_key], $replacement[$_val], $val['alpha']);
+                            }
+                        }
+                    }
+
+                    if (is_json($val['alpha'])) {
+                        // Decode JSON data
+                        $val['alpha'] = json_decode($val['alpha'], true);
                     }
                 }
 

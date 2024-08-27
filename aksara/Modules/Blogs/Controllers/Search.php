@@ -41,10 +41,10 @@ class Search extends \Aksara\Laboratory\Core
         ->set_output([
             'keywords' => $this->_keywords,
 
-            /* list of category */
+            // List of category
             'categories' => $this->_get_categories(),
 
-            /* latest post */
+            // Latest get latest post
             'latest' => $this->_get_latest()
         ])
 

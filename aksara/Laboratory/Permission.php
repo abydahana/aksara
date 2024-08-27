@@ -184,7 +184,7 @@ class Permission
      */
     public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
     {
-        if (! $method || ! method_exists(service('router')->controllerName(), $method)) {
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists(service('router')->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
@@ -256,7 +256,7 @@ class Permission
      */
     public function restrict($path = null, $method = null, $redirect = null)
     {
-        if (! $method) {
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists(service('router')->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
@@ -302,7 +302,7 @@ class Permission
      * @param   mixed|null $path
      * @param   mixed|null $method
      */
-    private function _push_privileges($path = null, $method = null)
+    private function _push_privileges($path = null, $method = '')
     {
         $privileges = $this->_model->select('
             privileges
@@ -366,7 +366,7 @@ class Permission
      * @param   mixed|null $path
      * @param   mixed|null $method
      */
-    private function _push_logs($path = null, $method = null)
+    private function _push_logs($path = null, $method = '')
     {
         $query = service('request')->getGet();
 

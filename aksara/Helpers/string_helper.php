@@ -149,36 +149,157 @@ if (! function_exists('encoding_fixer')) {
     }
 }
 
+if (! function_exists('related_generator')) {
+    /**
+     * Table of content generator
+     *
+     * @param   string $content
+     */
+    function related_generator($content = null, $related = [], int $per_paragraph = 5)
+    {
+        // Reformat related object into array
+        $related = json_decode(json_encode($related), true);
+
+        // Split the text into paragraphs
+        $paragraphs = explode('</p>', $content);
+        $updatedContent = '';
+        $applied = false;
+
+        if (sizeof($paragraphs) < $per_paragraph) {
+            // Paragraph is lower than minimum, change default minimum setting
+            $per_paragraph = sizeof($paragraphs);
+        }
+
+        foreach ($paragraphs as $index => $paragraph) {
+            // If the paragraph is not empty, add the closing </p> tag
+            if (! empty(trim($paragraph))) {
+                $paragraph .= "</p>";
+            }
+
+            // Add the paragraph to the updated text
+            $updatedContent .= $paragraph;
+
+            // Add additional content after every 5th paragraph
+            if (0 == ($index + 1) % $per_paragraph && ! empty(trim($paragraph)) && isset($related[($index / $per_paragraph)])) {
+                $applied = true;
+                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $related[($index / $per_paragraph)]['link'] . '" class="--xhr">' . $related[($index / $per_paragraph)]['title'] . '</a></div>';
+            }
+        }
+
+        if (! $applied && $related) {
+            $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $related[0]['link'] . '" class="--xhr">' . $related[0]['title'] . '</a></div>';
+        }
+
+        return $updatedContent;
+    }
+}
+
+if (! function_exists('toc_generator')) {
+    /**
+     * Table of content generator
+     *
+     * @param   string $content
+     */
+    function toc_generator($content = null, $related = [])
+    {
+        $toc = null; // Start the table of contents
+        $pattern = '/<h([1-6])[^>]*>(.*?)<\/h\1>/i'; // Regex pattern to find headings (h1 to h6)
+        $matches = [];
+
+        // Find all headings in the content
+        preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $key => $match) {
+            $level = $match[1]; // Heading level (e.g., 1 for h1, 2 for h2)
+            $title = $match[2]; // The text inside the heading
+            $slug = format_slug($title); // Create a URL-friendly ID
+
+            // Add ID attribute to the heading in the content
+            $content = str_replace($match[0], "<h$level id=\"$slug\">$title</h$level>", $content);
+
+            // Add a list item to the TOC
+            $toc .= "<li class=\"toc-level-$level\"><a href=\"#$slug\" class=\"lead\">$title</a></li>";
+        }
+
+        if ($toc) {
+            $toc = '<ul class="mb-0">' . $toc . '</ul>';
+        }
+
+        return [$toc, $content];
+    }
+}
+
+if (! function_exists('fetch_metadata')) {
+    /**
+     * Fetching metadata from url path
+     */
+    function fetch_metadata(string $path)
+    {
+        try {
+            $client = service('curlrequest');
+
+            $response = $client->request('GET', base_url($path), [
+                'headers' => [
+                    'X-Requested-With' => 'XMLHttpRequest',
+                    'X-API-KEY' => ENCRYPTION_KEY
+                ],
+                'query' => [
+                    '__fetch_metadata' => true
+                ]
+            ]);
+
+            return json_decode($response->getBody());
+        } catch(\Throwable $e) {
+            return $e;
+        }
+
+        return [];
+    }
+}
+
 if (! function_exists('time_ago')) {
     /**
      * Convert timestamp to time ago
      *
      * @param   string $datetime
      */
-    function time_ago($datetime = null, bool $full = true, bool $short = false)
+    function time_ago($datetime = null, bool $short = false, bool $full = true)
     {
+        if (! $datetime) {
+            return phrase('Just now');
+        }
+
         $time_difference = time() - strtotime($datetime);
 
-        if ($time_difference < 1) {
-            return strtolower(phrase('Just now'));
+        if ($time_difference < 30) {
+            return phrase('Just now');
         }
 
         $condition = [
-            (12 * 30 * 24 * 60 * 60) => ($full ? strtolower(phrase('year')) : strtolower(phrase('yr'))),
-            (30 * 24 * 60 * 60) => strtolower(phrase('month')),
-            (24 * 60 * 60) => strtolower(phrase('day')),
-            (60 * 60) => ($full ? strtolower(phrase('hour')) : strtolower(phrase('hr'))),
-            60 => ($full ? strtolower(phrase('minute')) : strtolower(phrase('min'))),
-            1 => ($full ? strtolower(phrase('second')) : strtolower(phrase('sec')))
+            (12 * 30 * 24 * 60 * 60) => ($full ? phrase('year') : phrase('yr')),
+            (30 * 24 * 60 * 60) => ($full ? phrase('month') : phrase('mo')),
+            (7 * 24 * 60 * 60) => phrase('week'),
+            (24 * 60 * 60) => phrase('day'),
+            (60 * 60) => ($full ? phrase('hour') : phrase('hr')),
+            60 => ($full ? phrase('minute') : phrase('min')),
+            1 => ($full ? phrase('second') : phrase('sec'))
         ];
 
         foreach ($condition as $seconds => $label) {
-            $day = $time_difference / $seconds;
+            $time_period = $time_difference / $seconds;
 
-            if ($day >= 1) {
-                $time = round($day);
-                return $time . ' ' . $label . ($time > 1 ? strtolower(phrase('s')) : '') . ' ' . (! $short ? strtolower(phrase('ago')) : null);
+            if ($time_period >= 1) {
+                $time = round($time_period);
+
+                if ($full && 1 == $time && phrase('day') == $label) {
+                    $time = null;
+                    $label = phrase('Yesterday');
+                }
+
+                return $time . ' ' . $label . ($time > 1 ? phrase('s') : null) . (! $short && $time ? ' ' . phrase('ago') : null);
             }
         }
+
+        return phrase('Just now');
     }
 }

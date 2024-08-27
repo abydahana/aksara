@@ -34,11 +34,15 @@
                                     <div class="carousel-caption text-start">
                                         <div class="mb-3">
                                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                                <h4 class="text-light">
+                                                <h3 class="text-light">
                                                     <?= truncate($val->post_title, 80); ?>
-                                                </h4>
-                                                <p class="text-light d-none d-md-inline">
+                                                </h3>
+                                                <p class="lead text-light d-none d-md-inline">
                                                     <?= truncate($val->post_excerpt, 90); ?>
+                                                </p>
+                                                <p class="text-white">
+                                                    <i class="mdi mdi-clock-outline"></i>
+                                                    <?= time_ago($val->updated_timestamp); ?>
                                                 </p>
                                             </a>
                                         </div>
@@ -56,9 +60,9 @@
                                                 </a>
                                             </div>
                                             <div class="col-5 text-end">
-                                                <small class="text-white text-sm">
-                                                    <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
-                                                </small>
+                                                <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger">
+                                                    <i class="mdi mdi-heart"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +94,7 @@
                         <?= $val->category_title; ?>
                     </h3>
                 </a>
-                <p class="text-center text-sm-start">
+                <p class="lead text-center text-sm-start">
                     <?= $val->category_description; ?>
                 </p>
                 <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
@@ -102,14 +106,18 @@
                                         <div class="position-relative" style="background:url(<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                             <div class="clip gradient-top"></div>
                                             <div class="position-absolute bottom-0 p-3">
-                                                <b class="text-light" data-toggle="tooltip" title="<?= $_val->post_title; ?>">
-                                                <?= truncate($_val->post_title, 64); ?>
-                                                </b>
+                                                <h4 class="text-light" data-toggle="tooltip" title="<?= $_val->post_title; ?>">
+                                                    <?= truncate($_val->post_title, 64); ?>
+                                                </h4>
+                                                <p class="text-white">
+                                                    <i class="mdi mdi-clock-outline"></i>
+                                                    <?= time_ago($_val->updated_timestamp); ?>
+                                                </p>
                                             </div>
                                         </div>
                                     </a>
                                     <div class="card-body">
-                                        <p class="card-text text-secondary">
+                                        <p class="lead card-text text-secondary">
                                             <?= truncate($_val->post_excerpt, 64); ?>
                                         </p>
                                         <div class="row g-0 align-items-center">
@@ -118,18 +126,17 @@
                                                     <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                                 </a>
                                             </div>
-                                            <div class="col-7">
-                                                <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-dark ps-2">
+                                            <div class="col-8 overflow-hidden">
+                                                <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2">
                                                     <b>
                                                         <?= $_val->first_name . ' ' . $_val->last_name; ?>
                                                     </b>
                                                 </a>
                                             </div>
-                                            <div class="col-4 text-end">
-                                                <small class="text-muted text-sm">
-                                                    <i class="mdi mdi-clock-outline"></i>
-                                                    <?= time_ago($_val->updated_timestamp); ?>
-                                                </small>
+                                            <div class="col-3 text-end">
+                                                <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($_val->post_id, 'blogs/' . $val->category_slug . '/' . $_val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $_val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $_val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
+                                                    <i class="mdi mdi-heart"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

@@ -25,17 +25,17 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
+                <?php if ($keywords): ?>
+                    <p class="lead">
+                        <?php if ($total): ?>
+                            <?= phrase('Your search keyword {{ keywords }} has returning {{ total }} data.', ['keywords' => $keywords, 'total' => number_format($total)]); ?>
+                        <?php else: ?>
+                            <?= phrase('Your search keyword {{ keywords }} does not match any result.', ['keywords' => $keywords]); ?>
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
-                        <?php
-                            if (! $key && $keywords && $total) {
-                                echo '
-                                    <div class="mb-3">
-                                        ' . phrase('Found') . ' <b>' . number_format($total) . '</b> ' . phrase('for the search keyword') . ' &quot;<b>' . $keywords . '</b>&quot;.
-                                    </div>
-                                ';
-                            }
-                        ?>
                         <div class="row g-0 g-md-3 align-items-center mb-5">
                             <div class="col-9 col-md-10">
                                 <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="text-muted --xhr">
@@ -43,12 +43,12 @@
                                         <?= $val->category_title; ?>
                                     </span>
                                 </a>
-                                <h5>
+                                <h3>
                                     <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-primary --xhr">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_title, 160)) : truncate($val->post_title, 160)); ?>
                                     </a>
-                                </h5>
-                                <div>
+                                </h3>
+                                <div class="lead">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_excerpt, 160)) : truncate($val->post_excerpt, 160)); ?>
                                 </div>
                             </div>
@@ -61,13 +61,6 @@
                     <?php endforeach; ?>
 
                     <?= pagination($pagination); ?>
-                <?php else: ?>
-                    <div class="py-5 text-center">
-                        <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-                        <h2>
-                            <?= phrase('Your search keyword does not match any result'); ?>
-                        </h2>
-                    </div>
                 <?php endif; ?>
             </div>
         </div>

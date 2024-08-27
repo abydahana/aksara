@@ -1,21 +1,25 @@
-<?php if ($activation): ?>
-    <div class="alert alert-info border-0 rounded-0">
-        <div class="container text-center">
-            <i class="mdi mdi-check-circle mdi-5x"></i>
-            <h3>
-                <?= phrase('Account Registered'); ?>
-            </h3>
-            <?= phrase('Follow the link we sent to your email to activate your account.'); ?>
-        </div>
-    </div>
-<?php endif; ?>
 <style type="text/css">
+    #content-wrapper {
+        margin-top: 0
+    }
     #footer-wrapper {
         display: none
     }
 </style>
-<div class="py-3 py-md-5">
-    <div class="<?= (! $activation ? 'd-flex align-items-end justify-content-center' : null); ?>">
+<div class="vh-100">
+    <div class="<?= (! $activation ? 'h-100 d-flex align-items-center justify-content-center' : null); ?>">
+        <?php if ($activation): ?>
+            <div class="alert alert-info border-0 rounded-0">
+                <div class="container text-center py-5">
+                    <i class="mdi mdi-check-circle mdi-5x"></i>
+                    <h3>
+                        <?= phrase('Account Registered'); ?>
+                    </h3>
+                    <?= phrase('Follow the link we sent to your email to activate your account.'); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="container-fluid">
             <div class="card border-0">
                 <div class="card-body">
@@ -26,7 +30,7 @@
                             </p>
                         </div>
                         <div class="mb-3">
-                            <p class="text-center text-muted">
+                            <p class="lead text-center text-muted">
                                 <?= phrase('Please enter your account information to sign in.'); ?>
                             </p>
                         </div>
@@ -73,7 +77,7 @@
                             }
                         ?>
                         
-                        <div class="row mb-5">
+                        <div class="row g-0 mb-5">
                             <div class="col-7">
                                 <div class="d-grid">
                                     <a href="<?= current_page('forgot'); ?>" class="btn btn-link px-0 text-start --xhr">
@@ -121,7 +125,7 @@
                             </div>
                         <?php endif; ?>
                         <div class="text-center text-muted">
-                            <?= phrase('Do not have an account?'); ?>
+                            <?= phrase('Do not have an account?'); ?> &nbsp; 
                             <a href="<?= base_url('auth/register'); ?>" class="--xhr">
                                 <b>
                                     <?= phrase('Register an Account'); ?>

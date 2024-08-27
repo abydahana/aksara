@@ -176,20 +176,113 @@ class Form
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
                 $value = '*****';
                 $content = '*****';
-            } elseif (isset($this->_default_value[$field]) && 'create' === $this->_method) {
-                $value = $this->_default_value[$field];
-                $content = $this->_default_value[$field];
+            } elseif (array_intersect(['geospatial'], array_keys($type)) && ! sizeof(json_decode($value, true) ?? [])) {
+                $value = get_setting('office_map');
+                $content = $value;
             } else {
                 $content = $this->formatter->format($content, $type);
             }
 
-            $checked = ($value ? true : false);
+            $checked = $value || false;
 
             if ('create' === $this->_method) {
-                $checked = true;
+                if (array_intersect(['boolean'], array_keys($type))) {
+                    $checked = true;
+                } elseif (array_intersect(['select'], array_keys($type)) && is_array($content)) {
+                    foreach ($content as $key => $val) {
+                        // Match selected value
+                        $content[$key]['selected'] = (isset($this->_default_value[$field]) && $this->_default_value[$field] == $val['value']) || false;
+                    }
+                } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
+                    foreach ($content as $key => $val) {
+                        // Match checked value
+                        $content[$key]['checked'] = (isset($this->_default_value[$field]) && $this->_default_value[$field] == $val['value']) || false;
+                    }
+                } elseif (isset($this->_default_value[$field])) {
+                    $value = $this->_default_value[$field];
+                    $content = $value;
+                }
 
-                if (isset($this->_default_value[$field])) {
-                    $checked = ($this->_default_value[$field] ? true : false);
+                if (array_intersect(['last_insert'], array_keys($type))) {
+                    if (! isset($this->_default_value[$field])) {
+                        $last_insert_params = array_search('last_insert', $type);
+                        $type_key = (isset($parameter[$last_insert_params]) && $parameter[$last_insert_params] ? array_search('{1}', explode('/', $parameter[$last_insert_params])) : null);
+                        $where = [];
+
+                        if ($this->_where) {
+                            foreach ($this->_where as $key => $val) {
+                                if ($this->model->field_exists($key, $this->_table)) {
+                                    $where[$key] = $val;
+                                }
+                            }
+                        }
+
+                        if (in_array($this->_db_driver, ['SQLSRV'])) {
+                            $cast_field = 'CONVERT(' . $field . ', SIGNED INTEGER)';
+                        } else {
+                            $cast_field = 'CAST(' . $field . ' AS SIGNED INTEGER)';
+                        }
+
+                        if (1 == 1) { // Skip
+                            if (isset($parameter[$last_insert_params]) && is_array($parameter[$last_insert_params])) {
+                                $this->model->where($parameter[$last_insert_params]);
+                            }
+
+                            $last_insert = $this->model->select((in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
+                        } else {
+                            $last_insert = $this->model->select((in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
+                        }
+
+                        if ($last_insert) {
+                            $last_insert = (strpos($last_insert, '/') !== false ? explode('/', $last_insert) : [$last_insert]);
+                            $last_insert = (isset($last_insert[$type_key]) ? $last_insert[$type_key] : $last_insert[0]);
+                            $last_insert = preg_replace('/[^0-9]/', '', $last_insert);
+                        }
+
+                        $last_insert = (! is_array($last_insert) && $last_insert > 0 ? $last_insert : 0) + 1;
+
+                        $value = ($last_insert > 0 ? $last_insert : 1);
+
+                        if (array_intersect(['sprintf'], array_keys($type))) {
+                            $value = sprintf((isset($extra_params[$last_insert_params]) && is_string($extra_params[$last_insert_params]) ? $extra_params[$last_insert_params] : '%04d'), $value);
+                        }
+
+                        if (isset($parameter[$last_insert_params]) && $parameter[$last_insert_params]) {
+                            $value = str_replace('{1}', $value, $parameter[$last_insert_params]);
+                        }
+                    }
+                }
+            } else {
+                if (array_intersect(['select'], array_keys($type)) && is_array($content)) {
+                    foreach ($content as $key => $val) {
+                        // Match selected value
+                        $content[$key]['selected'] = $value == $val['value'];
+                    }
+                } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
+                    $has_checked = false;
+
+                    foreach ($content as $key => $val) {
+                        // Match checked value
+                        $content[$key]['checked'] = $value == $val['value'];
+
+                        if (! $has_checked && $value == $val['value']) {
+                            // Checked found
+                            $has_checked = true;
+                        }
+                    }
+
+                    if (! $has_checked) {
+                        // Backup default checked
+                        foreach ($content as $key => $val) {
+                            $content[$key]['checked'] = true;
+
+                            break;
+                        }
+                    }
+                }
+
+                if (array_intersect(['sprintf'], array_keys($type))) {
+                    $value = str_replace('{1}', sprintf((isset($extra_params[$last_insert_params]) && is_string($extra_params[$last_insert_params]) ? $extra_params[$last_insert_params] : '%04d'), $value), $parameter[$last_insert_params]);
                 }
             }
 
@@ -202,6 +295,7 @@ class Form
                 'value' => $value,
                 'content' => $content,
                 'maxlength' => $maxlength,
+                'class' => (isset($this->_add_class[$field]) ? $this->_add_class[$field] : null),
                 'placeholder' => $placeholder,
                 'required' => $required,
                 'checked' => $checked,

@@ -37,8 +37,6 @@ class Model
 
     private $_prepare;
 
-    private $_select;
-
     private $_selection;
 
     private $_set = [];
@@ -383,15 +381,11 @@ class Model
         $this->_selection = true;
 
         if (! is_array($column)) {
-            // Split selected by comma, but ignore that inside brackets
+            // Split selected by comma, but ignore which is inside brackets
             $column = array_map('trim', preg_split('/,(?![^(]+\))/', $column));
         }
 
         $column = array_unique($column);
-
-        foreach ($column as $key => $val) {
-            $this->_select[] = $val;
-        }
 
         $this->_prepare[] = [
             'function' => 'select',
@@ -497,7 +491,7 @@ class Model
      * @param   mixed|null $subquery
      * @param   mixed|null $alias
      */
-    public function select_subquery($subquery = null, $alias = null)
+    public function select_subquery($subquery, string $alias)
     {
         $this->_selection = true;
 
@@ -529,7 +523,7 @@ class Model
      * @param   mixed|null $subquery
      * @param   mixed|null $alias
      */
-    public function from_subquery($subquery = null, $alias = null)
+    public function from_subquery($subquery, string $alias)
     {
         $this->_prepare[] = [
             'function' => 'fromSubquery',
@@ -1493,6 +1487,14 @@ class Model
     }
 
     /**
+     * Breaks query builder
+     */
+    public function reset_query()
+    {
+        return $this->_run_query();
+    }
+
+    /**
      * Your contribution is needed to write complete hint about this method
      */
     public function result()
@@ -2062,8 +2064,32 @@ class Model
             $arguments = $val['arguments'];
 
             if (in_array($function, $builder_filter)) {
-                if (in_array($function, ['selectSubquery', 'fromSubquery'])) {
-                    $this->_builder = $this->db;
+                if ('selectSubquery' == $function) {
+                    if ($query) {
+                        // Hacking line
+                        $reflectionClass = new \ReflectionClass(($query));
+
+                        // Get query builder select list
+                        $reflectionProperty = $reflectionClass->getProperty('QBSelect');
+
+                        // Set property accessible (only required prior to PHP 8.1.0)
+                        $reflectionProperty->setAccessible(true);
+
+                        // Modify not unique select value
+                        $reflectionProperty->setValue(($query), array_unique($reflectionProperty->getValue(($query))));
+
+                        // Select subquery
+                        $this->_builder = $this->db->table($this->_table)->selectSubquery($query, $arguments[1]);
+                    }
+
+                    continue;
+                } elseif ('fromSubquery' == $function) {
+                    if ($query) {
+                        // Select from subquery
+                        $this->_builder = $this->db->table($this->_table)->fromSubquery($query, $arguments[1]);
+                    }
+
+                    continue;
                 }
 
                 $this->_get = true;
@@ -2108,7 +2134,6 @@ class Model
             $this->_prepare = [];
             $this->_finished = false;
             $this->_ordered = false;
-            $this->_select = [];
             $this->_from = null;
             $this->_table = null;
             $this->_set = [];

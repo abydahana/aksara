@@ -3,6 +3,7 @@
 #-------------------------
 
 # OS X
+__MACOSX
 .DS_Store
 .AppleDouble
 .LSOverride

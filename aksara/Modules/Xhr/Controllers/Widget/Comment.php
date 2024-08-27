@@ -28,8 +28,16 @@ class Comment extends \Aksara\Laboratory\Core
         $this->permission->must_ajax();
         $this->limit(null);
 
-        if ('replies' === service('request')->getPost('fetch')) {
-            return $this->_fetch_replies();
+        if (in_array(service('request')->getPost('fetch'), ['comments', 'replies'])) {
+            return $this->_fetch_comments();
+        } elseif ('token' === service('request')->getPost('fetch')) {
+            $token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+
+            set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $token);
+
+            return make_json([
+                'token' => $token
+            ]);
         }
     }
 
@@ -39,7 +47,7 @@ class Comment extends \Aksara\Laboratory\Core
             return $this->_validate_form();
         }
 
-        $this->set_title('Comment')
+        $this->set_title(phrase('Comments'))
         ->set_icon('mdi mdi-comment-multiple')
 
         ->set_output([
@@ -63,43 +71,7 @@ class Comment extends \Aksara\Laboratory\Core
             ->num_rows()
         ])
 
-        ->select('
-            app__users.photo,
-            app__users.username,
-            app__users.first_name,
-            app__users.last_name,
-
-            COUNT(distinct replies_table.comment_id) AS replies,
-            COUNT(distinct upvotes_table.comment_id) AS upvotes
-        ')
-
-        ->join(
-            'app__users',
-            'app__users.user_id = post__comments.user_id'
-        )
-
-        ->join(
-            'post__comments replies_table',
-            'replies_table.reply_id = post__comments.comment_id',
-            'LEFT'
-        )
-
-        ->join(
-            'post__comments_likes upvotes_table',
-            'upvotes_table.comment_id = post__comments.comment_id',
-            'LEFT'
-        )
-        ->where([
-            'post_id' => service('request')->getGet('post_id'),
-            'post_path' => service('request')->getGet('path'),
-            'reply_id' => 0
-        ])
-
-        ->group_by('post__comments.comment_id')
-
-        ->order_by('comment_id', 'DESC')
-
-        ->render($this->_table);
+        ->render();
     }
 
     public function repute()
@@ -160,7 +132,9 @@ class Comment extends \Aksara\Laboratory\Core
 
         return make_json([
             'element' => '.likes-count',
-            'content' => ($upvotes ? $upvotes : null)
+            'content' => ($upvotes ? $upvotes : null),
+            'class_add' => ($upvotes ? service('request')->getPost('classAdd') : service('request')->getPost('classRemove')),
+            'class_remove' => (! $upvotes ? service('request')->getPost('classAdd') : service('request')->getPost('classRemove'))
         ]);
     }
 
@@ -485,13 +459,14 @@ class Comment extends \Aksara\Laboratory\Core
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
                 <input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
-                <div class="text-center pt-3 pb-3 mb-3 border-bottom">
-                    ' . phrase('Are you sure want to hide this comment?') . '
+                <div class="text-center pt-3 pb-3 mb-3">
+                    ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>
+                <hr class="row border-secondary-subtle" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -499,7 +474,7 @@ class Comment extends \Aksara\Laboratory\Core
                     </div>
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="btn btn-dark rounded-pill">
                                 <i class="mdi mdi-check"></i>
                                 ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
                             </button>
@@ -512,17 +487,35 @@ class Comment extends \Aksara\Laboratory\Core
         return make_json([
             'status' => 200,
             'meta' => [
-                'title' => phrase('Action Warning'),
-                'icon' => 'mdi mdi-alert-outline',
-                'popup' => true
+                'popup' => true,
+                'modal_size' => 'modal-sm'
             ],
             'content' => $html
         ]);
     }
 
-    private function _fetch_replies()
+    private function _fetch_comments()
     {
+        $limit = 10;
+        $order = 'DESC';
+        $page = (is_numeric(service('request')->getGet('page')) ? service('request')->getGet('page') : 0);
         $parent_id = service('request')->getGet('parent_id');
+
+        if ($page) {
+            $this->model->offset($limit * $page);
+        }
+
+        if ($parent_id) {
+            $order = 'ASC';
+
+            $this->model->where('post__comments.reply_id', $parent_id);
+        } else {
+            $this->model->where([
+                'post__comments.post_id' => service('request')->getGet('post_id'),
+                'post__comments.post_path' => service('request')->getGet('path'),
+                'post__comments.reply_id' => 0
+            ]);
+        }
 
         $query = $this->model->select('
             post__comments.comment_id,
@@ -540,6 +533,7 @@ class Comment extends \Aksara\Laboratory\Core
             app__users.username,
             app__users.first_name,
             app__users.last_name,
+            COUNT(distinct replies_table.comment_id) AS replies,
             COUNT(distinct upvotes_table.comment_id) AS upvotes
         ')
         ->join(
@@ -547,20 +541,21 @@ class Comment extends \Aksara\Laboratory\Core
             'app__users.user_id = post__comments.user_id'
         )
         ->join(
+            'post__comments replies_table',
+            'replies_table.reply_id = post__comments.comment_id',
+            'LEFT'
+        )
+        ->join(
             'post__comments_likes upvotes_table',
             'upvotes_table.comment_id = post__comments.comment_id',
             'LEFT'
         )
-
         ->group_by('post__comments.comment_id')
-
-        ->order_by('comment_id', 'DESC')
-
+        ->order_by('post__comments.comment_id', $order)
         ->get_where(
             'post__comments',
-            [
-                'post__comments.reply_id' => $parent_id
-            ]
+            [],
+            $limit
         )
         ->result();
 
@@ -576,11 +571,13 @@ class Comment extends \Aksara\Laboratory\Core
 
                 // Create links
                 $val->links = [
-                    'reply_url' => current_page('reply', ['comment_id' => $val->comment_id, 'path' => null, 'parent_id' => null]),
-                    'upvote_url' => current_page('upvote', ['comment_id' => $val->comment_id, 'path' => null, 'parent_id' => null]),
-                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['comment_id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
-                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['comment_id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['comment_id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null)
+                    'profile_url' => base_url('user/' . $val->username),
+                    'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'page' => null]),
+                    'reply_url' => current_page('reply', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'reply' => service('request')->getGet('reply') ?? $val->comment_id]),
+                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]),
+                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
+                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
+                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {
@@ -589,6 +586,8 @@ class Comment extends \Aksara\Laboratory\Core
                         'original' => get_image('comment', $val->attachment),
                         'thumbnail' => get_image('comment', $val->attachment, 'thumb')
                     ];
+                } else {
+                    $val->attachment = [];
                 }
 
                 if ($val->mention_id) {
@@ -624,13 +623,19 @@ class Comment extends \Aksara\Laboratory\Core
                 $val->timestamp = time_ago($val->timestamp);
 
                 // Set highlight
-                $val->highlight = false;
+                $val->highlight = service('request')->getGet('comment_highlight') == $val->comment_id;
 
                 $output[] = $val;
             }
         }
 
-        return make_json($output);
+        return make_json([
+            'page' => ($page + 1),
+            'limit' => $limit,
+            'total' => sizeof($output),
+            'next_page' => current_page(null, ['page' => ($page + 1)]),
+            'comments' => $output
+        ]);
     }
 
     private function _validate_form()
@@ -684,6 +689,9 @@ class Comment extends \Aksara\Laboratory\Core
 
         $comment_id = $this->model->insert_id();
 
+        // Push into log's activity
+        $this->_push_logs(service('request')->getGet('path'));
+
         // Set spam timer
         set_userdata('_spam_timer', strtotime('+10 seconds'));
 
@@ -725,7 +733,7 @@ class Comment extends \Aksara\Laboratory\Core
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                                 <li>
-                                    <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id]) . '">
+                                    <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
                                         ' . phrase('Update') . '
                                     </a>
                                 </li>
@@ -743,11 +751,11 @@ class Comment extends \Aksara\Laboratory\Core
                             ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
                             
                             ' . nl2br(htmlspecialchars(service('request')->getPost('comments'))) . '
-                            ' . ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="..." /></a></div>' : null) . '
+                            ' . ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-5" alt="..." /></a></div>' : null) . '
                         </div>
                     </div>
                     <div class="py-1 ps-3">
-                        <a href="' . current_page('upvote', ['id' => $comment_id]) . '" class="text-sm --modify">
+                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => null]) . '" class="text-sm --upvote">
                             <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
                             &nbsp;
                             <b>
@@ -755,7 +763,7 @@ class Comment extends \Aksara\Laboratory\Core
                             </b>
                         </a>
                          &middot; 
-                        <a href="' . current_page(null, ['path' => service('request')->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => service('request')->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>
@@ -782,5 +790,44 @@ class Comment extends \Aksara\Laboratory\Core
             $insert_method => ($reply_id ? '#comment-container #comment-reply form' : '#comment-container'),
             'in_context' => ($reply_id ? true : false)
         ]);
+    }
+
+    /**
+     * Store activity logs into database
+     *
+     * @param   mixed|null $path
+     * @param   mixed|null $method
+     */
+    private function _push_logs($path = null, $method = '')
+    {
+        $query = service('request')->getGet();
+
+        unset($query['aksara'], $query['post_id'], $query['path']);
+
+        $agent = service('request')->getUserAgent();
+
+        if ($agent->isBrowser()) {
+            $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
+        } elseif ($agent->isRobot()) {
+            $user_agent = $agent->getRobot();
+        } elseif ($agent->isMobile()) {
+            $user_agent = $agent->getMobile();
+        } else {
+            $user_agent = phrase('Unknown');
+        }
+
+        $prepare = [
+            'user_id' => service('session')->get('user_id'),
+            'session_id' => COOKIE_NAME . session_id(),
+            'path' => $path,
+            'method' => $method,
+            'query' => json_encode($query),
+            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+            'browser' => $user_agent,
+            'platform' => $agent->getPlatform(),
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->insert('app__log_activities', $prepare);
     }
 }
