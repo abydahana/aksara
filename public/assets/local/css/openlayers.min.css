@@ -28,25 +28,30 @@
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   z-index: 1;
 }
-.ol-zoom {
+.ol-rotate {
   top: 1rem !important;
   right: 1rem !important;
   left: auto !important;
 }
+.ol-zoom {
+  top: 1rem !important;
+  left: 1rem !important;
+  right: auto !important;
+}
 .ol-track {
   top: 6rem !important;
-  right: 1rem !important;
-  left: auto !important;
+  left: 1rem !important;
+  right: auto !important;
 }
 .ol-zoom-extent {
   top: 8.5rem !important;
-  right: 1rem !important;
-  left: auto !important;
+  left: 1rem !important;
+  right: auto !important;
 }
 .ol-full-screen {
   top: 11rem !important;
-  right: 1rem !important;
-  left: auto !important;
+  left: 1rem !important;
+  right: auto !important;
 }
 .ol-mouse-position {
   top: auto !important;
@@ -59,9 +64,6 @@
 }
 .ol-scale-line {
   left: 1rem !important;
-}
-.ol-attribution {
-  right: 1rem !important;
 }
 .ol-popup {
   border-radius: 1rem !important;
