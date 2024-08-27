@@ -15,22 +15,22 @@
         </div>
     </div>
 </div>
-<div class="py-3 py-md-5">
+<div class="py-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8 offset-md-2 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
                 <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
                     <div class="mb-3">
-                        <label class="d-block text-muted" for="username_input">
+                        <label class="d-block text-muted mb-3" for="username_input">
                             <?= phrase('Enter your valid username or email to request a password reset link.'); ?>
                         </label>
-                        <input type="text" name="username" class="form-control rounded-pill" id="username_input" placeholder="<?= phrase('Enter your username or email'); ?>" />
+                        <input type="text" name="username" class="form-control" id="username_input" placeholder="<?= phrase('Enter your username or email'); ?>" />
                     </div>
                     <div class="mb-3">
                         <div class="row">
                             <div class="col-6">
                                 <div class="d-grid">
-                                    <a href="<?= current_page('../'); ?>" class="btn btn-light rounded-pill --xhr">
+                                    <a href="<?= current_page('../'); ?>" class="btn btn-light --xhr">
                                         <i class="mdi mdi-arrow-left"></i>
                                         <?= phrase('Back'); ?>
                                     </a>
@@ -38,7 +38,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary rounded-pill">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="mdi mdi-check"></i> 
                                         <?= phrase('Reset Password'); ?>
                                     </button>

@@ -9,10 +9,10 @@
         </div>
     </div>
 <?php endif; ?>
-<div class="py-3 py-md-5">
+<div class="py-3 <?= ($activation ? 'py-md-3' : 'py-md-5'); ?>">
     <div class="container-fluid">
         <div class="row">
-            <div class="<?= (get_setting('frontend_registration') ? 'col-md-8 offset-md-2 col-xxl-6 offset-xxl-3' : 'col-md-4 offset-md-4'); ?>">
+            <div class="<?= (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
                 <div class="card-group py-5">
                     <div class="card shadow rounded-4 rounded-end-0">
                         <div class="card-body p-4">
@@ -114,7 +114,7 @@
                                 </div>
                                 <?php endif; ?>
                                 <div class="d-grid">
-                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success rounded-pill">
+                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success --xhr rounded-pill">
                                         <i class="mdi mdi-account-plus"></i>
                                         <?= phrase('Register an Account'); ?>
                                     </a>

@@ -60,7 +60,7 @@
                     }
                 ?>
                 
-                <div class="row mt-3">
+                <div class="row g-0 mt-3">
                     <div class="col-7">
                         <div class="d-grid">
                             <a href="<?= current_page('forgot'); ?>" class="btn btn-link px-0 text-start --xhr">
@@ -104,7 +104,7 @@
                 </div>
                 <?php endif; ?>
                 <div class="d-grid">
-                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success rounded-pill --xhr">
+                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success --xhr rounded-pill --xhr">
                         <i class="mdi mdi-account-plus"></i>
                         <?= phrase('Register an Account'); ?>
                     </a>
