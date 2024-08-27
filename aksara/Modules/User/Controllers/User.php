@@ -26,6 +26,7 @@ class User extends \Aksara\Laboratory\Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->limit(10);
 
         if (service('request')->getGet('user_id')) {
             $query = $this->model->select('
@@ -76,7 +77,77 @@ class User extends \Aksara\Laboratory\Core
             )
             ->result()
         ])
+        ->select('
+            (SELECT MAX(timestamp) FROM app__log_activities WHERE user_id = app__users.user_id) AS last_activity
+        ')
         ->limit(1)
         ->render($this->_table);
+    }
+
+    public function activity($username = '')
+    {
+        $this->set_title(phrase('Activity'))
+        ->set_icon('mdi mdi-account-clock-outline')
+        ->set_output([
+            'user' => $this->model->select('
+                username,
+                first_name,
+                last_name,
+                photo
+            ')
+            ->get_where(
+                $this->_table,
+                [
+                    'username' => $username
+                ],
+                1
+            )
+            ->row()
+        ])
+        ->join(
+            'app__users',
+            'app__users.user_id = post__comments.user_id'
+        )
+        ->where([
+            'app__users.username' => $username,
+            'post__comments.status' => 1
+        ])
+        ->order_by([
+            'post__comments.timestamp' => 'DESC'
+        ])
+        ->render('post__comments', 'activity');
+    }
+
+    public function likes($username = '')
+    {
+        $this->set_title(phrase('Likes'))
+        ->set_icon('mdi mdi-heart')
+        ->set_output([
+            'user' => $this->model->select('
+                username,
+                first_name,
+                last_name,
+                photo
+            ')
+            ->get_where(
+                $this->_table,
+                [
+                    'username' => $username
+                ],
+                1
+            )
+            ->row()
+        ])
+        ->join(
+            'app__users',
+            'app__users.user_id = post__likes.user_id'
+        )
+        ->where([
+            'app__users.username' => $username
+        ])
+        ->order_by([
+            'post__likes.timestamp' => 'DESC'
+        ])
+        ->render('post__likes', 'likes');
     }
 }
