@@ -39,7 +39,8 @@ class PostLikes extends Migration
             ],
             'post_path' => [
                 'type' => 'varchar',
-                'constraint' => 255
+                'constraint' => 255,
+                'null' => false
             ],
             'timestamp' => [
                 'type' => 'timestamp',

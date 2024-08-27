@@ -46,6 +46,11 @@ class Announcements extends Migration
                 'type' => 'text',
                 'null' => false
             ],
+            'cover' => [
+                'type' => 'varchar',
+                'constraint' => 255,
+                'null' => false
+            ],
             'placement' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
