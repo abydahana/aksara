@@ -36,8 +36,7 @@ class Testimonials extends \Aksara\Laboratory\Core
         ->set_icon('mdi mdi-bullhorn-outline')
 
         ->where([
-            'status' => 1,
-            'language_id' => get_userdata('language_id')
+            'status' => 1
         ])
 
         ->order_by('timestamp', 'desc')
