@@ -179,10 +179,12 @@ class View
                 } else {
                     $content = $this->parser->parse($this->_merge_content[$field]['parameter'], $replacement);
                 }
-            } else {
-                // Get formatted content
-                $content = $this->formatter->format($content, $type, $replacement);
+
+                $value = $content;
             }
+
+            // Get formatted content
+            $content = $this->formatter->format($content, $type, $replacement);
 
             // Add to form data response
             $field_data[$field] = [
