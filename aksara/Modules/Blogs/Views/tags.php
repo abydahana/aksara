@@ -29,7 +29,7 @@
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="card mb-4 border-0 rounded-4 overflow-hidden">
                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
                                 <div class="position-relative" style="background:url(<?= get_image('blogs', $val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                     <div class="clip gradient-top"></div>

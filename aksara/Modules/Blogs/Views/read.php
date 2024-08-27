@@ -104,7 +104,7 @@
                             </p>
                         </div>
                         <div class="toc">
-                            <fieldset class="border p-3 rounded-4 mb-3">
+                            <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
                                 <legend><?= phrase('Table of Contents'); ?></legend>
                                 <?= $toc; ?>
                             </fieldset>
@@ -135,7 +135,7 @@
                         </h4>
                         <?php if ($recommendations): ?>
                             <?php foreach ($recommendations as $key => $val): ?>
-                                <div class="card rounded-4 mb-3">
+                                <div class="card rounded-4 border-light-subtle mb-3">
                                     <div class="card-body">
                                         <div class="row g-0 align-items-center">
                                             <div class="col-2">
@@ -161,7 +161,7 @@
                         <h4 class="mb-3">
                             <?= phrase('Other Categories'); ?>
                         </h4>
-                        <div class="card rounded-4 mb-3">
+                        <div class="card rounded-4 border-light-subtle mb-3">
                             <div class="card-body">
                                 <?php if ($categories): ?>
                                     <?php foreach ($categories as $key => $val): ?>

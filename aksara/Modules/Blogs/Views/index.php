@@ -101,7 +101,7 @@
                     <div class="swiper-wrapper">
                         <?php foreach ($val->posts as $_key => $_val): ?>
                             <div class="swiper-slide">
-                                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="card border-0 rounded-4 overflow-hidden">
                                     <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr d-block">
                                         <div class="position-relative" style="background:url(<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                             <div class="clip gradient-top"></div>
