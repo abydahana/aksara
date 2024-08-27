@@ -38,7 +38,7 @@ class Comments extends \Aksara\Laboratory\Core
         ->unset_column('post_id, post_type, reply_id, mention_id, edited, attachment')
         ->unset_view('post_id, post_type, reply_id, mention_id, edited, attachment')
 
-        ->column_order('first_name, post_id, path, comments, timestamp, status')
+        ->column_order('first_name, post_id, post_path, comments, timestamp, status')
 
         ->add_button('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
 
@@ -47,7 +47,7 @@ class Comments extends \Aksara\Laboratory\Core
             'status' => 'boolean'
         ])
         ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_field('path', 'hyperlink', '{{ path }}', ['user_id' => 'user_id'], true)
+        ->set_field('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
 
         ->set_relation(
             'user_id',
@@ -99,26 +99,25 @@ class Comments extends \Aksara\Laboratory\Core
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
                 <input type="hidden" name="comment_id" value="' . sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
-                <div class="text-center pt-3 pb-3 mb-3 border-bottom">
+                <div class="text-center pt-3 pb-3 mb-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>
-                <div class="p-3 pt-0">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="d-grid">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                    <i class="mdi mdi-window-close"></i>
-                                    ' . phrase('Cancel') . '
-                                </button>
-                            </div>
+                <hr class="border-secondary-subtle row" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
+                                <i class="mdi mdi-window-close"></i>
+                                ' . phrase('Cancel') . '
+                            </button>
                         </div>
-                        <div class="col-6">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="mdi mdi-check"></i>
-                                    ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
-                                </button>
-                            </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark rounded-pill">
+                                <i class="mdi mdi-check"></i>
+                                ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -128,11 +127,10 @@ class Comments extends \Aksara\Laboratory\Core
         return make_json([
             'status' => 200,
             'meta' => [
-                'title' => ($query->status ? phrase('Hide Comment') : phrase('Publish Comment')),
-                'icon' => 'mdi mdi-toggle-switch',
-                'popup' => true
+                'popup' => true,
+                'modal_size' => 'modal-sm'
             ],
-            'html' => $html
+            'content' => $html
         ]);
     }
 
