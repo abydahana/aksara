@@ -25,20 +25,20 @@
                                     </a>
                                 </div>
                                 <div class="col-10 ps-2">
-                                    <h5 class="mb-1">
+                                    <h4 class="mb-0">
                                         <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr" data-bs-toggle="tooltip" title="<?= $val->title; ?>">
                                             <?= truncate($val->title, 64); ?>
                                         </a>
-                                    </h5>
-                                    <p class="mb-0">
+                                    </h4>
+                                    <p class="lead mb-0">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark --xhr">
                                             <b>
                                                 <?= $val->first_name . ' ' . $val->last_name; ?>
                                             </b>
                                         </a>
                                     </p>
-                                    <p class="mb-0 text-muted text-sm">
-                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->timestamp); ?>
+                                    <p class="mb-0 text-muted">
+                                        <?= time_ago($val->timestamp); ?>
                                     </p>
                                 </div>
                             </div>
