@@ -90,7 +90,7 @@
             <?= phrase('Allowed File Extension'); ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,gif,png,pdf,xls,xlsx,doc,docx,csv'); ?>" />
+        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv'); ?>" />
     </div>
     <div class="row">
         <div class="col-md-8">
@@ -99,7 +99,7 @@
                     <?= phrase('Allowed Image Extension'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ? session()->get('image_extension') : 'jpg,png,gif'); ?>" />
+                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ? session()->get('image_extension') : 'jpg,jpeg,png,gif'); ?>" />
             </div>
         </div>
         <div class="col-md-4">
