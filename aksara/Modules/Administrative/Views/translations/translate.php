@@ -55,7 +55,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label class="text-muted d-block">
-                        <?= phrase('Total phrases'); ?>
+                        <?= phrase('Total Phrases'); ?>
                     </label>
                 </div>
                 <div class="col">
