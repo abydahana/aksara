@@ -37,7 +37,7 @@
                         }
                     ?>
                     <div class="col-lg-6">
-                        <div class="rounded-4 overflow-hidden shadow-sm mb-3">
+                        <div class="rounded-4 overflow-hidden mb-3">
                             <div class="row g-0">
                                 <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-center" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:320px">
                                     <div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">

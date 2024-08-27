@@ -28,7 +28,7 @@ class Blogs extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        $this->set_title(phrase('Our news updates'))
+        $this->set_title(phrase('Our News Updates'))
         ->set_description(phrase('Follow an update from us'))
         ->set_icon('mdi mdi-newspaper')
         ->set_output([
