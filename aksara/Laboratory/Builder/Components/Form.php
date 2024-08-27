@@ -121,7 +121,7 @@ class Form
             <div class="form-check me-3">
                 <label class="form-check-label {{ option.class }}">
                     <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ option.readonly }} {% if option.checked %} checked {% endif %}>
-                    {{ option.label }}
+                    {{ option.label | raw }}
                 </label>
             </div>
         {% endfor %}
@@ -140,7 +140,7 @@ class Form
             <div class="form-check me-3">
                 <label class="form-check-label {{ option.class }}"> 
                     <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" {{ option.readonly }} {% if option.checked %} checked {% endif %}>
-                    {{ option.label }}
+                    {{ option.label | raw }}
                 </label>
             </div>
         {% endfor %}
@@ -384,13 +384,13 @@ class Form
         $component = <<<EOF
         <div class="attribution-input w-100">
             <div class="attribution-input-body">
-                {% for attribution in content %}
+                {% for label, value in content %}
                     <div class="row mb-1">
                         <div class="col-4 pe-0">
-                            <input type="text" name="{{ name }}[label][]" value="{{ attribution.label }}" class="form-control form-control-sm" placeholder="{{ phrase('Label') }}" autocomplete="off" spellcheck="false" />
+                            <input type="text" name="{{ name }}[label][]" value="{{ label }}" class="form-control form-control-sm" placeholder="{{ phrase('Label') }}" autocomplete="off" spellcheck="false" />
                         </div>
                         <div class="col-5 pe-0">
-                            <input type="text" name="{{ name }}[value][]" value="{{ attribution.value }}" class="form-control form-control-sm" placeholder="{{ phrase('Value') }}" autocomplete="off" spellcheck="false" />
+                            <input type="text" name="{{ name }}[value][]" value="{{ value }}" class="form-control form-control-sm" placeholder="{{ phrase('Value') }}" autocomplete="off" spellcheck="false" />
                         </div>
                         <div class="col-3">
                             <div class="btn-group btn-group-sm float-end">
