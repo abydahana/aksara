@@ -1,6 +1,7 @@
 <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
-        <div class="modal-content">
+        <div class="modal-content {% if not meta.title %} rounded-4 {% endif %}">
+            {% if meta.title %}
             <div class="modal-header">
                 <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                     <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
@@ -10,6 +11,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
             </div>
+            {% endif %}
             <div class="modal-body">
                 {% if content %}
                     {{ content }}
