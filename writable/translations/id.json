@@ -823,6 +823,7 @@
     "You were signed out.": "Anda telah keluar.",
     "Your API Client is not permitted to access the requested source": "Klien API tidak diizinkan untuk mengakses sumber yang diminta",
     "Your API Key is not eligible to access the requested module or its already expired": "Kunci API Anda tidak cukup untuk mengakses modul yang diminta atau telah kedaluwarsa",
+    "Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.": "Akun Anda belum diizinkan untuk mengirimkan komentar. Silakan coba lagi setelah {{ interval }} hari.",
     "Your core system is up to date": "Sistem inti Anda sudah terbarukan",
     "Your created module and theme will not be overwritten.": "Modul dan tema yang Anda buat tidak akan ditimpa.",
     "Your current session": "Sesi Anda sekarang",
