@@ -823,6 +823,7 @@
     "You were signed out.": "Вы вышли из системы.",
     "Your API Client is not permitted to access the requested source": "Вашему API-клиенту запрещен доступ к запрошенному источнику",
     "Your API Key is not eligible to access the requested module or its already expired": "Your API Key is not eligible to access the requested module or its already expired",
+    "Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.": "Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.",
     "Your core system is up to date": "Ваша основная система обновлена",
     "Your created module and theme will not be overwritten.": "Ваши созданный модуль и тема не будут перезаписаны.",
     "Your current session": "Your current session",

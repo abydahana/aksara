@@ -270,7 +270,7 @@ class Addons extends \Aksara\Laboratory\Core
                                 <div class="text-center">
                                     ' . phrase('The ' . $type . ' package with same structure is already installed.') . ' ' . phrase('Do you want to upgrade the ' . $type . ' instead?') . '
                                 </div>
-                                <hr class="row" />
+                                <hr class="m--3" />
                                 <input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
                                 <div class="row">
                                     <div class="col-6">

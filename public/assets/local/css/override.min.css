@@ -94,6 +94,14 @@ th[align=right] {
   margin-right: -1rem!important;
   margin-bottom: -1rem !important;
 }
+.m--3 {
+  margin-left: -.75rem!important;
+  margin-right: -.75rem!important
+}
+.modal-body .m--3 {
+  margin-left: -1rem!important;
+  margin-right: -1rem!important
+}
 .card-body .list-group .list-group-item span.float-end {
   float: inherit!important
 }

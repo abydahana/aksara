@@ -138,7 +138,7 @@ class Modules extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -524,7 +524,7 @@ class Modules extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this module?') . '
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <input type="hidden" name="module" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">

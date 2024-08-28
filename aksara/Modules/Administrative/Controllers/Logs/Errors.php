@@ -53,7 +53,7 @@ class Errors extends \Aksara\Laboratory\Core
                         ' . phrase('Are you sure want to delete this log?') . '
                     </div>
                     <input type="hidden" name="log" value="' . service('request')->getGet('log') . '" />
-                    <hr class="row border-secondary-subtle" />
+                    <hr class="m--3 border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
@@ -120,7 +120,7 @@ class Errors extends \Aksara\Laboratory\Core
                         </p>
                     </div>
                     <input type="hidden" name="confirm" value="1" />
-                    <hr class="row border-secondary-subtle" />
+                    <hr class="m--3 border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
