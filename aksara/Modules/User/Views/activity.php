@@ -82,7 +82,9 @@
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <?php if (! $results): ?>
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning callout">
+                            <h3 class="mb-0"><?= phrase('No Activities'); ?></h3>
+                            <hr />
                             <i class="mdi mdi-information-outline"></i> <?= phrase('User activity will be shown here if they have made some interaction.'); ?>
                         </div>
                     <?php endif; ?>

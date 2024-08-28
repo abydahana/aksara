@@ -53,11 +53,11 @@ class Errors extends \Aksara\Laboratory\Core
                         ' . phrase('Are you sure want to delete this log?') . '
                     </div>
                     <input type="hidden" name="log" value="' . service('request')->getGet('log') . '" />
-                    <hr class="row" />
+                    <hr class="row border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">
                                     <i class="mdi mdi-window-close"></i>
                                     ' . phrase('Cancel') . '
                                 </button>
@@ -65,7 +65,7 @@ class Errors extends \Aksara\Laboratory\Core
                         </div>
                         <div class="col-6">
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-dark btn-sm rounded-pill">
                                     <i class="mdi mdi-check"></i>
                                     ' . phrase('Continue') . '
                                 </button>
@@ -78,9 +78,8 @@ class Errors extends \Aksara\Laboratory\Core
             return make_json([
                 'status' => 200,
                 'meta' => [
-                    'title' => phrase('Remove Log'),
-                    'icon' => 'mdi mdi-alert',
-                    'popup' => true
+                    'popup' => true,
+                    'modal_size' => 'modal-sm'
                 ],
                 'content' => $html
             ]);
@@ -121,11 +120,11 @@ class Errors extends \Aksara\Laboratory\Core
                         </p>
                     </div>
                     <input type="hidden" name="confirm" value="1" />
-                    <hr class="row" />
+                    <hr class="row border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">
                                     <i class="mdi mdi-window-close"></i>
                                     ' . phrase('Cancel') . '
                                 </button>
@@ -133,7 +132,7 @@ class Errors extends \Aksara\Laboratory\Core
                         </div>
                         <div class="col-6">
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-dark btn-sm rounded-pill">
                                     <i class="mdi mdi-check"></i>
                                     ' . phrase('Clear Logs') . '
                                 </button>
@@ -146,8 +145,6 @@ class Errors extends \Aksara\Laboratory\Core
             return make_json([
                 'status' => 200,
                 'meta' => [
-                    'title' => phrase('Clear Logs'),
-                    'icon' => 'mdi mdi-alert',
                     'popup' => true
                 ],
                 'content' => $html
