@@ -141,7 +141,7 @@ $(document).ready(function() {
                                     <br />
                                     <div id="comment-text-${ val.comment_id }">
                                         ` + (typeof val.mention !== 'undefined' ? `
-                                            <div class="alert alert-warning border-0 border-start border-3 p-2 mb-2">
+                                            <div class="alert alert-warning callout p-2 mb-2">
                                                 ${ phrase('Replying to') } <b> ${ val.mention.user } </b>
                                                 <br />
                                                 ${ val.mention.comment }
