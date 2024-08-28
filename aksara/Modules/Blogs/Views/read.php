@@ -121,9 +121,10 @@
 
                     <?= comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]); ?>
                 <?php else: ?>
-                    <div class="alert alert-warning">
-                        <i class="mdi mdi-alert-outline"></i>
-                        <?= phrase('The post you requested does not exist or already been archived'); ?>
+                    <div class="alert alert-warning callout">
+                        <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
+                        <hr />
+                        <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived'); ?>
                     </div>
                 <?php endif; ?>
             </div>

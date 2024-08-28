@@ -1,7 +1,8 @@
 <div class="container-fluid py-3">
-    <p>
-        <?= phrase('You are signed in on these devices or have been recently in.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
-    </p>
+    <div class="alert alert-info callout">
+        <h3><?= phrase('Information'); ?></h3>
+        <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or have been recently in.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
+    </div>
     <div class="row">
         <div class="col-md-7 col-xxl-6">
             <?php foreach($logs as $platform => $log): ?>
@@ -38,7 +39,7 @@
                                         <?php if ($session->ip_address == service('request')->getIPAddress()): ?>
                                             <br />
                                             <i class="mdi mdi-check-circle text-primary"></i>
-                                            <?= phrase('your current session'); ?>
+                                            <?= phrase('Your current session'); ?>
                                         <?php endif; ?>
                                     </div>
                                 <?php endforeach; ?>

@@ -313,6 +313,9 @@ class Core extends Controller
         // Set the method property
         $this->_method = $method;
 
+        // Mark if method is called manually
+        $this->_set_method = true;
+
         return $this;
     }
 
@@ -2551,7 +2554,7 @@ class Core extends Controller
             $title = (isset($this->_set_title[$this->_method]) ? $this->_set_title[$this->_method] : (isset($this->_set_title['index']) ? $this->_set_title['index'] : null));
 
             // Default description property
-            $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : ('index' === $this->_method && isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+            $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 
             if (isset($results[0])) {
                 // Extract magic string
@@ -2598,13 +2601,13 @@ class Core extends Controller
                 $results = $this->render_form($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-plus');
+                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-plus');
 
                 // Set title property
-                $this->_set_title = ($this->_method && $title ? $title : phrase('Add New Data'));
+                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Add New Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_method && $description ? $description : phrase('Please fill all required field below to add new data'));
+                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Please fill all required field below to add new data'));
             } elseif ('read' == $this->_method) {
                 /**
                  * -------------------------------------------------------------
@@ -2618,13 +2621,13 @@ class Core extends Controller
                 $results = $this->render_read($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-magnify');
+                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-magnify');
 
                 // Set title property
-                $this->_set_title = ($this->_method && $title ? $title : phrase('Showing Data'));
+                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Showing Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_method && $description ? $description : phrase('Showing the result of requested data'));
+                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Showing the result of requested data'));
             } elseif ('update' == $this->_method) {
                 /**
                  * -------------------------------------------------------------
@@ -2638,13 +2641,13 @@ class Core extends Controller
                 $results = $this->render_form($results);
 
                 // Set icon property
-                $this->_set_icon = ($this->_method && $icon ? $icon : 'mdi mdi-square-edit-outline');
+                $this->_set_icon = ($this->_set_method && $icon ? $icon : 'mdi mdi-square-edit-outline');
 
                 // Set title property
-                $this->_set_title = ($this->_method && $title ? $title : phrase('Update Data'));
+                $this->_set_title = ($this->_set_method && $title ? $title : phrase('Update Data'));
 
                 // Set description property
-                $this->_set_description = ($this->_method && $description ? $description : phrase('Make sure to check the changes before submitting'));
+                $this->_set_description = ($this->_set_method && $description ? $description : phrase('Make sure to check the changes before submitting'));
             } elseif (in_array($this->_method, ['export', 'print', 'pdf'])) {
                 /**
                  * -------------------------------------------------------------

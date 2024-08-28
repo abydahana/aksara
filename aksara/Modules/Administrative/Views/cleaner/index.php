@@ -4,17 +4,13 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-lg-8">
-            <div class="alert alert-warning rounded-4">
+            <div class="alert alert-warning callout">
                 <p>
-                    <b>
-                        <?= phrase('You are about to cleaning up unused session garbage.'); ?>
-                    </b>
-                    <br />
-                    <?= phrase('All inactive session within'); ?> <b><?= $hour . ' ' . ($hour > 1 ? phrase('hours') : phrase('hour')); ?></b> <?= phrase('will be removed.'); ?>
-                    <?= phrase('This action cannot be undone.'); ?>
+                    <h3><?= phrase('Information'); ?></h3>
+                    <?= phrase('You are about to cleaning up unused session garbage.') . ' ' . phrase('All inactive session within {{ hour }} hours will be removed.', ['hour' => $hour]) . ' ' . phrase('This action cannot be undone.'); ?>
                 </p>
                 <hr />
-                <a href="<?= go_to('clean'); ?>" class="btn btn-danger btn-sm rounded-pill --xhr show-progress">
+                <a href="<?= go_to('clean'); ?>" class="btn btn-danger rounded-pill --xhr show-progress">
                     <i class="mdi mdi-check"></i>
                     <?= phrase('Click to continue'); ?>
                 </a>
