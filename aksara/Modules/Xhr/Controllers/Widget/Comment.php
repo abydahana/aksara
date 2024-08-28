@@ -290,7 +290,7 @@ class Comment extends \Aksara\Laboratory\Core
                         </span>
                     </div>
                 </div>
-                <hr />
+                <hr class="m--3" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
@@ -319,7 +319,8 @@ class Comment extends \Aksara\Laboratory\Core
                 'icon' => 'mdi mdi-square-edit-outline',
                 'popup' => true
             ],
-            'content' => $html
+            'content' => $html,
+            'reactivate' => true
         ]);
     }
 
@@ -462,7 +463,7 @@ class Comment extends \Aksara\Laboratory\Core
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>
-                <hr class="row border-secondary-subtle" />
+                <hr class="m--3 border-secondary-subtle" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">

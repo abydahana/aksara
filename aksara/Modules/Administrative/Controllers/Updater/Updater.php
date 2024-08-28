@@ -308,7 +308,7 @@ class Updater extends \Aksara\Laboratory\Core
                             </h5>
                         </a>
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
@@ -396,7 +396,7 @@ class Updater extends \Aksara\Laboratory\Core
                     </a>
                 </li>
             </ul>
-            <hr class="row" />
+            <hr class="m--3" />
             <div class="row">
                 <div class="col-6">
                     <div class="d-grid">

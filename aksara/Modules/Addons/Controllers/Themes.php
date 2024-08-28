@@ -138,7 +138,7 @@ class Themes extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -192,7 +192,7 @@ class Themes extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to activate this theme?') . '
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -490,7 +490,7 @@ class Themes extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this theme?') . '
                     </div>
-                    <hr class="row" />
+                    <hr class="m--3" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
