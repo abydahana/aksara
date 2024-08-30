@@ -2240,6 +2240,25 @@ class Core extends Controller
                     } else {
                         $columns = $this->model->list_fields($this->_table);
 
+						if ($this->_select && $this->_compiled_table) {
+							// Search from joined table
+							foreach ($this->_compiled_table as $key => $val) {
+                                // Get joined table name
+								list($joined_table) = explode('.', $val);
+
+                                // Ensure the table is not a primary table
+								if ($joined_table != $this->_table) {
+                                    // Search column of joinned table from the selection list
+									$select_search = preg_grep('/^' . preg_quote($joined_table, '/') . '/', $this->_select);
+
+									if (isset($select_search[0])) {
+                                        // Push matches into column list
+										$columns[] = $select_search[0];
+									}
+								}
+							}
+						}
+
                         if ($columns) {
                             $this->or_group_start();
 
@@ -2248,8 +2267,11 @@ class Core extends Controller
                                     continue;
                                 }
 
-                                // Add the table prefix to prevent ambiguous
-                                $val = $this->_table . '.' . $val;
+                                // Find column exclude table name
+								if (strpos($val, '.') === false) {
+                                    // Add the table prefix to prevent ambiguous
+                                    $val = $this->_table . '.' . $val;
+                                }
 
                                 // Push like an or like to the prepared query builder
                                 $this->_prepare(($key ? 'or_like' : 'like'), [$val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);

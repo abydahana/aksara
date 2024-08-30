@@ -98,7 +98,8 @@ th[align=right] {
   margin-left: -.75rem!important;
   margin-right: -.75rem!important
 }
-.modal-body .m--3 {
+.modal-body .m--3,
+.card-body .m--3 {
   margin-left: -1rem!important;
   margin-right: -1rem!important
 }
