@@ -2086,7 +2086,7 @@ class Model
                 } elseif ('fromSubquery' == $function) {
                     if ($query) {
                         // Select from subquery
-                        $this->_builder = $this->db->table($this->_table)->fromSubquery($query, $arguments[1]);
+                        $this->_builder = $this->db->newQuery()->fromSubquery($query, $arguments[1]);
                     }
 
                     continue;
