@@ -50,6 +50,9 @@
                     </p>
                 </div>
             </div>
+            <h4>
+                <?= $results->field_data->title->value; ?>
+            </h4>
             <div>
                 <?= $results->field_data->description->value; ?>
             </div>

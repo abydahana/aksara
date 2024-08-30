@@ -167,7 +167,7 @@
                                 <?php if ($categories): ?>
                                     <?php foreach ($categories as $key => $val): ?>
                                         <?php if ($key): ?>
-                                            <hr class="border-secondary" />
+                                            <hr class="m--3 border-secondary" />
                                         <?php endif; ?>
 
                                         <div class="row g-0 align-items-center">
