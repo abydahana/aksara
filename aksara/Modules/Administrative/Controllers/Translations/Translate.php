@@ -145,6 +145,12 @@ class Translate extends \Aksara\Laboratory\Core
 
                 foreach (service('request')->getPost('phrases') as $key => $val) {
                     if (isset($phrases[$key])) {
+                        if ($val) {
+                            // Sanitize unsafe input
+                            $val = strip_tags($val, '<p><a><b><i><u><span><small><br>');
+                            $val = str_ireplace(['onclick="', 'onerror="'], 'xss-clean="', $val);
+                        }
+                        
                         $phrases[$key] = $val;
                     }
                 }
