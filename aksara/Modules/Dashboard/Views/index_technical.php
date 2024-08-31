@@ -96,7 +96,7 @@
                         <div class="card mb-3">
                             <div class="card-header bg-white border-0">
                                 <h5 class="card-title mb-0">
-                                    <?= phrase('Most used browser'); ?>
+                                    <?= phrase('Most used browsers'); ?>
                                 </h5>
                             </div>
                             <div class="card-body p-3">
