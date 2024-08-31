@@ -132,7 +132,7 @@ class Announcements extends \Aksara\Laboratory\Core
     public function validate_end_date($value = null)
     {
         if (strtotime(service('request')->getPost('start_date')) >= strtotime($value)) {
-            return phrase('The end date must be greater than start date.');
+            $this->form_validation->setError('start_date', 'The end date must be greater than start date');
         }
 
         return true;

@@ -179,27 +179,17 @@ class Form
                 $value = get_setting('office_map');
                 $content = $value;
             } else {
-                $content = $this->formatter->format($content, $type);
+                $content = $this->formatter->format($field, $content, $type);
             }
 
             $checked = $value || false;
 
             if ('create' === $this->_method) {
-                if (array_intersect(['boolean'], array_keys($type))) {
-                    $checked = true;
-                } elseif (array_intersect(['select'], array_keys($type)) && is_array($content)) {
-                    foreach ($content as $key => $val) {
-                        // Match selected value
-                        $content[$key]['selected'] = (isset($this->_default_value[$field]) && $this->_default_value[$field] == $val['value']) || false;
-                    }
-                } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
-                    foreach ($content as $key => $val) {
-                        // Match checked value
-                        $content[$key]['checked'] = (isset($this->_default_value[$field]) && $this->_default_value[$field] == $val['value']) || false;
-                    }
-                } elseif (isset($this->_default_value[$field])) {
+                if (isset($this->_default_value[$field])) {
                     $value = $this->_default_value[$field];
                     $content = $value;
+                } elseif (array_intersect(['boolean'], array_keys($type))) {
+                    $checked = true;
                 }
 
                 if (array_intersect(['last_insert'], array_keys($type))) {

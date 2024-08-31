@@ -183,7 +183,7 @@ class View
             }
 
             // Get formatted content
-            $content = $this->formatter->format($content, $type, $replacement);
+            $content = $this->formatter->format($field, $content, $type, $replacement);
 
             // Add to form data response
             $field_data[$field] = [
