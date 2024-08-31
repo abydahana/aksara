@@ -24,7 +24,7 @@
         "mpdf/mpdf": "^8.0",
         "chillerlan/php-qrcode": "^3.3",
         "picqer/php-barcode-generator": "^2.1",
-        "phpoffice/phpspreadsheet": "^1.19"
+        "phpoffice/phpspreadsheet": "^2.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",
