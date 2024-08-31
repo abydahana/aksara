@@ -18,11 +18,11 @@ Anda juga dapat menggunakan metode secara multiple seperti berikut:
 ```php
 $this->field_prepend
 (
-	array
-	(
-		'harga' => 'Rp.',
-		'url' => 'http://'
-	)
+    array
+    (
+        'harga' => 'Rp.',
+        'url' => 'http://'
+    )
 );
 ```
 

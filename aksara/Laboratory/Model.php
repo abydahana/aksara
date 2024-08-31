@@ -120,7 +120,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (ENVIRONMENT !== 'production');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Decrypt error
                 return throw_exception(403, $e->getMessage());
             }
@@ -131,7 +131,7 @@ class Model
 
                 // Try to initialize the connection
                 $this->db->initialize();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
         } elseif ($driver && $hostname && $username && $database) {
@@ -160,7 +160,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (ENVIRONMENT !== 'production');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return throw_exception(403, $e->getMessage());
             }
         }

@@ -18,7 +18,6 @@
 namespace Aksara\Laboratory\Renderer\Components;
 
 use Aksara\Laboratory\Traits;
-
 use Aksara\Laboratory\Builder\Builder;
 use Aksara\Laboratory\Renderer\Formatter;
 use Aksara\Laboratory\Renderer\Parser;
@@ -120,7 +119,7 @@ class View
                 $primary_key[$field] = $value;
             }
 
-            if ($hidden || array_intersect(['current_timestamp'], array_keys($type))) {
+            if ($hidden) {
                 // Skip showing field
                 continue;
             }

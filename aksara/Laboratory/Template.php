@@ -20,7 +20,6 @@ namespace Aksara\Laboratory;
 use Aksara\Laboratory\Model;
 use Aksara\Libraries\Beautifier;
 use Aksara\Libraries\Html_dom;
-
 use Aksara\Laboratory\Renderer\Parser;
 
 class Template
@@ -96,7 +95,7 @@ class Template
 
             try {
                 $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/package.json'));
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
 
@@ -207,8 +206,7 @@ class Template
          * ---------------------------------------------------------------------
          * Find view from user modules
          * ---------------------------------------------------------------------
-         */
-        elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
             // View is found under i18n path
             $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $method . $suffix);
         } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
@@ -250,8 +248,7 @@ class Template
          * ---------------------------------------------------------------------
          * Find view from core modules
          * ---------------------------------------------------------------------
-         */
-        elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
             // View is found under i18n path
             $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $method . $suffix);
         } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
@@ -290,8 +287,7 @@ class Template
          * ---------------------------------------------------------------------
          * Find fallback view if doesn't match anything from above occurrence
          * ---------------------------------------------------------------------
-         */
-        elseif (file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.php')) {
             // View is found without i18n path
             $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $method . $suffix);
         } elseif (file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.php')) {

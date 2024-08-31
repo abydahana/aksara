@@ -37,7 +37,7 @@ class Register extends \Aksara\Laboratory\Core
         if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
             try {
                 unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -59,7 +59,7 @@ class Register extends \Aksara\Laboratory\Core
             if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
                 try {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Safe abstraction
                 }
             }

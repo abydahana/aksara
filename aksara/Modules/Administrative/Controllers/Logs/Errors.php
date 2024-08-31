@@ -53,7 +53,7 @@ class Errors extends \Aksara\Laboratory\Core
                         ' . phrase('Are you sure want to delete this log?') . '
                     </div>
                     <input type="hidden" name="log" value="' . service('request')->getGet('log') . '" />
-                    <hr class="m--3 border-secondary-subtle" />
+                    <hr class="mx--3 border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
@@ -91,7 +91,7 @@ class Errors extends \Aksara\Laboratory\Core
             unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename);
 
             $deleted = true;
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $deleted = false;
         }
 
@@ -120,7 +120,7 @@ class Errors extends \Aksara\Laboratory\Core
                         </p>
                     </div>
                     <input type="hidden" name="confirm" value="1" />
-                    <hr class="m--3 border-secondary-subtle" />
+                    <hr class="mx--3 border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
@@ -174,7 +174,7 @@ class Errors extends \Aksara\Laboratory\Core
                     unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $val);
 
                     $success++;
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                 }
             }
         }

@@ -21,11 +21,11 @@ Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 ```php
 $this->column_size
 (
-	array
-	(
-		1 => 'col-md-8',
-		2 => 'col-md-4'
-	)
+    array
+    (
+        1 => 'col-md-8',
+        2 => 'col-md-4'
+    )
 );
 ```
 

@@ -68,7 +68,7 @@ class Sso extends \Aksara\Laboratory\Core
                 // Throw exception
                 throw new \Throwable(phrase('Unable to signing you in using th selected platform.'));
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_exception(403, $e->getMessage(), base_url('auth'));
         }
     }

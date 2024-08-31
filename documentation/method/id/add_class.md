@@ -22,10 +22,10 @@ Anda juga dapat menggunakan metode ini secara multiple, misalnya:
 ```php
 $this->add_class
 (
-	array
-	(
-		'nama_lengkap' => 'extra-class',
-		'alamat' => 'another-class'
-	)
+    array
+    (
+        'nama_lengkap' => 'extra-class',
+        'alamat' => 'another-class'
+    )
 );
 ```

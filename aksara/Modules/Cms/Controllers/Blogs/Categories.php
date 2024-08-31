@@ -56,7 +56,7 @@ class Categories extends \Aksara\Laboratory\Core
             'category_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('category_slug', 'to_slug', 'category_title')
+        ->set_field('category_slug', 'slug', 'category_title')
         ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'category_id'])
         ->set_relation(
             'language_id',
@@ -70,6 +70,7 @@ class Categories extends \Aksara\Laboratory\Core
             'category_title' => 'required|max_length[64]|unique[' . $this->_table . '.category_title.category_id.' . service('request')->getGet('category_id') . ']',
             'category_slug' => 'max_length[64]|unique[' . $this->_table . '.category_slug.category_id.' . service('request')->getGet('category_id') . ']',
             'category_description' => 'required',
+            'language_id' => 'required',
             'status' => 'boolean'
         ])
         ->set_alias([
@@ -79,6 +80,9 @@ class Categories extends \Aksara\Laboratory\Core
             'category_description' => phrase('Description'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
+        ])
+        ->set_placeholder([
+            'category_description' => phrase('Category details to improve SEO')
         ])
 
         ->render($this->_table);

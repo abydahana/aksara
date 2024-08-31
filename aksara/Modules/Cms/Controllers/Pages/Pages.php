@@ -39,6 +39,15 @@ class Pages extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
+        if ($this->get_method() === 'create') {
+            $this->set_field('created_timestamp', 'current_timestamp');
+        } elseif ($this->get_method() === 'update') {
+            $this->set_field('updated_timestamp', 'current_timestamp');
+        } else {
+            $this->set_field('created_timestamp', 'datetime');
+            $this->set_field('updated_timestamp', 'datetime');
+        }
+
         $this->set_title(phrase('Pages'))
         ->set_icon('mdi mdi-file-document-outline')
         ->set_primary('page_id')
@@ -50,11 +59,9 @@ class Pages extends \Aksara\Laboratory\Core
         ->set_field([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',
-            'created_timestamp' => 'current_timestamp',
-            'updated_timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field('page_slug', 'to_slug', 'page_title')
+        ->set_field('page_slug', 'slug', 'page_title')
         ->set_field('page_title', 'hyperlink', 'pages', ['page_id' => 'page_id'], true)
 
         ->add_button('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
@@ -87,6 +94,7 @@ class Pages extends \Aksara\Laboratory\Core
             'page_title' => 'required|max_length[64]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
             'page_slug' => 'max_length[64]|unique[' . $this->_table . '.page_slug.page_id.' . service('request')->getGet('page_id') . ']',
             'page_content' => 'required',
+            'language_id' => 'required',
             'status' => 'boolean'
         ])
         ->set_default([
@@ -105,6 +113,9 @@ class Pages extends \Aksara\Laboratory\Core
             'updated_timestamp' => phrase('Updated'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
+        ])
+        ->set_placeholder([
+            'page_description' => phrase('Page summary to improve SEO')
         ])
         ->field_position([
             'carousel_id' => 2,

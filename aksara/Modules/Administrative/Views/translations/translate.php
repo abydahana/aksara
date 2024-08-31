@@ -79,11 +79,11 @@
         </div>
     </div>
     
-    <hr class="m--3" />
+    <hr class="mx--3" />
     
     <?= pagination($pagination); ?>
     
-    <hr class="m--3" />
+    <hr class="mx--3" />
     
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row">

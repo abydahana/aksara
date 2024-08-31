@@ -84,7 +84,7 @@ class Builder
                 // Get component
                 $component = file_get_contents($directory . ($path ? '/' . $path : null) . '/' . $type . '.twig');
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
             exit($e->getMessage());
         }

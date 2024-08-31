@@ -76,6 +76,9 @@ th[align=right] {
 .toast-container {
   z-index: 1090 !important;
 }
+.toast {
+  border-radius:1.25rem!important
+}
 .callout {
   border-width: 0!important;
   border-left-width: .25rem!important
@@ -94,12 +97,13 @@ th[align=right] {
   margin-right: -1rem!important;
   margin-bottom: -1rem !important;
 }
-.m--3 {
+.mx--3 {
   margin-left: -.75rem!important;
   margin-right: -.75rem!important
 }
-.modal-body .m--3,
-.card-body .m--3 {
+.modal-body .mx--3,
+.card-body .mx--3,
+.alert .mx--3 {
   margin-left: -1rem!important;
   margin-right: -1rem!important
 }
@@ -116,6 +120,10 @@ th[align=right] {
 .list-group-item-action i {
   width: 30px;
   display: inline-block;
+}
+.btn-group-sm .rounded-end {
+  border-top-right-radius: .25rem!important;
+  border-bottom-right-radius: .25rem!important;
 }
 .btn-group-xs > .btn,
 .btn-xs {
@@ -194,6 +202,9 @@ input::-webkit-inner-spin-button {
 }
 textarea {
   resize: none !important;
+}
+.form-control::placeholder {
+  opacity: .75!important
 }
 .form-control[readonly],
 .form-control:focus[readonly] {

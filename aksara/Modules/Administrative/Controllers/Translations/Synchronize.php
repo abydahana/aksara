@@ -53,7 +53,7 @@ class Synchronize extends \Aksara\Laboratory\Core
 
                     // Merge phrases
                     $populated_phrases = array_merge($populated_phrases, json_decode($translation, true));
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     /* failed to write file, throw an error exception */
                     $error++;
                 }
@@ -79,7 +79,7 @@ class Synchronize extends \Aksara\Laboratory\Core
                     ksort($phrases);
 
                     file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     /* failed to write file, throw an error exception */
                     $error++;
                 }

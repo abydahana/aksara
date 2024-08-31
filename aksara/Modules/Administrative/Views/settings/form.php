@@ -127,6 +127,15 @@
                                     <?= form_input($results->field_data->one_device_login); ?>
                                 </div>
                             </div>
+                            <hr class="border-secondary" />
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <?= form_input($results->field_data->account_age_restriction); ?>
+                                </div>
+                                <div class="col-sm-3">
+                                    <?= form_input($results->field_data->spam_timer); ?>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="pills-apis">
                             <h5>

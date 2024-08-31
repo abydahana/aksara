@@ -53,7 +53,7 @@
             </form>
         </div>
     </div>
-    <hr class="m--3 mt-0" />
+    <hr class="mx--3 mt-0" />
     <div class="row addon-listing">
         <!-- addon listing -->
     </div>

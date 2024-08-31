@@ -86,7 +86,7 @@ class Translations extends \Aksara\Laboratory\Core
                 /* put content into file */
                 file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json', json_encode([]));
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             /* failed to write file */
         }
     }
@@ -100,7 +100,7 @@ class Translations extends \Aksara\Laboratory\Core
                 /* rename old file */
                 rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json');
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             /* failed to write file */
         }
     }

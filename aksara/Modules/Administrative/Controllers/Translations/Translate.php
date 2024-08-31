@@ -118,7 +118,7 @@ class Translate extends \Aksara\Laboratory\Core
 
                     // Attempt to update the translation file
                     file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Failed to write file, increase error counts
                     $error++;
                 }
@@ -152,7 +152,7 @@ class Translate extends \Aksara\Laboratory\Core
                 file_put_contents($this->_translation_file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return throw_exception(403, $e->getMessage(), current_page());
             }
         } else {

@@ -288,7 +288,7 @@ class Document
                     }
 
                     unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Debug
                 }
             }

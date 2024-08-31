@@ -21,7 +21,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter = null)
     {
-        $version = '5.1.2';
+        $version = '5.1.3';
 
         if ('version' == $parameter) {
             return $version;
@@ -183,7 +183,7 @@ if (! function_exists('phrase')) {
 
                     // Put default content to file
                     file_put_contents($translation_file, json_encode([]));
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Safe absraction
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
@@ -191,7 +191,7 @@ if (! function_exists('phrase')) {
                 try {
                     // Put content into file
                     file_put_contents($translation_file, json_encode([]));
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Safe abstraction
                 }
             }
@@ -218,8 +218,8 @@ if (! function_exists('phrase')) {
                 }
             }
 
-            $phrase = htmlspecialchars($phrases[$phrase]);
-        } catch(\Throwable $e) {
+            $phrase = $phrases[$phrase];
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 

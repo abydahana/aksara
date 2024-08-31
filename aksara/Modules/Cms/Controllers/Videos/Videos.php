@@ -43,19 +43,19 @@ class Videos extends \Aksara\Laboratory\Core
             'cover' => 'image',
             'description' => 'textarea',
             'featured' => 'boolean',
+            'timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field('slug', 'to_slug', 'title')
+        ->set_field('slug', 'slug', 'title')
 
         ->set_default([
-            'author' => get_userdata('user_id'),
-            'timestamp' => date('Y-m-d H:i:s')
+            'author' => get_userdata('user_id')
         ])
 
         ->set_validation([
             'title' => 'required|unique[' . $this->_table . '.title.id.' . service('request')->getGet('id') . ']',
             'description' => 'required',
-            'video_url' => 'valid_url',
+            'video_url' => 'required|valid_url',
             'featured' => 'boolean',
             'status' => 'boolean'
         ])
@@ -66,6 +66,15 @@ class Videos extends \Aksara\Laboratory\Core
             'video_url' => phrase('Video URL'),
             'featured' => phrase('Featured'),
             'status' => phrase('Status')
+        ])
+
+        ->set_placeholder([
+            'description' => phrase('Video description'),
+            'video_url' => 'e.g: https://www.youtube.com/watch?v=ZyTjlNkFfd4'
+        ])
+
+        ->set_tooltip([
+            'video_url' => phrase('You can use YouTube, Facebook, Vimeo, DailyMotion and Twitch video')
         ])
 
         ->render($this->_table);

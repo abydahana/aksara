@@ -85,7 +85,7 @@ class Addons extends \Aksara\Laboratory\Core
                         ]
                     ]
                 );
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return make_json([
                         'error' => $e->getMessage()
                 ]);
@@ -149,7 +149,7 @@ class Addons extends \Aksara\Laboratory\Core
                         ]
                     ]
                 );
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return make_json([
                     'error' => $e->getMessage()
                 ]);
@@ -181,7 +181,7 @@ class Addons extends \Aksara\Laboratory\Core
 
                         // Copy the repository to temporary path
                         copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReason(), go_to());
                     }
@@ -270,7 +270,7 @@ class Addons extends \Aksara\Laboratory\Core
                                 <div class="text-center">
                                     ' . phrase('The ' . $type . ' package with same structure is already installed.') . ' ' . phrase('Do you want to upgrade the ' . $type . ' instead?') . '
                                 </div>
-                                <hr class="m--3" />
+                                <hr class="mx--3" />
                                 <input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
                                 <div class="row">
                                     <div class="col-6">
@@ -357,7 +357,7 @@ class Addons extends \Aksara\Laboratory\Core
                             if ($migration->latest()) {
                                 //
                             }
-                        } catch(\Throwable $e) {
+                        } catch (\Throwable $e) {
                             /* migration error, delete module */
                             $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -598,7 +598,7 @@ class Addons extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return make_json([
                 'error' => $e->getMessage()
             ]);
@@ -660,7 +660,7 @@ class Addons extends \Aksara\Laboratory\Core
                             /* close FTP connection */
                             ftp_close($connection);
                         }
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         return throw_exception(403, $e->getMessage(), go_to());
                     }
                 }

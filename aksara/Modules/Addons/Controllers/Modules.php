@@ -55,7 +55,7 @@ class Modules extends \Aksara\Laboratory\Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
@@ -117,7 +117,7 @@ class Modules extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_excetion(404, $e->getMessage());
         }
 
@@ -138,7 +138,7 @@ class Modules extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -332,7 +332,7 @@ class Modules extends \Aksara\Laboratory\Core
                         if ($migration->latest()) {
                             //
                         }
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         /* migration error, delete module */
                         $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -524,7 +524,7 @@ class Modules extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this module?') . '
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <input type="hidden" name="module" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -591,7 +591,7 @@ class Modules extends \Aksara\Laboratory\Core
 
                         // Trying to run the migration
                         $migration->regress(($query->batch - 1));
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         return throw_exception(400, ['module' => $e->getMessage()]);
                     }
                 }
@@ -777,7 +777,7 @@ class Modules extends \Aksara\Laboratory\Core
                             /* close FTP connection */
                             ftp_close($connection);
                         }
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         return throw_exception(400, ['file' => $e->getMessage()]);
                     }
                 }

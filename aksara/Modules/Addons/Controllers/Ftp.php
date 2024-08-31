@@ -80,7 +80,7 @@ class Ftp extends \Aksara\Laboratory\Core
                 // Try to login to FTP
                 $login = ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password'));
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw_exception(400, ['hostname' => $e->getMessage()]);
         }
     }

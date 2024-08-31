@@ -53,7 +53,7 @@ class Media extends \Aksara\Laboratory\Core
     {
         try {
             unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_exception(403, $e->getMessage());
         }
 

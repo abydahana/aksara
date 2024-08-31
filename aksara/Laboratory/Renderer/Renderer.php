@@ -18,7 +18,6 @@
 namespace Aksara\Laboratory\Renderer;
 
 use Aksara\Laboratory\Traits;
-
 use Aksara\Laboratory\Renderer\Components\Core;
 use Aksara\Laboratory\Renderer\Components\Table;
 use Aksara\Laboratory\Renderer\Components\Form;

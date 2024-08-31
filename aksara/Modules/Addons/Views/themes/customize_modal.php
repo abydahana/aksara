@@ -120,7 +120,7 @@
                 </div>
             </div>
         </div>
-        <hr class="m--3" />
+        <hr class="mx--3" />
         <div class="row">
             <div class="col-md-12 text-end">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">

@@ -27,7 +27,7 @@ define('TIMEZONE', '%TIMEZONE%');
  * Set the environment
  * Available option: development, production
  */
-define('ENVIRONMENT', 'development');
+define('ENVIRONMENT', 'production');
 
 /**
  * Set the default site url

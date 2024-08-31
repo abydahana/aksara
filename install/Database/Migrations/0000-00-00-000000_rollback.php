@@ -49,7 +49,7 @@ class Rollback extends Migration
                     try {
                         // Drop foreign key
                         $this->forge->dropForeignKey($_val->table_name, $_val->constraint_name);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 }

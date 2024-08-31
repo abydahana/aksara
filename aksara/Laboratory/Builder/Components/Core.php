@@ -538,7 +538,7 @@ class Core
     public function form_modal($type = null)
     {
         $component = <<<EOF
-        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
                 <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
                     <div class="modal-header">
@@ -686,7 +686,7 @@ class Core
     public function read_modal($type = null)
     {
         $component = <<<EOF
-        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
                 <div class="modal-content {% if modal %} border shadow {% endif %}">
                     <div class="modal-header">
@@ -776,14 +776,14 @@ class Core
             {% endif %}
             <div class="input-group">
                 {% if params.prepend %}
-                    <span class="input-group-text"> {{ params.prepend }} </span>
+                    <span class="input-group-text"> {{ params.prepend | raw }} </span>
                 {% endif %}
 
                 {# Include form component #}
                 {% include 'form/' ~ params.type ~ '.twig' with params %}
                 
                 {% if params.append %}
-                    <span class="input-group-text"> {{ params.append }} </span>
+                    <span class="input-group-text"> {{ params.append | raw }} </span>
                 {% endif %}
             </div>
         </div>
@@ -812,14 +812,14 @@ class Core
             {% endif %}
             <div class="input-group">
                 {% if params.prepend %}
-                    <span class="input-group-text-unformatted me-2"> {{ params.prepend }} </span>
+                    <span class="input-group-text-unformatted me-2"> {{ params.prepend | raw }} </span>
                 {% endif %}
 
                 {# Include form component #}
                 {% include 'view/' ~ params.type ~ '.twig' with params %}
                 
                 {% if params.append %}
-                    <span class="input-group-text-unformatted ms-2"> {{ params.append }} </span>
+                    <span class="input-group-text-unformatted ms-2"> {{ params.append | raw }} </span>
                 {% endif %}
             </div>
         </div>
@@ -834,7 +834,7 @@ class Core
     public function modal($type = null)
     {
         $component = <<<EOF
-        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
                 <div class="modal-content">
                     <div class="modal-header">

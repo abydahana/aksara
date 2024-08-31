@@ -33,7 +33,7 @@
                         <?= phrase('Email'); ?>
                     </label>
                     <p class="lead">
-                        <a href="mailto:<?= get_setting('office_phone'); ?>" target="_blank">
+                        <a href="mailto:<?= get_setting('office_email'); ?>" target="_blank">
                             <?= get_setting('office_email'); ?>
                         </a>
                     </p>
@@ -118,16 +118,15 @@
                             </div>
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <label>
-                                        <input type="checkbox" name="copy" class="form-check-input" value="1" checked />
-                                        <?= phrase('Request a copy'); ?>
-                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" name="copy" class="form-check-input" value="1" id="copy_input" checked />
+                                        <label class="form-check-label" for="copy_input"> <?= phrase('Request a copy'); ?> </label>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="mdi mdi-check"></i>
-                                            <?= phrase('Send Message'); ?>
+                                            <?= phrase('Send Message'); ?> <i class="mdi mdi-send"></i>
                                         </button>
                                     </div>
                                 </div>

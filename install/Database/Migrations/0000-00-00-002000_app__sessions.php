@@ -35,12 +35,12 @@ class AppSessions extends Migration
                 'constraint' => 45,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'data' => [
                 'type' => (in_array($this->db->DBDriver, ['Postgre']) ? 'bytea' : (in_array($this->db->DBDriver, ['SQLSRV']) ? 'binary' : 'blob')),
+                'null' => false
+            ],
+            'timestamp' => [
+                'type' => 'timestamp',
                 'null' => false
             ]
         ]);

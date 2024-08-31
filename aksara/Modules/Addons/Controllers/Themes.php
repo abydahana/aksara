@@ -55,7 +55,7 @@ class Themes extends \Aksara\Laboratory\Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
@@ -117,7 +117,7 @@ class Themes extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_excetion(404, $e->getMessage());
         }
 
@@ -138,7 +138,7 @@ class Themes extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -192,7 +192,7 @@ class Themes extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to activate this theme?') . '
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -490,7 +490,7 @@ class Themes extends \Aksara\Laboratory\Core
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this theme?') . '
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -646,7 +646,7 @@ class Themes extends \Aksara\Laboratory\Core
                             /* close FTP connection */
                             ftp_close($connection);
                         }
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         return throw_exception(400, ['file' => $e->getMessage()]);
                     }
                 }

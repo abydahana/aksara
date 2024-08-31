@@ -16,49 +16,49 @@ $(document).ready(function() {
         }
     });
 
-	/**
-	 * Simple request and modify
-	 */
-	$('body').on('click', '.--upvote', function(e)
-	{
-		e.preventDefault();
-		
-		xhr = $.ajax({
-			url: $(this).data('href'),
-			method: 'POST',
-			context: this,
-			beforeSend: function() {
-				$(this).prop('disabled', true);
-				$('[data-bs-toggle=tooltip]').tooltip('dispose')
-			},
-			complete: function() {
-				$(this).prop('disabled', false)
-			},
-			statusCode: {
-				403: function(response, status, error) {
+    /**
+     * Simple request and modify
+     */
+    $('body').on('click', '.--upvote', function(e)
+    {
+        e.preventDefault();
+        
+        xhr = $.ajax({
+            url: $(this).data('href'),
+            method: 'POST',
+            context: this,
+            beforeSend: function() {
+                $(this).prop('disabled', true);
+                $('[data-bs-toggle=tooltip]').tooltip('dispose')
+            },
+            complete: function() {
+                $(this).prop('disabled', false)
+            },
+            statusCode: {
+                403: function(response, status, error) {
                     if (config.action_sound) {
                         warningBuzzer.play()
                     }
 
-					if (typeof response.responseJSON !== 'undefined') {
-						response = response.responseJSON;
-						
-						throw_exception(response.status, response.message)
-					}
-				}
-			}
-		})
-		.done(function(response) {
-			if (typeof response.element !== 'undefined' && response.content !== 'undefined') {
-				$(response.element).html(response.content)
-			}
-		})
-		.fail(function(response, status, error) {
-			if (response.statusText == 'abort') {
-				return;
-			}
-		})
-	});
+                    if (typeof response.responseJSON !== 'undefined') {
+                        response = response.responseJSON;
+                        
+                        throw_exception(response.status, response.message)
+                    }
+                }
+            }
+        })
+        .done(function(response) {
+            if (typeof response.element !== 'undefined' && response.content !== 'undefined') {
+                $(response.element).html(response.content)
+            }
+        })
+        .fail(function(response, status, error) {
+            if (response.statusText == 'abort') {
+                return;
+            }
+        })
+    });
     
     /**
      * Fetch comment comments
@@ -222,13 +222,13 @@ $(document).ready(function() {
                 `).appendTo(container)
             }
         })
-		.fail(function(response, status, error) {
-			if (response.statusText == 'abort') {
-				return;
-			}
+        .fail(function(response, status, error) {
+            if (response.statusText == 'abort') {
+                return;
+            }
             
             container.find('.spinner').remove();
-		})
+        })
     });
     
     /**
@@ -320,10 +320,10 @@ $(document).ready(function() {
                 }
             });
         })
-		.fail(function(response, status, error) {
-			if (response.statusText == 'abort') {
-				return;
-			}
-		})
+        .fail(function(response, status, error) {
+            if (response.statusText == 'abort') {
+                return;
+            }
+        })
     })
 });

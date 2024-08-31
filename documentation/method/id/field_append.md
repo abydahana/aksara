@@ -18,11 +18,11 @@ Anda juga dapat menggunakan metode secara multiple seperti berikut:
 ```php
 $this->field_append
 (
-	array
-	(
-		'pajak' => '%',
-		'ukuran' => 'cm'
-	)
+    array
+    (
+        'pajak' => '%',
+        'ukuran' => 'cm'
+    )
 );
 ```
 

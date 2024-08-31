@@ -54,19 +54,6 @@ class Cleaner extends \Aksara\Laboratory\Core
         $error = false;
 
         /**
-         * Clean visitor log garbage that exceed 7 days
-         */
-        if ('Postgre' == DB_DRIVER) {
-            $this->model->where('extract(epoch from timestamp) < ', strtotime('-7 day'));
-        } else {
-            $this->model->where('timestamp < ', date('Y-m-d H:i:s', strtotime('-7 days')));
-        }
-
-        $garbage_visitors = $this->model->delete('app__log_visitors');
-
-        $logs_cleaned = $this->model->affected_rows();
-
-        /**
          * Clean session garbage
          */
         $session_driver = (config('Session')->driver ? config('Session')->driver : '');
@@ -95,7 +82,8 @@ class Cleaner extends \Aksara\Laboratory\Core
                             if (unlink($session_path . DIRECTORY_SEPARATOR . $val)) {
                                 $session_cleaned++;
                             }
-                        } catch(\Throwable $e) {
+                        } catch (\Throwable $e) {
+                            // Safe abstraction
                         }
                     }
                 }
@@ -110,7 +98,7 @@ class Cleaner extends \Aksara\Laboratory\Core
                 $this->model->where('timestamp < ', (time() - $session_expiration));
             }
 
-            $query = $this->model->delete($session_path);
+            $this->model->delete($session_path);
 
             $session_cleaned = $this->model->affected_rows();
         }
@@ -118,38 +106,18 @@ class Cleaner extends \Aksara\Laboratory\Core
         if ($error) {
             // Throw with error
             return throw_exception(403, $error, go_to());
-        } elseif ($logs_cleaned > 0 || $session_cleaned > 0) {
+        } elseif ($session_cleaned > 0) {
             // Throw with amount of cleaned garbage
             $html = '
                 <div class="text-center">
                     <i class="mdi mdi-delete-empty mdi-5x text-success"></i>
-                    <br />
                     <h5>
-                        ' . phrase('The session garbage was successfully cleaned!') . '
+                        ' . phrase('Garbage Cleaned!') . '
                     </h5>
-                </div>
-                <p class="text-center">
-                    ' . phrase('Below is the detailed information about the cleaned garbage') . '
-                </p>
-                <div class="row">
-                    <div class="col-6 text-end">
-                        ' . phrase('Visitor Logs') . '
-                    </div>
-                    <div class="col-6">
-                        <b>' . number_format($logs_cleaned) . '</b> ' . phrase('cleaned') . '
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 text-end">
-                        ' . phrase('Expired Session') . '
-                    </div>
-                    <div class="col-6">
-                        <b>' . number_format($session_cleaned) . '</b> ' . phrase('cleaned') . '
-                    </div>
-                </div>
-                <hr class="border-secondary" />
-                <div class="text-end">
-                    <a href="javascript:void(0)" class="btn btn-light" data-bs-dismiss="modal">
+                    <p>
+                        ' . phrase('There are {{ sessions }} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
+                    </p>
+                    <a href="javascript:void(0)" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>
                         ' . phrase('Close') . '
                         <em class="text-sm">(esc)</em>
@@ -160,9 +128,8 @@ class Cleaner extends \Aksara\Laboratory\Core
             return make_json([
                 'status' => 200,
                 'meta' => [
-                    'title' => phrase('Garbage Cleaned'),
-                    'icon' => 'mdi mdi-check',
-                    'popup' => true
+                    'popup' => true,
+                    'modal_size' => 'modal-sm'
                 ],
                 'content' => $html
             ]);

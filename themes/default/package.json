@@ -1,31 +1,31 @@
 {
-	"name": "Default front end theme",
-	"description": "The default front end theme bundle",
-	"version": "1.0",
-	"author": "Aby Dahana",
-	"website": "https://abydahana.github.io",
-	"demo_url": "https://www.aksaracms.com",
-	"type": "frontend",
-	"compatibility":
-	[
-		"4.1"
-	],
-	"configs": {
-		"wrapper": {
-			"page": "#page-wrapper",
-			"content": "#content-wrapper",
-			"header": "#header-wrapper",
-			"footer": "#footer-wrapper",
-			"title": "#title-wrapper",
-			"breadcrumb": "#breadcrumb-wrapper",
-			"sidebar": "#sidebar-wrapper"
-		}
-	},
-	"screenshot":
-	[
-		{
-			"src": "assets/screenshot.png",
-			"alt": "Screenshot"
-		}
-	]
+    "name": "Default front end theme",
+    "description": "The default front end theme bundle",
+    "version": "1.0",
+    "author": "Aby Dahana",
+    "website": "https://abydahana.github.io",
+    "demo_url": "https://www.aksaracms.com",
+    "type": "frontend",
+    "compatibility":
+    [
+        "5.1"
+    ],
+    "configs": {
+        "wrapper": {
+            "page": "#page-wrapper",
+            "content": "#content-wrapper",
+            "header": "#header-wrapper",
+            "footer": "#footer-wrapper",
+            "title": "#title-wrapper",
+            "breadcrumb": "#breadcrumb-wrapper",
+            "sidebar": "#sidebar-wrapper"
+        }
+    },
+    "screenshot":
+    [
+        {
+            "src": "assets/screenshot.png",
+            "alt": "Screenshot"
+        }
+    ]
 }

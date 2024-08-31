@@ -18,11 +18,11 @@ Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 ```php
 $this->field_size
 (
-	array
-	(
-		'hostname' => 'col-md-8',
-		'port' => 'col-md-4'
-	)
+    array
+    (
+        'hostname' => 'col-md-8',
+        'port' => 'col-md-4'
+    )
 );
 ```
 

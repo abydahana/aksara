@@ -24,11 +24,18 @@ class Updater extends Migration
     public function up()
     {
         // Preserved for upgrade
-        $this->forge->addColumn('announcements', [
-            'cover' => [
-                'type' => 'varchar',
-                'constraint' => 255,
-                'after' => 'content'
+        $this->forge->addColumn('app__settings', [
+            'account_age_restriction' => [
+                'type' => 'smallint',
+                'constraint' => 3,
+                'default' => '0',
+                'after' => 'one_device_login'
+            ],
+            'spam_timer' => [
+                'type' => 'smallint',
+                'constraint' => 5,
+                'default' => '0',
+                'after' => 'account_age_restriction'
             ]
         ]);
     }

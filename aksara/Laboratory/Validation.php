@@ -355,7 +355,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -367,7 +367,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -379,7 +379,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;

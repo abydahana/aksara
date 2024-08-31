@@ -319,7 +319,7 @@ class Auth extends \Aksara\Laboratory\Core
 
                 // Disconnect the adapter (log out)
                 $adapter->disconnect();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -391,7 +391,7 @@ class Auth extends \Aksara\Laboratory\Core
 
         try {
             $user_id = service('encrypter')->decrypt(base64_decode(service('request')->getGet('activation')));
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
