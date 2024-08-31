@@ -136,7 +136,7 @@ class Messaging
             try {
                 // Send email
                 $email->send();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // return throw_exception(400, array('message' => $email->printDebugger()));
             }
         } else {

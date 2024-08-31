@@ -120,7 +120,7 @@ class Assets extends \Aksara\Laboratory\Core
                     }
                 }
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             exit($e->getMessage());
         }
 
@@ -191,7 +191,7 @@ class Assets extends \Aksara\Laboratory\Core
                 // IE fixer
                 $output .= file_get_contents('assets/local/js/ie.fix.min.js');
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             exit($e->getMessage());
         }
 
@@ -256,7 +256,7 @@ class Assets extends \Aksara\Laboratory\Core
                     // Merge main configs and theme package
                     $configs = array_merge($configs, $theme_package['configs']);
                 }
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -273,7 +273,7 @@ class Assets extends \Aksara\Laboratory\Core
                 $phrases = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . get_userdata('language') . '.json');
                 $phrases = json_decode($phrases, true);
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 

@@ -28,12 +28,13 @@
 
 <div class="updater-placeholder"></div>
 <div class="container-fluid py-3">
+    <?php if (! get_userdata('hideGreeting')): ?>
     <div class="row" id="greeting-card">
         <div class="col-12">
             <div class="card mb-3">
                 <div class="card-body p-3">
                     <h3>
-                        <a href="javascript:void(0)" class="btn btn-close float-end" onclick="jExec($(this).closest('#greeting-card').slideUp())"></a>
+                        <button type="button" class="btn btn-close btn-greeting float-end"></button>
                         <?= phrase('Welcome to'); ?> Aksara!
                     </h3>
                     <p class="text-muted">
@@ -124,6 +125,7 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
@@ -458,7 +460,7 @@
                     data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>
                 }]
             })
-        }),
+        });
         
         $.ajax ({
             url: '<?= current_page(); ?>',
@@ -491,6 +493,18 @@
             }
             
             clearInterval(interval)
+        });
+        
+        $('body').off('click.greeting touch.greeting'),
+        $('body').on('click.greeting touch.greeting', '.btn-greeting', function(e) {
+            $.ajax({
+                url: '<?= base_url('xhr/settings'); ?>',
+                method: 'POST',
+                data: {
+                    hideGreeting: true
+                }
+            });
+            $(this).closest('#greeting-card').slideUp()
         })
     })
 </script>

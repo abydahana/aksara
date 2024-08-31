@@ -249,7 +249,7 @@ if (! function_exists('fetch_metadata')) {
             ]);
 
             return json_decode($response->getBody());
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return $e;
         }
 

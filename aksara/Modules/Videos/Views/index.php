@@ -25,12 +25,12 @@
                                     </a>
                                 </div>
                                 <div class="col-10 ps-2">
-                                    <h4 class="mb-0">
+                                    <h5 class="mb-0">
                                         <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr" data-bs-toggle="tooltip" title="<?= $val->title; ?>">
-                                            <?= truncate($val->title, 64); ?>
+                                            <?= truncate($val->title, 60); ?>
                                         </a>
-                                    </h4>
-                                    <p class="lead mb-0">
+                                    </h5>
+                                    <p class="mb-0">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark --xhr">
                                             <b>
                                                 <?= $val->first_name . ' ' . $val->last_name; ?>

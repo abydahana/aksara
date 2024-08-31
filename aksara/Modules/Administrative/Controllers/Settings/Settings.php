@@ -84,6 +84,8 @@ class Settings extends \Aksara\Laboratory\Core
             'one_device_login' => 'boolean',
             'login_attempt' => 'number_format',
             'blocking_time' => 'number_format',
+            'account_age_restriction' => 'number_format',
+            'spam_timer' => 'number_format',
             'username_change' => 'boolean',
             'frontend_registration' => 'boolean',
             'auto_active_registration' => 'boolean',
@@ -105,7 +107,9 @@ class Settings extends \Aksara\Laboratory\Core
         )
         ->field_append([
             'login_attempt' => phrase('times'),
-            'blocking_time' => phrase('minutes')
+            'blocking_time' => phrase('minutes'),
+            'account_age_restriction' => phrase('days'),
+            'spam_timer' => phrase('seconds')
         ])
         ->set_attribute([
             'office_map' => 'data-drawing-type="coordinate" data-draggable="1"'
@@ -115,8 +119,15 @@ class Settings extends \Aksara\Laboratory\Core
             'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
         ])
         ->set_tooltip([
+            'login_attempt' => phrase('Maximum number of login attempts'),
+            'blocking_time' => phrase('Blocking time when reaching maximum login attempts'),
+            'account_age_restriction' => phrase('How many days before user can post interaction after registration'),
+            'spam_timer' => phrase('How many seconds before user can post another comment'),
             'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider'),
             'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles')
+        ])
+        ->field_append([
+            'default_map_tile' => '<a href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers" target="_blank">Reference<i class="mdi mdi-launch"></i></a>'
         ])
         ->set_relation(
             'app_language',
@@ -150,6 +161,8 @@ class Settings extends \Aksara\Laboratory\Core
             'one_device_login' => 'boolean',
             'login_attempt' => 'numeric|max_length[5]',
             'blocking_time' => 'numeric|max_length[5]',
+            'account_age_restriction' => 'numeric|max_length[3]',
+            'spam_timer' => 'numeric|max_length[5]',
 
             /* APIS */
             'openlayers_search_provider' => 'in_list[openlayers,google,osm]',
@@ -189,6 +202,8 @@ class Settings extends \Aksara\Laboratory\Core
             'one_device_login' => phrase('One Device Login'),
             'login_attempt' => phrase('Login Attempt'),
             'blocking_time' => phrase('Blocking Time'),
+            'account_age_restriction' => phrase('Day Restriction'),
+            'spam_timer' => phrase('Spam Timer'),
             'frontend_registration' => phrase('Enable Public Registration'),
             'default_membership_group' => phrase('Default Membership Group'),
             'auto_active_registration' => phrase('Auto Active Registration'),

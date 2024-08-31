@@ -18,13 +18,11 @@
 namespace Aksara\Laboratory;
 
 use CodeIgniter\Controller;
-
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Model;
 use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
-
 use Aksara\Libraries\Document;
 
 /**
@@ -2240,24 +2238,24 @@ class Core extends Controller
                     } else {
                         $columns = $this->model->list_fields($this->_table);
 
-						if ($this->_select && $this->_compiled_table) {
-							// Search from joined table
-							foreach ($this->_compiled_table as $key => $val) {
+                        if ($this->_select && $this->_compiled_table) {
+                            // Search from joined table
+                            foreach ($this->_compiled_table as $key => $val) {
                                 // Get joined table name
-								list($joined_table) = explode('.', $val);
+                                list($joined_table) = explode('.', $val);
 
                                 // Ensure the table is not a primary table
-								if ($joined_table != $this->_table) {
+                                if ($joined_table != $this->_table) {
                                     // Search column of joinned table from the selection list
-									$select_search = preg_grep('/^' . preg_quote($joined_table, '/') . '/', $this->_select);
+                                    $select_search = preg_grep('/^' . preg_quote($joined_table, '/') . '/', $this->_select);
 
-									if (isset($select_search[0])) {
+                                    if (isset($select_search[0])) {
                                         // Push matches into column list
-										$columns[] = $select_search[0];
-									}
-								}
-							}
-						}
+                                        $columns[] = $select_search[0];
+                                    }
+                                }
+                            }
+                        }
 
                         if ($columns) {
                             $this->or_group_start();
@@ -2268,7 +2266,7 @@ class Core extends Controller
                                 }
 
                                 // Find column exclude table name
-								if (strpos($val, '.') === false) {
+                                if (strpos($val, '.') === false) {
                                     // Add the table prefix to prevent ambiguous
                                     $val = $this->_table . '.' . $val;
                                 }
@@ -3174,11 +3172,11 @@ class Core extends Controller
                 $type = array_keys($value['type']);
 
                 // Skip field when it's disabled and has no default value
-                if ((in_array($field, $this->_unset_field) && ! isset($this->_set_default[$field]) && ! array_intersect(['to_slug', 'current_timestamp'], $type)) || (in_array('disabled', $type) && ! isset($this->_set_default[$field]))) {
+                if ((in_array($field, $this->_unset_field) && ! isset($this->_set_default[$field]) && ! array_intersect(['slug', 'current_timestamp'], $type)) || (in_array('disabled', $type) && ! isset($this->_set_default[$field]))) {
                     continue;
                 }
 
-                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'image', 'images', 'file', 'files', 'to_slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
+                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
                         if (service('request')->getPost($field)) {
@@ -3381,14 +3379,14 @@ class Core extends Controller
                         $value = trim(service('request')->getPost($field));
                         $value = str_replace(',', '', $value);
                         $prepare[$field] = $value;
-                    } elseif (array_intersect(['to_slug'], $type)) {
+                    } elseif (array_intersect(['slug'], $type)) {
                         // Check if slug has its own post data
                         if (service('request')->getPost($field)) {
                             // Use its own data as slug
                             $title = service('request')->getPost($field);
-                        } elseif (service('request')->getPost($value['type']['to_slug']['parameter'])) {
+                        } elseif (service('request')->getPost($value['type']['slug']['parameter'])) {
                             // Or match other field from given parameter
-                            $title = service('request')->getPost($value['type']['to_slug']['parameter']);
+                            $title = service('request')->getPost($value['type']['slug']['parameter']);
                         } else {
                             // Otherwise, use the time instead
                             $title = time();
@@ -3405,7 +3403,7 @@ class Core extends Controller
                     }
 
                     // Apply the formatter when not match any given parameter
-                    if (! array_intersect(['to_slug', 'password', 'encryption', 'image', 'images', 'file', 'files'], $type)) {
+                    if (! array_intersect(['slug', 'password', 'encryption', 'image', 'images', 'file', 'files'], $type)) {
                         // Use empty value instead of NULL when no data is submitted
                         if (! isset($prepare[$field])) {
                             $prepare[$field] = '';
@@ -5182,7 +5180,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $field)) {
@@ -5190,7 +5188,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $field);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 }
@@ -5200,7 +5198,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $field)) {
@@ -5208,7 +5206,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $field);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 }
@@ -5218,7 +5216,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $field)) {
@@ -5226,7 +5224,7 @@ class Core extends Controller
                     try {
                         // Attempt to unlink source file
                         unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $field);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 }
@@ -5419,11 +5417,11 @@ class Core extends Controller
                     try {
                         // Trap suspicious access
                         file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                     }
                 }
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction;
             }
         }

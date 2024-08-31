@@ -20,11 +20,11 @@ Anda juga dapat menjalankan metode secara multiple seperti berikut:
 ```php
 $this->field_position
 (
-	array
-	(
-		'alamat' => 2,
-		'telepon' => 2,
-		'status' => 3
-	)
+    array
+    (
+        'alamat' => 2,
+        'telepon' => 2,
+        'status' => 3
+    )
 );
 ```

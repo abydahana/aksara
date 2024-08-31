@@ -146,7 +146,7 @@ class Connections extends \Aksara\Laboratory\Core
             }
 
             return throw_exception(200, phrase('The database was successfully connected!'));
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Decrypt error
             return throw_exception(403, $e->getMessage());
         }

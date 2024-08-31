@@ -119,12 +119,12 @@ class AppSettings extends Migration
                 'null' => false
             ],
             'login_attempt' => [
-                'type' => 'int',
+                'type' => 'smallint',
                 'constraint' => 5,
                 'default' => '0'
             ],
             'blocking_time' => [
-                'type' => 'int',
+                'type' => 'smallint',
                 'constraint' => 5,
                 'default' => '0'
             ],
@@ -133,6 +133,16 @@ class AppSettings extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'account_age_restriction' => [
+                'type' => 'smallint',
+                'constraint' => 3,
+                'default' => '0'
+            ],
+            'spam_timer' => [
+                'type' => 'smallint',
+                'constraint' => 5,
+                'default' => '0'
             ],
             'google_analytics_key' => [
                 'type' => 'varchar',

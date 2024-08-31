@@ -12,14 +12,14 @@
     {% endif %}
     <div class="input-group">
         {% if params.prepend %}
-            <span class="input-group-text-unformatted me-2"> {{ params.prepend }} </span>
+            <span class="input-group-text-unformatted me-2"> {{ params.prepend | raw }} </span>
         {% endif %}
 
         {# Include form component #}
         {% include 'view/' ~ params.type ~ '.twig' with params %}
         
         {% if params.append %}
-            <span class="input-group-text-unformatted ms-2"> {{ params.append }} </span>
+            <span class="input-group-text-unformatted ms-2"> {{ params.append | raw }} </span>
         {% endif %}
     </div>
 </div>

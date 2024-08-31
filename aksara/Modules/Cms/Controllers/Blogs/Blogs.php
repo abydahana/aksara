@@ -69,11 +69,20 @@ class Blogs extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
+        if ($this->get_method() === 'create') {
+            $this->set_field('created_timestamp', 'current_timestamp');
+        } elseif ($this->get_method() === 'update') {
+            $this->set_field('updated_timestamp', 'current_timestamp');
+        } else {
+            $this->set_field('created_timestamp', 'datetime');
+            $this->set_field('updated_timestamp', 'datetime');
+        }
+
         $this->set_title(phrase('Blogs'))
         ->set_icon('mdi mdi-newspaper')
         ->set_primary('post_id')
-        ->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, updated_timestamp, headline, language')
-        ->unset_field('post_id, author')
+        ->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, headline, language')
+        ->unset_field('post_id, author, created_timestamp, updated_timestamp')
         ->unset_view('post_id')
         ->column_order('featured_image, post_title, category_title, first_name, headline, updated_timestamp, status')
         ->field_order('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
@@ -82,14 +91,12 @@ class Blogs extends \Aksara\Laboratory\Core
             'post_excerpt' => 'textarea',
             'post_content' => 'wysiwyg',
             'post_tags' => 'tagsinput',
-            'created_timestamp' => 'current_timestamp',
-            'updated_timestamp' => 'current_timestamp',
             'author' => 'current_user',
             'headline' => 'boolean',
             'featured_image' => 'image',
             'status' => 'boolean'
         ])
-        ->set_field('post_slug', 'to_slug', 'post_title')
+        ->set_field('post_slug', 'slug', 'post_title')
         ->set_field('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
         ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
 
@@ -100,6 +107,8 @@ class Blogs extends \Aksara\Laboratory\Core
             'post_slug' => 'max_length[256]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . ']',
             'post_content' => 'required',
             'post_category' => 'required',
+            'language_id' => 'required',
+            'post_tags' => 'required',
             'headline' => 'boolean',
             'status' => 'boolean'
         ])
@@ -137,6 +146,10 @@ class Blogs extends \Aksara\Laboratory\Core
             'updated_timestamp' => phrase('Updated'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
+        ])
+        ->set_placeholder([
+            'post_excerpt' => phrase('Article summary to improve SEO'),
+            'post_tags' => phrase('Separate with commas')
         ])
         ->field_position([
             'post_category' => 2,

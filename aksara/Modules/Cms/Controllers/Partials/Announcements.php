@@ -41,6 +41,15 @@ class Announcements extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
+        if ($this->get_method() === 'create') {
+            $this->set_field('created_timestamp', 'current_timestamp');
+        } elseif ($this->get_method() === 'update') {
+            $this->set_field('updated_timestamp', 'current_timestamp');
+        } else {
+            $this->set_field('created_timestamp', 'datetime');
+            $this->set_field('updated_timestamp', 'datetime');
+        }
+
         $this->set_title(phrase('Announcements'))
         ->set_icon('mdi mdi-bullhorn-outline')
         ->set_primary('announcement_id')
@@ -53,8 +62,6 @@ class Announcements extends \Aksara\Laboratory\Core
             'cover' => 'image',
             'start_date' => 'date',
             'end_date' => 'date',
-            'created_timestamp' => 'current_timestamp',
-            'updated_timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
         ->set_field(
@@ -65,7 +72,7 @@ class Announcements extends \Aksara\Laboratory\Core
                 1 => phrase('Back End')
             ]
         )
-        ->set_field('announcement_slug', 'to_slug', 'title')
+        ->set_field('announcement_slug', 'slug', 'title')
         ->set_field('announcement_title', 'hyperlink', 'announcements', ['announcement_slug' => 'announcement_slug'], true)
 
         ->add_button('../../../announcements/get', phrase('View Announcement'), 'btn-success', 'mdi mdi-eye', ['announcement_slug' => 'announcement_slug'], true)
@@ -81,6 +88,9 @@ class Announcements extends \Aksara\Laboratory\Core
             ]
         )
         ->field_position([
+            'placement' => 2,
+            'start_date' => 2,
+            'end_date' => 2,
             'cover' => 2,
             'language_id' => 2,
             'status' => 2
@@ -109,6 +119,8 @@ class Announcements extends \Aksara\Laboratory\Core
             'language_id' => phrase('Language'),
             'status' => phrase('Status')
         ])
+
+        ->default_value('placement', 0)
 
         ->order_by('updated_timestamp', 'DESC')
 

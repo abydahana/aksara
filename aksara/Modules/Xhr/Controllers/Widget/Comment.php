@@ -290,7 +290,7 @@ class Comment extends \Aksara\Laboratory\Core
                         </span>
                     </div>
                 </div>
-                <hr class="m--3" />
+                <hr class="mx--3" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
@@ -463,7 +463,7 @@ class Comment extends \Aksara\Laboratory\Core
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>
-                <hr class="m--3 border-secondary-subtle" />
+                <hr class="mx--3 border-secondary-subtle" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
@@ -646,17 +646,17 @@ class Comment extends \Aksara\Laboratory\Core
         } elseif (! service('request')->getGet('post_id') || ! service('request')->getGet('path')) {
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread')]);
         }
-        
-		$earlier = new \DateTime(get_userdata('registered_date'));
-		$later = new \DateTime(date('Y-m-d'));
-		$difference = $earlier->diff($later);
-		$interval = $difference->days;
+
+        $earlier = new \DateTime(get_userdata('registered_date'));
+        $later = new \DateTime(date('Y-m-d'));
+        $difference = $earlier->diff($later);
+        $interval = $difference->days;
         $day_minimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
 
-		if ($interval <= $day_minimum) {
+        if (get_userdata('group_id') > 2 && $interval <= $day_minimum) {
             // Minimize spam
-			return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.', ['interval' => $interval]));
-		}
+            return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
+        }
 
         if (time() <= get_userdata('_spam_timer')) {
             // Minimize spam
@@ -706,7 +706,7 @@ class Comment extends \Aksara\Laboratory\Core
         $this->_push_logs(service('request')->getGet('path'));
 
         // Set spam timer
-        set_userdata('_spam_timer', strtotime('+10 seconds'));
+        set_userdata('_spam_timer', strtotime('+' . (get_setting('spam_timer') ?? 10) . ' seconds'));
 
         $query = $this->model->select('
             post__comments.comment_id,

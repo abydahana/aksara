@@ -21,10 +21,10 @@ Anda juga dapat menjalankan metode secara multiple seperti berikut:
 ```php
 $this->default_value
 (
-	array
-	(
-		'nama_lengkap' => 'John Doe',
-		'usia' => 20
-	)
+    array
+    (
+        'nama_lengkap' => 'John Doe',
+        'usia' => 20
+    )
 );
 ```

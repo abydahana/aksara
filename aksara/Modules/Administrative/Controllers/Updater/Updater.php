@@ -59,7 +59,7 @@ class Updater extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $response = null;
         }
 
@@ -104,7 +104,7 @@ class Updater extends \Aksara\Laboratory\Core
                 );
 
                 $response = json_decode($response->getBody());
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $response = null;
             }
 
@@ -164,7 +164,7 @@ class Updater extends \Aksara\Laboratory\Core
 
             // Zip archive will be created only after closing object
             $zip->close();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Remove temporary path
             $this->_rmdir($tmp_path);
 
@@ -219,7 +219,7 @@ class Updater extends \Aksara\Laboratory\Core
                 // Close the opened zip
                 $zip->close();
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Extract failed, revert the updater
             return throw_exception(400, ['package' => $e->getMessage()]);
         }
@@ -308,7 +308,7 @@ class Updater extends \Aksara\Laboratory\Core
                             </h5>
                         </a>
                     </div>
-                    <hr class="m--3" />
+                    <hr class="mx--3" />
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
@@ -338,7 +338,7 @@ class Updater extends \Aksara\Laboratory\Core
                     ],
                     'content' => $html
                 ]);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 // Update failed
                 return throw_exception(400, ['upgrade' => $e->getMessage()]);
             }
@@ -350,7 +350,7 @@ class Updater extends \Aksara\Laboratory\Core
                 // Close the opened zip
                 $zip->close();
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Backup file restore failed
             return throw_exception(400, ['upgrade' => $e->getMessage()]);
         }
@@ -396,7 +396,7 @@ class Updater extends \Aksara\Laboratory\Core
                     </a>
                 </li>
             </ul>
-            <hr class="m--3" />
+            <hr class="mx--3" />
             <div class="row">
                 <div class="col-6">
                     <div class="d-grid">
@@ -466,7 +466,7 @@ class Updater extends \Aksara\Laboratory\Core
                             // Close FTP connection
                             ftp_close($connection);
                         }
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         return throw_exception(400, ['updater' => $e->getMessage()]);
                     }
                 }

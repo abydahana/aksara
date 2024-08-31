@@ -10,56 +10,56 @@
 
 .highcharts-graph
 {
-	fill: none;
-	stroke-width: 2px;
-	stroke-dasharray: 5px;
-	animation: dashoffset 1s linear infinite
+    fill: none;
+    stroke-width: 2px;
+    stroke-dasharray: 5px;
+    animation: dashoffset 1s linear infinite
 }
 
 @-webkit-keyframes dashoffset
 {
-	0%
-	{
-		stroke-dashoffset: 0
-	}
-	100%
-	{
-		stroke-dashoffset: -20px
-	}
+    0%
+    {
+        stroke-dashoffset: 0
+    }
+    100%
+    {
+        stroke-dashoffset: -20px
+    }
 }
 
 @-moz-keyframes dashoffset
 {
-	0%
-	{
-		stroke-dashoffset: 0
-	}
-	100%
-	{
-		stroke-dashoffset: -20px
-	}
+    0%
+    {
+        stroke-dashoffset: 0
+    }
+    100%
+    {
+        stroke-dashoffset: -20px
+    }
 }
 
 @-ms-keyframes dashoffset
 {
-	0%
-	{
-		stroke-dashoffset: 0
-	}
-	100%
-	{
-		stroke-dashoffset: -20px
-	}
+    0%
+    {
+        stroke-dashoffset: 0
+    }
+    100%
+    {
+        stroke-dashoffset: -20px
+    }
 }
 
 @keyframes dashoffset
 {
-	0%
-	{
-		stroke-dashoffset: 0
-	}
-	100%
-	{
-		stroke-dashoffset: -20px
-	}
+    0%
+    {
+        stroke-dashoffset: 0
+    }
+    100%
+    {
+        stroke-dashoffset: -20px
+    }
 }

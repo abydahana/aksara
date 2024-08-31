@@ -94,7 +94,7 @@
             </div>
         </div>
     </div>
-    <hr class="m--3" />
+    <hr class="mx--3" />
     <div class="row">
         <div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
             <div class="row">

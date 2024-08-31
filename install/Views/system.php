@@ -90,7 +90,7 @@
             <?= phrase('Allowed File Extension'); ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ? session()->get('file_extension') : 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv'); ?>" />
+        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ?? 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv'); ?>" />
     </div>
     <div class="row">
         <div class="col-md-8">
@@ -99,7 +99,7 @@
                     <?= phrase('Allowed Image Extension'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ? session()->get('image_extension') : 'jpg,jpeg,png,gif'); ?>" />
+                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ?? 'jpg,jpeg,png,gif'); ?>" />
             </div>
         </div>
         <div class="col-md-4">
@@ -109,7 +109,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" placeholder="e.g: 2048" value="<?= (session()->get('max_upload_size') ? session()->get('max_upload_size') : 10); ?>" />
+                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" placeholder="e.g: 2048" value="<?= (session()->get('max_upload_size') ?? ((int) ini_get('upload_max_filesize') ?? 10)); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         MB
                     </span>
@@ -131,7 +131,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('image_dimension') ? session()->get('image_dimension') : 1024); ?>" />
+                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('image_dimension') ?? 1024); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -145,7 +145,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ? session()->get('thumbnail_dimension') : 256); ?>" />
+                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ?? 256); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -159,7 +159,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ? session()->get('icon_dimension') : 80); ?>" />
+                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ?? 80); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>

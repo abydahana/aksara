@@ -18,7 +18,6 @@
 namespace Aksara\Laboratory\Renderer\Components;
 
 use Aksara\Laboratory\Traits;
-
 use Aksara\Laboratory\Builder\Builder;
 use Aksara\Laboratory\Renderer\Formatter;
 use Aksara\Laboratory\Renderer\Parser;

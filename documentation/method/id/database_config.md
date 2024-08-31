@@ -21,14 +21,14 @@ Anda juga dapat menjalankan metode dengan parameter seperti berikut:
 ```php
 $this->database_config
 (
-	array
-	(
-		'driver' => 'SQLSRV',
-		'hostname' => '127.0.0.1',
-		'port' => 1433,
-		'username' => 'sa',
-		'password' => 'MyStrongPassword!',
-		'database' => 'master'
-	)
+    array
+    (
+        'driver' => 'SQLSRV',
+        'hostname' => '127.0.0.1',
+        'port' => 1433,
+        'username' => 'sa',
+        'password' => 'MyStrongPassword!',
+        'database' => 'master'
+    )
 );
 ```

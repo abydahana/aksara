@@ -13,11 +13,11 @@ Pada pemanggilan `query builder` di atas, akan mengembalikan perintah `SQL` seba
 
 ```sql
 WHERE
-	(
-		field_1 = "statement" OR field_2 = "statement"
-	)
-	AND
-	field_3 = "statement"
+    (
+        field_1 = "statement" OR field_2 = "statement"
+    )
+    AND
+    field_3 = "statement"
 ```
 
 ---
@@ -39,10 +39,10 @@ Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 ```php
 $this->group_where
 (
-	array
-	(
-		'field_1'		=> 'statement',
-		'field_2'		=> 'statement'
-	)
+    array
+    (
+        'field_1'        => 'statement',
+        'field_2'        => 'statement'
+    )
 );
 ```

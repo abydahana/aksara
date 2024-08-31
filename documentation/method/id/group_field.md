@@ -22,10 +22,10 @@ Anda juga dapat menjalankan metode ini secara multiple seperti contoh berikut:
 ```php
 $this->group_field
 (
-	array
-	(
-		'nama_depan' => 'nama',
-		'nama_belakang' => 'nama'
-	)
+    array
+    (
+        'nama_depan' => 'nama',
+        'nama_belakang' => 'nama'
+    )
 );
 ```

@@ -12,9 +12,9 @@ Metode ini untuk menambahkan suatu kolom filter pada formulir pencarian pada tab
 ```php
 $this->add_filter
 ('
-	<select name="jenis_kelamin" class="form-control form-control-sm">
-		<option value="1">Pria</option>
-		<option value="2">Wanita</option>
-	</select>
+    <select name="jenis_kelamin" class="form-control form-control-sm">
+        <option value="1">Pria</option>
+        <option value="2">Wanita</option>
+    </select>
 ');
 ```

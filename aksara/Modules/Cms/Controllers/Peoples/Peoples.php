@@ -46,7 +46,7 @@ class Peoples extends \Aksara\Laboratory\Core
             'photo' => 'image',
             'status' => 'boolean'
         ])
-        ->set_field('people_slug', 'to_slug', 'full_name')
+        ->set_field('people_slug', 'slug', 'full_name')
         ->set_field('full_name', 'hyperlink', 'peoples', ['people_slug' => 'people_slug'], true)
 
         ->add_button('../../peoples/user', phrase('View People'), 'btn-success', 'mdi mdi-eye', ['people_slug' => 'people_slug'], true)
@@ -77,6 +77,9 @@ class Peoples extends \Aksara\Laboratory\Core
             'position' => phrase('Position'),
             'mobile' => phrase('Mobile'),
             'email' => phrase('Email'),
+            'instagram' => phrase('Instagram Profile URL'),
+            'facebook' => phrase('Facebook Profile URL'),
+            'twitter' => phrase('X Profile URL'),
             'biography' => phrase('Biography'),
             'status' => phrase('Status')
         ])

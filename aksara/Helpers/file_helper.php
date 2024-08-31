@@ -48,7 +48,7 @@ if (! function_exists('get_image')) {
 
                     // Copy placeholder image
                     copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png');
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Keep silent
                 }
             }
@@ -65,7 +65,7 @@ if (! function_exists('get_image')) {
 
                     // Copy placeholder image
                     copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png');
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Keep silent
                 }
             }
@@ -82,7 +82,7 @@ if (! function_exists('get_image')) {
 
                     // Copy placeholder image
                     copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png');
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Keep silent
                 }
             }

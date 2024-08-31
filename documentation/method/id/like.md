@@ -13,9 +13,9 @@ Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar be
 ```php
 $this->nama_metode
 (
-	array
-	(
-		'foo' => 'bar'
-	)
+    array
+    (
+        'foo' => 'bar'
+    )
 );
 ```

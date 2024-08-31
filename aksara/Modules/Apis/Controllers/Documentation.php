@@ -233,7 +233,7 @@ class Documentation extends \Aksara\Laboratory\Core
                     ];
                 }
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
         }
 
         // Remove the temporary session

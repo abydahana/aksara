@@ -61,7 +61,7 @@
                 <?= $changelog; ?>
                 </div>
             </div>
-            <hr class="m--3" />
+            <hr class="mx--3" />
             <div class="row">
                 <div class="col-lg-8">
                     <button type="submit" class="btn btn-success rounded-pill">

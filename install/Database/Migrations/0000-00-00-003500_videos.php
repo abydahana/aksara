@@ -43,7 +43,7 @@ class Videos extends Migration
                 'null' => false
             ],
             'description' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'tinytext'),
+                'type' => 'text',
                 'null' => false
             ],
             'slug' => [

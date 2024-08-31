@@ -95,7 +95,7 @@
             </div>
         </div>
     </div>
-    <hr class="m--3" />
+    <hr class="mx--3" />
     <div class="row">
         <div class="col-md-6 col-lg-7">
             <a href="<?= current_page('../update', ['item' => $detail->folder]); ?>" class="btn btn-outline-success btn-sm --modal">

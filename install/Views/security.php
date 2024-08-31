@@ -32,7 +32,7 @@
                     <b class="text-danger">*</b>
                     <i class="mdi mdi-help-circle-outline" data-bs-toggle="tooltip" title="<?= phrase('The number of seconds you want the session to last.'); ?>"></i>
                 </label>
-                <input type="number" name="session_expiration" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('In seconds'); ?>" value="<?= (session()->get('session_expiration') ? session()->get('session_expiration') : 86400); ?>" />
+                <input type="number" name="session_expiration" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('In seconds'); ?>" value="<?= (session()->get('session_expiration') ?? 86400); ?>" />
             </div>
         </div>
     </div>

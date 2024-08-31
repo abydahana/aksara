@@ -103,7 +103,7 @@ class Parser
         try {
             // Attempt to get the template component
             $output = $twig->render($component, $replacement);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
@@ -113,7 +113,7 @@ class Parser
                 try {
                     // Attempt to get the template component
                     $component = file_get_contents($component);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     // Fail to load component file into string
                     exit($e->getMessage());
                 }

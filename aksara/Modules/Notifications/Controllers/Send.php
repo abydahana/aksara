@@ -126,7 +126,7 @@ class Send extends \Aksara\Laboratory\Core
                     ]
                 );
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_exception(500, $email->printDebugger());
         }
     }
