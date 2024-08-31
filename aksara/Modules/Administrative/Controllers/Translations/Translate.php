@@ -150,7 +150,7 @@ class Translate extends \Aksara\Laboratory\Core
                             $val = strip_tags($val, '<p><a><b><i><u><span><small><br>');
                             $val = str_ireplace(['onclick="', 'onerror="'], 'xss-clean="', $val);
                         }
-                        
+
                         $phrases[$key] = $val;
                     }
                 }

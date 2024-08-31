@@ -201,7 +201,7 @@ class Table
                 }
 
                 // Get formatted content
-                $content = $this->formatter->format($content, $type, $replacement);
+                $content = $this->formatter->format($field, $content, $type, $replacement);
 
 
                 // Field preparation

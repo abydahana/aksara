@@ -40,7 +40,7 @@ class Formatter
         }
     }
 
-    public function format($value = null, $type = [], $replacement = [])
+    public function format($field, $value = null, $type = [], $replacement = [])
     {
         foreach ($type as $key => $val) {
             if (in_array($key, ['checkbox', 'radio']) && $val['parameter']) {
@@ -59,7 +59,7 @@ class Formatter
                         $value[] = [
                             'value' => $key,
                             'label' => $val,
-                            'checked' => is_array($checked) && in_array($key, $checked) || $key === $checked
+                            'checked' => is_array($checked) && in_array($key, $checked) || ('create' === $this->_method && isset($this->_default_value[$field]) && ($this->_default_value[$field] == $checked || $this->_default_value[$field] == $key)) || $key === $checked
                         ];
                     }
                 } else {
