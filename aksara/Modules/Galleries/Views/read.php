@@ -81,23 +81,26 @@
                     </p>
                 </div>
             </div>
+            <div>
+                <?= $results[0]->gallery_description; ?>
+            </div>
             <?php
                 if ($attributes) {
-                    foreach ($attributes as $key => $val) {
-                        if (! isset($val->label) && ! isset($val->value)) {
-                            continue;
-                        }
+                    echo '<hr class="border-secondary" />';
+
+                    foreach ($attributes as $label => $value) {
+                        if (! $value) continue;
 
                         echo '
                             <div class="row">
                                 <div class="col-sm-4 col-lg-3">
                                     <label class="d-block text-muted">
-                                        ' . $val->label . '
+                                        ' . $label . '
                                     </label>
                                 </div>
                                 <div class="col-sm-8 col-lg-9">
                                     <label>
-                                        ' . $val->value . '
+                                        ' . $value . '
                                     </label>
                                 </div>
                             </div>
@@ -105,9 +108,6 @@
                     }
                 }
             ?>
-            <div>
-                <?= $results[0]->gallery_description; ?>
-            </div>
             <div>
                 <?= comment_widget(['post_id' => $results[0]->gallery_id, 'path' => service('uri')->getRoutePath()]); ?>
             </div>
