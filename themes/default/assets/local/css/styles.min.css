@@ -226,7 +226,7 @@ a
     font-size: inherit!important
 }
 
-.form-check {
+.input-group .form-check {
     padding-top: .375rem;
     padding-bottom: .375rem
 }
