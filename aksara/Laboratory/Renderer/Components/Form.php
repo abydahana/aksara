@@ -187,7 +187,6 @@ class Form
             if ('create' === $this->_method) {
                 if (isset($this->_default_value[$field])) {
                     $value = $this->_default_value[$field];
-                    $content = $value;
                 } elseif (array_intersect(['boolean'], array_keys($type))) {
                     $checked = true;
                 }

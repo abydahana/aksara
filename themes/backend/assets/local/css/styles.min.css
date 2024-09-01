@@ -258,6 +258,11 @@ a {
     background: rgb(221, 238, 255, .5);
 }
 
+.form-check {
+    padding-top: .375rem;
+    padding-bottom: .375rem
+}
+
 @media (min-width: 992px)
 {
     body.sidebar-collapsed .navbar-brand

@@ -226,6 +226,11 @@ a
     font-size: inherit!important
 }
 
+.form-check {
+    padding-top: .375rem;
+    padding-bottom: .375rem
+}
+
 @media (min-width: 992px) and (min-height: 360px)
 {
     .sticky-top

@@ -55,11 +55,22 @@ class Formatter
                     $value = [];
 
                     foreach ($val['parameter'] as $key => $val) {
+                        $is_checked = false;
+
+                        if (
+                            is_array($checked) && in_array($key, $checked) ||  
+                            ! is_array($checked) && $key === $checked || 
+                            ('create' === $this->_method && isset($this->_default_value[$field]) && $this->_default_value[$field] == $key)
+                        ) {
+                            // Set checked
+                            $is_checked = true;
+                        }
+
                         // Iterate array key pairs
                         $value[] = [
                             'value' => $key,
                             'label' => $val,
-                            'checked' => is_array($checked) && in_array($key, $checked) || ('create' === $this->_method && isset($this->_default_value[$field]) && ($this->_default_value[$field] == $checked || $this->_default_value[$field] == $key)) || $key === $checked
+                            'checked' => $is_checked
                         ];
                     }
                 } else {
