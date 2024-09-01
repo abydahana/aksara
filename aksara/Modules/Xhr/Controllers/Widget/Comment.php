@@ -641,9 +641,14 @@ class Comment extends \Aksara\Laboratory\Core
 
     private function _validate_form()
     {
-        if (! get_userdata('is_logged')) {
+        if (DEMO_MODE) {
+            // Demo mode
+            return throw_exception(403, phrase('This feature is disabled in demo mode'), base_url(service('request')->getGet('path')));
+        } elseif (! get_userdata('is_logged')) {
+            // Non logged user
             return throw_exception(400, ['comments' => phrase('Please sign in to submit comment')]);
         } elseif (! service('request')->getGet('post_id') || ! service('request')->getGet('path')) {
+            // Invalid post
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread')]);
         }
 

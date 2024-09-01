@@ -150,7 +150,7 @@ $(document).ready(function() {
 
                                         (val.status > 0 ? `
                                             ${ val.comments }
-                                            ` + (val.attachment.length ? `
+                                            ` + (Object.keys(val.attachment).length ? `
                                                 <div class="mt-3">
                                                     <a href="${ val.attachment.original }" target="_blank">
                                                         <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="..." />
