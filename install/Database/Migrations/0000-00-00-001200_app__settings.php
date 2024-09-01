@@ -233,7 +233,7 @@ class AppSettings extends Migration
         $this->forge->addKey('id', true, true);
 
         // Add foreign key parent table
-        $this->forge->addForeignKey('app_language', 'app__languages', 'id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('app_language', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Create table
         $this->forge->createTable('app__settings');

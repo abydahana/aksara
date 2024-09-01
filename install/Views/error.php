@@ -22,9 +22,11 @@
         </b>
     </p>
     <p class="text-break-word">
-        <?= phrase('Please download the configuration file below and upload or paste it manually under the following directory') . ': <code>' . substr(ROOTPATH, 0, strrpos(ROOTPATH, '/public')) . '</code>'; ?>
+        <?= phrase('Please download the configuration file below and upload or paste it manually under the following directory'); ?>:
         <br />
-        <a href="<?= site_url('run'); ?>?download=1" target="_blank" class="btn btn-success btn-sm">
+        <code><?= ROOTPATH; ?></code>
+        <br /><br />
+        <a href="<?= site_url('run'); ?>?download=1" target="_blank" class="btn btn-secondary rounded-pill btn-sm">
             <i class="mdi mdi-download"></i>
             <?= phrase('Download Configuration'); ?>
         </a>

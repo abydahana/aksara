@@ -96,7 +96,7 @@ class PostComments extends Migration
         $this->forge->addKey('mention_id', false, false);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('user_id', 'app__users', 'user_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('post__comments');

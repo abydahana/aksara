@@ -341,9 +341,6 @@ class Install extends BaseController
             session()->set('installation_mode', 0);
         }
 
-        // Default error's flag
-        $error = false;
-
         // Get config source
         $config_source = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 

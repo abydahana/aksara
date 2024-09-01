@@ -57,7 +57,7 @@ class AppFtp extends Migration
         $this->forge->addKey('site_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('site_id', 'app__settings', 'id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'));
+        $this->forge->addForeignKey('site_id', 'app__settings', 'id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('app__ftp');

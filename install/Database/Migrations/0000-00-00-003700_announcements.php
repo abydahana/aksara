@@ -91,7 +91,7 @@ class Announcements extends Migration
         $this->forge->addKey('announcement_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Create table
         $this->forge->createTable('announcements');

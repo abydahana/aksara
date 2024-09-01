@@ -50,7 +50,7 @@ class PostCommentsHistory extends Migration
         $this->forge->addKey('comment_id', false, false);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('comment_id', 'post__comments', 'comment_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('comment_id', 'post__comments', 'comment_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('post__comments_history');

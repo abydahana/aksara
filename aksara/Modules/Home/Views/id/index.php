@@ -30,6 +30,9 @@
                 <p class="lead text-center">
                     <?= truncate($meta->description, 256); ?>
                 </p>
+                <h3 class="mb-3 text-center">
+                    Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
+                </h3>
             </div>
         </div>
     </div>
@@ -38,9 +41,6 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <h3 class="mb-3 text-center">
-                    Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
                 <?php if ($error): ?>
                     <div class="mb-5">
                         <p>
@@ -138,17 +138,17 @@
                 </h4>
                 <div class="mb-5">
                     <p>
-                        Sebagai seorang <b>peneliti tunggal</b>, saya sesekali ingin menikmati dunia luar yang belum pernah saya jelajahi. Mungkin dengan sedikit liburan, saya bisa mendapatkan ide cemerlang lain untuk diterapkan pada penelitian saya lainnya.
+                        Sebagai seorang peneliti tunggal, saya sesekali ingin menikmati dunia luar yang belum pernah saya jelajahi. Mungkin dengan sedikit liburan, saya bisa mendapatkan ide cemerlang lain untuk diterapkan pada penelitian saya lainnya.
                     </p>
                     <p>
                         Seperti kebanyakan peneliti lainnya, jika merasa terbantu dengan penelitian yang saya lakukan dan ingin memberikan dukungan moril maupun materil, jangan sungkan untuk menghubungi saya dari <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Website Pengembangan Aksara</b></a>. Saya akan sangat menghargai apapun dukungan Anda, dan tentu saja itu akan membuat saya lebih percaya diri.
                     </p>
                 </div>
                 <h5 class="text-center fw-light">
-                    Sekali lagi, terima kasih.
+                    Sekali lagi, terima kasih telah mencoba <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
                 </h5>
                 <h5 class="text-center fw-light mb-3">
-                    Kita semua luar biasa!
+                    Kita luar biasa!
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>

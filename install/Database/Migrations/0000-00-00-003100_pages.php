@@ -94,8 +94,8 @@ class Pages extends Migration
         $this->forge->addKey('page_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('author', 'app__users', 'user_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE')), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE')), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Create table
         $this->forge->createTable('pages');

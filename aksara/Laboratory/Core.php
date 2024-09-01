@@ -1053,7 +1053,7 @@ class Core extends Controller
 
         // Find existing field validation and merge
         foreach ($params as $key => $val) {
-            if (! is_array($val)) {
+            if ($val && ! is_array($val)) {
                 $val = array_map('trim', explode('|', $val));
             }
 
