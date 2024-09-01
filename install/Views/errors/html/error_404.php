@@ -12,8 +12,7 @@
         <title>Aksara is not installed!</title>
         <style>
             html,
-            body
-            {
+            body {
                 min-height: 100%;
                 margin: 0;
                 padding: 0
@@ -33,8 +32,7 @@
                 margin-bottom: 0;
                 color: #222;
             }
-            .centered
-            {
+            .centered {
                 position: fixed;
                 width: 100%;
                 top: 50%;
