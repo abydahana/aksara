@@ -258,7 +258,7 @@ a {
     background: rgb(221, 238, 255, .5);
 }
 
-.form-check {
+.input-group .form-check {
     padding-top: .375rem;
     padding-bottom: .375rem
 }
