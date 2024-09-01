@@ -222,6 +222,10 @@ a
     left: 0
 }
 
+.accordion-button {
+    font-size: inherit!important
+}
+
 @media (min-width: 992px) and (min-height: 360px)
 {
     .sticky-top
