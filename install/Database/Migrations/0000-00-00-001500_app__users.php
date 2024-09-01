@@ -126,8 +126,8 @@ class AppUsers extends Migration
         $this->forge->addKey('email', false, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('group_id', 'app__groups', 'group_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('group_id', 'app__groups', 'group_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Create table
         $this->forge->createTable('app__users');

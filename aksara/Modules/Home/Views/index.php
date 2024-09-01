@@ -30,6 +30,9 @@
                 <p class="lead text-center">
                     <?= truncate($meta->description, 256); ?>
                 </p>
+                <h3 class="mb-3 text-center">
+                    You are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
+                </h3>
             </div>
         </div>
     </div>
@@ -38,9 +41,6 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <h3 class="mb-3 text-center">
-                    You are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
                 <?php if ($error): ?>
                     <div class="mb-5">
                         <p>
@@ -137,14 +137,14 @@
                 </h4>
                 <div class="mb-5">
                     <p>
-                        As a <b>single fighter</b> researcher, I occasionally want to enjoy an outside world that I've never explored. Maybe with a little vacation, I can come up with another bright idea to apply to my research.
+                        As a single fighter researcher, I occasionally want to enjoy an outside world that I've never explored. Maybe with a little vacation, I can come up with another bright idea to apply to my research.
                     </p>
                     <p>
                         Like most single fighter researchers, if you feel helped by the research I did and want to provide moral or material support, don't hesitate to contact me from the <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara development website</b></a>. I would really appreciate whatever your support was, and of course it will give me more confidence.
                     </p>
                 </div>
                 <h5 class="text-center">
-                    Once again, thank you.
+                    Once again, thank you for trying <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
                 </h5>
                 <h5 class="text-center mb-3">
                     We are awesome!

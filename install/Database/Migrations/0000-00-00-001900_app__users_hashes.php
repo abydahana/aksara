@@ -42,7 +42,7 @@ class AppUsersHashes extends Migration
         $this->forge->addKey('user_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('user_id', 'app__users', 'user_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE'));
+        $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('app__users_hashes');

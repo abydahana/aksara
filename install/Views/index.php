@@ -17,20 +17,17 @@
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
         <style type="text/css">
-            body
-            {
+            body {
                 font-family: 'Fira Sans', sans-serif
             }
-            h1,h2,h3,h4,h5,h6,.display-5,.btn,.lead
-            {
+            h1,h2,h3,h4,h5,h6,.display-5,.btn,.lead {
                 font-family: 'DM Sans', sans-serif!important
             }
         </style>
     </head>
     <style type="text/css">
         html,
-        body
-        {
+        body {
             height: 100%;
             min-height: 100%
         }
@@ -202,72 +199,53 @@
         <script type="text/javascript" src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
         
         <script type="text/javascript">
-            $(document).ready(function()
-            {
-                if ($('input[name=timezone]').length)
-                {
+            $(document).ready(function() {
+                if ($('input[name=timezone]').length) {
                     $('input[name=timezone]').val(Intl.DateTimeFormat().resolvedOptions().timeZone)
                 }
                 
                 $('[data-bs-toggle=tooltip]').tooltip(),
                 $('[data-bs-toggle=popover]').popover(),
                 
-                $('body').on('change', 'select[name=language]', function(e)
-                {
-                    window.location.href            = '?language=' + $(this).val()
+                $('body').on('change', 'select[name=language]', function(e) {
+                    window.location.href = '?language=' + $(this).val()
                 }),
                 
-                $('body').on('click change', 'input[name=agree]', function(e)
-                {
-                    if ($(this).is(':checked'))
-                    {
+                $('body').on('click change', 'input[name=agree]', function(e) {
+                    if ($(this).is(':checked')) {
                         $(this).closest('form').find('button[type=submit]').prop('disabled', false)
-                    }
-                    else
-                    {
+                    } else {
                         $(this).closest('form').find('button[type=submit]').prop('disabled', true)
                     }
                 }),
                 
-                $('body').on('click change', 'input[name=request_config]', function(e)
-                {
-                    if ($(this).is(':checked'))
-                    {
+                $('body').on('click change', 'input[name=request_config]', function(e) {
+                    if ($(this).is(':checked')) {
                         $('.using_ftp').slideUp()
-                    }
-                    else
-                    {
+                    } else {
                         $('.using_ftp').slideDown()
                     }
                 }),
                 
-                $('body').on('click touch', '.--xhr', function(e)
-                {
+                $('body').on('click touch', '.--xhr', function(e) {
                     e.preventDefault(),
-                    $.ajax
-                    ({
+                    $.ajax({
                         url: $(this).attr('href'),
                         context: this,
-                        beforeSend: function()
-                        {
+                        beforeSend: function() {
                             $('.failure').remove(),
                             $('[data-bs-toggle=tooltip]').tooltip('hide'),
                             $('[data-bs-toggle=popover]').popover('hide')
                         }
                     })
-                    .done(function(response)
-                    {
-                        if (response.status == 301)
-                        {
+                    .done(function(response) {
+                        if (response.status == 301) {
                             window.location.href    = response.url;
                             
                             return;
-                        }
-                        else if (response.status !== 200)
-                        {
+                        } else if (response.status !== 200) {
                             $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + response.message + '</div>'),
-                            $('html, body').animate
-                            ({
+                            $('html, body').animate({
                                 scrollTop: $('.failure').offset().top - 60
                             }, 500)
                         }
@@ -278,71 +256,63 @@
                         $('[data-bs-toggle=tooltip]').tooltip(),
                         $('[data-bs-toggle=popover]').popover()
                     })
-                    .fail(function(response, status, error)
-                    {
+                    .fail(function(response, status, error) {
                         $(this).find('button[type=submit]').prop('disabled', false),
                         $('.--validation-callback').html('<div class="alert alert-danger failure"><b><?= phrase('Whoops!'); ?></b> ' + error + '</div>'),
-                        $('html, body').animate
-                        ({
+                        $('html, body').animate({
                             scrollTop: $('.failure').offset().top - 60
                         }, 500)
                     })
                 }),
                 
-                $('body').on('submit', '.--validate-form', function(e)
-                {
+                $('body').on('submit', '.--validate-form', function(e) {
                     e.preventDefault(),
-                    $.ajax
-                    ({
+                    $.ajax({
                         url: $(this).attr('action'),
                         method: $(this).attr('method'),
                         data: new FormData(this),
                         contentType: false,
                         processData: false,
                         context: this,
-                        beforeSend: function()
-                        {
+                        beforeSend: function() {
                             $('.failure').remove(),
                             $('.--validation-callback').removeClass('alert alert-warning pr-3 pl-3').html(''),
                             $(this).find('button[type=submit]').prop('disabled', true).addClass('disabled').find('i.mdi').removeClass('mdi-check').addClass('mdi-loading mdi-spin'),
                             $('[data-bs-toggle=tooltip]').tooltip('hide'),
                             $('[data-bs-toggle=popover]').popover('hide')
                         },
-                        complete: function(progress)
-                        {
+                        complete: function(progress) {
                             /* animate the submit button */
                             $(this).find('button[type=submit]:not(.btn-link)').prop('disabled', false).removeClass('disabled').find('i.mdi').removeClass('mdi-loading mdi-spin').addClass('mdi-check')
                         },
                     })
-                    .done(function(response)
-                    {
-                        if (response.status === 200)
-                        {
+                    .done(function(response) {
+                        if (typeof response.code !== 'undefined' && response.code === 200) {
+                            /* indicates that the Aksara was successfully installed */
+                            window.location.href = '<?= base_url(); ?>';
+
+                            return;
+                        }
+
+                        if (response.status === 200) {
                             $('.step' + response.active).addClass('text-warning'),
                             $(response.passed).removeClass('text-warning').addClass('text-success'),
                             $('.step-content').html(response.html),
-                            $('html, body').animate
-                            ({
+                            $('html, body').animate({
                                 scrollTop: 0
                             }, 500)
-                        }
-                        else if (response.status === 400)
-                        {
-                            var num                    = 0;
+                        } else if (response.status === 400) {
+                            var num = 0;
                             
                             $('.--validation-callback').addClass('alert alert-warning pr-3 pl-3'),
-                            $.each(response.validation, function(key, val)
-                            {
+                            $.each(response.validation, function(key, val) {
                                 $('<p class="' + (num ? 'mb-1 border-top' : 'mb-1') + '">' + val + '</p>').appendTo('.--validation-callback');
                                 
                                 num++;
                             })
-                        }
-                        else
-                        {
+                        } else {
                             $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + response.message + '</div>'),
-                            $('html, body').animate
-                            ({
+                            $('html, body').animate({
                                 scrollTop: $('.failure').offset().top - 60
                             }, 500)
                         }
@@ -350,12 +320,10 @@
                         $('[data-bs-toggle=tooltip]').tooltip(),
                         $('[data-bs-toggle=popover]').popover()
                     })
-                    .fail(function(response, status, error)
-                    {
+                    .fail(function(response, status, error) {
                         $(this).find('button[type=submit]').prop('disabled', false),
                         $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + error + '</div>'),
-                        $('html, body').animate
-                        ({
+                        $('html, body').animate({
                             scrollTop: $('.failure').offset().top - 60
                         }, 500)
                     })

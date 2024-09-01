@@ -37,7 +37,7 @@ class Svg extends \Aksara\Laboratory\Core
 
     public function point()
     {
-        $output = '<?xml version="1.0" encoding="utf-8"?><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="64" width="64" x="0px" viewBox="0 0 512 512"><title>map-pointer-glyph</title><path d="M257.13,125.11c40.21,0,72.52,30.23,72.52,70.43,0,38.59-32.31,70.76-72.52,70.76-40.52,0-72.85-32.17-72.85-70.76,0-40.2,32.33-70.43,72.85-70.43Zm181.54,52.42C438.67,78.79,358,0,257.13,0c-101,0-183.8,78.79-183.8,177.53,0,4.18,0,10.3,2.09,14.15H73.33c0,96.81,183.8,320.32,183.8,320.32S438.67,288.49,438.67,191.68h0V177.53Z" fill="' . $this->_fill . '" stroke="' . $this->_stroke . '" stroke-width="4" fill-rule="evenodd"/></svg>';
+        $output = '<?xml version="1.0" encoding="UTF-8"?><svg width="64" height="64" viewBox="-4 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>map-marker</title><g id="Vivid.JS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Vivid-Icons" transform="translate(-125.000000, -643.000000)"><g id="Icons" transform="translate(37.000000, 169.000000)"><g id="map-marker" transform="translate(78.000000, 468.000000)"><g transform="translate(10.000000, 6.000000)"><path d="M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z" id="Shape" fill="' . $this->_stroke . '"></path><circle id="Oval" fill="' . $this->_fill . '" fill-rule="nonzero" cx="14" cy="14" r="7"></circle></g></g></g></g></g></svg>';
 
         service('response')->setContentType('image/svg+xml');
         service('response')->setBody($output);

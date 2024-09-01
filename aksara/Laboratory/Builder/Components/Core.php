@@ -550,7 +550,7 @@ class Core
                     </div>
                     <div class="modal-body">
                         {% if meta.description %}
-                            <div class="pb-3 mb-3 border-bottom">
+                            <div class="pb-3 mb-3">
                                 {{ meta.description }}
                             </div>
                         {% endif %}
@@ -698,7 +698,7 @@ class Core
                     </div>
                     <div class="modal-body">
                         {% if meta.description %}
-                            <div class="pb-3 mb-3 border-bottom">
+                            <div class="pb-3 mb-3">
                                 {{ meta.description }}
                             </div>
                         {% endif %}

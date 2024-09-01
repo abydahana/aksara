@@ -84,7 +84,7 @@ class Videos extends Migration
         $this->forge->addKey('id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('author', 'app__users', 'user_id', ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'CASCADE')), ('SQLSRV' == $this->db->DBDriver ? 'NO ACTION' : 'RESTRICT'));
+        $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('videos');
