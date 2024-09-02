@@ -98,7 +98,7 @@ $(document).ready(function() {
                         <div class="row g-0 mb-2">
                             <div class="col-1 pt-1">
                                 <a href="${ val.links.profile_url }" class="--xhr">
-                                    <img src="${ val.user_photo }" class="img-fluid rounded-circle" />
+                                    <img src="${ val.photo }" class="img-fluid rounded-circle" />
                                 </a>
                             </div>
                             <div class="col-11 ps-3">
