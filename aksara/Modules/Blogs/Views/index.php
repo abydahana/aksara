@@ -29,7 +29,7 @@
                                 <div class="carousel-item<?= (! $key ? ' active' : null); ?>">
                                     <div class="clip gradient-top"></div>
                                     <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                        <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100" alt="..." style="max-height:360px;object-fit: cover">
+                                        <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100" alt="..." style="height:360px;object-fit: cover">
                                     </a>
                                     <div class="carousel-caption text-start">
                                         <div class="mb-3">
