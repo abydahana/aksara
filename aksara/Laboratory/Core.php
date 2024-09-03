@@ -1750,7 +1750,7 @@ class Core extends Controller
             $data = [array_fill_keys($this->model->list_fields($this->_table), '')];
         }
 
-        if ($this->api_client && ! service('request')->getGet('format_result')) {
+        if ($this->api_client && (! service('request')->getGet('format_result') || ! in_array(service('request')->getGet('format_result'), ['field_data', 'complete', 'full']))) {
             // Requested from API Client in unformatted result
             return make_json($data);
         }
