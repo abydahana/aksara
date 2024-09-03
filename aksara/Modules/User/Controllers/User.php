@@ -62,6 +62,7 @@ class User extends \Aksara\Laboratory\Core
 
         ->set_output([
             'suggestions' => $this->model->select('
+                user_id,
                 username,
                 first_name,
                 last_name
@@ -84,25 +85,34 @@ class User extends \Aksara\Laboratory\Core
         ->render($this->_table);
     }
 
-    public function activity($username = '')
+    public function activities($username = '')
     {
-        $this->set_title(phrase('Activity'))
+        $user = $this->model->select('
+            user_id,
+            username,
+            first_name,
+            last_name,
+            photo
+        ')
+        ->get_where(
+            $this->_table,
+            [
+                'username' => $username
+            ],
+            1
+        )
+        ->row();
+
+        if ($user) {
+            $title = phrase('{{ user }}\'s Activities', ['user' => $user->first_name . ' ' . $user->last_name]);
+        } else {
+            $title = phrase('Activities');
+        }
+
+        $this->set_title($title)
         ->set_icon('mdi mdi-account-clock-outline')
         ->set_output([
-            'user' => $this->model->select('
-                username,
-                first_name,
-                last_name,
-                photo
-            ')
-            ->get_where(
-                $this->_table,
-                [
-                    'username' => $username
-                ],
-                1
-            )
-            ->row()
+            'user' => $user
         ])
         ->join(
             'app__users',
@@ -115,28 +125,37 @@ class User extends \Aksara\Laboratory\Core
         ->order_by([
             'post__comments.timestamp' => 'DESC'
         ])
-        ->render('post__comments', 'activity');
+        ->render('post__comments', 'activities');
     }
 
     public function likes($username = '')
     {
-        $this->set_title(phrase('Likes'))
+        $user = $this->model->select('
+            user_id,
+            username,
+            first_name,
+            last_name,
+            photo
+        ')
+        ->get_where(
+            $this->_table,
+            [
+                'username' => $username
+            ],
+            1
+        )
+        ->row();
+
+        if ($user) {
+            $title = phrase('{{ user }}\'s Likes', ['user' => $user->first_name . ' ' . $user->last_name]);
+        } else {
+            $title = phrase('Likes');
+        }
+
+        $this->set_title($title)
         ->set_icon('mdi mdi-heart')
         ->set_output([
-            'user' => $this->model->select('
-                username,
-                first_name,
-                last_name,
-                photo
-            ')
-            ->get_where(
-                $this->_table,
-                [
-                    'username' => $username
-                ],
-                1
-            )
-            ->row()
+            'user' => $user
         ])
         ->join(
             'app__users',
@@ -149,5 +168,37 @@ class User extends \Aksara\Laboratory\Core
             'post__likes.timestamp' => 'DESC'
         ])
         ->render('post__likes', 'likes');
+    }
+
+    public function guestbook($username = '')
+    {
+        $user = $this->model->select('
+            user_id,
+            username,
+            first_name,
+            last_name,
+            photo
+        ')
+        ->get_where(
+            $this->_table,
+            [
+                'username' => $username
+            ],
+            1
+        )
+        ->row();
+
+        if ($user) {
+            $title = phrase('The Guest Book of {{ user }}', ['user' => $user->first_name . ' ' . $user->last_name]);
+        } else {
+            $title = phrase('Guest Book');
+        }
+
+        $this->set_title($title)
+        ->set_icon('mdi mdi-book')
+        ->set_output([
+            'user' => $user
+        ])
+        ->render();
     }
 }

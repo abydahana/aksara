@@ -90,8 +90,6 @@ trait Traits
 
     private $_insert_id;
 
-    private $_insert_on_update_fail;
-
     private $_item_reference = [];
 
     private $_join = [];
@@ -123,6 +121,8 @@ trait Traits
     private $_output = [];
 
     private $_parameter = [];
+
+    private $_permit_upsert;
 
     private $_prepare = [];
 

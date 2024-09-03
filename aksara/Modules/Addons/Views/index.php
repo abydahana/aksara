@@ -1,26 +1,26 @@
 <div class="container-fluid">
-    <div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x:auto">
-        <ul class="nav" style="flex-wrap: nowrap">
+    <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
+        <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to(); ?>" class="nav-link no-wrap --xhr text-bg-primary">
+                <a href="<?= go_to(); ?>" class="nav-link rounded-pill active no-wrap --xhr">
                     <i class="mdi mdi-cart"></i>
                     <?= phrase('Market'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('themes'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('themes'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-palette"></i>
                     <?= phrase('Installed Theme'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('modules'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('modules'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-puzzle"></i>
                     <?= phrase('Installed Module'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('ftp'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('ftp'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-console-network"></i>
                     <?= phrase('FTP Configuration'); ?>
                 </a>

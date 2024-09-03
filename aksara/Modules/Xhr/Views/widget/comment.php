@@ -3,10 +3,10 @@
         <div class="row">
             <div class="col-4">
                 <div class="d-grid">
-                    <a href="javascript:void(0)" data-href="<?= current_page('repute'); ?>" class="btn btn-light btn-sm btn-block rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>" data-post-id="<?= service('request')->getGet('post_id'); ?>">
+                    <button type="button" data-href="<?= current_page('repute'); ?>" class="btn btn-light btn-sm btn-block rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>" data-post-id="<?= service('request')->getGet('post_id'); ?>">
                         <i class="mdi mdi-heart<?= ($likes_count ? ' me-2' : null); ?>"></i>
                         <b class="likes-count fw-bold"><?= ($likes_count ? $likes_count : ''); ?></b>
-                    </a>
+                    </button>
                 </div>
             </div>
             <div class="col-4">
@@ -31,7 +31,7 @@
         <div class="form-group">
             <div class="row g-0 align-items-center">
                 <div class="col-1">
-                    <a href="<?= (get_userdata('username') ? base_url('user/' . get_userdata('username')) : 'javascript:void(0)'); ?>">
+                    <a href="<?= (get_userdata('username') ? base_url('user/' . get_userdata('username')) : 'javascript:void(0)'); ?>" class="--xhr">
                         <img src="<?= get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded-circle" />
                     </a>
                 </div>
@@ -39,7 +39,7 @@
                     <div class="position-relative">
                         <textarea name="comments" class="form-control nofocus" placeholder="<?= phrase('Type a comment'); ?>" rows="1"></textarea>
                         <div class="btn-group position-absolute bottom-0 end-0">
-                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase('Attach photo'); ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
+                            <button type="button" class="btn btn-link text-dark" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase('Attach photo'); ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
                                 <i class="mdi mdi-camera"></i>
                             </button>
                         </div>
@@ -75,6 +75,8 @@
                     </a>
                 </p>
             </div>
+        <?php else: ?>
+            <p class="text-center text-muted empty-comment-message"><?= phrase('Be the first to comment'); ?></p>
         <?php endif; ?>
     </div>
 </div>

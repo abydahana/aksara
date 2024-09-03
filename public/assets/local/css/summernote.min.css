@@ -27,10 +27,6 @@
 .note-editor .note-toolbar > .note-btn-group {
   margin-top: 0 !important;
 }
-.note-btn-group .note-btn {
-  padding: 0.15rem 0.5rem !important;
-  font-size: 12px !important;
-}
 .note-statusbar {
   display: none;
 }

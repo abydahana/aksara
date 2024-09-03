@@ -806,6 +806,7 @@ class Comment extends \Aksara\Laboratory\Core
         return make_json([
             'content' => $html,
             $insert_method => ($reply_id ? '#comment-container #comment-reply form' : '#comment-container'),
+            'remove_element' => '.empty-comment-message',
             'in_context' => ($reply_id ? true : false)
         ]);
     }

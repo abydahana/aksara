@@ -94,60 +94,24 @@
     </div>
 <?php else: ?>
     <div class="py-3 py-md-5">
-        <div class="text-center">
-            <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center" style="border:5px solid #fff; width:128px; height:128px; margin:0 auto">
-                <i class="mdi mdi-account-off-outline mdi-5x text-light"></i>
-            </div>
-        </div>
-        <div class="row mb-5">
-            <div class="col-md-8 offset-md-2">
-                <h2 class="text-center">
-                    <?= phrase('People was not found!'); ?>
-                </h2>
-                <p class="lead text-center mb-5">
-                <?= phrase('The people you are looking for was not found.'); ?>
-                </p>
-                <div class="text-center mt-5">
-                    <a href="<?= go_to('../'); ?>" class="btn btn-outline-primary rounded-pill --xhr">
-                        <i class="mdi mdi-arrow-left"></i>
-                        <?= phrase('Back to Peoples'); ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-
-<?php if ($similar): ?>
-    <div class="py-3 py-md-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h3 class="my-3">
-                        <?= phrase('People you might want to know'); ?>
-                    </h3>
-                    <div class="row">
-                        <?php foreach ($similar as $key => $val): ?>
-                            <div class="col-6 col-md-4">
-                                <div class="card border-0 rounded-4 shadow-sm mb-3">
-                                    <a href="<?= go_to('../' . $val->people_slug); ?>" class="--xhr">
-                                        <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="card-img-top" alt="<?= $val->first_name . ' '  . $val->last_name; ?>" width="100%" />
-                                    </a>
-                                    <div class="card-body">
-                                        <a href="<?= go_to('../' . $val->people_slug); ?>" class="--xhr">
-                                            <h6 class="card-title text-center text-truncate">
-                                                <?= truncate($val->first_name, 22) . ' ' . truncate($val->last_name, 22); ?>
-                                            </h6>
-                                        </a>
-                                        <a href="<?= go_to('../' . $val->people_slug); ?>" class="--xhr">
-                                            <h6 class="card-subtitle fw-light text-center mb-2 text-muted text-truncate">
-                                            <?= truncate($val->position, 22); ?>
-                                            </h6>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="py-5">
+                        <div class="text-center">
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('People was not found!'); ?>
+                        </h2>
+                        <p class="lead text-center mb-5">
+                            <?= phrase('The people you are looking for was not found.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Peoples'); ?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

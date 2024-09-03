@@ -33,7 +33,7 @@ class Ftp extends \Aksara\Laboratory\Core
         $this->searchable(false);
 
         $this->set_method('update');
-        $this->insert_on_update_fail();
+        $this->permit_upsert();
     }
 
     public function index()

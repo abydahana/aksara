@@ -16,7 +16,7 @@
                         {{ phrase('Options') }}
                     </th>
                     {% for column in results.columns %}
-                        <th align="{{ column.align }}">
+                        <th align="{{ column.align }}" class="no-wrap">
                             {% if column.url %}
                                 <a href="{{ column.url }}" class="fw-bold {{ column.class }}">
                                     {{ column.label }}

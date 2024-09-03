@@ -33,7 +33,7 @@ class Privileges extends \Aksara\Laboratory\Core
         $this->set_theme('backend');
 
         $this->set_method('update');
-        $this->insert_on_update_fail();
+        $this->permit_upsert();
 
         $this->_primary = service('request')->getGet('user_id');
 

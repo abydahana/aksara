@@ -41,7 +41,7 @@ class Language extends \Aksara\Laboratory\Core
             set_userdata('language', $params);
             set_userdata('language_id', $query);
 
-            if (get_userdata('is_logged')) {
+            if (get_userdata('is_logged') && ! DEMO_MODE) {
                 $this->model->update('app__users', ['language_id' => $query], ['user_id' => get_userdata('user_id')]);
             }
         }

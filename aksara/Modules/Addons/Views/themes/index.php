@@ -1,26 +1,26 @@
 <div class="container-fluid">
-    <div class="row border-bottom bg-white mb-1 sticky-top" style="overflow-x:auto">
-        <ul class="nav" style="flex-wrap: nowrap">
+    <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 mb-1 border-bottom">
+        <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to('../'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-cart"></i>
                     <?= phrase('Market'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= current_page(); ?>" class="nav-link no-wrap --xhr text-bg-primary">
+                <a href="<?= current_page(); ?>" class="nav-link rounded-pill active no-wrap --xhr">
                     <i class="mdi mdi-palette"></i>
                     <?= phrase('Installed Theme'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('../modules'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../modules'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-puzzle"></i>
                     <?= phrase('Installed Module'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('../ftp'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../ftp'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-console-network"></i>
                     <?= phrase('FTP Configuration'); ?>
                 </a>
@@ -29,7 +29,7 @@
     </div>
     <div class="row border-bottom pb-1 mb-3">
         <div class="col-md-6 offset-md-6 text-end">
-            <a href="<?= current_page('import'); ?>" class="btn btn-primary btn-sm --xhr">
+            <a href="<?= current_page('import'); ?>" class="btn btn-dark btn-sm --xhr">
                 <i class="mdi mdi-import"></i>
                 <?= phrase('Import Theme'); ?>
             </a>

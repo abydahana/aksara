@@ -59,12 +59,12 @@
                         <div class="card-footer">
                             <div class="btn-group btn-group-sm d-flex">
                                 {% for button in row.buttons %}
-                                    <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                    <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-light" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                         <i class="{{ button.icon }}"></i>
                                     </a>
                                 {% endfor %}
                                 {% if row.dropdowns | length > 0 %}
-                                    <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                    <a href="javascript:void(0)" class="btn btn-light --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                         <i class="mdi mdi-format-list-bulleted"></i>
                                     </a>
                                 {% endif %}

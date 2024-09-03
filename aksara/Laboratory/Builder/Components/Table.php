@@ -455,4 +455,16 @@ class Table
             'component' => $component
         ];
     }
+
+    public function custom_format($type = null)
+    {
+        $component = <<<EOF
+        {{ content | raw }}
+        EOF;
+
+        return [
+            'type' => __FUNCTION__,
+            'component' => $component
+        ];
+    }
 }

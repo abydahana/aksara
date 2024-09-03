@@ -38,10 +38,12 @@
                                             </div>
 
                                             {% for merged_field in results.merged_field[name] %}
-                                                <div class="col {{ results.field_size[merged_field] }}">
-                                                    {# Include form input component #}
-                                                    {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
-                                                </div>
+                                                {% if results.field_data[merged_field] %}
+                                                    <div class="col {{ results.field_size[merged_field] }}">
+                                                        {# Include form input component #}
+                                                        {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                    </div>
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                     {% elseif not params.merged %}

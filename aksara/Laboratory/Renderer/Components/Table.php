@@ -207,11 +207,11 @@ class Table
                 // Field preparation
                 $field_data[$field] = [
                     'name' => $field,
-                    'type' => end($field_type),
-                    'primary' => $primary,
                     'label' => $label,
                     'value' => $value,
                     'content' => $content,
+                    'type' => end($field_type),
+                    'primary' => $primary,
                     'hidden' => $hidden,
                     'escape' => ! isset($this->_merge_content[$field])
                 ];

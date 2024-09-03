@@ -30,7 +30,7 @@ class Setting extends \Aksara\Laboratory\Core
         $this->parent_module('notifications');
 
         $this->set_method('update');
-        $this->insert_on_update_fail();
+        $this->permit_upsert();
     }
 
     public function index()

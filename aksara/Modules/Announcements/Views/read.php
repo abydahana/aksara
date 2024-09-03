@@ -26,23 +26,19 @@
                 <?php else: ?>
                     <div class="py-5">
                         <div class="text-center">
-                            <h1 class="text-muted">
-                                404
-                            </h1>
-                            <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
                             <?= phrase('No announcement is found!'); ?>
                         </h2>
-                        <p class="lead text-center mb-5">
+                        <p class="lead text-center">
                             <?= phrase('The announcement you requested was not found or its already been removed.'); ?>
                         </p>
-                        <div class="text-center mt-5">
-                            <a href="<?= go_to('../'); ?>" class="btn btn-outline-primary rounded-pill --xhr">
-                                <i class="mdi mdi-arrow-left"></i>
-                                <?= phrase('Back to Announcements'); ?>
+                        <p class="text-center">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Announcements'); ?>
                             </a>
-                        </div>
+                        </p>
                     </div>
                 <?php endif; ?>
             </div>

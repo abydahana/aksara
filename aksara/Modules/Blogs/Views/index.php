@@ -1,3 +1,5 @@
+
+<?php if ($articles): ?>
 <div class="py-3 py-md-5">
     <div class="container">
         <div class="row align-items-center">
@@ -29,7 +31,7 @@
                                 <div class="carousel-item<?= (! $key ? ' active' : null); ?>">
                                     <div class="clip gradient-top"></div>
                                     <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                        <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100" alt="..." style="height:360px;object-fit: cover">
+                                        <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100 carousel-headline" alt="...">
                                     </a>
                                     <div class="carousel-caption text-start">
                                         <div class="mb-3">
@@ -40,9 +42,8 @@
                                                 <p class="lead text-light d-none d-md-inline">
                                                     <?= truncate($val->post_excerpt, 90); ?>
                                                 </p>
-                                                <p class="text-white">
-                                                    <i class="mdi mdi-clock-outline"></i>
-                                                    <?= time_ago($val->updated_timestamp); ?>
+                                                <p class="text-muted">
+                                                    <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
                                                 </p>
                                             </a>
                                         </div>
@@ -52,14 +53,14 @@
                                                     <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                                 </a>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-8">
                                                 <a href="<?= base_url('user/' . $val->username); ?>" class="text-white ps-2 --xhr">
                                                     <b>
                                                         <?= $val->first_name . ' ' . $val->last_name; ?>
                                                     </b>
                                                 </a>
                                             </div>
-                                            <div class="col-5 text-end">
+                                            <div class="col-3 text-end">
                                                 <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger">
                                                     <i class="mdi mdi-heart"></i>
                                                 </button>
@@ -83,70 +84,92 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-<?php if ($articles): ?>
-<div class="py-3 bg-light">
+<div class="py-3 py-md-5 <?= ($articles ? 'bg-light' : null); ?>">
     <div class="container">
-        <?php foreach ($articles as $key => $val): ?>
-            <div class="py-3">
-                <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="--xhr">
-                    <h3 class="text-center text-sm-start text-primary mt-3">
-                        <?= $val->category_title; ?>
-                    </h3>
-                </a>
-                <p class="lead text-center text-sm-start">
-                    <?= $val->category_description; ?>
-                </p>
-                <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
-                    <div class="swiper-wrapper">
-                        <?php foreach ($val->posts as $_key => $_val): ?>
-                            <div class="swiper-slide">
-                                <div class="card border-0 rounded-4 overflow-hidden">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr d-block">
-                                        <div class="position-relative" style="background:url(<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
-                                            <div class="clip gradient-top"></div>
-                                            <div class="position-absolute bottom-0 p-3">
-                                                <h4 class="text-light" data-toggle="tooltip" title="<?= $_val->post_title; ?>">
-                                                    <?= truncate($_val->post_title, 64); ?>
-                                                </h4>
-                                                <p class="text-white">
-                                                    <i class="mdi mdi-clock-outline"></i>
-                                                    <?= time_ago($_val->updated_timestamp); ?>
-                                                </p>
+        <?php if ($articles): ?>
+            <?php foreach ($articles as $key => $val): ?>
+                <div class="py-3">
+                    <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="--xhr">
+                        <h3 class="text-center text-sm-start text-primary mt-3">
+                            <?= $val->category_title; ?>
+                        </h3>
+                    </a>
+                    <p class="lead text-center text-sm-start">
+                        <?= $val->category_description; ?>
+                    </p>
+                    <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($val->posts as $_key => $_val): ?>
+                                <div class="swiper-slide">
+                                    <div class="card border-0 rounded-4 overflow-hidden">
+                                        <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr d-block">
+                                            <div class="position-relative" style="background:url(<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
+                                                <div class="clip gradient-top"></div>
+                                                <div class="position-absolute bottom-0 p-3">
+                                                    <h4 class="text-light" data-toggle="tooltip" title="<?= $_val->post_title; ?>">
+                                                        <?= truncate($_val->post_title, 64); ?>
+                                                    </h4>
+                                                    <p class="text-white">
+                                                        <i class="mdi mdi-clock-outline"></i>
+                                                        <?= time_ago($_val->updated_timestamp); ?>
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                    <div class="card-body">
-                                        <p class="lead card-text text-secondary">
-                                            <?= truncate($_val->post_excerpt, 64); ?>
-                                        </p>
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-1">
-                                                <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary">
-                                                    <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
-                                                </a>
-                                            </div>
-                                            <div class="col-8 overflow-hidden">
-                                                <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2">
-                                                    <b>
-                                                        <?= $_val->first_name . ' ' . $_val->last_name; ?>
-                                                    </b>
-                                                </a>
-                                            </div>
-                                            <div class="col-3 text-end">
-                                                <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($_val->post_id, 'blogs/' . $val->category_slug . '/' . $_val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $_val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $_val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
-                                                    <i class="mdi mdi-heart"></i>
-                                                </button>
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="lead card-text text-secondary">
+                                                <?= truncate($_val->post_excerpt, 64); ?>
+                                            </p>
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-1">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary">
+                                                        <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                                    </a>
+                                                </div>
+                                                <div class="col-8 overflow-hidden">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2">
+                                                        <b>
+                                                            <?= $_val->first_name . ' ' . $_val->last_name; ?>
+                                                        </b>
+                                                    </a>
+                                                </div>
+                                                <div class="col-3 text-end">
+                                                    <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($_val->post_id, 'blogs/' . $val->category_slug . '/' . $_val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $_val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $_val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
+                                                        <i class="mdi mdi-heart"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="py-5">
+                        <div class="text-center">
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('No post is found!'); ?>
+                        </h2>
+                        <p class="lead text-center">
+                            <?= phrase('No post is available at the moment.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>
-<?php endif; ?>

@@ -150,21 +150,19 @@ class Groups extends \Aksara\Laboratory\Core
                     }
 
                     if ('read' === $this->get_method()) {
-                        if (isset($current[$val->path]) && in_array($privilege, $current[$val->path])) {
-                            $privilege_output .= '
-                                <div class="col-6 col-md-3">
-                                    <label class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
-                                        <span class="badge text-dark pe-0 ps-0"><i class="mdi mdi-check text-primary"></i> ' . $label . '</span>
-                                    </label>
-                                </div>
-                            ';
-                        }
+                        $privilege_output .= '
+                            <div class="col-6 col-md-3">
+                                <label class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
+                                    <i class="fw-bold mdi ' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? 'mdi-checkbox-marked-circle text-primary' : 'mdi-checkbox-blank-circle-outline') . '"></i> ' . $label . '
+                                </label>
+                            </div>
+                        ';
                     } else {
                         $privilege_output .= '
                             <div class="col-6 col-md-3 bg-white">
                                 <div class="form-check form-switch mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
                                     <input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="form-check-input checker-children" id="' . $path . '_' . $privilege . '"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
-                                    <label class="form-check-label text-sm" for="' . $path . '_' . $privilege . '">
+                                    <label class="form-check-label" for="' . $path . '_' . $privilege . '">
                                         ' . $label . '
                                     </label>
                                 </div>
@@ -193,9 +191,9 @@ class Groups extends \Aksara\Laboratory\Core
                     </a>
                     ' : '') . '
                     <div class="check-group w-100">
-                        <div class="form-check form-switch">
-                            ' . (in_array($this->get_method(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : '<input type="checkbox" class="form-check-input" checked disabled />') . '
-                            <label class="form-check-label fw-bold" for="' . $path . '">
+                        <div class="' . (in_array($this->get_method(), ['create', 'update']) ? 'form-check form-switch' : null) . '">
+                            ' . (in_array($this->get_method(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
+                            <label class="fw-bold" for="' . $path . '">
                                 ' . $module_path . '
                             </label>
                             <a href="' . base_url($val->path) . '" target="_blank">

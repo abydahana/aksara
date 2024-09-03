@@ -50,37 +50,15 @@ class Auth extends \Aksara\Laboratory\Core
         } elseif ($this->valid_token(service('request')->getPost('_token')) || ($this->api_client && service('request')->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
             if (get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time()) {
-                // Check if login attempts failed from the previous session
-                $blocking_check = $this->model->get_where(
+                // Blacklist the client IP
+                $this->model->upsert(
                     'app__users_blocked',
                     [
-                        'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
-                    ],
-                    1
-                )
-                ->row();
-
-                if ($blocking_check) {
-                    // Update the blocked time of blacklisted client IP
-                    $this->model->update(
-                        'app__users_blocked',
-                        [
-                            'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time'))
-                        ],
-                        [
-                            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
-                        ]
-                    );
-                } else {
-                    // Blacklist the client IP
-                    $this->model->insert(
-                        'app__users_blocked',
-                        [
-                            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
-                            'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time'))
-                        ]
-                    );
-                }
+                        'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                        'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time')),
+                        'blocked_reason' => 'login_attempt'
+                    ]
+                );
 
                 return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
             }
@@ -146,18 +124,6 @@ class Auth extends \Aksara\Laboratory\Core
                         }
                     }
 
-                    // Update the last login timestamp
-                    $this->model->update(
-                        'app__users',
-                        [
-                            'last_login' => date('Y-m-d H:i:s')
-                        ],
-                        [
-                            'user_id' => $execute->user_id
-                        ],
-                        1
-                    );
-
                     // Check if system apply one device login
                     if (get_setting('one_device_login')) {
                         // Get older sessions
@@ -203,6 +169,18 @@ class Auth extends \Aksara\Laboratory\Core
                         'year' => ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
+
+                    // Update the last login timestamp
+                    $this->model->update(
+                        'app__users',
+                        [
+                            'last_login' => date('Y-m-d H:i:s')
+                        ],
+                        [
+                            'user_id' => $execute->user_id
+                        ],
+                        1
+                    );
 
                     // Check if request is made through API or not
                     if ($this->api_client) {

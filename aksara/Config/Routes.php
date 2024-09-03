@@ -33,7 +33,6 @@ $routes->set404Override('Aksara\Modules\Pages\Controllers\Pages::not_found');
 
 $routes->add('/', 'Home::index');
 
-
 /**
  * Register the directory based routes
  */

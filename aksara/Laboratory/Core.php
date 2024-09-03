@@ -264,7 +264,7 @@ class Core extends Controller
      */
     public function set_permission($permissive_user = [], string $redirect = null)
     {
-        if ($this->api_client && ! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+        if ($this->api_client && ! service('request')->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-TOKEN')) {
             // Basic Auth
             $account = base64_decode(str_ireplace('Basic ', '', service('request')->getHeaderLine('Authorization')));
             list($username, $password) = array_pad(explode(':', $account), 2, '');
@@ -291,13 +291,13 @@ class Core extends Controller
         if (in_array($this->_method, $this->_unset_method)) {
             // Method is restricted
             return throw_exception(403, phrase('The method you requested is not acceptable'), ($redirect ? $redirect : base_url()), true);
-        } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->api_client) {
+        } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->_api_token) {
             // User isn't signed in
             return throw_exception(403, phrase('Your session has been expired'), ($redirect ? $redirect : base_url()), true);
-        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect)) {
+        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
-        } elseif ($permissive_user && ! in_array(get_userdata('group_id'), $permissive_user)) {
+        } elseif ($permissive_user && ! in_array(get_userdata('group_id'), $permissive_user) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
         }
@@ -1750,6 +1750,11 @@ class Core extends Controller
             $data = [array_fill_keys($this->model->list_fields($this->_table), '')];
         }
 
+        if ($this->api_client && ! service('request')->getGet('format_result')) {
+            // Requested from API Client in unformatted result
+            return make_json($data);
+        }
+
         // Define field data compilation
         $field_data = $this->model->field_data($this->_table);
 
@@ -1908,6 +1913,11 @@ class Core extends Controller
             $output[$row] = $results;
         }
 
+        if ($this->api_client && 'field_data' === service('request')->getGet('format_result')) {
+            // Requested from API Client with field data information
+            return make_json($output);
+        }
+
         return $output;
     }
 
@@ -1982,7 +1992,7 @@ class Core extends Controller
         /**
          * Token checker and apply only when uri has query string
          */
-        if (service('request')->getGet()) {
+        if (service('request')->getGet() && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-KEY')) {
             $token = service('request')->getGet('aksara');
             $query_string = service('request')->getGet();
 
@@ -2600,7 +2610,7 @@ class Core extends Controller
                 }
             }
 
-            if (service('request')->getGet('__fetch_metadata') && ENCRYPTION_KEY === service('request')->getHeaderLine('X-API-KEY')) {
+            if (service('request')->getGet('__fetch_metadata') && $this->api_client) {
                 return make_json([
                     'title' => $title,
                     'description' => $description,
@@ -2738,6 +2748,19 @@ class Core extends Controller
 
             // Default description property
             $this->_set_description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
+
+            if (service('request')->getGet('__fetch_metadata') && $this->api_client) {
+                return make_json([
+                    'title' => $this->_set_title,
+                    'description' => $this->_set_description,
+                    'icon' => $this->_set_icon
+                ]);
+            }
+        }
+
+        if ($this->api_client && 'complete' === service('request')->getGet('format_result')) {
+            // Requested from API Client in formatted result
+            return make_json($results);
         }
 
         // Get query string
@@ -2833,7 +2856,8 @@ class Core extends Controller
             return throw_exception(403, phrase('The method you requested is not acceptable') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
         }
 
-        if ($this->api_client) {
+        if ($this->api_client && 'full' === service('request')->getGet('format_result')) {
+            // Requested from API Client in full result
             return make_json($output);
         }
 
@@ -2882,7 +2906,7 @@ class Core extends Controller
      */
     public function render_form(array $data = [])
     {
-        if (! $data && ! $this->_insert_on_update_fail && 'autocomplete' != service('request')->getPost('method')) {
+        if (! $data && ! $this->_permit_upsert && 'autocomplete' != service('request')->getPost('method')) {
             // Data is empty
             return throw_exception(404, phrase('The data you requested does not exist or has been removed'), $this->_redirect_back);
         }
@@ -2957,7 +2981,7 @@ class Core extends Controller
         }
 
         // Check if method is update
-        if ('update' == $this->_method && ! $this->_where && ! $this->_insert_on_update_fail) {
+        if ('update' == $this->_method && ! $this->_where && ! $this->_permit_upsert) {
             // Fail because no primary keyword and insert is restricted
             return throw_exception(404, phrase('The data you would to update is not found'), (! $this->api_client ? $this->_redirect_back : null));
         }
@@ -3457,9 +3481,9 @@ class Core extends Controller
     /**
      * This function sustain to insert data if there's no data to update
      */
-    public function insert_on_update_fail(bool $return = true)
+    public function permit_upsert(bool $return = true)
     {
-        $this->_insert_on_update_fail = $return;
+        $this->_permit_upsert = $return;
 
         return $this;
     }
@@ -3641,7 +3665,7 @@ class Core extends Controller
                     // For user
                     return throw_exception(500, phrase('Unable to update the data') . '. ' . phrase('Please try again or contact the system administrator') . '. ' . phrase('Error code') . ': <b>500 (UPDATE)</b>', (! $this->api_client ? $this->_redirect_back : null));
                 }
-            } elseif ($this->_insert_on_update_fail) {
+            } elseif ($this->_permit_upsert) {
                 // Attempt to insert data
                 $this->insert_data($table, $data);
             } else {
@@ -5255,14 +5279,16 @@ class Core extends Controller
         ->row();
 
         if (! $client) {
-            // Client doesn't exist, check if request is from self app
+            // Client doesn't exist
             if (ENCRYPTION_KEY === $api_key) {
-                // Add temporary API client
+                // Indicates the request is made from current app
                 $client = (object) [
                     'ip_range' => service('request')->getServer('SERVER_ADDR'),
                     'method' => json_encode([service('request')->getServer('REQUEST_METHOD')]),
                     'status' => 1
                 ];
+
+                $this->_api_token = true;
             }
         }
 

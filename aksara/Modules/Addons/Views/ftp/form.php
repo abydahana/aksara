@@ -1,26 +1,26 @@
 <div class="container-fluid">
-    <div class="row border-bottom bg-white mb-3 sticky-top" style="overflow-x:auto">
-        <ul class="nav" style="flex-wrap: nowrap">
+    <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
+        <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to('../'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-cart"></i>
                     <?= phrase('Market'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('../themes'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../themes'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-palette"></i>
                     <?= phrase('Installed Theme'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('../modules'); ?>" class="nav-link no-wrap --xhr">
+                <a href="<?= go_to('../modules'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-puzzle"></i>
                     <?= phrase('Installed Module'); ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= current_page(); ?>" class="nav-link no-wrap --xhr text-bg-primary">
+                <a href="<?= current_page(); ?>" class="nav-link rounded-pill active no-wrap --xhr">
                     <i class="mdi mdi-console-network"></i>
                     <?= phrase('FTP Configuration'); ?>
                 </a>
@@ -47,10 +47,10 @@
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label class="text-muted d-block">
-                        <input type="checkbox" name="checking" class="form-check-input" value="1" />
-                        <?= phrase('Check connection while submitting'); ?>
-                    </label>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" name="checking" role="boolean" value="1" class="form-check-input" id="checking_input" checked="" autocomplete="off">
+                        <label class="form-check-label" for="checking_input"> <?= phrase('Check connection while submitting'); ?> </label>
+                    </div>
                 </div>
             </div>
         </div>

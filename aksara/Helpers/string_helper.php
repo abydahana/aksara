@@ -149,114 +149,6 @@ if (! function_exists('encoding_fixer')) {
     }
 }
 
-if (! function_exists('related_generator')) {
-    /**
-     * Table of content generator
-     *
-     * @param   string $content
-     */
-    function related_generator($content = null, $related = [], int $per_paragraph = 5)
-    {
-        // Reformat related object into array
-        $related = json_decode(json_encode($related), true);
-
-        // Split the text into paragraphs
-        $paragraphs = explode('</p>', $content);
-        $updatedContent = '';
-        $applied = false;
-
-        if (sizeof($paragraphs) < $per_paragraph) {
-            // Paragraph is lower than minimum, change default minimum setting
-            $per_paragraph = sizeof($paragraphs);
-        }
-
-        foreach ($paragraphs as $index => $paragraph) {
-            // If the paragraph is not empty, add the closing </p> tag
-            if (! empty(trim($paragraph))) {
-                $paragraph .= "</p>";
-            }
-
-            // Add the paragraph to the updated text
-            $updatedContent .= $paragraph;
-
-            // Add additional content after every 5th paragraph
-            if (0 == ($index + 1) % $per_paragraph && ! empty(trim($paragraph)) && isset($related[($index / $per_paragraph)])) {
-                $applied = true;
-                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $related[($index / $per_paragraph)]['link'] . '" class="--xhr">' . $related[($index / $per_paragraph)]['title'] . '</a></div>';
-            }
-        }
-
-        if (! $applied && $related) {
-            $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $related[0]['link'] . '" class="--xhr">' . $related[0]['title'] . '</a></div>';
-        }
-
-        return $updatedContent;
-    }
-}
-
-if (! function_exists('toc_generator')) {
-    /**
-     * Table of content generator
-     *
-     * @param   string $content
-     */
-    function toc_generator($content = null, $related = [])
-    {
-        $toc = null; // Start the table of contents
-        $pattern = '/<h([1-6])[^>]*>(.*?)<\/h\1>/i'; // Regex pattern to find headings (h1 to h6)
-        $matches = [];
-
-        // Find all headings in the content
-        preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
-
-        foreach ($matches as $key => $match) {
-            $level = $match[1]; // Heading level (e.g., 1 for h1, 2 for h2)
-            $title = $match[2]; // The text inside the heading
-            $slug = format_slug($title); // Create a URL-friendly ID
-
-            // Add ID attribute to the heading in the content
-            $content = str_replace($match[0], "<h$level id=\"$slug\">$title</h$level>", $content);
-
-            // Add a list item to the TOC
-            $toc .= "<li class=\"toc-level-$level\"><a href=\"#$slug\" class=\"lead\">$title</a></li>";
-        }
-
-        if ($toc) {
-            $toc = '<ul class="mb-0">' . $toc . '</ul>';
-        }
-
-        return [$toc, $content];
-    }
-}
-
-if (! function_exists('fetch_metadata')) {
-    /**
-     * Fetching metadata from url path
-     */
-    function fetch_metadata(string $path)
-    {
-        try {
-            $client = service('curlrequest');
-
-            $response = $client->request('GET', base_url($path), [
-                'headers' => [
-                    'X-Requested-With' => 'XMLHttpRequest',
-                    'X-API-KEY' => ENCRYPTION_KEY
-                ],
-                'query' => [
-                    '__fetch_metadata' => true
-                ]
-            ]);
-
-            return json_decode($response->getBody());
-        } catch (\Throwable $e) {
-            return $e;
-        }
-
-        return [];
-    }
-}
-
 if (! function_exists('time_ago')) {
     /**
      * Convert timestamp to time ago
@@ -301,5 +193,100 @@ if (! function_exists('time_ago')) {
         }
 
         return phrase('Just now');
+    }
+}
+
+if (! function_exists('format_slug')) {
+    /**
+     * Generate slug from given string
+     *
+     * @param   mixed|null $string
+     */
+    function format_slug($string = null)
+    {
+        $string = strtolower(preg_replace('/[\-\s]+/', '-', preg_replace('/[^A-Za-z0-9-]+/', '-', trim($string))));
+
+        if (! preg_match('/(\d{10})/', $string)) {
+            $string = $string;
+        }
+
+        return $string;
+    }
+}
+
+if (! function_exists('valid_hex')) {
+    /**
+     * Validate hex color
+     */
+    function valid_hex(string $string = null)
+    {
+        if ($string && preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $string)) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('number2alpha')) {
+    /*
+     * Convert an integer to a string of uppercase letters (A-Z, AA-ZZ, AAA-ZZZ, etc.)
+     */
+    function number2alpha($number = 0, $suffix = null)
+    {
+        for ($alpha = ''; $number >= 0; $number = intval($number / 26) - 1) {
+            $alpha = chr($number % 26 + 0x41) . $alpha;
+        }
+
+        return $alpha . $suffix;
+    }
+}
+
+if (! function_exists('alpha2number')) {
+    /*
+     * Convert a string of uppercase letters to an integer.
+     */
+    function alpha2number($alpa = null, $suffix = null)
+    {
+        $length = strlen($alpha);
+        $number = 0;
+
+        for ($i = 0; $i < $l; $i++) {
+            $number = $number * 26 + ord($alpha[$i]) - 0x40;
+        }
+
+        return ($number - 1) . $suffix;
+    }
+}
+
+if (! function_exists('encrypt')) {
+    /*
+     * Encryption
+     */
+    function encrypt($passphrase = null)
+    {
+        if (! $passphrase) {
+            return false;
+        }
+
+        $encrypter = \Config\Services::encrypter();
+
+        return base64_encode($encrypter->encrypt($passphrase));
+    }
+}
+
+if (! function_exists('decrypt')) {
+    /*
+     * Decryption
+     */
+    function decrypt($source = null)
+    {
+        if (! $source) {
+            return false;
+        }
+
+        $encrypter = \Config\Services::encrypter();
+
+        return $encrypter->decrypt(base64_decode($source));
     }
 }

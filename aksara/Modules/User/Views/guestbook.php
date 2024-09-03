@@ -1,6 +1,3 @@
-<?php
-    $user = (isset($results[0]) ? $results[0] : []);
-?>
 <?php if ($user): ?>
     <div class="py-3 py-md-5 bg-light">
         <div class="container">
@@ -11,7 +8,7 @@
                 <div class="col-12 col-sm-12 col-lg-10">
                     <div class="text-center text-lg-start">
                         <h2 class="mb-0">
-                            <?= $meta->title; ?>
+                            <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
                         <p class="lead">
                             @<?= $user->username; ?>
@@ -28,7 +25,7 @@
                     <div class="overflow-x-auto">
                         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username, ['limit' => null, 'per_page' => null]); ?>" class="nav-link active rounded-pill no-wrap --xhr">
+                                <a href="<?= go_to($user->username, ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
                                     <i class="mdi mdi-information-outline"></i> <?= phrase('About'); ?>
                                 </a>
                             </li>
@@ -43,7 +40,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/guestbook', ['comment_highlight' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                <a href="<?= go_to($user->username . '/guestbook', ['comment_highlight' => null]); ?>" class="nav-link active rounded-pill no-wrap --xhr">
                                     <i class="mdi mdi-book"></i> <?= phrase('Guestbook'); ?>
                                 </a>
                             </li>
@@ -57,30 +54,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Email'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= $user->email; ?>
+                    <div class="alert alert-info callout mb-0">
+                        <p class="lead mb-0">
+                            <i class="mdi mdi-information-outline"></i> <?= phrase('Please be respectful to each other and be sure to follow our community standard.'); ?>
                         </p>
                     </div>
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Biography'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= ($user->bio ? $user->bio : '-'); ?>
-                        </p>
-                    </div>
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
-                            <?= phrase('Last Activity'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= time_ago($user->last_activity); ?>
-                        </p>
-                    </div>
+                    <?= comment_widget(['post_id' => $user->user_id, 'path' => service('uri')->getRoutePath()]); ?>
                 </div>
             </div>
         </div>
@@ -95,7 +74,7 @@
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
-                            <?= phrase('User not found!'); ?>
+                            <?= phrase('User not found'); ?>
                         </h2>
                         <p class="lead text-center">
                             <?= phrase('The user you requested does not exists.'); ?>

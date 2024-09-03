@@ -1,35 +1,30 @@
 <div class="container-fluid">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-        <div class="row border-bottom bg-white sticky-top" style="overflow-x:auto">
-            <ul class="nav nav-pills" style="flex-wrap: nowrap">
+        <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 border-bottom">
+            <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                 <li class="nav-item">
-                    <a href="#pills-setting" data-bs-toggle="pill" id="pills-setting-tab" class="nav-link rounded-0 no-wrap --xhr active">
-                        <i class="mdi mdi-cogs"></i>
-                        <?= phrase('Configuration'); ?>
+                    <a href="#pills-setting" data-bs-toggle="pill" class="nav-link rounded-pill active no-wrap --xhr">
+                        <i class="mdi mdi-cogs"></i> <?= phrase('Configuration'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-membership" data-bs-toggle="pill" id="pills-membership-tab" class="nav-link rounded-0 no-wrap --xhr">
-                        <i class="mdi mdi-account-group-outline"></i>
-                        <?= phrase('Membership'); ?>
+                    <a href="#pills-membership" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-account-group-outline"></i> <?= phrase('Membership'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-apis" data-bs-toggle="pill" id="pills-apis-tab" class="nav-link rounded-0 no-wrap --xhr">
-                        <i class="mdi mdi-code-braces"></i>
-                        <?= phrase('APIs'); ?>
+                    <a href="#pills-apis" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-code-braces"></i> <?= phrase('API'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-oauth" data-bs-toggle="pill" id="pills-oauth-tab" class="nav-link rounded-0 no-wrap --xhr">
-                        <i class="mdi mdi-shield-lock-outline"></i>
-                        <?= phrase('OAuth'); ?>
+                    <a href="#pills-oauth" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-shield-lock-outline"></i> <?= phrase('OAuth'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-notifier" data-bs-toggle="pill" id="pills-notifier-tab" class="nav-link rounded-0 no-wrap --xhr">
-                        <i class="mdi mdi-bullhorn"></i>
-                        <?= phrase('Notifier'); ?>
+                    <a href="#pills-notifier" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-bullhorn"></i> <?= phrase('Notifier'); ?>
                     </a>
                 </li>
             </ul>
