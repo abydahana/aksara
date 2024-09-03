@@ -74,6 +74,18 @@ class Form
 
             // Flip array and order by user expect
             $serialized = array_replace(array_flip($field_order), $serialized);
+        } elseif (is_array($this->_view_order) && sizeof($this->_view_order) > 0) {
+            // Indicates field order
+            $view_order = [];
+
+            foreach ($this->_view_order as $order_key => $order_val) {
+                if (array_key_exists($order_val, $serialized)) {
+                    $view_order[] = $order_val;
+                }
+            }
+
+            // Flip array and order by user expect
+            $serialized = array_replace(array_flip($view_order), $serialized);
         } elseif (is_array($this->_column_order) && sizeof($this->_column_order) > 0) {
             // Backup order to follow the columns order
             $column_order = [];
@@ -277,11 +289,11 @@ class Form
             // Add to form data response
             $field_data[$field] = [
                 'name' => $field,
-                'type' => end($field_type),
-                'primary' => $primary,
                 'label' => $label,
                 'value' => $value,
                 'content' => $content,
+                'type' => end($field_type),
+                'primary' => $primary,
                 'maxlength' => $maxlength,
                 'class' => (isset($this->_add_class[$field]) ? $this->_add_class[$field] : null),
                 'placeholder' => $placeholder,

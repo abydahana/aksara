@@ -48,10 +48,10 @@ class Read extends \Aksara\Laboratory\Core
             'categories' => $this->_get_categories(),
 
             // Get similar articles
-            'recommendations' => $this->_get_recommendations($category, $slug),
+            'related' => $this->_get_related($category, $slug),
 
             // Read other articles
-            'related' => $this->_get_related($category, $slug)
+            'recommendations' => $this->_get_recommendations($category, $slug)
         ])
         ->select('
             blogs.post_slug,
@@ -115,7 +115,7 @@ class Read extends \Aksara\Laboratory\Core
         return $query;
     }
 
-    private function _get_recommendations($category = 0, $slug = '')
+    private function _get_related($category = 0, $slug = '')
     {
         $query = $this->model->select('
             blogs.post_slug,
@@ -147,7 +147,7 @@ class Read extends \Aksara\Laboratory\Core
         return $query;
     }
 
-    private function _get_related($category = 0, $slug = '')
+    private function _get_recommendations($category = 0, $slug = '')
     {
         $post_tags = $this->model->select('
             blogs.post_tags

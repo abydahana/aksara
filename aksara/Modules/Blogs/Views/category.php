@@ -1,3 +1,5 @@
+
+<?php if ($results): ?>
 <div class="py-3 py-md-5">
     <div class="container">
         <div class="row align-items-center">
@@ -31,10 +33,11 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-<?php if ($results): ?>
-    <div class="py-3 py-md-5 bg-light">
-        <div class="container">
+<div class="py-3 py-md-5 <?= ($results ? 'bg-light' : null); ?>">
+    <div class="container">
+        <?php if ($results): ?>
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
@@ -110,21 +113,27 @@
             </div>
             
             <?= pagination($pagination); ?>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="py-3 py-md-5 bg-light">
-        <div class="container">
+        <?php else: ?>
             <div class="row">
-                <div class="col-lg-6 offset-lg-3 text-center">
+                <div class="col-lg-8 offset-lg-2">
                     <div class="py-5">
-                        <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-                        <h2>
-                            <?= phrase('No post is available under this category'); ?>
+                        <div class="text-center">
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('No category is found!'); ?>
                         </h2>
+                        <p class="lead text-center">
+                            <?= phrase('The category of post you requested was not found or it\'s been archived.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to News'); ?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
-<?php endif; ?>
+</div>

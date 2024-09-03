@@ -8,7 +8,7 @@
     if ($images) {
         foreach ($images as $key => $val) {
             $carousel .= '
-                <div class="carousel-item text-center' . ($current == $key ? ' active' : null) . '">
+                <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null) . '">
                     <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
                         <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
                         <div class="carousel-caption d-none d-md-block text-shadow">
@@ -22,11 +22,6 @@
         }
     }
 ?>
-<style type="text/css">
-    .modal-header {
-        display: none
-    }
-</style>
 <div class="row g-0 bg-light">
     <div class="col-lg-8">
         <div class="sticky-top">
@@ -64,18 +59,16 @@
                     </a>
                 </div>
                 <div class="col-9 col-md-10">
-                    <a href="<?= current_page('../'); ?>" class="float-end --xhr">
-                        <i class="mdi mdi-window-close"></i>
-                    </a>
-                    <div>
-                        <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
-                            <b class="mb-0">
-                                <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
-                            </b>
+                    <h5 class="fw-bold mb-0">
+                        <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">
+                            &nbsp;
                         </a>
-                    </div>
+                        <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
+                            <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
+                        </a>
+                    </h5>
                     <p class="mb-0">
-                        <span class="text-sm text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
+                        <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
                             <?= time_ago($results[0]->updated_timestamp); ?>
                         </span>
                     </p>

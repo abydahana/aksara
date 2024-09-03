@@ -45,7 +45,7 @@ class Core
                                 {{ phrase('Options') }}
                             </th>
                             {% for column in results.columns %}
-                                <th align="{{ column.align }}">
+                                <th align="{{ column.align }}" class="no-wrap">
                                     {% if column.url %}
                                         <a href="{{ column.url }}" class="fw-bold {{ column.class }}">
                                             {{ column.label }}
@@ -172,12 +172,12 @@ class Core
                                 <div class="card-footer">
                                     <div class="btn-group btn-group-sm d-flex">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-light" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="javascript:void(0)" class="btn btn-light --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -491,10 +491,12 @@ class Core
                                                         </div>
 
                                                         {% for merged_field in results.merged_field[name] %}
-                                                            <div class="col {{ results.field_size[merged_field] }}">
-                                                                {# Include form input component #}
-                                                                {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
-                                                            </div>
+                                                            {% if results.field_data[merged_field] %}
+                                                                <div class="col {{ results.field_size[merged_field] }}">
+                                                                    {# Include form input component #}
+                                                                    {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                                </div>
+                                                            {% endif %}
                                                         {% endfor %}
                                                     </div>
                                                 {% elseif not params.merged %}
@@ -578,10 +580,12 @@ class Core
                                                     </div>
 
                                                     {% for merged_field in results.merged_field[name] %}
-                                                        <div class="col {{ results.field_size[merged_field] }}">
-                                                            {# Include form input component #}
-                                                            {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
-                                                        </div>
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                                {# Include form input component #}
+                                                                {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                            </div>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% elseif not params.merged %}
@@ -647,10 +651,12 @@ class Core
                                                     </div>
 
                                                     {% for merged_field in results.merged_field[name] %}
-                                                        <div class="col {{ results.field_size[merged_field] }}">
-                                                            {# Include form read component #}
-                                                            {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
-                                                        </div>
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                                {# Include form read component #}
+                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
+                                                            </div>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% elseif not params.merged %}
@@ -726,10 +732,12 @@ class Core
                                                     </div>
 
                                                     {% for merged_field in results.merged_field[name] %}
-                                                        <div class="col {{ results.field_size[merged_field] }}">
-                                                            {# Include form read component #}
-                                                            {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
-                                                        </div>
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                                {# Include form read component #}
+                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
+                                                            </div>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% elseif not params.merged %}

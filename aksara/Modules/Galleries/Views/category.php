@@ -46,25 +46,23 @@
 <?php else: ?>
     <div class="py-3 py-md-5">
         <div class="container">
-            <div class="text-center py-5">
-                <h1 class="text-muted">
-                    404
-                </h1>
-                <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-            </div>
-            <div class="row mb-5">
-                <div class="col-md-6 offset-md-3">
-                    <h2 class="text-center">
-                        <?= phrase('Album not found!'); ?>
-                    </h2>
-                    <p class="lead text-center mb-5">
-                        <?= phrase('The album you requested was not found or already been archived.'); ?>
-                    </p>
-                    <div class="text-center mt-5">
-                        <a href="<?= go_to('../'); ?>" class="btn btn-outline-primary rounded-pill --xhr">
-                            <i class="mdi mdi-arrow-left"></i>
-                            <?= phrase('Back to Galleries'); ?>
-                        </a>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="py-5">
+                        <div class="text-center">
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('No album is found!'); ?>
+                        </h2>
+                        <p class="lead text-center">
+                            <?= phrase('No album is available at the moment.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Galleries'); ?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

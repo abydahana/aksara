@@ -177,7 +177,7 @@ class Documentation extends \Aksara\Laboratory\Core
                 'timeout' => 5,
                 'http_errors' => false,
                 'allow_redirects' => [
-                    'max' => 10
+                    'max' => 3
                 ],
                 'headers' => [
                     'X-API-KEY' => ENCRYPTION_KEY,
@@ -234,6 +234,7 @@ class Documentation extends \Aksara\Laboratory\Core
                 }
             }
         } catch (\Throwable $e) {
+            // Safe abstraction
         }
 
         // Remove the temporary session

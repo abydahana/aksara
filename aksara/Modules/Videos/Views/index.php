@@ -1,3 +1,4 @@
+<?php if ($results): ?>
 <div class="py-3 py-md-5 bg-light">
     <div class="container">
         <h1 class="text-center text-md-start">
@@ -8,9 +9,10 @@
         </p>
     </div>
 </div>
-<?php if ($results): ?>
-    <div class="py-3 py-md-5">
-        <div class="container">
+<?php endif; ?>
+<div class="py-3 py-md-5">
+    <div class="container">
+        <?php if ($results): ?>
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <div class="col-md-6 col-lg-4">
@@ -48,19 +50,27 @@
             </div>
 
             <?= pagination($pagination); ?>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="py-3 py-md-5">
-        <div class="container">
+        <?php else: ?>
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="text-muted">
-                        <i class="mdi mdi-information-outline"></i>
-                        <?= phrase('No video are available right now.'); ?>
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="py-5">
+                        <div class="text-center">
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        </div>
+                        <h2 class="text-center">
+                            <?= phrase('No video is found!'); ?>
+                        </h2>
+                        <p class="lead text-center">
+                            <?= phrase('No video is available at the moment.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
-<?php endif; ?>
+</div>

@@ -78,8 +78,7 @@ class Errors extends \Aksara\Laboratory\Core
             return make_json([
                 'status' => 200,
                 'meta' => [
-                    'popup' => true,
-                    'modal_size' => 'modal-sm'
+                    'popup' => true
                 ],
                 'content' => $html
             ]);

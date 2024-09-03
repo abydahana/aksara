@@ -18,7 +18,7 @@
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
                         <div class="mb-3">
-                            <div class="row mb-4">
+                            <div class="row align-items-center mb-4">
                                 <div class="col-3 col-md-3 pt-2 order-sm-<?= ($key %2 === 0 ? '0' : '1'); ?>">
                                     <img src="<?= get_image('testimonials', $val->photo, 'thumb'); ?>" class="img-fluid w-100 rounded-4">
                                 </div>
@@ -43,13 +43,18 @@
                 <?php else: ?>
                     <div class="py-5">
                         <div class="text-center">
-                            <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
                             <?= phrase('No testimonial is found!'); ?>
                         </h2>
-                        <p class="lead text-center mb-5">
+                        <p class="lead text-center">
                             <?= phrase('No testimonial is available at the moment.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
+                            </a>
                         </p>
                     </div>
                 <?php endif; ?>

@@ -42,13 +42,18 @@
                 <div class="col-lg-8 offset-lg-2">
                     <div class="py-5">
                         <div class="text-center">
-                            <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
                             <?= phrase('No people is found!'); ?>
                         </h2>
-                        <p class="lead text-center mb-5">
+                        <p class="lead text-center">
                             <?= phrase('No people is available at the moment.'); ?>
+                        </p>
+                        <p class="text-center">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
+                            </a>
                         </p>
                     </div>
                 </div>

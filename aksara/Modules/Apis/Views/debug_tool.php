@@ -19,7 +19,7 @@
             </div>
             <div class="col-md-2">
                 <div class="d-grid mb-3">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-dark">
                         <i class="mdi mdi-send"></i>
                         <?= phrase('Send'); ?>
                     </button>

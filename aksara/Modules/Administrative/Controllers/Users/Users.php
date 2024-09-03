@@ -59,11 +59,11 @@ class Users extends \Aksara\Laboratory\Core
         ->add_button('privileges', phrase('Individual Privilege'), 'btn-success --xhr', 'mdi mdi-account-check-outline', ['user_id' => 'user_id'])
 
         ->unset_column('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')
-        ->unset_field('user_id, last_login, is_logged, registered_date')
+        ->unset_field('user_id, bio, phone, address, postal_code, country_id, last_login, is_logged, registered_date')
         ->unset_view('user_id, password')
         ->column_order('photo, username, first_name, email, group_name')
-        ->field_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
-        ->view_order('photo, first_name, username, email, password, bio, phone, address, postal_code, country, language, group_name, status, last_login')
+        ->field_order('photo, first_name, last_name, gender, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
+        ->view_order('photo, first_name, last_name, gender, username, email, language, group_name, language_id, group_id, phone, address, postal_code, country, bio, registered_date, last_login, status')
         ->set_field([
             'password' => 'password',
             'photo' => 'image',
@@ -114,25 +114,6 @@ class Users extends \Aksara\Laboratory\Core
             'group_id' => 'required',
             'status' => 'boolean'
         ])
-        ->field_position([
-            'bio' => 2,
-            'postal_code' => 2,
-            'address' => 2,
-            'phone' => 2,
-            'country_id' => 2,
-            'country_name' => 2,
-            'language_id' => 2,
-            'language' => 2,
-            'group_id' => 2,
-            'group_name' => 2,
-            'pin' => 2,
-            'status' => 2,
-            'last_login' => 2
-        ])
-        ->column_size([
-            1 => 'col-md-6',
-            2 => 'col-md-6'
-        ])
         ->set_alias([
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),
@@ -153,6 +134,11 @@ class Users extends \Aksara\Laboratory\Core
 
         ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->merge_field('first_name, last_name', phrase('Full Name'))
+        ->merge_field('username, email')
+        ->merge_field('language_id, group_id')
+        ->merge_field('language, group_name')
+        ->merge_field('postal_code, country')
+        ->merge_field('registered_date, last_login')
 
         ->render($this->_table);
     }

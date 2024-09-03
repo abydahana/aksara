@@ -55,87 +55,93 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <?php if ($article): ?>
-                    <div class="row">
-                        <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
-                            <div class="row g-0 align-items-center">
-                                <div class="col-2 col-sm-1">
-                                    <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
-                                        <img src="<?= get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded-circle" />
+                <div class="sticky-top">
+                    <?php if ($article): ?>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col-2 col-sm-1">
+                                        <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
+                                            <img src="<?= get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded-circle" />
+                                        </a>
+                                    </div>
+                                    <div class="col-10 col-sm-11 ps-3">
+                                        <h5 class="fw-bold mb-0">
+                                            <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
+                                                <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
+                                            </a>
+                                        </h5>
+                                        <p class="mb-0">
+                                            <small class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
+                                                <?= time_ago($results[0]->updated_timestamp); ?>
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 mb-3 order-0 order-md-1">
+                                <div class="btn-group btn-group-sm d-flex rounded-pill overflow-hidden">
+                                    <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page(); ?>'" class="btn btn-primary" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook'); ?>" target="_blank">
+                                        <i class="mdi mdi-facebook"></i>
+                                    </a>
+                                    <a href="//www.twitter.com/share?url=<?= current_page(); ?>" class="btn btn-info text-light" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter'); ?>" target="_blank">
+                                        <i class="mdi mdi-twitter"></i>
+                                    </a>
+                                    <a href="//wa.me/?text=<?= current_page(); ?>" class="btn btn-success" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp'); ?>" target="_blank">
+                                        <i class="mdi mdi-whatsapp"></i>
                                     </a>
                                 </div>
-                                <div class="col-10 col-sm-11 ps-3">
-                                    <h5 class="fw-bold mb-0">
-                                        <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
-                                            <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
-                                        </a>
-                                    </h5>
-                                    <p class="mb-0">
-                                        <small class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
-                                            <?= time_ago($results[0]->updated_timestamp); ?>
-                                        </small>
-                                    </p>
-                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-4 mb-3 order-0 order-md-1">
-                            <div class="btn-group btn-group-sm d-flex rounded-pill overflow-hidden">
-                                <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page(); ?>'" class="btn btn-primary" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook'); ?>" target="_blank">
-                                    <i class="mdi mdi-facebook"></i>
-                                </a>
-                                <a href="//www.twitter.com/share?url=<?= current_page(); ?>" class="btn btn-info text-light" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter'); ?>" target="_blank">
-                                    <i class="mdi mdi-twitter"></i>
-                                </a>
-                                <a href="//wa.me/?text=<?= current_page(); ?>" class="btn btn-success" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp'); ?>" target="_blank">
-                                    <i class="mdi mdi-whatsapp"></i>
-                                </a>
+
+                        <?php if ($featured_image): ?>
+                            <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="img-fluid rounded d-none" width="100%" /></a>
+                        <?php endif; ?>
+
+                        <?php if ($toc): ?>
+                            <div class="lead">
+                                <p class="text-lg-justify article text-break">
+                                    <?= $meta->description; ?>
+                                </p>
                             </div>
-                        </div>
-                    </div>
+                            <div class="toc">
+                                <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
+                                    <legend><?= phrase('Table of Contents'); ?></legend>
+                                    <?= $toc; ?>
+                                </fieldset>
+                            </div>
+                        <?php endif; ?>
 
-                    <?php if ($featured_image): ?>
-                        <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="img-fluid rounded d-none" width="100%" /></a>
-                    <?php endif; ?>
-
-                    <?php if ($toc): ?>
                         <div class="lead">
-                            <p class="text-lg-justify article text-break">
-                                <?= $meta->description; ?>
+                            <?= recommendation_generator(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $article), $recommendations); ?>
+                        </div>
+
+                        <div class="tags">
+                            <?= $post_tags; ?>
+                        </div>
+
+                        <?= comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]); ?>
+
+                        <div class="d-md-none py-3">&nbsp;</div>
+                    <?php else: ?>
+                        <div class="alert alert-warning callout mb-5">
+                            <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
+                            <hr />
+                            <p class="lead mb-0">
+                                <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived'); ?>
                             </p>
                         </div>
-                        <div class="toc">
-                            <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
-                                <legend><?= phrase('Table of Contents'); ?></legend>
-                                <?= $toc; ?>
-                            </fieldset>
-                        </div>
                     <?php endif; ?>
-
-                    <div class="lead">
-                        <?= related_generator(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $article), $related); ?>
-                    </div>
-
-                    <div class="tags">
-                        <?= $post_tags; ?>
-                    </div>
-
-                    <?= comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]); ?>
-                <?php else: ?>
-                    <div class="alert alert-warning callout">
-                        <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
-                        <hr />
-                        <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived'); ?>
-                    </div>
-                <?php endif; ?>
+                </div>
             </div>
             <div class="col-lg-4">
                 <div class="sticky-top">
                     <div class="mb-5">
                         <h4 class="mb-3">
-                            <?= phrase('Recommended Articles'); ?>
+                            <?= phrase('Related Articles'); ?>
                         </h4>
-                        <?php if ($recommendations): ?>
-                            <?php foreach ($recommendations as $key => $val): ?>
+                        <?php if ($related): ?>
+                            <?php foreach ($related as $key => $val): ?>
                                 <div class="card rounded-4 border-light-subtle mb-3">
                                     <div class="card-body">
                                         <div class="row g-0 align-items-center">

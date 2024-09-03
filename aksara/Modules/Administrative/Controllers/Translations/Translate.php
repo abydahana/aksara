@@ -88,7 +88,7 @@ class Translate extends \Aksara\Laboratory\Core
     public function delete_phrase()
     {
         if (DEMO_MODE) {
-            return throw_exception(403, phrase('Changes will not saved in demo mode'), current_page());
+            return throw_exception(403, phrase('Changes will not saved in demo mode'), current_page('../'));
         }
 
         $delete_key = service('request')->getGet('phrase');

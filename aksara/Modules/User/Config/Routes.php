@@ -15,5 +15,6 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-$routes->add('user/(:any)/activity', '\Aksara\Modules\User\Controllers\User::activity/$1');
+$routes->add('user/(:any)/activities', '\Aksara\Modules\User\Controllers\User::activities/$1');
 $routes->add('user/(:any)/likes', '\Aksara\Modules\User\Controllers\User::likes/$1');
+$routes->add('user/(:any)/guestbook', '\Aksara\Modules\User\Controllers\User::guestbook/$1');
