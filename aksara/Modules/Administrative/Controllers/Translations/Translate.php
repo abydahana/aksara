@@ -185,6 +185,21 @@ class Translate extends \Aksara\Laboratory\Core
                         $phrases[$key] = htmlspecialchars($val);
                     }
                 }
+
+                // Separate identical and non-identical key-value pairs
+                $identical_pairs = [];
+                $non_identical_pairs = [];
+
+                foreach ($phrases as $key => $val) {
+                    if ($key === $val) {
+                        $identical_pairs[$key] = $val;
+                    } else {
+                        $non_identical_pairs[$key] = $val;
+                    }
+                }
+
+                // Sort by untranslated first
+                $phrases = array_merge($identical_pairs, $non_identical_pairs);
             }
 
             // Update phrase total
