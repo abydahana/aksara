@@ -27,24 +27,20 @@
     <div class="col-lg-4 p-3 bg-white">
         <div class="sticky-top">
             <div class="row align-items-center mb-3">
-                <div class="col-3 col-md-2 pe-0">
+                <div class="col-2 pe-0">
                     <a href="<?= base_url('user/' . $results->field_data->username->value); ?>" class="--xhr">
                         <img src="<?= get_image('users', $results->field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" />
                     </a>
                 </div>
-                <div class="col-9 col-md-10">
-                    <a href="<?= current_page('../'); ?>" class="float-end --xhr">
-                        <i class="mdi mdi-window-close"></i>
-                    </a>
-                    <div>
+                <div class="col-10">
+                    <h5 class="fw-bold mb-0">
+                        <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">&nbsp;</a>
                         <a href="<?= base_url('user/' . $results->field_data->username->value); ?>" class="--xhr">
-                            <b class="mb-0">
-                                <?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value; ?>
-                            </b>
+                            <?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value; ?>
                         </a>
-                    </div>
+                    </h5>
                     <p class="mb-0">
-                        <span class="text-sm text-muted" data-bs-toggle="tooltip" title="<?= $results->field_data->timestamp->value; ?>">
+                        <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results->field_data->timestamp->value; ?>">
                             <?= time_ago($results->field_data->timestamp->value); ?>
                         </span>
                     </p>
