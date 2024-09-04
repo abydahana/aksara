@@ -5435,7 +5435,8 @@ class Core extends Controller
         $query = $this->model->get_where(
             'app__log_visitors',
             [
-                'ip_address' => $prepare['ip_address']
+                'ip_address' => $prepare['ip_address'],
+                'DATE(timestamp)' => date('Y-m-d', strtotime($prepare['timestamp']))
             ],
             1
         )
@@ -5444,13 +5445,11 @@ class Core extends Controller
         if (! $query) {
             try {
                 // Insert log
-                if (! $this->model->insert('app__log_visitors', $prepare)) {
-                    try {
-                        // Trap suspicious access
-                        file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
+                $log_insert = $this->model->insert('app__log_visitors', $prepare);
+
+                if (! $log_insert) {
+                    // Trap suspicious access
+                    file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
                 }
             } catch (\Throwable $e) {
                 // Safe abstraction;

@@ -30,10 +30,6 @@ class AppLogVisitors extends Migration
                 'constraint' => 45,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'browser' => [
                 'type' => 'varchar',
                 'constraint' => 32,
@@ -42,6 +38,10 @@ class AppLogVisitors extends Migration
             'platform' => [
                 'type' => 'varchar',
                 'constraint' => 64,
+                'null' => false
+            ],
+            'timestamp' => [
+                'type' => 'timestamp',
                 'null' => false
             ]
         ]);
