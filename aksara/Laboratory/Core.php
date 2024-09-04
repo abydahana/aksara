@@ -1796,6 +1796,8 @@ class Core extends Controller
         foreach ($data as $row => $array) {
             // Rows
             foreach ($array as $field => $value) {
+                $hidden = false;
+
                 // Attempt to get the type
                 $type = strtolower((isset($field_data[$field]->type) ? $field_data[$field]->type : gettype($value)));
 
@@ -1854,21 +1856,19 @@ class Core extends Controller
                 // Attempt to get field translation
                 $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
 
-                $hidden = false;
-
                 if ('create' == $this->_method) {
                     $content = (isset($this->_set_default[$field]) ? $this->_set_default[$field] : (isset($field_data[$field]->default) ? $field_data[$field]->default : null));
                     $value = null;
                 }
 
-                if (in_array($this->_method, ['create', 'update']) && in_array($field, $this->_unset_field)) {
-                    // Skip field validation
+                if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unset_field) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_set_field[$field])))) {
+                    // Indicates that field should not be shown
                     $hidden = true;
                 } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unset_view)) {
-                    // Skip showing field
+                    // Indicates that field should not be shown
                     $hidden = true;
                 } elseif (in_array($this->_method, ['index', 'export', 'print', 'pdf']) && in_array($field, $this->_unset_column)) {
-                    // Skip showing field
+                    // Indicates that field should not be shown
                     $hidden = true;
                 }
 
@@ -3000,8 +3000,8 @@ class Core extends Controller
                 $type = array_keys($val['type']);
 
                 // Skip field when it's disabled and has no default value
-                if (in_array($key, $this->_unset_field) || isset($this->_set_default[$key]) || array_intersect(['current_timestamp'], $type)) {
-                    // Skip when field were unset or type is current timestamp
+                if (in_array($key, $this->_unset_field) || isset($this->_set_default[$key]) || array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['updated_timestamp'], $type)) || ('update' === $this->_method && array_intersect(['created_timestamp'], $type))) {
+                    // Skip field from validation
                     continue;
                 }
 
@@ -3196,11 +3196,16 @@ class Core extends Controller
                 $type = array_keys($value['type']);
 
                 // Skip field when it's disabled and has no default value
-                if ((in_array($field, $this->_unset_field) && ! isset($this->_set_default[$field]) && ! array_intersect(['slug', 'current_timestamp'], $type)) || (in_array('disabled', $type) && ! isset($this->_set_default[$field]))) {
+                if (
+                    (in_array($field, $this->_unset_field) && ! isset($this->_set_default[$field]) && ! array_intersect(['slug', 'current_timestamp', 'created_timestamp', 'updated_timestamp'], $type)) ||
+                    (in_array('disabled', $type) && ! isset($this->_set_default[$field])) ||
+                    ('create' === $this->_method && array_intersect(['updated_timestamp'], $type)) ||
+                    ('update' === $this->_method && array_intersect(['created_timestamp'], $type))
+                ) {
                     continue;
                 }
 
-                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
+                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
                         if (service('request')->getPost($field)) {
@@ -3381,7 +3386,7 @@ class Core extends Controller
                     } elseif (array_intersect(['boolean'], $type)) {
                         // Push the boolean field type to data preparation
                         $prepare[$field] = service('request')->getPost($field);
-                    } elseif (array_intersect(['current_timestamp'], $type)) {
+                    } elseif (array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['created_timestamp'], $type)) || ('update' === $this->_method && array_intersect(['updated_timestamp'], $type))) {
                         // Push the current timestamp field type to data preparation
                         $prepare[$field] = date('Y-m-d H:i:s');
                     } elseif (array_intersect(['date', 'datepicker'], $type)) {

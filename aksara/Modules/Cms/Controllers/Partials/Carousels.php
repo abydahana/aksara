@@ -43,15 +43,6 @@ class Carousels extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('Carousels'))
         ->set_icon('mdi mdi-view-carousel')
         ->unset_column('carousel_id, created_timestamp, updated_timestamp, language')
@@ -60,6 +51,8 @@ class Carousels extends \Aksara\Laboratory\Core
         ->set_field([
             'carousel_description' => 'textarea',
             'carousel_content' => 'carousel',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_relation(

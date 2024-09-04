@@ -69,15 +69,6 @@ class Blogs extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('Blogs'))
         ->set_icon('mdi mdi-newspaper')
         ->set_primary('post_id')
@@ -94,6 +85,8 @@ class Blogs extends \Aksara\Laboratory\Core
             'author' => 'current_user',
             'headline' => 'boolean',
             'featured_image' => 'image',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_field('post_slug', 'slug', 'post_title')
