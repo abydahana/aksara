@@ -124,12 +124,12 @@
                                             </p>
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-1">
-                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary --xhr">
                                                         <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                                     </a>
                                                 </div>
                                                 <div class="col-8 overflow-hidden">
-                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2 --xhr">
                                                         <b>
                                                             <?= $_val->first_name . ' ' . $_val->last_name; ?>
                                                         </b>

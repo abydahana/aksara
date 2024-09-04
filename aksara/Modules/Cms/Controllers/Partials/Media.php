@@ -51,6 +51,11 @@ class Media extends \Aksara\Laboratory\Core
 
     private function _delete_file($filename = '')
     {
+        if (DEMO_MODE) {
+            // Demo mode
+            return throw_exception(403, phrase('This feature is disabled in demo mode'), current_page(null, ['file' => null, 'action' => null]));
+        }
+
         try {
             unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
         } catch (\Throwable $e) {

@@ -41,15 +41,6 @@ class Announcements extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('Announcements'))
         ->set_icon('mdi mdi-bullhorn-outline')
         ->set_primary('announcement_id')
@@ -62,6 +53,8 @@ class Announcements extends \Aksara\Laboratory\Core
             'cover' => 'image',
             'start_date' => 'date',
             'end_date' => 'date',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_field(

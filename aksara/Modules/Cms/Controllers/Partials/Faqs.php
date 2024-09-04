@@ -41,15 +41,6 @@ class Faqs extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('FAQs'))
         ->set_icon('mdi mdi-file-question')
         ->unset_column('faq_id, created_timestamp, updated_timestamp, language')
@@ -59,6 +50,8 @@ class Faqs extends \Aksara\Laboratory\Core
             'faq_description' => 'textarea',
             'faq_content' => 'accordion',
             'language' => 'language_picker',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_relation(

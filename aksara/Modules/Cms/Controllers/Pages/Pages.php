@@ -39,15 +39,6 @@ class Pages extends \Aksara\Laboratory\Core
             $this->where('language_id', service('request')->getGet('language'));
         }
 
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('Pages'))
         ->set_icon('mdi mdi-file-document-outline')
         ->set_primary('page_id')
@@ -59,6 +50,8 @@ class Pages extends \Aksara\Laboratory\Core
         ->set_field([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_field('page_slug', 'slug', 'page_title')

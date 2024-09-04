@@ -37,15 +37,6 @@ class Galleries extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if ($this->get_method() === 'create') {
-            $this->set_field('created_timestamp', 'current_timestamp');
-        } elseif ($this->get_method() === 'update') {
-            $this->set_field('updated_timestamp', 'current_timestamp');
-        } else {
-            $this->set_field('created_timestamp', 'datetime');
-            $this->set_field('updated_timestamp', 'datetime');
-        }
-
         $this->set_title(phrase('Galleries'))
         ->set_icon('mdi mdi-folder-multiple-image')
         ->set_primary('gallery_id')
@@ -60,6 +51,8 @@ class Galleries extends \Aksara\Laboratory\Core
             'gallery_description' => 'textarea',
             'gallery_attributes' => 'attribution',
             'featured' => 'boolean',
+            'created_timestamp' => 'created_timestamp',
+            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->set_field('gallery_slug', 'slug', 'gallery_title')
