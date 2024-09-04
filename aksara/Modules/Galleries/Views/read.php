@@ -53,16 +53,14 @@
     <div class="col-lg-4 p-3 bg-white">
         <div class="sticky-top">
             <div class="row align-items-center mb-3">
-                <div class="col-3 col-md-2 pe-0">
+                <div class="col-2 pe-0">
                     <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
                         <img src="<?= get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded-circle" />
                     </a>
                 </div>
-                <div class="col-9 col-md-10">
+                <div class="col-10">
                     <h5 class="fw-bold mb-0">
-                        <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">
-                            &nbsp;
-                        </a>
+                        <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">&nbsp;</a>
                         <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
                             <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
                         </a>

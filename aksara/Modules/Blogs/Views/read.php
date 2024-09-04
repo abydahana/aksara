@@ -57,24 +57,24 @@
             <div class="col-lg-8">
                 <div class="sticky-top">
                     <?php if ($article): ?>
-                        <div class="row">
+                        <div class="row align-items-center mb-3">
                             <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-2 col-sm-1">
+                                <div class="row align-items-center">
+                                    <div class="col-2 pe-0">
                                         <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
                                             <img src="<?= get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded-circle" />
                                         </a>
                                     </div>
-                                    <div class="col-10 col-sm-11 ps-3">
+                                    <div class="col-10">
                                         <h5 class="fw-bold mb-0">
                                             <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
                                                 <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
                                             </a>
                                         </h5>
                                         <p class="mb-0">
-                                            <small class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
                                                 <?= time_ago($results[0]->updated_timestamp); ?>
-                                            </small>
+                                            </span>
                                         </p>
                                     </div>
                                 </div>
