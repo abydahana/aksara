@@ -4486,20 +4486,6 @@ class Core extends Controller
     }
 
     /**
-     * Running a subquery
-     *
-     * @param   string|mixed $subquery
-     */
-    public function subquery($subquery = null, string $alias = null)
-    {
-        if (! in_array($this->_method, ['create', 'update', 'delete'])) {
-            $this->_prepare(__FUNCTION__, [$subquery, $alias]);
-        }
-
-        return $this;
-    }
-
-    /**
      * Starts a new group by adding an opening parenthesis to the WHERE clause
      * of the query.
      */
