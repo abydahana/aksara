@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div>
-                <?= $results[0]->gallery_description; ?>
+                <?= nl2br_limit($results[0]->gallery_description); ?>
             </div>
             <?php
                 if ($attributes) {

@@ -50,7 +50,7 @@
                 <?= $results->field_data->title->value; ?>
             </h4>
             <div>
-                <?= $results->field_data->description->value; ?>
+                <?= custom_nl2br($results->field_data->description->value, 1); ?>
             </div>
             <div>
                 <?= comment_widget(['post_id' => $results->field_data->id->value, 'path' => service('uri')->getRoutePath()]); ?>
