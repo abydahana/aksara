@@ -20,22 +20,35 @@ if (! function_exists('truncate')) {
      * Truncate the string
      *
      * @param   string $string
-     * @param   int $limit
      * @param   string $pad
      */
-    function truncate($string = null, $limit = 0, $pad = '...')
+    function truncate($string = null, int $limit = 0, $pad = '...')
     {
         if (! $string) {
             return;
         }
 
-        $string = strip_tags($string);
+        $string = strip_tags(str_replace('<', ' <', $string));
+        $string = trim(preg_replace('/\s\s+/', ' ', $string));
 
         if ($limit && strlen($string) >= $limit) {
             $string = substr($string, 0, $limit) . $pad;
         }
 
         return $string;
+    }
+}
+
+if (! function_exists('custom_nl2br')) {
+    /**
+     * Limit new line into break
+     *
+     * @param   string $string
+     * @param   int $limit
+     */
+    function custom_nl2br($string = '')
+    {
+        return preg_replace('/(<br(?: \\/)?>\\r?\\n?\\r?)(?=\\1\\1)/is', '', nl2br($string));
     }
 }
 
