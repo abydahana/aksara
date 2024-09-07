@@ -185,12 +185,12 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="row g-0">
-                            <div class="col-12 offset-0 col-sm-11 offset-sm-1 ps-0 ps-sm-3">
+                            <div class="col-11 offset-1 ps-3">
                                 <div id="comment-reply">
                                     ` + (val.replies > 0 ? `
                                         <div class="load-more-container row g-0">
-                                            <div class="col-11 offset-1 col-sm-12 offset-sm-0">
-                                                <div class="ps-3 mb-4">
+                                            <div class="col-12">
+                                                <div class="mb-3">
                                                     <a href="javascript:void(0)" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-dark fw-bold">
                                                         <i class="mdi mdi-chevron-down"></i>
                                                         ${ val.replies } ${ (val.replies ? (val.replies > 1 ? phrase('Replies') : 'Reply') : '') }
@@ -209,8 +209,8 @@ $(document).ready(function() {
             if (response.total === response.limit) {
                 $(`
                     <div class="load-more-container row g-0">
-                        <div class="col-11 offset-1 ps-3">
-                            <div class="ps-3">
+                        <div class="col-12">
+                            <div class="mb-3">
                                 <p class="text-${ (is_reply ? 'start' : 'center') }">
                                     <a href="javascript:void(0)" data-href="${ response.next_page }" data-is-reply="${ is_reply }" class="load-more --fetch-comments">
                                         <b>${ (is_reply ? phrase('Load more replies') : phrase('Load more comments')) }</b>
@@ -271,7 +271,7 @@ $(document).ready(function() {
                                     <textarea name="comments" class="form-control" placeholder="${ (typeof phrase.type_a_reply !== 'undefined' ? phrase.type_a_reply : 'Type a reply') }" rows="1"></textarea>
                                     <div class="btn-group position-absolute bottom-0 end-0">
                                         <button type="button" class="btn btn-link" data-bs-toggle="tooltip" title="${ (typeof phrase.attach_photo !== 'undefined' ? phrase.attach_photo : 'Attach photo') }" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
-                                            <i class="mdi mdi-camera"></i>
+                                            <i class="mdi mdi-camera text-dark"></i>
                                         </button>
                                     </div>
                                 </div>

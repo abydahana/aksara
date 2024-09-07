@@ -83,6 +83,11 @@ class Comments extends \Aksara\Laboratory\Core
         }
 
         if (service('request')->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+            if (DEMO_MODE) {
+                // Demo mode
+                return throw_exception(403, phrase('This feature is disabled in demo mode'), go_to(null, ['id' => null]));
+            }
+
             $this->model->update(
                 $this->_table,
                 [

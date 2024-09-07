@@ -111,18 +111,11 @@ class Dashboard extends \Aksara\Laboratory\Core
 
     private function _visitors()
     {
-        $visitors = $this->model->select('
-            ip_address,
-            browser,
-            platform,
-            timestamp
-        ')
-        ->group_by('ip_address, browser, platform, timestamp, ' . (in_array(DB_DRIVER, ['Postgre', 'SQLSRV']) ? 'CAST(timestamp AS DATE)' : 'DATE(timestamp)'))
-        ->get_where(
+        $visitors = $this->model->get_where(
             'app__log_visitors',
             [
-                'timestamp > ' => date('Y-m-d', strtotime('-6 days')) . ' 00:00:00',
-                'timestamp < ' => date('Y-m-d H:i:s')
+                'DATE(timestamp) >= ' => date('Y-m-d', strtotime('-6 days')),
+                'DATE(timestamp) <= ' => date('Y-m-d')
             ]
         )
         ->result();
@@ -154,10 +147,10 @@ class Dashboard extends \Aksara\Laboratory\Core
         if ($visitors) {
             foreach ($visitors as $key => $val) {
                 // Translate day name
-                $date = phrase(date('l', strtotime($val->timestamp)));
+                $day = phrase(date('l', strtotime($val->timestamp)));
 
                 // Increase number of visits based with its day name
-                $output['visits'][$date]++;
+                $output['visits'][$day]++;
 
                 if (stripos($val->browser, 'chrome') !== false) {
                     $browsers['chrome']++;
