@@ -184,26 +184,25 @@ class Feedback extends \Aksara\Laboratory\Core
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
                 <input type="hidden" name="comment_id" value="' . sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
-                <div class="text-center pt-3 pb-3 mb-3 border-bottom">
+                <div class="text-center py-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>
-                <div class="p-3 pt-0">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="d-grid">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                    <i class="mdi mdi-window-close"></i>
-                                    ' . phrase('Cancel') . '
-                                </button>
-                            </div>
+                <hr class="mx--3 border-secondary" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                <i class="mdi mdi-window-close"></i>
+                                ' . phrase('Cancel') . '
+                            </button>
                         </div>
-                        <div class="col-6">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="mdi mdi-check"></i>
-                                    ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
-                                </button>
-                            </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="mdi mdi-check"></i>
+                                ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -217,7 +216,7 @@ class Feedback extends \Aksara\Laboratory\Core
                 'icon' => 'mdi mdi-toggle-switch',
                 'popup' => true
             ],
-            'html' => $html
+            'content' => $html
         ]);
     }
 }
