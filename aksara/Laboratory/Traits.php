@@ -116,6 +116,8 @@ trait Traits
 
     private $_offset;
 
+    private $_offset_called = false;
+
     private $_old_files;
 
     private $_output = [];

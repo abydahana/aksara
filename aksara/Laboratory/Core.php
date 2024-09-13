@@ -2221,7 +2221,7 @@ class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && ! $this->_offset && gettype($this->_offset) !== 'integer' && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1) {
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1 && (! $this->_offset_called || (! $this->_offset && gettype($this->_offset) !== 'integer'))) {
                     $this->_offset = (service('request')->getGet('per_page') - 1) * ($this->_limit ?? $this->_limit_backup);
                 }
 
@@ -2590,6 +2590,7 @@ class Core extends Controller
                 // Extract magic string
                 preg_match_all('/\{\{(.*?)\}\}/', $title ?? '', $title_replace);
                 preg_match_all('/\{\{(.*?)\}\}/', $description ?? '', $description_replace);
+                preg_match_all('/\{\{(.*?)\}\}/', $icon ?? '', $icon_replace);
 
                 foreach ($title_replace[1] as $index => $replace) {
                     $replacement = trim($replace);
@@ -2607,6 +2608,31 @@ class Core extends Controller
                         // Attempt to convert the magic string and replace with the result
                         $description = preg_replace("/\{\{(\s+)?($replace)(\s+)?\}\}/", $results[0]->$replacement, $description);
                     }
+                }
+
+                foreach ($icon_replace[1] as $index => $replace) {
+                    $replacement = trim($replace);
+
+                    if (isset($results[0]->$replacement)) {
+                        // Attempt to convert the magic string and replace with the result
+                        $icon = preg_replace("/\{\{(\s+)?($replace)(\s+)?\}\}/", $results[0]->$replacement, $icon);
+                    }
+                }
+            } else {
+                // No result found
+                if (preg_match_all('/\{\{(.*?)\}\}/', $title)) {
+                    // Unset title contains magic string
+                    $title = null;
+                }
+
+                if (preg_match_all('/\{\{(.*?)\}\}/', $description)) {
+                    // Unset description contains magic string
+                    $description = null;
+                }
+
+                if (preg_match_all('/\{\{(.*?)\}\}/', $icon)) {
+                    // Unset icon contains magic string
+                    $icon = null;
                 }
             }
 
@@ -2719,13 +2745,13 @@ class Core extends Controller
                 $results = (! $view_exist ? $this->render_table($results) : $results);
 
                 // Set icon property
-                $this->_set_icon = ($icon ? $icon : 'mdi mdi-table');
+                $this->_set_icon = ($icon ? $icon : ($this->_set_title_fallback ?? 'mdi mdi-table'));
 
                 // Set title property
-                $this->_set_title = ($results ? $title : ($this->_set_title_fallback ?? phrase('Page not found!')));
+                $this->_set_title = ($title ? $title : ($this->_set_title_fallback ?? phrase('Page not found!')));
 
                 // Set description property
-                $this->_set_description = ($results ? $description : ($this->_set_description_fallback ?? phrase('The page you requested does not exist or already been archived.')));
+                $this->_set_description = ($description ? $description : $this->_set_description_fallback);
             }
         } else {
             /**
@@ -4478,6 +4504,8 @@ class Core extends Controller
     {
         if (! in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
             $this->_offset = (is_numeric(service('request')->getGet('offset')) ? service('request')->getGet('offset') : $offset);
+
+            $this->_offset_called = true;
         }
 
         $this->_prepare(__FUNCTION__, [$offset]);
