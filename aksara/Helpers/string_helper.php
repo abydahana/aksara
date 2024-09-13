@@ -44,7 +44,6 @@ if (! function_exists('custom_nl2br')) {
      * Limit new line into break
      *
      * @param   string $string
-     * @param   int $limit
      */
     function custom_nl2br($string = '')
     {
@@ -196,7 +195,7 @@ if (! function_exists('time_ago')) {
             if ($time_period >= 1) {
                 $time = round($time_period);
 
-                if ($full && 1 == $time && phrase('day') == $label) {
+                if ($full && ((1 == $time && phrase('day') == $label) || (24 == $time && in_array($label, [phrase('hour'), phrase('hr')])))) {
                     $time = null;
                     $label = phrase('Yesterday');
                 }
