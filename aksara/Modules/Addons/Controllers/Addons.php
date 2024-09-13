@@ -180,7 +180,40 @@ class Addons extends \Aksara\Laboratory\Core
                         mkdir($tmp_path, 0755, true);
 
                         // Copy the repository to temporary path
-                        copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
+                        if (! copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip')) {
+                            // Unable to copy file, use FTP instead
+                            $site_id = get_setting('id');
+
+                            $query = $this->model->get_where(
+                                'app__ftp',
+                                [
+                                    'site_id' => $site_id
+                                ],
+                                1
+                            )
+                            ->row();
+
+                            if (! $query) {
+                                return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
+                            }
+
+                            // Configuration found, decrypt password
+                            $query->username = service('encrypter')->decrypt(base64_decode($query->username));
+                            $query->password = service('encrypter')->decrypt(base64_decode($query->password));
+
+                            // Try to connect to FTP
+                            $connection = ftp_connect($query->hostname, $query->port, 10);
+
+                            if (! $connection || ! ftp_login($connection, $query->username, $query->password)) {
+                                return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration.'));
+                            }
+
+                            // Download file over FTP
+                            ftp_get($connection, $package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip', FTP_BINARY);
+
+                            // Close FTP connection
+                            ftp_close($connection);
+                        }
                     } catch (\Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReason(), go_to());
@@ -270,7 +303,7 @@ class Addons extends \Aksara\Laboratory\Core
                                 <div class="text-center">
                                     ' . phrase('The ' . $type . ' package with same structure is already installed.') . ' ' . phrase('Do you want to upgrade the ' . $type . ' instead?') . '
                                 </div>
-                                <hr class="mx--3" />
+                                <hr class="mx--3 border-secondary" />
                                 <input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
                                 <div class="row">
                                     <div class="col-6">
@@ -300,48 +333,15 @@ class Addons extends \Aksara\Laboratory\Core
                                 'icon' => 'mdi mdi-alert-outline',
                                 'popup' => true
                             ],
-                            'html' => $html
+                            'content' => $html
                         ]);
                     }
 
                     if (is_writable(ROOTPATH . $path)) {
-                        // Extract add-ons to module or theme path
+                        // Extract package contents
                         $extract = $zip->extractTo(ROOTPATH . $path);
 
-                        // Close opened zip
-                        $zip->close();
-                    } else {
-                        // Get the site id
-                        $site_id = get_setting('id');
-
-                        $query = $this->model->get_where(
-                            'app__ftp',
-                            [
-                                'site_id' => $site_id
-                            ],
-                            1
-                        )
-                        ->row();
-
-                        if (! $query) {
-                            return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
-                        }
-
-                        /* configuration found, decrypt password */
-                        $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                        $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                        // Try to connect to FTP
-                        $connection = @ftp_connect($query->hostname, $query->port, 10);
-
-                        if (! $connection || ! @ftp_login($connection, $query->username, $query->password)) {
-                            return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration.'));
-                        }
-
-                        // Extract add-ons to module or theme path
-                        $extract = $zip->extractTo(ROOTPATH . $path);
-
-                        // Close opened zip
+                        // Close zip
                         $zip->close();
                     }
 
@@ -358,7 +358,7 @@ class Addons extends \Aksara\Laboratory\Core
                                 //
                             }
                         } catch (\Throwable $e) {
-                            /* migration error, delete module */
+                            // Migration error, delete module
                             $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
                             return throw_exception(400, ['file' => $e->getMessage()]);
@@ -630,78 +630,20 @@ class Addons extends \Aksara\Laboratory\Core
     private function _rmdir($directory = null)
     {
         if (is_dir($directory)) {
-            /* delete directory */
-            if (! delete_files($directory, true)) {
-                /* Unable to delete directory. Get FTP configuration */
-                $site_id = get_setting('id');
+            $directories = scandir($directory);
 
-                $query = $this->model->get_where(
-                    'app__ftp',
-                    [
-                        'site_id' => $site_id
-                    ],
-                    1
-                )
-                ->row();
-
-                if ($query) {
-                    /* configuration found, decrypt password */
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    try {
-                        /* trying to delete directory using ftp instead */
-                        $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                        if ($connection && ftp_login($connection, $query->username, $query->password)) {
-                            /* Yay! FTP is connected, try to delete the directory */
-                            $this->_ftp_rmdir($connection, $directory);
-
-                            /* close FTP connection */
-                            ftp_close($connection);
-                        }
-                    } catch (\Throwable $e) {
-                        return throw_exception(403, $e->getMessage(), go_to());
+            foreach ($directories as $object) {
+                if ('.' != $object && '..' != $object) {
+                    if (is_dir($directory . DIRECTORY_SEPARATOR . $object) && ! is_link($directory . DIRECTORY_SEPARATOR . $object)) {
+                        $this->_rmdir($directory . DIRECTORY_SEPARATOR . $object);
+                    } else {
+                        unlink($directory . DIRECTORY_SEPARATOR . $object);
                     }
                 }
-            } elseif (is_dir($directory)) {
-                // Remove garbage directory
-                rmdir($directory);
             }
+
+            rmdir($directory);
         }
-    }
-
-    /**
-     * Remove directory and its files using FTP
-     *
-     * @param mixed|null $connection
-     * @param mixed|null $directory
-     */
-    private function _ftp_rmdir($connection = null, $directory = null)
-    {
-        if (! $directory) {
-            return false;
-        }
-
-        $lists = ftp_mlsd($connection, $directory);
-
-        unset($lists[0]);
-        unset($lists[1]);
-
-        foreach ($lists as $list) {
-            $full = $directory . DIRECTORY_SEPARATOR . $list['name'];
-
-            if ('dir' == $list['type']) {
-                // Directory found, reinitialize
-                $this->_ftp_rmdir($connection, $full);
-            } else {
-                // Delete file
-                ftp_delete($connection, $full);
-            }
-        }
-
-        // Delete directory
-        ftp_rmdir($connection, $directory);
     }
 
     /**

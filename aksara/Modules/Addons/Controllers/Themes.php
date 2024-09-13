@@ -127,7 +127,7 @@ class Themes extends \Aksara\Laboratory\Core
             return throw_exception(403, $response->getReason(), current_page('../', ['item' => null]));
         } elseif (isset($upstream->version) && $upstream->version > $package->version) {
             $html = '
-                <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'theme']) . '" method="POST" class="p-3 --validate-form">
+                <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'theme']) . '" method="POST" class="--validate-form">
                     <div class="text-center">
                         ' . phrase('A new version of the selected theme is available') . '
                         <br />
@@ -138,7 +138,7 @@ class Themes extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="mx--3" />
+                    <hr class="mx--3 border-secondary" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -168,7 +168,7 @@ class Themes extends \Aksara\Laboratory\Core
                     'icon' => 'mdi mdi-auto-fix',
                     'popup' => true
                 ],
-                'html' => $html
+                'content' => $html
             ]);
         }
 
@@ -188,11 +188,11 @@ class Themes extends \Aksara\Laboratory\Core
 
         if (! service('request')->getPost('theme')) {
             $html = '
-                <form action="' . current_page() . '" method="POST" class="p-3 --validate-form">
+                <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
                         ' . phrase('Are you sure want to activate this theme?') . '
                     </div>
-                    <hr class="mx--3" />
+                    <hr class="mx--3 border-secondary" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -222,7 +222,7 @@ class Themes extends \Aksara\Laboratory\Core
                     'icon' => 'mdi mdi-alert-outline',
                     'popup' => true
                 ],
-                'html' => $html
+                'content' => $html
             ]);
         }
 
@@ -418,39 +418,10 @@ class Themes extends \Aksara\Laboratory\Core
                 }
 
                 if (is_writable(ROOTPATH . 'themes')) {
+                    // Extract package contents
                     $extract = $zip->extractTo(ROOTPATH . 'themes');
 
-                    $zip->close();
-                } else {
-                    // Get the site id
-                    $site_id = get_setting('id');
-
-                    $query = $this->model->get_where(
-                        'app__ftp',
-                        [
-                            'site_id' => $site_id
-                        ],
-                        1
-                    )
-                    ->row();
-
-                    if (! $query) {
-                        return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable'), go_to('../../ftp'));
-                    }
-
-                    /* configuration found, decrypt password */
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    // Try to connect to FTP
-                    $connection = @ftp_connect($query->hostname, $query->port, 10);
-
-                    if (! $connection || ! @ftp_login($connection, $query->username, $query->password)) {
-                        return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration'));
-                    }
-
-                    $extract = $zip->extractTo(ROOTPATH . 'themes');
-
+                    // Close zip
                     $zip->close();
                 }
 
@@ -483,14 +454,14 @@ class Themes extends \Aksara\Laboratory\Core
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
 
-        /* delete confirmation */
+        // Delete confirmation
         if (! service('request')->getPost('theme')) {
             $html = '
-                <form action="' . current_page() . '" method="POST" class="p-3 --validate-form">
+                <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this theme?') . '
                     </div>
-                    <hr class="mx--3" />
+                    <hr class="mx--3 border-secondary" />
                     <input type="hidden" name="theme" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -520,7 +491,7 @@ class Themes extends \Aksara\Laboratory\Core
                     'icon' => 'mdi mdi-alert-outline',
                     'popup' => true
                 ],
-                'html' => $html
+                'content' => $html
             ]);
         }
 
@@ -530,13 +501,13 @@ class Themes extends \Aksara\Laboratory\Core
             return throw_exception(400, ['theme' => $this->form_validation->getErrors()]);
         }
 
-        /* check if requested theme to delete is match */
+        //C heck if requested theme to delete is match
         if (service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'))) {
             if (DEMO_MODE) {
                 return throw_exception(400, ['theme' => phrase('Changes will not saved in demo mode')]);
             }
 
-            /* check if theme property is exists */
+            // Check if theme property is exists
             if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json')) {
                 $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'));
 
@@ -560,10 +531,10 @@ class Themes extends \Aksara\Laboratory\Core
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use')]);
                 }
 
-                /* delete theme */
+                // Delete theme
                 $this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
             } else {
-                /* theme property is not found */
+                // Theme property is not found
                 return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstall from the theme manager')]);
             }
         } else {
@@ -616,77 +587,19 @@ class Themes extends \Aksara\Laboratory\Core
     private function _rmdir($directory = null)
     {
         if (is_dir($directory)) {
-            /* delete directory */
-            if (! delete_files($directory, true)) {
-                /* Unable to delete directory. Get FTP configuration */
-                $site_id = get_setting('id');
+            $directories = scandir($directory);
 
-                $query = $this->model->get_where(
-                    'app__ftp',
-                    [
-                        'site_id' => $site_id
-                    ],
-                    1
-                )
-                ->row();
-
-                if ($query) {
-                    /* configuration found, decrypt password */
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    try {
-                        /* trying to delete directory using ftp instead */
-                        $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                        if ($connection && ftp_login($connection, $query->username, $query->password)) {
-                            /* Yay! FTP is connected, try to delete the directory */
-                            $this->_ftp_rmdir($connection, $directory);
-
-                            /* close FTP connection */
-                            ftp_close($connection);
-                        }
-                    } catch (\Throwable $e) {
-                        return throw_exception(400, ['file' => $e->getMessage()]);
+            foreach ($directories as $object) {
+                if ('.' != $object && '..' != $object) {
+                    if (is_dir($directory . DIRECTORY_SEPARATOR . $object) && ! is_link($directory . DIRECTORY_SEPARATOR . $object)) {
+                        $this->_rmdir($directory . DIRECTORY_SEPARATOR . $object);
+                    } else {
+                        unlink($directory . DIRECTORY_SEPARATOR . $object);
                     }
                 }
-            } elseif (is_dir($directory)) {
-                // Remove garbage directory
-                rmdir($directory);
             }
+
+            rmdir($directory);
         }
-    }
-
-    /**
-     * Remove directory and its files using FTP
-     *
-     * @param mixed|null $connection
-     * @param mixed|null $directory
-     */
-    private function _ftp_rmdir($connection = null, $directory = null)
-    {
-        if (! $directory) {
-            return false;
-        }
-
-        $lists = ftp_mlsd($connection, $directory);
-
-        unset($lists[0]);
-        unset($lists[1]);
-
-        foreach ($lists as $list) {
-            $full = $directory . DIRECTORY_SEPARATOR . $list['name'];
-
-            if ('dir' == $list['type']) {
-                // Directory found, reinitialize
-                $this->_ftp_rmdir($connection, $full);
-            } else {
-                // Delete file
-                ftp_delete($connection, $full);
-            }
-        }
-
-        // Delete directory
-        ftp_rmdir($connection, $directory);
     }
 }

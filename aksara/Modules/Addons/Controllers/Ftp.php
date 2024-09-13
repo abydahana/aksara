@@ -38,10 +38,6 @@ class Ftp extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if (1 == service('request')->getPost('checking') && service('request')->getPost('hostname') && service('request')->getPost('port')) {
-            $this->_connection_check();
-        }
-
         $this->set_title(phrase('FTP Configuration'))
         ->set_icon('mdi mdi-console-network')
         ->unset_field('site_id')
@@ -70,18 +66,19 @@ class Ftp extends \Aksara\Laboratory\Core
         ->render($this->_table);
     }
 
-    private function _connection_check()
+    public function before_update()
     {
-        try {
-            // Try to connect to FTP
-            $connection = ftp_connect(service('request')->getPost('hostname'), service('request')->getPost('port'), 10);
+        if (service('request')->getPost('checking') && service('request')->getPost('hostname') && service('request')->getPost('port')) {
+            try {
+                // Try to connect to FTP
+                $connection = ftp_connect(service('request')->getPost('hostname'), service('request')->getPost('port'), 10);
 
-            if (! $connection) {
-                // Try to login to FTP
-                $login = ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password'));
+                if (! $connection || ! ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password'))) {
+                    return throw_exception(400, ['hostname' => phrase('Unable to connect to the FTP using the provided configuration.')]);
+                }
+            } catch (\Throwable $e) {
+                throw_exception(400, ['hostname' => $e->getMessage()]);
             }
-        } catch (\Throwable $e) {
-            throw_exception(400, ['hostname' => $e->getMessage()]);
         }
     }
 }

@@ -50,7 +50,6 @@
                     <div class="card rounded-4 mb-3">
                         <div class="card-body p-3">
                             <div class="position-relative mb-3">
-                                <?= ($val->type == 'backend' ? '<span class="badge bg-dark position-absolute end-0">' . phrase('Back End') . '</span>' : '<span class="badge bg-success position-absolute end-0">' . phrase('Front End') . '</span>'); ?>
                                 <img src="<?= $screenshot; ?>" class="img-fluid rounded-4 border" alt="..." />
                             </div>
                             <div class="mb-3">
