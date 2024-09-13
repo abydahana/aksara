@@ -33,10 +33,6 @@ class Updater extends \Aksara\Laboratory\Core
      */
     public static function ping_upstream($changelog = false)
     {
-        if (! function_exists('curl_init') || ! function_exists('curl_exec') || ! @fsockopen('www.aksaracms.com', 443)) {
-            return false;
-        }
-
         try {
             $curl = \Config\Services::curlrequest([
                 'timeout' => 5,
@@ -59,12 +55,10 @@ class Updater extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
-            $response = null;
-        }
 
-        if ($response) {
             return json_decode($response->getBody());
+        } catch (\Throwable $e) {
+            // Safe abstraction
         }
 
         return false;
@@ -75,10 +69,6 @@ class Updater extends \Aksara\Laboratory\Core
         if ($this->valid_token(service('request')->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(403, phrase('Changes will not saved in demo mode!'), current_page());
-            }
-
-            if (! function_exists('curl_init') || ! function_exists('curl_exec') || ! @fsockopen('www.aksaracms.com', 443)) {
-                return false;
             }
 
             try {
@@ -104,13 +94,13 @@ class Updater extends \Aksara\Laboratory\Core
                 );
 
                 $response = json_decode($response->getBody());
-            } catch (\Throwable $e) {
-                $response = null;
-            }
 
-            if ($response) {
-                // Run updater
-                $this->_run_updater($response);
+                if ($response) {
+                    // Run updater
+                    return $this->_run_updater($response);
+                }
+            } catch (\Throwable $e) {
+                return throw_exception(500, $e->getMessage(), current_page());
             }
 
             return throw_exception(404, phrase('No update are available at the moment.'), current_page());
@@ -132,6 +122,8 @@ class Updater extends \Aksara\Laboratory\Core
     private function _run_updater($response = [])
     {
         $updater_path = sha1($response->version);
+        $updater_package = null;
+        $updated = false;
         $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
         $old_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
         $backup_name = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
@@ -165,25 +157,58 @@ class Updater extends \Aksara\Laboratory\Core
             // Zip archive will be created only after closing object
             $zip->close();
         } catch (\Throwable $e) {
+            // Close zip
+            $zip->close();
+
             // Remove temporary path
             $this->_rmdir($tmp_path);
 
-            return throw_exception(400, ['package' => phrase('Update canceled to inability to write the backup file!') . ': ' . $e->getMessage()]);
+            return throw_exception(400, ['package' => phrase('Update canceled due inability to write the backup file!') . ': ' . $e->getMessage()]);
         }
-
-        $updater_package = null;
-        $updated = false;
 
         try {
             // Get update package from the remote server
-            copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip');
+            if (! copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip')) {
+                // Unable to copy file, use FTP instead
+                $site_id = get_setting('id');
+
+                $query = $this->model->get_where(
+                    'app__ftp',
+                    [
+                        'site_id' => $site_id
+                    ],
+                    1
+                )
+                ->row();
+
+                if (! $query) {
+                    return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
+                }
+
+                // Configuration found, decrypt password
+                $query->username = service('encrypter')->decrypt(base64_decode($query->username));
+                $query->password = service('encrypter')->decrypt(base64_decode($query->password));
+
+                // Try to connect to FTP
+                $connection = ftp_connect($query->hostname, $query->port, 10);
+
+                if (! $connection || ! ftp_login($connection, $query->username, $query->password)) {
+                    return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration.'));
+                }
+
+                // Download file over FTP
+                ftp_get($connection, $response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', FTP_BINARY);
+
+                // Close FTP connection
+                ftp_close($connection);
+            }
 
             /**
              * STEP 1
-             * open and extract the updater file to the temporary directory to get the updater files
+             * Open and extract the updater file to the temporary directory to get the updater files
              */
             if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo($tmp_path . DIRECTORY_SEPARATOR)) {
-                // Close the opened zip
+                // Close zip
                 $zip->close();
 
                 // Set the updater name
@@ -204,13 +229,13 @@ class Updater extends \Aksara\Laboratory\Core
                     }
                 }
 
-                // Close the opened zip
+                // Close zip
                 $zip->close();
             }
 
             /**
              * STEP 2
-             * extract created updater file to root of the Aksara installation
+             * Extract created updater file to root of the Aksara installation
              */
             if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo(ROOTPATH)) {
                 // Updater success, change the state
@@ -220,7 +245,6 @@ class Updater extends \Aksara\Laboratory\Core
                 $zip->close();
             }
         } catch (\Throwable $e) {
-            // Extract failed, revert the updater
             return throw_exception(400, ['package' => $e->getMessage()]);
         }
 
@@ -265,7 +289,7 @@ class Updater extends \Aksara\Laboratory\Core
                         </h5>
                     </div>
                     ' . ($dependency_updated ? '
-                    <div class="alert alert-warning text-sm border-0 rounded-0 row">
+                    <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
                             ' . phrase('You may need to run the composer update from the directory below to update the dependencies') . ':
                             <br />
@@ -274,7 +298,7 @@ class Updater extends \Aksara\Laboratory\Core
                     </div>
                     ' : null) . '
                     ' . (is_dir($tmp_path) ? '
-                    <div class="alert alert-warning text-sm border-0 rounded-0 row">
+                    <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
                             ' . phrase('Unable to remove the updater junk files from the cache directory') . ':
                             <br />
@@ -349,6 +373,9 @@ class Updater extends \Aksara\Laboratory\Core
             if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name) === true && $zip->extractTo(ROOTPATH)) {
                 // Close the opened zip
                 $zip->close();
+
+                // Remove temporary path
+                $this->_rmdir($tmp_path);
             }
         } catch (\Throwable $e) {
             // Backup file restore failed
@@ -436,44 +463,19 @@ class Updater extends \Aksara\Laboratory\Core
     private function _rmdir($directory = null)
     {
         if (is_dir($directory)) {
-            // Delete directory
-            if (! delete_files($directory, true)) {
-                // Unable to delete directory. Get FTP configuration
-                $site_id = get_setting('id');
+            $directories = scandir($directory);
 
-                $query = $this->model->get_where(
-                    'app__ftp',
-                    [
-                        'site_id' => $site_id
-                    ],
-                    1
-                )
-                ->row();
-
-                if ($query) {
-                    // Configuration found, decrypt password
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    try {
-                        // Attempt to delete directory using ftp instead
-                        $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                        if ($connection && ftp_login($connection, $query->username, $query->password)) {
-                            // Yay! FTP is connected, try to delete the directory
-                            $this->_ftp_rmdir($connection, $directory);
-
-                            // Close FTP connection
-                            ftp_close($connection);
-                        }
-                    } catch (\Throwable $e) {
-                        return throw_exception(400, ['updater' => $e->getMessage()]);
+            foreach ($directories as $object) {
+                if ('.' != $object && '..' != $object) {
+                    if (is_dir($directory . DIRECTORY_SEPARATOR . $object) && ! is_link($directory . DIRECTORY_SEPARATOR . $object)) {
+                        $this->_rmdir($directory . DIRECTORY_SEPARATOR . $object);
+                    } else {
+                        unlink($directory . DIRECTORY_SEPARATOR . $object);
                     }
                 }
-            } elseif (is_dir($directory)) {
-                // Remove garbage directory
-                rmdir($directory);
             }
+
+            rmdir($directory);
         }
     }
 }
