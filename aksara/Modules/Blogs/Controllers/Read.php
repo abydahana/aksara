@@ -26,6 +26,8 @@ class Read extends \Aksara\Laboratory\Core
         parent::__construct();
 
         $this->searchable(false);
+
+        helper('Aksara\Modules\Blogs\Helpers\blog');
     }
 
     public function index($category = null, $slug = null)
