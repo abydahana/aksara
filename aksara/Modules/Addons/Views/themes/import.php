@@ -52,7 +52,7 @@
                         <div class="row">
                             <div class="col-sm-8 col-md-9">
                                 <div class="input-group mb-3">
-                                    <input type="file" name="file" class="form-control" />
+                                    <input type="file" name="file" class="form-control rounded-pill" />
                                 </div>
                             </div>
                             <div class="col-sm-4 col-md-3">

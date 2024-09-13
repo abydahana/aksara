@@ -127,7 +127,7 @@ class Modules extends \Aksara\Laboratory\Core
             return throw_exception(403, $response->getReason(), current_page('../', ['item' => null]));
         } elseif (isset($upstream->version) && $upstream->version > $package->version) {
             $html = '
-                <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'module']) . '" method="POST" class="p-3 --validate-form">
+                <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'module']) . '" method="POST" class="--validate-form">
                     <div class="text-center">
                         ' . phrase('A new version of the selected module is available') . '
                         <br />
@@ -138,7 +138,7 @@ class Modules extends \Aksara\Laboratory\Core
                             '. phrase('Version') . ' ' . $upstream->version . '
                         </h5>
                     </div>
-                    <hr class="mx--3" />
+                    <hr class="mx--3 border-secondary" />
                     <input type="hidden" name="upgrade" value="' . $upstream->path . '" />
                     <div class="row">
                         <div class="col-6">
@@ -168,7 +168,7 @@ class Modules extends \Aksara\Laboratory\Core
                     'icon' => 'mdi mdi-auto-fix',
                     'popup' => true
                 ],
-                'html' => $html
+                'content' => $html
             ]);
         }
 
@@ -226,7 +226,7 @@ class Modules extends \Aksara\Laboratory\Core
                 $extract = false;
 
                 foreach ($files as $key => $val) {
-                    if (! $package_path) {
+                    if (! $package_path && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
                         $package_path = str_replace(DIRECTORY_SEPARATOR, '', $key);
                     }
 
@@ -284,39 +284,10 @@ class Modules extends \Aksara\Laboratory\Core
                 }
 
                 if (is_writable(ROOTPATH . 'modules')) {
+                    // Extract package contents
                     $extract = $zip->extractTo(ROOTPATH . 'modules');
 
-                    $zip->close();
-                } else {
-                    // Get the site id
-                    $site_id = get_setting('id');
-
-                    $query = $this->model->get_where(
-                        'app__ftp',
-                        [
-                            'site_id' => $site_id
-                        ],
-                        1
-                    )
-                    ->row();
-
-                    if (! $query) {
-                        return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable'), go_to('../../ftp'));
-                    }
-
-                    /* configuration found, decrypt password */
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    // Try to connect to FTP
-                    $connection = @ftp_connect($query->hostname, $query->port, 10);
-
-                    if (! $connection || ! @ftp_login($connection, $query->username, $query->password)) {
-                        return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration'));
-                    }
-
-                    $extract = $zip->extractTo(ROOTPATH . 'modules');
-
+                    // Close zip
                     $zip->close();
                 }
 
@@ -326,14 +297,14 @@ class Modules extends \Aksara\Laboratory\Core
                         $loader = \Config\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
                         // Run install migration
-                        $migration = \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
+                        $migration = \Config\Services::migrations()->setNamespace('Modules\\' . $package_path);
 
                         // Trying to run the migration
                         if ($migration->latest()) {
                             //
                         }
                     } catch (\Throwable $e) {
-                        /* migration error, delete module */
+                        // Migration error, delete module
                         $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
                         return throw_exception(400, ['file' => $e->getMessage()]);
@@ -517,14 +488,14 @@ class Modules extends \Aksara\Laboratory\Core
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
 
-        /* delete confirmation */
+        // Delete confirmation
         if (! service('request')->getPost('module')) {
             $html = '
-                <form action="' . current_page() . '" method="POST" class="p-3 --validate-form">
+                <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
                         ' . phrase('Are you sure want to delete this module?') . '
                     </div>
-                    <hr class="mx--3" />
+                    <hr class="mx--3 border-secondary" />
                     <input type="hidden" name="module" value="' . $this->_primary . '" />
                     <div class="row">
                         <div class="col-6">
@@ -554,7 +525,7 @@ class Modules extends \Aksara\Laboratory\Core
                     'icon' => 'mdi mdi-alert-outline',
                     'popup' => true
                 ],
-                'html' => $html
+                'content' => $html
             ]);
         }
 
@@ -564,13 +535,13 @@ class Modules extends \Aksara\Laboratory\Core
             return throw_exception(400, ['module' => $this->form_validation->getErrors()]);
         }
 
-        /* check if requested module to delete is match */
+        // Check if requested module to delete is match
         if (service('request')->getPost('module') && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'))) {
             if (DEMO_MODE) {
                 return throw_exception(400, ['module' => phrase('Changes will not saved in demo mode')]);
             }
 
-            /* check if module property is exists */
+            // Check if module property is exists
             if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json')) {
                 $query = $this->model->order_by('id', 'DESC')->get_where(
                     config('Migrations')->table,
@@ -587,23 +558,23 @@ class Modules extends \Aksara\Laboratory\Core
                         $loader = \Config\Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
 
                         // Run uninstall migration
-                        $migration = \Config\Services::migrations()->setNameSpace($query->namespace);
+                        $migration = \Config\Services::migrations()->setNamespace($query->namespace);
 
                         // Trying to run the migration
-                        $migration->regress(($query->batch - 1));
+                        $migration->regress($query->batch);
                     } catch (\Throwable $e) {
                         return throw_exception(400, ['module' => $e->getMessage()]);
                     }
                 }
 
                 /**
-                 * prepare to remove unused privileges
+                 * Prepare to remove unused privileges
                  */
                 $package = file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json');
                 $package = json_decode($package);
 
                 /**
-                 * prepare to update the menu that ever linked to uninstalled module before
+                 * Prepare to update the menu that ever linked to uninstalled module before
                  */
                 $query = $this->model->get_where(
                     'app__menus',
@@ -617,14 +588,14 @@ class Modules extends \Aksara\Laboratory\Core
                     // Query has result, loops the menus
                     foreach ($query as $key => $val) {
                         // Populate the menu as array
-                        $menus = json_decode($val->serialized_data, true);
+                        $menus = json_decode($val->serialized_data);
 
                         // Check if menus not empty
                         if ($menus) {
                             // Loops the menu to update links
                             foreach ($menus as $_key => $_val) {
                                 // Check if the link id related to uninstalled module
-                                if (isset($_val['id']) && sha1(service('request')->getPost('module')) == $_val['id']) {
+                                if (isset($_val->id) && sha1(service('request')->getPost('module')) == $_val->id) {
                                     // Link relate to uninstalled module, unset it
                                     unset($menus[$_key]);
                                 }
@@ -691,10 +662,10 @@ class Modules extends \Aksara\Laboratory\Core
                     }
                 }
 
-                /* delete module */
+                // Delete module
                 $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
             } else {
-                /* module property is not found */
+                // Module property is not found
                 return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstall from the module manager')]);
             }
         } else {
@@ -747,78 +718,20 @@ class Modules extends \Aksara\Laboratory\Core
     private function _rmdir($directory = null)
     {
         if (is_dir($directory)) {
-            /* delete directory */
-            if (! delete_files($directory, true)) {
-                /* Unable to delete directory. Get FTP configuration */
-                $site_id = get_setting('id');
+            $directories = scandir($directory);
 
-                $query = $this->model->get_where(
-                    'app__ftp',
-                    [
-                        'site_id' => $site_id
-                    ],
-                    1
-                )
-                ->row();
-
-                if ($query) {
-                    /* configuration found, decrypt password */
-                    $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                    $query->password = service('encrypter')->decrypt(base64_decode($query->password));
-
-                    try {
-                        /* trying to delete directory using ftp instead */
-                        $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                        if ($connection && ftp_login($connection, $query->username, $query->password)) {
-                            /* Yay! FTP is connected, try to delete the directory */
-                            $this->_ftp_rmdir($connection, $directory);
-
-                            /* close FTP connection */
-                            ftp_close($connection);
-                        }
-                    } catch (\Throwable $e) {
-                        return throw_exception(400, ['file' => $e->getMessage()]);
+            foreach ($directories as $object) {
+                if ('.' != $object && '..' != $object) {
+                    if (is_dir($directory . DIRECTORY_SEPARATOR . $object) && ! is_link($directory . DIRECTORY_SEPARATOR . $object)) {
+                        $this->_rmdir($directory . DIRECTORY_SEPARATOR . $object);
+                    } else {
+                        unlink($directory . DIRECTORY_SEPARATOR . $object);
                     }
                 }
-            } elseif (is_dir($directory)) {
-                // Remove garbage directory
-                rmdir($directory);
             }
+
+            rmdir($directory);
         }
-    }
-
-    /**
-     * Remove directory and its files using FTP
-     *
-     * @param mixed|null $connection
-     * @param mixed|null $directory
-     */
-    private function _ftp_rmdir($connection = null, $directory = null)
-    {
-        if (! $directory) {
-            return false;
-        }
-
-        $lists = ftp_mlsd($connection, $directory);
-
-        unset($lists[0]);
-        unset($lists[1]);
-
-        foreach ($lists as $list) {
-            $full = $directory . DIRECTORY_SEPARATOR . $list['name'];
-
-            if ('dir' == $list['type']) {
-                // Directory found, reinitialize
-                $this->_ftp_rmdir($connection, $full);
-            } else {
-                // Delete file
-                ftp_delete($connection, $full);
-            }
-        }
-
-        // Delete directory
-        ftp_rmdir($connection, $directory);
     }
 
     /**
