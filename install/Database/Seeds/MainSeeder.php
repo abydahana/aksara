@@ -111,7 +111,12 @@ class MainSeeder extends Seeder
             ],
             [
                 'path' => 'administrative/account',
-                'privileges' => json_encode(['index', 'edit', 'logs']),
+                'privileges' => json_encode(['index', 'edit']),
+                'last_generated' => date('Y-m-d H:i:s')
+            ],
+            [
+                'path' => 'administrative/account/logs',
+                'privileges' => json_encode(['index', 'kick']),
                 'last_generated' => date('Y-m-d H:i:s')
             ],
             [
@@ -121,7 +126,7 @@ class MainSeeder extends Seeder
             ],
             [
                 'path' => 'administrative/logs/activities',
-                'privileges' => json_encode(['index', 'read', 'truncate', 'delete', 'print', 'pdf']),
+                'privileges' => json_encode(['index', 'read', 'truncate', 'delete', 'export', 'print', 'pdf']),
                 'last_generated' => date('Y-m-d H:i:s')
             ],
             [
@@ -150,13 +155,8 @@ class MainSeeder extends Seeder
                 'last_generated' => date('Y-m-d H:i:s')
             ],
             [
-                'path' => 'administrative/groups/adjust_privileges',
-                'privileges' => json_encode(['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf']),
-                'last_generated' => date('Y-m-d H:i:s')
-            ],
-            [
                 'path' => 'administrative/groups/privileges',
-                'privileges' => json_encode(['index', 'create', 'update', 'read', 'delete']),
+                'privileges' => json_encode(['index', 'create', 'update', 'read', 'delete', 'export', 'print', 'pdf']),
                 'last_generated' => date('Y-m-d H:i:s')
             ],
             [
@@ -325,7 +325,7 @@ class MainSeeder extends Seeder
         $this->db->table('app__groups')->insert([
             'group_name' => 'Global Administrator',
             'group_description' => 'Super User',
-            'group_privileges' => '{"addons":["index","detail","install"],"addons/ftp":["index"],"addons/modules":["index","detail","import","update","delete"],"addons/themes":["index","detail","import","update","delete","activate","customize"],"administrative":["index"],"administrative/account":["index","edit","logs"],"administrative/logs":["index"],"administrative/logs/activities":["index","read","truncate","delete","print","pdf"],"administrative/logs/errors":["index","remove","clear"],"administrative/cleaner":["index","clean"],"administrative/connections":["index","create","read","update","delete","export","print","pdf","connect"],"administrative/countries":["index","create","read","update","delete","export","print","pdf"],"administrative/groups":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/adjust_privileges":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/privileges":["index","create","update","read","delete"],"administrative/menus":["index","create","read","update","delete","export","print","pdf"],"administrative/settings":["index","update"],"administrative/translations":["index","create","read","update","delete","export","print","pdf"],"administrative/translations/synchronize":["index"],"administrative/translations/translate":["index","delete_phrase"],"administrative/updater":["index","update"],"administrative/users":["index","create","read","update","delete","export","print","pdf"],"administrative/users/privileges":["index","update"],"administrative/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifications":["index","read","export","print","pdf"],"notifications/setting":["index"]}',
+            'group_privileges' => '{"addons":["index","detail","install"],"addons/ftp":["index"],"addons/modules":["index","detail","import","update","delete"],"addons/themes":["index","detail","import","update","delete","activate","customize"],"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"administrative/logs":["index"],"administrative/logs/activities":["index","read","truncate","delete","print","pdf"],"administrative/logs/errors":["index","remove","clear"],"administrative/cleaner":["index","clean"],"administrative/connections":["index","create","read","update","delete","export","print","pdf","connect"],"administrative/countries":["index","create","read","update","delete","export","print","pdf"],"administrative/groups":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/privileges":["index","create","update","read","delete","export","print","pdf"],"administrative/menus":["index","create","read","update","delete","export","print","pdf"],"administrative/settings":["index","update"],"administrative/translations":["index","create","read","update","delete","export","print","pdf"],"administrative/translations/synchronize":["index"],"administrative/translations/translate":["index","delete_phrase"],"administrative/updater":["index","update"],"administrative/users":["index","create","read","update","delete","export","print","pdf"],"administrative/users/privileges":["index","update"],"administrative/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifications":["index","read","export","print","pdf"],"notifications/setting":["index"]}',
             'status' => 1
         ]);
 
@@ -333,7 +333,7 @@ class MainSeeder extends Seeder
         $this->db->table('app__groups')->insert([
             'group_name' => 'Technical',
             'group_description' => 'Group user for technical support',
-            'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit","logs"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifications":["index","read","export","print","pdf"]}',
+            'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifications":["index","read","export","print","pdf"]}',
             'status' => 1
         ]);
 
@@ -341,7 +341,7 @@ class MainSeeder extends Seeder
         $this->db->table('app__groups')->insert([
             'group_name' => 'Subscriber',
             'group_description' => 'Group user for subscriber',
-            'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit","logs"],"dashboard":["index"]}',
+            'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"dashboard":["index"]}',
             'status' => 1
         ]);
 
