@@ -25,6 +25,8 @@ class Inquiries extends \Aksara\Laboratory\Core
     {
         parent::__construct();
 
+        $this->restrict_on_demo();
+
         $this->set_permission();
         $this->set_theme('backend');
 
