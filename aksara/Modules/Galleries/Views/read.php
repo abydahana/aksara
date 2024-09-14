@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div>
-                <?= nl2br_limit($results[0]->gallery_description); ?>
+                <?= custom_nl2br($results[0]->gallery_description); ?>
             </div>
             <?php
                 if ($attributes) {
