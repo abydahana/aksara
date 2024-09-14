@@ -2000,7 +2000,7 @@ class Core extends Controller
             if (
                 $this->_set_permission &&
                 $query_string &&
-                generate_token($query_string, uri_string()) != $token
+                (generate_token($query_string, uri_string()) != $token && ! $this->api_client)
             ) {
                 // Token is missmatch, throw an exception
                 return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source'), base_url());
