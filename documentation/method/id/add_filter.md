@@ -18,12 +18,13 @@ $this->add_filter('language', [
     ], [
         'id' => 1,
         'label' => 'English'
-    ],[
+    ], [
         'id' => 2,
         'label' => 'Bahasa Indonesia'
     ]
 ]);
 ```
+
 
 ###### Contoh Penggunaan #2
 
@@ -38,7 +39,7 @@ $this->add_filter([
             ], [
                 'id' => 1,
                 'label' => 'English'
-            ],[
+            ], [
                 'id' => 2,
                 'label' => 'Bahasa Indonesia'
             ]
@@ -53,7 +54,7 @@ $this->add_filter([
             ], [
                 'id' => 1,
                 'label' => phrase('Sports')
-            ],[
+            ], [
                 'id' => 2,
                 'label' => phrase('Foods')
             ]
