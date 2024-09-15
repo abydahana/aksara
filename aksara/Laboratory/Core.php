@@ -260,9 +260,9 @@ class Core extends Controller
      * Set up the permission of module, it's mean that only logged user can
      * access the module
      *
-     * @param   array|string $permissive_user
+     * @param   array|string $permissive_group
      */
-    public function set_permission($permissive_user = [], string $redirect = null)
+    public function set_permission($permissive_group = [], string $redirect = null)
     {
         if ($this->api_client && ! service('request')->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-TOKEN')) {
             // Basic Auth
@@ -283,9 +283,9 @@ class Core extends Controller
         $this->_set_permission = true;
 
         // Check if permissive user is set
-        if ($permissive_user && ! is_array($permissive_user)) {
+        if ($permissive_group && ! is_array($permissive_group)) {
             // Safe check for array
-            $permissive_user = array_map('trim', explode(',', $permissive_user));
+            $permissive_group = array_map('trim', explode(',', $permissive_group));
         }
 
         if (in_array($this->_method, $this->_unset_method)) {
@@ -297,7 +297,7 @@ class Core extends Controller
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
-        } elseif ($permissive_user && ! in_array(get_userdata('group_id'), $permissive_user) && ! $this->_api_token) {
+        } elseif ($permissive_group && ! in_array(get_userdata('group_id'), $permissive_group) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
         }
@@ -2820,7 +2820,7 @@ class Core extends Controller
                 'current_page' => current_page()
             ],
             'meta' => [
-                'description' => $this->_set_description,
+                'description' => preg_replace('/[^\S ]+/', '', $this->_set_description),
                 'icon' => $this->_set_icon,
                 'title' => $this->_set_title,
                 'modal_size' => ($this->_modal_size ? $this->_modal_size : ''),
@@ -2841,16 +2841,13 @@ class Core extends Controller
             $output['limit'] = $this->_limit;
 
             // Add pagination
-            $output['pagination'] = $this->template->pagination(
-                [
-                    'limit' => $this->_limit_backup,
-                    'offset' => $this->_offset,
-                    'per_page' => $this->_limit,
-                    'total_rows' => $total,
-                    'url' => current_page(null, ['per_page' => null])
-                ],
-                ($this->api_client || service('request')->isAJAX())
-            );
+            $output['pagination'] = $this->template->pagination([
+                'limit' => $this->_limit_backup,
+                'offset' => $this->_offset,
+                'per_page' => $this->_limit,
+                'total_rows' => $total,
+                'url' => current_page(null, ['per_page' => null])
+            ]);
         }
 
         // Merge user defined output
