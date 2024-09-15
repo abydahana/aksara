@@ -12,35 +12,35 @@
 
 <ul class="pagination pagination-sm mb-0">
     <li class="page-item<?= ($current_page <= 1 ? ' disabled' : null); ?>">
-        <a href="<?= ($current_page > 1 ? current_page(null, ['per_page' => 0]) : 'javascript:void(0)'); ?>" class="page-link --xhr" aria-label="<?= phrase('First'); ?>">
+        <a href="<?= ($current_page > 1 ? current_page(null, ['per_page' => 0]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="first" aria-label="<?= phrase('First'); ?>">
             <?= phrase('First'); ?>
         </a>
     </li>
 
     <?php if ($current_page > 1): ?>
     <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page - 1)]); ?>" class="page-link --xhr" aria-label="<?= phrase('Previous'); ?>">
-            &lt;
+        <a href="<?= current_page(null, ['per_page' => ($current_page - 1)]); ?>" class="page-link --xhr" id="prev" aria-label="<?= phrase('Previous'); ?>">
+            <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Prev') : '&lt;'); ?>
         </a>
     </li>
     <?php endif; ?>
 
     <li class="page-item active">
-        <a href="javascript:void(0)" class="page-link">
+        <a href="javascript:void(0)" class="page-link" id="current">
             <?= $current_page; ?>
         </a>
     </li>
 
     <?php if ($last_page > $current_page): ?>
     <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page + 1)]); ?>" class="page-link --xhr" aria-label="<?= phrase('Next'); ?>">
-            &gt;
+        <a href="<?= current_page(null, ['per_page' => ($current_page + 1)]); ?>" class="page-link --xhr" id="next" aria-label="<?= phrase('Next'); ?>">
+            <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Next') : '&gt;'); ?>
         </a>
     </li>
     <?php endif; ?>
 
     <li class="page-item<?= ($last_page <= $current_page ? ' disabled' : null); ?>">
-        <a href="<?= ($last_page > $current_page ? current_page(null, ['per_page' => $last_page]) : 'javascript:void(0)'); ?>" class="page-link --xhr" aria-label="<?= phrase('Last'); ?>">
+        <a href="<?= ($last_page > $current_page ? current_page(null, ['per_page' => $last_page]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="last" aria-label="<?= phrase('Last'); ?>">
             <?= phrase('Last'); ?>
         </a>
     </li>

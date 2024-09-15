@@ -404,10 +404,10 @@ class Template
                 $parser = new Parser($this->theme);
 
                 // Build html from result object
-                $data->content = $parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data);
+                $data->content = $this->_minify($parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data));
             } else {
                 // Build html from result object
-                $data->content = view($view, (array) $data);
+                $data->content = $this->_minify(view($view, (array) $data));
             }
 
             // Intersection key to keep property from unset
@@ -529,7 +529,7 @@ class Template
      *
      * @param   mixed|array $data
      */
-    public function pagination($data = [], bool $api_client = false)
+    public function pagination($data = [])
     {
         if (! $data) {
             // Safe abstraction
@@ -647,6 +647,7 @@ class Template
 
         foreach ($buffer->find('ul li') as $key => $val) {
             $output['links'][] = [
+                'id' => $val->find('a', 0)->id,
                 'parent_class' => $val->class,
                 'class' => $val->find('a', 0)->class,
                 'href' => $val->find('a', 0)->href,
