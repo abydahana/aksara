@@ -16,16 +16,13 @@ Metode ini digunakan untuk mengelompokkan suatu input pada formulir menjadi satu
 ###### Contoh penggunaan
 
 `$this->group_field('nama_depan', 'nama');`
+`$this->group_field('nama_belakang', 'nama');`
 
 Anda juga dapat menjalankan metode ini secara multiple seperti contoh berikut:
 
 ```php
-$this->group_field
-(
-    array
-    (
-        'nama_depan' => 'nama',
-        'nama_belakang' => 'nama'
-    )
-);
+$this->group_field([
+    'nama_depan' => 'nama',
+    'nama_belakang' => 'nama'
+]);
 ```
