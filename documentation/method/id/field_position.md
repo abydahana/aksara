@@ -18,13 +18,9 @@ Pada contoh penggunaan di atas, input untuk field `alamat` akan diposisikan pada
 Anda juga dapat menjalankan metode secara multiple seperti berikut:
 
 ```php
-$this->field_position
-(
-    array
-    (
-        'alamat' => 2,
-        'telepon' => 2,
-        'status' => 3
-    )
-);
+$this->field_position([
+    'alamat' => 2,
+    'telepon' => 2,
+    'status' => 3
+]);
 ```
