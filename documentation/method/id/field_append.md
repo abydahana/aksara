@@ -16,14 +16,10 @@ Sesuai dengan nama metodenya, field append menambahkan komponen atau suffix sete
 Anda juga dapat menggunakan metode secara multiple seperti berikut:
 
 ```php
-$this->field_append
-(
-    array
-    (
-        'pajak' => '%',
-        'ukuran' => 'cm'
-    )
-);
+$this->field_append([
+    'pajak' => '%',
+    'ukuran' => 'cm'
+]);
 ```
 
 ###### Baca juga
