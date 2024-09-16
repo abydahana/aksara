@@ -13,5 +13,5 @@ Contoh untuk tampilan table yang telah diformat dalam tampilan grid dapat ditemu
 
 ###### Contoh Penggunaan
 ```php
-$this->grid_view('gallery_images', 'galleries', array('gallery_slug' => 'gallery_slug'), true);
+$this->grid_view('gallery_images', 'galleries', ['gallery_slug' => 'gallery_slug'], true);
 ```
