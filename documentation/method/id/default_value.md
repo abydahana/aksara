@@ -1,4 +1,4 @@
-Metode ini digunakan apabila ingin memberikan nilai default pada suatu kolom input, namun tetap dapat diubah oleh pengguna aplikasi.
+Metode ini digunakan apabila ingin memberikan nilai default pada suatu kolom input pada formulir "Tambah", namun tetap dapat diubah oleh pengguna aplikasi.
 
 ###### Referensi
 
@@ -19,12 +19,8 @@ Parameter di atas akan menghasilkan sebuah bidang input seperti berikut:
 Anda juga dapat menjalankan metode secara multiple seperti berikut:
 
 ```php
-$this->default_value
-(
-    array
-    (
-        'nama_lengkap' => 'John Doe',
-        'usia' => 20
-    )
-);
+$this->default_value([
+    'nama_lengkap' => 'John Doe',
+    'usia' => 20
+]);
 ```
