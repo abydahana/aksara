@@ -12,3 +12,6 @@ Metode `unset_column` digunakan untuk menghilangkan/membatasi kolom yang tampil 
 
 `$this->unset_column('nama_depan, nama_belakang, jenis_kelamin, alamat');`
 
+##### Baca juga
+* [unset_field](./unset_field)
+* [unset_view](./unset_view)

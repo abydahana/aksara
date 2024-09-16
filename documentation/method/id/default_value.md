@@ -24,3 +24,6 @@ $this->default_value([
     'usia' => 20
 ]);
 ```
+
+##### Baca juga
+* [set_default](./set_default)

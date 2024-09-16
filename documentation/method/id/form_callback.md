@@ -17,6 +17,6 @@ Pada contoh di atas, Anda harus membuat public method bernama `validasi` misal s
 ```php
 public function validasi()
 {
-    // statement untuk menjalankan dan mengembalikan validasi
+    // Statement untuk menjalankan dan mengembalikan validasi
 }
 ```
