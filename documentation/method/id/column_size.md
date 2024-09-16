@@ -19,14 +19,10 @@ Pada contoh gambar di atas, formulir `modal` menggunakan 2 kolom, kolom 1 lebih 
 Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 
 ```php
-$this->column_size
-(
-    array
-    (
-        1 => 'col-md-8',
-        2 => 'col-md-4'
-    )
-);
+$this->column_size([
+    1 => 'col-md-8',
+    2 => 'col-md-4'
+]);
 ```
 
 Pengertian dari parameter di atas adalah:
@@ -34,7 +30,7 @@ Kolom 1 menggunakan class `col-md-8` dan kolom 2 menggunakan class `col-md-4`.
 
 Referensi lain terkait inisial class yang tersedia, silakan merujuk pada penggunaan grid pada Bootstrap pada tautan berikut:
 
-[https://getbootstrap.com/docs/4.5/layout/grid/](https://getbootstrap.com/docs/4.5/layout/grid/).
+[https://getbootstrap.com/docs/5.3/layout/grid/](https://getbootstrap.com/docs/5.3/layout/grid/).
 
 ###### Baca juga
 * [field_size](./field_size)
