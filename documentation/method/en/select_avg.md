@@ -1,4 +1,5 @@
 Your contribution's needed!
+
 Please update this page through GitHub using this standard format.
 
 ##### Reference
@@ -6,6 +7,7 @@ Please update this page through GitHub using this standard format.
 `select_avg($argumen_1, $argumen_2)`
 
 Your contribution's needed!
+
 Please update this page through GitHub using this standard format.
 
 ### Reference

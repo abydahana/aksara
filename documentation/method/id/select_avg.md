@@ -1,4 +1,5 @@
 Kontribusi kalian dibutuhkan!
+
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
 ##### Referensi
@@ -6,6 +7,7 @@ Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar be
 `select_avg($argumen_1, $argumen_2)`
 
 Kontribusi kalian dibutuhkan!
+
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
 ### Referensi
