@@ -16,14 +16,10 @@ Sesuai dengan nama metodenya, field prepend menambahkan komponen atau prefix pad
 Anda juga dapat menggunakan metode secara multiple seperti berikut:
 
 ```php
-$this->field_prepend
-(
-    array
-    (
-        'harga' => 'Rp.',
-        'url' => 'http://'
-    )
-);
+$this->field_prepend([
+    'harga' => 'Rp.',
+    'url' => 'http://'
+]);
 ```
 
 
