@@ -37,12 +37,8 @@ WHERE
 Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 
 ```php
-$this->group_where
-(
-    array
-    (
-        'field_1'        => 'statement',
-        'field_2'        => 'statement'
-    )
-);
+$this->group_where([
+    'field_1' => 'statement',
+    'field_2' => 'statement'
+]);
 ```

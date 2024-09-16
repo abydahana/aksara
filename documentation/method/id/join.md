@@ -3,20 +3,20 @@ Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar be
 
 ##### Referensi
 
-`nama_metode($argumen_1, $argumen_2)`
+`join($argumen_1, $argumen_2)`
 
 ##### Parameter
 * **$argumen_1** (string) keterangan terkait variabel.
 * **$argumen_2** (string) keterangan terkait variabel.
 
 ##### Contoh Penggunaan
-`$this->nama_metode('foo', 'bar');`
-`$this->nama_metode('baz', 'qux');`
+`$this->join('foo', 'bar');`
+`$this->join('baz', 'qux');`
 
 
 ##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
 ```php
-$this->nama_metode([
+$this->join([
     'foo' => 'bar',
     'baz' => 'qux'
 ]);
