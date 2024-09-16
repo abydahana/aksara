@@ -1,20 +1,21 @@
 Kontribusi kalian dibutuhkan!
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
-##### Referensi
+### Referensi
+`render_read($foo, $bar)`
 
-`render_read($argumen_1, $argumen_2)`
+**Parameter**
+* **$foo** [`string`] *keterangan terkait variabel;*
+* **$bar** [`string`] *keterangan terkait variabel.*
 
-##### Parameter
-* **$argumen_1** (string) keterangan terkait variabel.
-* **$argumen_2** (string) keterangan terkait variabel.
+&nbsp;
 
-##### Contoh Penggunaan
+### Contoh Penggunaan
 `$this->render_read('foo', 'bar');`
+
 `$this->render_read('baz', 'qux');`
 
-
-##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
 ```php
 $this->render_read([
     'foo' => 'bar',
@@ -22,5 +23,7 @@ $this->render_read([
 ]);
 ```
 
-##### Baca juga
+&nbsp;
+
+### Baca Juga
 * [field_prepend](./field_prepend)

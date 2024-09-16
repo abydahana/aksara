@@ -1,29 +1,33 @@
 Metode ini berfungsi untuk mengontrol tata letak penempatan sebuah input pada formulir (field input). Apabila Anda mengatur kolom formulir menjadi beberapa kolom, metode ini dapat digunakan untuk mengatur posisi tata letak inputnya.
 
-###### Referensi
+### Referensi
+`field_position($field, $position)`
 
-`field_position($params, $value)`
+**Parameter**
+* **$field** [`mixed`] *nama daripada field;*
+* **$position** [`integer`] *posisi target kolom.*
 
-###### Parameter
+&nbsp;
 
-* **$params** (mixed) - nama daripada field
-* **$value** (integer) - posisi target kolom
+### Contoh Penggunaan
+`$this->field_position('foo', 2);`
 
-###### Contoh penggunaan
+`$this->field_position('bar', 2);`
 
-`$this->field_position('alamat', 2);`
+Pada contoh penggunaan di atas, input untuk field `foo` dan `bar` akan diposisikan pada kolom ke-dua.
 
-Pada contoh penggunaan di atas, input untuk field `alamat` akan diposisikan pada kolom ke-dua.
-
-Anda juga dapat menjalankan metode secara multiple seperti berikut:
-
+**Anda juga dapat menjalankan metode secara berkelompok seperti berikut:**
 ```php
 $this->field_position([
-    'alamat' => 2,
-    'telepon' => 2,
-    'status' => 3
+    'foo' => 2,
+    'bar' => 2,
+    'baz' => 3,
+    'qux' => 4
 ]);
 ```
 
-##### Baca juga
+&nbsp;
+
+### Baca Juga
+* [field_size](./field_size)
 * [column_size](./column_size)

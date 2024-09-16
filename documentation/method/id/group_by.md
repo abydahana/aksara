@@ -1,14 +1,14 @@
 Sesuai dengan namanya, metode digunakan untuk mewakili `query builder` yang mana berfungsi untuk mengelompokkan suatu hasil dari query database berdasarkan parameter yang diberikan.
 
-###### Referensi
-
+### Referensi
 `group_by($group_by)`
 
-###### Parameter
+**Parameter**
+* **$group_by** [`mixed`] *nama field yang akan dilakukan pengelompokan.*
 
-* **$group_by** (mixed) - nama field yang akan dilakukan pengelompokan
+&nbsp;
 
-###### Contoh penggunaan
+### Contoh penggunaan
 ```php
 $this->group_by('user_id, product_id');
 ```

@@ -1,26 +1,29 @@
 Sesuai dengan nama metodenya, field append menambahkan komponen atau suffix setelah field yang mana dapat berupa suffix keterangan dari sebuah elemen input.
 
-###### Referensi
+### Referensi
+`field_append($field, $append)`
 
-`field_append($params, $value)`
+**Parameter**
+* **$field** [`mixed`] *nama daripada field;*
+* **$append** [`string`] *isi suffix yang digunakan.*
 
-###### Parameter
+&nbsp;
 
-* **$params** (mixed) - nama daripada field
-* **$value** (string) - isi suffix yang digunakan
+### Contoh Penggunaan
+`$this->field_append('foo', 'bar');`
 
-###### Contoh penggunaan
+`$this->field_append('baz', 'qux');`
 
-`$this->field_append('pajak', '%');`
-
-Anda juga dapat menggunakan metode secara multiple seperti berikut:
+**Anda juga dapat menggunakan metode secara berkelompok seperti berikut:**
 
 ```php
 $this->field_append([
-    'pajak' => '%',
-    'ukuran' => 'cm'
+    'foo' => 'bar',
+    'baz' => 'qux'
 ]);
 ```
 
-###### Baca juga
+&nbsp;
+
+### Baca Juga
 * [field_prepend](./field_prepend)

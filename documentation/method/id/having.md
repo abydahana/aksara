@@ -1,20 +1,21 @@
 Kontribusi kalian dibutuhkan!
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
-##### Referensi
+### Referensi
+`having($foo, $bar)`
 
-`having($argumen_1, $argumen_2)`
+**Parameter**
+* **$foo** [`string`] *keterangan terkait variabel;*
+* **$bar** [`string`] *keterangan terkait variabel.*
 
-##### Parameter
-* **$argumen_1** (string) keterangan terkait variabel.
-* **$argumen_2** (string) keterangan terkait variabel.
+&nbsp;
 
-##### Contoh Penggunaan
+### Contoh Penggunaan
 `$this->having('foo', 'bar');`
+
 `$this->having('baz', 'qux');`
 
-
-##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
 ```php
 $this->having([
     'foo' => 'bar',
@@ -22,9 +23,15 @@ $this->having([
 ]);
 ```
 
-##### Baca juga
-* [having_group_start](./having_group_start)
-* [or_having_group_start](./or_having_group_start)
-* [not_having_group_start](./not_having_group_start)
-* [or_not_having_group_start](./or_not_having_group_start)
-* [having_group_end](./having_group_end)
+&nbsp;
+
+### Baca Juga
+* [or_having](./or_having)
+* [or_having_in](./or_having_in)
+* [or_having_not_in](./or_having_not_in)
+* [having_in](./having_in)
+* [having_not_in](./having_not_in)
+* [having_like](./having_like)
+* [or_having_like](./or_having_like)
+* [not_having_like](./not_having_like)
+* [or_not_having_like](./or_not_having_like)

@@ -1,20 +1,21 @@
 Kontribusi kalian dibutuhkan!
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
-##### Referensi
+### Referensi
+`distinct($foo, $bar)`
 
-`distinct($argumen_1, $argumen_2)`
+**Parameter**
+* **$foo** [`string`] *keterangan terkait variabel;*
+* **$bar** [`string`] *keterangan terkait variabel.*
 
-##### Parameter
-* **$argumen_1** (string) keterangan terkait variabel.
-* **$argumen_2** (string) keterangan terkait variabel.
+&nbsp;
 
-##### Contoh Penggunaan
+### Contoh Penggunaan
 `$this->distinct('foo', 'bar');`
+
 `$this->distinct('baz', 'qux');`
 
-
-##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
 ```php
 $this->distinct([
     'foo' => 'bar',
@@ -22,5 +23,13 @@ $this->distinct([
 ]);
 ```
 
-##### Baca juga
-* [field_prepend](./field_prepend)
+&nbsp;
+
+### Baca Juga
+* [select](./select)
+* [select_avg](./select_avg)
+* [select_count](./select_count)
+* [select_max](./select_max)
+* [select_min](./select_min)
+* [select_subquery](./select_subquery)
+* [select_sum](./select_sum)

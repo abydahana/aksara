@@ -1,27 +1,38 @@
 Ada kalanya untuk menjalankan suatu trigger javascript, memerlukan suatu *class identity* unik pada element tertentu. Pada kasusn pemanggilan metode `add_class` di sini, Anda akan menambahkan ekstra class pada bidang input.
 
-###### Referensi
+### Referensi
 
-`add_class($params, $value)`
+`add_class($field, $class_name)`
 
-###### Parameter
+**Parameter**
+* **$field** [`mixed`] *nama kolom inputan / field;*
+* **$class_name** [`string`] *class yang akan ditambahkan.*
 
-* **$params** (mixed) - nama kolom inputan / field,
-* **$value** (string) - class yang akan ditambahkan.
+&nbsp;
 
-###### Contoh Penggunaan
+### Contoh Penggunaan
 
-`$this->add_class('nama_lengkap', 'extra-class');`
+`$this->add_class('foo', 'bar');`
+
+`$this->add_class('baz', 'qux');`
 
 Pemanggilan metode di atas akan menambah class CSS pada kolom input dan akan menghasilkan contoh output seperti berikut:
 
-`<input name="nama_lengkap" class="extra-class" />`
+`<input name="foo" class="bar" />`
 
-Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+`<input name="baz" class="qux" />`
 
+**Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:**
 ```php
 $this->add_class([
     'nama_lengkap' => 'extra-class',
     'alamat' => 'another-class'
 ]);
 ```
+
+&nbsp;
+
+### Baca Juga
+* [set_attribute](./set_attribute)
+* [set_placehoder](./set_placehoder)
+* [set_tooltip](./set_tooltip)

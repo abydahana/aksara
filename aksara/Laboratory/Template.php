@@ -669,7 +669,7 @@ class Template
             'indent_char' => ' ',
             'indent_size' => 4,
             'wrap_line_length' => 32786,
-            'unformatted' => ['code', 'pre', 'textarea'],
+            'unformatted' => ['textarea', 'pre', 'code', 'script'],
             'preserve_newlines' => false,
             'max_preserve_newlines' => 32786,
             'indent_scripts' => 'normal' // keep|separate|normal
@@ -686,7 +686,7 @@ class Template
     private function _minify($buffer = null)
     {
         // Replace possible tag
-        $buffer = preg_replace('/(?>[^\S ]\s*| \s{2,})(?=[^<]*+(?:<(?!\/?(?:textarea|pre|script)\b)[^<]*+)*+(?:<(?>textarea|pre|script)\b| \z))/', '', $buffer);
+        $buffer = preg_replace('/(?>[^\S ]\s*| \s{2,})(?=[^<]*+(?:<(?!\/?(?:textarea|pre|code|script)\b)[^<]*+)*+(?:<(?>textarea|pre|code|script)\b| \z))/', '', $buffer);
 
         return $buffer;
     }

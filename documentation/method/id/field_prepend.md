@@ -1,28 +1,28 @@
 Sesuai dengan nama metodenya, field prepend menambahkan komponen atau prefix pada field yang mana dapat berupa prefix keterangan dari sebuah elemen input.
 
-###### Referensi
+### Referensi
+`field_prepend($field, $prepend)`
 
-`field_prepend($params, $value)`
+**Parameter**
+* **$field** [mixed] *nama daripada field;*
+* **$prepend** [string] *isi prefix yang digunakan.*
 
-###### Parameter
+&nbsp;
 
-* **$params** (mixed) - nama daripada field
-* **$value** (string) - isi prefix yang digunakan
+### Contoh Penggunaan
+`$this->field_prepend('foo', 'bar');`
 
-###### Contoh penggunaan
+`$this->field_prepend('baz', 'qux');`
 
-`$this->field_prepend('harga', 'Rp.');`
-
-Anda juga dapat menggunakan metode secara multiple seperti berikut:
-
+**Anda juga dapat menggunakan metode secara berkelompok seperti berikut:**
 ```php
 $this->field_prepend([
-    'harga' => 'Rp.',
-    'url' => 'http://'
+    'foo' => 'bar',
+    'baz' => 'qux'
 ]);
 ```
 
+&nbsp;
 
-###### Baca juga
-
+### Baca Juga
 * [field_append](./field_append)

@@ -1,17 +1,18 @@
 Metode ini sama seperti [column_order](./column_order), perbedaannya adalah pada lokasi jenis sortir. Apabila `column_order` digunakan untuk sortir urutan kolom tabel, pada metode `field_order` digunakan untuk mengurutkan posisi daripada komponen input dalam formulir.
 
-###### Referensi
-
+### Referensi
 `field_order($params)`
 
-###### Parameter
+**Parameter**
+* **$params** [`mixed`] *nama-nama field yang diprioritaskan untuk diurutkan pertama.*
 
-* **$params** (mixed) - nama-nama field yang diprioritaskan untuk diurutkan pertama
+&nbsp;
 
-###### Contoh penggunaan
+### Contoh Penggunaan
+`$this->field_order('foo, bar, baz, qux');`
 
-`$this->field_order('nama_depan, nama_belakang, jenis_kelamin, alamat');`
+&nbsp;
 
-###### Baca juga
+### Baca Juga
 * [column_order](./column_order)
 * [view_order](./view_order)

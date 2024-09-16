@@ -1,25 +1,23 @@
 Metode ini digunakan untuk mengelompokkan suatu input pada formulir menjadi satu bagian. Misalnya pada penyusunan formulir yang mengharuskan untuk mengelompokkan beberapa input dalam satu element dasar untuk contoh kasus penggunaan `fieldset` pada formulir.
 
-#### Metode ini masih dalam riset dan belum dapat digunakan!
+> [!NOTE]
+> Metode ini masih dalam riset dan belum dapat digunakan!
 
----
-
-###### Referensi
-
+### Referensi
 `group_field($params, $group)`
 
-###### Parameter
+**Parameter**
+* **$params** [mixed] *nama field yang akan dilakukan pengelompokan;*
+* **$group** [string] *inisial pengelompokan.*
 
-* **$params** (mixed) - nama field yang akan dilakukan pengelompokan
-* **$group** (string) - inisial pengelompokan
+&nbsp;
 
-###### Contoh penggunaan
+### Contoh penggunaan
+`$this->group_field('foo', 'bar');`
 
-`$this->group_field('nama_depan', 'nama');`
-`$this->group_field('nama_belakang', 'nama');`
+`$this->group_field('baz', 'qux');`
 
-Anda juga dapat menjalankan metode ini secara multiple seperti contoh berikut:
-
+**Anda juga dapat menjalankan metode ini secara berkelompok seperti contoh berikut:**
 ```php
 $this->group_field([
     'nama_depan' => 'nama',

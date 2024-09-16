@@ -1,22 +1,26 @@
 Metode ini digunakan ketika akan melakukan validasi formulir menggunakan validasi pribadi. Artinya tidak menggunakan validasi yang secara default diberikan oleh framework. Pada kasus tertentu, apabila ingin mendapatkan suatu pengembalian yang rumit dari permintaan formulir, maka metode ini akan diperlukan.
 
-###### Referensi
-
+### Referensi
 `form_callback($callback)`
 
-###### Parameter
+**Parameter**
+* **$callback** [`string`] *metode yang akan dipanggil dan dijalankan.*
 
-* **$callback** (string) - metode yang akan dipanggil dan dijalankan
+&nbsp;
 
-###### Contoh penggunaan
-
-`$this->form_callback('validasi');`
+### Contoh Penggunaan
+`$this->form_callback('foo');`
 
 Pada contoh di atas, Anda harus membuat public method bernama `validasi` misal seperti berikut:
-
 ```php
-public function validasi()
+public function foo()
 {
     // Statement untuk menjalankan dan mengembalikan validasi
 }
 ```
+
+&nbsp;
+
+### Baca Juga
+* [validate_form](./validate_form)
+* [valid_token](./valid_token)
