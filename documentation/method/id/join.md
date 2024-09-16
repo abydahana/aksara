@@ -1,20 +1,21 @@
 Kontribusi kalian dibutuhkan!
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
-##### Referensi
+### Referensi
+`join($foo, $bar)`
 
-`join($argumen_1, $argumen_2)`
+**Parameter**
+* **$foo** [`string`] *keterangan terkait variabel;*
+* **$bar** [`string`] *keterangan terkait variabel.*
 
-##### Parameter
-* **$argumen_1** (string) keterangan terkait variabel.
-* **$argumen_2** (string) keterangan terkait variabel.
+&nbsp;
 
-##### Contoh Penggunaan
+### Contoh Penggunaan
 `$this->join('foo', 'bar');`
+
 `$this->join('baz', 'qux');`
 
-
-##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
 ```php
 $this->join([
     'foo' => 'bar',
@@ -22,5 +23,9 @@ $this->join([
 ]);
 ```
 
-##### Baca juga
-* [field_prepend](./field_prepend)
+&nbsp;
+
+### Baca Juga
+* [join](./join)
+* [set_autocomplete](./set_autocomplete)
+* [set_relation](./set_relation)

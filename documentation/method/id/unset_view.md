@@ -1,17 +1,18 @@
 Metode `unset_view` digunakan untuk menghilangkan/membatasi bidang yang tampil pada tampilan detil
 
-###### Referensi
-
+### Referensi
 `unset_view($params)`
 
-###### Parameter
+**Parameter**
+* **$params** [`mixed`] *nama-nama bidang yang ingin hilangkan pada tampilan detil.*
 
-* **$params** (mixed) - nama-nama bidang yang ingin hilangkan pada tampilan detil
+&nbsp;
 
-###### Contoh penggunaan
-
+### Contoh Penggunaan
 `$this->unset_view('nama_depan, nama_belakang, jenis_kelamin, alamat');`
 
-##### Baca juga
+&nbsp;
+
+### Baca Juga
 * [unset_column](./unset_column)
 * [unset_field](./unset_field)

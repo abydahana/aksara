@@ -83,25 +83,6 @@ if (! function_exists('make_json')) {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', -1);
 
-        $html = null;
-
-        if (isset($data->html)) {
-            $html = $data->html;
-
-            /* make a backup of "pre" tag */
-            preg_match_all('#\<pre.*\>(.*)\<\/pre\>#Uis', $html, $pre_backup);
-            $html = str_replace($pre_backup[0], array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $html);
-
-            $html = trim(preg_replace(['/\s+/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\>)\s*(\<)/m'], [' ', '>', '<', '$1$2'], $html));
-
-            /* rollback the pre tag */
-            $html = str_replace(array_map(function ($element) {return '<pre>' . $element . '</pre>';}, array_keys($pre_backup[0])), $pre_backup[0], $html);
-        }
-
-        if ($html) {
-            $data->html = $html;
-        }
-
         if (isset($data->status) && 200 === $data->status) {
             $data->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
         }
@@ -109,10 +90,8 @@ if (! function_exists('make_json')) {
         $data = encoding_fixer($data);
 
         $minify_pattern = [
-            '/[\r\n\t\s]+/' => ' ',     // Replace end of line by space
             '/\>[^\S ]+/s' => '>',      // Strip whitespaces after tags, except space
             '/[^\S ]+\</s' => '<',      // Strip whitespaces before tags, except space
-            '/(\s)+/s' => '\\1',        // Shorten multiple whitespace sequences
             '/<!--(.|\s)*?-->/' => ''   // Remove HTML comments
         ];
 

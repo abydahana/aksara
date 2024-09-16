@@ -1,14 +1,19 @@
 Digunakan untuk melakukan pembatasan pada hasil tabel yang didapatkan.
 
-###### Referensi
-
+### Referensi
 `limit($parameter)`
 
-###### Parameter
-* **$parameter** (number) angka untuk membatasi hasil.
+**Parameter**
+* **$parameter** [`number`] *angka untuk membatasi hasil.*
 
-###### Contoh Penggunaan
+&nbsp;
 
+### Contoh Penggunaan
 ```php
 $this->limit(25);
 ```
+
+&nbsp;
+
+### Baca Juga
+* [offset](./offset)

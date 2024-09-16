@@ -1,15 +1,29 @@
-This method enables you to set values for inserts or updates.
+Your contribution's needed!
+Please update this page through GitHub using this standard format.
 
-Example :
-<br />
-```$this->set_default('created_by', get_userdata('user_id'));```
-<br />
-or
-<br />
+### Reference
+`set_default($foo, $bar)`
+
+**Parameter**
+* **$foo** [`string`] *the detail related to the variable;*
+* **$bar** [`string`] *the detail related to the variable.*
+
+&nbsp;
+
+### Usage Sample
+`$this->set_default('foo', 'bar');`
+
+`$this->set_default('baz', 'qux');`
+
+**You can use this method in groups as below:**
+```php
+$this->set_default([
+    'foo' => 'bar',
+    'baz' => 'qux'
+]);
 ```
-$data = [
-'created_by' => get_userdata('user_id'),
-'updated_by'  => get_userdata('user_id')
-];
-$this->set_default($data);
-```
+
+&nbsp;
+
+### Read Also
+* [default_value](./default_value)

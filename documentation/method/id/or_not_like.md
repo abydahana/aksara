@@ -1,20 +1,21 @@
 Kontribusi kalian dibutuhkan!
 Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
 
-##### Referensi
+### Referensi
+`or_not_like($foo, $bar)`
 
-`or_not_like($argumen_1, $argumen_2)`
+**Parameter**
+* **$foo** [`string`] *keterangan terkait variabel;*
+* **$bar** [`string`] *keterangan terkait variabel.*
 
-##### Parameter
-* **$argumen_1** (string) keterangan terkait variabel.
-* **$argumen_2** (string) keterangan terkait variabel.
+&nbsp;
 
-##### Contoh Penggunaan
+### Contoh Penggunaan
 `$this->or_not_like('foo', 'bar');`
+
 `$this->or_not_like('baz', 'qux');`
 
-
-##### Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:
+**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
 ```php
 $this->or_not_like([
     'foo' => 'bar',
@@ -22,7 +23,9 @@ $this->or_not_like([
 ]);
 ```
 
-##### Baca juga
+&nbsp;
+
+### Baca Juga
 * [like](./like)
 * [or_like](./or_like)
 * [not_like](./not_like)

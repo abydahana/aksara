@@ -1,17 +1,18 @@
 Metode `unset_column` digunakan untuk menghilangkan/membatasi kolom yang tampil pada tabel
 
-###### Referensi
-
+### Referensi
 `unset_column($params)`
 
-###### Parameter
+**Parameter**
+* **$params** [mixed] *nama-nama field yang tidak tampil/di hilangkan pada tampilan tabel.*
 
-* **$params** (mixed) - nama-nama field yang tidak tampil/di hilangkan pada tampilan tabel
+&nbsp;
 
-###### Contoh penggunaan
+### Contoh Penggunaan
+`$this->unset_column('foo, bar, baz, qux');`
 
-`$this->unset_column('nama_depan, nama_belakang, jenis_kelamin, alamat');`
+&nbsp;
 
-##### Baca juga
+### Baca Juga
 * [unset_field](./unset_field)
 * [unset_view](./unset_view)

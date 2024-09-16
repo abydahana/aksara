@@ -1,14 +1,15 @@
 Metode ini untuk menambahkan suatu kolom filter pada formulir pencarian pada tabel
 
-###### Referensi
-
+### Referensi
 `add_filter($filter, $options)`
 
-###### Parameter
-* **$filter** (array|string) filter yang akan ditambahkan sebagai tambahan formulir pencarian.
-* **$options** (array) opsi fallback yang akan diubah menjadi pilihan dropdown / value input
+**Parameter**
+* **$filter** [`array`|`string`] *filter yang akan ditambahkan sebagai tambahan formulir pencarian;*
+* **$options** [`array`] *opsi fallback yang akan diubah menjadi pilihan dropdown / value input.*
 
-###### Contoh Penggunaan #1
+&nbsp;
+
+### Contoh Penggunaan
 
 ```php
 $this->add_filter('language', [
@@ -25,8 +26,7 @@ $this->add_filter('language', [
 ]);
 ```
 
-
-###### Contoh Penggunaan #2
+**Anda juga dapat menggunakan metode berikut secara berkelompok seperti berikut:**
 
 ```php
 $this->add_filter([
@@ -62,3 +62,10 @@ $this->add_filter([
     ]
 ]);
 ```
+
+&nbsp;
+
+### Baca Juga
+* [add_button](./add_button)
+* [add_dropdown](./add_dropdown)
+* [add_toolbar](./add_toolbar)
