@@ -16,19 +16,15 @@ Metode ini digunakan untuk mengatur ukuran masing-masing inputan apabila dilakuk
 Anda juga dapat menjalankan metode ini secara multiple seperti berikut:
 
 ```php
-$this->field_size
-(
-    array
-    (
-        'hostname' => 'col-md-8',
-        'port' => 'col-md-4'
-    )
-);
+$this->field_size([
+    'hostname' => 'col-md-8',
+    'port' => 'col-md-4'
+]);
 ```
 
 Anda mungkin membaca ulasan terkait penggunaan Bootstrap Grid pada artikel berikut:
 
-[https://getbootstrap.com/docs/4.5/layout/grid/](https://getbootstrap.com/docs/4.5/layout/grid/).
+[https://getbootstrap.com/docs/5.3/layout/grid/](https://getbootstrap.com/docs/5.3/layout/grid/).
 
 ###### Baca juga
 * [column_size](./column_size)
