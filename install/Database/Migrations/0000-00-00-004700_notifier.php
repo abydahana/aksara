@@ -19,27 +19,32 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class PostReports extends Migration
+class AppNotifier extends Migration
 {
     public function up()
     {
         // Add columns to table
         $this->forge->addField([
-            'user_id' => [
-                'type' => 'bigint',
-                'constraint' => 22,
+            'id' => [
+                'type' => 'int',
+                'constraint' => 11,
                 'unsigned' => true,
+                'auto_increment' => true,
                 'null' => false
             ],
-            'post_id' => [
-                'type' => 'bigint',
-                'constraint' => 22,
-                'unsigned' => true,
-                'null' => false
-            ],
-            'post_path' => [
+            'phone' => [
                 'type' => 'varchar',
-                'constraint' => 2000,
+                'constraint' => 16,
+                'null' => false
+            ],
+            'email' => [
+                'type' => 'varchar',
+                'constraint' => 255,
+                'null' => false
+            ],
+            'title' => [
+                'type' => 'varchar',
+                'constraint' => 255,
                 'null' => false
             ],
             'message' => [
@@ -49,18 +54,20 @@ class PostReports extends Migration
             'timestamp' => [
                 'type' => 'timestamp',
                 'null' => false
+            ],
+            'status' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'default' => '0',
+                'null' => false
             ]
         ]);
 
         // Add primary and unique index
-        $this->forge->addKey('user_id', false, false);
-        $this->forge->addKey('post_id', false, false);
-
-        // Add foreign key to parent table
-        $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addKey('id', true, true);
 
         // Create table
-        $this->forge->createTable('post__reports');
+        $this->forge->createTable('notifier');
     }
 
     public function down()
