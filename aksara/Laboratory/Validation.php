@@ -338,7 +338,7 @@ class Validation
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) str_replace(',', '', $source->getSizeByUnit('kb')) > MAX_UPLOAD_SIZE) {
+        } elseif ((float) str_replace(',', '', $source->getSizeByUnit('kb')) > (MAX_UPLOAD_SIZE * 1024)) {
             // Size is exceeded the maximum allocation
             $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 
