@@ -571,6 +571,27 @@ class Template
         $query_string = [];
 
         foreach (service('request')->getGet() as $key => $val) {
+            if (is_array($val)) {
+                foreach ($val as $_key => $_val) {
+                    if (is_array($_val)) {
+                        continue;
+                    }
+
+                    $_key = preg_replace('/[^\w-]/', '', $_key);
+
+                    if (! $_key || in_array($_key, ['q', 'per_page'])) {
+                        continue;
+                    }
+
+                    $query_string[] = [
+                        'name' => $_key,
+                        'value' => htmlspecialchars($_val)
+                    ];
+                }
+
+                continue;
+            }
+
             $key = preg_replace('/[^\w-]/', '', $key);
 
             if (! $key || in_array($key, ['q', 'per_page'])) {
@@ -942,8 +963,8 @@ class Template
                     ],
                     [
                         'id' => 0,
-                        'label' => 'Notifications',
-                        'slug' => 'notifications',
+                        'label' => 'Notifier',
+                        'slug' => 'notifier',
                         'icon' => 'mdi mdi-bullhorn'
                     ],
                     [
