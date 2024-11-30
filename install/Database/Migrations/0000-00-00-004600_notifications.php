@@ -25,46 +25,47 @@ class AppNotifications extends Migration
     {
         // Add columns to table
         $this->forge->addField([
-            'id' => [
-                'type' => 'int',
-                'constraint' => 11,
+            'from_user' => [
+                'type' => 'bigint',
+                'constraint' => 22,
                 'unsigned' => true,
-                'auto_increment' => true,
                 'null' => false
             ],
-            'phone' => [
+            'to_user' => [
+                'type' => 'bigint',
+                'constraint' => 22,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'type' => [
                 'type' => 'varchar',
-                'constraint' => 14,
+                'constraint' => 32,
                 'null' => false
             ],
-            'email' => [
+            'interaction_id' => [
+                'type' => 'bigint',
+                'constraint' => 22,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'path' => [
                 'type' => 'varchar',
-                'constraint' => 128,
-                'null' => false
-            ],
-            'title' => [
-                'type' => 'varchar',
-                'constraint' => 128,
-                'null' => false
-            ],
-            'message' => [
-                'type' => 'text',
+                'constraint' => 2000,
                 'null' => false
             ],
             'timestamp' => [
                 'type' => 'timestamp',
                 'null' => false
-            ],
-            'status' => [
-                'type' => 'tinyint',
-                'constraint' => 1,
-                'default' => '0',
-                'null' => false
             ]
         ]);
 
         // Add primary and unique index
-        $this->forge->addKey('id', true, true);
+        $this->forge->addKey('from_user', false, false);
+        $this->forge->addKey('to_user', false, false);
+
+        // Add foreign key to parent table
+        $this->forge->addForeignKey('from_user', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('to_user', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('notifications');

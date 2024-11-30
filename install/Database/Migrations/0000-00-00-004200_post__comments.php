@@ -46,7 +46,7 @@ class PostComments extends Migration
             ],
             'post_path' => [
                 'type' => 'varchar',
-                'constraint' => 255,
+                'constraint' => 2000,
                 'null' => false
             ],
             'reply_id' => [

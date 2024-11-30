@@ -19,7 +19,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AppNotificationsSettings extends Migration
+class AppNotifierSettings extends Migration
 {
     public function up()
     {
@@ -47,7 +47,7 @@ class AppNotificationsSettings extends Migration
         $this->forge->addKey('site_id', true, true);
 
         // Create table
-        $this->forge->createTable('notifications__settings');
+        $this->forge->createTable('notifier__settings');
     }
 
     public function down()
