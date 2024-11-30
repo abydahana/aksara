@@ -13,6 +13,9 @@ html.dark-mode img {
 .navbar-brand .img-logo {
     height: 40px;
 }
+.navbar .dropdown-menu .nav-item a.nav-link:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
 .navbar-brand .img-icon,
 body.sidebar-collapsed .navbar-brand img.img-logo,
 body.sidebar-collapsed .navbar-brand span.badge,
@@ -217,7 +220,8 @@ a {
     }
 }
 @media (max-width: 991.98px) {
-    .offcanvas {
+    .offcanvas-start,
+    .offcanvas-end {
         max-width: 320px;
     }
     .navbar .navbar-collapse {
