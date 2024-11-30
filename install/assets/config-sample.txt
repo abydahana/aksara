@@ -52,7 +52,7 @@ define('ENCRYPTION_KEY', '%ENCRYPTION_KEY%');
 define('COOKIE_NAME', '%COOKIE_NAME%');
 
 /**
- * Session expirarion
+ * Session expiration
  * The number of SECONDS you want the session to last.
  * Setting to 0 (zero) means expire when the browser is closed.
  */
@@ -73,7 +73,7 @@ define('DB_DATABASE', '%DB_DATABASE%');
  * Upload config
  */
 define('UPLOAD_PATH', 'uploads'); // NO TRAILING SLASH
-define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%); // In kilobytes
+define('MAX_UPLOAD_SIZE', %MAX_UPLOAD_SIZE%); // In MB
 define('DOCUMENT_FORMAT_ALLOWED', '%DOCUMENT_EXTENSION%');
 define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');
 define('IMAGE_DIMENSION', %IMAGE_DIMENSION%); // In pixels
