@@ -1,4 +1,4 @@
 <div class="form-check form-switch">
-    <input type="checkbox" name="{{ name }}" role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ readonly }} {% if checked %} checked {% endif %}>
+    <input type="checkbox" name="{{ name }}" role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} {% if checked %} checked {% endif %}>
     <label class="form-check-label" for="{{ name }}_input"> {{ placeholder }} </label>
 </div>

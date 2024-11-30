@@ -1,4 +1,4 @@
 <div class="uploader-input w-100">
-    <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" multiple />
+    <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
     <label class="form-control custom-file-label" for="{{ name }}_input">{{ label }}</label>
 </div>
