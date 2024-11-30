@@ -264,21 +264,6 @@ class Core extends Controller
      */
     public function set_permission($permissive_group = [], string $redirect = null)
     {
-        if ($this->api_client && ! service('request')->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-TOKEN')) {
-            // Basic Auth
-            $account = base64_decode(str_ireplace('Basic ', '', service('request')->getHeaderLine('Authorization')));
-            list($username, $password) = array_pad(explode(':', $account), 2, '');
-
-            if ($username && $password) {
-                // Get authorization
-                $authorize = $this->permission->authorize($username, $password);
-
-                if (is_bool($authorize) && $authorize) {
-                    $this->_api_token = true;
-                }
-            }
-        }
-
         // This mean the permission is set as true
         $this->_set_permission = true;
 
@@ -553,14 +538,15 @@ class Core extends Controller
     /**
      * Override the existing CRUD button
      */
-    public function set_button(string $button, string $value, string $label, string $icon = null, string $class = null, bool $new_tab = null)
+    public function set_button(string $button, string $value, string $label, string $class = null, string $icon = null, $parameter = [], bool $new_tab = null)
     {
         // Push the button properties
         $this->_set_button[$button] = [
-            'href' => $value,
+            'url' => $value,
             'label' => $label,
             'icon' => $icon,
             'class' => $class,
+            'parameter' => $parameter,
             'new_tab' => $new_tab
         ];
 
@@ -2231,8 +2217,12 @@ class Core extends Controller
                 }
 
                 if (($this->_searchable && ! $this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))) {
+                    $group_start = false;
+
                     if ('autocomplete' != service('request')->getPost('method')) {
                         $this->group_start();
+
+                        $group_start = true;
                     }
 
                     $column = (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
@@ -2268,13 +2258,13 @@ class Core extends Controller
                         }
 
                         if ($columns) {
-                            $this->or_group_start();
+                            if ($group_start) {
+                                $this->or_group_start();
+                            } else {
+                                $this->group_start();
+                            }
 
                             foreach ($columns as $key => $val) {
-                                if (! $key) {
-                                    continue;
-                                }
-
                                 // Find column exclude table name
                                 if (strpos($val, '.') === false) {
                                     // Add the table prefix to prevent ambiguous
@@ -2289,9 +2279,13 @@ class Core extends Controller
                         }
 
                         if ($this->_select) {
-                            $compiled_like = [];
+                            if ($group_start) {
+                                $this->or_group_start();
+                            } else {
+                                $this->group_start();
+                            }
 
-                            $this->or_group_start();
+                            $compiled_like = [];
 
                             foreach ($this->_select as $key => $val) {
                                 if ($val && stripos($val, ' AS ') !== false) {
@@ -2820,7 +2814,7 @@ class Core extends Controller
                 'current_page' => current_page()
             ],
             'meta' => [
-                'description' => preg_replace('/[^\S ]+/', '', $this->_set_description),
+                'description' => preg_replace('/[^\S ]+/', '', $this->_set_description ?? ''),
                 'icon' => $this->_set_icon,
                 'title' => $this->_set_title,
                 'modal_size' => ($this->_modal_size ? $this->_modal_size : ''),
@@ -2906,7 +2900,7 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_field', '_set_relation', '_set_upload_path', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
+            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation', '_set_upload_path', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
 
             // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
@@ -3392,20 +3386,8 @@ class Core extends Controller
                         // Push the json encoded attribution to data preparation
                         $prepare[$field] = json_encode($items);
                     } elseif (array_intersect(['wysiwyg'], $type)) {
-                        // Sanitize the wysiwyg from the XSS attack
-                        $value = service('request')->getPost($field);
-
-                        if ($value) {
-                            $value = str_ireplace(['<?php', '?>'], ['&lt;?php', '?&gt;'], $value);
-                            $value = str_ireplace(['<script', '</script>'], ['&lt;script', '&lt;/script&gt;'], $value);
-                            $value = str_ireplace(['<noscript', '</noscript>'], ['&lt;noscript', '&lt;/noscript&gt;'], $value);
-                            $value = str_ireplace(['<style', '</style>'], ['&lt;style', '&lt;/style&gt;'], $value);
-                            $value = str_ireplace('<link', '&lt;link', $value);
-                            $value = str_ireplace(['onclick="', 'onerror="'], 'xss-clean="', $value);
-                        }
-
                         // Push the boolean field type to data preparation
-                        $prepare[$field] = $value;
+                        $prepare[$field] = service('request')->getPost($field);
                     } elseif (array_intersect(['boolean'], $type)) {
                         // Push the boolean field type to data preparation
                         $prepare[$field] = service('request')->getPost($field);
@@ -3461,10 +3443,6 @@ class Core extends Controller
                             $prepare[$field] = '';
                         }
                     }
-
-                    if (! array_intersect(['wysiwyg', 'encryption'], $type) && isset($prepare[$field])) {
-                        $prepare[$field] = str_replace(['<', '>'], ['&lt;', '&gt;'], $prepare[$field]);
-                    }
                 }
 
                 // Check if the field is sets to use the default value
@@ -3477,6 +3455,14 @@ class Core extends Controller
                 elseif (array_intersect(['boolean'], $type) && ! service('request')->getPost($field) && ! in_array($field, $this->_unset_field)) {
                     // Sets to "0" instead of null
                     $prepare[$field] = 0;
+                }
+
+                if (! array_intersect(['wysiwyg', 'encryption'], $type) && isset($prepare[$field])) {
+                    $prepare[$field] = str_replace(['<', '>'], ['&lt;', '&gt;'], $prepare[$field]);
+                }
+
+                if (isset($prepare[$field]) && ! array_intersect(['encryption'], $type)) {
+                    $prepare[$field] = $this->_sanitize_input($prepare[$field]);
                 }
             }
 
@@ -5279,6 +5265,21 @@ class Core extends Controller
      */
     private function _handshake($api_key = 0)
     {
+        if (! service('request')->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-TOKEN')) {
+            // Basic Auth
+            $account = base64_decode(str_ireplace('Basic ', '', service('request')->getHeaderLine('Authorization')));
+            list($username, $password) = array_pad(explode(':', $account), 2, '');
+
+            if ($username && $password) {
+                // Get authorization
+                $authorize = $this->permission->authorize($username, $password);
+
+                if (is_bool($authorize) && $authorize) {
+                    $this->_api_token = true;
+                }
+            }
+        }
+
         // Set client header
         service('request')->setHeader('X-Requested-With', 'XMLHttpRequest');
 
@@ -5548,5 +5549,26 @@ class Core extends Controller
             'function' => $function,
             'arguments' => $arguments
         ];
+    }
+
+    /**
+     * XSS safe
+     */
+    private function _sanitize_input($input = '')
+    {
+        // Define an array of tags to remove
+        $tagsToRemove = ['applet', 'base', 'basefont', 'body', 'command', 'embed', 'frame', 'frameset', 'head', 'html', 'iframe', 'keygen', 'link', 'meta', 'noframes', 'noscript', 'object', 'param', 'script', 'style', 'title'];
+
+        // Loop through each tag and remove it using a regular expression
+        foreach ($tagsToRemove as $tag) {
+            $input = preg_replace('/<' . $tag . '.*?>.*?<\/' . $tag . '>/is', '', $input); // Remove the tag and its content
+            $input = preg_replace('/<' . $tag . '.*?\/?>/is', '', $input); // Remove the self-closing tag (e.g., <meta />)
+            $input = preg_replace('/<' . $tag . '.*?>/is', '', $input); // Remove the no closing tag (e.g., <noscript>)
+        }
+
+        // Remove event handler attributes (e.g., onclick, onerror, etc.)
+        $input = preg_replace('/\s*(on\w+)\s*=\s*[^>]+/is', '', $input);
+
+        return $input;
     }
 }
