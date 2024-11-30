@@ -31,7 +31,7 @@
     <?php if (! get_userdata('hideGreeting')): ?>
     <div class="row" id="greeting-card">
         <div class="col-12">
-            <div class="card mb-3">
+            <div class="card rounded-4 mb-3">
                 <div class="card-body p-3">
                     <h3>
                         <button type="button" class="btn btn-close btn-greeting float-end"></button>
@@ -46,9 +46,8 @@
                                 <?= phrase('Getting started'); ?>
                             </h5>
                             <div class="text-center text-md-start">
-                                <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 --xhr">
-                                    <i class="mdi mdi-color-palette"></i>
-                                    <?= phrase('Customize your app'); ?>
+                                <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
+                                    <i class="mdi mdi-palette"></i> <?= phrase('Customize your app'); ?>
                                 </a>
                             </div>
                         </div>
@@ -129,7 +128,7 @@
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
-                <div class="card border-0 bg-primary text-center text-sm-start" style="overflow:hidden">
+                <div class="card rounded-4 border-0 bg-primary text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
                             <div class="p-3 text-center">
@@ -150,7 +149,7 @@
         </div>
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/pages'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages'); ?>">
-                <div class="card border-0 bg-info text-center text-sm-start" style="overflow:hidden">
+                <div class="card rounded-4 border-0 bg-info text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
                             <div class="p-3 text-center">
@@ -171,7 +170,7 @@
         </div>
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/galleries'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries'); ?>">
-                <div class="card border-0 bg-danger text-center text-sm-start" style="overflow:hidden">
+                <div class="card rounded-4 border-0 bg-danger text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
                             <div class="p-3 text-center">
@@ -192,7 +191,7 @@
         </div>
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('administrative/users'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage users'); ?>">
-                <div class="card border-0 bg-dark text-center text-sm-start" style="overflow:hidden">
+                <div class="card rounded-4 border-0 bg-dark text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
                             <div class="p-3 text-center">
@@ -215,13 +214,13 @@
     <div class="row">
         <div class="col-lg-8 bg-white">
             <div class="sticky-top">
-                <div class="border rounded mb-3">
-                    <div id="visitor-chart" class="rounded" style="width:100%; height:300px"></div>
+                <div class="border rounded-4 mb-3">
+                    <div id="visitor-chart" class=" rounded-4" style="width:100%; height:300px"></div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header bg-white border-0">
+                        <div class="card rounded-4 mb-3">
+                            <div class="card-header rounded-top-4 bg-white border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Most used browsers'); ?>
                                 </h5>
@@ -256,8 +255,8 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header bg-white border-0">
+                        <div class="card rounded-4 mb-3">
+                            <div class="card-header rounded-top-4 bg-white border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Recent sign in'); ?>
                                 </h5>
@@ -296,8 +295,8 @@
         <div class="col-lg-4 bg-white">
             <div class="sticky-top">
                 <?php if ($announcements): ?>
-                    <div class="card mb-3">
-                        <div class="card-header bg-white border-0">
+                    <div class="card rounded-4 mb-3">
+                        <div class="card-header rounded-top-4 bg-white border-0">
                             <h5 class="card-title mb-0">
                                 <?= phrase('Announcements'); ?>
                             </h5>
@@ -318,8 +317,8 @@
                     </div>
                 <?php endif; ?>
                 
-                <div class="card mb-3">
-                    <div class="card-header bg-white border-0">
+                <div class="card rounded-4 mb-3">
+                    <div class="card-header rounded-top-4 bg-white border-0">
                         <h5 class="card-title mb-0">
                             <?= phrase('Application Information'); ?>
                         </h5>
@@ -414,7 +413,7 @@
         
         var interval;
         
-        require.js('<?= base_url('assets/highcharts/highcharts.min.js'); ?>', function() {
+        require.js('<?= base_url('assets/highcharts/highcharts.js'); ?>', function() {
             Highcharts.chart('visitor-chart', {
                 chart: {
                     type: 'areaspline'

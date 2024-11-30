@@ -58,7 +58,7 @@
                     <?= phrase('The Laborant'); ?>
                 </h6>
                 <div class="mb-3">
-                    <label class="d-block text-muted mb-0">
+                    <label class="d-block mb-0">
                         <a href="//abydahana.github.io" class="fw-bold" target="_blank">
                             Aby Dahana
                             <i class="mdi mdi-open-in-new"></i>
@@ -71,7 +71,7 @@
                     <?= phrase('Contributors'); ?>
                 </h6>
                 <div class="mb-3">
-                    <label class="d-block text-muted mb-0">
+                    <label class="d-block mb-0">
                         <a href="//ganjar.id" class="fw-bold" target="_blank">
                             Ganjar Nugraha
                             <i class="mdi mdi-open-in-new"></i>
