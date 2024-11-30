@@ -1,6 +1,6 @@
 <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center w-100">
     <span class="btn btn-file d-block">
-        <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input"{{ readonly }} />
+        <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
         <div class="fileupload-new text-center">
             <img class="img-fluid upload_preview" src="{{ content }}" />
         </div>

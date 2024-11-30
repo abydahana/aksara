@@ -1,7 +1,7 @@
 {% for option in content %}
     <div class="form-check me-3">
         <label class="form-check-label {{ option.class }}">
-            <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+            <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
             {{ option.label | raw }}
         </label>
     </div>
