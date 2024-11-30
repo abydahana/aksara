@@ -160,7 +160,7 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
     right: 20px;
 }
 .navbar .dropdown-menu .nav-item a.nav-link:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.1);
 }
 .dropdown-menu .dropdown-header {
     color: val(--bs-text-muted) !important;
