@@ -210,10 +210,7 @@
         </div>
         <div class="text-center">
             <small class="fw-bold">
-                <?= phrase('Copyright'); ?> &#169;<?= date('Y'); ?> - <?= get_setting('office_name'); ?>
-            </small>
-            <small>
-                (<a href="<?= base_url('pages/about'); ?>" class="fw-bold --xhr">Aksara <?= aksara('build_version'); ?></a>)
+                <?= phrase('Copyright'); ?> &#169;<?= date('Y'); ?> - <?= get_setting('office_name'); ?> (<a href="<?= base_url('pages/about'); ?>" class="fw-bold --xhr">Aksara <?= aksara('build_version'); ?></a>)
             </small>
         </div>
         <div class="row">

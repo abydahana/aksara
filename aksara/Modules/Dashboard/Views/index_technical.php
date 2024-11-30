@@ -281,7 +281,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        require.js('<?= base_url('assets/highcharts/highcharts.min.js'); ?>', function() {
+        require.js('<?= base_url('assets/highcharts/highcharts.js'); ?>', function() {
             Highcharts.chart('visitor-chart', {
                 chart: {
                     type: 'areaspline'

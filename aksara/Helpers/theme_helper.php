@@ -130,10 +130,7 @@ if (! function_exists('generate_menu')) {
                     $output .= '
                         <li class="' . $li_class . (isset($val->class) ? ' ' . $val->class : null) . '">
                             <span class="' . $a_class . '">
-                                ' . (isset($val->icon) && $val->icon ? '<i class="' . $val->icon . '"></i>' : null) . '
-                                <b class="text-sm hide-on-collapse">
-                                    ' . ($val->label ? $val->label : null) . '
-                                </b>
+                                ' . (isset($val->icon) && $val->icon ? '<i class="' . $val->icon . '"></i>' : null) . ' <b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
                             </span>
                         </li>
                     ';
@@ -151,10 +148,7 @@ if (! function_exists('generate_menu')) {
                     $output .= '
                         <li class="' . $li_class . ($children && $dropdown_class ? ' ' . $dropdown_class : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
                             <a href="' . ($children ? '#' : $val->slug) . '" class="' . $a_class . ($children ? ' ' . $toggle_class : null) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
-                                ' . (isset($val->icon) && $val->icon ? '<i class="' . $val->icon . '"></i>' : null) . '
-                                <span class="hide-on-collapse">
-                                    ' . $val->label . '
-                                </span>
+                                ' . (isset($val->icon) && $val->icon ? '<i class="' . $val->icon . '"></i>' : null) . ' <span class="hide-on-collapse">' . $val->label . '</span>
                             </a>
                             ' . ($children ? generate_menu($children, $ul_class, $li_class, $a_class, $toggle_class, $toggle_initial, $dropdown_class, $sub_ul_class, true, ($level + 1)) : null) . '
                         </li>

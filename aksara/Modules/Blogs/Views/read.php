@@ -72,8 +72,8 @@
                                             </a>
                                         </h5>
                                         <p class="mb-0">
-                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->updated_timestamp; ?>">
-                                                <?= time_ago($results[0]->updated_timestamp); ?>
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->created_timestamp; ?>">
+                                                <?= time_ago($results[0]->created_timestamp); ?>
                                             </span>
                                         </p>
                                     </div>
@@ -118,6 +118,10 @@
 
                         <div class="tags">
                             <?= $post_tags; ?>
+                        </div>
+
+                        <div>
+                            <i class="text-muted text-sm"><?= ($results[0]->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($results[0]->updated_timestamp))) . ', ' . $results[0]->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($results[0]->created_timestamp))) . ', ' . $results[0]->created_timestamp); ?></i>
                         </div>
 
                         <?= comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]); ?>
