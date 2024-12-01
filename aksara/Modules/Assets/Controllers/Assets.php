@@ -236,7 +236,7 @@ class Assets extends \Aksara\Laboratory\Core
             'current_slug' => str_replace('.', '-', service('uri')->setSilent()->getPath()),
             'document_extension_allowed' => (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : []),
             'image_extension_allowed' => (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : []),
-            'max_upload_size' => (MAX_UPLOAD_SIZE ? MAX_UPLOAD_SIZE : 0),
+            'max_upload_size' => (MAX_UPLOAD_SIZE ? (MAX_UPLOAD_SIZE * 1024) : 0),
             'app_name' => get_setting('app_name'),
             'app_logo' => get_image('settings', get_setting('app_logo')),
             'app_icon' => get_image('settings', get_setting('app_icon'), 'icon'),
