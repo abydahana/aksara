@@ -68,16 +68,16 @@ class Builder
                 $component = $builder->$template($type);
 
                 // Theme found, now create default component when no file exists
-                //if (! file_exists($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig')) {
-                // Component file not exists
-                if (! is_dir($directory . ($path ? '/' . $path : null))) {
-                    // Try to create directory
-                    mkdir($directory . ($path ? '/' . $path : null), 0755, true);
-                }
+                if (! file_exists($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig')) {
+                    // Component file not exists
+                    if (! is_dir($directory . ($path ? '/' . $path : null))) {
+                        // Try to create directory
+                        mkdir($directory . ($path ? '/' . $path : null), 0755, true);
+                    }
 
-                // Put component to file
-                file_put_contents($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig', $component['component']);
-                //}
+                    // Put component to file
+                    file_put_contents($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig', $component['component']);
+                }
             }
 
             if ($type) {

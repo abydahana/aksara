@@ -329,6 +329,20 @@ class Table
             $buttons[] = $this->_set_link(null, phrase('Refresh'), 'btn-secondary --xhr', 'mdi mdi-refresh', $query_string);
         }
 
+        // Override default button if any
+        foreach ($buttons as $key => $val) {
+            if (isset($this->_set_button[$val['path']])) {
+                $buttons[$key] = $this->_set_link(
+                    $val['path'],
+                    $this->_set_button[$val['path']]['label'],
+                    $this->_set_button[$val['path']]['class'],
+                    $this->_set_button[$val['path']]['icon'],
+                    $this->_set_button[$val['path']]['parameter'],
+                    $this->_set_button[$val['path']]['new_tab']
+                );
+            }
+        }
+
         // Default filters
         $filters = [
             'q' => [
@@ -409,6 +423,11 @@ class Table
         }
 
         foreach ($buttons as $key => $val) {
+            if (isset($this->_set_button[$val['url']])) {
+                // Override button if any
+                $val = $this->_set_button[$val['url']];
+            }
+
             if ($val['parameter']) {
                 // Replace matches query string value
                 foreach ($val['parameter'] as $_key => $_val) {
@@ -472,7 +491,7 @@ class Table
         return $dropdowns;
     }
 
-    private function _set_link($path, $label, $class, $icon, $query_string = [], bool $new_tab = false, $attribution = null)
+    private function _set_link($path, $label, $class, $icon, $query_string = [], $new_tab = false, $attribution = null)
     {
         foreach ($query_string as $keyword => $value) {
             if (in_array($path, $this->_unset_method)) {

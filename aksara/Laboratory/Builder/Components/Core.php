@@ -44,7 +44,9 @@ class Core
                             <th>
                                 {{ phrase('Options') }}
                             </th>
+                            {% set colspan = 0 %}
                             {% for column in results.columns %}
+                                {% set colspan = colspan + 1 %}
                                 <th align="{{ column.align }}" class="no-wrap">
                                     {% if column.url %}
                                         <a href="{{ column.url }}" class="fw-bold {{ column.class }}">
@@ -61,7 +63,22 @@ class Core
                         </tr>
                     </thead>
                     <tbody>
+                        {% set references = [] %}
                         {% for key, row in results.table_data %}
+                            {% set unique_reference = '' %}
+                            {% for reference in results.item_reference %}
+                                {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
+                                {% if unique_reference not in references %}
+                                    <tr>
+                                        <td colspan="2">&nbsp;</td>
+                                        <td colspan="{{ colspan }}">
+                                            <b class="text-primary">{{ row.field_data[reference].value }}</b>
+                                        </td>
+                                    </tr>
+                            
+                                    {% set references = references | merge([unique_reference]) %}
+                                {% endif %}
+                            {% endfor %}
                             <tr id="row_{{ key }}">
                                 <td>
                                     {% if row.deleting %}
