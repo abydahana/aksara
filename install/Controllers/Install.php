@@ -370,21 +370,21 @@ class Install extends BaseController
                 '<?php',
                 session()->get('encryption'),
                 session()->get('cookie_name'),
-                session()->get('session_expiration'),
+                (int) session()->get('session_expiration'),
                 session()->get('database_dsn'),
                 session()->get('database_driver'),
                 session()->get('database_hostname'),
-                session()->get('database_port'),
+                (int) session()->get('database_port'),
                 session()->get('database_username'),
                 session()->get('database_password'),
                 session()->get('database_initial'),
                 session()->get('timezone'),
                 session()->get('file_extension'),
                 session()->get('image_extension'),
-                floor(session()->get('max_upload_size') * 1024),
-                session()->get('image_dimension'),
-                session()->get('thumbnail_dimension'),
-                session()->get('icon_dimension')
+                (int) session()->get('max_upload_size'),
+                (int) session()->get('image_dimension'),
+                (int) session()->get('thumbnail_dimension'),
+                (int) session()->get('icon_dimension')
             ],
             $config_source
         );
