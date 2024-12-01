@@ -6,8 +6,7 @@
     "website": "https://abydahana.github.io",
     "demo_url": "https://www.aksaracms.com",
     "type": "frontend",
-    "compatibility":
-    [
+    "compatibility": [
         "5.1"
     ],
     "configs": {
@@ -21,8 +20,7 @@
             "sidebar": "#sidebar-wrapper"
         }
     },
-    "screenshot":
-    [
+    "screenshot": [
         {
             "src": "assets/screenshot.png",
             "alt": "Screenshot"

@@ -107,7 +107,7 @@ class Comments extends \Aksara\Laboratory\Core
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>
-                <hr class="border-secondary-subtle row" />
+                <hr class="border-secondary-subtle mx--3" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">

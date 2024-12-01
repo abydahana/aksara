@@ -199,7 +199,12 @@ class Errors extends \Aksara\Laboratory\Core
             }
         }
 
-        krsort($logs);
+        // Sort DESC
+        usort($logs, function ($a, $b) {
+            $dateA = \DateTime::createFromFormat('Y-m-d', substr($a, 4, 10));
+            $dateB = \DateTime::createFromFormat('Y-m-d', substr($b, 4, 10));
+            return $dateB <=> $dateA;
+        });
 
         return $logs;
     }
