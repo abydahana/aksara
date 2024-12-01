@@ -25,25 +25,32 @@
                         <i class="mdi mdi-fullscreen"></i>
                     </a>
                 </li>
+                <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
-                        <i class="mdi mdi-translate"></i>
-                        <?= phrase('Language'); ?>
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" role="notifications">
+                        <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <!-- language list -->
+                        <!-- Notification list -->
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
+                        <i class="mdi mdi-translate"></i> <?= phrase('Language'); ?>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <!-- Language list -->
                     </ul>
                 </li>
                 <li class="nav-item">
                     <a href="<?= base_url('administrative/account'); ?>" class="nav-link --xhr">
-                        <i class="mdi mdi-cogs"></i>
-                        <?= phrase('Account'); ?>
+                        <i class="mdi mdi-cogs"></i> <?= phrase('Account'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="<?= base_url('auth/sign_out'); ?>" class="nav-link --xhr">
-                        <i class="mdi mdi-logout"></i>
-                        <?= phrase('Sign Out'); ?>
+                        <i class="mdi mdi-logout"></i> <?= phrase('Sign Out'); ?>
                     </a>
                 </li>
             </ul>
