@@ -27,7 +27,7 @@ class Form
     public function text($type = null)
     {
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="text" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="text" name="{{ name }}" role="text" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -39,7 +39,7 @@ class Form
     public function textarea($type = null)
     {
         $component = <<<EOF
-        <textarea name="{{ name }}" role="textarea" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ readonly }}>{{ value }}</textarea>
+        <textarea name="{{ name }}" role="textarea" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ attribution | raw }} {{ readonly }}>{{ value }}</textarea>
         EOF;
 
         return [
@@ -65,7 +65,7 @@ class Form
     public function number($type = null)
     {
         $component = <<<EOF
-        <input type="number" name="{{ name }}" role="number" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="1" {{ readonly }}>
+        <input type="number" name="{{ name }}" role="number" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="1" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -77,7 +77,7 @@ class Form
     public function money($type = null)
     {
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
+        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -89,7 +89,7 @@ class Form
     public function percent($type = null)
     {
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ readonly }}>
+        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -101,7 +101,7 @@ class Form
     public function select($type = null)
     {
         $component = <<<EOF
-        <select name="{{ name }}" role="select" data-relation="{{ relation }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" {{ readonly }}>
+        <select name="{{ name }}" role="select" data-relation="{{ relation }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" {{ attribution | raw }} {{ readonly }}>
             {% for option in content %}
                 <option value="{{ option.value }}" {% if option.selected %} selected {% endif %}>{{ option.label }}</option>
             {% endfor %}
@@ -120,7 +120,7 @@ class Form
         {% for option in content %}
             <div class="form-check me-3">
                 <label class="form-check-label {{ option.class }}">
-                    <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                    <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
                     {{ option.label | raw }}
                 </label>
             </div>
@@ -139,7 +139,7 @@ class Form
         {% for option in content %}
             <div class="form-check me-3">
                 <label class="form-check-label {{ option.class }}"> 
-                    <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                    <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
                     {{ option.label | raw }}
                 </label>
             </div>
@@ -156,7 +156,7 @@ class Form
     {
         $component = <<<EOF
         <div class="form-check form-switch">
-            <input type="checkbox" name="{{ name }}" role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ readonly }} {% if checked %} checked {% endif %}>
+            <input type="checkbox" name="{{ name }}" role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} {% if checked %} checked {% endif %}>
             <label class="form-check-label" for="{{ name }}_input"> {{ placeholder }} </label>
         </div>
         EOF;
@@ -170,7 +170,7 @@ class Form
     public function range($type = null)
     {
         $component = <<<EOF
-        <input type="range" name="{{ name }}" role="range" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" min="0" max="100" spellcheck="false" {{ readonly }}>
+        <input type="range" name="{{ name }}" role="range" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" min="0" max="100" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -182,7 +182,7 @@ class Form
     public function color($type = null)
     {
         $component = <<<EOF
-        <input type="color" name="{{ name }}" role="color" value="{{ value }}" class="form-control form-control-color {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="color" name="{{ name }}" role="color" value="{{ value }}" class="form-control form-control-color {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -194,7 +194,7 @@ class Form
     public function date($type = null)
     {
         $component = <<<EOF
-        <input type="date" name="{{ name }}" role="date" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="date" name="{{ name }}" role="date" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -206,7 +206,7 @@ class Form
     public function datetime($type = null)
     {
         $component = <<<EOF
-        <input type="datetime-local" name="{{ name }}" role="datetime" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="datetime-local" name="{{ name }}" role="datetime" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -218,7 +218,7 @@ class Form
     public function time($type = null)
     {
         $component = <<<EOF
-        <input type="time" name="{{ name }}" role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="time" name="{{ name }}" role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -230,7 +230,7 @@ class Form
     public function week($type = null)
     {
         $component = <<<EOF
-        <input type="week" name="{{ name }}" role="week" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="week" name="{{ name }}" role="week" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -242,7 +242,7 @@ class Form
     public function month($type = null)
     {
         $component = <<<EOF
-        <input type="month" name="{{ name }}" role="month" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="month" name="{{ name }}" role="month" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -254,7 +254,7 @@ class Form
     public function hidden($type = null)
     {
         $component = <<<EOF
-        <input type="hidden" name="{{ name }}" role="hidden" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="hidden" name="{{ name }}" role="hidden" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -266,7 +266,7 @@ class Form
     public function email($type = null)
     {
         $component = <<<EOF
-        <input type="email" name="{{ name }}" role="email" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="email" name="{{ name }}" role="email" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -279,7 +279,7 @@ class Form
     {
         $component = <<<EOF
         <input type="password" name="{{ name }}" role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
-        <input type="password" name="{{ name }}_confirmation" role="password" class="form-control {{ class }}" id="{{ name }}_confirmation_input" placeholder="{{ phrase('Retype') }} {{ name }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="password" name="{{ name }}_confirmation" role="password" class="form-control {{ class }}" id="{{ name }}_confirmation_input" placeholder="{{ phrase('Retype') }} {{ name }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -291,7 +291,7 @@ class Form
     public function encryption($type = null)
     {
         $component = <<<EOF
-        <input type="password" name="{{ name }}" role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="password" name="{{ name }}" role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -303,7 +303,7 @@ class Form
     public function file($type = null)
     {
         $component = <<<EOF
-        <input type="file" name="{{ name }}" role="file" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="file" name="{{ name }}" role="file" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -316,7 +316,7 @@ class Form
     {
         $component = <<<EOF
         <div class="uploader-input w-100">
-            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" multiple />
+            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
             <label class="form-control custom-file-label" for="{{ name }}_input">{{ label }}</label>
         </div>
         EOF;
@@ -332,7 +332,7 @@ class Form
         $component = <<<EOF
         <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center w-100">
             <span class="btn btn-file d-block">
-                <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input"{{ readonly }} />
+                <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
                 <div class="fileupload-new text-center">
                     <img class="img-fluid upload_preview" src="{{ content }}" />
                 </div>
@@ -353,7 +353,7 @@ class Form
     {
         $component = <<<EOF
         <div class="uploader-input w-100">
-            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" multiple />
+            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
             <label class="form-control custom-file-label" for="{{ name }}_input">{{ label }}</label>
         </div>
         EOF;
