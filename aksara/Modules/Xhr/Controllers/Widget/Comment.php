@@ -99,6 +99,17 @@ class Comment extends \Aksara\Laboratory\Core
                     'user_id' => get_userdata('user_id')
                 ]
             );
+
+            // Delete notification
+            $this->model->delete(
+                'notifications',
+                [
+                    'from_user' => get_userdata('user_id'),
+                    'to_user' => get_userdata('user_id'),
+                    'type' => 'like',
+                    'path' => service('request')->getGet('path')
+                ]
+            );
         } else {
             $query = $this->model->insert(
                 'post__likes',
@@ -107,6 +118,19 @@ class Comment extends \Aksara\Laboratory\Core
                     'post_path' => service('request')->getGet('path'),
                     'user_id' => get_userdata('user_id'),
                     'timestamp' => date('Y-m-d H:i:s')
+                ]
+            );
+
+            // Insert notification
+            $this->model->insert(
+                'notifications',
+                [
+                    'from_user' => get_userdata('user_id'),
+                    'to_user' => get_userdata('user_id'),
+                    'type' => 'like',
+                    'interaction_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
+                    'path' => service('request')->getGet('path'),
+                    'timestamp' => date('Y-m-d H:i:s'),
                 ]
             );
         }
@@ -144,6 +168,21 @@ class Comment extends \Aksara\Laboratory\Core
             return throw_exception(403, phrase('Please sign in to upvote the comment.'));
         }
 
+        // Get interaction
+        $interaction = $this->model->get_where(
+            'post__comments',
+            [
+                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+            ],
+            1
+        )
+        ->row();
+
+        if (! $interaction) {
+            // No interaction is found
+            return throw_exception(404, phrase('The interaction does not exists.'));
+        }
+
         $query = $this->model->get_where(
             'post__comments_likes',
             [
@@ -161,6 +200,17 @@ class Comment extends \Aksara\Laboratory\Core
                     'user_id' => get_userdata('user_id')
                 ]
             );
+
+            // Insert notification
+            $this->model->delete(
+                'notifications',
+                [
+                    'from_user' => get_userdata('user_id'),
+                    'to_user' => $interaction->user_id,
+                    'type' => 'upvote',
+                    'path' => service('request')->getGet('path')
+                ]
+            );
         } else {
             $query = $this->model->insert(
                 'post__comments_likes',
@@ -168,6 +218,19 @@ class Comment extends \Aksara\Laboratory\Core
                     'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
                     'user_id' => get_userdata('user_id'),
                     'timestamp' => date('Y-m-d H:i:s')
+                ]
+            );
+
+            // Insert notification
+            $this->model->insert(
+                'notifications',
+                [
+                    'from_user' => get_userdata('user_id'),
+                    'to_user' => $interaction->user_id,
+                    'type' => 'upvote',
+                    'interaction_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+                    'path' => service('request')->getGet('path'),
+                    'timestamp' => date('Y-m-d H:i:s'),
                 ]
             );
         }
@@ -575,10 +638,10 @@ class Comment extends \Aksara\Laboratory\Core
                     'profile_url' => base_url('user/' . $val->username),
                     'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'page' => null]),
                     'reply_url' => current_page('reply', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'reply' => service('request')->getGet('reply') ?? $val->comment_id]),
-                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]),
-                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
-                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => null, 'parent_id' => null]) : null)
+                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]),
+                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null),
+                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null),
+                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {
@@ -658,7 +721,7 @@ class Comment extends \Aksara\Laboratory\Core
         $interval = $difference->days;
         $day_minimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
 
-        if (get_userdata('group_id') > 2 && $interval <= $day_minimum) {
+        if (get_userdata('group_id') > 2 && $day_minimum && $interval <= $day_minimum) {
             // Minimize spam
             return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
         }
@@ -706,6 +769,33 @@ class Comment extends \Aksara\Laboratory\Core
         );
 
         $comment_id = $this->model->insert_id();
+
+        if ($reply_id) {
+            // Get interaction
+            $interaction = $this->model->get_where(
+                'post__comments',
+                [
+                    'comment_id' => $reply_id
+                ],
+                1
+            )
+            ->row();
+
+            if ($interaction && get_userdata('user_id') != $interaction->user_id) {
+                // Insert notification
+                $this->model->insert(
+                    'notifications',
+                    [
+                        'from_user' => get_userdata('user_id'),
+                        'to_user' => $interaction->user_id,
+                        'type' => 'reply',
+                        'interaction_id' => $comment_id,
+                        'path' => service('request')->getGet('path'),
+                        'timestamp' => date('Y-m-d H:i:s'),
+                    ]
+                );
+            }
+        }
 
         // Push into log's activity
         $this->_push_logs(service('request')->getGet('path'));
@@ -773,7 +863,7 @@ class Comment extends \Aksara\Laboratory\Core
                         </div>
                     </div>
                     <div class="py-1 ps-3">
-                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => null]) . '" class="text-sm --upvote">
+                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => service('request')->getGet('path')]) . '" class="text-sm --upvote">
                             <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
                             &nbsp;
                             <b>
