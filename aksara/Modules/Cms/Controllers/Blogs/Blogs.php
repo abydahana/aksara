@@ -162,6 +162,9 @@ class Blogs extends \Aksara\Laboratory\Core
         ->set_default([
             'author' => get_userdata('user_id')
         ])
+        ->item_reference([
+            'category_title'
+        ])
 
         ->render($this->_table);
     }

@@ -61,6 +61,7 @@ class Read extends \Aksara\Laboratory\Core
             blogs.post_excerpt,
             blogs.post_tags,
             blogs.featured_image,
+            blogs.created_timestamp,
             blogs.updated_timestamp,
             blogs__categories.category_slug,
             blogs__categories.category_title,
