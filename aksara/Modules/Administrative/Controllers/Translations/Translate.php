@@ -142,8 +142,13 @@ class Translate extends \Aksara\Laboratory\Core
             try {
                 $translation = file_get_contents($this->_translation_file);
                 $phrases = json_decode($translation, true);
+                $phrases_input = service('request')->getPost('phrases');
 
-                foreach (service('request')->getPost('phrases') as $key => $val) {
+                if (! is_array($phrases_input)) {
+                    $phrases_input = [];
+                }
+
+                foreach ($phrases_input as $key => $val) {
                     if (isset($phrases[$key])) {
                         if ($val) {
                             // Sanitize unsafe input
