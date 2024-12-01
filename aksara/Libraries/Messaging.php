@@ -145,7 +145,7 @@ class Messaging
 
             // Insert record into notification
             $query = $model->insert(
-                'notifications',
+                'notifier',
                 [
                     'phone' => $this->_recipient_phone,
                     'email' => $this->_recipient_email,
