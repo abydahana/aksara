@@ -293,7 +293,7 @@ class Themes extends \Aksara\Laboratory\Core
 
             unset($package->folder, $package->integrity);
 
-            if (file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json', json_encode($package))) {
+            if (file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json', json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE))) {
                 return throw_exception(301, phrase('The theme was successfully customized'), current_page('../', ['item' => null]));
             }
 
@@ -321,7 +321,7 @@ class Themes extends \Aksara\Laboratory\Core
                 return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../'));
             }
 
-            $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+            $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
             if ($this->form_validation->run(service('request')->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
