@@ -53,7 +53,7 @@ class Summernote extends \Aksara\Laboratory\Core
             $valid_mime[] = $mime_type->guessTypeFromExtension($val);
         }
 
-        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByUnit('kb') > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByUnit('kb') > (MAX_UPLOAD_SIZE * 1024) || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('Upload Error!')
