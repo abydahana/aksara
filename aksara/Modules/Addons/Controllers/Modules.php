@@ -185,7 +185,7 @@ class Modules extends \Aksara\Laboratory\Core
                 return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../'));
             }
 
-            $this->form_validation->setRule('file', phrase('Module Package'), 'max_size[file,' . MAX_UPLOAD_SIZE . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+            $this->form_validation->setRule('file', phrase('Module Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
             if ($this->form_validation->run(service('request')->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
