@@ -83,6 +83,9 @@ th[align=right] {
   border-width: 0!important;
   border-left-width: .25rem!important
 }
+.offcanvas-header {
+  padding: .75rem 1rem!important
+}
 .modal-backdrop.show ~ .modal-backdrop.show {
   z-index: 1055 !important;
 }

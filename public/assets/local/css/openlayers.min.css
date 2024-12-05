@@ -204,9 +204,6 @@ ol.entry-content li:before {
   overflow: hidden !important;
 }
 @media (max-width: 639px) {
-  .ol-control {
-    display: none;
-  }
   .ol-geocoder.gcd-txt-container {
     left: 5% !important;
     right: 5% !important;
