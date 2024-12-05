@@ -338,7 +338,7 @@ class Validation
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) str_replace(',', '', $source->getSizeByUnit('kb')) > (MAX_UPLOAD_SIZE * 1024)) {
+        } elseif ((float) $source->getSizeByUnit('mb') > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
             $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 
@@ -388,6 +388,16 @@ class Validation
 
         // Get encrypted filename
         $filename = $source->getRandomName();
+        // Read file contents
+        $fileContent = file_get_contents($source->getPathName());
+
+        // Check for PHP tags
+        if (preg_match('/<\?php/i', $fileContent)) {
+            // Ensure the file is not contain exploit command
+            $this->_upload_error = phrase('The file is not allowed to upload.');
+
+            return false;
+        }
 
         if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'])) {
             // Uploaded file is image format, prepare image manipulation
