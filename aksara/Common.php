@@ -19,7 +19,7 @@ if (! function_exists('aksara')) {
     /**
      * Get Aksara variable
      */
-    function aksara(string $parameter = null)
+    function aksara(?string $parameter = null)
     {
         $version = '5.1.6';
 
@@ -41,7 +41,7 @@ if (! function_exists('get_setting')) {
     /**
      * Get setting variable
      */
-    function get_setting(string $parameter = null)
+    function get_setting(?string $parameter = null)
     {
         $model = new \Aksara\Laboratory\Model();
 
@@ -132,7 +132,7 @@ if (! function_exists('phrase')) {
     /**
      * Get phrase of translation
      */
-    function phrase(string $phrase = null, array $replacement = [])
+    function phrase(?string $phrase = null, array $replacement = [])
     {
         // Make sure the phrase and language is valid
         if (! $phrase || is_numeric($phrase)) {
@@ -239,7 +239,7 @@ if (! function_exists('is_liked')) {
     /**
      * Get if post is liked
      */
-    function is_liked(int $post_id = 0, string $post_path = null)
+    function is_liked(int $post_id = 0, ?string $post_path = null)
     {
         // Load model
         $model = new \Aksara\Laboratory\Model();

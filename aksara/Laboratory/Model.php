@@ -57,7 +57,7 @@ class Model
      *
      * @param   mixed|null $driver
      */
-    public function database_config($driver = null, string $hostname = null, int $port = null, string $username = null, string $password = null, string $database = null)
+    public function database_config($driver = null, ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null)
     {
         if (! $driver) {
             // No config provided, use default connection instead
