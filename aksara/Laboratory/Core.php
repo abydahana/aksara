@@ -217,7 +217,7 @@ class Core extends Controller
      *
      * @param   array|string $driver
      */
-    public function database_config($driver = [], string $hostname = null, int $port = null, string $username = null, string $password = null, string $database = null)
+    public function database_config($driver = [], ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null)
     {
         // Check if the parameter is sets with array
         if (is_array($driver) && isset($driver['driver']) && isset($driver['hostname']) && isset($driver['port']) && isset($driver['username']) && isset($driver['password']) && isset($driver['database'])) {
@@ -234,7 +234,7 @@ class Core extends Controller
     /**
      * Validate the token that submitted through form
      */
-    public function valid_token(string $token = null)
+    public function valid_token(?string $token = null)
     {
         // Match the token validation
         if (service('request')->getPost() && (($token && get_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY)) === $token) || ($token && sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) || $this->api_client)) {
@@ -262,7 +262,7 @@ class Core extends Controller
      *
      * @param   array|string $permissive_group
      */
-    public function set_permission($permissive_group = [], string $redirect = null)
+    public function set_permission($permissive_group = [], ?string $redirect = null)
     {
         // This mean the permission is set as true
         $this->_set_permission = true;
@@ -366,7 +366,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_template($params = [], string $value = null)
+    public function set_template($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -387,7 +387,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_breadcrumb($params = [], string $value = null)
+    public function set_breadcrumb($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -430,7 +430,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_title($params = [], string $fallback = null)
+    public function set_title($params = [], ?string $fallback = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -461,7 +461,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_description($params = [], string $fallback = null)
+    public function set_description($params = [], ?string $fallback = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -488,7 +488,7 @@ class Core extends Controller
      * Set the icon of content title, yeah we need some icon that describe
      * the module
      */
-    public function set_icon($params = [], string $fallback = null)
+    public function set_icon($params = [], ?string $fallback = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -516,7 +516,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_messages($params = [], int $code = null, string $messages = null)
+    public function set_messages($params = [], ?int $code = null, ?string $messages = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -538,7 +538,7 @@ class Core extends Controller
     /**
      * Override the existing CRUD button
      */
-    public function set_button(string $button, string $value, string $label, string $class = null, string $icon = null, $parameter = [], bool $new_tab = null)
+    public function set_button(string $button, string $value, string $label, ?string $class = null, ?string $icon = null, $parameter = [], ?bool $new_tab = null)
     {
         // Push the button properties
         $this->_set_button[$button] = [
@@ -556,7 +556,7 @@ class Core extends Controller
     /**
      * Switch the view as grid
      */
-    public function grid_view(string $thumbnail, string $hyperlink = null, array $parameter = [], bool $new_tab = false)
+    public function grid_view(string $thumbnail, ?string $hyperlink = null, array $parameter = [], bool $new_tab = false)
     {
         // Use grid view instead of data tables
         $_ENV['GRID_VIEW'] = true;
@@ -622,7 +622,7 @@ class Core extends Controller
      *
      * @param   array|string $url
      */
-    public function add_toolbar($url, string $label = null, string $class = null, string $icon = null, array $parameter = [], bool $new_tab = false, string $attribution = null)
+    public function add_toolbar($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
     {
         if (! is_array($url)) {
             $params = [
@@ -662,7 +662,7 @@ class Core extends Controller
      *
      * @param   array|string $url
      */
-    public function add_button($url, string $label = null, string $class = null, string $icon = null, array $parameter = [], bool $new_tab = false, string $attribution = null)
+    public function add_button($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
     {
         if (! is_array($url)) {
             $params = [
@@ -702,7 +702,7 @@ class Core extends Controller
      *
      * @param   array|string $url
      */
-    public function add_dropdown($url, string $label = null, string $class = null, string $icon = null, array $parameter = [], bool $new_tab = false, string $attribution = null)
+    public function add_dropdown($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
     {
         if (! is_array($url)) {
             $params = [
@@ -742,7 +742,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function add_class($params = [], string $value = null)
+    public function add_class($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -768,7 +768,7 @@ class Core extends Controller
      * @param   null|mixed $beta
      * @param   null|mixed $charlie
      */
-    public function set_field($field = [], $type = [], $parameter = [], $alpha = [], $beta = null, $charlie = null, string $delta = null)
+    public function set_field($field = [], $type = [], $parameter = [], $alpha = [], $beta = null, $charlie = null, ?string $delta = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($field)) {
@@ -814,7 +814,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_tooltip($params = [], string $value = null)
+    public function set_tooltip($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1027,7 +1027,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_validation($params = [], string $value = null)
+    public function set_validation($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1058,7 +1058,7 @@ class Core extends Controller
     /**
      * Set the upload path to follow the custom path
      */
-    public function set_upload_path(string $path = null)
+    public function set_upload_path(?string $path = null)
     {
         // Validate the given parameter is a valid path name
         if ($path && preg_match('/^[A-Za-z0-9\-\.\_\/]*$/', $path)) {
@@ -1084,7 +1084,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_alias($params = [], string $value = null)
+    public function set_alias($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1105,7 +1105,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_heading($params = [], string $value = null)
+    public function set_heading($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1173,7 +1173,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function field_position($params = [], string $value = null)
+    public function field_position($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1194,7 +1194,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function column_size($params = [], string $value = null)
+    public function column_size($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1215,7 +1215,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function field_size($params = [], string $value = null)
+    public function field_size($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1236,7 +1236,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function field_prepend($params = [], string $value = null)
+    public function field_prepend($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1257,7 +1257,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function field_append($params = [], string $value = null)
+    public function field_append($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1277,7 +1277,7 @@ class Core extends Controller
      * Merge the multiple field into one
      * Wrap the string (field name) between double curly braces
      */
-    public function merge_content(string $magic_string, string $alias = null, string $callback = null)
+    public function merge_content(string $magic_string, ?string $alias = null, ?string $callback = null)
     {
         // Get the fields from the magic string
         preg_match_all('/\{\{(.*?)\}\}/', $magic_string, $matches);
@@ -1338,7 +1338,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function group_field($params = [], string $group = null)
+    public function group_field($params = [], ?string $group = null)
     {
         if (! is_array($params)) {
             // Shorthand possibility, separate with commas
@@ -1374,7 +1374,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_attribute($params = [], string $value = null)
+    public function set_attribute($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1402,7 +1402,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_placeholder($params = [], string $value = null)
+    public function set_placeholder($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1423,7 +1423,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_option_label($params = [], string $value = null)
+    public function set_option_label($params = [], ?string $value = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -1653,7 +1653,7 @@ class Core extends Controller
     /**
      * Set the field as autocomplete
      */
-    public function set_autocomplete(string $field, string $selected_value, string $output, $where = [], $join = [], $order_by = [], string $group_by = null, int $limit = 0)
+    public function set_autocomplete(string $field, string $selected_value, string $output, $where = [], $join = [], $order_by = [], ?string $group_by = null, int $limit = 0)
     {
         $value = (isset($output['value']) ? $output['value'] : (isset($output[0]) ? $output[0] : null));
         $label = (isset($output['label']) ? $output['label'] : (isset($output[1]) ? $output[1] : null));
@@ -1912,7 +1912,7 @@ class Core extends Controller
      *
      * @return  object|string
      */
-    public function render(string $table = null, string $view = null)
+    public function render(?string $table = null, ?string $view = null)
     {
         // Debugger
         if (in_array($this->_debugging, ['params', 'parameter'])) {
@@ -3505,7 +3505,7 @@ class Core extends Controller
     /**
      * Inserting data to the database
      */
-    public function insert_data(string $table = null, array $data = [])
+    public function insert_data(?string $table = null, array $data = [])
     {
         if ($this->api_client && 'POST' != service('request')->getServer('REQUEST_METHOD')) {
             // Unlink the files
@@ -3600,7 +3600,7 @@ class Core extends Controller
     /**
      * Update data from database
      */
-    public function update_data(string $table = null, array $data = [], array $where = [])
+    public function update_data(?string $table = null, array $data = [], array $where = [])
     {
         if ($this->api_client && 'POST' != service('request')->getServer('REQUEST_METHOD')) {
             // Unlink the files
@@ -3701,7 +3701,7 @@ class Core extends Controller
     /**
      * Delete multiple data from the database
      */
-    public function delete_data(string $table = null, array $where = [], int $limit = 1)
+    public function delete_data(?string $table = null, array $where = [], int $limit = 1)
     {
         if ($this->api_client && 'DELETE' != service('request')->getServer('REQUEST_METHOD')) {
             // Indicate the method is requested through API
@@ -3786,7 +3786,7 @@ class Core extends Controller
     /**
      * Delete multiple data from the database
      */
-    public function delete_batch(string $table = null)
+    public function delete_batch(?string $table = null)
     {
         if ($this->api_client && 'DELETE' != service('request')->getServer('REQUEST_METHOD')) {
             // Indicate the method is requested through API
@@ -3926,7 +3926,7 @@ class Core extends Controller
      *
      * Possible to use comma separated
      */
-    public function select_count(string $column, string $alias = null)
+    public function select_count(string $column, ?string $alias = null)
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -3938,7 +3938,7 @@ class Core extends Controller
      *
      * Possible to use comma separated
      */
-    public function select_sum(string $column, string $alias = null)
+    public function select_sum(string $column, ?string $alias = null)
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -3950,7 +3950,7 @@ class Core extends Controller
      *
      * Possible to use comma separated
      */
-    public function select_min(string $column, string $alias = null)
+    public function select_min(string $column, ?string $alias = null)
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -3962,7 +3962,7 @@ class Core extends Controller
      *
      * Possible to use comma separated
      */
-    public function select_max(string $column, string $alias = null)
+    public function select_max(string $column, ?string $alias = null)
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -3974,7 +3974,7 @@ class Core extends Controller
      *
      * Possible to use comma separated
      */
-    public function select_avg(string $column, string $alias = null)
+    public function select_avg(string $column, ?string $alias = null)
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -5152,7 +5152,7 @@ class Core extends Controller
      * @param   mixed|array $files
      * @param   array $field_list
      */
-    private function _unlink_files($files = [], string $field_name = null, $field_list = [])
+    private function _unlink_files($files = [], ?string $field_name = null, $field_list = [])
     {
         if (! is_array($files)) {
             // Ensure the variable is an array
@@ -5474,7 +5474,7 @@ class Core extends Controller
      * translation within the app. Otherwise, use the user session or fallback
      * to the system default language
      */
-    private function _set_language(string $language_id = null)
+    private function _set_language(?string $language_id = null)
     {
         if (! get_userdata('language_id') || ! $language_id) {
             // Session has no language_id, get locale
