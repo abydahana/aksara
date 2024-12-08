@@ -508,12 +508,17 @@ class Template
         }
 
         foreach ($data as $key => $val) {
-            $slug .= ($slug ? '/' : null) . $key;
+            $external = null;
+            if (stripos($key, '://')) {
+                $external = $key;
+            } else {
+                $slug .= ($slug ? '/' : null) . $key;
+            }
 
             if ($key && $val) {
                 if ($key != $current_slug) {
                     $output[] = [
-                        'url' => base_url($slug, $params),
+                        'url' => $external ?? base_url($slug, $params),
                         'label' => $val,
                         'icon' => ''
                     ];

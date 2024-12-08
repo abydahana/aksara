@@ -76,6 +76,16 @@ class Menus extends \Aksara\Laboratory\Core
             'status' => 'boolean'
         ])
 
+        ->merge_field('menu_label, menu_placement')
+        ->merge_field('group_id, status')
+
+        ->field_size([
+            'menu_label' => 'col-md-6',
+            'menu_placement' => 'col-md-6',
+            'group_id' => 'col-md-6',
+            'status' => 'col-md-6'
+        ])
+
         ->modal_size('modal-lg')
 
         ->order_by('menu_id')

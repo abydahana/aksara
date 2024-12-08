@@ -1567,12 +1567,7 @@ class Core extends Controller
         if ($where) {
             foreach ($where as $key => $val) {
                 // Check if field are wrapped with brackets
-                if (strpos($key, '.') === false && strpos($key, ' ') === false && strpos($key, '(') === false && strpos($key, ')') === false) {
-                    unset($where[$key]);
-
-                    // Assign the field with its table
-                    $key = $relation_table . '.' . $key;
-
+                if (! preg_match('/[.<=>()]/', $key)) {
                     // Add assigned field to where
                     $where[$key] = $val;
                 }
@@ -1637,7 +1632,7 @@ class Core extends Controller
             'primary_key' => $field,
             'relation_table' => $relation_table,
             'relation_key' => $relation_key,
-            'where' => $where,
+            'where' => $where ?? [],
             'join' => $join,
             'order_by' => $order_by,
             'group_by' => $group_by,
@@ -3901,7 +3896,7 @@ class Core extends Controller
             $this->_select[] = $val;
 
             // Find the prefixed table select
-            if (strpos($val, '.') !== false && strpos($val, '(') === false && strpos($val, ')') === false) {
+            if (! preg_match('/[.()]/', $val)) {
                 $val = substr($val, strpos($val, '.') + 1);
             }
 
@@ -4826,7 +4821,7 @@ class Core extends Controller
                     continue;
                 }
 
-                if (strpos($arguments[0], '.') === false && strpos($arguments[0], ' ') === false && strpos($arguments[0], '(') === false && strpos($arguments[0], ')') === false) {
+                if (! preg_match('/[.<=>()]/', $arguments[0])) {
                     // Add table prefix to field
                     $arguments[0] = $this->_table . '.' . $arguments[0];
                 }
@@ -4993,7 +4988,13 @@ class Core extends Controller
 
         // Check if has selected value
         if ($selected) {
-            $relation_key = $params['relation_table'] . '.' . $params['relation_key'];
+            $relation_table = $params['relation_table'];
+
+            if (strpos($relation_table, ' ')) {
+                $relation_table = substr($relation_table, strpos($relation_table, ' ') + 1);
+            }
+
+            $relation_key = $relation_table . '.' . $params['relation_key'];
             $params['where'][$relation_key] = $selected;
             $params['limit'] = 1;
         }
@@ -5017,11 +5018,6 @@ class Core extends Controller
                     // No IN in field
                     $this->model->where($key, $val, false);
                 } else {
-                    // Otherwise, check if field has space or aliases
-                    if (stripos(trim($key), ' ') !== false) {
-                        //$key                        = substr(trim($key), strpos(trim($key), ' ') + 1);
-                    }
-
                     // Add where clause
                     $this->model->where($key, $val);
                 }
@@ -5064,7 +5060,22 @@ class Core extends Controller
             $this->model->group_by($params['group_by']);
         }
 
-        $output = [];
+        if ($ajax) {
+            $output = [
+                [
+                    'id' => 0,
+                    'text' => phrase('None')
+                ]
+            ];
+        } else {
+            $output = [
+                [
+                    'value' => 0,
+                    'label' => phrase('None'),
+                    'selected' => false
+                ]
+            ];
+        }
 
         // Run relation query
         $query = $this->model->get($params['relation_table'], $params['limit'], $params['offset'])->result();

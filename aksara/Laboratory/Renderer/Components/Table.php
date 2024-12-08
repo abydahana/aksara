@@ -35,6 +35,7 @@ class Table
     private $path;
     private $model;
     private $api_client;
+    private $fields = [];
 
     public function __construct($properties = [])
     {
@@ -102,6 +103,11 @@ class Table
                 $placeholder = (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : null);
                 $class = null;
                 $readonly = null;
+
+                // Add field to collections
+                if (! in_array($field, $this->fields)) {
+                    $this->fields[] = $field;
+                }
 
                 // Store primary key as a token
                 if ($primary) {
@@ -431,9 +437,9 @@ class Table
             if ($val['parameter']) {
                 // Replace matches query string value
                 foreach ($val['parameter'] as $_key => $_val) {
-                    if (isset($replacement[$_val])) {
+                    if (isset($replacement[$_val]) || in_array($_val, $this->fields)) {
                         // Do replace
-                        $val['parameter'][$_key] = $replacement[$_val];
+                        $val['parameter'][$_key] = (isset($replacement[$_val]) ? $replacement[$_val] : null);
                     }
                 }
             }
@@ -479,7 +485,15 @@ class Table
         }
 
         foreach ($dropdowns as $key => $val) {
-            $val['parameter'] = array_replace($val['parameter'], array_intersect($val['parameter'], $replacement));
+            if ($val['parameter']) {
+                // Replace matches query string value
+                foreach ($val['parameter'] as $_key => $_val) {
+                    if (isset($replacement[$_val]) || in_array($_val, $this->fields)) {
+                        // Do replace
+                        $val['parameter'][$_key] = (isset($replacement[$_val]) ? $replacement[$_val] : null);
+                    }
+                }
+            }
 
             $dropdowns[$key] = $this->_set_link($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['new_tab'], (isset($val['attribution']) ? $val['attribution'] : null));
 

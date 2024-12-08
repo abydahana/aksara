@@ -177,9 +177,9 @@ class Formatter
                 if (is_array($val['alpha'])) {
                     // Attempt to get query string value from field
                     foreach ($val['alpha'] as $_key => $_val) {
-                        if (isset($replacement[$_val])) {
+                        if (isset($replacement[$_val]) || in_array($_val, array_keys($replacement))) {
                             // Found query string value
-                            $_val = $replacement[$_val];
+                            $_val = (isset($replacement[$_val]) ? $replacement[$_val] : null);
                         } elseif (isset($replacement[$_key])) {
                             // Found query string backup value
                             $_val = $replacement[$_key];
