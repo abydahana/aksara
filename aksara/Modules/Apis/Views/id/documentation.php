@@ -63,21 +63,15 @@
                     <?php if ($permission->groups): ?>
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-3 --title">
-                                    <?= $active; ?>
-                                </h4>
+                                <h4 class="mb-3 --title"><?= $active; ?></h4>
                             </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <?= phrase('Group Name'); ?>
-                                        </th>
-                                        <th>
-                                            <?= phrase('Privileges'); ?>
-                                        </th>
+                                        <th><?= phrase('Group Name'); ?></th>
+                                        <th><?= phrase('Privileges'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,17 +83,13 @@
                                                 </select>
                                             </form>
                                         </td>
-                                        <td>
-                                            <?= (isset($privileges[$selected]) ? $privileges[$selected] : null); ?>
-                                        </td>
+                                        <td><?= (isset($privileges[$selected]) ? $privileges[$selected] : null); ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         
-                        <h5 class="mt-3">
-                            <?= phrase('Request Method'); ?>
-                        </h5>
+                        <h5 class="mt-3"><?= phrase('Request Method'); ?></h5>
                     <?php endif; ?>
                     <?php if ($permission->privileges): ?>
                         <?php foreach ($permission->privileges as $key => $val): ?>
@@ -114,25 +104,15 @@
                                     <code class="text-light"><?= base_url(('index' !== $val ? $active . '/' . $val : $active)); ?></code>
                                 </div>
                             </div>
-                            <h5 class="mt-3">
-                                <?= phrase('Header'); ?>
-                            </h5>
+                            <h5 class="mt-3"><?= phrase('Header'); ?></h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-sm">
                                     <thead>
                                         <tr>
-                                            <th>
-                                            <?= phrase('Field'); ?>
-                                            </th>
-                                            <th>
-                                            <?= phrase('Type'); ?>
-                                            </th>
-                                            <th>
-                                            <?= phrase('Description'); ?>
-                                            </th>
-                                            <th width="100" class="text-center">
-                                            <?= phrase('Required'); ?>
-                                            </th>
+                                            <th><?= phrase('Field'); ?></th>
+                                            <th><?= phrase('Type'); ?></th>
+                                            <th><?= phrase('Description'); ?></th>
+                                            <th width="100" class="text-center"><?= phrase('Required'); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -142,15 +122,11 @@
                                                     X-API-KEY
                                                 </code>
                                             </td>
-                                            <td>
-                                                String
-                                            </td>
-                                            <td>
-                                            <?= phrase('Valid API Key added in API Service'); ?>
-                                            </td>
+                                            <td>String</td>
+                                            <td><?= phrase('Valid API Key added in API Service'); ?></td>
                                             <td class="text-center">
                                                 <span class="badge bg-danger">
-                                                <?= phrase('Required'); ?>
+                                                    <?= phrase('Required'); ?>
                                                 </span>
                                             </td>
                                         </tr>
@@ -158,19 +134,13 @@
                                         <tr>
                                             <td>
                                                 <code>
-                                                    X-ACCESS-TOKEN
+                                                    Authorization
                                                 </code>
                                             </td>
-                                            <td>
-                                                String
-                                            </td>
-                                            <td>
-                                            <?= phrase('The given token from authentication response'); ?>
-                                            </td>
+                                            <td>String</td>
+                                            <td>Diisi dengan <code>username:password</code> yang dikodekan dalam format base64</td>
                                             <td class="text-center">
-                                                <span class="badge bg-danger">
-                                                <?= phrase('Required'); ?>
-                                                </span>
+                                                <span class="badge bg-danger"><?= phrase('Required'); ?></span>
                                             </td>
                                         </tr>
                                         <?php endif; ?>
@@ -181,25 +151,15 @@
                                 <div class="spinner-border" role="status"></div>
                             </div>
                             <div class="--query-<?= $val; ?> d-none">
-                                <h5 class="mt-3">
-                                <?= phrase('Query String'); ?>
-                                </h5>
+                                <h5 class="mt-3"><?= phrase('Query String'); ?></h5>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-sm">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                <?= phrase('Field'); ?>
-                                                </th>
-                                                <th>
-                                                <?= phrase('Type'); ?>
-                                                </th>
-                                                <th>
-                                                <?= phrase('Description'); ?>
-                                                </th>
-                                                <th width="100" class="text-center">
-                                                <?= phrase('Required'); ?>
-                                                </th>
+                                                <th><?= phrase('Field'); ?></th>
+                                                <th><?= phrase('Type'); ?></th>
+                                                <th><?= phrase('Description'); ?></th>
+                                                <th width="100" class="text-center"><?= phrase('Required'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -208,45 +168,30 @@
                                 </div>
                             </div>
                             <div class="--parameter-<?= $val; ?> d-none">
-                                <h5 class="mt-3">
-                                <?= phrase('Parameter'); ?>
-                                </h5>
+                                <h5 class="mt-3"><?= phrase('Parameter'); ?></h5>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-sm">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                <?= phrase('Field'); ?>
-                                                </th>
-                                                <th>
-                                                <?= phrase('Type'); ?>
-                                                </th>
-                                                <th>
-                                                <?= phrase('Max Length'); ?>
-                                                </th>
-                                                <th>
-                                                <?= phrase('Description'); ?>
-                                                </th>
-                                                <th width="100" class="text-center">
-                                                <?= phrase('Required'); ?>
-                                                </th>
+                                                <th><?= phrase('Field'); ?></th>
+                                                <th><?= phrase('Type'); ?></th>
+                                                <th><?= phrase('Max Length'); ?></th>
+                                                <th><?= phrase('Description'); ?></th>
+                                                <th width="100" class="text-center"><?= phrase('Required'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <!-- Filled from XHR response -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             <div class="--response-success-<?= $val; ?> d-none">
-                                <h5 class="mt-3">
-                                <?= phrase('Success Response'); ?>
-                                </h5>
+                                <h5 class="mt-3"><?= phrase('Success Response'); ?></h5>
                                 <pre class="language-javascript rounded mt-0"><code>{}</code></pre>
                             </div>
                             <div class="--response-error-<?= $val; ?> d-none">
-                                <h5 class="mt-3">
-                                <?= phrase('Error Response'); ?>
-                                </h5>
+                                <h5 class="mt-3"><?= phrase('Error Response'); ?></h5>
                                 <pre class="language-javascript rounded mt-0"><code>{}</code></pre>
                             </div>
                             <br />
@@ -280,18 +225,10 @@
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <?= phrase('Field'); ?>
-                                    </th>
-                                    <th>
-                                        <?= phrase('Type'); ?>
-                                    </th>
-                                    <th>
-                                        <?= phrase('Description'); ?>
-                                    </th>
-                                    <th width="100" class="text-center">
-                                        <?= phrase('Required'); ?>
-                                    </th>
+                                    <th><?= phrase('Field'); ?></th>
+                                    <th><?= phrase('Type'); ?></th>
+                                    <th><?= phrase('Description'); ?></th>
+                                    <th width="100" class="text-center"><?= phrase('Required'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -301,12 +238,8 @@
                                             X-API-KEY
                                         </code>
                                     </td>
-                                    <td>
-                                        string
-                                    </td>
-                                    <td>
-                                        <?= phrase('Valid API Key added in API Service'); ?>
-                                    </td>
+                                    <td>String</td>
+                                    <td><?= phrase('Valid API Key added in API Service'); ?></td>
                                     <td class="text-center">
                                         <span class="badge bg-danger">
                                             <?= phrase('Required'); ?>
@@ -317,42 +250,30 @@
                         </table>
                     </div>
                     <p>
-                        Untuk modul yang memerlukan izin sebagaimana ditentukan untuk kelompok pengguna tertentu, tambahkan parameter <code>X-ACCESS-TOKEN</code> ke dalam HEADER dan isi nilai dengan token yang diperoleh dari permintaan otentikasi (log-in).
+                        Untuk modul yang memerlukan izin sebagaimana ditentukan untuk kelompok pengguna tertentu, tambahkan parameter <code>Authorization</code> ke dalam HEADER dan isi nilai dengan nama pengguna dan kata sandi yang dienkripsi ke dalam format base64.
                     </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <?= phrase('Field'); ?>
-                                    </th>
-                                    <th>
-                                        <?= phrase('Type'); ?>
-                                    </th>
-                                    <th>
-                                    <?= phrase('Description'); ?>
-                                    </th>
-                                    <th width="100" class="text-center">
-                                    <?= phrase('Required'); ?>
-                                    </th>
+                                    <th><?= phrase('Field'); ?></th>
+                                    <th><?= phrase('Type'); ?></th>
+                                    <th><?= phrase('Description'); ?></th>
+                                    <th width="100" class="text-center"><?= phrase('Required'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
                                         <code>
-                                            X-ACCESS-TOKEN
+                                            Authorization
                                         </code>
                                     </td>
-                                    <td>
-                                        string
-                                    </td>
-                                    <td>
-                                    <?= phrase('The given token from authentication response'); ?>
-                                    </td>
+                                    <td>String</td>
+                                    <td>Diisi dengan <code>username:password</code> yang dikodekan dalam format base64</td>
                                     <td class="text-center">
                                         <span class="badge bg-danger">
-                                        <?= phrase('Required'); ?>
+                                            <?= phrase('Required'); ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -360,7 +281,12 @@
                         </table>
                     </div>
                     <p>
-                        Proses otentikasi dapat POST ke <code><?= base_url('auth'); ?></code> dengan menambahkan <code>X-API-KEY</code> pada HEADER, termasuk data formulir (form-data) untuk mengirimkan <code>nama pengguna</code> dan <code>kata sandi</code>.
+                        Contoh payload:
+                        <br />
+                        <code>Authorization: Basic</code> <code class="text-success">YWRtaW46YWRtaW4xMjM=</code>
+                    </p>
+                    <p>
+                        <code class="text-success">YWRtaW46YWRtaW4xMjM=</code> merupakan enkripsi base64 dari <code>admin:admin123</code>
                     </p>
                     <hr />
                     <h4>
@@ -373,15 +299,9 @@
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <?= phrase('Key'); ?>
-                                    </th>
-                                    <th>
-                                        <?= phrase('Type'); ?>
-                                    </th>
-                                    <th>
-                                        <?= phrase('Description'); ?>
-                                    </th>
+                                    <th><?= phrase('Key'); ?></th>
+                                    <th><?= phrase('Type'); ?></th>
+                                    <th><?= phrase('Description'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -391,12 +311,8 @@
                                             limit
                                         </code>
                                     </td>
-                                    <td>
-                                        int
-                                    </td>
-                                    <td>
-                                        Menerapkan jumlah data yang dihasilkan
-                                    </td>
+                                    <td>int</td>
+                                    <td>Menerapkan jumlah data yang dihasilkan</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -404,12 +320,8 @@
                                             offset
                                         </code>
                                     </td>
-                                    <td>
-                                        int
-                                    </td>
-                                    <td>
-                                        Menerapkan di baris ke berapa pengambilan data di mulai
-                                    </td>
+                                    <td>int</td>
+                                    <td>Menerapkan di baris ke berapa pengambilan data di mulai</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -417,12 +329,8 @@
                                             order
                                         </code>
                                     </td>
-                                    <td>
-                                        string
-                                    </td>
-                                    <td>
-                                        Pengurutan berdasarkan nama kolom
-                                    </td>
+                                    <td>string</td>
+                                    <td>Pengurutan berdasarkan nama kolom</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -430,12 +338,8 @@
                                             sort
                                         </code>
                                     </td>
-                                    <td>
-                                        string <code>ASC|DESC</code>
-                                    </td>
-                                    <td>
-                                        Pengurutan berdasarkan abjad, angka atau waktu
-                                    </td>
+                                    <td>string <code>ASC|DESC</code></td>
+                                    <td>Pengurutan berdasarkan abjad, angka atau waktu</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -443,12 +347,8 @@
                                             q
                                         </code>
                                     </td>
-                                    <td>
-                                        string | number | int
-                                    </td>
-                                    <td>
-                                        Kata kunci untuk menerapkan pencarian
-                                    </td>
+                                    <td>string | number | int</td>
+                                    <td>Kata kunci untuk menerapkan pencarian</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -456,12 +356,8 @@
                                             column
                                         </code>
                                     </td>
-                                    <td>
-                                        string
-                                    </td>
-                                    <td>
-                                        Kolom yang dilakukan pencarian
-                                    </td>
+                                    <td>string</td>
+                                    <td>Kolom yang dilakukan pencarian</td>
                                 </tr>
                             </tbody>
                         </table>
