@@ -1877,6 +1877,11 @@ class Core extends Controller
                 }
 
                 if ($maxlength) {
+                    if (in_array($type, ['money', 'percent'])) {
+                        // Add extra dot to maxlength
+                        $maxlength = ($maxlength + 1);
+                    }
+
                     $validation[] = 'max_length[' . $maxlength . ']';
                 }
 
