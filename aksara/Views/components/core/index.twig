@@ -38,18 +38,16 @@
                 {% for key, row in results.table_data %}
                     {% set unique_reference = '' %}
                     {% for reference in results.item_reference %}
-                        {% if row.field_data[reference].value is not null %}
-                            {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
-                            {% if unique_reference not in references %}
-                                <tr>
-                                    <td colspan="2">&nbsp;</td>
-                                    <td colspan="{{ colspan }}">
-                                        <b class="text-primary">{{ row.field_data[reference].value }}</b>
-                                    </td>
-                                </tr>
-                        
-                                {% set references = references | merge([unique_reference]) %}
-                            {% endif %}
+                        {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
+                        {% if unique_reference not in references %}
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                                <td colspan="{{ colspan }}">
+                                    <b class="text-primary">{{ row.field_data[reference].value }}</b>
+                                </td>
+                            </tr>
+                    
+                            {% set references = references | merge([unique_reference]) %}
                         {% endif %}
                     {% endfor %}
                     <tr id="row_{{ key }}">
