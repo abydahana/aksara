@@ -1050,9 +1050,9 @@ class Template
                 [
                     'id' => 0,
                     'label' => 'Aksara ' . aksara('build_version'),
-                    'slug' => '---',
+                    'slug' => 'https://aksaracms.com',
                     'icon' => 'mdi mdi-blank',
-                    'class' => 'text-sm',
+                    'class' => 'text-sm fw-bold',
                     'translate' => false
                 ]
             ];
