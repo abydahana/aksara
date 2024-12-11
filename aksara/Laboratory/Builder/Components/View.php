@@ -403,7 +403,7 @@ class View
         $component = <<<EOF
         <div>
             <a href="{{ content }}" class="--xhr" target="{{ target }}">
-                <b> {{ value }} </b>
+                <b> {{ value }}<i class="mdi mdi-launch"></i> </b>
             </a>
         </div>
         EOF;
