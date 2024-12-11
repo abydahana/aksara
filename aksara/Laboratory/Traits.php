@@ -192,6 +192,8 @@ trait Traits
 
     private $_set_validation = [];
 
+    private $_sortable;
+
     private $_table;
 
     private $_total;

@@ -618,6 +618,20 @@ class Core extends Controller
     }
 
     /**
+     * Allow table sort
+     */
+    public function sortable(?string $primary_key, ?string $order_key)
+    {
+        $this->_sortable = [
+            'sort_url' => current_page(),
+            'primary_key' => $primary_key,
+            'order_key' => $order_key
+        ];
+
+        return $this;
+    }
+
+    /**
      * Adding the toolbar action button
      *
      * @param   array|string $url
@@ -2526,9 +2540,12 @@ class Core extends Controller
                 return make_json([
                     'suggestions' => ($suggestions ? $suggestions : null)
                 ]);
-            } elseif (service('request')->isAJAX() && service('request')->getPost('method') == 'ajax_select' && isset($this->_set_relation[service('request')->getPost('source')])) {
+            } elseif (service('request')->isAJAX() && 'ajax_select' == service('request')->getPost('method') && isset($this->_set_relation[service('request')->getPost('source')])) {
                 // Check if data is requested through server side select (jQuery plugin)
                 return $this->_get_relation($this->_set_relation[service('request')->getPost('source')], null, true);
+            } elseif (service('request')->isAJAX() && 'sort_table' == service('request')->getPost('method')) {
+                // Sort table
+                return $this->_sort_table(service('request')->getPost('ordered_id'));
             }
 
             if (service('request')->getGet('sort') && 'desc' == strtolower(service('request')->getGet('sort'))) {
@@ -2900,7 +2917,7 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation', '_set_upload_path', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
+            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation', '_set_upload_path', '_sortable', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
 
             // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
@@ -5160,6 +5177,54 @@ class Core extends Controller
         }
 
         return $output;
+    }
+
+    /**
+     * Sort table
+     */
+    private function _sort_table($ordered_id = [])
+    {
+        if (! $this->_sortable || ! is_array($ordered_id)) {
+            return make_json([
+                'status' => 400,
+                'message' => phrase('The order format is invalid.')
+            ]);
+        }
+
+        // Get original order
+        $query = $this->model->select($this->_sortable['primary_key'])
+        ->select($this->_sortable['order_key'])
+        ->where_in($this->_sortable['primary_key'], $ordered_id)
+        ->order_by($this->_sortable['order_key'], 'ASC')
+        ->get_where(
+            $this->_table,
+            []
+        )
+        ->result_array();
+
+        // Create new order
+        $new_order = [];
+        foreach ($query as $key => $val) {
+            $new_order[] = $val[$this->_sortable['order_key']];
+        }
+
+        foreach ($ordered_id as $key => $val) {
+            // Update order
+            $this->model->update(
+                $this->_table,
+                [
+                    $this->_sortable['order_key'] => $new_order[$key]
+                ],
+                [
+                    $this->_sortable['primary_key'] => $val
+                ]
+            );
+        }
+
+        return make_json([
+            'status' => 200,
+            'message' => phrase('The data was sorted successfully.')
+        ]);
     }
 
     /**
