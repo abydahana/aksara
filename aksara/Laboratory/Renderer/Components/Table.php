@@ -376,7 +376,8 @@ class Table
                 'action' => current_page(null, ['per_page' => null]),
                 'buttons' => $buttons,
                 'filters' => $filters
-            ]
+            ],
+            'sortable' => $this->_sortable
         ];
 
         if ($this->_grid_view) {

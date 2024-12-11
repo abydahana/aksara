@@ -62,7 +62,7 @@ class Core
                             {% endfor %}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody {{ results.sortable ? 'role=sortable data-url=' ~ results.sortable.sort_url : 'role="tbody"' }}>
                         {% set references = [] %}
                         {% for key, row in results.table_data %}
                             {% set unique_reference = '' %}
@@ -81,7 +81,7 @@ class Core
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
-                            <tr id="row_{{ key }}">
+                            <tr id="row_{{ key }}" data-id="{{ row.primary[results.sortable.primary_key] }}">
                                 <td>
                                     {% if row.deleting %}
                                         <div class="mb-0">

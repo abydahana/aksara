@@ -33,24 +33,26 @@
                     {% endfor %}
                 </tr>
             </thead>
-            <tbody>
+            <tbody {{ results.sortable ? 'role=sortable data-url=' ~ results.sortable.sort_url : 'role="tbody"' }}>
                 {% set references = [] %}
                 {% for key, row in results.table_data %}
                     {% set unique_reference = '' %}
                     {% for reference in results.item_reference %}
-                        {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
-                        {% if unique_reference not in references %}
-                            <tr>
-                                <td colspan="2">&nbsp;</td>
-                                <td colspan="{{ colspan }}">
-                                    <b class="text-primary">{{ row.field_data[reference].value }}</b>
-                                </td>
-                            </tr>
-                    
-                            {% set references = references | merge([unique_reference]) %}
+                        {% if row.field_data[reference].value is not null %}
+                            {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
+                            {% if unique_reference not in references %}
+                                <tr>
+                                    <td colspan="2">&nbsp;</td>
+                                    <td colspan="{{ colspan }}">
+                                        <b class="text-primary">{{ row.field_data[reference].value }}</b>
+                                    </td>
+                                </tr>
+                        
+                                {% set references = references | merge([unique_reference]) %}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
-                    <tr id="row_{{ key }}">
+                    <tr id="row_{{ key }}" data-id="{{ row.primary[results.sortable.primary_key] }}">
                         <td>
                             {% if row.deleting %}
                                 <div class="mb-0">
