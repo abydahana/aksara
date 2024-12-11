@@ -431,6 +431,9 @@ blink {
 }
 
 @media (max-width: 575.98px) {
+  .navbar-brand {
+    max-width: 80%
+  }
   .card a>img.rounded.w-100 {
     max-height: 200px;
     object-fit: cover;
