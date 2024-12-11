@@ -387,7 +387,7 @@ class Table
         $component = <<<EOF
         <span>
             <a href="{{ content }}" class="--xhr" target="{{ target }}">
-                <b> {{ truncate(value, 32) }} </b>
+                <b> {{ truncate(value, 32) }}<i class="mdi mdi-launch"></i> </b>
             </a>
         </span>
         EOF;
