@@ -27,7 +27,7 @@ class View
     public function text($type = null)
     {
         $component = <<<EOF
-        <div>
+        <div class="text-break-word">
             {{ content | raw }}
         </div>
         EOF;
@@ -41,7 +41,7 @@ class View
     public function textarea($type = null)
     {
         $component = <<<EOF
-        <div>
+        <div class="text-break-word">
             {{ content | raw }}
         </div>
         EOF;
@@ -285,7 +285,7 @@ class View
     public function email($type = null)
     {
         $component = <<<EOF
-        <div>
+        <div class="text-break-word">
             {{ content | raw }}
         </div>
         EOF;
@@ -327,7 +327,7 @@ class View
     public function file($type = null)
     {
         $component = <<<EOF
-        <div>
+        <div class="text-break-word">
             {{ content | raw }}
         </div>
         EOF;
