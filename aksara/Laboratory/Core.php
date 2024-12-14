@@ -1825,32 +1825,22 @@ class Core extends Controller
                 } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
                     try {
                         // Get enum list
-                        $enum_query = $this->model->query('
-                            SELECT
-                                COLUMN_TYPE 
-                            FROM
-                                INFORMATION_SCHEMA.COLUMNS 
-                            WHERE
-                                TABLE_NAME = ? 
-                                AND COLUMN_NAME = ? 
-                                AND TABLE_SCHEMA = DATABASE()
-                        ',
-                        [
-                            'survey',
+                        $enum_query = $this->model->query('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND TABLE_SCHEMA = DATABASE()', [
+                            $this->_table,
                             $field_data[$field]->name
                         ])
                         ->row('COLUMN_TYPE');
-                        
+
                         // Extract enum list
                         $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
-                        
+
                         if ($enum_list) {
                             $options = [];
-                            
+
                             foreach ($enum_list as $_key => $_val) {
                                 $options[$_val] = $_val;
                             }
-                            
+
                             $this->_set_field[$field]['select'] = [
                                 'parameter' => $options,
                                 'alpha' => null,
