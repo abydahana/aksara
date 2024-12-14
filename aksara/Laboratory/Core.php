@@ -1822,6 +1822,47 @@ class Core extends Controller
                 } elseif (in_array($type, ['time'])) {
                     // Field type time (H:i:s)
                     $type = 'time';
+                } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
+                    try {
+                        // Get enum list
+                        $enum_query = $this->model->query('
+                            SELECT
+                                COLUMN_TYPE 
+                            FROM
+                                INFORMATION_SCHEMA.COLUMNS 
+                            WHERE
+                                TABLE_NAME = ? 
+                                AND COLUMN_NAME = ? 
+                                AND TABLE_SCHEMA = DATABASE()
+                        ',
+                        [
+                            'survey',
+                            $field_data[$field]->name
+                        ])
+                        ->row('COLUMN_TYPE');
+                        
+                        // Extract enum list
+                        $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
+                        
+                        if ($enum_list) {
+                            $options = [];
+                            
+                            foreach ($enum_list as $_key => $_val) {
+                                $options[$_val] = $_val;
+                            }
+                            
+                            $this->_set_field[$field]['select'] = [
+                                'parameter' => $options,
+                                'alpha' => null,
+                                'beta' => null,
+                                'charlie' => null,
+                                'delta' => null
+                            ];
+                        }
+                    } catch (\Throwable $e) {
+                        // Safe abstraction
+                        exit($e->getMessage());
+                    }
                 } else {
                     // Fallback field type
                     $type = 'text';
@@ -1872,7 +1913,7 @@ class Core extends Controller
                     $content = $this->_get_relation($this->_set_relation[$field], $value);
                 }
 
-                if ($content && array_intersect(['number', 'numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
+                if ($content && array_intersect(['numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
                     // Get decimal fractional
                     $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
 
@@ -5083,12 +5124,16 @@ class Core extends Controller
         }
 
         if ($ajax) {
-            $output = [
-                [
-                    'id' => 0,
-                    'text' => phrase('None')
-                ]
-            ];
+            if (service('request')->getPost('page') <= 1) {
+                $output = [
+                    [
+                        'id' => 0,
+                        'text' => phrase('None')
+                    ]
+                ];
+            } else {
+                $output = [];
+            }
         } else {
             $output = [
                 [
