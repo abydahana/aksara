@@ -238,6 +238,14 @@ class Formatter
                 $month = date('F', $timestamp);
                 $month = phrase($month);
                 $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
+            } elseif (in_array($key, ['sprintf'])) {
+                $parameter = $val['parameter'];
+                $extra_params = $val['alpha'];
+                $value = sprintf(($extra_params ? $extra_params : '%04d'), $value);
+
+                if ($parameter && ! is_array($parameter)) {
+                    $value = str_replace('{1}', $value, $parameter);
+                }
             }
         }
 
