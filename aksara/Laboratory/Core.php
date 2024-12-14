@@ -2261,7 +2261,7 @@ class Core extends Controller
                     $this->_prepare('offset', [$this->_offset]);
                 }
 
-                if (($this->_searchable && ! $this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))) {
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && ($this->_searchable && ! $this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))) {
                     $group_start = false;
 
                     if ('autocomplete' != service('request')->getPost('method')) {
