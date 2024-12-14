@@ -205,8 +205,9 @@ class Form
 
                 if (array_intersect(['last_insert'], array_keys($type))) {
                     if (! isset($this->_default_value[$field])) {
-                        $last_insert_params = array_search('last_insert', $type);
-                        $type_key = (isset($parameter[$last_insert_params]) && $parameter[$last_insert_params] ? array_search('{1}', explode('/', $parameter[$last_insert_params])) : null);
+                        $parameter = $type['last_insert']['parameter'];
+                        $extra_params = $type['last_insert']['alpha'];
+                        $type_key = array_search('{1}', explode('/', $parameter));
                         $where = [];
 
                         if ($this->_where) {
@@ -224,8 +225,8 @@ class Form
                         }
 
                         if (1 == 1) { // Skip
-                            if (isset($parameter[$last_insert_params]) && is_array($parameter[$last_insert_params])) {
-                                $this->model->where($parameter[$last_insert_params]);
+                            if ($extra_params) {
+                                $this->model->where($extra_params);
                             }
 
                             $last_insert = $this->model->select((in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
@@ -244,11 +245,11 @@ class Form
                         $value = ($last_insert > 0 ? $last_insert : 1);
 
                         if (array_intersect(['sprintf'], array_keys($type))) {
-                            $value = sprintf((isset($extra_params[$last_insert_params]) && is_string($extra_params[$last_insert_params]) ? $extra_params[$last_insert_params] : '%04d'), $value);
+                            $value = sprintf(($extra_params ? $extra_params : '%04d'), $value);
                         }
 
-                        if (isset($parameter[$last_insert_params]) && $parameter[$last_insert_params]) {
-                            $value = str_replace('{1}', $value, $parameter[$last_insert_params]);
+                        if ($parameter && ! is_array($parameter)) {
+                            $value = str_replace('{1}', $value, $parameter);
                         }
                     }
                 }
@@ -282,7 +283,13 @@ class Form
                 }
 
                 if (array_intersect(['sprintf'], array_keys($type))) {
-                    $value = str_replace('{1}', sprintf((isset($extra_params[$last_insert_params]) && is_string($extra_params[$last_insert_params]) ? $extra_params[$last_insert_params] : '%04d'), $value), $parameter[$last_insert_params]);
+                    $parameter = $type['sprintf']['parameter'];
+                    $extra_params = $type['sprintf']['alpha'];
+                    $value = sprintf(($extra_params ? $extra_params : '%04d'), $value);
+
+                    if ($parameter && ! is_array($parameter)) {
+                        $value = str_replace('{1}', $value, $parameter);
+                    }
                 }
             }
 
