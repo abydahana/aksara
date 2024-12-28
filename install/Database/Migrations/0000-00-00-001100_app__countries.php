@@ -39,7 +39,7 @@ class AppCountries extends Migration
             ],
             'country' => [
                 'type' => 'varchar',
-                'constraint' => 32,
+                'constraint' => 64,
                 'null' => false
             ],
             'status' => [
