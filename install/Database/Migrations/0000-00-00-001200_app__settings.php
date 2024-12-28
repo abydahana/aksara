@@ -213,19 +213,23 @@ class AppSettings extends Migration
             ],
             'smtp_hostname' => [
                 'type' => 'varchar',
-                'constraint' => 255
+                'constraint' => 255,
+                'default' => ''
             ],
             'smtp_port' => [
                 'type' => 'int',
-                'constraint' => 6
+                'constraint' => 6,
+                'default' => '0'
             ],
             'smtp_username' => [
                 'type' => 'varchar',
-                'constraint' => 255
+                'constraint' => 255,
+                'default' => ''
             ],
             'smtp_password' => [
                 'type' => 'varchar',
-                'constraint' => 255
+                'constraint' => 255,
+                'default' => ''
             ]
         ]);
 
