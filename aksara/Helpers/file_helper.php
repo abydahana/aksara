@@ -109,6 +109,72 @@ if (! function_exists('get_image')) {
     }
 }
 
+if (! function_exists('resize_image')) {
+    /**
+     * Image resize
+     *
+     * @param mixed|null $path
+     * @param mixed|null $file
+     */
+    function resize_image($source = null)
+    {
+        if (file_exists($source)) {
+            $path = dirname($source);
+            $filename = basename($source);
+
+            try {
+                if (! is_dir($path . '/thumbs')) {
+                    // Directory is not exists, create one
+                    mkdir($path . '/thumbs', 0755, true);
+                    copy(UPLOAD_PATH . '/placeholder_thumb.png', $path . '/thumbs/placeholder.png');
+                }
+
+                if (! is_dir($path . '/icons')) {
+                    // Directory is not exists, create one
+                    mkdir($path . '/icons', 0755, true);
+                    copy(UPLOAD_PATH . '/placeholder_icon.png', $path . '/icons/placeholder.png');
+                }
+                
+                // Uploaded file is image format, prepare image manipulation
+                $imageinfo = getimagesize($source);
+                $source = new \CodeIgniter\Files\File($source);
+                $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+                $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+                $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+                $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+                
+                // Load image manipulation library
+                $image = \Config\Services::image('gd');
+    
+                if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+                    // Resize image and move to upload directory
+                    $image->withFile($source)
+                        ->resize($original_dimension, $original_dimension, true, $master_dimension)
+                        ->save($path . '/' . $filename);
+                }
+
+                // Create thumbnail
+                if ($image->withFile($source)->resize($thumbnail_dimension, $thumbnail_dimension, true, $master_dimension)->save($path . '/thumbs/' . $filename)) {
+                    // Crop image after resized
+                    $image->withFile($path . '/thumbs/' . $filename)
+                        ->fit($thumbnail_dimension, $thumbnail_dimension, 'center')
+                        ->save($path . '/thumbs/' . $filename);
+                }
+
+                // Create icon
+                if ($image->withFile($source)->resize($icon_dimension, $icon_dimension, true, $master_dimension)->save($path . '/icons/' . $filename)) {
+                    // Crop image after resized
+                    $image->withFile($path . '/icons/' . $filename)
+                        ->fit($icon_dimension, $icon_dimension, 'center')
+                        ->save($path . '/icons/' . $filename);
+                }
+            } catch (\Throwable $e) {
+                // Safe abstraction
+            }
+        }
+    }
+}
+
 if (! function_exists('get_filesize')) {
     /**
      * Get file size
