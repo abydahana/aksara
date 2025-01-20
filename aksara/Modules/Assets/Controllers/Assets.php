@@ -36,6 +36,12 @@ class Assets extends \Aksara\Laboratory\Core
      */
     public function index()
     {
+        if (file_exists(FCPATH . uri_string())) {
+            helper('download');
+
+            return force_download(basename(uri_string()), file_get_contents(FCPATH . uri_string()), true);
+        }
+
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
     }
 
@@ -52,7 +58,7 @@ class Assets extends \Aksara\Laboratory\Core
         if (in_array($extension, ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'bmp', 'avif', 'webp', 'mp3', 'mp4', 'avi']) && file_exists('../' . $path)) {
             helper('download');
 
-            return force_download($path, file_get_contents('../' . $path), true);
+            return force_download(basename($path), file_get_contents('../' . $path), true);
         }
     }
 
