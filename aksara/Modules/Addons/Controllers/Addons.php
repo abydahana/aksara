@@ -94,7 +94,7 @@ class Addons extends \Aksara\Laboratory\Core
             $package = json_decode($response->getBody());
 
             if ($response->getStatusCode() !== 200) {
-                return throw_exception(403, $response->getReason(), current_page('../'));
+                return throw_exception(403, $response->getReasonPhrase(), current_page('../'));
             }
         }
 
@@ -158,7 +158,7 @@ class Addons extends \Aksara\Laboratory\Core
             $package = json_decode($response->getBody());
 
             if ($response->getStatusCode() !== 200) {
-                return throw_exception(403, $response->getReason(), go_to());
+                return throw_exception(403, $response->getReasonPhrase(), go_to());
             }
 
             if ('theme' == service('request')->getGet('type')) {
@@ -216,7 +216,7 @@ class Addons extends \Aksara\Laboratory\Core
                         }
                     } catch (\Throwable $e) {
                         // Action error, throw exception
-                        return throw_exception(403, $response->getReason(), go_to());
+                        return throw_exception(403, $response->getReasonPhrase(), go_to());
                     }
                 }
 
@@ -608,7 +608,7 @@ class Addons extends \Aksara\Laboratory\Core
 
         if ($response->getStatusCode() !== 200) {
             return make_json([
-                'error' => $response->getReason()
+                'error' => $response->getReasonPhrase()
             ]);
         }
 

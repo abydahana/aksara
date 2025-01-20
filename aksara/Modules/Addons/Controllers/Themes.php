@@ -124,12 +124,12 @@ class Themes extends \Aksara\Laboratory\Core
         $upstream = json_decode($response->getBody());
 
         if ($response->getStatusCode() !== 200) {
-            return throw_exception(403, $response->getReason(), current_page('../', ['item' => null]));
+            return throw_exception(403, $response->getReasonPhrase(), current_page('../', ['item' => null]));
         } elseif (isset($upstream->version) && $upstream->version > $package->version) {
             $html = '
                 <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'theme']) . '" method="POST" class="--validate-form">
                     <div class="text-center">
-                        ' . phrase('A new version of the selected theme is available') . '
+                        ' . phrase('A new version of the selected theme is available.') . '
                         <br />
                         <h4>
                             ' . $upstream->name . '
