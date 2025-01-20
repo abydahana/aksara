@@ -267,6 +267,11 @@ class Core extends Controller
         // This mean the permission is set as true
         $this->_set_permission = true;
 
+        if (0 === $permissive_group) {
+            // Allow everyone to do create, update and delete
+            return $this;
+        }
+
         // Check if permissive user is set
         if ($permissive_group && ! is_array($permissive_group)) {
             // Safe check for array
@@ -286,6 +291,8 @@ class Core extends Controller
             // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
         }
+
+        return $this;
     }
 
     /**
