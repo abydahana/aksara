@@ -211,7 +211,7 @@ class Auth extends \Aksara\Laboratory\Core
                         $redirect = service('request')->getGet('redirect');
 
                         if (! $redirect && stripos($referrer, base_url()) !== false) {
-                            $redirect = str_replace(base_url(), '', $referrer);
+                            $redirect = str_replace([base_url(), 'index.php'], '', $referrer);
                         }
 
                         // Requested through browser
