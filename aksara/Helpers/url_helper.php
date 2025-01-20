@@ -81,7 +81,7 @@ if (! function_exists('base_url')) {
 
         assert($currentURI instanceof SiteURI);
 
-        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi' || file_exists(FCPATH . $uri)) {
+        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || ($uri && file_exists(FCPATH . $uri))) {
             return $currentURI->baseUrl(($uri ? rtrim($uri, '/') : ''));
         }
 
