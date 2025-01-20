@@ -24,4 +24,6 @@ $routes->group('assets', ['namespace' => '\Aksara\Modules\Assets\Controllers'], 
     $routes->get('svg/linestring.svg', 'Svg::linestring');
     $routes->get('svg/folder.svg', 'Svg::folder');
     $routes->get('svg/back_arrow.svg', 'Svg::back_arrow');
+
+    $routes->get('(:any)', 'Assets::index');
 });
