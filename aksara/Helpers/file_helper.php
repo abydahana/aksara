@@ -113,8 +113,7 @@ if (! function_exists('resize_image')) {
     /**
      * Image resize
      *
-     * @param mixed|null $path
-     * @param mixed|null $file
+     * @param null|mixed $source
      */
     function resize_image($source = null)
     {
@@ -134,7 +133,7 @@ if (! function_exists('resize_image')) {
                     mkdir($path . '/icons', 0755, true);
                     copy(UPLOAD_PATH . '/placeholder_icon.png', $path . '/icons/placeholder.png');
                 }
-                
+
                 // Uploaded file is image format, prepare image manipulation
                 $imageinfo = getimagesize($source);
                 $source = new \CodeIgniter\Files\File($source);
@@ -142,10 +141,10 @@ if (! function_exists('resize_image')) {
                 $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
                 $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
                 $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
-                
+
                 // Load image manipulation library
                 $image = \Config\Services::image('gd');
-    
+
                 if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
                     // Resize image and move to upload directory
                     $image->withFile($source)
