@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= get_userdata('language') ?? 'en'; ?>"<?= (in_array(get_userdata('language'), ['ar']) ? ' dir="rtl"' : null); ?>>
+<html lang="<?= get_userdata('language') ?? 'en'; ?>"<?= (in_array(get_userdata('language'), ['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'ur', 'yi']) ? ' dir="rtl"' : null); ?>>
     <head>
         <title><?= truncate($meta->title) . ' | ' . get_setting('app_name'); ?></title>
         <meta charset="UTF-8" />
