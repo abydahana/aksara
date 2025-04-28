@@ -19,47 +19,23 @@ namespace Aksara\Modules\Assets\Controllers;
 
 class Assets extends \Aksara\Laboratory\Core
 {
-    private $_rtl = false;
-
     public function __construct()
     {
         parent::__construct();
-
-        if (get_userdata('language') && in_array(get_userdata('language'), ['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'ur', 'yi'])) {
-            // Set RTL
-            $this->_rtl = true;
-        }
     }
 
     /**
-     * Mimic not found
+     * Get file
      */
     public function index()
     {
-        if (file_exists(FCPATH . uri_string())) {
+        if (is_file(FCPATH . uri_string())) {
             helper('download');
 
             return force_download(basename(uri_string()), file_get_contents(FCPATH . uri_string()), true);
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
-    }
-
-    /**
-     * Get file inside the theme
-     */
-    public function themes()
-    {
-        $extension = strtolower(pathinfo(service('uri')->getPath(), PATHINFO_EXTENSION));
-
-        // Sanitize input to prevent hack
-        $path = str_replace(['../', './'], '', service('uri')->getPath());
-
-        if (in_array($extension, ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'bmp', 'avif', 'webp', 'mp3', 'mp4', 'avi']) && file_exists('../' . $path)) {
-            helper('download');
-
-            return force_download(basename($path), file_get_contents('../' . $path), true);
-        }
     }
 
     /**
