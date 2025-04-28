@@ -49,7 +49,7 @@ class Database extends Config
         'DBPrefix' => '',
         'pConnect' => false,
         'DBDebug' => true,
-        'charset' => 'utf8mb4',
+        'charset' => ('Postgre' === DB_DRIVER ? 'utf8' : ('OCI8' === DB_DRIVER ? 'AL32UTF8' : 'utf8mb4')),
         'DBCollat' => 'utf8mb4_general_ci',
         'swapPre' => '',
         'encrypt' => false,
