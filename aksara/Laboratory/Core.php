@@ -3495,7 +3495,11 @@ class Core extends Controller
                     if (! array_intersect(['slug', 'password', 'encryption', 'image', 'images', 'file', 'files'], $type)) {
                         // Use empty value instead of NULL when no data is submitted
                         if (! isset($prepare[$field])) {
-                            $prepare[$field] = '';
+                            if (stripos($value['default'], 'null') !== false) {
+                                $prepare[$field] = NULL;
+                            } else {
+                                $prepare[$field] = '';
+                            }
                         }
                     }
                 }
@@ -3666,22 +3670,39 @@ class Core extends Controller
         }
 
         if ($table && $this->model->table_exists($table)) {
-            foreach ($where as $key => $val) {
-                // Find string after dot
-                $keyword = substr($key . '.', 0, strpos($key, '.'));
-
-                if ($keyword && ! in_array($keyword, $this->_compiled_table)) {
-                    // Keyword is not listed in compiled table
-                    unset($where[$key]);
+            if (! $where) {
+                // Safe check to make sure the given field parameter is exists in the database table
+                $field_exists = array_flip($this->model->list_fields($table));
+                
+                if (! $where) {
+                    $where = array_intersect_key(service('request')->getGet(), $field_exists);
+                }
+    
+                // Make sure the delete action have where as condition
+                if (! $where) {
+                    // Otherwise, redirect to previous page
+                    return throw_exception(404, phrase('The data you would to delete is not found'), (! $this->api_client ? $this->_redirect_back : null));
+                }
+    
+                foreach ($where as $key => $val) {
+                    // Backup key
+                    $key_backup = $key;
+    
+                    // Now find dotted table and column pairs
+                    if (stripos($key, '.') !== false) {
+                        // Extract column
+                        $key = substr($key, stripos($key, '.') + 1);
+                    }
+    
+                    if (! $this->model->field_exists($key, $table)) {
+                        // Unset column that isn't exist
+                        unset($where[$key_backup]);
+                    }
                 }
             }
 
-            $query = null;
-
-            if (is_array($where) && sizeof($where) > 0) {
-                // Check if data is exist in table
-                $query = $this->model->get_where($table, $where, 1)->row();
-            }
+            // Check if data is exist in table
+            $query = $this->model->get_where($table, $where, 1)->row();
 
             if ($query) {
                 if (method_exists($this, 'before_update')) {
@@ -3776,14 +3797,35 @@ class Core extends Controller
 
         // Check if targeted table is exists
         if ($table && $this->model->table_exists($table)) {
-            // safe check to make sure the given field parameter is exists in the database table
-            $field_exists = array_flip($this->model->list_fields($table));
-            $where = array_intersect_key(service('request')->getGet(), $field_exists);
-
-            // make sure the delete action have where as condition
             if (! $where) {
-                // otherwise, redirect to previous page
-                return throw_exception(404, phrase('The data you would to delete is not found'), (! $this->api_client ? $this->_redirect_back : null));
+                // Safe check to make sure the given field parameter is exists in the database table
+                $field_exists = array_flip($this->model->list_fields($table));
+                
+                if (! $where) {
+                    $where = array_intersect_key(service('request')->getGet(), $field_exists);
+                }
+    
+                // Make sure the delete action have where as condition
+                if (! $where) {
+                    // Otherwise, redirect to previous page
+                    return throw_exception(404, phrase('The data you would to delete is not found'), (! $this->api_client ? $this->_redirect_back : null));
+                }
+    
+                foreach ($where as $key => $val) {
+                    // Backup key
+                    $key_backup = $key;
+    
+                    // Now find dotted table and column pairs
+                    if (stripos($key, '.') !== false) {
+                        // Extract column
+                        $key = substr($key, stripos($key, '.') + 1);
+                    }
+    
+                    if (! $this->model->field_exists($key, $table)) {
+                        // Unset column that isn't exist
+                        unset($where[$key_backup]);
+                    }
+                }
             }
 
             // Check if data is exist in table
