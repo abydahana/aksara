@@ -12,7 +12,7 @@
                                 <?= phrase('Update Profile'); ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Update your profile information'); ?>
+                                <?= phrase('Update your profile information.'); ?>
                             </p>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                                 <?= phrase('Login Activity'); ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('See your login activity'); ?>
+                                <?= phrase('See your login activity.'); ?>
                             </p>
                         </div>
                     </div>

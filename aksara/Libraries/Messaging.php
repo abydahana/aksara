@@ -147,10 +147,10 @@ class Messaging
             $query = $model->insert(
                 'notifier',
                 [
-                    'phone' => $this->_recipient_phone,
-                    'email' => $this->_recipient_email,
-                    'title' => $this->_subject,
-                    'message' => $this->_message,
+                    'phone' => $this->_recipient_phone ?? '',
+                    'email' => $this->_recipient_email ?? '',
+                    'title' => $this->_subject ?? '',
+                    'message' => $this->_message ?? '',
                     'timestamp' => date('Y-m-d H:i:s'),
                     'status' => 0
                 ]

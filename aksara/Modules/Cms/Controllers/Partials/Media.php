@@ -53,7 +53,7 @@ class Media extends \Aksara\Laboratory\Core
     {
         if (DEMO_MODE) {
             // Demo mode
-            return throw_exception(403, phrase('This feature is disabled in demo mode'), current_page(null, ['file' => null, 'action' => null]));
+            return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page(null, ['file' => null, 'action' => null]));
         }
 
         try {

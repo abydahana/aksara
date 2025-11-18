@@ -245,7 +245,7 @@
                         <tr>
                             <td class="text-muted text-sm">
                                 <i>
-                                    <?= phrase('The document was generated from') . ' ' . get_setting('app_name') . ' ' . phrase('at') . ' ' . date('Y-m-d H:i:s'); ?>
+                                    <?= phrase('The document was generated from {{ app_name }} at {{ datetime }}.', ['app_name' => get_setting('app_name'), 'datetime' => date('Y-m-d H:i:s')]); ?>
                                 </i>
                             </td>
                             <td class="text-muted text-sm text-end">

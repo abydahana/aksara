@@ -79,7 +79,7 @@
             <div class="col-sm-12">
                 <div class="alert alert-warning">
                     <i class="mdi mdi-information-outline"></i>
-                    <?= phrase('No installed module'); ?>
+                    <?= phrase('No installed module.'); ?>
                 </div>
             </div>
         <?php endif; ?>

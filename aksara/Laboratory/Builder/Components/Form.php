@@ -138,7 +138,7 @@ class Form
         $component = <<<EOF
         {% for option in content %}
             <div class="form-check me-3">
-                <label class="form-check-label {{ option.class }}"> 
+                <label class="form-check-label {{ option.class }}">
                     <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
                     {{ option.label | raw }}
                 </label>
@@ -330,10 +330,10 @@ class Form
     public function image($type = null)
     {
         $component = <<<EOF
-        <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center w-100">
+        <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center {% if content and '/thumbs/' not in content %}w-100{% endif %}">
             <span class="btn btn-file d-block">
                 <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
-                <div class="fileupload-new text-center">
+                <div class="fileupload-new text-center {% if content and '/thumbs/' not in content %}w-100{% endif %}">
                     <img class="img-fluid upload_preview" src="{{ content }}" />
                 </div>
                 <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '{{ placeholder }}'))">

@@ -11,7 +11,7 @@
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <meta name="description" content="<?= truncate($meta->description); ?>" />
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
-        
+
         <?php
             echo aksara_header();
 
@@ -20,7 +20,7 @@
                 'local/css/styles.min.css'
             ]);
         ?>
-        
+
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
         <style type="text/css">
@@ -31,11 +31,11 @@
         </style>
     </head>
     <body>
-        
+
         <?php include_once('header.php'); ?>
         <?php include_once('breadcrumb.php'); ?>
         <?php include_once('sidebar.php'); ?>
-        
+
         <main id="page-wrapper">
             <section role="meta" id="title-wrapper">
                 <div class="container-fluid d-none d-md-none d-lg-block d-xl-block">
@@ -70,15 +70,15 @@
                     <?= $meta->description; ?>
                 </div>
             </section>
-            
+
             <article id="content-wrapper">
-                
+
                 <?= $content; ?>
-                
+
             </article>
-        
+
         </main>
-        
+
         <?php
             echo aksara_footer();
 
@@ -87,6 +87,6 @@
                 'local/js/script.min.js'
             ]);
         ?>
-        
+
     </body>
 </html>

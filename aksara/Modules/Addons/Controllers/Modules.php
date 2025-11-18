@@ -54,7 +54,7 @@ class Modules extends \Aksara\Laboratory\Core
         $package = [];
 
         try {
-            $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+            $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
         } catch (\Throwable $e) {
             // Safe abstraction
         }
@@ -79,20 +79,20 @@ class Modules extends \Aksara\Laboratory\Core
      */
     public function update()
     {
-        if (! file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json')) {
-            return throw_exception(404, phrase('The package manifest for the selected module is missing'), current_page('../'));
+        if (! file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json')) {
+            return throw_exception(404, phrase('The package manifest for the selected module is missing.'), current_page('../'));
         }
 
-        $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+        $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
 
         if (! isset($package->hash) || ! isset($package->version)) {
-            return throw_exception(404, phrase('The selected module is not supported by the official market'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('The selected module is not supported by the official market.'), current_page('../', ['item' => null]));
         }
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
-            return throw_exception(403, phrase('The cURL module is not enabled'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../', ['item' => null]));
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara Market'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../', ['item' => null]));
         }
 
         try {
@@ -172,7 +172,7 @@ class Modules extends \Aksara\Laboratory\Core
             ]);
         }
 
-        return throw_exception(404, phrase('No update available at the moment'), current_page('../', ['item' => null]));
+        return throw_exception(404, phrase('No update available at the moment.'), current_page('../', ['item' => null]));
     }
 
     /**
@@ -182,7 +182,7 @@ class Modules extends \Aksara\Laboratory\Core
     {
         if ($this->valid_token(service('request')->getPost('_token'))) {
             if (DEMO_MODE) {
-                return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../'));
+                return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
             $this->form_validation->setRule('file', phrase('Module Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
@@ -190,9 +190,9 @@ class Modules extends \Aksara\Laboratory\Core
             if ($this->form_validation->run(service('request')->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
-                return throw_exception(400, ['file' => phrase('No module package were chosen')]);
+                return throw_exception(400, ['file' => phrase('No module package were chosen.')]);
             } elseif (! class_exists('ZipArchive')) {
-                return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration')]);
+                return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
             $zip = new \ZipArchive();
@@ -202,7 +202,7 @@ class Modules extends \Aksara\Laboratory\Core
 
             if (true === $unzip) {
                 if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
-                    return throw_exception(400, ['file' => phrase('Unable to extract your module package')]);
+                    return throw_exception(400, ['file' => phrase('Unable to extract your module package.')]);
                 }
 
                 // Extract the repository
@@ -217,7 +217,7 @@ class Modules extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['file' => phrase('Unable to extract your module package')]);
+                    return throw_exception(400, ['file' => phrase('Unable to extract your module package.')]);
                 }
 
                 $package = [];
@@ -237,7 +237,7 @@ class Modules extends \Aksara\Laboratory\Core
                     foreach ($val as $_key => $_val) {
                         if (strpos($_key, ' ') !== false) {
                             break;
-                        } elseif ('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
+                        } elseif ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
                             $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
 
                             if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['module'])) {
@@ -247,7 +247,7 @@ class Modules extends \Aksara\Laboratory\Core
                                 // Remove temporary directory
                                 $this->_rmdir($tmp_path);
 
-                                return throw_exception(400, ['file' => phrase('The package manifest was invalid')]);
+                                return throw_exception(400, ['file' => phrase('The package manifest was invalid.')]);
                             } elseif (! in_array(aksara('version'), $package->compatibility)) {
                                 // Close the opened zip
                                 $zip->close();
@@ -255,7 +255,7 @@ class Modules extends \Aksara\Laboratory\Core
                                 // Remove temporary directory
                                 $this->_rmdir($tmp_path);
 
-                                return throw_exception(400, ['file' => phrase('The package is not compatible with your current aksara version')]);
+                                return throw_exception(400, ['file' => phrase('The package is not compatible with your current Aksara version.')]);
                             }
 
                             $valid_package = true;
@@ -270,7 +270,7 @@ class Modules extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['file' => phrase('No package manifest found on your module package')]);
+                    return throw_exception(400, ['file' => phrase('No package manifest found on your module package.')]);
                 }
 
                 if (is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && ! service('request')->getPost('upgrade')) {
@@ -280,7 +280,7 @@ class Modules extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['module' => phrase('This module package with same structure is already installed')]);
+                    return throw_exception(400, ['module' => phrase('This module package with same structure is already installed.')]);
                 }
 
                 if (is_writable(ROOTPATH . 'modules')) {
@@ -378,7 +378,7 @@ class Modules extends \Aksara\Laboratory\Core
                                         [
                                             'menu_placement' => $val->placement,
                                             'menu_label' => phrase('Generated Menu'),
-                                            'menu_description' => phrase('Generated menu from module installation'),
+                                            'menu_description' => phrase('Generated menu from module installation.'),
                                             'serialized_data' => json_encode($links),
                                             'group_id' => $_val,
                                             'status' => 1
@@ -463,13 +463,13 @@ class Modules extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(301, phrase('Your module package was successfully imported'), current_page('../'));
+                    return throw_exception(301, phrase('Your module package was successfully imported.'), current_page('../'));
                 } else {
-                    return throw_exception(400, ['file' => phrase('Your module folder seems cannot be writable')]);
+                    return throw_exception(400, ['file' => phrase('Your module folder seems cannot be writable.')]);
                 }
             }
 
-            return throw_exception(400, ['file' => phrase('Unable to extract the module package')]);
+            return throw_exception(400, ['file' => phrase('Unable to extract the module package.')]);
         }
 
         $this->set_title(phrase('Module Importer'))
@@ -483,7 +483,7 @@ class Modules extends \Aksara\Laboratory\Core
     public function delete()
     {
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
         }
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
@@ -538,11 +538,11 @@ class Modules extends \Aksara\Laboratory\Core
         // Check if requested module to delete is match
         if (service('request')->getPost('module') && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'))) {
             if (DEMO_MODE) {
-                return throw_exception(400, ['module' => phrase('Changes will not saved in demo mode')]);
+                return throw_exception(400, ['module' => phrase('Changes will not saved in demo mode.')]);
             }
 
             // Check if module property is exists
-            if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json')) {
+            if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json')) {
                 $query = $this->model->order_by('id', 'DESC')->get_where(
                     config('Migrations')->table,
                     [
@@ -570,7 +570,7 @@ class Modules extends \Aksara\Laboratory\Core
                 /**
                  * Prepare to remove unused privileges
                  */
-                $package = file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'package.json');
+                $package = file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json');
                 $package = json_decode($package);
 
                 /**
@@ -666,13 +666,13 @@ class Modules extends \Aksara\Laboratory\Core
                 $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
             } else {
                 // Module property is not found
-                return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstall from the module manager')]);
+                return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstall from the module manager.')]);
             }
         } else {
-            return throw_exception(400, ['module' => phrase('The module you would to delete is not exists or already uninstalled')]);
+            return throw_exception(400, ['module' => phrase('The module you would to delete is not exists or already uninstalled.')]);
         }
 
-        return throw_exception(301, phrase('The selected module was successfully uninstalled'), current_page('../', ['item' => null]));
+        return throw_exception(301, phrase('The selected module was successfully uninstalled.'), current_page('../', ['item' => null]));
     }
 
     /**
@@ -691,7 +691,7 @@ class Modules extends \Aksara\Laboratory\Core
         foreach ($data as $key => $val) {
             if (is_array($val)) {
                 foreach ($val as $_key => $_val) {
-                    if ('package.json' != $_val) {
+                    if ('theme.json' != $_val) {
                         continue;
                     }
 

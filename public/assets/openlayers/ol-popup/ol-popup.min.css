@@ -1,97 +1,97 @@
 .ol-popup {
-    display: none;
-    position: absolute;
-    background-color: white;
-    bottom: 12px;
-    min-width: 300px;
-    transform: translateX(-50%);
-    border-radius: .3rem
+  display: none;
+  position: absolute;
+  background-color: white;
+  bottom: 12px;
+  min-width: 300px;
+  transform: translateX(-50%);
+  border-radius: .3rem
 }
 
 .ol-popup:after, .ol-popup:before {
-    top: 100%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
 }
 
 .ol-popup:after {
-    border-top-color: white;
-    border-width: 10px;
-    left: 50%;
-    margin-left: -10px;
+  border-top-color: white;
+  border-width: 10px;
+  left: 50%;
+  margin-left: -10px;
 }
 
 .ol-popup:before {
-    border-top-color: #cccccc;
-    border-width: 11px;
-    left: 50%;
-    margin-left: -11px;
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 50%;
+  margin-left: -11px;
 }
 
 .ol-popup-title {
-    padding: 0 1rem;
-    border-bottom: 1px solid rgba(0,0,0,.1)
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(0,0,0,.1)
 }
 
 .ol-popup-content {
-    width: 100%;
-    padding: 1rem
+  width: 100%;
+  padding: 1rem
 }
 
 .ol-popup-closer {
-    position: absolute;
-    top: .2rem;
-    right: .5rem;
-    text-decoration: none;
-    z-index: 1
+  position: absolute;
+  top: .2rem;
+  right: .5rem;
+  text-decoration: none;
+  z-index: 1
 }
 
 .ol-popup-closer:after {
-    content: "\2716";
-    font-size: 14px
+  content: "\2716";
+  font-size: 14px
 }
 
 .ol-popup div.infoResult {
-    min-width: 130px;
+  min-width: 130px;
 }
 
 .ol-popup div.infoResult p {
-    padding: 0.1em;
-    margin: 0;
+  padding: 0.1em;
+  margin: 0;
 }
 
 .ol-popup-content h3 {
-    margin: 0.25em 0;
+  margin: 0.25em 0;
 }
 
 .ol-popup.marker {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 @media (min-width: 320px) and (max-width: 680px)
 {
-    .ol-popup .mejs__container
-    {
-        width: 320px!important
-    }
+  .ol-popup .mejs__container
+  {
+    width: 320px!important
+  }
 }
 
 @media (min-width: 681px) and (max-width: 1023px)
 {
-    .ol-popup .mejs__container
-    {
-        width: 640px!important
-    }
+  .ol-popup .mejs__container
+  {
+    width: 640px!important
+  }
 }
 
 @media (min-width: 1024px)
 {
-    .ol-popup .mejs__container
-    {
-        width: 720px!important
-    }
+  .ol-popup .mejs__container
+  {
+    width: 720px!important
+  }
 }

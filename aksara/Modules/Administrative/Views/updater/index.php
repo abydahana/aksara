@@ -50,9 +50,7 @@
                 <?= phrase('Update Available'); ?>
             </h5>
             <p class="mb-0">
-                <?= phrase('A newer version of Aksara is available.'); ?>
-                <?= phrase('Click the button below to update your core system directly.'); ?>
-                <?= phrase('Your created module and theme will not be overwritten.'); ?>
+                <?= phrase('A newer version of Aksara is available.'); ?> <?= phrase('Click the button below to update your core system directly.'); ?> <?= phrase('Your created module and theme will not be overwritten.'); ?>
             </p>
         </div>
         <form action="<?= current_page(); ?>" method="POST">

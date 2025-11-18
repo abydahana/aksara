@@ -76,7 +76,7 @@ class Core
                                                 <b class="text-primary">{{ row.field_data[reference].value }}</b>
                                             </td>
                                         </tr>
-                                
+
                                         {% set references = references | merge([unique_reference]) %}
                                     {% endif %}
                                 {% endif %}
@@ -163,13 +163,13 @@ class Core
                                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             </a>
                                         </div>
-                                        
+
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                             <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                         </a>
-                                        
+
                                         {% set break = true %}
                                     {% endif %}
                                 {% endfor %}
@@ -252,13 +252,13 @@ class Core
                                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             </a>
                                         </div>
-                                        
+
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                             <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                         </a>
-                                        
+
                                         {% set break = true %}
                                     {% endif %}
                                 {% endfor %}
@@ -491,7 +491,7 @@ class Core
                         {% endif %}
                     {% endfor %}
                     <div class="row">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                             <div class="row">
                                 {# Find index within column total #}
                                 {% for index in 1..results.column_total %}
@@ -532,12 +532,12 @@ class Core
                     </div>
                     <div class="opt-btn-overlap-fix"></div>
                     <div class="row opt-btn">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                             <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back') }}
                             </a>
-                            
+
                             <button type="submit" class="btn btn-primary float-end">
                                 <i class="mdi mdi-check"></i>
                                 {{ phrase('Submit') }}
@@ -564,7 +564,7 @@ class Core
                 <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
-                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
+                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                             <span class="modal-title-text">{{ meta.title }}</span>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
@@ -623,7 +623,7 @@ class Core
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-check"></i> 
+                            <i class="mdi mdi-check"></i>
                             {{ phrase('Submit') }}
                             <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
                         </button>
@@ -651,7 +651,7 @@ class Core
                     {% endif %}
                 {% endfor %}
                 <div class="row">
-                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                         <div class="row">
                             {# Find index within column total #}
                             {% for index in 1..results.column_total %}
@@ -691,7 +691,7 @@ class Core
                 </div>
                 <div class="opt-btn-overlap-fix"></div>
                 <div class="row opt-btn">
-                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                         <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                             <i class="mdi mdi-arrow-left"></i>
                             {{ phrase('Back') }}
@@ -716,7 +716,7 @@ class Core
                 <div class="modal-content {% if modal %} border shadow {% endif %}">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
-                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
+                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                             <span class="modal-title-text">{{ meta.title }}</span>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
@@ -808,7 +808,7 @@ class Core
 
                 {# Include form component #}
                 {% include 'form/' ~ params.type ~ '.twig' with params %}
-                
+
                 {% if params.append %}
                     <span class="input-group-text"> {{ params.append | raw }} </span>
                 {% endif %}
@@ -844,7 +844,7 @@ class Core
 
                 {# Include form component #}
                 {% include 'view/' ~ params.type ~ '.twig' with params %}
-                
+
                 {% if params.append %}
                     <span class="input-group-text-unformatted ms-2"> {{ params.append | raw }} </span>
                 {% endif %}
@@ -866,7 +866,7 @@ class Core
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
-                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
+                            <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                             <span class="modal-title-text">
                             {{ meta.title ?? phrase('Loading') }}
                             </span>
@@ -933,7 +933,7 @@ class Core
                         [info@localhost ~]# aksara trace -exception
                     </p>
                     <p class="text-danger">
-                        {{ phrase('No response could be loaded') }}. 
+                        {{ phrase('No response could be loaded') }}.
                         {{ phrase('Make sure to check the following mistake') }}:
                     </p>
                     <ol>

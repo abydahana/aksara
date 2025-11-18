@@ -24,7 +24,7 @@ class Synchronize extends \Aksara\Laboratory\Core
         parent::__construct();
 
         if (DEMO_MODE) {
-            return throw_exception(403, phrase('Changes will not saved in demo mode'), current_page('../'));
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
         $this->set_permission();
@@ -87,7 +87,7 @@ class Synchronize extends \Aksara\Laboratory\Core
         }
 
         if ($error) {
-            return throw_exception(403, phrase('Translation synchronized!') . ' ' .  phrase('However, there are') . ' <b>' . number_format($error) . '</b> ' . phrase('translations were unsuccessful'), current_page('../'));
+            return throw_exception(403, phrase('Translation synchronized!') . ' ' .  phrase('However, there are') . ' <b>' . number_format($error) . '</b> ' . phrase('translations were unsuccessful.'), current_page('../'));
         }
 
         return throw_exception(301, '<b>' . (sizeof($languages) - 1) . '</b> ' . ((sizeof($languages) - 1) > 1 ? phrase('languages') : phrase('language')) . ' ' . phrase('was successfully updated.') . ' <b>' . number_format(sizeof($populated_phrases)) . '</b> ' . phrase('phrases was synchronized.'), current_page('../'));

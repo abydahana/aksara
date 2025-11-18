@@ -87,7 +87,7 @@
             <div class="col-sm-12">
                 <div class="alert alert-warning">
                     <i class="mdi mdi-information-outline"></i>
-                    <?= phrase('No installed theme'); ?>
+                    <?= phrase('No installed theme.'); ?>
                 </div>
             </div>
         <?php endif; ?>

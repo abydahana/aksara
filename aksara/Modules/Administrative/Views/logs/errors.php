@@ -30,7 +30,7 @@
                                 </ul>
                             ';
                         } else {
-                            echo '<div class="pt-3 pb-3">' . phrase('No error log') . '</div>';
+                            echo '<div class="pt-3 pb-3">' . phrase('No error log.') . '</div>';
                         }
                     ?>
                 </div>

@@ -12,7 +12,7 @@
                                 <?= phrase('Activities'); ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Show log activities'); ?>
+                                <?= phrase('Show log activities.'); ?>
                             </p>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                                 <?= phrase('Errors'); ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Show error logs'); ?>
+                                <?= phrase('Show error logs.'); ?>
                             </p>
                         </div>
                     </div>

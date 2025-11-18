@@ -64,7 +64,7 @@
                         <?= $visible_menu; ?>
                     <?php else: ?>
                         <div class="alert alert-warning">
-                            <?= phrase('No menu is available right now'); ?>
+                            <?= phrase('No menu is available right now.'); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -72,7 +72,7 @@
             <div class="col-sm-6 col-md-5">
                 <div class="mb-3">
                     <label class="text-muted d-block" for="sub_level_1_input">
-                        <?= phrase('The sub level can be accessed'); ?>
+                        <?= phrase('The sub level can be accessed.'); ?>
                     </label>
                     <?php if ($sub_level_1): ?>
                         <?php
@@ -88,7 +88,7 @@
                         </select>
                     <?php else: ?>
                         <div class="alert alert-warning">
-                            <?= phrase('No sub level table assigned to the selection'); ?>
+                            <?= phrase('No sub level table assigned to the selection.'); ?>
                         </div>
                     <?php endif; ?>
                 </div>

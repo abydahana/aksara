@@ -54,7 +54,7 @@ class Themes extends \Aksara\Laboratory\Core
         $package = [];
 
         try {
-            $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+            $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
         } catch (\Throwable $e) {
             // Safe abstraction
         }
@@ -79,20 +79,20 @@ class Themes extends \Aksara\Laboratory\Core
      */
     public function update()
     {
-        if (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json')) {
-            return throw_exception(404, phrase('The package manifest for the selected theme is missing'), current_page('../', ['item' => null]));
+        if (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json')) {
+            return throw_exception(404, phrase('The package manifest for the selected theme is missing.'), current_page('../', ['item' => null]));
         }
 
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
 
         if (! isset($package->hash) || ! isset($package->version)) {
-            return throw_exception(404, phrase('The selected theme is not supported by the official market'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('The selected theme is not supported by the official market.'), current_page('../', ['item' => null]));
         }
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
-            return throw_exception(403, phrase('The cURL module is not enabled'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../', ['item' => null]));
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara Market'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../', ['item' => null]));
         }
 
         try {
@@ -172,7 +172,7 @@ class Themes extends \Aksara\Laboratory\Core
             ]);
         }
 
-        return throw_exception(404, phrase('No update available at the moment'), current_page('../', ['item' => null]));
+        return throw_exception(404, phrase('No update available at the moment.'), current_page('../', ['item' => null]));
     }
 
     /**
@@ -181,7 +181,7 @@ class Themes extends \Aksara\Laboratory\Core
     public function activate()
     {
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
         }
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
@@ -227,15 +227,15 @@ class Themes extends \Aksara\Laboratory\Core
         }
 
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null]));
-        } elseif (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json')) {
-            return throw_exception(404, phrase('No theme package manifest were found'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
+        } elseif (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
+            return throw_exception(404, phrase('No theme package manifest were found.'), current_page('../', ['item' => null]));
         }
 
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'));
+        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
         if (! $package || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
-            return throw_exception(403, phrase('Unable to activate the theme with invalid package manifest'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('Unable to activate the theme with invalid package manifest.'), current_page('../', ['item' => null]));
         }
 
         if ('backend' == $package->type) {
@@ -257,10 +257,10 @@ class Themes extends \Aksara\Laboratory\Core
         );
 
         if ($query) {
-            return throw_exception(301, phrase('The selected theme was successfully activated'), current_page('../', ['item' => null]));
+            return throw_exception(301, phrase('The selected theme was successfully activated.'), current_page('../', ['item' => null]));
         }
 
-        return throw_exception(403, phrase('Unable to activate the selected theme'), current_page('../', ['item' => null]));
+        return throw_exception(403, phrase('Unable to activate the selected theme.'), current_page('../', ['item' => null]));
     }
 
     /**
@@ -268,14 +268,14 @@ class Themes extends \Aksara\Laboratory\Core
      */
     public function customize()
     {
-        if (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json')) {
-            return throw_exception(404, phrase('No theme package manifest were found'), current_page('../', ['item' => null]));
+        if (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json')) {
+            return throw_exception(404, phrase('No theme package manifest were found.'), current_page('../', ['item' => null]));
         }
 
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'package.json'));
+        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
 
         if (! $package) {
-            return throw_exception(403, phrase('Unable to customize the theme with invalid package manifest'), current_page('../', ['item' => null]));
+            return throw_exception(403, phrase('Unable to customize the theme with invalid package manifest.'), current_page('../', ['item' => null]));
         }
 
         $package->folder = $this->_primary;
@@ -283,9 +283,9 @@ class Themes extends \Aksara\Laboratory\Core
 
         if ($this->valid_token(service('request')->getPost('_token'))) {
             if (DEMO_MODE) {
-                return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null]));
-            } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json')) {
-                return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is not writable')]);
+                return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
+            } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json')) {
+                return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
             }
 
             $package->colorscheme = service('request')->getPost('colorscheme');
@@ -293,17 +293,17 @@ class Themes extends \Aksara\Laboratory\Core
 
             unset($package->folder, $package->integrity);
 
-            if (file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json', json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE))) {
-                return throw_exception(301, phrase('The theme was successfully customized'), current_page('../', ['item' => null]));
+            if (file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json', json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE))) {
+                return throw_exception(301, phrase('The theme was successfully customized.'), current_page('../', ['item' => null]));
             }
 
-            return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'package.json ' . phrase('is not writable')]);
+            return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
         }
 
         $this->set_title(phrase('Theme Customization'))
         ->set_icon('mdi mdi-palette')
         ->set_output([
-            'writable' => (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'package.json') ? true : false),
+            'writable' => (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json') ? true : false),
             'detail' => $package
         ])
         ->modal_size('modal-xl')
@@ -318,7 +318,7 @@ class Themes extends \Aksara\Laboratory\Core
     {
         if ($this->valid_token(service('request')->getPost('_token'))) {
             if (DEMO_MODE) {
-                return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../'));
+                return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
             $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
@@ -326,9 +326,9 @@ class Themes extends \Aksara\Laboratory\Core
             if ($this->form_validation->run(service('request')->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
-                return throw_exception(400, ['file' => phrase('No theme package were chosen')]);
+                return throw_exception(400, ['file' => phrase('No theme package were chosen.')]);
             } elseif (! class_exists('ZipArchive')) {
-                return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration')]);
+                return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
             $zip = new \ZipArchive();
@@ -337,7 +337,7 @@ class Themes extends \Aksara\Laboratory\Core
 
             if (true === $unzip) {
                 if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
-                    return throw_exception(400, ['file' => phrase('Unable to extract your theme package')]);
+                    return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
                 // Extract the repository
@@ -352,7 +352,7 @@ class Themes extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['file' => phrase('Unable to extract your theme package')]);
+                    return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
                 $valid_package = false;
@@ -371,7 +371,7 @@ class Themes extends \Aksara\Laboratory\Core
                     foreach ($val as $_key => $_val) {
                         if (strpos($_key, ' ') !== false) {
                             break;
-                        } elseif ('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
+                        } elseif ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
                             $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
 
                             if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
@@ -381,7 +381,7 @@ class Themes extends \Aksara\Laboratory\Core
                                 // Remove temporary directory
                                 $this->_rmdir($tmp_path);
 
-                                return throw_exception(400, ['file' => phrase('The package manifest was invalid')]);
+                                return throw_exception(400, ['file' => phrase('The package manifest was invalid.')]);
                             } elseif (! in_array(aksara('version'), $package->compatibility)) {
                                 // Close the opened zip
                                 $zip->close();
@@ -389,7 +389,7 @@ class Themes extends \Aksara\Laboratory\Core
                                 // Remove temporary directory
                                 $this->_rmdir($tmp_path);
 
-                                return throw_exception(400, ['file' => phrase('This theme package is not compatible with your current aksara version')]);
+                                return throw_exception(400, ['file' => phrase('This theme package is not compatible with your current Aksara version.')]);
                             }
 
                             $valid_package = true;
@@ -404,7 +404,7 @@ class Themes extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['file' => phrase('No package manifest found on your theme package')]);
+                    return throw_exception(400, ['file' => phrase('No package manifest found on your theme package.')]);
                 }
 
                 if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path) && ! service('request')->getPost('upgrade')) {
@@ -414,7 +414,7 @@ class Themes extends \Aksara\Laboratory\Core
                     // Remove temporary directory
                     $this->_rmdir($tmp_path);
 
-                    return throw_exception(400, ['theme' => phrase('The theme package with same structure is already installed')]);
+                    return throw_exception(400, ['theme' => phrase('The theme package with same structure is already installed.')]);
                 }
 
                 if (is_writable(ROOTPATH . 'themes')) {
@@ -429,13 +429,13 @@ class Themes extends \Aksara\Laboratory\Core
                 $this->_rmdir($tmp_path);
 
                 if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path)) {
-                    return throw_exception(301, phrase('Your theme package was successfully imported'), current_page('../'));
+                    return throw_exception(301, phrase('Your theme package was successfully imported.'), current_page('../'));
                 } else {
-                    return throw_exception(400, ['file' => phrase('Your theme folder seems cannot be writable')]);
+                    return throw_exception(400, ['file' => phrase('Your theme folder seems cannot be writable.')]);
                 }
             }
 
-            return throw_exception(400, ['file' => phrase('Unable to extract the theme package')]);
+            return throw_exception(400, ['file' => phrase('Unable to extract the theme package.')]);
         }
 
         $this->set_title(phrase('Theme Importer'))
@@ -449,7 +449,7 @@ class Themes extends \Aksara\Laboratory\Core
     public function delete()
     {
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null]));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
         }
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
@@ -504,15 +504,15 @@ class Themes extends \Aksara\Laboratory\Core
         //C heck if requested theme to delete is match
         if (service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'))) {
             if (DEMO_MODE) {
-                return throw_exception(400, ['theme' => phrase('Changes will not saved in demo mode')]);
+                return throw_exception(400, ['theme' => phrase('Changes will not saved in demo mode.')]);
             }
 
             // Check if theme property is exists
-            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json')) {
-                $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'package.json'));
+            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
+                $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
                 if (! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
-                    return throw_exception(400, ['theme' => phrase('Unable to uninstall theme with invalid package')]);
+                    return throw_exception(400, ['theme' => phrase('Unable to uninstall theme with invalid package.')]);
                 }
 
                 // Get the site id
@@ -528,20 +528,20 @@ class Themes extends \Aksara\Laboratory\Core
                 ->row($package->type . '_theme');
 
                 if (service('request')->getPost('theme') == $active_theme) {
-                    return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use')]);
+                    return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use.')]);
                 }
 
                 // Delete theme
                 $this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
             } else {
                 // Theme property is not found
-                return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstall from the theme manager')]);
+                return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstall from the theme manager.')]);
             }
         } else {
-            return throw_exception(400, ['theme' => phrase('The theme you would to delete is not exists or already uninstalled')]);
+            return throw_exception(400, ['theme' => phrase('The theme you would to delete is not exists or already uninstalled.')]);
         }
 
-        return throw_exception(301, phrase('The selected theme was successfully uninstalled'), current_page('../', ['item' => null]));
+        return throw_exception(301, phrase('The selected theme was successfully uninstalled.'), current_page('../', ['item' => null]));
     }
 
     /**
@@ -560,7 +560,7 @@ class Themes extends \Aksara\Laboratory\Core
         foreach ($data as $key => $val) {
             if (is_array($val)) {
                 foreach ($val as $_key => $_val) {
-                    if ('package.json' != $_val) {
+                    if ('theme.json' != $_val) {
                         continue;
                     }
 

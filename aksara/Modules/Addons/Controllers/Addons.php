@@ -55,9 +55,9 @@ class Addons extends \Aksara\Laboratory\Core
         $package = [];
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
-            return throw_exception(403, phrase('The cURL module is not enabled'), current_page('../'));
+            return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../'));
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara market'), current_page('../'));
+            return throw_exception(403, phrase('Unable to connect to the Aksara market.'), current_page('../'));
         }
 
         if (! $package) {
@@ -98,7 +98,7 @@ class Addons extends \Aksara\Laboratory\Core
             }
         }
 
-        $this->set_title((isset($package->name) ? $package->name : phrase('No item found')))
+        $this->set_title((isset($package->name) ? $package->name : phrase('No item found!')))
         ->set_icon('mdi ' . (service('request')->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
         ->set_output([
             'detail' => $package
@@ -114,14 +114,14 @@ class Addons extends \Aksara\Laboratory\Core
     public function install()
     {
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../', ['item' => null, 'type' => null]));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null, 'type' => null]));
         }
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
-            return throw_exception(403, phrase('The cURL module is not enabled'), go_to());
+            return throw_exception(403, phrase('The cURL module is not enabled.'), go_to());
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
             return [
-                'error' => phrase('Unable to connect to the Aksara Market')
+                'error' => phrase('Unable to connect to the Aksara Market.')
             ];
         }
 
@@ -236,7 +236,7 @@ class Addons extends \Aksara\Laboratory\Core
                         // Close opened zip
                         $zip->close();
 
-                        return throw_exception(400, ['file' => phrase('Unable to extract the selected ' . $type . ' package')]);
+                        return throw_exception(400, ['file' => phrase('Unable to extract the selected ' . $type . ' package.')]);
                     }
 
                     $valid_package = false;
@@ -253,7 +253,7 @@ class Addons extends \Aksara\Laboratory\Core
                         }
 
                         foreach ($val as $_key => $_val) {
-                            if ('package.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
+                            if ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
                                 $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
 
                                 if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['module', 'backend', 'frontend'])) {
@@ -263,7 +263,7 @@ class Addons extends \Aksara\Laboratory\Core
                                     // Remove temporary directory
                                     $this->_rmdir($tmp_path);
 
-                                    return throw_exception(403, phrase('The package manifest was invalid'));
+                                    return throw_exception(403, phrase('The package manifest was invalid.'));
                                 } elseif (! in_array(aksara('version'), $package->compatibility)) {
                                     // Close opened zip
                                     $zip->close();
@@ -432,7 +432,7 @@ class Addons extends \Aksara\Laboratory\Core
                                             [
                                                 'menu_placement' => $val->placement,
                                                 'menu_label' => phrase('Generated Menu'),
-                                                'menu_description' => phrase('Generated menu from module installation'),
+                                                'menu_description' => phrase('Generated menu from module installation.'),
                                                 'serialized_data' => json_encode($links),
                                                 'group_id' => $_val,
                                                 'status' => 1
@@ -517,22 +517,22 @@ class Addons extends \Aksara\Laboratory\Core
                         // Remove temporary directory
                         $this->_rmdir($tmp_path);
 
-                        return throw_exception(301, phrase('The selected ' . $type . ' package was successfully installed'), current_page('../' . $type, ['item' => null, 'type' => null]));
+                        return throw_exception(301, phrase('The selected ' . $type . ' package was successfully installed.'), current_page('../' . $type, ['item' => null, 'type' => null]));
                     } else {
-                        return throw_exception(403, phrase('Your ' . $type . ' folder seems cannot be writable'));
+                        return throw_exception(403, phrase('Your ' . $type . ' folder seems cannot be writable.'));
                     }
                 }
 
                 // Remove temporary directory
                 $this->_rmdir($tmp_path);
 
-                return throw_exception(403, phrase('Unable to install the selected ' . $type));
+                return throw_exception(403, phrase('Unable to install the selected ' . $type . '.'));
             }
 
-            return throw_exception(404, phrase('The selected ' . $type . ' you would to install is not available'));
+            return throw_exception(404, phrase('The selected ' . $type . ' you would to install is not available.'));
         }
 
-        return throw_exception(404, phrase('Your web server need to connected to the internet to install the add-ons'));
+        return throw_exception(404, phrase('Your web server need to connected to the internet to install the add-ons.'));
     }
 
     /**
@@ -542,11 +542,11 @@ class Addons extends \Aksara\Laboratory\Core
     {
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return make_json([
-                'error' => phrase('The cURL module is not enabled')
+                'error' => phrase('The cURL module is not enabled.')
             ]);
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
             return make_json([
-                'error' => phrase('Unable to connect to the Aksara Market')
+                'error' => phrase('Unable to connect to the Aksara Market.')
             ]);
         }
 

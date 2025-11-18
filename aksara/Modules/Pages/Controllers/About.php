@@ -28,7 +28,7 @@ class About extends \Aksara\Laboratory\Core
     {
         $this->set_title(phrase('About the project'))
         ->set_icon('mdi mdi-information-outline')
-        ->set_description(phrase('Including the credit of external resources'))
+        ->set_description(phrase('Including the credit of external resources.'))
 
         ->render();
     }

@@ -50,8 +50,8 @@ class Assets extends \Aksara\Laboratory\Core
             $output .= file_get_contents('assets/local/css/override.min.css') . "\n";
             $output .= file_get_contents('assets/local/css/ie.fix.min.css') . "\n";
 
-            if (file_exists(ROOTPATH . 'themes/' . $theme . '/package.json')) {
-                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/package.json');
+            if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {
+                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
                 $theme_package = json_decode($theme_package);
 
                 if (isset($theme_package->configs->wrapper) && isset($theme_package->colorscheme)) {
@@ -230,9 +230,9 @@ class Assets extends \Aksara\Laboratory\Core
             'action_sound' => (get_setting('action_sound') ? true : false)
         ];
 
-        if (file_exists(ROOTPATH . 'themes/' . $theme . '/package.json')) {
+        if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {
             try {
-                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/package.json');
+                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
                 $theme_package = json_decode($theme_package, true);
                 if (isset($theme_package['configs'])) {
                     // Merge main configs and theme package

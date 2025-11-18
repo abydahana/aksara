@@ -34,7 +34,7 @@ class Read extends \Aksara\Laboratory\Core
             $slug = service('request')->getGet('people_slug');
         }
 
-        $this->set_title('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found'))
+        $this->set_title('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))
         ->set_description('{{ biography }}')
         ->set_icon('mdi mdi-account-outline')
         ->set_output(
