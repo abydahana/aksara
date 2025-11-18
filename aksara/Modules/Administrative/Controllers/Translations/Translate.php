@@ -43,7 +43,7 @@ class Translate extends \Aksara\Laboratory\Core
         $this->_primary = service('request')->getGet('id');
 
         if (! $this->_primary) {
-            return throw_exception(404, phrase('Please choose the language to translate'), current_page('../'));
+            return throw_exception(404, phrase('Please choose the language to translate.'), current_page('../'));
         }
 
         $this->_code = service('request')->getGet('code');
@@ -88,7 +88,7 @@ class Translate extends \Aksara\Laboratory\Core
     public function delete_phrase()
     {
         if (DEMO_MODE) {
-            return throw_exception(403, phrase('Changes will not saved in demo mode'), current_page('../'));
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
         $delete_key = service('request')->getGet('phrase');

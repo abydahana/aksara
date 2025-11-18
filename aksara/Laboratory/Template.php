@@ -89,12 +89,12 @@ class Template
      */
     public function get_theme_property($parameter = null)
     {
-        if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/package.json')) {
+        if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/theme.json')) {
             // Check if active theme has a property
             $property = new \stdClass();
 
             try {
-                $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/package.json'));
+                $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/theme.json'));
             } catch (\Throwable $e) {
                 // Safe abstraction
             }
@@ -404,10 +404,10 @@ class Template
                 $parser = new Parser($this->theme);
 
                 // Build html from result object
-                $data->content = $this->_minify($parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data));
+                $data->content = $parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data);
             } else {
                 // Build html from result object
-                $data->content = $this->_minify(view($view, (array) $data));
+                $data->content = view($view, (array) $data);
             }
 
             // Intersection key to keep property from unset
@@ -443,7 +443,7 @@ class Template
             }
 
             // Minify output
-            $output = $this->_minify($parsed_view);
+            $output = $this->_minify(str_replace('</body>', '<div class="' . implode('', ['ak', 'sa', 'ra', '-', 'fo', 'ot', 'er']) . '"></div></body>', $parsed_view));
 
             // Add security headers
             service('response')->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
@@ -711,8 +711,37 @@ class Template
      */
     private function _minify($buffer = null)
     {
-        // Replace possible tag
-        $buffer = preg_replace('/(?>[^\S ]\s*| \s{2,})(?=[^<]*+(?:<(?!\/?(?:textarea|pre|code|script)\b)[^<]*+)*+(?:<(?>textarea|pre|code|script)\b| \z))/', '', $buffer);
+        if (! is_string($buffer) || trim($buffer) === '') {
+            return $buffer;
+        }
+
+        // Save content inside tags that must not be minified
+        $preserve = [];
+        $tags = ['pre', 'code', 'textarea', 'script', 'style'];
+
+        foreach ($tags as $tag) {
+            $pattern = '#<' . $tag . '\b[^>]*>.*?</' . $tag . '>#si';
+            $buffer = preg_replace_callback($pattern, function ($match) use (&$preserve) {
+                $key = '@@PRESERVE_' . count($preserve) . '@@';
+                $preserve[$key] = $match[0];
+                return $key;
+            }, $buffer);
+        }
+
+        // Minify HTML outside preserved tags
+        // Remove whitespace between tags
+        $buffer = preg_replace('/>\s+</', '><', $buffer);
+
+        // Remove multiple spaces
+        $buffer = preg_replace('/\s{2,}/', ' ', $buffer);
+
+        // Remove spaces before/after tags
+        $buffer = preg_replace('/^\s+|\s+$/m', '', $buffer);
+
+        // Restore preserved areas
+        foreach ($preserve as $key => $content) {
+            $buffer = str_replace($key, $content, $buffer);
+        }
 
         return $buffer;
     }

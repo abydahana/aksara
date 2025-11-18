@@ -32,7 +32,7 @@ class Contact extends \Aksara\Laboratory\Core
 
         $this->set_title(phrase('Contact Us'))
         ->set_icon('mdi mdi-phone-classic')
-        ->set_description(phrase('Submit your inquiries or questions to us'))
+        ->set_description(phrase('Submit your inquiries or questions to us.'))
 
         ->render();
     }

@@ -215,7 +215,7 @@ class Sso extends \Aksara\Laboratory\Core
                 ' . phrase('Hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
             </p>
             <p>
-                ' . phrase('You are successfully registered to our website.') . ' ' . phrase('Now you can sign in to our website using your ' . $provider . ' account.') . ' ' . phrase('Make sure to set your password and username to secure your account.') . '
+                ' . phrase('You are successfully registered to our website.') . ' ' . phrase('Now you can sign in to our website using your {{ provider }} account.', ['provider' => $provider]) . ' ' . phrase('Make sure to set your password and username to secure your account.') . '
             </p>
             <p>
                 ' . phrase('If you unable to sign in, please contact us immediately.') . '

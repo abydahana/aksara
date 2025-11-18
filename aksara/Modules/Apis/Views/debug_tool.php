@@ -132,7 +132,7 @@
             
             if (! $(this).find('input[name=url]').val()) {
                 $('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
-                $('pre code').text(JSON.stringify({error: "<?= phrase('No service URL are given'); ?>"}, null, 4));
+                $('pre code').text(JSON.stringify({error: "<?= phrase('No service URL are given.'); ?>"}, null, 4));
                 Prism.highlightAll();
                 
                 return;
@@ -172,7 +172,7 @@
             .always(function(response, status, error) {
                 if (typeof response !== 'object') {
                     response = {
-                        error: '<?= phrase('The response is not a valid object'); ?>'
+                        error: '<?= phrase('The response is not a valid object.'); ?>'
                     };
                 }
                 

@@ -29,7 +29,7 @@ class Category extends \Aksara\Laboratory\Core
 
     public function index($slug = null)
     {
-        $this->set_title('{{ category_title }}', phrase('No category were found'))
+        $this->set_title('{{ category_title }}', phrase('No category were found!'))
         ->set_description('{{ category_description }}')
         ->set_icon('mdi mdi-sitemap')
 

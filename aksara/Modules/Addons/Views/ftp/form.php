@@ -49,7 +49,7 @@
                 <div class="form-group mb-3">
                     <div class="form-check form-switch">
                         <input type="checkbox" name="checking" role="boolean" value="1" class="form-check-input" id="checking_input" checked="" autocomplete="off">
-                        <label class="form-check-label" for="checking_input"> <?= phrase('Check connection while submitting'); ?> </label>
+                        <label class="form-check-label" for="checking_input"> <?= phrase('Check connection while submitting.'); ?> </label>
                     </div>
                 </div>
             </div>

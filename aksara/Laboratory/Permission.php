@@ -277,9 +277,9 @@ class Permission
         $privileges = json_decode($privileges, true);
 
         if (isset($privileges[$path]) && in_array($method, $privileges[$path])) {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page'), ($redirect ? $redirect : base_url()));
+            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         } else {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page'), ($redirect ? $redirect : base_url()));
+            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         }
     }
 
@@ -292,7 +292,7 @@ class Permission
     {
         if (! service('request')->isAJAX()) {
             // Non AJAX, redirect to somewhere
-            return throw_exception(403, phrase('You cannot perform the requested action'), ($redirect ? $redirect : base_url()));
+            return throw_exception(403, phrase('You cannot perform the requested action.'), ($redirect ? $redirect : base_url()));
         }
     }
 

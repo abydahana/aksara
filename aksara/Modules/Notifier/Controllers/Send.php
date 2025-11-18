@@ -200,7 +200,7 @@ class Send extends \Aksara\Laboratory\Core
                 $response = json_decode($response);
             }
 
-            if ('success' == $response || (isset($response->message_status) && strtolower($response->message_status) == 'success')) {
+            if ('success' == $response || (isset($response->message_status) && strtolower($response->message_status) == 'success') || (isset($response->code) && 200 == $response->code)) {
                 // Update delivery status
                 $this->model->update(
                     $this->_table,

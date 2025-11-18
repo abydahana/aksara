@@ -67,7 +67,7 @@
                         <div class="form-group">
                             <div class="form-check form-switch">
                                 <input type="checkbox" name="upgrade" role="boolean" value="1" class="form-check-input" id="upgrade_input" checked="" autocomplete="off">
-                                <label class="form-check-label" for="upgrade_input"> <?= phrase('Upgrade existing theme'); ?> </label>
+                                <label class="form-check-label" for="upgrade_input"> <?= phrase('Upgrade existing theme.'); ?> </label>
                             </div>
                         </div>
                     </div>

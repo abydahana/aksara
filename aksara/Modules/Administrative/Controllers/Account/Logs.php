@@ -60,10 +60,10 @@ class Logs extends \Aksara\Laboratory\Core
             // Update table to skip getting session_id on next execution
             $this->model->update($this->_table, ['session_id' => ''], ['session_id' => service('request')->getGet('session')]);
 
-            return throw_exception(301, phrase('The device was successfully kicked'), current_page('../', ['session' => null]));
+            return throw_exception(301, phrase('The device was successfully kicked.'), current_page('../', ['session' => null]));
         }
 
-        return throw_exception(404, phrase('Unable to kick the selected device'), current_page('../', ['session' => null]));
+        return throw_exception(404, phrase('Unable to kick the selected device.'), current_page('../', ['session' => null]));
     }
 
     public function _get_logs()

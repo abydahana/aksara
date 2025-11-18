@@ -132,7 +132,7 @@
                             <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
                             <hr />
                             <p class="lead mb-0">
-                                <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived'); ?>
+                                <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived.'); ?>
                             </p>
                         </div>
                     <?php endif; ?>

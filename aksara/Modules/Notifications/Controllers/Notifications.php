@@ -26,7 +26,7 @@ class Notifications extends \Aksara\Laboratory\Core
         parent::__construct();
 
         if (! get_userdata('is_logged')) {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page'));
+            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page!'));
         }
     }
 
@@ -84,7 +84,7 @@ class Notifications extends \Aksara\Laboratory\Core
 
                 $query[$key]->user = $val->first_name . ' ' . $val->last_name;
                 $query[$key]->avatar = get_image('users', $val->avatar, 'icon');
-                $query[$key]->text = ('comment' === $val->type ? phrase('commented on your post') : ('reply' === $val->type ? phrase('replying to your comment') : ('like' === $val->type ? phrase('likes your post') : ('upvote' === $val->type ? phrase('upvoted your comment') : phrase('reacted to your post')))));
+                $query[$key]->text = ('comment' === $val->type ? phrase('commented on your post.') : ('reply' === $val->type ? phrase('replying to your comment.') : ('like' === $val->type ? phrase('likes your post') : ('upvote' === $val->type ? phrase('upvoted your comment.') : phrase('reacted to your post.')))));
                 $query[$key]->url = base_url($val->url, $query_string);
                 $query[$key]->timestamp = time_ago($val->timestamp);
             }

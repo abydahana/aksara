@@ -107,7 +107,7 @@ class Register extends \Aksara\Laboratory\Core
 
         $this->set_title(phrase('Register an Account'))
         ->set_icon('mdi mdi-account-plus')
-        ->set_description(phrase('Fill all the required fields below to register your account'))
+        ->set_description(phrase('Fill all the required fields below to register your account.'))
 
         ->render();
     }

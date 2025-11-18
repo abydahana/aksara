@@ -65,7 +65,7 @@
                 $output .= '
                     <div class="accordion-item">
                         <div class="accordion-header" id="heading_' . $key . '">
-                            <button type="button" class="accordion-button' . (! $key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $key . '" aria-expanded="' . (! $key ? 'true' : 'false') . '" aria-controls="collapse_' . $key . '">
+                            <button type="button" class="accordion-button' . ($key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $key . '" aria-expanded="' . (! $key ? 'true' : 'false') . '" aria-controls="collapse_' . $key . '">
                                 ' . $val->title . '
                             </a>
                         </div>
@@ -85,7 +85,7 @@
             ';
         }
     ?>
-    
+
     <div class="py-3 py-md-5 bg-light gradient">
         <div class="container">
             <div class="text-center text-sm-start">

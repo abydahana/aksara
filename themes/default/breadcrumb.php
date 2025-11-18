@@ -3,8 +3,7 @@
         <?php foreach ($breadcrumb as $key => $val): ?>
             <li class="breadcrumb-item">
                 <a href="<?= $val->url; ?>" class="--xhr">
-                    <?= ($val->icon ? '<i class="' . $val->icon . '"></i>' : null); ?>
-                    <?= $val->label; ?>
+                    <?= ($val->icon ? '<i class="' . $val->icon . '"></i>' : null); ?> <?= $val->label; ?>
                 </a>
             </li>
         <?php endforeach; ?>

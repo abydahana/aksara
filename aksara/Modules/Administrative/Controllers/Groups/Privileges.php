@@ -49,7 +49,7 @@ class Privileges extends \Aksara\Laboratory\Core
                         ' . phrase('Group Privileges') . '
                     </a>
                     &nbsp;
-                    ' . phrase('after modify this adjustment to sets new roles') . '
+                    ' . phrase('after modify this adjustment to sets new roles.') . '
                 </div>
             </div>
         ')

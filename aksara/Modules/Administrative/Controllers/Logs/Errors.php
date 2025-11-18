@@ -95,10 +95,10 @@ class Errors extends \Aksara\Laboratory\Core
         }
 
         if ($deleted) {
-            return throw_exception(301, phrase('The selected log was successfully removed'), current_page('../', ['log' => null]));
+            return throw_exception(301, phrase('The selected log was successfully removed.'), current_page('../', ['log' => null]));
         }
 
-        return throw_exception(403, phrase('Unable to remove the selected log'), current_page('../', ['log' => null]));
+        return throw_exception(403, phrase('Unable to remove the selected log.'), current_page('../', ['log' => null]));
     }
 
     public function clear()
@@ -115,7 +115,7 @@ class Errors extends \Aksara\Laboratory\Core
                             ' . phrase('Are you sure want to clear the logs?') . '
                         </h5>
                         <p class="lead">
-                            ' . phrase('This action will remove everything related to the error logs') . '
+                            ' . phrase('This action will remove everything related to the error logs.') . '
                         </p>
                     </div>
                     <input type="hidden" name="confirm" value="1" />
@@ -178,7 +178,7 @@ class Errors extends \Aksara\Laboratory\Core
             }
         }
 
-        return throw_exception(301, '<b>' . number_format($success) . '</b> ' . phrase('of') . ' <b>' . number_format(sizeof($logs)) . '</b> ' . phrase('was successfully removed'), current_page('../', ['log' => null]));
+        return throw_exception(301, '<b>' . number_format($success) . '</b> ' . phrase('of') . ' <b>' . number_format(sizeof($logs)) . '</b> ' . phrase('was successfully removed.'), current_page('../', ['log' => null]));
     }
 
     private function _logs()

@@ -6,7 +6,7 @@
                 <?= phrase('Notice'); ?>
             </h5>
             <p class="mb-0 text-danger">
-                <b><?= ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . 'package.json'; ?></b> <?= phrase('is not writable'); ?>
+                <b><?= ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . 'theme.json'; ?></b> <?= phrase('is not writable'); ?>
             </p>
         </div>
     </div>

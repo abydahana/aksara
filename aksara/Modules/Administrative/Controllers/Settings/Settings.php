@@ -119,12 +119,12 @@ class Settings extends \Aksara\Laboratory\Core
             'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
         ])
         ->set_tooltip([
-            'login_attempt' => phrase('Maximum number of login attempts'),
-            'blocking_time' => phrase('Blocking time when reaching maximum login attempts'),
-            'account_age_restriction' => phrase('How many days before user can post interaction after registration'),
-            'spam_timer' => phrase('How many seconds before user can post another comment'),
-            'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider'),
-            'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles')
+            'login_attempt' => phrase('Maximum number of login attempts.'),
+            'blocking_time' => phrase('Blocking time when reaching maximum login attempts.'),
+            'account_age_restriction' => phrase('How many days before user can post interaction after registration.'),
+            'spam_timer' => phrase('How many seconds before user can post another comment.'),
+            'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider.'),
+            'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.')
         ])
         ->field_append([
             'default_map_tile' => '<a href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers" target="_blank">Reference<i class="mdi mdi-launch"></i></a>'

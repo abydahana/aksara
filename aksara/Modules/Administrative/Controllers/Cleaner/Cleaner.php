@@ -48,7 +48,7 @@ class Cleaner extends \Aksara\Laboratory\Core
         $this->permission->must_ajax();
 
         if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode'), current_page('../'));
+            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
         $error = false;
@@ -136,6 +136,6 @@ class Cleaner extends \Aksara\Laboratory\Core
         }
 
         // No garbage found
-        return throw_exception(301, phrase('There are no session garbage available at the moment'), go_to());
+        return throw_exception(301, phrase('There are no session garbage available at the moment.'), go_to());
     }
 }

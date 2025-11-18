@@ -68,7 +68,7 @@ class Updater extends \Aksara\Laboratory\Core
     {
         if ($this->valid_token(service('request')->getPost('_token'))) {
             if (DEMO_MODE) {
-                return throw_exception(403, phrase('Changes will not saved in demo mode!'), current_page());
+                return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
             }
 
             try {
@@ -291,7 +291,7 @@ class Updater extends \Aksara\Laboratory\Core
                     ' . ($dependency_updated ? '
                     <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
-                            ' . phrase('You may need to run the composer update from the directory below to update the dependencies') . ':
+                            ' . phrase('You may need to run the composer update from the directory below to update the dependencies:') . '
                             <br />
                             <code>' . ROOTPATH . '</code>
                         </div>
@@ -300,7 +300,7 @@ class Updater extends \Aksara\Laboratory\Core
                     ' . (is_dir($tmp_path) ? '
                     <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
-                            ' . phrase('Unable to remove the updater junk files from the cache directory') . ':
+                            ' . phrase('Unable to remove the updater junk files from the cache directory:') . '
                             <br />
                             <code>' . $tmp_path . '</code>
                         </div>

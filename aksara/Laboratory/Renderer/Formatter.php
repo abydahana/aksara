@@ -130,10 +130,13 @@ class Formatter
                 $value = get_file($this->_set_upload_path, $value);
             } elseif (in_array($key, ['image'])) {
                 // Set image url
-                $value = get_image($this->_set_upload_path, $value, 'thumb');
+                $value = get_image($this->_set_upload_path, $value, (! in_array('original_thumbnail', array_keys($type)) ? 'thumb' : null));
             } elseif (in_array($key, ['hyperlink'])) {
                 // Prepare query string
-                $query_string = [];
+                $query_string = [
+                    'per_page' => null,
+                    'limit' => null
+                ];
 
                 if (is_string($val['parameter']) && strpos($val['parameter'], '{{') !== false && strpos($val['parameter'], '}}') !== false) {
                     // Extract magic string

@@ -66,13 +66,13 @@ class Activities extends \Aksara\Laboratory\Core
     public function truncate()
     {
         if (DEMO_MODE) {
-            return throw_exception(403, phrase('Changes will not saved in demo mode'), go_to());
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), go_to());
         }
 
         if ($this->model->truncate($this->_table)) {
-            return throw_exception(301, phrase('The log activities was successfully cleaned'), go_to(null, ['per_page' => null]));
+            return throw_exception(301, phrase('The log activities was successfully cleaned.'), go_to(null, ['per_page' => null]));
         } else {
-            return throw_exception(500, phrase('Unable to clear the log activities'), go_to());
+            return throw_exception(500, phrase('Unable to clear the log activities.'), go_to());
         }
     }
 }
