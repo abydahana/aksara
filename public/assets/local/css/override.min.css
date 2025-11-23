@@ -6,14 +6,14 @@ html.fix-scrollbar body {
   overflow-x: inherit;
 }
 body.content-expanded .navbar,
-body.content-expanded [role=breadcrumb] {
+body.content-expanded [role="breadcrumb"] {
   display: none;
 }
 body.content-expanded #page-wrapper {
   background: #fff;
-  z-index: 1081
+  z-index: 1081;
 }
-body.content-expanded [role=content] {
+body.content-expanded [role="content"] {
   position: fixed !important;
   padding-top: 0 !important;
   padding-left: 0 !important;
@@ -24,8 +24,8 @@ body.content-expanded [role=content] {
   bottom: 0 !important;
   overflow-y: hidden;
 }
-th[align=right] {
-  text-align: right!important
+th[align="right"] {
+  text-align: right !important;
 }
 .clip {
   position: absolute;
@@ -77,14 +77,14 @@ th[align=right] {
   z-index: 1090 !important;
 }
 .toast {
-  border-radius:1.25rem!important
+  border-radius: 1.25rem !important;
 }
 .callout {
-  border-width: 0!important;
-  border-left-width: .25rem!important
+  border-width: 0 !important;
+  border-left-width: 0.25rem !important;
 }
 .offcanvas-header {
-  padding: .75rem 1rem!important
+  padding: 0.75rem 1rem !important;
 }
 .modal-backdrop.show ~ .modal-backdrop.show {
   z-index: 1055 !important;
@@ -97,21 +97,21 @@ th[align=right] {
 }
 .modal-body > .--validation-callback.alert {
   margin-left: -1rem !important;
-  margin-right: -1rem!important;
+  margin-right: -1rem !important;
   margin-bottom: -1rem !important;
 }
 .mx--3 {
-  margin-left: -.75rem!important;
-  margin-right: -.75rem!important
+  margin-left: -0.75rem !important;
+  margin-right: -0.75rem !important;
 }
 .modal-body .mx--3,
 .card-body .mx--3,
 .alert .mx--3 {
-  margin-left: -1rem!important;
-  margin-right: -1rem!important
+  margin-left: -1rem !important;
+  margin-right: -1rem !important;
 }
 .card-body .list-group .list-group-item span.float-end {
-  float: inherit!important
+  float: inherit !important;
 }
 .sortable {
   cursor: pointer;
@@ -125,8 +125,8 @@ th[align=right] {
   display: inline-block;
 }
 .btn-group-sm .rounded-end {
-  border-top-right-radius: .25rem!important;
-  border-bottom-right-radius: .25rem!important;
+  border-top-right-radius: 0.25rem !important;
+  border-bottom-right-radius: 0.25rem !important;
 }
 .btn-group-xs > .btn,
 .btn-xs {
@@ -134,7 +134,7 @@ th[align=right] {
   font-size: 12px;
 }
 .text-justify {
-  text-align: justify
+  text-align: justify;
 }
 .text-break-word {
   word-break: break-word;
@@ -173,7 +173,7 @@ th[align=right] {
 }
 .fileupload-new {
   min-height: 36px;
-  max-width: 128px
+  max-width: 128px;
 }
 .fileupload-new img {
   border-radius: var(--bs-border-radius);
@@ -207,7 +207,7 @@ textarea {
   resize: none !important;
 }
 .form-control::placeholder {
-  opacity: .75!important
+  opacity: 0.75 !important;
 }
 .form-control[readonly],
 .form-control:focus[readonly] {
@@ -217,8 +217,8 @@ textarea {
 .form-control:focus {
   box-shadow: none !important;
 }
-.input-group>.select2-container {
-  margin-left:0!important
+.input-group > .select2-container {
+  margin-left: 0 !important;
 }
 .custom-file-label {
   border: 2px dashed #ced4da !important;
@@ -401,67 +401,67 @@ blink {
 }
 
 @media (min-width: 576px) {
- .text-sm-justify {
-  text-align: justify
- }
+  .text-sm-justify {
+    text-align: justify;
+  }
 }
 
 @media (min-width: 768px) {
   .text-md-justify {
-   text-align: justify
+    text-align: justify;
   }
 }
 
 @media (min-width: 992px) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
   .text-lg-justify {
-   text-align: justify
+    text-align: justify;
   }
 }
 
 @media (min-width: 1200px) {
   .text-xl-justify {
-   text-align: justify
+    text-align: justify;
   }
 }
 
 @media (min-width: 1400px) {
   .text-xxl-justify {
-   text-align: justify
+    text-align: justify;
   }
 }
 
 @media (max-width: 575.98px) {
   .navbar-brand {
-    max-width: 80%
+    max-width: 80%;
   }
-  .card a>img.rounded.w-100 {
+  .card a > img.rounded.w-100 {
     max-height: 200px;
     object-fit: cover;
   }
   .toast-container.position-fixed.bottom-0.end-0 {
     width: 100%;
-    top: 60px!important;
-    left: 0!important;
-    right: 0!important
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
   }
   .toast-container.position-fixed.bottom-0.end-0 .toast {
     width: 100%;
-    max-width: 575.98px!important
+    max-width: 575.98px !important;
   }
 }
 
 @media (max-width: 767.98px) {
-
 }
 
 @media (max-width: 991.98px) {
-
 }
 
 @media (max-width: 1199.98px) {
-
 }
 
 @media (max-width: 1399.98px) {
-
 }
