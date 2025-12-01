@@ -1,0 +1,59 @@
+@media(max-width:768px) {
+  :root {
+    --bs-body-font-size: 1.1rem!important;
+    --bs-nav-link-font-size: 1.25rem!important;
+  }
+  .offcanvas.text-bg-dark {
+    background: linear-gradient(to bottom left, rgb(76, 76, 79), rgb(33,37,41))!important;
+  }
+  .offcanvas .nav-link i {
+    width: 3rem!important;
+    margin-top: 3px
+  }
+  .offcanvas .dropdown-menu .nav-link i {
+    margin-top: -3px
+  }
+  .offcanvas .dropdown-menu .nav-link span {
+    padding-left: 3rem
+  }
+  .navbar-nav .dropdown .dropdown-toggle::after {
+    top: 1.75rem
+  }
+  .navbar-nav .dropdown.user-account .dropdown-toggle::after {
+    top: 2.5rem
+  }
+  .navbar-toggler:focus {
+    box-shadow: none
+  }
+  .user-account {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background: var(--bs-dark);
+    padding-top: 1rem;
+    padding-bottom: 1rem
+  }
+  .user-login {
+    position: absolute;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem
+  }
+  footer#footer-wrapper {
+    display: none!important
+  }
+  .vh-100 {
+    height: calc(100vh - 56px) !important;
+  }
+  .vh-75 {
+    height: calc(75vh - 56px) !important;
+  }
+  .vh-50 {
+    height: calc(50vh - 56px) !important;
+  }
+  .vh-25 {
+    height: calc(25vh - 56px) !important;
+  }
+}

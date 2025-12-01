@@ -11,7 +11,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
+        <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">
                     <?= phrase('Main Navigation'); ?>
@@ -24,7 +24,8 @@
                     <?php if (get_userdata('is_logged')): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" role="notifications">
-                            <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
+                            <i class="mdi mdi-bell-ring"></i>
+                            <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <!-- Notification list -->
@@ -33,42 +34,39 @@
                     <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
-                            <i class="mdi mdi-translate"></i> <span><?= phrase('Language'); ?></span>
+                            <i class="mdi mdi-translate"></i>
+                            <span><?= phrase('Language'); ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <!-- Language list -->
                         </ul>
                     </li>
                     <?php if (get_userdata('is_logged')): ?>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown user-account">
                         <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown">
-                            <i class="mdi mdi-account-outline"></i> <span><?= truncate(get_userdata('first_name'), 16); ?></span>
+                            <i class="mdi mdi-account-outline"></i>
+                            <span><?= truncate(get_userdata('first_name'), 16); ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li class="nav-item">
-                                <h6 href="javascript:void(0)" class="nav-link dropdown-header text-muted">
-                                    <i class="mdi mdi-blank"></i> <span><?= phrase('User Panel'); ?></span>
-                                </h6>
-                            </li>
-                            
-                            <li><hr class="dropdown-divider"></li>
-                            
-                            <li class="nav-item">
                                 <a class="nav-link no-ajax" href="<?= base_url('dashboard'); ?>">
-                                    <i class="mdi mdi-monitor-dashboard"></i> <span><?= phrase('Dashboard'); ?></span>
+                                    <i class="mdi mdi-monitor-dashboard"></i>
+                                    <span><?= phrase('Dashboard'); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link no-ajax" href="<?= base_url('administrative/account'); ?>">
-                                    <i class="mdi mdi-account-circle-outline"></i> <span><?= phrase('Account'); ?></span>
+                                    <i class="mdi mdi-account-circle-outline"></i>
+                                    <span><?= phrase('Account'); ?></span>
                                 </a>
                             </li>
                             <!-- Divider -->
                             <li><hr class="dropdown-divider"></li>
-                            
+
                             <li class="nav-item">
                                 <a class="nav-link text-danger" href="<?= base_url('auth/sign_out'); ?>">
-                                    <i class="mdi mdi-logout"></i> <span><?= phrase('Sign Out'); ?></span>
+                                    <i class="mdi mdi-logout"></i>
+                                    <span><?= phrase('Sign Out'); ?></span>
                                 </a>
                             </li>
                         </ul>
@@ -77,9 +75,10 @@
                     <li class="nav-item">
                         <span class="nav-link">&nbsp;</span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item user-login">
                         <a href="<?= base_url('auth'); ?>" class="nav-link bg-primary rounded-pill px-3 text-center --modal" data-format="html">
-                            <i class="mdi mdi-login"></i> <span><?= phrase('Sign In'); ?></span>
+                            <i class="mdi mdi-login"></i>
+                            <span><?= phrase('Sign In'); ?></span>
                         </a>
                     </li>
                     <?php endif; ?>
