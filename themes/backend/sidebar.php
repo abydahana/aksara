@@ -14,15 +14,15 @@
                 </a>
                 <p class="text-sm mb-lg-0">
                     <i class="mdi mdi-circle text-success"></i>
-                    
+
                     <?= phrase('Online') . (get_userdata('year') ? '<span class="badge badge-warning d-md-none d-lg-none d-xl-none">' . get_userdata('year') . '</span>' : ''); ?>
                 </p>
                 <p class="d-lg-none d-xl-none mb-0">
-                    <a href="<?= base_url('xhr/partial/account'); ?>" class="btn btn-outline-primary btn-xs --modal --force-xs">
+                    <a href="<?= base_url('xhr/partial/account'); ?>" class="btn btn-outline-primary btn-sm rounded-pill --modal --force-xs">
                         <i class="mdi mdi-cogs"></i>
                         <?= phrase('Account'); ?>
                     </a>
-                    <a href="<?= base_url('xhr/partial/language'); ?>" class="btn btn-xs float-end --modal --force-xs">
+                    <a href="<?= base_url('xhr/partial/language'); ?>" class="btn btn-sm rounded-pill float-end --modal --force-xs">
                         <i class="mdi mdi-translate"></i>
                         <?= phrase('Language'); ?>
                         <i class="mdi mdi-chevron-down"></i>
@@ -31,7 +31,7 @@
             </div>
         </div>
     </div>
-    
+
     <?= generate_menu($menus, 'nav flex-column', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-toggle="expand-collapse"', '', 'list-unstyled flex-column collapse'); ?>
-    
+
 </aside>

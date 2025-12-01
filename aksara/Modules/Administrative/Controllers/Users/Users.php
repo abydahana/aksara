@@ -55,7 +55,7 @@ class Users extends \Aksara\Laboratory\Core
 
         ->set_primary('user_id, username')
 
-        /* add extra option button */
+        // Add extra option button
         ->add_button('privileges', phrase('Individual Privilege'), 'btn-success --xhr', 'mdi mdi-account-check-outline', ['user_id' => 'user_id'])
 
         ->unset_column('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')

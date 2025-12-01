@@ -44,6 +44,11 @@ class Assets extends \Aksara\Laboratory\Core
      */
     public function styles($theme = null)
     {
+        // Fallback ke theme default jika tidak ada
+        if (! $theme) {
+            $theme = get_setting('frontend_theme') ?? 'default';
+        }
+
         $output = '';
 
         try {
@@ -147,6 +152,11 @@ class Assets extends \Aksara\Laboratory\Core
      */
     public function scripts($theme = null)
     {
+        // Fallback ke theme default jika tidak ada
+        if (! $theme) {
+            $theme = get_setting('frontend_theme') ?? 'default';
+        }
+
         $output = '';
 
         try {
