@@ -93,7 +93,7 @@ class Cache extends BaseConfig
      * Your file storage preferences can be specified below, if you are using
      * the File driver.
      *
-     * @var array<string, int|string|null>
+     * @var array{storePath?: string, mode?: int}
      */
     public array $file = [
         'storePath' => WRITEPATH . 'cache/',
@@ -110,7 +110,7 @@ class Cache extends BaseConfig
      *
      * @see https://codeigniter.com/user_guide/libraries/caching.html#memcached
      *
-     * @var array<string, bool|int|string>
+     * @var array{host?: string, port?: int, weight?: int, raw?: bool}
      */
     public array $memcached = [
         'host' => '127.0.0.1',
@@ -123,10 +123,11 @@ class Cache extends BaseConfig
      * -------------------------------------------------------------------------
      * Redis settings
      * -------------------------------------------------------------------------
+     *
      * Your Redis server can be specified below, if you are using
      * the Redis or Predis drivers.
      *
-     * @var array<string, int|string|null>
+     * @var array{host?: string, password?: string|null, port?: int, timeout?: int, database?: int}
      */
     public array $redis = [
         'host' => '127.0.0.1',

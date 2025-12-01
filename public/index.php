@@ -19,6 +19,10 @@
  * Hack the installation under a limited shared hosting (cPanel). Read the
  * detailed trick here: https://github.com/abydahana/aksara/discussions/439
  */
+
+use CodeIgniter\Boot;
+use Config\Paths;
+
 $frameworkPath = '';
 
 if ($frameworkPath) {
@@ -42,8 +46,8 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
 } elseif (! is_dir('../' . $frameworkPath . 'vendor')) {
     exit('<center>Please run "<code style="color:green">composer install</code>" from "<code style="color:red">' . dirname(__DIR__) . '</code>" to fetch the required dependencies before we start the installation wizard.<br /><a href="//getcomposer.org/download" target="_blank"><b>Click here</b></a> to download the composer if it\'s not yet installed on your web server.</center>');
 } elseif (
-    ! is_writable('../' . $frameworkPath . 'writable') || 
-    ! is_writable('../' . $frameworkPath . 'writable/session') || 
+    ! is_writable('../' . $frameworkPath . 'writable') ||
+    ! is_writable('../' . $frameworkPath . 'writable/session') ||
     ! is_writable('uploads')) {
     exit('<center>You need to make the following directory and it\'s subdirectories to be writable recursively: ' . (! is_writable('../' . $frameworkPath . 'writable') || ! is_writable('../' . $frameworkPath . 'writable/session') ? '<br /><code style="color:red">' . dirname(__DIR__) . DIRECTORY_SEPARATOR . $frameworkPath . 'writable' . '</code>' : null) . (! is_writable('uploads') ? '<br /><code style="color:red">' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . '</code>' : null) . '<br />Please <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>click here</b></a> to get support related to this error.</center>');
 }
@@ -92,9 +96,9 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
 require FCPATH . '../' . $config_path . '/Config/Paths.php';
 // ^^^ Change this line if you move your application folder
 
-$paths = new Config\Paths();
+$paths = new Paths();
 
 // LOAD THE FRAMEWORK BOOTSTRAP FILE
 require $paths->systemDirectory . '/Boot.php';
 
-exit(CodeIgniter\Boot::bootWeb($paths));
+exit(Boot::bootWeb($paths));
