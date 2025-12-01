@@ -11,16 +11,17 @@
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <meta name="description" content="<?= truncate($meta->description); ?>" />
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
-        
+
         <?php
             echo aksara_header();
 
             echo asset_loader([
                 'bootstrap/css/bootstrap.min.css',
-                'local/css/styles.min.css'
+                'local/css/styles.min.css',
+                'local/css/mobile.min.css'
             ]);
         ?>
-        
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
@@ -35,17 +36,17 @@
         </style>
     </head>
     <body>
-        
+
         <?php require_once('header.php'); ?>
-        
+
         <main id="content-wrapper">
             <section id="content-placeholder">
                 <?= $content; ?>
             </section>
         </main>
-        
+
         <?php require_once('footer.php'); ?>
-        
+
         <?php
             echo aksara_footer();
 
