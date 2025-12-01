@@ -259,10 +259,12 @@ class Install extends BaseController
             'installation_mode' => [
                 [
                     'id' => 0,
-                    'label' => phrase('Developer (without sample)')
+                    'label' => phrase('Developer (without sample)'),
+                    'selected' => false
                 ], [
                     'id' => 1,
-                    'label' => phrase('Basic (with sample)')
+                    'label' => phrase('Basic (with sample)'),
+                    'selected' => true
                 ]
             ],
             'timezone' => \DateTimeZone::listIdentifiers(\DateTimeZone::ALL)

@@ -9,6 +9,9 @@
  * the LICENSE file that was distributed with this source code.
  */
 
+use CodeIgniter\Boot;
+use Config\Paths;
+
 /*
  *---------------------------------------------------------------
  * Sample file for Preloading
@@ -24,7 +27,7 @@
  */
 
 // Load the paths config file
-require __DIR__ . '/aksara/Config/Paths.php';
+require __DIR__ . '/app/Config/Paths.php';
 
 // Path to the front controller
 define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
@@ -54,6 +57,7 @@ class preload
                 '/system/Config/Routes.php',
                 '/system/Language/',
                 '/system/bootstrap.php',
+                '/system/util_bootstrap.php',
                 '/system/rewrite.php',
                 '/Views/',
                 // Errors occur.
@@ -69,10 +73,10 @@ class preload
 
     private function loadAutoloader(): void
     {
-        $paths = new Config\Paths();
+        $paths = new Paths();
         require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
 
-        CodeIgniter\Boot::preload($paths);
+        Boot::preload($paths);
     }
 
     /**

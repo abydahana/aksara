@@ -18,8 +18,6 @@
 namespace Config;
 
 /**
- * Mimes
- *
  * This file contains an array of mime types.  It is used by the
  * Upload class to help identify allowed file types.
  *
@@ -30,13 +28,13 @@ namespace Config;
  *
  * When working with mime types, please make sure you have the ´fileinfo´
  * extension enabled to reliably detect the media types.
- *
- * @immutable
  */
 class Mimes
 {
     /**
      * Map of extensions to mime types.
+     *
+     * @var array<string, list<string>|string>
      */
     public static array $mimes = [
         'hqx' => [
@@ -495,6 +493,8 @@ class Mimes
             'application/sla',
             'application/vnd.ms-pki.stl',
             'application/x-navistyle',
+            'model/stl',
+            'application/octet-stream',
         ],
     ];
 

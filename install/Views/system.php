@@ -4,7 +4,7 @@
 
     foreach($installation_mode as $key => $val)
     {
-        $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] ? ' selected' : null) . '>' . $val['label'] . '</option>';
+        $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
     }
 
     // Get timezone options
