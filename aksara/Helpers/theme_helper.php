@@ -17,49 +17,89 @@
 
 if (! function_exists('asset_loader')) {
     /**
-     * Load additional css or js file.
-     * The file location is directive to a folder named "assets" for security
-     * purpose.
+     * Load additional CSS or JS files.
+     * Auto-detect: check theme assets first, fallback to core assets
+     *
+     * @param array|string $assets Array or comma-separated string of file paths
+     * @return string|false HTML tags for loading assets
      */
     function asset_loader($assets = [])
     {
         $theme = null;
         $backtrace = debug_backtrace();
 
+        // Auto-detect theme from backtrace
         foreach ($backtrace as $key => $val) {
-            // Find active theme
-            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file']) {
+            if (isset($val['file']) && ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file']) {
                 if (isset($val['object']->template->theme)) {
-                    // Active theme found
                     $theme = $val['object']->template->theme;
                 } elseif (isset($val['object']->theme)) {
-                    // Active theme found
                     $theme = $val['object']->theme;
                 }
             }
         }
 
+        // Fallback: try get_theme() helper
         if (! $theme) {
-            return false;
+            $theme = get_theme();
         }
 
+        // Final fallback: from settings
+        if (! $theme) {
+            $theme = get_setting('frontend_theme') ?? 'default';
+        }
+
+        // Convert string to array
         if (! is_array($assets)) {
             $assets = array_map('trim', explode(',', $assets));
         }
 
-        $output = null;
+        $output = '';
 
         foreach ($assets as $key => $val) {
-            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $val)) {
-                if ('css' == strtolower(pathinfo($val, PATHINFO_EXTENSION))) {
-                    $output .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . base_url('themes/' . $theme . '/assets/' . $val) . "\" />\n";
-                } else {
-                    $output .= "<script type=\"text/javascript\" src=\"" . base_url('themes/' . $theme . '/assets/' . $val) . "\"></script>\n";
+            $val = trim($val);
+
+            if (empty($val)) {
+                continue;
+            }
+
+            $extension = strtolower(pathinfo($val, PATHINFO_EXTENSION));
+            $file_exists = false;
+            $file_url = '';
+
+            // Priority 1: Check theme assets
+            $theme_path = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $val);
+
+            if (file_exists($theme_path)) {
+                $file_exists = true;
+                $file_url = base_url('themes/' . $theme . '/assets/' . $val);
+            } else {
+                // Priority 2: Fallback to core assets
+                $core_path = ROOTPATH . 'assets' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $val);
+
+                if (file_exists($core_path)) {
+                    $file_exists = true;
+                    $file_url = base_url('assets/' . $val);
                 }
+            }
+
+            // Generate HTML tag
+            if ($file_exists) {
+                if ('css' === $extension) {
+                    $output .= '<link rel="stylesheet" type="text/css" href="' . $file_url . '" />' . "\n";
+                } elseif ('js' === $extension) {
+                    $output .= '<script type="text/javascript" src="' . $file_url . '"></script>' . "\n";
+                } else {
+                    // Log warning for unrecognized extension
+                    log_message('warning', "Unknown asset extension: {$val}");
+                }
+            } else {
+                // Log warning if file not found
+                log_message('warning', "Asset not found: {$val} (theme: {$theme})");
             }
         }
 
-        return $output;
+        return $output ?: false;
     }
 }
 
@@ -130,7 +170,7 @@ if (! function_exists('generate_menu')) {
                     $output .= '
                         <li class="' . $li_class . (isset($val->class) ? ' ' . $val->class : null) . '">
                             <span class="' . $a_class . '">
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . ' <b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
+                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
                             </span>
                         </li>
                     ';
@@ -148,7 +188,7 @@ if (! function_exists('generate_menu')) {
                     $output .= '
                         <li class="' . $li_class . ($children && $dropdown_class ? ' ' . $dropdown_class : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
                             <a href="' . ($children ? '#' : $val->slug) . '" class="' . $a_class . ($children ? ' ' . $toggle_class : null) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . ' <span class="hide-on-collapse">' . $val->label . '</span>
+                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<span class="hide-on-collapse">' . $val->label . '</span>
                             </a>
                             ' . ($children ? generate_menu($children, $ul_class, $li_class, $a_class, $toggle_class, $toggle_initial, $dropdown_class, $sub_ul_class, true, ($level + 1)) : null) . '
                         </li>

@@ -771,8 +771,105 @@ class Template
             ->row('serialized_data');
 
             $menus = ($menus ? json_decode($menus, true) : []);
+            $cms_menus = [
+                [
+                    'id' => 0,
+                    'label' => 'Blogs',
+                    'slug' => 'cms/blogs',
+                    'icon' => 'mdi mdi-newspaper',
+                    'children' => [
+                        [
+                            'id' => 0,
+                            'label' => 'Posts',
+                            'slug' => 'cms/blogs',
+                            'icon' => 'mdi mdi-pencil'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'Categories',
+                            'slug' => 'cms/blogs/categories',
+                            'icon' => 'mdi mdi-sitemap'
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Pages',
+                    'slug' => 'cms/pages',
+                    'icon' => 'mdi mdi-book-open-page-variant'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Galleries',
+                    'slug' => 'cms/galleries',
+                    'icon' => 'mdi mdi-folder-multiple-image'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Videos',
+                    'slug' => 'cms/videos',
+                    'icon' => 'mdi mdi-youtube'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Peoples',
+                    'slug' => 'cms/peoples',
+                    'icon' => 'mdi mdi-account-group-outline'
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Partial Content',
+                    'slug' => 'cms/partials',
+                    'icon' => 'mdi mdi-file-image',
+                    'children' => [
+                        [
+                            'id' => 0,
+                            'label' => 'Carousels',
+                            'slug' => 'cms/partials/carousels',
+                            'icon' => 'mdi mdi-image-multiple'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'FAQs',
+                            'slug' => 'cms/partials/faqs',
+                            'icon' => 'mdi mdi-file-question'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'Announcements',
+                            'slug' => 'cms/partials/announcements',
+                            'icon' => 'mdi mdi-bullhorn-outline'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'Testimonials',
+                            'slug' => 'cms/partials/testimonials',
+                            'icon' => 'mdi mdi-comment-account-outline'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'Inquiries',
+                            'slug' => 'cms/partials/inquiries',
+                            'icon' => 'mdi mdi-message-text'
+                        ],
+                        [
+                            'id' => 0,
+                            'label' => 'Media',
+                            'slug' => 'cms/partials/media',
+                            'icon' => 'mdi mdi-folder-image'
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 0,
+                    'label' => 'Comments',
+                    'slug' => 'cms/comments',
+                    'icon' => 'mdi mdi-comment-multiple-outline'
+                ]
+            ];
 
             if (get_userdata('group_id') == 1 && $this->get_theme_property('type') == 'backend') {
+                // Core menus for global administrator
                 $core_menus = [
                     [
                         'id' => 0,
@@ -784,102 +881,7 @@ class Template
                         'label' => 'CMS',
                         'slug' => 'cms',
                         'icon' => 'mdi mdi-dropbox',
-                        'children' => [
-                            [
-                                'id' => 0,
-                                'label' => 'Blogs',
-                                'slug' => 'cms/blogs',
-                                'icon' => 'mdi mdi-newspaper',
-                                'children' => [
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Posts',
-                                        'slug' => 'cms/blogs',
-                                        'icon' => 'mdi mdi-pencil'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Categories',
-                                        'slug' => 'cms/blogs/categories',
-                                        'icon' => 'mdi mdi-sitemap'
-                                    ]
-                                ]
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Pages',
-                                'slug' => 'cms/pages',
-                                'icon' => 'mdi mdi-book-open-page-variant'
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Galleries',
-                                'slug' => 'cms/galleries',
-                                'icon' => 'mdi mdi-folder-multiple-image'
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Videos',
-                                'slug' => 'cms/videos',
-                                'icon' => 'mdi mdi-youtube'
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Peoples',
-                                'slug' => 'cms/peoples',
-                                'icon' => 'mdi mdi-account-group-outline'
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Partial Content',
-                                'slug' => 'cms/partials',
-                                'icon' => 'mdi mdi-file-image',
-                                'children' => [
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Carousels',
-                                        'slug' => 'cms/partials/carousels',
-                                        'icon' => 'mdi mdi-image-multiple'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'FAQs',
-                                        'slug' => 'cms/partials/faqs',
-                                        'icon' => 'mdi mdi-file-question'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Announcements',
-                                        'slug' => 'cms/partials/announcements',
-                                        'icon' => 'mdi mdi-bullhorn-outline'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Testimonials',
-                                        'slug' => 'cms/partials/testimonials',
-                                        'icon' => 'mdi mdi-comment-account-outline'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Inquiries',
-                                        'slug' => 'cms/partials/inquiries',
-                                        'icon' => 'mdi mdi-message-text'
-                                    ],
-                                    [
-                                        'id' => 0,
-                                        'label' => 'Media',
-                                        'slug' => 'cms/partials/media',
-                                        'icon' => 'mdi mdi-folder-image'
-                                    ]
-                                ]
-                            ],
-                            [
-                                'id' => 0,
-                                'label' => 'Comments',
-                                'slug' => 'cms/comments',
-                                'icon' => 'mdi mdi-comment-multiple-outline'
-                            ]
-                        ]
+                        'children' => $cms_menus
                     ],
                     [
                         'id' => 0,
@@ -1036,6 +1038,9 @@ class Template
                 ];
 
                 $menus = array_merge($menus, $core_menus);
+            } elseif (get_userdata('group_id') == 2 && $this->get_theme_property('type') == 'backend') {
+                // CMS menus for technical
+                $menus = array_merge($menus, $cms_menus);
             }
         }
 
