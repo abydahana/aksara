@@ -5712,7 +5712,7 @@ class Core extends Controller
     {
         $stats = $this->model->get('app__stats', 1)->row();
 
-        if (!$stats) {
+        if (! $stats) {
             return;
         }
 
@@ -5724,13 +5724,13 @@ class Core extends Controller
         $updates = [];
 
         // Check daily reset - hanya reset kalau beda hari
-        if (!$stats->last_daily_reset || $stats->last_daily_reset !== $today) {
+        if (! $stats->last_daily_reset || $stats->last_daily_reset !== $today) {
             $updates['daily_visits'] = 0;
             $updates['last_daily_reset'] = $today;
         }
 
         // Check weekly reset - hanya reset kalau beda minggu
-        if (!$stats->last_weekly_reset) {
+        if (! $stats->last_weekly_reset) {
             $updates['weekly_visits'] = 0;
             $updates['last_weekly_reset'] = $today;
         } else {
@@ -5742,7 +5742,7 @@ class Core extends Controller
         }
 
         // Check monthly reset - hanya reset kalau beda bulan
-        if (!$stats->last_monthly_reset) {
+        if (! $stats->last_monthly_reset) {
             $updates['monthly_visits'] = 0;
             $updates['last_monthly_reset'] = $today;
         } else {
@@ -5754,7 +5754,7 @@ class Core extends Controller
         }
 
         // Check yearly reset - hanya reset kalau beda tahun
-        if (!$stats->last_yearly_reset) {
+        if (! $stats->last_yearly_reset) {
             $updates['yearly_visits'] = 0;
             $updates['last_yearly_reset'] = $today;
         } else {
@@ -5766,7 +5766,7 @@ class Core extends Controller
         }
 
         // Update if there are changes
-        if (!empty($updates)) {
+        if (! empty($updates)) {
             $this->model->update('app__stats', $updates);
         }
     }
