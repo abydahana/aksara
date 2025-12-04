@@ -54,6 +54,8 @@ trait Traits
 
     private $_compiled_table = [];
 
+    private $_custom_format = false;
+
     private $_data = [];
 
     private $_db_driver;

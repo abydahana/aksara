@@ -38,6 +38,30 @@ class Parser
     public function parse(string $component, $replacement = [])
     {
         try {
+            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/core')) {
+                // Core components not exists, create directory
+                mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/core', 0755, true);
+            }
+
+            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/form')) {
+                // Form components not exists, create directory
+                mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/form', 0755, true);
+            }
+
+            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/table')) {
+                // Table components not exists, create directory
+                mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/table', 0755, true);
+            }
+
+            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/view')) {
+                // View components not exists, create directory
+                mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/view', 0755, true);
+            }
+
+            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/views')) {
+                mkdir(ROOTPATH . 'themes/' . $this->_theme . '/views', 0755, true);
+            }
+
             // Check components notes existence
             if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/README')) {
                 // Add readme notes

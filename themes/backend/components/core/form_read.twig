@@ -17,7 +17,7 @@
 
         {# Include form component #}
         {% include 'view/' ~ params.type ~ '.twig' with params %}
-        
+
         {% if params.append %}
             <span class="input-group-text-unformatted ms-2"> {{ params.append | raw }} </span>
         {% endif %}

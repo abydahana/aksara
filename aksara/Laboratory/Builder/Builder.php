@@ -68,7 +68,7 @@ class Builder
                 $component = $builder->$template($type);
 
                 // Theme found, now create default component when no file exists
-                if (! file_exists($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig')) {
+                if (! file_exists($directory . ($path ? '/' . $path : null) . '/' . $component['type'] . '.twig') || ENVIRONMENT === 'development') {
                     // Component file not exists
                     if (! is_dir($directory . ($path ? '/' . $path : null))) {
                         // Try to create directory
