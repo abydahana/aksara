@@ -17,11 +17,11 @@ $config = new PhpCsFixer\Config();
 $header = <<<EOF
     This file is part of Aksara CMS, both framework and publishing
     platform.
-    
+
     @author     Aby Dahana <abydahana@gmail.com>
     @copyright  (c) Aksara Laboratory <https://aksaracms.com>
     @license    MIT License
-    
+
     This source file is subject to the MIT license that is bundled
     with this source code in the LICENSE.txt file.
 
@@ -68,4 +68,4 @@ return $config->setRules
 ])
 ->setFinder($finder)
 ->setIndent("    ")
-->setLineEnding("\r\n");
+->setLineEnding("\n");
