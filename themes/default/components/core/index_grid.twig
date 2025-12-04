@@ -31,13 +31,13 @@
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     </a>
                                 </div>
-                                
+
                                 {% set break = true %}
                             {% elseif not break and field.type == 'image' %}
                                 <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
                                     <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
                                 </a>
-                                
+
                                 {% set break = true %}
                             {% endif %}
                         {% endfor %}

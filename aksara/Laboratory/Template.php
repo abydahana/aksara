@@ -516,13 +516,23 @@ class Template
             }
 
             if ($key && $val) {
-                if ($key != $current_slug) {
-                    $output[] = [
-                        'url' => $external ?? base_url($slug, $params),
-                        'label' => $val,
-                        'icon' => ''
-                    ];
+                $breadcrumb_params = $params;
+
+                if (is_array($val) && isset($val['label'])) {
+                    $label = $val['label'];
+
+                    if (isset($val['parameter']) && is_array($val['parameter'])) {
+                        $breadcrumb_params = array_merge($params, $val['parameter']);
+                    }
+                } else {
+                    $label = $val;
                 }
+
+                $output[] = [
+                    'url' => $external ?? base_url($slug, $breadcrumb_params),
+                    'label' => $label,
+                    'icon' => ''
+                ];
             }
         }
 

@@ -807,6 +807,10 @@ class Core extends Controller
 
                 // Loop multiple field type
                 foreach ($types as $_key => $_type) {
+                    if ('custom_format' == $_type) {
+                        $this->_custom_format = true;
+                    }
+
                     $this->_set_field[$key][$_type] = [
                         'parameter' => (isset($field[$_type]['parameter']) ? $field[$_type]['parameter'] : $parameter),
                         'alpha' => (isset($field[$_type]['alpha']) ? $field[$_type]['alpha'] : $alpha),
@@ -816,6 +820,10 @@ class Core extends Controller
                     ];
                 }
             } else {
+                if ('custom_format' == $type) {
+                    $this->_custom_format = true;
+                }
+
                 // Single field type
                 $this->_set_field[$key][$type] = [
                     'parameter' => (isset($field[$type]['parameter']) ? $field[$type]['parameter'] : $parameter),
@@ -1937,6 +1945,12 @@ class Core extends Controller
                     $validation[] = 'max_length[' . $maxlength . ']';
                 }
 
+                // Call assigned method of custom format
+                if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
+                    $method = $this->_set_field[$field]['custom_format']['parameter'];
+                    $content = $this->$method((array) $array);
+                }
+
                 $results[$field] = [
                     'type' => $this->_set_field[$field],
                     'primary' => (in_array($field, $this->_set_primary) ? 1 : 0),
@@ -2955,9 +2969,9 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
+            // Safe abstraction to reduce unnecessary property
             $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation', '_set_upload_path', '_sortable', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
 
-            // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
 
             // Load renderer
@@ -2989,10 +3003,9 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            // Slice only required property as config
+            // Safe abstraction to reduce unnecessary property
             $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_class', '_column_order', '_column_size', '_default_value', '_db_driver', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client', 'model']));
 
-            // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
 
             // Load renderer
@@ -3024,10 +3037,9 @@ class Core extends Controller
         $serialized = $this->serialize($data);
 
         if ($serialized) {
-            // Slice only required property as config
+            // Safe abstraction to reduce unnecessary property
             $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order', '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path', '_table', 'api_client']));
 
-            // Safe abstraction to reduce unnecessary property
             $properties['_set_theme'] = $this->template->theme;
 
             // Load renderer
@@ -5579,6 +5591,9 @@ class Core extends Controller
      */
     private function _push_log()
     {
+        // Check and reset counters first before processing visitor
+        $this->_auto_reset_counters();
+
         if (service('request')->getUserAgent()->isBrowser()) {
             // Browser
             $user_agent = service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion();
@@ -5600,20 +5615,11 @@ class Core extends Controller
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        if (in_array($this->_db_driver, ['Postgre', 'SQLSRV'])) {
-            // Cast column
-            $this->model->where('CAST(timestamp AS DATE)', date('Y-m-d'));
-        } else {
-            // Cast column
-            $this->model->where('DATE(timestamp)', date('Y-m-d'));
-        }
-
-        // Get visitor log by IP address
+        // Get visitor log by IP address (check all time, not just today)
         $query = $this->model->get_where(
             'app__log_visitors',
             [
-                'ip_address' => $prepare['ip_address'],
-                'DATE(timestamp)' => date('Y-m-d', strtotime($prepare['timestamp']))
+                'ip_address' => $prepare['ip_address']
             ],
             1
         )
@@ -5621,16 +5627,147 @@ class Core extends Controller
 
         if (! $query) {
             try {
-                // Insert log
+                // Insert new visitor log
                 $log_insert = $this->model->insert('app__log_visitors', $prepare);
 
                 if (! $log_insert) {
                     // Trap suspicious access
                     file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
+                } else {
+                    // Update all counters for new unique visitor (including whole_visits)
+                    $this->_update_visit_counters(['daily', 'weekly', 'monthly', 'yearly', 'whole']);
                 }
             } catch (\Throwable $e) {
-                // Safe abstraction;
+                // Safe abstraction
             }
+        } else {
+            // Check if visitor came in different period
+            $this->_update_visit_counters_if_needed($query);
+        }
+    }
+
+    /**
+     * Update visit counters based on specified periods
+     */
+    private function _update_visit_counters($periods = [])
+    {
+        if (empty($periods)) {
+            return;
+        }
+
+        // Build increment query for each period
+        foreach ($periods as $period) {
+            $field = $period . '_visits';
+            $this->model->set($field, "$field + 1", false);
+        }
+
+        // Update app__stats table (single row, no WHERE needed)
+        $this->model->update('app__stats');
+    }
+
+    /**
+     * Update counters only if visitor's last visit was in a different period
+     */
+    private function _update_visit_counters_if_needed($previous_visit)
+    {
+        $last_visit = strtotime($previous_visit->timestamp);
+        $now = time();
+
+        $periods_to_update = [];
+
+        // Check if different day
+        if (date('Y-m-d', $last_visit) !== date('Y-m-d', $now)) {
+            $periods_to_update[] = 'daily';
+        }
+
+        // Check if different week
+        if (date('Y-W', $last_visit) !== date('Y-W', $now)) {
+            $periods_to_update[] = 'weekly';
+        }
+
+        // Check if different month
+        if (date('Y-m', $last_visit) !== date('Y-m', $now)) {
+            $periods_to_update[] = 'monthly';
+        }
+
+        // Check if different year
+        if (date('Y', $last_visit) !== date('Y', $now)) {
+            $periods_to_update[] = 'yearly';
+        }
+
+        // Update counters if any period changed
+        if (! empty($periods_to_update)) {
+            $this->_update_visit_counters($periods_to_update);
+
+            // Update last visit timestamp
+            $this->model->where('ip_address', $previous_visit->ip_address);
+            $this->model->update('app__log_visitors', ['timestamp' => date('Y-m-d H:i:s')]);
+        }
+    }
+
+    /**
+     * Auto reset counters based on date comparison
+     */
+    private function _auto_reset_counters()
+    {
+        $stats = $this->model->get('app__stats', 1)->row();
+
+        if (!$stats) {
+            return;
+        }
+
+        $today = date('Y-m-d');
+        $current_week = date('Y-W');
+        $current_month = date('Y-m');
+        $current_year = date('Y');
+
+        $updates = [];
+
+        // Check daily reset - hanya reset kalau beda hari
+        if (!$stats->last_daily_reset || $stats->last_daily_reset !== $today) {
+            $updates['daily_visits'] = 0;
+            $updates['last_daily_reset'] = $today;
+        }
+
+        // Check weekly reset - hanya reset kalau beda minggu
+        if (!$stats->last_weekly_reset) {
+            $updates['weekly_visits'] = 0;
+            $updates['last_weekly_reset'] = $today;
+        } else {
+            $last_weekly_reset_week = date('Y-W', strtotime($stats->last_weekly_reset));
+            if ($last_weekly_reset_week !== $current_week) {
+                $updates['weekly_visits'] = 0;
+                $updates['last_weekly_reset'] = $today;
+            }
+        }
+
+        // Check monthly reset - hanya reset kalau beda bulan
+        if (!$stats->last_monthly_reset) {
+            $updates['monthly_visits'] = 0;
+            $updates['last_monthly_reset'] = $today;
+        } else {
+            $last_monthly_reset_month = date('Y-m', strtotime($stats->last_monthly_reset));
+            if ($last_monthly_reset_month !== $current_month) {
+                $updates['monthly_visits'] = 0;
+                $updates['last_monthly_reset'] = $today;
+            }
+        }
+
+        // Check yearly reset - hanya reset kalau beda tahun
+        if (!$stats->last_yearly_reset) {
+            $updates['yearly_visits'] = 0;
+            $updates['last_yearly_reset'] = $today;
+        } else {
+            $last_yearly_reset_year = date('Y', strtotime($stats->last_yearly_reset));
+            if ($last_yearly_reset_year !== $current_year) {
+                $updates['yearly_visits'] = 0;
+                $updates['last_yearly_reset'] = $today;
+            }
+        }
+
+        // Update if there are changes
+        if (!empty($updates)) {
+            $this->model->update('app__stats', $updates);
         }
     }
 
