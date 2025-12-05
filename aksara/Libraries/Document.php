@@ -320,7 +320,8 @@ class Document
 
         // Load dom
         $dom = new \DOMDocument();
-        $dom->loadHTML($html);
+        $dom->encoding = 'UTF-8';
+        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 
         // Get only style element
         $styles = $dom->getElementsByTagName('style');
@@ -342,17 +343,18 @@ class Document
             $output .= $dom->saveHTML($table);
         }
 
-        $output = '<!DOCTYPE html><head><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
+        $output = '<!DOCTYPE html><head><meta charset="UTF-8"><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
 
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
         $spreadsheet = $reader->loadFromString($output);
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+        $spreadsheet->getDefaultStyle()->getFont()->setName('Arial');
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
 
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.xls"');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.xlsx"');
 
         $writer->save('php://output');
     }
