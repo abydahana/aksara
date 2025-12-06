@@ -86,12 +86,6 @@ th[align="right"] {
 .offcanvas-header {
   padding: 0.75rem 1rem !important;
 }
-.modal-backdrop.show ~ .modal-backdrop.show {
-  z-index: 1055 !important;
-}
-.modal.show ~ .modal.show {
-  z-index: 1056 !important;
-}
 .modal-body .mCSB_container {
   padding: 3px;
 }
