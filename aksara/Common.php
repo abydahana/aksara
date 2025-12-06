@@ -157,7 +157,8 @@ if (! function_exists('phrase')) {
 
         // Check if language session isn't available
         if (! $language) {
-            $language_id = (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+            $app_language = get_setting('app_language');
+            $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
 
             $language = $model->select('
                 code

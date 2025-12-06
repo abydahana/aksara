@@ -93,6 +93,7 @@ class Blogs extends \Aksara\Laboratory\Core
         ->set_field('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
         ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
 
+        ->add_button('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['post_id' => 'post_id'])
         ->add_button('../../blogs/read', phrase('View Post'), 'btn-success', 'mdi mdi-eye', ['post_id' => 'post_id'], true)
 
         ->field_append(
@@ -171,6 +172,122 @@ class Blogs extends \Aksara\Laboratory\Core
             'category_title'
         ])
 
+        ->render($this->_table);
+    }
+
+    public function translate()
+    {
+        $this->set_method('update');
+
+        if (! service('request')->getGet('language')) {
+            $current_language = $this->model->get_where(
+                $this->_table,
+                [
+                    'post_id' => service('request')->getGet('post_id') ?? 0
+                ],
+                1
+            )
+            ->row('language_id');
+
+            $languages = $this->model->get_where(
+                'app__languages',
+                [
+                    'id !=' => $current_language,
+                    'status' => 1
+                ]
+            )
+            ->result();
+
+            // Build language list
+            $language_list = '';
+
+            foreach ($languages as $key => $val) {
+                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
+                    <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
+                </a>';
+            }
+
+            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+
+            return make_json([
+                'meta' => [
+                    'title' => phrase('Choose Language'),
+                    'icon' => 'mdi mdi-translate',
+                    'popup' => true,
+                    'modal_size' => 'modal-sm'
+                ],
+                'content' => $content,
+            ]);
+        }
+
+        // Initialize post id
+        $post_id = 0;
+
+        try {
+            // Get current data
+            $data = $this->model->get_where(
+                $this->_table,
+                [
+                    'post_id' => service('request')->getGet('post_id') ?? 0
+                ],
+                1
+            )
+            ->row();
+
+            // Check if translation already exists
+            $checker = $this->model->get_where(
+                $this->_table,
+                [
+                    'post_slug' => $data->post_slug,
+                    'language_id' => service('request')->getGet('language') ?? 0
+                ],
+                1
+            )
+            ->row();
+
+            $post_id = $checker->post_id ?? 0;
+
+            if (! $checker) {
+                // Noop, modify data and create new translation
+                unset($data->post_id);
+
+                // Change language id
+                $data->language_id = service('request')->getGet('language');
+
+                // Insert new data
+                $this->model->insert($this->_table, (array) $data);
+
+                // Set new post id
+                $post_id = $this->model->insert_id();
+            }
+        } catch (\Exception $e) {
+            return throw_exception(500, $e->getMessage());
+        }
+
+        $this->set_title(phrase('Translate Blog Post'))
+        ->set_icon('mdi mdi-translate')
+        ->unset_field('post_id, post_category, language_id, post_slug, featured_image, author, headline, status, created_timestamp, updated_timestamp')
+        ->set_field([
+            'post_excerpt' => 'textarea',
+            'post_content' => 'wysiwyg',
+            'post_tags' => 'tagsinput',
+            'status' => 'boolean'
+        ])
+        ->where([
+            'post_id' => $post_id
+        ])
+        ->set_validation([
+            'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
+            'post_content' => 'required',
+            'post_tags' => 'required'
+        ])
+        ->set_alias([
+            'post_title' => phrase('Title'),
+            'post_excerpt' => phrase('Excerpt'),
+            'post_content' => phrase('Content'),
+            'post_tags' => phrase('Tags')
+        ])
+        ->modal_size('modal-lg')
         ->render($this->_table);
     }
 

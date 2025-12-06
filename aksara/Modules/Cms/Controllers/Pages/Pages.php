@@ -57,6 +57,7 @@ class Pages extends \Aksara\Laboratory\Core
         ->set_field('page_slug', 'slug', 'page_title')
         ->set_field('page_title', 'hyperlink', 'pages', ['page_id' => 'page_id'], true)
 
+        ->add_button('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
         ->add_button('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
 
         ->field_append(
@@ -136,6 +137,119 @@ class Pages extends \Aksara\Laboratory\Core
         ])
         ->modal_size('modal-xl')
 
+        ->render($this->_table);
+    }
+
+    public function translate()
+    {
+        $this->set_method('update');
+
+        if (! service('request')->getGet('language')) {
+            $current_language = $this->model->get_where(
+                $this->_table,
+                [
+                    'page_id' => service('request')->getGet('page_id') ?? 0
+                ],
+                1
+            )
+            ->row('language_id');
+
+            $languages = $this->model->get_where(
+                'app__languages',
+                [
+                    'id !=' => $current_language,
+                    'status' => 1
+                ]
+            )
+            ->result();
+
+            // Build language list
+            $language_list = '';
+
+            foreach ($languages as $key => $val) {
+                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
+                    <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
+                </a>';
+            }
+
+            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+
+            return make_json([
+                'meta' => [
+                    'title' => phrase('Choose Language'),
+                    'icon' => 'mdi mdi-translate',
+                    'popup' => true,
+                    'modal_size' => 'modal-sm'
+                ],
+                'content' => $content,
+            ]);
+        }
+
+        // Initialize page id
+        $page_id = 0;
+
+        try {
+            // Get current data
+            $data = $this->model->get_where(
+                $this->_table,
+                [
+                    'page_id' => service('request')->getGet('page_id') ?? 0
+                ],
+                1
+            )
+            ->row();
+
+            // Check if translation already exists
+            $checker = $this->model->get_where(
+                $this->_table,
+                [
+                    'page_slug' => $data->page_slug,
+                    'language_id' => service('request')->getGet('language') ?? 0
+                ],
+                1
+            )
+            ->row();
+
+            $page_id = $checker->page_id ?? 0;
+
+            if (! $checker) {
+                // Noop, modify data and create new translation
+                unset($data->page_id);
+
+                // Change language id
+                $data->language_id = service('request')->getGet('language');
+
+                // Insert new data
+                $this->model->insert($this->_table, (array) $data);
+
+                // Set new page id
+                $page_id = $this->model->insert_id();
+            }
+        } catch (\Exception $e) {
+            return throw_exception(500, $e->getMessage());
+        }
+
+        $this->set_title(phrase('Translate Page'))
+        ->set_icon('mdi mdi-translate')
+        ->unset_field('page_id, language_id, page_slug, author, carousel_id, faq_id, status, created_timestamp, updated_timestamp')
+        ->set_field([
+            'page_description' => 'textarea',
+            'page_content' => 'wysiwyg',
+            'status' => 'boolean'
+        ])
+        ->where([
+            'page_id' => $page_id
+        ])
+        ->set_validation([
+            'page_title' => 'required|max_length[256]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
+            'page_content' => 'required'
+        ])
+        ->set_alias([
+            'page_title' => phrase('Title'),
+            'page_description' => phrase('Description'),
+            'page_content' => phrase('Content'),
+        ])
+        ->modal_size('modal-lg')
         ->render($this->_table);
     }
 
