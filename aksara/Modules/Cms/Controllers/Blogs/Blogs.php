@@ -95,6 +95,11 @@ class Blogs extends \Aksara\Laboratory\Core
 
         ->add_button('../../blogs/read', phrase('View Post'), 'btn-success', 'mdi mdi-eye', ['post_id' => 'post_id'], true)
 
+        ->field_append(
+            'post_category',
+            '<a href="' . go_to('categories/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
+        )
+
         ->set_validation([
             'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
             'post_slug' => 'max_length[256]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . ']',

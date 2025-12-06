@@ -59,6 +59,15 @@ class Pages extends \Aksara\Laboratory\Core
 
         ->add_button('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
 
+        ->field_append(
+            'carousel_id',
+            '<a href="' . go_to('../../cms/partials/carousels/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
+        )
+        ->field_append(
+            'faq_id',
+            '<a href="' . go_to('../../cms/partials/faqs/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
+        )
+
         ->set_relation(
             'carousel_id',
             'pages__carousels.carousel_id',
