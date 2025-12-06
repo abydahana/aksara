@@ -19,7 +19,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AppLogVisitors extends Migration
+class AppStats extends Migration
 {
     public function up()
     {
