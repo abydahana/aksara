@@ -1,9 +1,9 @@
-<div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+<div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
-                    <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i> 
+                    <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                     <span class="modal-title-text">
                     {{ meta.title ?? phrase('Loading') }}
                     </span>

@@ -711,7 +711,7 @@ class Core
     public function read_modal($type = null)
     {
         $component = <<<EOF
-        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+        <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
                 <div class="modal-content {% if modal %} border shadow {% endif %}">
                     <div class="modal-header">
@@ -861,7 +861,7 @@ class Core
     public function modal($type = null)
     {
         $component = <<<EOF
-        <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
+        <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
