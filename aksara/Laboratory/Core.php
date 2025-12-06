@@ -2098,20 +2098,20 @@ class Core extends Controller
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
 
-            // Retrieve primary key
-            $field_data = $this->model->field_data($this->_table);
-
-            // Find primary key
-            foreach ($field_data as $key => $val) {
-                // Check if the field has a primary key
-                if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                    // Push primary key
-                    $this->_set_primary[] = $val->name;
-                }
-            }
-
             // Primary key still not found, find from index data
             if (! $this->_set_primary) {
+                // Retrieve primary key
+                $field_data = $this->model->field_data($this->_table);
+
+                // Find primary key
+                foreach ($field_data as $key => $val) {
+                    // Check if the field has a primary key
+                    if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
+                        // Push primary key
+                        $this->_set_primary[] = $val->name;
+                    }
+                }
+
                 // Retrieve index data
                 $index_data = $this->model->index_data($this->_table);
 
@@ -2184,8 +2184,10 @@ class Core extends Controller
                             }
                         }
 
-                        // Push where into prepared statement
-                        $this->_prepare('where', [$this->_table . '.' . $val, htmlspecialchars(service('request')->getGet($val))]);
+                        if (! in_array($val, array_keys($this->_where ?? []))) {
+                            // Push where into prepared statement only if where is not defined in controller
+                            $this->_prepare('where', [$this->_table . '.' . $val, htmlspecialchars(service('request')->getGet($val))]);
+                        }
                     } elseif (
                         in_array($val, $this->_set_primary) &&
                         $this->model->field_exists($val, $this->_table) &&
@@ -5779,32 +5781,33 @@ class Core extends Controller
     private function _set_language(?string $language_id = null)
     {
         if (! get_userdata('language_id') || ! $language_id) {
+            // Set default language
+            $app_language = get_setting('app_language');
+            $language_id = ($app_language > 0 ? $app_language : 1);
+
             // Session has no language_id, get locale
-            $locale = explode(',', (service('request')->getServer('HTTP_ACCEPT_LANGUAGE') ? service('request')->getServer('HTTP_ACCEPT_LANGUAGE') : 'en-us'));
+            $locales = explode(',', (service('request')->getServer('HTTP_ACCEPT_LANGUAGE') ? service('request')->getServer('HTTP_ACCEPT_LANGUAGE') : 'en-us'));
 
-            foreach ($locale as $key => $val) {
-                if ($key) {
-                    $this->model->or_like('locale', $val, 'both', true, true);
-                } else {
-                    $this->model->like('locale', $val, 'both', true, true);
-                }
-            }
-
-            // Get language id
-            $language_id = $this->model->select('
-                id
-            ')
-            ->get_where(
+            // Get language list
+            $languages = $this->model->get_where(
                 'app__languages',
                 [
                     'status' => 1
-                ],
-                1
+                ]
             )
-            ->row('id');
+            ->result();
 
-            // Apply app language if no language found
-            $language_id = ($language_id ? $language_id : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+            foreach ($languages as $language) {
+                $items = array_map('trim', explode(',', strtolower($language->locale)));
+
+                foreach ($locales as $loc) {
+                    if (in_array(strtolower($loc), $items)) {
+                        $language_id = $language->id;
+
+                        break 2; // Break both loops on first match
+                    }
+                }
+            }
 
             // Set language id to user session
             set_userdata('language_id', $language_id);
