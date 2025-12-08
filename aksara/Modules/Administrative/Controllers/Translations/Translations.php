@@ -51,21 +51,18 @@ class Translations extends \Aksara\Laboratory\Core
         ->unset_field('id')
         ->unset_view('id')
         ->set_field([
-            'description' => 'textarea',
             'status' => 'boolean'
         ])
         ->add_toolbar('synchronize', phrase('Synchronize'), 'btn btn-info --xhr show-progress', 'mdi mdi-reload')
         ->add_button('translate', phrase('Translate'), 'btn btn-success --xhr', 'mdi mdi-comment-processing-outline', ['id' => 'id', 'code' => 'code', 'keyword' => null])
         ->set_validation([
             'language' => 'required|string|max_length[32]',
-            'description' => 'required|string',
             'code' => 'required|alpha_dash|max_length[32]|unique[app__languages.code.id.' . service('request')->getGet('id') . ']',
             'locale' => 'required|string|max_length[64]',
             'status' => 'boolean'
         ])
         ->set_alias([
             'language' => phrase('Language'),
-            'description' => phrase('Description'),
             'code' => phrase('Code'),
             'locale' => phrase('Locale'),
             'status' => phrase('Status')
