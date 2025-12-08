@@ -8,7 +8,7 @@
     <hr class="row" />
 </div>
 <p class="mb-0">
-    <?= phrase('You can login as superuser using following credential:'); ?>:
+    <?= phrase('You can login as superuser using following credential:'); ?>
 </p>
 <div class="row">
     <div class="col-4">

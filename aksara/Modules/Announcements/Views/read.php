@@ -15,7 +15,7 @@
                         </div>
                         <p class="text-muted">
                             <em>
-                                <?= phrase('This announcement will be effective until {{ end_date }}.', ['end_date' => $val->end_date]); ?>
+                                <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $val->end_date]); ?>
                             </em>
                         </p>
                         <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 --xhr">

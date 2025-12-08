@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // Global
+    'Aksara Installer' => 'مثبِّت أكسارا',
+    'Whoops!' => 'عذرًا!',
+    'Back' => 'رجوع',
+    'Refresh' => 'تحديث',
+    'Continue' => 'متابعة',
+    'DSN' => 'مصدر بيانات DSN',
+    'Hostname' => 'اسم المضيف',
+    'Port' => 'المنفذ',
+    'Username' => 'اسم المستخدم',
+    'Password' => 'كلمة المرور',
+    'Confirm Password' => 'تأكيد كلمة المرور',
+    'Available' => 'متاح',
+
+    // Index
+    'Checking Requirements' => 'فحص المتطلبات',
+    'Database Configuration' => 'تهيئة قاعدة البيانات',
+    'Security Configuration' => 'تهيئة الأمان',
+    'System Configuration' => 'تهيئة النظام',
+    'Finalizing' => 'الإنهاء',
+    'Hello there' => 'مرحبًا بك',
+    'Choose Language' => 'اختر اللغة',
+    'Thank you for choosing Aksara' => 'شكرًا لاختيارك <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">أكسارا</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'قبل أن نبدأ التثبيت، من فضلك خذ لحظة لقراءة هذه الملاحظات القليلة.',
+    'You could check the agreement box and skip reading as usual.' => 'يمكنك تحديد خانة "<b>الموافقة</b>" وتخطي القراءة كالمعتاد، لكننا ما زلنا نعتقد أن هناك "<b>مهووسًا</b>" سيقرأ هذه الملاحظات جملةً جملةً.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">أكسارا</a> مجرد أداة لبناء النظم البيئية حسب احتياجاتك. لكن أي نظام تبنيه باستخدام <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">أكسارا</a> يجب أن يخضع لشروطه؛',
+
+    'Article 2' => 'مسموح لك بإعادة توزيع النظم البيئية التي تبنيها باستخدام <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">أكسارا</a> دون الحاجة لتصريحي، لكن ادعاء أنك بنيتها بالكامل أمر مخزٍ؛',
+
+    'Article 3' => 'لا تخيّب أبدًا المبدعين الذين يشاركون أعمالهم مجانًا، وإلا ستجدهم يبيعون أفكارهم المستقبلية بأسعار لا تستطيع الوصول إليها.',
+
+    'Three notes should be enough.' => 'ثلاث ملاحظات يجب أن تكون كافية.',
+    'I look forward to your support.' => 'نتطلع لدعمكم.',
+    'The fool' => 'الأحمق',
+    'Pretend to agree' => 'تظاهر بالموافقة',
+    'Start Installation' => 'بدء التثبيت',
+
+    // Database
+    'Fill the requested fields below with your database connection.' => 'املأ الحقول المطلوبة أدناه بتفاصيل اتصال قاعدة البيانات.',
+    'Please fill all required fields!' => 'يرجى ملء جميع الحقول المطلوبة!',
+    'Database Driver' => 'برنامج تشغيل قاعدة البيانات',
+    'Initial Database' => 'قاعدة البيانات الأولية',
+    'Please choose the correct database driver!' => 'يرجى اختيار برنامج تشغيل قاعدة البيانات الصحيح!',
+    'Create database if not exist' => 'إنشاء قاعدة البيانات إذا لم تكن موجودة',
+
+    // Finalizing
+    'The timezone is not valid!' => 'المنطقة الزمنية غير صالحة!',
+    'The site title cannot be empty!' => 'عنوان الموقع لا يمكن أن يكون فارغًا!',
+    'The site description cannot be empty!' => 'وصف الموقع لا يمكن أن يكون فارغًا!',
+    'File extension must be comma separated alphanumeric only!' => 'امتدادات الملفات يجب أن تكون أرقامًا وحروفًا فقط مفصولة بفواصل!',
+    'Image extension must be comma separated alphanumeric only!' => 'امتدادات الصور يجب أن تكون أرقامًا وحروفًا فقط مفصولة بفواصل!',
+    'Maximum upload size must be numeric only!' => 'الحجم الأقصى للرفع يجب أن يكون رقميًا فقط!',
+    'Image dimension must be numeric only!' => 'أبعاد الصورة يجب أن تكون رقمية فقط!',
+    'Thumbnail dimension must be numeric only!' => 'أبعاد الصورة المصغرة يجب أن تكون رقمية فقط!',
+    'Icon dimension must be numeric only!' => 'أبعاد الأيقونة يجب أن تكون رقمية فقط!',
+    'All catched up!' => 'كل شيء جاهز!',
+    'Your application is ready to install using provided settings.' => 'تطبيقك جاهز للتثبيت باستخدام الإعدادات المقدمة.',
+    'Just one more step' => 'خطوة واحدة فقط',
+    'Make sure what you filled in on the previous form is correct.' => 'تأكد من صحة ما أدخلته في النموذج السابق.',
+    'Once you have successfully run the installer, there is no more back button.' => 'بمجرد تشغيل المثبِّت بنجاح، لا يوجد زر للرجوع.',
+    'Click run installer to applying your configuration.' => 'انقر "<b>تشغيل المثبِّت</b>" لتطبيق إعداداتك.',
+    'Run Installer' => 'تشغيل المثبِّت',
+
+    // Install
+    'Failed to open or create the configuration file!' => 'فشل فتح أو إنشاء ملف الإعدادات!',
+    'Failed to write the configuration into file!' => 'فشل كتابة الإعدادات في الملف!',
+    'Congratulations!' => 'مبروك!',
+    'Aksara has been successfully installed on your system!' => 'تم تثبيت <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">أكسارا</a> بنجاح على نظامك!',
+    'Notice!' => 'ملاحظة!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'ملف أو مجلد الإعدادات غير قابل للكتابة أو حدثت مشكلة أثناء إنشاء ملف الإعدادات.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'سيتعين عليك إنشاء الكود التالي يدويًا ووضعه في المجلد التالي:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'تحقق من صحة الإعدادات بعد إنشاء أو رفع ملف الإعدادات.',
+    'You can login as superuser using following credential:' => 'يمكنك تسجيل الدخول كمستخدم فائق باستخدام بيانات الاعتماد التالية:',
+    'Follow our updates to get our other works if you find this useful.' => 'تابع تحديثاتنا للحصول على أعمالنا الأخرى إذا وجدت هذا مفيدًا.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'مجرد تذكير، نحن نقبل التبرعات من أشخاص مثلك لدعم أبحاثنا.',
+    'Regardless of the amount will be very useful.' => 'بغض النظر عن المبلغ، سيكون مفيدًا جدًا.',
+    'Cheers' => 'تحياتنا',
+    'Launch Site' => 'تشغيل موقعك',
+    'Revalidate Configuration' => 'إعادة التحقق من الإعدادات',
+
+    // Requirements
+    'You just need to pretend to agree!' => 'عليك فقط أن تتظاهر بالموافقة، يا صديقي!',
+    'Awesome!' => 'رائع!',
+    'You just read our notes and pretend to agree with it.' => 'لقد قرأت ملاحظاتنا وتظاهرت بالموافقة عليها :)',
+    'We will help you to prepare your application using this installation wizard.' => 'سنساعدك في إعداد تطبيقك باستخدام معالج التثبيت هذا.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'قبل المتابعة، تأكد من استيفاء هذه المتطلبات المسبقة دون أي تحذيرات.',
+    'Otherwise your application will not work properly.' => 'وإلا فلن يعمل تطبيقك بشكل صحيح.',
+    'PHP Version' => 'إصدار PHP',
+    'Rewrite Module' => 'وحدة إعادة الكتابة',
+    'Internationalization' => 'التدويل',
+    'Multibyte String' => 'النصوص متعددة البايت',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'الحد الأدنى المطلوب للإصدار هو',
+    'and the maximum version is' => 'والحد الأقصى للإصدار هو',
+    'Disabled' => 'معطل',
+    'Enabled' => 'مفعّل',
+    'Off' => 'إيقاف',
+    'On' => 'تشغيل',
+    'Turn it on!' => 'فعّله!',
+    'Optional' => 'اختياري',
+    'Some requirement are not yet fulfilled.' => 'بعض المتطلبات لم تستوف بعد.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'يرجى تحديث إعدادات الخادم وانقر على زر التحديث لمتابعة التثبيت.',
+    'The rewrite module is disabled by your server.' => 'وحدة إعادة الكتابة معطلة من قبل خادمك.',
+    'You can continue the installation but we recommend to enable it.' => 'يمكنك متابعة التثبيت لكننا ننصح بتفعيلها.',
+
+    // Security
+    'Enter your secret formula to secure your application.' => 'أدخل صيغتك السرية لتأمين تطبيقك.',
+    'Encryption Key' => 'مفتاح التشفير',
+    'Your encryption key' => 'مفتاح التشفير الخاص بك',
+    'Cookie Name' => 'اسم الكوكي',
+    'Session Expiration' => 'انتهاء الجلسة',
+    'The number of seconds you want the session to last.' => 'عدد الثواني التي تريد أن تدوم فيها الجلسة. تعيين القيمة 0 (صفر) يعني انتهاء الجلسة عند إغلاق المتصفح.',
+    'In seconds' => 'بالثواني',
+    'Unique cookie name to prevent session conflict' => 'اسم كوكي فريد لمنع التعارض',
+    'Superuser' => 'المستخدم الفائق',
+    'First Name' => 'الاسم الأول',
+    'Last Name' => 'اسم العائلة',
+    'Email Address' => 'البريد الإلكتروني',
+    'Create username for superuser' => 'اسم المستخدم للمستخدم الفائق',
+    'Password for superuser' => 'كلمة المرور للمستخدم الفائق',
+    'Retype the password' => 'أعد إدخال كلمة المرور',
+
+    // System
+    'The encryption key cannot be empty!' => 'مفتاح التشفير لا يمكن أن يكون فارغًا!',
+    'The encryption key contain unsupported character!' => 'مفتاح التشفير يحتوي على رمز غير مدعوم!',
+    'The cookie name cannot be empty!' => 'اسم الكوكي لا يمكن أن يكون فارغًا!',
+    'The cookie name contain unsupported character!' => 'اسم الكوكي يحتوي على رمز غير مدعوم!',
+    'The first name cannot be empty!' => 'الاسم الأول لا يمكن أن يكون فارغًا!',
+    'Please enter your valid email address!' => 'يرجى إدخال بريدك الإلكتروني الصحيح!',
+    'The username must be in alphanumeric only!' => 'اسم المستخدم يجب أن يكون أرقامًا وحروفًا فقط وبحد أدنى 5 أحرف!',
+    'The password cannot be empty!' => 'كلمة المرور لا يمكن أن تكون فارغة!',
+    'The password confirmation did not match!' => 'تأكيد كلمة المرور غير متطابق!',
+    'Enter the basic system configuration.' => 'أدخل إعدادات النظام الأساسية.',
+    'You will able to change it after the installation.' => 'ستتمكن من تغييره بعد التثبيت.',
+    'Installation Mode' => 'وضع التثبيت',
+    'Basic (with sample)' => 'أساسي (مع عينات)',
+    'Developer (without sample)' => 'مطور (بدون عينات)',
+    'Timezone' => 'المنطقة الزمنية',
+    'Site Settings' => 'إعدادات الموقع',
+    'Site Title' => 'عنوان الموقع',
+    'Enter the site title' => 'أدخل عنوان الموقع',
+    'Site Description' => 'وصف الموقع',
+    'Enter the site description' => 'أدخل وصف الموقع',
+    'Upload Settings' => 'إعدادات الرفع',
+    'Allowed File Extension' => 'امتدادات الملفات المسموحة',
+    'Allowed Image Extension' => 'امتدادات الصور المسموحة',
+    'Separate with comma' => 'افصل بفواصل',
+    'Upload Limit' => 'حد الرفع',
+    'Image Width Dimension' => 'بُعد عرض الصورة',
+    'Original' => 'الأصلية',
+    'Thumbnail' => 'المصغرة',
+    'Icon' => 'الأيقونة',
+    'In pixel' => 'بالبكسل',
+    'ZIP Archiver' => 'أرشيف ZIP',
+    'Your application is ready to install using the provided configurations.' => 'تطبيقك جاهز للتثبيت باستخدام الإعدادات المقدمة.',
+    'Agreement' => 'اتفاقية الترخيص',
+    'Database Initial' => 'قاعدة البيانات الأولية',
+    'Email' => 'البريد الإلكتروني',
+    'Password Confirmation' => 'تأكيد كلمة المرور',
+    'File Extension' => 'امتدادات الملفات المسموحة',
+    'Image Extension' => 'امتدادات الصور المسموحة',
+    'Max Upload Size' => 'الحجم الأقصى للرفع',
+    'Image Dimension' => 'أبعاد الصورة',
+    'Thumbnail Dimension' => 'أبعاد الصورة المصغرة',
+    'Icon Dimension' => 'أبعاد الأيقونة',
+    'The installer was interrupted!' => 'تمت مقاطعة المثبِّت!',
+    'The installer was unable to write the configuration file.' => 'تعذر على المثبِّت كتابة ملف الإعدادات.',
+    'Please follow the instructions below to continue.' => 'يرجى اتباع التعليمات أدناه للمتابعة.',
+    'Problem Found' => 'تم اكتشاف مشكلة',
+    'Unable to create or write file' => 'غير قادر على إنشاء أو كتابة الملف',
+    'Solution' => 'الحل',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'يرجى تحميل ملف الإعدادات أدناه ورفعه أو لصقه يدويًا في المجلد التالي',
+    'Download Configuration' => 'تحميل الإعدادات',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'بمجرد رفع ملف الإعدادات، يرجى النقر على زر "تحديث" لمتابعة التثبيت.',
+    'Unable to extract the sample module.' => 'تعذر استخراج الوحدة النموذجية.',
+    'Make sure the following directory is writable' => 'تأكد من أن المجلد التالي قابل للكتابة',
+    'Skip installing the sample module' => 'تخطي تثبيت الوحدة النموذجية.',
+
+    // Miscellaneous
+    'Subscribe to my channel' => 'اشترك في قناتي',
+    'Be my friend' => 'كُن صديقي',
+    'Follow my GitHub' => 'تابعني على GitHub',
+    'Import sample data' => 'تثبيت مع بيانات نموذجية',
+];

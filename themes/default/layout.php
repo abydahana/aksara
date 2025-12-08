@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= get_userdata('language') ?? 'en'; ?>"<?= (in_array(get_userdata('language'), ['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'ur', 'yi']) ? ' dir="rtl"' : null); ?>>
+<html lang="<?= get_userdata('language') ?? 'en'; ?>"<?= (is_rtl() ? ' dir="rtl"' : null); ?>>
     <head>
         <title><?= truncate($meta->title) . ' | ' . get_setting('app_name'); ?></title>
         <meta charset="UTF-8" />
@@ -16,7 +16,7 @@
             echo aksara_header();
 
             echo asset_loader([
-                'bootstrap/css/bootstrap.min.css',
+                (is_rtl() ? 'bootstrap/css/bootstrap.rtl.min.css' : 'bootstrap/css/bootstrap.min.css'),
                 'local/css/styles.min.css',
                 'local/css/mobile.min.css'
             ]);

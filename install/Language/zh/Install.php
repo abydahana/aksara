@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // 全局
+    'Aksara Installer' => 'Aksara 安装程序',
+    'Whoops!' => '哎呀！',
+    'Back' => '返回',
+    'Refresh' => '刷新',
+    'Continue' => '继续',
+    'DSN' => '数据源 DSN',
+    'Hostname' => '主机名',
+    'Port' => '端口',
+    'Username' => '用户名',
+    'Password' => '密码',
+    'Confirm Password' => '确认密码',
+    'Available' => '可用',
+
+    // 索引
+    'Checking Requirements' => '检查要求',
+    'Database Configuration' => '数据库配置',
+    'Security Configuration' => '安全配置',
+    'System Configuration' => '系统配置',
+    'Finalizing' => '完成安装',
+    'Hello there' => '你好',
+    'Choose Language' => '选择语言',
+    'Thank you for choosing Aksara' => '感谢选择 <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>！',
+    'Before we start the installation, please take a moment to read this few notes.' => '在开始安装之前，请花点时间阅读以下注意事项。',
+    'You could check the agreement box and skip reading as usual.' => '您可以像往常一样勾选"<b>同意</b>"框跳过阅读，但我们仍然相信会有"<b>强迫症</b>"逐行阅读这些说明。',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> 只是根据您的需求构建生态系统的工具。但使用 <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> 构建的任何系统都必须遵守其条款；',
+
+    'Article 2' => '您被允许在不需要我许可的情况下重新分发使用 <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> 构建的生态系统，但声称完全由自己构建是可耻的；',
+
+    'Article 3' => '永远不要让免费分享作品的创作者失望，否则你会发现他们以你无法承受的价格出售他们未来的想法。',
+
+    'Three notes should be enough.' => '三点说明应该足够了。',
+    'I look forward to your support.' => '期待您的支持。',
+    'The fool' => '傻瓜',
+    'Pretend to agree' => '假装同意',
+    'Start Installation' => '开始安装',
+
+    // 数据库
+    'Fill the requested fields below with your database connection.' => '在下面的请求字段中填写您的数据库连接信息。',
+    'Please fill all required fields!' => '请填写所有必填字段！',
+    'Database Driver' => '数据库驱动',
+    'Initial Database' => '初始数据库',
+    'Please choose the correct database driver!' => '请选择正确的数据库驱动程序！',
+    'Create database if not exist' => '如果不存在则创建数据库',
+
+    // 完成
+    'The timezone is not valid!' => '时区无效！',
+    'The site title cannot be empty!' => '网站标题不能为空！',
+    'The site description cannot be empty!' => '网站描述不能为空！',
+    'File extension must be comma separated alphanumeric only!' => '文件扩展名只能是逗号分隔的字母数字！',
+    'Image extension must be comma separated alphanumeric only!' => '图片扩展名只能是逗号分隔的字母数字！',
+    'Maximum upload size must be numeric only!' => '最大上传大小只能是数字！',
+    'Image dimension must be numeric only!' => '图片尺寸只能是数字！',
+    'Thumbnail dimension must be numeric only!' => '缩略图尺寸只能是数字！',
+    'Icon dimension must be numeric only!' => '图标尺寸只能是数字！',
+    'All catched up!' => '全部完成！',
+    'Your application is ready to install using provided settings.' => '您的应用程序已准备好使用提供的设置进行安装。',
+    'Just one more step' => '只差一步',
+    'Make sure what you filled in on the previous form is correct.' => '请确保您在上一个表单中填写的内容是正确的。',
+    'Once you have successfully run the installer, there is no more back button.' => '成功运行安装程序后，就没有后退按钮了。',
+    'Click run installer to applying your configuration.' => '点击"<b>运行安装程序</b>"以应用您的配置。',
+    'Run Installer' => '运行安装程序',
+
+    // 安装
+    'Failed to open or create the configuration file!' => '无法打开或创建配置文件！',
+    'Failed to write the configuration into file!' => '无法将配置写入文件！',
+    'Congratulations!' => '恭喜！',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> 已成功安装在您的系统上！',
+    'Notice!' => '注意！',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => '您的配置文件或文件夹不可写，或者创建配置文件时出现问题。',
+    'You will have to create the following code by hand manually and locate to the following directory:' => '您需要手动创建以下代码并将其放在以下目录中：',
+    'Revalidate configuration after the configuration file is created or uploaded.' => '创建或上传配置文件后重新验证配置。',
+    'You can login as superuser using following credential:' => '您可以使用以下凭据以超级用户身份登录：',
+    'Follow our updates to get our other works if you find this useful.' => '如果您觉得有用，请关注我们的更新以获取我们的其他作品。',
+    'Just to remind you, we also collect donations from people like you to support our research.' => '提醒一下，我们也接受像您这样的人的捐赠以支持我们的研究。',
+    'Regardless of the amount will be very useful.' => '无论金额多少，都将非常有用。',
+    'Cheers' => '致意',
+    'Launch Site' => '启动网站',
+    'Revalidate Configuration' => '重新验证配置',
+
+    // 要求
+    'You just need to pretend to agree!' => '你只需要假装同意，我的朋友！',
+    'Awesome!' => '太棒了！',
+    'You just read our notes and pretend to agree with it.' => '您刚刚阅读了我们的说明并假装同意它们 :)',
+    'We will help you to prepare your application using this installation wizard.' => '我们将帮助您使用此安装向导准备您的应用程序。',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => '在继续之前，请确保满足这些先决条件且没有任何警告。',
+    'Otherwise your application will not work properly.' => '否则您的应用程序将无法正常工作。',
+    'PHP Version' => 'PHP 版本',
+    'Rewrite Module' => '重写模块',
+    'Internationalization' => '国际化',
+    'Multibyte String' => '多字节字符串',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => '所需的最低版本是',
+    'and the maximum version is' => '最高版本是',
+    'Disabled' => '禁用',
+    'Enabled' => '启用',
+    'Off' => '关闭',
+    'On' => '开启',
+    'Turn it on!' => '启用它！',
+    'Optional' => '可选',
+    'Some requirement are not yet fulfilled.' => '一些要求尚未满足。',
+    'Please update your server configuration and click on refresh button to continue the installation.' => '请更新您的服务器配置并单击刷新按钮以继续安装。',
+    'The rewrite module is disabled by your server.' => '重写模块被您的服务器禁用。',
+    'You can continue the installation but we recommend to enable it.' => '您可以继续安装，但我们建议启用它。',
+
+    // 安全
+    'Enter your secret formula to secure your application.' => '输入您的秘密配方以保护您的应用程序。',
+    'Encryption Key' => '加密密钥',
+    'Your encryption key' => '您的加密密钥',
+    'Cookie Name' => 'Cookie 名称',
+    'Session Expiration' => '会话过期时间',
+    'The number of seconds you want the session to last.' => '您希望会话持续的秒数。设置为0（零）表示在浏览器关闭时会话结束。',
+    'In seconds' => '以秒为单位',
+    'Unique cookie name to prevent session conflict' => '唯一的 cookie 名称以防止会话冲突',
+    'Superuser' => '超级用户',
+    'First Name' => '名',
+    'Last Name' => '姓',
+    'Email Address' => '电子邮件地址',
+    'Create username for superuser' => '创建超级用户的用户名',
+    'Password for superuser' => '超级用户的密码',
+    'Retype the password' => '重新输入密码',
+
+    // 系统
+    'The encryption key cannot be empty!' => '加密密钥不能为空！',
+    'The encryption key contain unsupported character!' => '加密密钥包含不受支持的字符！',
+    'The cookie name cannot be empty!' => 'Cookie 名称不能为空！',
+    'The cookie name contain unsupported character!' => 'Cookie 名称包含不受支持的字符！',
+    'The first name cannot be empty!' => '名字不能为空！',
+    'Please enter your valid email address!' => '请输入有效的电子邮件地址！',
+    'The username must be in alphanumeric only!' => '用户名必须仅为字母数字，且至少5个字符！',
+    'The password cannot be empty!' => '密码不能为空！',
+    'The password confirmation did not match!' => '密码确认不匹配！',
+    'Enter the basic system configuration.' => '输入基本系统配置。',
+    'You will able to change it after the installation.' => '安装后您可以更改它。',
+    'Installation Mode' => '安装模式',
+    'Basic (with sample)' => '基本（带示例）',
+    'Developer (without sample)' => '开发人员（无示例）',
+    'Timezone' => '时区',
+    'Site Settings' => '网站设置',
+    'Site Title' => '网站标题',
+    'Enter the site title' => '输入网站标题',
+    'Site Description' => '网站描述',
+    'Enter the site description' => '输入网站描述',
+    'Upload Settings' => '上传设置',
+    'Allowed File Extension' => '允许的文件扩展名',
+    'Allowed Image Extension' => '允许的图片扩展名',
+    'Separate with comma' => '用逗号分隔',
+    'Upload Limit' => '上传限制',
+    'Image Width Dimension' => '图片宽度尺寸',
+    'Original' => '原始',
+    'Thumbnail' => '缩略图',
+    'Icon' => '图标',
+    'In pixel' => '以像素为单位',
+    'ZIP Archiver' => 'ZIP 归档器',
+    'Your application is ready to install using the provided configurations.' => '您的应用程序已准备好使用提供的配置进行安装。',
+    'Agreement' => '许可协议',
+    'Database Initial' => '初始数据库',
+    'Email' => '电子邮件',
+    'Password Confirmation' => '确认密码',
+    'File Extension' => '允许的文件扩展名',
+    'Image Extension' => '允许的图片扩展名',
+    'Max Upload Size' => '最大上传大小',
+    'Image Dimension' => '图片尺寸',
+    'Thumbnail Dimension' => '缩略图尺寸',
+    'Icon Dimension' => '图标尺寸',
+    'The installer was interrupted!' => '安装程序被中断！',
+    'The installer was unable to write the configuration file.' => '安装程序无法写入配置文件。',
+    'Please follow the instructions below to continue.' => '请按照以下说明继续。',
+    'Problem Found' => '发现问题',
+    'Unable to create or write file' => '无法创建或写入文件',
+    'Solution' => '解决方案',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => '请下载下面的配置文件并手动上传或粘贴到以下目录下',
+    'Download Configuration' => '下载配置',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => '配置文件上传后，请单击刷新按钮以继续安装。',
+    'Unable to extract the sample module.' => '无法提取示例模块。',
+    'Make sure the following directory is writable' => '确保以下目录可写',
+    'Skip installing the sample module' => '跳过安装示例模块',
+
+    // 其他
+    'Subscribe to my channel' => '订阅我的频道',
+    'Be my friend' => '成为我的朋友',
+    'Follow my GitHub' => '关注我的 GitHub',
+    'Import sample data' => '使用示例数据安装',
+];

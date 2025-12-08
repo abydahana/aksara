@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // Global
+    'Aksara Installer' => 'Instalador Aksara',
+    'Whoops!' => 'Ops!',
+    'Back' => 'Voltar',
+    'Refresh' => 'Atualizar',
+    'Continue' => 'Continuar',
+    'DSN' => 'DSN da Fonte de Dados',
+    'Hostname' => 'Nome do Host',
+    'Port' => 'Porta',
+    'Username' => 'Nome de Usuário',
+    'Password' => 'Senha',
+    'Confirm Password' => 'Confirmar Senha',
+    'Available' => 'Disponível',
+
+    // Index
+    'Checking Requirements' => 'Verificando Requisitos',
+    'Database Configuration' => 'Configuração do Banco de Dados',
+    'Security Configuration' => 'Configuração de Segurança',
+    'System Configuration' => 'Configuração do Sistema',
+    'Finalizing' => 'Finalizando',
+    'Hello there' => 'Olá',
+    'Choose Language' => 'Escolha o Idioma',
+    'Thank you for choosing Aksara' => 'Obrigado por escolher o <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'Antes de começarmos a instalação, por favor, reserve um momento para ler estas poucas notas.',
+    'You could check the agreement box and skip reading as usual.' => 'Você pode marcar a caixa "<b>Concordo</b>" e pular a leitura como de costume, mas ainda acreditamos que há algum "<b>viciado</b>" que vai ler estas notas linha por linha.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> é apenas uma ferramenta para construir ecossistemas de acordo com suas necessidades. Mas qualquer sistema que você construir usando <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> deve seguir seus termos;',
+
+    'Article 2' => 'Você tem permissão para redistribuir os ecossistemas que você constrói usando <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> sem precisar da minha permissão, mas alegar que você construiu tudo sozinho é vergonhoso;',
+
+    'Article 3' => 'Nunca desaponte os criadores que compartilham seus trabalhos gratuitamente, caso contrário, você os encontrará vendendo suas ideias futuras por preços que você não pode alcançar.',
+
+    'Three notes should be enough.' => 'Três notas devem ser suficientes.',
+    'I look forward to your support.' => 'Espero pelo seu apoio.',
+    'The fool' => 'O tolo',
+    'Pretend to agree' => 'Fingir concordar',
+    'Start Installation' => 'Iniciar Instalação',
+
+    // Database
+    'Fill the requested fields below with your database connection.' => 'Preencha os campos solicitados abaixo com os detalhes de conexão do seu banco de dados.',
+    'Please fill all required fields!' => 'Por favor, preencha todos os campos obrigatórios!',
+    'Database Driver' => 'Driver do Banco de Dados',
+    'Initial Database' => 'Banco de Dados Inicial',
+    'Please choose the correct database driver!' => 'Por favor, escolha o driver de banco de dados correto!',
+    'Create database if not exist' => 'Criar banco de dados se não existir',
+
+    // Finalizing
+    'The timezone is not valid!' => 'O fuso horário não é válido!',
+    'The site title cannot be empty!' => 'O título do site não pode estar vazio!',
+    'The site description cannot be empty!' => 'A descrição do site não pode estar vazia!',
+    'File extension must be comma separated alphanumeric only!' => 'As extensões de arquivo devem ser apenas alfanuméricas separadas por vírgula!',
+    'Image extension must be comma separated alphanumeric only!' => 'As extensões de imagem devem ser apenas alfanuméricas separadas por vírgula!',
+    'Maximum upload size must be numeric only!' => 'O tamanho máximo de upload deve ser apenas numérico!',
+    'Image dimension must be numeric only!' => 'A dimensão da imagem deve ser apenas numérica!',
+    'Thumbnail dimension must be numeric only!' => 'A dimensão da miniatura deve ser apenas numérica!',
+    'Icon dimension must be numeric only!' => 'A dimensão do ícone deve ser apenas numérica!',
+    'All catched up!' => 'Tudo pronto!',
+    'Your application is ready to install using provided settings.' => 'Sua aplicação está pronta para instalação usando as configurações fornecidas.',
+    'Just one more step' => 'Apenas mais um passo',
+    'Make sure what you filled in on the previous form is correct.' => 'Certifique-se de que o que você preencheu no formulário anterior está correto.',
+    'Once you have successfully run the installer, there is no more back button.' => 'Depois de executar o instalador com sucesso, não há mais botão de voltar.',
+    'Click run installer to applying your configuration.' => 'Clique em "<b>Executar Instalador</b>" para aplicar suas configurações.',
+    'Run Installer' => 'Executar Instalador',
+
+    // Install
+    'Failed to open or create the configuration file!' => 'Falha ao abrir ou criar o arquivo de configuração!',
+    'Failed to write the configuration into file!' => 'Falha ao escrever a configuração no arquivo!',
+    'Congratulations!' => 'Parabéns!',
+    'Aksara has been successfully installed on your system!' => 'O <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> foi instalado com sucesso em seu sistema!',
+    'Notice!' => 'Atenção!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'Seu arquivo ou pasta de configuração não tem permissão de escrita ou houve um problema ao criar o arquivo de configuração.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'Você terá que criar o seguinte código manualmente e colocá-lo no seguinte diretório:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'Revalide a configuração após o arquivo de configuração ser criado ou enviado.',
+    'You can login as superuser using following credential:' => 'Você pode fazer login como superusuário usando as seguintes credenciais:',
+    'Follow our updates to get our other works if you find this useful.' => 'Siga nossas atualizações para obter nossos outros trabalhos se você achar isso útil.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'Apenas para lembrar, também coletamos doações de pessoas como você para apoiar nossa pesquisa.',
+    'Regardless of the amount will be very useful.' => 'Independentemente do valor, será muito útil.',
+    'Cheers' => 'Saúde',
+    'Launch Site' => 'Iniciar Site',
+    'Revalidate Configuration' => 'Revalidar Configuração',
+
+    // Requirements
+    'You just need to pretend to agree!' => 'Você só precisa fingir concordar, meu amigo!',
+    'Awesome!' => 'Incrível!',
+    'You just read our notes and pretend to agree with it.' => 'Você acabou de ler nossas notas e fingiu concordar com elas :)',
+    'We will help you to prepare your application using this installation wizard.' => 'Nós ajudaremos você a preparar sua aplicação usando este assistente de instalação.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'Antes de continuar, certifique-se de que estes pré-requisitos sejam atendidos sem nenhum aviso.',
+    'Otherwise your application will not work properly.' => 'Caso contrário, sua aplicação não funcionará corretamente.',
+    'PHP Version' => 'Versão do PHP',
+    'Rewrite Module' => 'Módulo de Reescrever',
+    'Internationalization' => 'Internacionalização',
+    'Multibyte String' => 'String Multibyte',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'A versão mínima necessária é',
+    'and the maximum version is' => 'e a versão máxima é',
+    'Disabled' => 'Desabilitado',
+    'Enabled' => 'Habilitado',
+    'Off' => 'Desligado',
+    'On' => 'Ligado',
+    'Turn it on!' => 'Ative!',
+    'Optional' => 'Opcional',
+    'Some requirement are not yet fulfilled.' => 'Alguns requisitos ainda não foram atendidos.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'Por favor, atualize sua configuração do servidor e clique no botão atualizar para continuar a instalação.',
+    'The rewrite module is disabled by your server.' => 'O módulo de reescrita está desabilitado pelo seu servidor.',
+    'You can continue the installation but we recommend to enable it.' => 'Você pode continuar a instalação, mas recomendamos habilitá-lo.',
+
+    // Security
+    'Enter your secret formula to secure your application.' => 'Digite sua fórmula secreta para proteger sua aplicação.',
+    'Encryption Key' => 'Chave de Criptografia',
+    'Your encryption key' => 'Sua chave de criptografia',
+    'Cookie Name' => 'Nome do Cookie',
+    'Session Expiration' => 'Expiração da Sessão',
+    'The number of seconds you want the session to last.' => 'O número de segundos que você quer que a sessão dure. Definir o valor como 0 (zero) significa que a sessão expira quando o navegador é fechado.',
+    'In seconds' => 'Em segundos',
+    'Unique cookie name to prevent session conflict' => 'Nome de cookie único para prevenir conflitos de sessão',
+    'Superuser' => 'Superusuário',
+    'First Name' => 'Primeiro Nome',
+    'Last Name' => 'Sobrenome',
+    'Email Address' => 'Endereço de E-mail',
+    'Create username for superuser' => 'Criar nome de usuário para o superusuário',
+    'Password for superuser' => 'Senha para o superusuário',
+    'Retype the password' => 'Digite a senha novamente',
+
+    // System
+    'The encryption key cannot be empty!' => 'A chave de criptografia não pode estar vazia!',
+    'The encryption key contain unsupported character!' => 'A chave de criptografia contém caractere não suportado!',
+    'The cookie name cannot be empty!' => 'O nome do cookie não pode estar vazio!',
+    'The cookie name contain unsupported character!' => 'O nome do cookie contém caractere não suportado!',
+    'The first name cannot be empty!' => 'O primeiro nome não pode estar vazio!',
+    'Please enter your valid email address!' => 'Por favor, digite seu endereço de e-mail válido!',
+    'The username must be in alphanumeric only!' => 'O nome de usuário deve conter apenas caracteres alfanuméricos e ter no mínimo 5 caracteres!',
+    'The password cannot be empty!' => 'A senha não pode estar vazia!',
+    'The password confirmation did not match!' => 'A confirmação da senha não corresponde!',
+    'Enter the basic system configuration.' => 'Digite a configuração básica do sistema.',
+    'You will able to change it after the installation.' => 'Você poderá alterá-lo após a instalação.',
+    'Installation Mode' => 'Modo de Instalação',
+    'Basic (with sample)' => 'Básico (com amostra)',
+    'Developer (without sample)' => 'Desenvolvedor (sem amostra)',
+    'Timezone' => 'Fuso Horário',
+    'Site Settings' => 'Configurações do Site',
+    'Site Title' => 'Título do Site',
+    'Enter the site title' => 'Digite o título do site',
+    'Site Description' => 'Descrição do Site',
+    'Enter the site description' => 'Digite a descrição do site',
+    'Upload Settings' => 'Configurações de Upload',
+    'Allowed File Extension' => 'Extensão de Arquivo Permitida',
+    'Allowed Image Extension' => 'Extensão de Imagem Permitida',
+    'Separate with comma' => 'Separe com vírgula',
+    'Upload Limit' => 'Limite de Upload',
+    'Image Width Dimension' => 'Dimensão da Largura da Imagem',
+    'Original' => 'Original',
+    'Thumbnail' => 'Miniatura',
+    'Icon' => 'Ícone',
+    'In pixel' => 'Em pixel',
+    'ZIP Archiver' => 'Arquivador ZIP',
+    'Your application is ready to install using the provided configurations.' => 'Sua aplicação está pronta para instalação usando as configurações fornecidas.',
+    'Agreement' => 'Contrato de Licença',
+    'Database Initial' => 'Banco de Dados Inicial',
+    'Email' => 'E-mail',
+    'Password Confirmation' => 'Confirmação de Senha',
+    'File Extension' => 'Extensão de Arquivo Permitida',
+    'Image Extension' => 'Extensão de Imagem Permitida',
+    'Max Upload Size' => 'Tamanho Máximo de Upload',
+    'Image Dimension' => 'Dimensão da Imagem',
+    'Thumbnail Dimension' => 'Dimensão da Miniatura',
+    'Icon Dimension' => 'Dimensão do Ícone',
+    'The installer was interrupted!' => 'O instalador foi interrompido!',
+    'The installer was unable to write the configuration file.' => 'O instalador não conseguiu escrever o arquivo de configuração.',
+    'Please follow the instructions below to continue.' => 'Por favor, siga as instruções abaixo para continuar.',
+    'Problem Found' => 'Problema Encontrado',
+    'Unable to create or write file' => 'Incapaz de criar ou escrever arquivo',
+    'Solution' => 'Solução',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'Por favor, baixe o arquivo de configuração abaixo e faça o upload ou cole-o manualmente no seguinte diretório',
+    'Download Configuration' => 'Baixar Configuração',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'Depois que o arquivo de configuração for enviado, clique no botão atualizar para continuar a instalação.',
+    'Unable to extract the sample module.' => 'Não foi possível extrair o módulo de amostra.',
+    'Make sure the following directory is writable' => 'Certifique-se de que o seguinte diretório tem permissão de escrita',
+    'Skip installing the sample module' => 'Pular instalação do módulo de amostra',
+
+    // Miscellaneous
+    'Subscribe to my channel' => 'Inscreva-se no meu canal',
+    'Be my friend' => 'Seja meu amigo',
+    'Follow my GitHub' => 'Siga meu GitHub',
+    'Import sample data' => 'Instalar com dados de amostra',
+];

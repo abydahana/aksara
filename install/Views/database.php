@@ -45,7 +45,7 @@
                     <?= phrase('Hostname'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="database_hostname" class="form-control form-control-sm rounded-pill" placeholder="e.g: localhost" value="<?= session()->get('database_hostname'); ?>" />
+                <input type="text" name="database_hostname" class="form-control form-control-sm rounded-pill" placeholder="e.g: localhost" value="<?= session()->get('database_hostname') ?? 'localhost'; ?>" />
             </div>
         </div>
         <div class="col-md-3">
@@ -54,7 +54,7 @@
                     <?= phrase('Port'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" placeholder="e.g: 3306" value="<?= session()->get('database_port'); ?>" />
+                <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" placeholder="e.g: 3306" value="<?= session()->get('database_port') ?? 3306; ?>" />
             </div>
         </div>
     </div>

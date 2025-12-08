@@ -57,7 +57,7 @@ class Addons extends \Aksara\Laboratory\Core
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../'));
         } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara market.'), current_page('../'));
+            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../'));
         }
 
         if (! $package) {
@@ -271,7 +271,7 @@ class Addons extends \Aksara\Laboratory\Core
                                     // Remove temporary directory
                                     $this->_rmdir($tmp_path);
 
-                                    return throw_exception(403, phrase('The ' . $type . ' package is not compatible with your current Aksara version.'));
+                                    return throw_exception(403, phrase('The {{type}} package is not compatible with your current Aksara version.', ['type' => $type]));
                                 }
 
                                 $valid_package = true;
@@ -301,7 +301,7 @@ class Addons extends \Aksara\Laboratory\Core
                         $html = '
                             <form action="' . current_page() . '" method="POST" class="--validate-form">
                                 <div class="text-center">
-                                    ' . phrase('The ' . $type . ' package with same structure is already installed.') . ' ' . phrase('Do you want to upgrade the ' . $type . ' instead?') . '
+                                    ' . phrase('The {{type}} package with same structure is already installed.', ['type' => $type]) . ' ' . phrase('Do you want to upgrade the {{type}} instead?', ['type' => $type]) . '
                                 </div>
                                 <hr class="mx--3 border-secondary" />
                                 <input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
@@ -517,19 +517,19 @@ class Addons extends \Aksara\Laboratory\Core
                         // Remove temporary directory
                         $this->_rmdir($tmp_path);
 
-                        return throw_exception(301, phrase('The selected ' . $type . ' package was successfully installed.'), current_page('../' . $type, ['item' => null, 'type' => null]));
+                        return throw_exception(301, phrase('The selected {{type}} package was successfully installed.', ['type' => $type]), current_page('../' . $type, ['item' => null, 'type' => null]));
                     } else {
-                        return throw_exception(403, phrase('Your ' . $type . ' folder seems cannot be writable.'));
+                        return throw_exception(403, phrase('Your {{type}} folder seems not writable.', ['type' => $type]));
                     }
                 }
 
                 // Remove temporary directory
                 $this->_rmdir($tmp_path);
 
-                return throw_exception(403, phrase('Unable to install the selected ' . $type . '.'));
+                return throw_exception(403, phrase('Unable to install the selected {{type}}.', ['type' => $type]));
             }
 
-            return throw_exception(404, phrase('The selected ' . $type . ' you would to install is not available.'));
+            return throw_exception(404, phrase('The selected {{type}} you would to install is not available.', ['type' => $type]));
         }
 
         return throw_exception(404, phrase('Your web server need to connected to the internet to install the add-ons.'));

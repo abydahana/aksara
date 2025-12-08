@@ -868,7 +868,7 @@ class Core
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                             <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                             <span class="modal-title-text">
-                            {{ meta.title ?? phrase('Loading') }}
+                            {{ meta.title ?? phrase('Loading...') }}
                             </span>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
@@ -880,7 +880,7 @@ class Core
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden sr-only">
-                                        {{ phrase('Loading') }}
+                                        {{ phrase('Loading...') }}
                                     </span>
                                 </div>
                             </div>
@@ -933,8 +933,7 @@ class Core
                         [info@localhost ~]# aksara trace -exception
                     </p>
                     <p class="text-danger">
-                        {{ phrase('No response could be loaded') }}.
-                        {{ phrase('Make sure to check the following mistake') }}:
+                        {{ phrase('No response could be loaded.') }} {{ phrase('Make sure to check the following mistake:') }}
                     </p>
                     <ol>
                         <li class="text-danger">

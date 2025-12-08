@@ -104,7 +104,7 @@ class User extends \Aksara\Laboratory\Core
         ->row();
 
         if ($user) {
-            $title = phrase('{{ user }}\'s Activities', ['user' => $user->first_name . ' ' . $user->last_name]);
+            $title = phrase('{{user}}\'s Activities', ['user' => $user->first_name . ' ' . $user->last_name]);
         } else {
             $title = phrase('Activities');
         }
@@ -147,7 +147,7 @@ class User extends \Aksara\Laboratory\Core
         ->row();
 
         if ($user) {
-            $title = phrase('{{ user }}\'s Likes', ['user' => $user->first_name . ' ' . $user->last_name]);
+            $title = phrase('{{user}}\'s Likes', ['user' => $user->first_name . ' ' . $user->last_name]);
         } else {
             $title = phrase('Likes');
         }
@@ -189,7 +189,7 @@ class User extends \Aksara\Laboratory\Core
         ->row();
 
         if ($user) {
-            $title = phrase('The Guest Book of {{ user }}', ['user' => $user->first_name . ' ' . $user->last_name]);
+            $title = phrase('The Guest Book of {{user}}', ['user' => $user->first_name . ' ' . $user->last_name]);
         } else {
             $title = phrase('Guest Book');
         }

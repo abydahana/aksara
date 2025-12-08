@@ -723,7 +723,7 @@ class Comment extends \Aksara\Laboratory\Core
 
         if (get_userdata('group_id') > 2 && $day_minimum && $interval <= $day_minimum) {
             // Minimize spam
-            return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{ interval }} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
+            return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{interval}} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
         }
 
         if (time() <= get_userdata('_spam_timer')) {
@@ -810,7 +810,7 @@ class Comment extends \Aksara\Laboratory\Core
             post__comments.comments,
             post__comments.attachment,
             post__comments.timestamp,
-            
+
             app__users.first_name,
             app__users.last_name
         ')
@@ -857,7 +857,7 @@ class Comment extends \Aksara\Laboratory\Core
                         <br />
                         <div id="comment-text-' . $comment_id . '">
                             ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
-                            
+
                             ' . nl2br(htmlspecialchars(service('request')->getPost('comments'))) . '
                             ' . ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-5" alt="..." /></a></div>' : null) . '
                         </div>
@@ -870,18 +870,18 @@ class Comment extends \Aksara\Laboratory\Core
                                 ' . phrase('Upvote') . '
                             </b>
                         </a>
-                         &middot; 
+                         &middot;
                         <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => service('request')->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>
                         </a>
-                         &middot; 
+                         &middot;
                         <span class="text-muted text-sm">
                             ' . time_ago(date('Y-m-d H:i:s')) . '
                         </span>
                     </div>
-                    
+
                     ' . (! $reply_id ? '<div id="comment-reply"></div>' : null) . '
                 </div>
             </div>

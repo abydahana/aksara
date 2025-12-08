@@ -32,7 +32,7 @@ class Install extends BaseController
 
                 service('language')->setLocale(service('request')->getGet('language'));
             }
-        } elseif (in_array(session()->get('language'), ['en', 'id'])) {
+        } elseif (in_array(session()->get('language'), ['ar', 'de', 'en', 'en-pi', 'id', 'es', 'fr', 'id', 'ja', 'ko', 'nl', 'pt', 'ru', 'th', 'vi', 'zh'])) {
             service('language')->setLocale(session()->get('language'));
         } else {
             session()->set('language', 'en');

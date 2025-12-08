@@ -158,28 +158,47 @@ if (! function_exists('time_ago')) {
             return phrase('Just now');
         }
 
-        $condition = [
-            (12 * 30 * 24 * 60 * 60) => ($full ? phrase('year') : phrase('yr')),
-            (30 * 24 * 60 * 60) => ($full ? phrase('month') : phrase('mo')),
-            (7 * 24 * 60 * 60) => phrase('week'),
-            (24 * 60 * 60) => phrase('day'),
-            (60 * 60) => ($full ? phrase('hour') : phrase('hr')),
-            60 => ($full ? phrase('minute') : phrase('min')),
-            1 => ($full ? phrase('second') : phrase('sec'))
-        ];
+        static $conditions = null;
+        if (null === $conditions) {
+            $conditions = [
+                31536000 => ['full' => 'year', 'short' => 'yr'],
+                2592000 => ['full' => 'month', 'short' => 'mo'],
+                604800 => ['full' => 'week', 'short' => 'week'],
+                86400 => ['full' => 'day', 'short' => 'day'],
+                3600 => ['full' => 'hour', 'short' => 'hr'],
+                60 => ['full' => 'minute', 'short' => 'min'],
+                1 => ['full' => 'second', 'short' => 'sec']
+            ];
+        }
 
-        foreach ($condition as $seconds => $label) {
-            $time_period = $time_difference / $seconds;
+        foreach ($conditions as $seconds => $labels) {
+            if ($time_difference >= $seconds) {
+                $time = (int)($time_difference / $seconds);
+                $label_key = $full ? 'full' : 'short';
 
-            if ($time_period >= 1) {
-                $time = round($time_period);
-
-                if ($full && ((1 == $time && phrase('day') == $label) || (24 == $time && in_array($label, [phrase('hour'), phrase('hr')])))) {
-                    $time = null;
-                    $label = phrase('Yesterday');
+                // Handle "Yesterday" special case
+                if ($full && 86400 === $seconds && 1 === $time) {
+                    return phrase('Yesterday');
                 }
 
-                return $time . ' ' . $label . ($time > 1 ? phrase('s') : null) . (! $short && $time ? ' ' . phrase('ago') : null);
+                if ($full && 3600 === $seconds && 24 === $time) {
+                    return phrase('Yesterday');
+                }
+
+                // Pakai suffix _plural hanya jika time > 1
+                $phrase_key = $labels[$label_key];
+                if ($time > 1) {
+                    $phrase_key .= '_plural';
+                }
+
+                $label = phrase($phrase_key);
+                $result = $time . ' ' . $label;
+
+                if (! $short) {
+                    $result .= ' ' . phrase('ago');
+                }
+
+                return $result;
             }
         }
 

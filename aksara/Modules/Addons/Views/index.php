@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 `);
-                
+
                 return;
             } else if (typeof response.error !== 'undefined') {
                 $('.addon-listing').html(`
@@ -98,12 +98,12 @@
                         </div>
                     </div>
                 `);
-                
+
                 return;
             }
-            
+
             $('.addon-listing').html(''),
-            
+
             $.each(response, function(key, val) {
                 if (val.addon_type == 'theme') {
                     $(`

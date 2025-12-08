@@ -276,7 +276,7 @@ class Validation
 
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
-                $validation->setError($field, phrase('Please choose the file to upload.'));
+                $validation->setError($field, phrase('Please choose the file to upload'));
             }
         }
 
@@ -335,17 +335,17 @@ class Validation
 
         if (! in_array($source->getMimeType(), $valid_mime)) {
             // Mime is invalid
-            $this->_upload_error = phrase('The selected file format is not allowed to upload.');
+            $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
         } elseif ((float) $source->getSizeByUnit('mb') > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
-            $this->_upload_error = phrase('The selected file size exceeds the maximum allocation.');
+            $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 
             return false;
         } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             // Upload directory is unwritable
-            $this->_upload_error = phrase('The upload folder is not writable.');
+            $this->_upload_error = phrase('The upload folder is not writable');
 
             return false;
         }
@@ -394,7 +394,7 @@ class Validation
         // Check for PHP tags
         if (preg_match('/<\?php/i', $fileContent)) {
             // Ensure the file is not contain exploit command
-            $this->_upload_error = phrase('The file is not allowed to upload.');
+            $this->_upload_error = phrase('The file is not allowed to upload');
 
             return false;
         }

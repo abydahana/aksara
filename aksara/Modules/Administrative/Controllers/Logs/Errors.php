@@ -178,7 +178,7 @@ class Errors extends \Aksara\Laboratory\Core
             }
         }
 
-        return throw_exception(301, '<b>' . number_format($success) . '</b> ' . phrase('of') . ' <b>' . number_format(sizeof($logs)) . '</b> ' . phrase('was successfully removed.'), current_page('../', ['log' => null]));
+        return throw_exception(301, phrase('{{deleted}} of {{total}} was successfully removed.', ['deleted' => number_format($success), 'total' => number_format(sizeof($logs) ?? 0)]), current_page('../', ['log' => null]));
     }
 
     private function _logs()

@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                     <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
                     <span class="modal-title-text">
-                    {{ meta.title ?? phrase('Loading') }}
+                    {{ meta.title ?? phrase('Loading...') }}
                     </span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="{{ phrase('Close') }}"></button>
@@ -17,7 +17,7 @@
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden sr-only">
-                                {{ phrase('Loading') }}
+                                {{ phrase('Loading...') }}
                             </span>
                         </div>
                     </div>
