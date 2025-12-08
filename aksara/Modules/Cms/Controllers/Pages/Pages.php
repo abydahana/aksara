@@ -37,6 +37,8 @@ class Pages extends \Aksara\Laboratory\Core
 
         if (service('request')->getGet('language')) {
             $this->where('language_id', service('request')->getGet('language'));
+        } else {
+            $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
         $this->set_title(phrase('Pages'))
@@ -94,8 +96,8 @@ class Pages extends \Aksara\Laboratory\Core
             ]
         )
         ->set_validation([
-            'page_title' => 'required|max_length[64]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
-            'page_slug' => 'max_length[64]|unique[' . $this->_table . '.page_slug.page_id.' . service('request')->getGet('page_id') . ']',
+            'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
+            'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . service('request')->getGet('page_id') . '.language_id.' . (service('request')->getPost('language_id') ?? service('request')->getGet('language') ?? 0) . ']',
             'page_content' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
