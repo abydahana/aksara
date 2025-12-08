@@ -134,6 +134,9 @@ if (! function_exists('phrase')) {
      */
     function phrase(?string $phrase = null, array $replacement = [])
     {
+        // Set internal encoding to UTF-8
+        mb_internal_encoding('UTF-8');
+
         // Make sure the phrase and language is valid
         if (! $phrase || is_numeric($phrase)) {
             // Otherwise, throwback the null result
@@ -146,11 +149,14 @@ if (! function_exists('phrase')) {
         // Transform the phrase into safe-string
         $phrase = preg_replace('/[^\w\s\p{P}\p{L}]/u', ' ', $phrase);
 
+        // Replace square braces to parentheses
+        $phrase = str_replace(['[', ']'], ['(', ')'], $phrase);
+
         // Remove multiple whitespace
         $phrase = preg_replace('/\s+/', ' ', $phrase);
 
-        // Replace sequare braces to parentheses
-        $phrase = str_replace(['[', ']'], ['(', ')'], $phrase);
+        // Trim whitespace
+        $phrase = trim($phrase);
 
         // Get locale by session
         $language = get_userdata('language');
@@ -182,16 +188,16 @@ if (! function_exists('phrase')) {
                     // Try to create directory
                     mkdir(WRITEPATH . 'translations', 0755, true);
 
-                    // Put default content to file
-                    file_put_contents($translation_file, json_encode([]));
+                    // Put default content to file with UTF-8 encoding
+                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (\Throwable $e) {
-                    // Safe absraction
+                    // Safe abstraction
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
                 // Translation directory is exists
                 try {
-                    // Put content into file
-                    file_put_contents($translation_file, json_encode([]));
+                    // Put content into file with UTF-8 encoding
+                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (\Throwable $e) {
                     // Safe abstraction
                 }
@@ -205,6 +211,11 @@ if (! function_exists('phrase')) {
             // Decode json from translation
             $phrases = (is_json($buffer) ? json_decode($buffer, true) : []);
 
+            // Ensure $phrases is array
+            if (! is_array($phrases)) {
+                $phrases = [];
+            }
+
             // Check if language property is valid
             if (! isset($phrases[$phrase])) {
                 // Set new phrase and push into existing
@@ -213,26 +224,56 @@ if (! function_exists('phrase')) {
                 // Sort and humanize the order of phrase
                 ksort($phrases);
 
-                // Put new phrase into existing language
+                // Put new phrase into existing language with proper UTF-8 encoding
                 if (file_exists($translation_file) && is_writable($translation_file)) {
-                    file_put_contents($translation_file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
+                    $json_content = json_encode(
+                        $phrases,
+                        JSON_PRETTY_PRINT |
+                        JSON_UNESCAPED_SLASHES |
+                        JSON_UNESCAPED_UNICODE
+                    );
+
+                    // Write with explicit UTF-8 encoding
+                    file_put_contents($translation_file, $json_content, LOCK_EX);
                 }
             }
 
-            $phrase = $phrases[$phrase];
+            // Get the translated phrase
+            $translated_phrase = $phrases[$phrase] ?? $phrase;
+
+            // Replace "word" to "word"
+            $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
+
+            // Replace quotes to apostrophes
+            $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
+
+            $phrase = $translated_phrase;
         } catch (\Throwable $e) {
-            // Safe abstraction
+            // Safe abstraction - keep original phrase
         }
 
         if ($replacement) {
             // Find and replace
             foreach ($replacement as $keyword => $replace) {
                 // Replace string between double braces
-                $phrase = preg_replace("/\{\{(\s+)?($keyword)(\s+)?\}\}/", $replace, $phrase);
+                $phrase = preg_replace("/\{\{(\s+)?(" . preg_quote($keyword, '/') . ")(\s+)?\}\}/", $replace, $phrase);
             }
         }
 
         return $phrase;
+    }
+}
+
+if (! function_exists('is_rtl')) {
+    /**
+     * Get RTL status
+     */
+    function is_rtl()
+    {
+        return in_array(get_userdata('language'), [
+            'ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw',
+            'ks', 'ku', 'ps', 'ur', 'yi', 'sd', 'ug',
+        ]);
     }
 }
 
