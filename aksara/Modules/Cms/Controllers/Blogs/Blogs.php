@@ -67,6 +67,8 @@ class Blogs extends \Aksara\Laboratory\Core
 
         if (service('request')->getGet('language')) {
             $this->where('language_id', service('request')->getGet('language'));
+        } else {
+            $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
         $this->set_title(phrase('Blogs'))
@@ -102,8 +104,8 @@ class Blogs extends \Aksara\Laboratory\Core
         )
 
         ->set_validation([
-            'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
-            'post_slug' => 'max_length[256]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . ']',
+            'post_title' => 'required|max_length[255]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
+            'post_slug' => 'max_length[255]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . '.language_id.' . (service('request')->getPost('language_id') ?? service('request')->getGet('language') ?? 0) . ']',
             'post_content' => 'required',
             'post_category' => 'required',
             'language_id' => 'required',
