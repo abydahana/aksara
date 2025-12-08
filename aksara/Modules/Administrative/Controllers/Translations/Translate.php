@@ -167,7 +167,7 @@ class Translate extends \Aksara\Laboratory\Core
                             // Sanitize <a> tags - only allow href, title, target
                             $val = preg_replace_callback(
                                 '/<a\s+([^>]+)>/i',
-                                function($matches) {
+                                function ($matches) {
                                     $attrs = $matches[1];
                                     $allowed_attrs = [];
 
@@ -189,7 +189,7 @@ class Translate extends \Aksara\Laboratory\Core
                                     if (preg_match('/target=["\'](_blank|_self)["\']/', $attrs, $target_match)) {
                                         $allowed_attrs[] = 'target="' . $target_match[1] . '"';
                                         // Add rel="noopener noreferrer" for security if target is _blank
-                                        if ($target_match[1] === '_blank') {
+                                        if ('_blank' === $target_match[1]) {
                                             $allowed_attrs[] = 'rel="noopener noreferrer"';
                                         }
                                     }
@@ -202,7 +202,7 @@ class Translate extends \Aksara\Laboratory\Core
                             // Sanitize <span> tags - only allow class and style with limited properties
                             $val = preg_replace_callback(
                                 '/<span\s+([^>]+)>/i',
-                                function($matches) {
+                                function ($matches) {
                                     $attrs = $matches[1];
                                     $allowed_attrs = [];
 
