@@ -411,7 +411,7 @@ class Template
             }
 
             // Intersection key to keep property from unset
-            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_string', 'elapsed_time', 'content', '_token'];
+            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_string', 'elapsed_time', 'content', '_identifier', '_token'];
 
             foreach ($data as $key => $val) {
                 if (! in_array($key, $intersection_key)) {

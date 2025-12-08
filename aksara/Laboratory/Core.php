@@ -191,7 +191,7 @@ class Core extends Controller
     /**
      * Debugging
      */
-    public function debug(string $result_type = '')
+    public function debug(?string $result_type = null)
     {
         $this->_debugging = $result_type;
 
@@ -523,7 +523,7 @@ class Core extends Controller
      *
      * @param   array|string $params
      */
-    public function set_messages($params = [], ?int $code = null, ?string $messages = null)
+    public function set_messages($params = [], int $code = 0, ?string $messages = null)
     {
         // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
@@ -545,7 +545,7 @@ class Core extends Controller
     /**
      * Override the existing CRUD button
      */
-    public function set_button(string $button, string $value, string $label, ?string $class = null, ?string $icon = null, $parameter = [], ?bool $new_tab = null)
+    public function set_button(string $button, ?string $value = null, ?string $label = null, ?string $class = null, ?string $icon = null, $parameter = [], ?bool $new_tab = null)
     {
         // Push the button properties
         $this->_set_button[$button] = [
@@ -643,7 +643,7 @@ class Core extends Controller
      *
      * @param   array|string $url
      */
-    public function add_toolbar($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
+    public function add_toolbar($url, string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
     {
         if (! is_array($url)) {
             $params = [
@@ -2138,7 +2138,7 @@ class Core extends Controller
             if (! $this->_set_primary) {
                 if ('backend' == $this->template->get_theme_property('type')) {
                     // Add notification into table heading
-                    $this->set_description('<div><b>' . phrase('No primary key is found.') . '</b> ' . phrase('Please define it manually') . ' (' . strtolower(phrase('refers to')) . ' <code>set_primary()</code>). ' . phrase('Without primary key, you will only allowed to insert the data.') . '</div>');
+                    $this->set_description('<div><b>' . phrase('No primary key is found.') . '</b> ' . phrase('Please define it manually and refer to {{set_primary}}.', ['set_primary' => '<code>set_primary()</code>']) . ' ' . phrase('Without primary key, you only allowed to insert the data.') . '</div>');
                 }
 
                 // Unset method
@@ -2610,7 +2610,7 @@ class Core extends Controller
                 set_userdata('sortOrder', 'DESC');
             }
 
-            if ($this->model->field_exists(service('request')->getGet('order'), $this->_table)) {
+            if (service('request')->getGet('order') && $this->model->field_exists(service('request')->getGet('order'), $this->_table)) {
                 // Match order by the primary table
                 // Push order to the prepared query builder
                 $this->_prepare[] = [
@@ -2621,7 +2621,7 @@ class Core extends Controller
                 // Otherwhise, find it from the relation table
                 foreach ($this->_compiled_table as $key => $table) {
                     // Validate the column to check if column is exist in table
-                    if ($this->model->field_exists(service('request')->getGet('order'), $table)) {
+                    if (service('request')->getGet('order') && $this->model->field_exists(service('request')->getGet('order'), $table)) {
                         // Push order to the prepared query builder
                         $this->_prepare[] = [
                             'function' => 'order_by',
@@ -2896,6 +2896,7 @@ class Core extends Controller
             'results' => $results,
             'total' => $total,
             'elapsed_time' => service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time'),
+            '_identifier' => base64_encode(current_page()),
             '_token' => $this->_token
         ];
 
@@ -3635,6 +3636,9 @@ class Core extends Controller
                     $this->after_insert();
                 }
 
+                // Check if reload's needed
+                $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
+
                 // Send to client
                 return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), (! $this->api_client ? $this->_redirect_back : null));
             } else {
@@ -3753,7 +3757,11 @@ class Core extends Controller
                         $this->after_update();
                     }
 
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null));
+                    // Check if reload's needed
+                    $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
+
+                    // Send to client
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null), $reload);
                 } else {
                     // Unlink the files
                     $this->_unlink_files(get_userdata('_uploaded_files'));
@@ -3871,7 +3879,11 @@ class Core extends Controller
                         $this->after_delete();
                     }
 
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null));
+                    // Check if reload's needed
+                    $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
+
+                    // Send to client
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null), $reload);
                 } else {
                     // Otherwise, the item is cannot be deleted
                     $error = $this->model->error();
@@ -3882,7 +3894,7 @@ class Core extends Controller
                     }
 
                     // For user
-                    return throw_exception(500, phrase('Unable to delete the requested data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code:') . ' <b>500 (DELETE)</b>', (! $this->api_client ? $this->_redirect_back : null));
+                    return throw_exception(500, phrase('Unable to delete the requested data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (DELETE)</b>', (! $this->api_client ? $this->_redirect_back : null));
                 }
             } else {
                 // No item found
@@ -3980,7 +3992,11 @@ class Core extends Controller
 
         if ($affected_rows) {
             // Deletion success
-            return throw_exception(($this->api_client ? 200 : 301), $affected_rows . ' ' . strtolower(phrase('of')) . ' ' . sizeof($items) . ' ' . strtolower(phrase('data was successfully removed.')), (! $this->api_client ? $this->_redirect_back : null));
+            // Check if reload's needed
+            $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
+
+            // Send to client
+            return throw_exception(($this->api_client ? 200 : 301), phrase('{{affected_rows}} of {{items}} data was successfully removed.', ['affected_rows' => $affected_rows, 'items' => sizeof($items)]), (! $this->api_client ? $this->_redirect_back : null), $reload);
         } else {
             // Deletion fail
             return throw_exception(403, phrase('Unable to remove the selected data.'), (! $this->api_client ? $this->_redirect_back : null));
@@ -4576,7 +4592,7 @@ class Core extends Controller
     /**
      * Limit the query result
      */
-    public function limit(int $limit = null, int $offset = 0)
+    public function limit(int|null $limit, ?int $offset = null)
     {
         if (in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
             $this->_limit = 1;
@@ -5496,7 +5512,7 @@ class Core extends Controller
             return throw_exception(403, phrase('Your API Key is temporary deactivated.'));
         } elseif (! in_array(service('request')->getServer('REQUEST_METHOD'), json_decode($client->method, true))) {
             // Client request method limited
-            return throw_exception(403, phrase('Your API Key is not eligible to use the method:') . ' ' . service('request')->getServer('REQUEST_METHOD'));
+            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . service('request')->getServer('REQUEST_METHOD'));
         } elseif ($client->ip_range && (($client->ip_range && ! $this->_ip_in_range($client->ip_range)) || service('request')->getIPAddress() != service('request')->getServer('SERVER_ADDR'))) {
             // Client IP blocked
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source.'));

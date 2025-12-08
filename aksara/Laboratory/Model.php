@@ -205,7 +205,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function table_exists($table = null)
+    public function table_exists(string $table)
     {
         if ($table && $this->db->tableExists($table)) {
             return true;
@@ -220,7 +220,7 @@ class Model
      * @param   mixed|null $field
      * @param   mixed|null $table
      */
-    public function field_exists($field = null, $table = null)
+    public function field_exists(string $field, string $table)
     {
         if (strpos(trim($table), '(') !== false || strpos(strtolower(trim($table)), 'select ') !== false) {
             return false;
@@ -246,7 +246,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function list_fields($table = null)
+    public function list_fields(string $table)
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getFieldNames($table);
@@ -260,7 +260,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function field_data($table = null)
+    public function field_data(string $table)
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getFieldData($table);
@@ -274,7 +274,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function index_data($table = null)
+    public function index_data(string $table)
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getIndexData($table);
@@ -288,7 +288,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function foreign_data($table = null)
+    public function foreign_data(string $table)
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getForeignKeyData($table);
@@ -326,7 +326,7 @@ class Model
      *
      * @param   mixed|null $query
      */
-    public function query($query = null, $params = [], $return = false)
+    public function query(string $query, array $params = [], bool $return = false)
     {
         // Convert multiple line to single line
         $query = trim(preg_replace('/\s+/S', ' ', $query));
@@ -360,7 +360,7 @@ class Model
     /**
      * Distinct field
      */
-    public function distinct($flag = true)
+    public function distinct(bool $flag = true)
     {
         $this->_prepare[] = [
             'function' => 'distinct',
@@ -376,7 +376,7 @@ class Model
      *
      * @param   mixed|null $column
      */
-    public function select($column = null, $escape = true)
+    public function select(string|array $column, bool $escape = true)
     {
         $this->_selection = true;
 
@@ -401,7 +401,7 @@ class Model
      * @param   mixed|null $column
      * @param   mixed|null $alias
      */
-    public function select_count($column = null, $alias = null)
+    public function select_count(string $column, string $alias = null)
     {
         $this->_selection = true;
 
@@ -419,7 +419,7 @@ class Model
      * @param   mixed|null $column
      * @param   mixed|null $alias
      */
-    public function select_sum($column = null, $alias = null)
+    public function select_sum(string $column, string $alias = null)
     {
         $this->_selection = true;
 
@@ -437,7 +437,7 @@ class Model
      * @param   mixed|null $column
      * @param   mixed|null $alias
      */
-    public function select_min($column = null, $alias = null)
+    public function select_min(string $column, string $alias = null)
     {
         $this->_selection = true;
 
@@ -455,7 +455,7 @@ class Model
      * @param   mixed|null $column
      * @param   mixed|null $alias
      */
-    public function select_max($column = null, $alias = null)
+    public function select_max(string $column, string $alias = null)
     {
         $this->_selection = true;
 
@@ -473,7 +473,7 @@ class Model
      * @param   mixed|null $column
      * @param   mixed|null $alias
      */
-    public function select_avg($column = null, $alias = null)
+    public function select_avg(string $column, string $alias = null)
     {
         $this->_selection = true;
 
@@ -508,7 +508,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function from($table = null)
+    public function from(string $table)
     {
         $this->_table = $table;
 
@@ -552,7 +552,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function table($table = null)
+    public function table(string $table)
     {
         $this->_table = $table;
 
@@ -568,7 +568,7 @@ class Model
      * @param   mixed|null $table
      * @param   mixed|null $condition
      */
-    public function join($table = null, $condition = null, $type = '', $escape = true)
+    public function join(string $table, string $condition, string $type = '', bool $escape = true)
     {
         $this->_prepare[] = [
             'function' => 'join',
@@ -1183,7 +1183,7 @@ class Model
 
             $this->_prepare[] = [
                 'function' => 'orNotHavingLike',
-                'arguments' => [$cast['column'], $cast['value'], $val['side'], $val['side'], $val['escape'], $val['case_insensitive']]
+                'arguments' => [$cast['column'], $cast['value'], $val['side'], $val['escape']]
             ];
         }
 
@@ -1270,7 +1270,7 @@ class Model
     /**
      * Your contribution is needed to write complete hint about this method
      */
-    public function limit($limit = 0, $offset = 0)
+    public function limit(int $limit = 0, int|null $offset = null)
     {
         $this->_prepare[] = [
             'function' => 'limit',
@@ -1430,7 +1430,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function get($table = null, $limit = 0, $offset = 0)
+    public function get(string $table = '', int $limit = 0, int $offset = 0)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1455,7 +1455,7 @@ class Model
      * @param   mixed|null $table
      * @param   mixed|null $offset
      */
-    public function get_where($table = null, array $where = [], $limit = 0, $offset = null, $reset = true)
+    public function get_where(string $table = '', array $where = [], int|null $limit = null, int|null $offset = null, bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1560,7 +1560,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function num_rows($table = null, $reset = true)
+    public function num_rows(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1579,7 +1579,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function count_all($table = null, $reset = true)
+    public function count_all(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1598,7 +1598,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function count_all_results($table = null, $reset = true)
+    public function count_all_results(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1617,7 +1617,7 @@ class Model
      *
      * @param   mixed|null $value
      */
-    public function set($column, $value = null, $escape = true)
+    public function set($column, $value = null, bool $escape = true)
     {
         if (is_array($column)) {
             foreach ($column as $key => $val) {
@@ -1641,7 +1641,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function insert($table = null, $set = [], $escape = true)
+    public function insert($table = null, array $set = [], bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1681,7 +1681,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function insert_batch($table = null, $set = [], $batch_size = 1, $escape = true)
+    public function insert_batch(string $table = '', array $set = [], int $batch_size = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1722,6 +1722,10 @@ class Model
             $set = $new_set;
         }
 
+        if (! $batch_size) {
+            $batch_size = sizeof($set);
+        }
+
         $this->_prepare[] = [
             'function' => 'insertBatch',
             'arguments' => [$set, $escape, $batch_size]
@@ -1736,7 +1740,7 @@ class Model
      * @param   mixed|null $table
      * @param   mixed|null $limit
      */
-    public function update($table = null, $set = [], array $where = [], $limit = null)
+    public function update(string $table = '', array $set = [], array $where = [], int|null $limit = null)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1769,7 +1773,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function update_batch($table = null, $set = [], $batch_size = 1, $escape = true)
+    public function update_batch(string $table = '', array $set = [], array $constraint = [], int $batch_size = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1779,9 +1783,13 @@ class Model
             $set = array_merge($this->_set, $set);
         }
 
+        if (! $batch_size) {
+            $batch_size = sizeof($set);
+        }
+
         $this->_prepare[] = [
             'function' => 'updateBatch',
-            'arguments' => [$set, '', $batch_size]
+            'arguments' => [$set, $constraint, $batch_size]
         ];
 
         return $this->_run_query();
@@ -1792,7 +1800,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function upsert($table = null, $set = [], $escape = true)
+    public function upsert(string $table = '', array $set = [], bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1832,7 +1840,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function upsert_batch($table = null, $set = [], $batch_size = 1, $escape = true)
+    public function upsert_batch(string $table = '', array $set = [], int $batch_size = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1873,6 +1881,10 @@ class Model
             $set = $new_set;
         }
 
+        if (! $batch_size) {
+            $batch_size = sizeof($set);
+        }
+
         $this->_prepare[] = [
             'function' => 'upsertBatch',
             'arguments' => [$set, $escape, $batch_size]
@@ -1886,7 +1898,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function replace($table = null, $set = [])
+    public function replace(string $table = '', array $set = [])
     {
         if ($set) {
             $set = array_merge($this->_set, $set);
@@ -1909,7 +1921,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function delete($table = null, $where = [], $limit = 0, $reset_data = true)
+    public function delete(string $table = '', array $where = [], int|null $limit = null, bool $reset_data = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1932,7 +1944,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function truncate($table = null)
+    public function truncate(string $table = '')
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1951,7 +1963,7 @@ class Model
      *
      * @param   mixed|null $table
      */
-    public function empty_table($table = null)
+    public function empty_table(string $table = '')
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
