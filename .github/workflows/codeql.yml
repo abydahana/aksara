@@ -1,0 +1,79 @@
+name: "CodeQL Full Scan"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: '0 4 * * 1'  # weekly scan on Mondays at 04:00 UTC
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+            build-mode: none
+          - language: php
+            build-mode: manual
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup PHP for manual build
+      - name: Setup PHP
+        if: matrix.language == 'php'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'  # adjust to your PHP version
+          extensions: mbstring, intl, curl, xml
+
+      # Optional: setup Node.js for JS projects if needed
+      - name: Setup Node.js
+        if: matrix.language == 'javascript-typescript'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Initialize CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # You can add custom queries if needed:
+          # queries: security-extended, security-and-quality
+
+      # Manual build for PHP
+      - name: Build PHP project
+        if: matrix.language == 'php'
+        shell: bash
+        run: |
+          echo "Installing PHP dependencies..."
+          composer install --no-progress --prefer-dist
+
+      # Manual build for JS if needed
+      - name: Build JavaScript project
+        if: matrix.language == 'javascript-typescript' && matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo "Run your JS build commands here, for example:"
+          echo "  npm install"
+          echo "  npm run build"
+
+      # Run CodeQL Analysis
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
