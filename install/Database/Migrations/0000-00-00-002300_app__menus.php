@@ -67,6 +67,10 @@ class AppMenus extends Migration
         // Add primary and unique index
         $this->forge->addKey('menu_id', true, true);
         $this->forge->addKey('menu_placement', false, false);
+        $this->forge->addKey('group_id', false, false);
+
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
 
         // Create table
         $this->forge->createTable('app__menus');

@@ -90,6 +90,9 @@ class AppConnections extends Migration
         $this->forge->addKey('year', false, false);
         $this->forge->addKey('database_driver', false, false);
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('app__connections');
     }

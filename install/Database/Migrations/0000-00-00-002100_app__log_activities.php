@@ -80,6 +80,15 @@ class AppLogActivities extends Migration
         // Add primary and unique index
         $this->forge->addKey('id', true, true);
 
+        // Add index for session_id column
+        $this->forge->addKey('session_id', false, false);
+
+        // Add index for user_id column
+        $this->forge->addKey('user_id', false, false);
+
+        // Add index for ip_address column
+        $this->forge->addKey('ip_address', false, false);
+
         // Add foreign key to parent table
         $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 

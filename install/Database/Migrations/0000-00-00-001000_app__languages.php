@@ -37,13 +37,9 @@ class AppLanguages extends Migration
                 'constraint' => 32,
                 'null' => false
             ],
-            'description' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'tinytext'),
-                'null' => false
-            ],
             'code' => [
                 'type' => 'varchar',
-                'constraint' => 32,
+                'constraint' => 10,
                 'null' => false
             ],
             'locale' => [
@@ -61,6 +57,9 @@ class AppLanguages extends Migration
 
         // Add primary and unique index
         $this->forge->addKey('id', true, true);
+
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
 
         // Create table
         $this->forge->createTable('app__languages');

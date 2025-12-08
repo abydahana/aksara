@@ -48,6 +48,9 @@ class AppSessions extends Migration
         // Add primary and unique index
         $this->forge->addKey('id', true, true);
 
+        // Add index for ip_address column
+        $this->forge->addKey('ip_address', false, false);
+
         // Create table
         $this->forge->createTable('app__sessions');
     }

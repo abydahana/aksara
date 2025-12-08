@@ -73,6 +73,9 @@ class PagesFaqs extends Migration
         // Add foreign key to parent table
         $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('pages__faqs');
     }
