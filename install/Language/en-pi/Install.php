@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // Global
+    'Aksara Installer' => 'Aksara Installer',
+    'Whoops!' => 'Shiver me timbers!',
+    'Back' => 'Aft',
+    'Refresh' => 'Swab th\' deck',
+    'Continue' => 'Full speed ahead',
+    'DSN' => 'Data Source DSN',
+    'Hostname' => 'Ship\'s Name',
+    'Port' => 'Port',
+    'Username' => 'Crewmate\'s Name',
+    'Password' => 'Secret Code',
+    'Confirm Password' => 'Verify Secret Code',
+    'Available' => 'Ready t\' sail',
+
+    // Index
+    'Checking Requirements' => 'Checkin\' Provisions',
+    'Database Configuration' => 'Chartin\' th\' Database',
+    'Security Configuration' => 'Secure th\' Booty',
+    'System Configuration' => 'Ship\'s Settings',
+    'Finalizing' => 'Makin\' Ready',
+    'Hello there' => 'Ahoy there',
+    'Choose Language' => 'Choose Tongue',
+    'Thank you for choosing Aksara' => 'Thankee fer choosin\' <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'Afore we weigh anchor, take a moment t\' read these few notes.',
+    'You could check the agreement box and skip reading as usual.' => 'Ye could mark th\' "<b>Agree</b>" box an\' skip readin\' as usual, but we still think some "<b>landlubber</b>\'ll read these notes line by line.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> be just a tool t\' build ecosystems fer yer needs. But any system ye build with <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> must follow its terms;',
+
+    'Article 2' => 'Ye be allowed t\' redistribute th\' ecosystems ye build usin\' <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> without needin\' me permission, but claimin\' ye built it all yerself be shameful;',
+
+    'Article 3' => 'Never disappoint th\' creators who share their works freely, lest ye find \'em sellin\' their future ideas fer prices ye can\'t reach.',
+
+    'Three notes should be enough.' => 'Three notes ought t\' be enough.',
+    'I look forward to your support.' => 'I look forward t\' yer support.',
+    'The fool' => 'Th\' bilge rat',
+    'Pretend to agree' => 'Pretend t\' agree',
+    'Start Installation' => 'Hoist th\' Anchor',
+
+    // Database
+    'Fill the requested fields below with your database connection.' => 'Fill th\' fields below with yer database connection details.',
+    'Please fill all required fields!' => 'Fill all required fields, ye scallywag!',
+    'Database Driver' => 'Database Driver',
+    'Initial Database' => 'First Database',
+    'Please choose the correct database driver!' => 'Choose th\' proper database driver!',
+    'Create database if not exist' => 'Make database if it ain\'t there',
+
+    // Finalizing
+    'The timezone is not valid!' => 'Th\' timezone be not valid!',
+    'The site title cannot be empty!' => 'Th\' site title can\'t be empty!',
+    'The site description cannot be empty!' => 'Th\' site description can\'t be empty!',
+    'File extension must be comma separated alphanumeric only!' => 'File extensions must be letters an\' numbers only, separated by commas!',
+    'Image extension must be comma separated alphanumeric only!' => 'Image extensions must be letters an\' numbers only, separated by commas!',
+    'Maximum upload size must be numeric only!' => 'Max upload size must be numbers only!',
+    'Image dimension must be numeric only!' => 'Image size must be numbers only!',
+    'Thumbnail dimension must be numeric only!' => 'Thumbnail size must be numbers only!',
+    'Icon dimension must be numeric only!' => 'Icon size must be numbers only!',
+    'All catched up!' => 'All caught up!',
+    'Your application is ready to install using provided settings.' => 'Yer app be ready t\' install with th\' given settings.',
+    'Just one more step' => 'Just one more step',
+    'Make sure what you filled in on the previous form is correct.' => 'Make sure what ye filled in th\' last form be correct.',
+    'Once you have successfully run the installer, there is no more back button.' => 'Once ye run th\' installer, there be no turnin\' back.',
+    'Click run installer to applying your configuration.' => 'Click "<b>Run Installer</b>" t\' apply yer settings.',
+    'Run Installer' => 'Run Installer',
+
+    // Install
+    'Failed to open or create the configuration file!' => 'Failed t\' open or make th\' settings file!',
+    'Failed to write the configuration into file!' => 'Failed t\' write th\' settings into th\' file!',
+    'Congratulations!' => 'Hooray!',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> has been successfully installed on yer system!',
+    'Notice!' => 'Avast!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'Yer settings file or folder can\'t be written or there be a problem makin\' it.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'Ye\'ll have t\' make th\' followin\' code by hand an\' put it in this here folder:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'Check th\' settings after th\' settings file be made or uploaded.',
+    'You can login as superuser using following credential:' => 'Ye can log in as captain with these here credentials:',
+    'Follow our updates to get our other works if you find this useful.' => 'Follow our updates t\' get our other works if ye find this useful.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'Just t\' remind ye, we also take donations from folks like ye t\' support our plunderin\'.',
+    'Regardless of the amount will be very useful.' => 'No matter th\' amount, it\'ll be mighty useful.',
+    'Cheers' => 'Cheers',
+    'Launch Site' => 'Launch Yer Ship',
+    'Revalidate Configuration' => 'Check Settings Again',
+
+    // Requirements
+    'You just need to pretend to agree!' => 'Ye just need t\' pretend t\' agree, me hearty!',
+    'Awesome!' => 'Savvy!',
+    'You just read our notes and pretend to agree with it.' => 'Ye just read our notes an\' pretended t\' agree with \'em :)',
+    'We will help you to prepare your application using this installation wizard.' => 'We\'ll help ye prepare yer app usin\' this installation wizard.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'Afore ye go, make sure these here requirements be met without any warnin\'.',
+    'Otherwise your application will not work properly.' => 'Or else yer app won\'t work proper.',
+    'PHP Version' => 'PHP Version',
+    'Rewrite Module' => 'Rewrite Module',
+    'Internationalization' => 'Internationalization',
+    'Multibyte String' => 'Multibyte String',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'Th\' minimum version needed be',
+    'and the maximum version is' => 'an\' th\' maximum version be',
+    'Disabled' => 'Scuttled',
+    'Enabled' => 'Ready',
+    'Off' => 'Off',
+    'On' => 'On',
+    'Turn it on!' => 'Hoist it!',
+    'Optional' => 'Optional',
+    'Some requirement are not yet fulfilled.' => 'Some requirements ain\'t met yet.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'Update yer server settings an\' click th\' refresh button t\' continue.',
+    'The rewrite module is disabled by your server.' => 'Th\' rewrite module be scuttled by yer server.',
+    'You can continue the installation but we recommend to enable it.' => 'Ye can continue, but we be recommendin\' t\' hoist it.',
+
+    // Security
+    'Enter your secret formula to secure your application.' => 'Enter yer secret formula t\' secure yer app.',
+    'Encryption Key' => 'Encryption Key',
+    'Your encryption key' => 'Yer encryption key',
+    'Cookie Name' => 'Cookie Name',
+    'Session Expiration' => 'Session Expiration',
+    'The number of seconds you want the session to last.' => 'Th\' number o\' seconds ye want th\' session t\' last. Settin\' it t\' 0 (zero) means it ends when th\' browser closes.',
+    'In seconds' => 'In seconds',
+    'Unique cookie name to prevent session conflict' => 'A unique cookie name t\' prevent session fights',
+    'Superuser' => 'Captain',
+    'First Name' => 'First Name',
+    'Last Name' => 'Last Name',
+    'Email Address' => 'Email Address',
+    'Create username for superuser' => 'Make a username fer th\' captain',
+    'Password for superuser' => 'Secret code fer th\' captain',
+    'Retype the password' => 'Enter th\' secret code again',
+
+    // System
+    'The encryption key cannot be empty!' => 'Th\' encryption key can\'t be empty!',
+    'The encryption key contain unsupported character!' => 'Th\' encryption key has unsupported characters!',
+    'The cookie name cannot be empty!' => 'Th\' cookie name can\'t be empty!',
+    'The cookie name contain unsupported character!' => 'Th\' cookie name has unsupported characters!',
+    'The first name cannot be empty!' => 'Th\' first name can\'t be empty!',
+    'Please enter your valid email address!' => 'Enter a proper email address!',
+    'The username must be in alphanumeric only!' => 'Th\' username must be letters an\' numbers only, at least 5 characters!',
+    'The password cannot be empty!' => 'Th\' secret code can\'t be empty!',
+    'The password confirmation did not match!' => 'Th\' secret codes don\'t match!',
+    'Enter the basic system configuration.' => 'Enter th\' basic ship settings.',
+    'You will able to change it after the installation.' => 'Ye can change it after th\' installation.',
+    'Installation Mode' => 'Installation Mode',
+    'Basic (with sample)' => 'Basic (with samples)',
+    'Developer (without sample)' => 'Deckhand (without samples)',
+    'Timezone' => 'Timezone',
+    'Site Settings' => 'Ship\'s Settings',
+    'Site Title' => 'Ship\'s Title',
+    'Enter the site title' => 'Enter th\' ship\'s title',
+    'Site Description' => 'Ship\'s Description',
+    'Enter the site description' => 'Enter th\' ship\'s description',
+    'Upload Settings' => 'Upload Settings',
+    'Allowed File Extension' => 'Allowed File Extensions',
+    'Allowed Image Extension' => 'Allowed Image Extensions',
+    'Separate with comma' => 'Separate with commas',
+    'Upload Limit' => 'Upload Limit',
+    'Image Width Dimension' => 'Image Width',
+    'Original' => 'Original',
+    'Thumbnail' => 'Thumbnail',
+    'Icon' => 'Icon',
+    'In pixel' => 'In pixels',
+    'ZIP Archiver' => 'ZIP Archiver',
+    'Your application is ready to install using the provided configurations.' => 'Yer app be ready t\' install with th\' given settings.',
+    'Agreement' => 'License Agreement',
+    'Database Initial' => 'First Database',
+    'Email' => 'Email',
+    'Password Confirmation' => 'Verify Secret Code',
+    'File Extension' => 'Allowed File Extensions',
+    'Image Extension' => 'Allowed Image Extensions',
+    'Max Upload Size' => 'Max Upload Size',
+    'Image Dimension' => 'Image Size',
+    'Thumbnail Dimension' => 'Thumbnail Size',
+    'Icon Dimension' => 'Icon Size',
+    'The installer was interrupted!' => 'Th\' installer was interrupted!',
+    'The installer was unable to write the configuration file.' => 'Th\' installer couldn\'t write th\' settings file.',
+    'Please follow the instructions below to continue.' => 'Follow th\' instructions below t\' continue.',
+    'Problem Found' => 'Problem Found',
+    'Unable to create or write file' => 'Can\'t make or write file',
+    'Solution' => 'Solution',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'Download th\' settings file below an\' upload or paste it by hand in this here folder',
+    'Download Configuration' => 'Download Settings',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'Once th\' settings file be uploaded, click th\' refresh button t\' continue.',
+    'Unable to extract the sample module.' => 'Can\'t unpack th\' sample module.',
+    'Make sure the following directory is writable' => 'Make sure this here folder can be written to',
+    'Skip installing the sample module' => 'Skip installin\' th\' sample module',
+
+    // Miscellaneous
+    'Subscribe to my channel' => 'Subscribe t\' me channel',
+    'Be my friend' => 'Be me matey',
+    'Follow my GitHub' => 'Follow me on GitHub',
+    'Import sample data' => 'Install with sample booty',
+];

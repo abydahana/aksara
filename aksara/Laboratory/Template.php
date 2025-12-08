@@ -666,7 +666,11 @@ class Template
                     ]
                 ]
             ],
-            'information' => phrase('Showing') . ' ' . ($data->offset ? number_format($data->offset) : ($data->total_rows ? 1 : 0)) . ' - ' . (($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows)) . ' ' . phrase('of') . ' ' . number_format($data->total_rows) . ' ' . ($data->total_rows > 1 ? phrase('entries found') : phrase('entry found'))
+            'information' => phrase('Showing {{start}} - {{end}} of {{total}} entries found.', [
+                'start' => ($data->offset ? number_format($data->offset) : ($data->total_rows ? 1 : 0)),
+                'end' => ((($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows))),
+                'total' => number_format($data->total_rows)
+            ])
         ];
 
         if (25 != $data->per_page) {

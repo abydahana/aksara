@@ -26,7 +26,7 @@ class Notifications extends \Aksara\Laboratory\Core
         parent::__construct();
 
         if (! get_userdata('is_logged')) {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page!'));
+            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'));
         }
     }
 

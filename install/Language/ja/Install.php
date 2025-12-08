@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // グローバル
+    'Aksara Installer' => 'Aksara インストーラー',
+    'Whoops!' => 'おっと！',
+    'Back' => '戻る',
+    'Refresh' => '更新',
+    'Continue' => '続行',
+    'DSN' => 'データソース DSN',
+    'Hostname' => 'ホスト名',
+    'Port' => 'ポート',
+    'Username' => 'ユーザー名',
+    'Password' => 'パスワード',
+    'Confirm Password' => 'パスワード確認',
+    'Available' => '利用可能',
+
+    // インデックス
+    'Checking Requirements' => '要件の確認',
+    'Database Configuration' => 'データベース設定',
+    'Security Configuration' => 'セキュリティ設定',
+    'System Configuration' => 'システム設定',
+    'Finalizing' => '最終設定',
+    'Hello there' => 'ようこそ',
+    'Choose Language' => '言語を選択',
+    'Thank you for choosing Aksara' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>をお選びいただきありがとうございます！',
+    'Before we start the installation, please take a moment to read this few notes.' => 'インストールを開始する前に、少し時間を取ってこれらの注意事項をお読みください。',
+    'You could check the agreement box and skip reading as usual.' => 'いつものように「<b>同意する</b>」チェックボックスを選択して読まずに進むこともできますが、それでも「<b>マニア</b>」がこれらの注意事項を一文ずつ読むと信じています。',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>は、あなたのニーズに合わせたエコシステムを構築するための単なるツールです。しかし、<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>を使用して構築するシステムは、その条件に従う必要があります；',
+
+    'Article 2' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>を使用して構築したエコシステムを私の許可なく再配布することは許可されていますが、すべてを自分で構築したと主張することは恥ずべきことです；',
+
+    'Article 3' => '無料で作品を共有する創造者を決して失望させないでください。さもなければ、彼らが将来のアイデアをあなたが手の届かない価格で売っているのを見つけるでしょう。',
+
+    'Three notes should be enough.' => '3つの注意事項で十分でしょう。',
+    'I look forward to your support.' => '皆様のご支援をお待ちしております。',
+    'The fool' => '愚か者',
+    'Pretend to agree' => '同意するふりをする',
+    'Start Installation' => 'インストール開始',
+
+    // データベース
+    'Fill the requested fields below with your database connection.' => '以下の必要なフィールドにデータベース接続の詳細を入力してください。',
+    'Please fill all required fields!' => 'すべての必須フィールドを入力してください！',
+    'Database Driver' => 'データベースドライバー',
+    'Initial Database' => '初期データベース',
+    'Please choose the correct database driver!' => '正しいデータベースドライバーを選択してください！',
+    'Create database if not exist' => 'データベースが存在しない場合は作成する',
+
+    // 最終設定
+    'The timezone is not valid!' => 'タイムゾーンが無効です！',
+    'The site title cannot be empty!' => 'サイトタイトルは空にできません！',
+    'The site description cannot be empty!' => 'サイト説明は空にできません！',
+    'File extension must be comma separated alphanumeric only!' => 'ファイル拡張子は英数字のみでカンマ区切りである必要があります！',
+    'Image extension must be comma separated alphanumeric only!' => '画像拡張子は英数字のみでカンマ区切りである必要があります！',
+    'Maximum upload size must be numeric only!' => '最大アップロードサイズは数字のみである必要があります！',
+    'Image dimension must be numeric only!' => '画像サイズは数字のみである必要があります！',
+    'Thumbnail dimension must be numeric only!' => 'サムネイルサイズは数字のみである必要があります！',
+    'Icon dimension must be numeric only!' => 'アイコンサイズは数字のみである必要があります！',
+    'All catched up!' => 'すべて完了しました！',
+    'Your application is ready to install using provided settings.' => 'アプリケーションは提供された設定を使用してインストールする準備ができています。',
+    'Just one more step' => 'あと一歩です',
+    'Make sure what you filled in on the previous form is correct.' => '前のフォームに入力した内容が正しいことを確認してください。',
+    'Once you have successfully run the installer, there is no more back button.' => 'インストーラーを正常に実行すると、戻るボタンはなくなります。',
+    'Click run installer to applying your configuration.' => '「<b>インストーラーを実行</b>」をクリックして設定を適用してください。',
+    'Run Installer' => 'インストーラーを実行',
+
+    // インストール
+    'Failed to open or create the configuration file!' => '設定ファイルを開くか作成できませんでした！',
+    'Failed to write the configuration into file!' => '設定をファイルに書き込めませんでした！',
+    'Congratulations!' => 'おめでとうございます！',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>がシステムに正常にインストールされました！',
+    'Notice!' => '注意！',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => '設定ファイルまたはフォルダーが書き込み可能ではないか、設定ファイルの作成中に問題が発生しました。',
+    'You will have to create the following code by hand manually and locate to the following directory:' => '以下のコードを手動で作成し、次のディレクトリに配置する必要があります：',
+    'Revalidate configuration after the configuration file is created or uploaded.' => '設定ファイルが作成またはアップロードされた後に設定を再検証してください。',
+    'You can login as superuser using following credential:' => '次の資格情報を使用してスーパーユーザーとしてログインできます：',
+    'Follow our updates to get our other works if you find this useful.' => 'これが役に立った場合は、他の作品を入手するために更新情報をフォローしてください。',
+    'Just to remind you, we also collect donations from people like you to support our research.' => '念のためお伝えしますと、私たちは研究を支援するために皆様のような方々から寄付も受け付けています。',
+    'Regardless of the amount will be very useful.' => '金額に関係なく、非常に役立ちます。',
+    'Cheers' => 'よろしくお願いします',
+    'Launch Site' => 'サイトを起動',
+    'Revalidate Configuration' => '設定を再検証',
+
+    // 要件
+    'You just need to pretend to agree!' => 'ただ同意するふりをすればいいのです、友よ！',
+    'Awesome!' => '素晴らしい！',
+    'You just read our notes and pretend to agree with it.' => 'あなたは私たちの注意事項を読み、それに同意するふりをしました :)',
+    'We will help you to prepare your application using this installation wizard.' => 'このインストールウィザードを使用してアプリケーションを準備するお手伝いをします。',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => '先に進む前に、これらの前提条件が警告なしに満たされていることを確認してください。',
+    'Otherwise your application will not work properly.' => 'そうでない場合、アプリケーションは正常に動作しません。',
+    'PHP Version' => 'PHP バージョン',
+    'Rewrite Module' => 'リライトモジュール',
+    'Internationalization' => '国際化',
+    'Multibyte String' => 'マルチバイト文字列',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => '必要最小限のバージョンは',
+    'and the maximum version is' => '最大バージョンは',
+    'Disabled' => '無効',
+    'Enabled' => '有効',
+    'Off' => 'オフ',
+    'On' => 'オン',
+    'Turn it on!' => '有効にしてください！',
+    'Optional' => 'オプション',
+    'Some requirement are not yet fulfilled.' => '一部の要件がまだ満たされていません。',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'サーバー設定を更新し、更新ボタンをクリックしてインストールを続行してください。',
+    'The rewrite module is disabled by your server.' => 'リライトモジュールはサーバーによって無効にされています。',
+    'You can continue the installation but we recommend to enable it.' => 'インストールを続行できますが、有効にすることをお勧めします。',
+
+    // セキュリティ
+    'Enter your secret formula to secure your application.' => 'アプリケーションを保護するための秘密の公式を入力してください。',
+    'Encryption Key' => '暗号化キー',
+    'Your encryption key' => '暗号化キー',
+    'Cookie Name' => 'Cookie名',
+    'Session Expiration' => 'セッション有効期限',
+    'The number of seconds you want the session to last.' => 'セッションを継続させたい秒数。0（ゼロ）に設定すると、ブラウザを閉じたときにセッションが終了します。',
+    'In seconds' => '秒単位',
+    'Unique cookie name to prevent session conflict' => 'セッションの競合を防ぐための一意のCookie名',
+    'Superuser' => 'スーパーユーザー',
+    'First Name' => '名',
+    'Last Name' => '姓',
+    'Email Address' => 'メールアドレス',
+    'Create username for superuser' => 'スーパーユーザーのユーザー名を作成',
+    'Password for superuser' => 'スーパーユーザーのパスワード',
+    'Retype the password' => 'パスワードを再入力',
+
+    // システム
+    'The encryption key cannot be empty!' => '暗号化キーは空にできません！',
+    'The encryption key contain unsupported character!' => '暗号化キーにサポートされていない文字が含まれています！',
+    'The cookie name cannot be empty!' => 'Cookie名は空にできません！',
+    'The cookie name contain unsupported character!' => 'Cookie名にサポートされていない文字が含まれています！',
+    'The first name cannot be empty!' => '名は空にできません！',
+    'Please enter your valid email address!' => '有効なメールアドレスを入力してください！',
+    'The username must be in alphanumeric only!' => 'ユーザー名は英数字のみで、最低5文字である必要があります！',
+    'The password cannot be empty!' => 'パスワードは空にできません！',
+    'The password confirmation did not match!' => 'パスワードの確認が一致しません！',
+    'Enter the basic system configuration.' => '基本的なシステム設定を入力してください。',
+    'You will able to change it after the installation.' => 'インストール後に変更できます。',
+    'Installation Mode' => 'インストールモード',
+    'Basic (with sample)' => '基本（サンプル付き）',
+    'Developer (without sample)' => '開発者（サンプルなし）',
+    'Timezone' => 'タイムゾーン',
+    'Site Settings' => 'サイト設定',
+    'Site Title' => 'サイトタイトル',
+    'Enter the site title' => 'サイトタイトルを入力',
+    'Site Description' => 'サイト説明',
+    'Enter the site description' => 'サイト説明を入力',
+    'Upload Settings' => 'アップロード設定',
+    'Allowed File Extension' => '許可されるファイル拡張子',
+    'Allowed Image Extension' => '許可される画像拡張子',
+    'Separate with comma' => 'カンマで区切る',
+    'Upload Limit' => 'アップロード制限',
+    'Image Width Dimension' => '画像幅',
+    'Original' => 'オリジナル',
+    'Thumbnail' => 'サムネイル',
+    'Icon' => 'アイコン',
+    'In pixel' => 'ピクセル単位',
+    'ZIP Archiver' => 'ZIPアーカイバー',
+    'Your application is ready to install using the provided configurations.' => 'アプリケーションは提供された設定を使用してインストールする準備ができています。',
+    'Agreement' => 'ライセンス契約',
+    'Database Initial' => '初期データベース',
+    'Email' => 'メールアドレス',
+    'Password Confirmation' => 'パスワード確認',
+    'File Extension' => '許可されるファイル拡張子',
+    'Image Extension' => '許可される画像拡張子',
+    'Max Upload Size' => '最大アップロードサイズ',
+    'Image Dimension' => '画像サイズ',
+    'Thumbnail Dimension' => 'サムネイルサイズ',
+    'Icon Dimension' => 'アイコンサイズ',
+    'The installer was interrupted!' => 'インストーラーが中断されました！',
+    'The installer was unable to write the configuration file.' => 'インストーラーは設定ファイルを書き込むことができませんでした。',
+    'Please follow the instructions below to continue.' => '続行するには以下の指示に従ってください。',
+    'Problem Found' => '問題が見つかりました',
+    'Unable to create or write file' => 'ファイルを作成または書き込むことができません',
+    'Solution' => '解決策',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => '以下の設定ファイルをダウンロードし、次のディレクトリに手動でアップロードまたは貼り付けてください',
+    'Download Configuration' => '設定をダウンロード',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => '設定ファイルがアップロードされたら、更新ボタンをクリックしてインストールを続行してください。',
+    'Unable to extract the sample module.' => 'サンプルモジュールを抽出できません。',
+    'Make sure the following directory is writable' => '以下のディレクトリが書き込み可能であることを確認してください',
+    'Skip installing the sample module' => 'サンプルモジュールのインストールをスキップ',
+
+    // その他
+    'Subscribe to my channel' => '私のチャンネルを登録',
+    'Be my friend' => '私の友達になる',
+    'Follow my GitHub' => '私のGitHubをフォロー',
+    'Import sample data' => 'サンプルデータでインストール',
+];

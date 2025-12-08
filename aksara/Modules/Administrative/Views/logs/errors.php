@@ -30,7 +30,7 @@
                                 </ul>
                             ';
                         } else {
-                            echo '<div class="pt-3 pb-3">' . phrase('No error log.') . '</div>';
+                            echo '<div class="pt-3 pb-3">' . phrase('No error log') . '</div>';
                         }
                     ?>
                 </div>
@@ -94,7 +94,7 @@
                 minHeight: $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
                 borderLeft: '1px solid rgba(0,0,0,.2)'
             });
-            
+
             if (typeof mCustomScrollbar === 'function') {
                 $('.pretty-scrollbar').mCustomScrollbar({
                     autoHideScrollbar: true,

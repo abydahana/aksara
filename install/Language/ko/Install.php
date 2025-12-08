@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // 글로벌
+    'Aksara Installer' => '액사라 설치 프로그램',
+    'Whoops!' => '이런!',
+    'Back' => '뒤로',
+    'Refresh' => '새로고침',
+    'Continue' => '계속',
+    'DSN' => '데이터 소스 DSN',
+    'Hostname' => '호스트명',
+    'Port' => '포트',
+    'Username' => '사용자 이름',
+    'Password' => '비밀번호',
+    'Confirm Password' => '비밀번호 확인',
+    'Available' => '사용 가능',
+
+    // 인덱스
+    'Checking Requirements' => '요구사항 확인',
+    'Database Configuration' => '데이터베이스 설정',
+    'Security Configuration' => '보안 설정',
+    'System Configuration' => '시스템 설정',
+    'Finalizing' => '마무리',
+    'Hello there' => '안녕하세요',
+    'Choose Language' => '언어 선택',
+    'Thank you for choosing Aksara' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">액사라</a>를 선택해 주셔서 감사합니다!',
+    'Before we start the installation, please take a moment to read this few notes.' => '설치를 시작하기 전에, 잠시 시간을 내어 이 몇 가지 주의사항을 읽어주세요.',
+    'You could check the agreement box and skip reading as usual.' => '평소처럼 "<b>동의</b>" 체크박스를 선택하고 읽는 것을 건너뛸 수 있지만, 우리는 여전히 이 주의사항을 줄줄이 읽을 "<b>괴짜</b>"가 있을 거라 믿습니다.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">액사라</a>는 단지 귀하의 필요에 따라 생태계를 구축하기 위한 도구일 뿐입니다. 하지만 <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">액사라</a>를 사용하여 구축한 모든 시스템은 그 조건을 따라야 합니다;',
+
+    'Article 2' => '귀하는 <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">액사라</a>를 사용하여 구축한 생태계를 내 허가 없이 재배포할 수 있지만, 그것을 완전히 스스로 구축했다고 주장하는 것은 부끄러운 일입니다;',
+
+    'Article 3' => '무료로 자신의 작품을 공유하는 창작자를 결코 실망시키지 마십시오, 그렇지 않으면 그들이 미래의 아이디어를 귀하가 접근할 수 없는 가격에 판매하는 것을 보게 될 것입니다.',
+
+    'Three notes should be enough.' => '세 가지 주의사항이면 충분할 것입니다.',
+    'I look forward to your support.' => '여러분의 지원을 기대합니다.',
+    'The fool' => '바보',
+    'Pretend to agree' => '동의하는 척하기',
+    'Start Installation' => '설치 시작',
+
+    // 데이터베이스
+    'Fill the requested fields below with your database connection.' => '아래 요청된 필드에 데이터베이스 연결 정보를 입력하세요.',
+    'Please fill all required fields!' => '필수 입력란을 모두 채워주세요!',
+    'Database Driver' => '데이터베이스 드라이버',
+    'Initial Database' => '초기 데이터베이스',
+    'Please choose the correct database driver!' => '올바른 데이터베이스 드라이버를 선택하세요!',
+    'Create database if not exist' => '데이터베이스가 없으면 생성하기',
+
+    // 마무리
+    'The timezone is not valid!' => '시간대가 유효하지 않습니다!',
+    'The site title cannot be empty!' => '사이트 제목은 비워둘 수 없습니다!',
+    'The site description cannot be empty!' => '사이트 설명은 비워둘 수 없습니다!',
+    'File extension must be comma separated alphanumeric only!' => '파일 확장자는 알파벳과 숫자만 쉼표로 구분되어야 합니다!',
+    'Image extension must be comma separated alphanumeric only!' => '이미지 확장자는 알파벳과 숫자만 쉼표로 구분되어야 합니다!',
+    'Maximum upload size must be numeric only!' => '최대 업로드 크기는 숫자만 입력해야 합니다!',
+    'Image dimension must be numeric only!' => '이미지 크기는 숫자만 입력해야 합니다!',
+    'Thumbnail dimension must be numeric only!' => '썸네일 크기는 숫자만 입력해야 합니다!',
+    'Icon dimension must be numeric only!' => '아이콘 크기는 숫자만 입력해야 합니다!',
+    'All catched up!' => '모든 준비가 완료되었습니다!',
+    'Your application is ready to install using provided settings.' => '제공된 설정을 사용하여 애플리케이션 설치가 준비되었습니다.',
+    'Just one more step' => '한 단계만 더',
+    'Make sure what you filled in on the previous form is correct.' => '이전 양식에 입력한 내용이 정확한지 확인하세요.',
+    'Once you have successfully run the installer, there is no more back button.' => '설치 프로그램을 성공적으로 실행하면 더 이상 뒤로 가기 버튼이 없습니다.',
+    'Click run installer to applying your configuration.' => '설정을 적용하려면 "<b>설치 프로그램 실행</b>"을 클릭하세요.',
+    'Run Installer' => '설치 프로그램 실행',
+
+    // 설치
+    'Failed to open or create the configuration file!' => '설정 파일을 열거나 생성하지 못했습니다!',
+    'Failed to write the configuration into file!' => '파일에 설정을 쓰지 못했습니다!',
+    'Congratulations!' => '축하합니다!',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">액사라</a>가 시스템에 성공적으로 설치되었습니다!',
+    'Notice!' => '주의!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => '설정 파일이나 폴더에 쓰기 권한이 없거나 설정 파일 생성 중 문제가 발생했습니다.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => '다음 코드를 수동으로 작성하여 다음 디렉토리에 배치해야 합니다:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => '설정 파일 생성 또는 업로드 후 설정을 재검증하세요.',
+    'You can login as superuser using following credential:' => '다음 자격 증명을 사용하여 슈퍼유저로 로그인할 수 있습니다:',
+    'Follow our updates to get our other works if you find this useful.' => '이것이 유용하다고 생각하시면 다른 작품을 얻기 위해 업데이트를 팔로우하세요.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => '상기시켜 드리자면, 우리는 연구를 지원하기 위해 귀하와 같은 사람들로부터 기부금도 받고 있습니다.',
+    'Regardless of the amount will be very useful.' => '금액에 관계없이 매우 유용할 것입니다.',
+    'Cheers' => '감사합니다',
+    'Launch Site' => '사이트 시작',
+    'Revalidate Configuration' => '설정 재검증',
+
+    // 요구사항
+    'You just need to pretend to agree!' => '그냥 동의하는 척만 하면 됩니다, 친구!',
+    'Awesome!' => '훌륭합니다!',
+    'You just read our notes and pretend to agree with it.' => '방금 저희의 주의사항을 읽고 동의하는 척하셨군요 :)',
+    'We will help you to prepare your application using this installation wizard.' => '이 설치 마법사를 사용하여 애플리케이션 준비를 도와드리겠습니다.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => '계속하기 전에, 이 선행 요구사항이 경고 없이 충족되는지 확인하세요.',
+    'Otherwise your application will not work properly.' => '그렇지 않으면 애플리케이션이 제대로 작동하지 않을 것입니다.',
+    'PHP Version' => 'PHP 버전',
+    'Rewrite Module' => '리라이트 모듈',
+    'Internationalization' => '국제화',
+    'Multibyte String' => '멀티바이트 문자열',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => '최소 요구 버전은',
+    'and the maximum version is' => '최대 버전은',
+    'Disabled' => '비활성화됨',
+    'Enabled' => '활성화됨',
+    'Off' => '끔',
+    'On' => '켬',
+    'Turn it on!' => '켜세요!',
+    'Optional' => '선택사항',
+    'Some requirement are not yet fulfilled.' => '일부 요구사항이 아직 충족되지 않았습니다.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => '서버 구성을 업데이트하고 새로고침 버튼을 클릭하여 설치를 계속하세요.',
+    'The rewrite module is disabled by your server.' => '리라이트 모듈이 서버에 의해 비활성화되었습니다.',
+    'You can continue the installation but we recommend to enable it.' => '설치를 계속할 수 있지만 활성화하는 것을 권장합니다.',
+
+    // 보안
+    'Enter your secret formula to secure your application.' => '애플리케이션을 보호하기 위해 비밀 공식을 입력하세요.',
+    'Encryption Key' => '암호화 키',
+    'Your encryption key' => '귀하의 암호화 키',
+    'Cookie Name' => '쿠키 이름',
+    'Session Expiration' => '세션 만료',
+    'The number of seconds you want the session to last.' => '세션이 지속되기를 원하는 초 단위 시간입니다. 값을 0(영)으로 설정하면 브라우저를 닫을 때 세션이 만료됩니다.',
+    'In seconds' => '초 단위',
+    'Unique cookie name to prevent session conflict' => '세션 충돌을 방지하기 위한 고유 쿠키 이름',
+    'Superuser' => '슈퍼유저',
+    'First Name' => '이름',
+    'Last Name' => '성',
+    'Email Address' => '이메일 주소',
+    'Create username for superuser' => '슈퍼유저용 사용자 이름 생성',
+    'Password for superuser' => '슈퍼유저 비밀번호',
+    'Retype the password' => '비밀번호 다시 입력',
+
+    // 시스템
+    'The encryption key cannot be empty!' => '암호화 키는 비워둘 수 없습니다!',
+    'The encryption key contain unsupported character!' => '암호화 키에 지원되지 않는 문자가 포함되어 있습니다!',
+    'The cookie name cannot be empty!' => '쿠키 이름은 비워둘 수 없습니다!',
+    'The cookie name contain unsupported character!' => '쿠키 이름에 지원되지 않는 문자가 포함되어 있습니다!',
+    'The first name cannot be empty!' => '이름은 비워둘 수 없습니다!',
+    'Please enter your valid email address!' => '유효한 이메일 주소를 입력하세요!',
+    'The username must be in alphanumeric only!' => '사용자 이름은 알파벳과 숫자만 포함해야 하며 최소 5자 이상이어야 합니다!',
+    'The password cannot be empty!' => '비밀번호는 비워둘 수 없습니다!',
+    'The password confirmation did not match!' => '비밀번호 확인이 일치하지 않습니다!',
+    'Enter the basic system configuration.' => '기본 시스템 구성을 입력하세요.',
+    'You will able to change it after the installation.' => '설치 후 변경할 수 있습니다.',
+    'Installation Mode' => '설치 모드',
+    'Basic (with sample)' => '기본 (샘플 포함)',
+    'Developer (without sample)' => '개발자 (샘플 없음)',
+    'Timezone' => '시간대',
+    'Site Settings' => '사이트 설정',
+    'Site Title' => '사이트 제목',
+    'Enter the site title' => '사이트 제목 입력',
+    'Site Description' => '사이트 설명',
+    'Enter the site description' => '사이트 설명 입력',
+    'Upload Settings' => '업로드 설정',
+    'Allowed File Extension' => '허용된 파일 확장자',
+    'Allowed Image Extension' => '허용된 이미지 확장자',
+    'Separate with comma' => '쉼표로 구분',
+    'Upload Limit' => '업로드 제한',
+    'Image Width Dimension' => '이미지 너비 크기',
+    'Original' => '원본',
+    'Thumbnail' => '썸네일',
+    'Icon' => '아이콘',
+    'In pixel' => '픽셀 단위',
+    'ZIP Archiver' => 'ZIP 아카이버',
+    'Your application is ready to install using the provided configurations.' => '제공된 구성을 사용하여 애플리케이션 설치가 준비되었습니다.',
+    'Agreement' => '라이선스 계약',
+    'Database Initial' => '초기 데이터베이스',
+    'Email' => '이메일',
+    'Password Confirmation' => '비밀번호 확인',
+    'File Extension' => '허용된 파일 확장자',
+    'Image Extension' => '허용된 이미지 확장자',
+    'Max Upload Size' => '최대 업로드 크기',
+    'Image Dimension' => '이미지 크기',
+    'Thumbnail Dimension' => '썸네일 크기',
+    'Icon Dimension' => '아이콘 크기',
+    'The installer was interrupted!' => '설치 프로그램이 중단되었습니다!',
+    'The installer was unable to write the configuration file.' => '설치 프로그램이 설정 파일을 작성할 수 없었습니다.',
+    'Please follow the instructions below to continue.' => '계속하려면 아래 지침을 따르세요.',
+    'Problem Found' => '문제 발견',
+    'Unable to create or write file' => '파일을 생성하거나 작성할 수 없음',
+    'Solution' => '해결 방법',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => '아래 설정 파일을 다운로드하여 다음 디렉토리에 수동으로 업로드하거나 붙여넣으세요',
+    'Download Configuration' => '설정 다운로드',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => '설정 파일이 업로드되면 새로고침 버튼을 클릭하여 설치를 계속하세요.',
+    'Unable to extract the sample module.' => '샘플 모듈을 추출할 수 없습니다.',
+    'Make sure the following directory is writable' => '다음 디렉토리에 쓰기 권한이 있는지 확인하세요',
+    'Skip installing the sample module' => '샘플 모듈 설치 건너뛰기',
+
+    // 기타
+    'Subscribe to my channel' => '내 채널 구독하기',
+    'Be my friend' => '내 친구가 되어주세요',
+    'Follow my GitHub' => '내 GitHub 팔로우하기',
+    'Import sample data' => '샘플 데이터로 설치',
+];

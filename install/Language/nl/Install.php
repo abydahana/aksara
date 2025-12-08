@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // Global
+    'Aksara Installer' => 'Aksara Installatieprogramma',
+    'Whoops!' => 'Oeps!',
+    'Back' => 'Terug',
+    'Refresh' => 'Vernieuwen',
+    'Continue' => 'Doorgaan',
+    'DSN' => 'DSN-gegevensbron',
+    'Hostname' => 'Hostnaam',
+    'Port' => 'Poort',
+    'Username' => 'Gebruikersnaam',
+    'Password' => 'Wachtwoord',
+    'Confirm Password' => 'Bevestig wachtwoord',
+    'Available' => 'Beschikbaar',
+
+    // Index
+    'Checking Requirements' => 'Vereisten controleren',
+    'Database Configuration' => 'Databaseconfiguratie',
+    'Security Configuration' => 'Beveiligingsconfiguratie',
+    'System Configuration' => 'Systeemconfiguratie',
+    'Finalizing' => 'Afronden',
+    'Hello there' => 'Hallo daar',
+    'Choose Language' => 'Kies taal',
+    'Thank you for choosing Aksara' => 'Bedankt voor het kiezen van <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'Voordat we beginnen met de installatie, neem even de tijd om deze paar notities te lezen.',
+    'You could check the agreement box and skip reading as usual.' => 'Je kunt het "<b>Akkoord</b>" vakje aanvinken en het lezen overslaan zoals gewoonlijk, maar we denken nog steeds dat er een "<b>nerd</b>" is die deze notities woord voor woord zal lezen.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> is slechts een tool om ecosystemen te bouwen volgens jouw behoeften. Maar elk systeem dat je bouwt met <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> moet aan zijn voorwaarden voldoen;',
+
+    'Article 2' => 'Je mag ecosystemen die je bouwt met <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> redistribueren zonder mijn toestemming, maar beweren dat je ze volledig zelf hebt gebouwd is beschamend;',
+
+    'Article 3' => 'Teleurstel nooit de makers die hun werk gratis delen, anders zul je zien dat ze hun toekomstige ideeën verkopen tegen prijzen die jij niet kunt betalen.',
+
+    'Three notes should be enough.' => 'Drie notities moeten genoeg zijn.',
+    'I look forward to your support.' => 'We kijken uit naar uw steun.',
+    'The fool' => 'De dwaas',
+    'Pretend to agree' => 'Doe alsof je akkoord gaat',
+    'Start Installation' => 'Installatie starten',
+
+    // Database
+    'Fill the requested fields below with your database connection.' => 'Vul de onderstaande velden in met je databaseverbindingsgegevens.',
+    'Please fill all required fields!' => 'Vul alle verplichte velden in!',
+    'Database Driver' => 'Databasestuurprogramma',
+    'Initial Database' => 'Initiele database',
+    'Please choose the correct database driver!' => 'Kies het juiste databasestuurprogramma!',
+    'Create database if not exist' => 'Database aanmaken als deze niet bestaat',
+
+    // Finalizing
+    'The timezone is not valid!' => 'De tijdzone is niet geldig!',
+    'The site title cannot be empty!' => 'De sitetitel mag niet leeg zijn!',
+    'The site description cannot be empty!' => 'De sitebeschrijving mag niet leeg zijn!',
+    'File extension must be comma separated alphanumeric only!' => 'Bestandsextensies moeten alleen alfanumeriek zijn, gescheiden door komma\'s!',
+    'Image extension must be comma separated alphanumeric only!' => 'Afbeeldingsextensies moeten alleen alfanumeriek zijn, gescheiden door komma\'s!',
+    'Maximum upload size must be numeric only!' => 'Maximale uploadgrootte moet alleen numeriek zijn!',
+    'Image dimension must be numeric only!' => 'Afbeeldingsafmetingen moeten alleen numeriek zijn!',
+    'Thumbnail dimension must be numeric only!' => 'Miniatuurafmetingen moeten alleen numeriek zijn!',
+    'Icon dimension must be numeric only!' => 'Pictogramafmetingen moeten alleen numeriek zijn!',
+    'All catched up!' => 'Alles is klaar!',
+    'Your application is ready to install using provided settings.' => 'Je applicatie is klaar om te installeren met de opgegeven instellingen.',
+    'Just one more step' => 'Nog een stap',
+    'Make sure what you filled in on the previous form is correct.' => 'Zorg ervoor dat wat je in het vorige formulier hebt ingevuld correct is.',
+    'Once you have successfully run the installer, there is no more back button.' => 'Zodra je het installatieprogramma succesvol hebt uitgevoerd, is er geen terugknop meer.',
+    'Click run installer to applying your configuration.' => 'Klik op "<b>Installatieprogramma uitvoeren</b>" om je configuratie toe te passen.',
+    'Run Installer' => 'Installatieprogramma uitvoeren',
+
+    // Install
+    'Failed to open or create the configuration file!' => 'Kon het configuratiebestand niet openen of aanmaken!',
+    'Failed to write the configuration into file!' => 'Kon de configuratie niet naar het bestand schrijven!',
+    'Congratulations!' => 'Gefeliciteerd!',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> is succesvol geïnstalleerd op je systeem!',
+    'Notice!' => 'Let op!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'Je configuratiebestand of map is niet beschrijfbaar of er was een probleem bij het aanmaken van het configuratiebestand.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'Je moet de volgende code handmatig maken en in de volgende map plaatsen:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'Valideer de configuratie opnieuw nadat het configuratiebestand is aangemaakt of geüpload.',
+    'You can login as superuser using following credential:' => 'Je kunt inloggen als supergebruiker met de volgende inloggegevens:',
+    'Follow our updates to get our other works if you find this useful.' => 'Volg onze updates om onze andere werken te krijgen als je dit nuttig vindt.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'Gewoon om je eraan te herinneren, we accepteren ook donaties van mensen zoals jij om ons onderzoek te ondersteunen.',
+    'Regardless of the amount will be very useful.' => 'Ongeacht het bedrag zal het erg nuttig zijn.',
+    'Cheers' => 'Groeten',
+    'Launch Site' => 'Site starten',
+    'Revalidate Configuration' => 'Configuratie hervalideren',
+
+    // Requirements
+    'You just need to pretend to agree!' => 'Je hoeft alleen maar te doen alsof je akkoord gaat, mijn vriend!',
+    'Awesome!' => 'Geweldig!',
+    'You just read our notes and pretend to agree with it.' => 'Je hebt net onze notities gelezen en doet alsof je ermee akkoord gaat :)',
+    'We will help you to prepare your application using this installation wizard.' => 'We helpen je je applicatie voor te bereiden met behulp van deze installatiewizard.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'Voordat je doorgaat, zorg ervoor dat aan deze vereisten is voldaan zonder waarschuwingen.',
+    'Otherwise your application will not work properly.' => 'Anders zal je applicatie niet goed werken.',
+    'PHP Version' => 'PHP-versie',
+    'Rewrite Module' => 'Herschrijfmodule',
+    'Internationalization' => 'Internationalisatie',
+    'Multibyte String' => 'Multibyte-tekenreeks',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'De minimaal vereiste versie is',
+    'and the maximum version is' => 'en de maximale versie is',
+    'Disabled' => 'Uitgeschakeld',
+    'Enabled' => 'Ingeschakeld',
+    'Off' => 'Uit',
+    'On' => 'Aan',
+    'Turn it on!' => 'Zet het aan!',
+    'Optional' => 'Optioneel',
+    'Some requirement are not yet fulfilled.' => 'Aan sommige vereisten is nog niet voldaan.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'Werk je serverconfiguratie bij en klik op de vernieuwknop om door te gaan met de installatie.',
+    'The rewrite module is disabled by your server.' => 'De herschrijfmodule is uitgeschakeld door je server.',
+    'You can continue the installation but we recommend to enable it.' => 'Je kunt doorgaan met de installatie, maar we raden aan het in te schakelen.',
+
+    // Security
+    'Enter your secret formula to secure your application.' => 'Voer je geheime formule in om je applicatie te beveiligen.',
+    'Encryption Key' => 'Encryptiesleutel',
+    'Your encryption key' => 'Je encryptiesleutel',
+    'Cookie Name' => 'Cookienaam',
+    'Session Expiration' => 'Sessieverloop',
+    'The number of seconds you want the session to last.' => 'Het aantal seconden dat je wilt dat de sessie duurt. Een waarde van 0 (nul) betekent dat de sessie verloopt wanneer de browser wordt gesloten.',
+    'In seconds' => 'In seconden',
+    'Unique cookie name to prevent session conflict' => 'Unieke cookienaam om sessieconflicten te voorkomen',
+    'Superuser' => 'Supergebruiker',
+    'First Name' => 'Voornaam',
+    'Last Name' => 'Achternaam',
+    'Email Address' => 'E-mailadres',
+    'Create username for superuser' => 'Gebruikersnaam voor supergebruiker',
+    'Password for superuser' => 'Wachtwoord voor supergebruiker',
+    'Retype the password' => 'Wachtwoord opnieuw invoeren',
+
+    // System
+    'The encryption key cannot be empty!' => 'De encryptiesleutel mag niet leeg zijn!',
+    'The encryption key contain unsupported character!' => 'De encryptiesleutel bevat een niet-ondersteund teken!',
+    'The cookie name cannot be empty!' => 'De cookienaam mag niet leeg zijn!',
+    'The cookie name contain unsupported character!' => 'De cookienaam bevat een niet-ondersteund teken!',
+    'The first name cannot be empty!' => 'De voornaam mag niet leeg zijn!',
+    'Please enter your valid email address!' => 'Voer een geldig e-mailadres in!',
+    'The username must be in alphanumeric only!' => 'De gebruikersnaam moet alleen alfanumeriek zijn met minimaal 5 tekens!',
+    'The password cannot be empty!' => 'Het wachtwoord mag niet leeg zijn!',
+    'The password confirmation did not match!' => 'De wachtwoordbevestiging komt niet overeen!',
+    'Enter the basic system configuration.' => 'Voer de basis systeemconfiguratie in.',
+    'You will able to change it after the installation.' => 'Je kunt het na de installatie wijzigen.',
+    'Installation Mode' => 'Installatiemodus',
+    'Basic (with sample)' => 'Basis (met voorbeeld)',
+    'Developer (without sample)' => 'Ontwikkelaar (zonder voorbeeld)',
+    'Timezone' => 'Tijdzone',
+    'Site Settings' => 'Site-instellingen',
+    'Site Title' => 'Sitetitel',
+    'Enter the site title' => 'Voer de sitetitel in',
+    'Site Description' => 'Sitebeschrijving',
+    'Enter the site description' => 'Voer de sitebeschrijving in',
+    'Upload Settings' => 'Upload-instellingen',
+    'Allowed File Extension' => 'Toegestane bestandsextensies',
+    'Allowed Image Extension' => 'Toegestane afbeeldingsextensies',
+    'Separate with comma' => 'Scheiden met komma\'s',
+    'Upload Limit' => 'Uploadlimiet',
+    'Image Width Dimension' => 'Afbeeldingsbreedte',
+    'Original' => 'Origineel',
+    'Thumbnail' => 'Miniatuur',
+    'Icon' => 'Pictogram',
+    'In pixel' => 'In pixels',
+    'ZIP Archiver' => 'ZIP-archief',
+    'Your application is ready to install using the provided configurations.' => 'Je applicatie is klaar om te installeren met de opgegeven configuraties.',
+    'Agreement' => 'Licentieovereenkomst',
+    'Database Initial' => 'Initiele database',
+    'Email' => 'E-mailadres',
+    'Password Confirmation' => 'Wachtwoordbevestiging',
+    'File Extension' => 'Toegestane bestandsextensies',
+    'Image Extension' => 'Toegestane afbeeldingsextensies',
+    'Max Upload Size' => 'Maximale uploadgrootte',
+    'Image Dimension' => 'Afbeeldingsafmetingen',
+    'Thumbnail Dimension' => 'Miniatuurafmetingen',
+    'Icon Dimension' => 'Pictogramafmetingen',
+    'The installer was interrupted!' => 'Het installatieprogramma werd onderbroken!',
+    'The installer was unable to write the configuration file.' => 'Het installatieprogramma kon het configuratiebestand niet schrijven.',
+    'Please follow the instructions below to continue.' => 'Volg de onderstaande instructies om door te gaan.',
+    'Problem Found' => 'Probleem gevonden',
+    'Unable to create or write file' => 'Kan bestand niet aanmaken of schrijven',
+    'Solution' => 'Oplossing',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'Download het onderstaande configuratiebestand en upload of plak het handmatig in de volgende map',
+    'Download Configuration' => 'Configuratie downloaden',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'Zodra het configuratiebestand is geüpload, klik op de vernieuwknop om door te gaan met de installatie.',
+    'Unable to extract the sample module.' => 'Kan de voorbeeldmodule niet uitpakken.',
+    'Make sure the following directory is writable' => 'Zorg ervoor dat de volgende map beschrijfbaar is',
+    'Skip installing the sample module' => 'Overslaan van het installeren van de voorbeeldmodule',
+
+    // Miscellaneous
+    'Subscribe to my channel' => 'Abonneer je op mijn kanaal',
+    'Be my friend' => 'Wees mijn vriend',
+    'Follow my GitHub' => 'Volg mij op GitHub',
+    'Import sample data' => 'Installeren met voorbeeldgegevens',
+];

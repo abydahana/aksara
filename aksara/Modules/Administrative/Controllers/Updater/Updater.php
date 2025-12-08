@@ -307,7 +307,7 @@ class Updater extends \Aksara\Laboratory\Core
                     </div>
                     ' : null) . '
                     <p>
-                        ' . phrase('If you found a problem after the update, please consider to open an issue to our official support.') . '
+                        ' . phrase('If you found a problem after the update, consider to open an issue to our official support.') . '
                     </p>
                     <ul>
                         <li>
@@ -409,7 +409,7 @@ class Updater extends \Aksara\Laboratory\Core
             </ol>
             <br />
             <p>
-                ' . phrase('If you found a problem after the update please consider to open an issue to our official support.') . '
+                ' . phrase('If you found a problem after the update, consider to open an issue to our official support.') . '
             </p>
             <ul>
                 <li>

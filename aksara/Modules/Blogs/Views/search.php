@@ -28,9 +28,9 @@
                 <?php if ($keywords): ?>
                     <p class="lead">
                         <?php if ($total): ?>
-                            <?= phrase('Your search keyword {{ keywords }} has returning {{ total }} data.', ['keywords' => $keywords, 'total' => number_format($total)]); ?>
+                            <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($total)]); ?>
                         <?php else: ?>
-                            <?= phrase('Your search keyword {{ keywords }} does not match any result.', ['keywords' => $keywords]); ?>
+                            <?= phrase('Your search keyword {{keywords}} does not match any result.', ['keywords' => $keywords]); ?>
                         <?php endif; ?>
                     </p>
                 <?php endif; ?>

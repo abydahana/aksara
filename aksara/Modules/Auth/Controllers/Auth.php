@@ -45,7 +45,7 @@ class Auth extends \Aksara\Laboratory\Core
                 ]);
             } else {
                 // Requested through browser
-                return throw_exception(301, phrase('You were signed in.'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
+                return throw_exception(301, phrase('You were signed in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
             }
         } elseif ($this->valid_token(service('request')->getPost('_token')) || ($this->api_client && service('request')->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
@@ -325,7 +325,7 @@ class Auth extends \Aksara\Laboratory\Core
             '_spam_timer' => $_spam_timer
         ]);
 
-        return throw_exception(301, phrase('You were signed out.'), base_url(), true);
+        return throw_exception(301, phrase('You were signed out'), base_url(), true);
     }
 
     /**

@@ -316,7 +316,7 @@
                         ?>
                     </div>
                 <?php endif; ?>
-                
+
                 <div class="card rounded-4 mb-3">
                     <div class="card-header rounded-top-4 bg-white border-0">
                         <h5 class="card-title mb-0">
@@ -410,16 +410,16 @@
         if (typeof interval !== 'undefined') {
             clearInterval(interval)
         }
-        
+
         var interval;
-        
+
         require.js('<?= base_url('assets/highcharts/highcharts.js'); ?>', function() {
             Highcharts.chart('visitor-chart', {
                 chart: {
                     type: 'areaspline'
                 },
                 title: {
-                    text: '<b><?= phrase('Visitor Graph'); ?></b>'
+                    text: `<b><?= phrase('Visitor Graph'); ?></b>`
                 },
                 legend: {
                     layout: 'vertical',
@@ -441,13 +441,13 @@
                 },
                 yAxis: {
                     title: {
-                        text: '<?= phrase('Visitor Total'); ?>'
+                        text: `<?= phrase('Visitor Total'); ?>`
                     },
                     allowDecimals: false
                 },
                 tooltip: {
                     shared: true,
-                    valueSuffix: ' <?= phrase('Visits'); ?>'
+                    valueSuffix: ` <?= phrase('Visits'); ?>`
                 },
                 plotOptions: {
                     areaspline: {
@@ -455,12 +455,12 @@
                     }
                 },
                 series: [{
-                    name: '<?= phrase('Visitors'); ?>',
+                    name: `<?= phrase('Visitors'); ?>`,
                     data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>
                 }]
             })
         });
-        
+
         $.ajax ({
             url: '<?= current_page(); ?>',
             method: 'POST',
@@ -472,28 +472,26 @@
         })
         .done(function(response) {
             if (response.update_available) {
-                $('.updater-placeholder').html(
-                    '<div class="alert alert-info rounded-0 border-0 p-3 mb-0">' +
-                        '<h5>' +
-                            '<?= phrase('Update Available'); ?>' +
-                        '</h5>' +
-                        '<p>' +
-                            '<?= phrase('A newer version of Aksara is available.'); ?> ' +
-                            '<?= phrase('Click the button below to update your core system directly.'); ?> ' +
-                            '<?= phrase('Your created module and theme will not be overwritten.'); ?>' +
-                        '</p>' +
-                        '<hr />' +
-                        '<a href="<?= base_url('administrative/updater'); ?>" class="btn btn-sm btn-success rounded-pill --xhr">' +
-                            '<i class="mdi mdi-update"></i>' +
-                            '<?= phrase('Update Now'); ?>' +
-                        '</a>' +
-                    '</div>'
-                )
+                $('.updater-placeholder').html(`
+                    <div class="alert alert-info rounded-0 border-0 p-3 mb-0">
+                        <h5>
+                            <?= phrase('Update Available'); ?>
+                        </h5>
+                        <p>
+                            <?= phrase('A newer version of Aksara is available.') . ' ' . phrase('Click the button below to update your core system directly.') . ' ' . phrase('Your created module and theme will not be overwritten.'); ?>
+                        </p>
+                        <hr />
+                        <a href="<?= base_url('administrative/updater'); ?>" class="btn btn-sm btn-success rounded-pill --xhr">
+                            <i class="mdi mdi-update"></i>
+                            <?= phrase('Update Now'); ?>
+                        </a>
+                    </div>
+                `)
             }
-            
+
             clearInterval(interval)
         });
-        
+
         $('body').off('click.greeting touch.greeting'),
         $('body').on('click.greeting touch.greeting', '.btn-greeting', function(e) {
             $.ajax({

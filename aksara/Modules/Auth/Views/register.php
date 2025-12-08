@@ -98,13 +98,7 @@
                     </div>
                     <div class="mt-4 mb-4">
                         <label class="text-muted d-block">
-                            <?= phrase('By submitting this form, you are agree about all future action related to your account related to the'); ?>
-                            &nbsp;
-                            <a href="<?= base_url('pages/guidelines/terms-and-conditions'); ?>" target="_blank">
-                                <b>
-                                    <?= phrase('Terms and Conditions'); ?>
-                                </b>
-                            </a>
+                            <?= phrase('By submitting this form, you are agree about all future action related to your account related to the {{term_of_service}}', ['terms_and_conditions' => '<a href="' . base_url('pages/guidelines/terms-and-conditions') . '" target="_blank"><b>' . phrase('Terms and Conditions') . '</b></a>']); ?>
                         </label>
                     </div>
                     <div class="mb-3">

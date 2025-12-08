@@ -42,14 +42,7 @@ class Privileges extends \Aksara\Laboratory\Core
         ->set_description('
             <div class="row">
                 <div class="col-12">
-                    ' . phrase('You may review') . '
-                    &nbsp;
-                    <a href="' . go_to('../', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr">
-                        <i class="mdi mdi-arrow-right"></i>
-                        ' . phrase('Group Privileges') . '
-                    </a>
-                    &nbsp;
-                    ' . phrase('after modify this adjustment to sets new roles.') . '
+                    ' . phrase('You may review {{group_privileges}} after modifying this adjustment to sets new roles.', ['group_privileges' => '<a href="' . go_to('../', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr"><i class="mdi mdi-arrow-right"></i> ' . phrase('Group Privileges') . '</a>']) . '
                 </div>
             </div>
         ')
@@ -134,9 +127,9 @@ class Privileges extends \Aksara\Laboratory\Core
                             </a>
                         </div>
                     </div>
-                
+
                     ' . $output . '
-                    
+
                     ' . (in_array($this->get_method(), ['index', 'create', 'update']) ? '
                     <div class="col-md-6 mt-1">
                         <a href="javascript:void(0)" class="btn btn-secondary btn-sm d-block" onclick="jExec($(this).closest(\'.row\').find(\'.privilege\').first().clone().insertBefore($(this).closest(\'.col-md-6\')).css(\'display\', \'block\').find(\'input[type=text]\').attr(\'name\', \'privileges[]\').val(\'\'))">

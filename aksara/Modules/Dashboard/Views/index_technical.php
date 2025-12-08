@@ -190,7 +190,7 @@
                         ?>
                     </div>
                 <?php endif; ?>
-                
+
                 <div class="card mb-3">
                     <div class="card-header bg-white border-0">
                         <h5 class="card-title mb-0">
@@ -245,7 +245,7 @@
                                         <?= phrase('Membership'); ?>
                                     </label>
                                     <p>
-                                        <?= (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
                                     </p>
                                 </div>
                             </div>

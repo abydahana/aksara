@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // Global
+    'Aksara Installer' => 'Trình Cài Đặt Aksara',
+    'Whoops!' => 'Rất tiếc!',
+    'Back' => 'Quay lại',
+    'Refresh' => 'Làm mới',
+    'Continue' => 'Tiếp tục',
+    'DSN' => 'Nguồn dữ liệu DSN',
+    'Hostname' => 'Tên máy chủ',
+    'Port' => 'Cổng',
+    'Username' => 'Tên đăng nhập',
+    'Password' => 'Mật khẩu',
+    'Confirm Password' => 'Xác nhận mật khẩu',
+    'Available' => 'Có sẵn',
+
+    // Index
+    'Checking Requirements' => 'Kiểm tra yêu cầu',
+    'Database Configuration' => 'Cấu hình cơ sở dữ liệu',
+    'Security Configuration' => 'Cấu hình bảo mật',
+    'System Configuration' => 'Cấu hình hệ thống',
+    'Finalizing' => 'Hoàn tất',
+    'Hello there' => 'Xin chào',
+    'Choose Language' => 'Chọn ngôn ngữ',
+    'Thank you for choosing Aksara' => 'Cảm ơn bạn đã chọn <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'Trước khi chúng tôi bắt đầu cài đặt, vui lòng dành chút thời gian đọc một vài lưu ý này.',
+    'You could check the agreement box and skip reading as usual.' => 'Bạn có thể đánh dấu vào ô "<b>Đồng ý</b>" và bỏ qua việc đọc như thường lệ, nhưng chúng tôi vẫn tin rằng có một "<b>người đam mê</b>" sẽ đọc những ghi chú này từng câu một.',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> chỉ là công cụ để xây dựng hệ sinh thái theo nhu cầu của bạn. Nhưng bất kỳ hệ thống nào bạn xây dựng bằng <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> đều phải tuân theo các điều khoản của nó;',
+
+    'Article 2' => 'Bạn được phép phân phối lại các hệ sinh thái bạn xây dựng bằng <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> mà không cần sự cho phép của tôi, nhưng tuyên bố rằng bạn đã xây dựng chúng hoàn toàn là điều đáng xấu hổ;',
+
+    'Article 3' => 'Đừng bao giờ làm thất vọng những người sáng tạo chia sẻ công việc của họ miễn phí, nếu không bạn sẽ thấy họ bán những ý tưởng tương lai với giá mà bạn không thể mua được.',
+
+    'Three notes should be enough.' => 'Ba lưu ý là đủ.',
+    'I look forward to your support.' => 'Chúng tôi mong đợi sự hỗ trợ của bạn.',
+    'The fool' => 'Kẻ ngốc',
+    'Pretend to agree' => 'Giả vờ đồng ý',
+    'Start Installation' => 'Bắt đầu cài đặt',
+
+    // Database
+    'Fill the requested fields below with your database connection.' => 'Điền các trường bên dưới với thông tin kết nối cơ sở dữ liệu của bạn.',
+    'Please fill all required fields!' => 'Vui lòng điền tất cả các trường bắt buộc!',
+    'Database Driver' => 'Trình điều khiển cơ sở dữ liệu',
+    'Initial Database' => 'Cơ sở dữ liệu ban đầu',
+    'Please choose the correct database driver!' => 'Vui lòng chọn trình điều khiển cơ sở dữ liệu chính xác!',
+    'Create database if not exist' => 'Tạo cơ sở dữ liệu nếu chưa tồn tại',
+
+    // Finalizing
+    'The timezone is not valid!' => 'Múi giờ không hợp lệ!',
+    'The site title cannot be empty!' => 'Tiêu đề trang web không được để trống!',
+    'The site description cannot be empty!' => 'Mô tả trang web không được để trống!',
+    'File extension must be comma separated alphanumeric only!' => 'Phần mở rộng tệp chỉ được bao gồm chữ và số, phân cách bằng dấu phẩy!',
+    'Image extension must be comma separated alphanumeric only!' => 'Phần mở rộng hình ảnh chỉ được bao gồm chữ và số, phân cách bằng dấu phẩy!',
+    'Maximum upload size must be numeric only!' => 'Kích thước tải lên tối đa chỉ được là số!',
+    'Image dimension must be numeric only!' => 'Kích thước hình ảnh chỉ được là số!',
+    'Thumbnail dimension must be numeric only!' => 'Kích thước hình thu nhỏ chỉ được là số!',
+    'Icon dimension must be numeric only!' => 'Kích thước biểu tượng chỉ được là số!',
+    'All catched up!' => 'Tất cả đã sẵn sàng!',
+    'Your application is ready to install using provided settings.' => 'Ứng dụng của bạn đã sẵn sàng để cài đặt bằng cài đặt được cung cấp.',
+    'Just one more step' => 'Chỉ còn một bước nữa',
+    'Make sure what you filled in on the previous form is correct.' => 'Hãy chắc chắn rằng những gì bạn đã điền vào biểu mẫu trước đó là chính xác.',
+    'Once you have successfully run the installer, there is no more back button.' => 'Một khi bạn đã chạy trình cài đặt thành công, sẽ không có nút quay lại.',
+    'Click run installer to applying your configuration.' => 'Nhấp vào "<b>Chạy trình cài đặt</b>" để áp dụng cấu hình của bạn.',
+    'Run Installer' => 'Chạy trình cài đặt',
+
+    // Install
+    'Failed to open or create the configuration file!' => 'Không thể mở hoặc tạo tệp cấu hình!',
+    'Failed to write the configuration into file!' => 'Không thể ghi cấu hình vào tệp!',
+    'Congratulations!' => 'Chúc mừng!',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> đã được cài đặt thành công trên hệ thống của bạn!',
+    'Notice!' => 'Lưu ý!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'Tệp hoặc thư mục cấu hình của bạn không thể ghi được hoặc có vấn đề khi tạo tệp cấu hình.',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'Bạn sẽ phải tự tạo mã sau và đặt vào thư mục sau:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'Xác thực lại cấu hình sau khi tệp cấu hình được tạo hoặc tải lên.',
+    'You can login as superuser using following credential:' => 'Bạn có thể đăng nhập với tư cách siêu người dùng bằng thông tin đăng nhập sau:',
+    'Follow our updates to get our other works if you find this useful.' => 'Theo dõi cập nhật của chúng tôi để nhận các tác phẩm khác nếu bạn thấy điều này hữu ích.',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'Chỉ để nhắc nhở bạn, chúng tôi cũng nhận đóng góp từ những người như bạn để hỗ trợ nghiên cứu của chúng tôi.',
+    'Regardless of the amount will be very useful.' => 'Bất kể số tiền, nó sẽ rất hữu ích.',
+    'Cheers' => 'Chúc mừng',
+    'Launch Site' => 'Khởi chạy trang web',
+    'Revalidate Configuration' => 'Xác thực lại cấu hình',
+
+    // Requirements
+    'You just need to pretend to agree!' => 'Bạn chỉ cần giả vờ đồng ý, bạn của tôi!',
+    'Awesome!' => 'Tuyệt vời!',
+    'You just read our notes and pretend to agree with it.' => 'Bạn vừa đọc ghi chú của chúng tôi và giả vờ đồng ý với nó :)',
+    'We will help you to prepare your application using this installation wizard.' => 'Chúng tôi sẽ giúp bạn chuẩn bị ứng dụng của mình bằng trình hướng dẫn cài đặt này.',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'Trước khi tiếp tục, hãy đảm bảo rằng các yêu cầu tiên quyết này được đáp ứng mà không có cảnh báo nào.',
+    'Otherwise your application will not work properly.' => 'Nếu không, ứng dụng của bạn sẽ không hoạt động bình thường.',
+    'PHP Version' => 'Phiên bản PHP',
+    'Rewrite Module' => 'Mô-đun viết lại',
+    'Internationalization' => 'Quốc tế hóa',
+    'Multibyte String' => 'Chuỗi đa byte',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'Phiên bản tối thiểu yêu cầu là',
+    'and the maximum version is' => 'và phiên bản tối đa là',
+    'Disabled' => 'Đã tắt',
+    'Enabled' => 'Đã bật',
+    'Off' => 'Tắt',
+    'On' => 'Bật',
+    'Turn it on!' => 'Bật nó lên!',
+    'Optional' => 'Tùy chọn',
+    'Some requirement are not yet fulfilled.' => 'Một số yêu cầu chưa được đáp ứng.',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'Vui lòng cập nhật cấu hình máy chủ của bạn và nhấp vào nút làm mới để tiếp tục cài đặt.',
+    'The rewrite module is disabled by your server.' => 'Mô-đun viết lại bị tắt bởi máy chủ của bạn.',
+    'You can continue the installation but we recommend to enable it.' => 'Bạn có thể tiếp tục cài đặt nhưng chúng tôi khuyên bạn nên bật nó.',
+
+    // Security
+    'Enter your secret formula to secure your application.' => 'Nhập công thức bí mật của bạn để bảo mật ứng dụng.',
+    'Encryption Key' => 'Khóa mã hóa',
+    'Your encryption key' => 'Khóa mã hóa của bạn',
+    'Cookie Name' => 'Tên cookie',
+    'Session Expiration' => 'Thời gian hết hạn phiên',
+    'The number of seconds you want the session to last.' => 'Số giây bạn muốn phiên kéo dài. Đặt giá trị 0 (không) có nghĩa là phiên hết hạn khi trình duyệt đóng.',
+    'In seconds' => 'Tính bằng giây',
+    'Unique cookie name to prevent session conflict' => 'Tên cookie duy nhất để ngăn xung đột phiên',
+    'Superuser' => 'Siêu người dùng',
+    'First Name' => 'Tên',
+    'Last Name' => 'Họ',
+    'Email Address' => 'Địa chỉ email',
+    'Create username for superuser' => 'Tên đăng nhập cho siêu người dùng',
+    'Password for superuser' => 'Mật khẩu cho siêu người dùng',
+    'Retype the password' => 'Nhập lại mật khẩu',
+
+    // System
+    'The encryption key cannot be empty!' => 'Khóa mã hóa không được để trống!',
+    'The encryption key contain unsupported character!' => 'Khóa mã hóa chứa ký tự không được hỗ trợ!',
+    'The cookie name cannot be empty!' => 'Tên cookie không được để trống!',
+    'The cookie name contain unsupported character!' => 'Tên cookie chứa ký tự không được hỗ trợ!',
+    'The first name cannot be empty!' => 'Tên không được để trống!',
+    'Please enter your valid email address!' => 'Vui lòng nhập địa chỉ email hợp lệ của bạn!',
+    'The username must be in alphanumeric only!' => 'Tên đăng nhập chỉ được bao gồm chữ và số với tối thiểu 5 ký tự!',
+    'The password cannot be empty!' => 'Mật khẩu không được để trống!',
+    'The password confirmation did not match!' => 'Xác nhận mật khẩu không khớp!',
+    'Enter the basic system configuration.' => 'Nhập cấu hình hệ thống cơ bản.',
+    'You will able to change it after the installation.' => 'Bạn sẽ có thể thay đổi nó sau khi cài đặt.',
+    'Installation Mode' => 'Chế độ cài đặt',
+    'Basic (with sample)' => 'Cơ bản (có mẫu)',
+    'Developer (without sample)' => 'Nhà phát triển (không có mẫu)',
+    'Timezone' => 'Múi giờ',
+    'Site Settings' => 'Cài đặt trang web',
+    'Site Title' => 'Tiêu đề trang web',
+    'Enter the site title' => 'Nhập tiêu đề trang web',
+    'Site Description' => 'Mô tả trang web',
+    'Enter the site description' => 'Nhập mô tả trang web',
+    'Upload Settings' => 'Cài đặt tải lên',
+    'Allowed File Extension' => 'Phần mở rộng tệp được phép',
+    'Allowed Image Extension' => 'Phần mở rộng hình ảnh được phép',
+    'Separate with comma' => 'Phân cách bằng dấu phẩy',
+    'Upload Limit' => 'Giới hạn tải lên',
+    'Image Width Dimension' => 'Kích thước chiều rộng hình ảnh',
+    'Original' => 'Ảnh gốc',
+    'Thumbnail' => 'Ảnh thu nhỏ',
+    'Icon' => 'Biểu tượng',
+    'In pixel' => 'Tính bằng pixel',
+    'ZIP Archiver' => 'Trình lưu trữ ZIP',
+    'Your application is ready to install using the provided configurations.' => 'Ứng dụng của bạn đã sẵn sàng để cài đặt bằng các cấu hình được cung cấp.',
+    'Agreement' => 'Thỏa thuận cấp phép',
+    'Database Initial' => 'Cơ sở dữ liệu ban đầu',
+    'Email' => 'Địa chỉ email',
+    'Password Confirmation' => 'Xác nhận mật khẩu',
+    'File Extension' => 'Phần mở rộng tệp được phép',
+    'Image Extension' => 'Phần mở rộng hình ảnh được phép',
+    'Max Upload Size' => 'Kích thước tải lên tối đa',
+    'Image Dimension' => 'Kích thước hình ảnh',
+    'Thumbnail Dimension' => 'Kích thước hình thu nhỏ',
+    'Icon Dimension' => 'Kích thước biểu tượng',
+    'The installer was interrupted!' => 'Trình cài đặt đã bị gián đoạn!',
+    'The installer was unable to write the configuration file.' => 'Trình cài đặt không thể ghi tệp cấu hình.',
+    'Please follow the instructions below to continue.' => 'Vui lòng làm theo hướng dẫn bên dưới để tiếp tục.',
+    'Problem Found' => 'Phát hiện vấn đề',
+    'Unable to create or write file' => 'Không thể tạo hoặc ghi tệp',
+    'Solution' => 'Giải pháp',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'Vui lòng tải xuống tệp cấu hình bên dưới và tải lên hoặc dán thủ công vào thư mục sau',
+    'Download Configuration' => 'Tải xuống cấu hình',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'Một khi tệp cấu hình đã được tải lên, vui lòng nhấp vào nút làm mới để tiếp tục cài đặt.',
+    'Unable to extract the sample module.' => 'Không thể giải nén mô-đun mẫu.',
+    'Make sure the following directory is writable' => 'Đảm bảo thư mục sau có thể ghi được',
+    'Skip installing the sample module' => 'Bỏ qua việc cài đặt mô-đun mẫu',
+
+    // Miscellaneous
+    'Subscribe to my channel' => 'Đăng ký kênh của tôi',
+    'Be my friend' => 'Hãy là bạn của tôi',
+    'Follow my GitHub' => 'Theo dõi tôi trên GitHub',
+    'Import sample data' => 'Cài đặt với dữ liệu mẫu',
+];

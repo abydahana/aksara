@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
+ */
+
+return [
+    // ระดับโลก
+    'Aksara Installer' => 'ตัวติดตั้ง Aksara',
+    'Whoops!' => 'อุ๊บ!',
+    'Back' => 'ย้อนกลับ',
+    'Refresh' => 'รีเฟรช',
+    'Continue' => 'ดำเนินการต่อ',
+    'DSN' => 'แหล่งข้อมูล DSN',
+    'Hostname' => 'ชื่อโฮสต์',
+    'Port' => 'พอร์ต',
+    'Username' => 'ชื่อผู้ใช้',
+    'Password' => 'รหัสผ่าน',
+    'Confirm Password' => 'ยืนยันรหัสผ่าน',
+    'Available' => 'พร้อมใช้งาน',
+
+    // หน้าหลัก
+    'Checking Requirements' => 'ตรวจสอบข้อกำหนด',
+    'Database Configuration' => 'การตั้งค่าฐานข้อมูล',
+    'Security Configuration' => 'การตั้งค่าความปลอดภัย',
+    'System Configuration' => 'การตั้งค่าระบบ',
+    'Finalizing' => 'กำลังสรุป',
+    'Hello there' => 'สวัสดี',
+    'Choose Language' => 'เลือกภาษา',
+    'Thank you for choosing Aksara' => 'ขอบคุณที่เลือก <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a>!',
+    'Before we start the installation, please take a moment to read this few notes.' => 'ก่อนที่เราจะเริ่มการติดตั้ง โปรดสละเวลาสักครู่เพื่ออ่านบันทึกย่อไม่กี่ข้อนี้',
+    'You could check the agreement box and skip reading as usual.' => 'คุณสามารถติ๊กช่อง "<b>ข้อตกลง</b>" และข้ามการอ่านตามปกติได้ แต่เรายังเชื่อว่ามี "<b>คนบ้า</b>" ที่จะอ่านบันทึกเหล่านี้ทีละบรรทัด',
+
+    'Article 1' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> เป็นเพียงเครื่องมือสำหรับสร้างระบบนิเวศตามความต้องการของคุณ แต่ระบบใดๆ ที่คุณสร้างโดยใช้ <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> ต้องอยู่ภายใต้เงื่อนไขของมัน',
+
+    'Article 2' => 'คุณได้รับอนุญาตให้แจกจ่ายระบบนิเวศที่คุณสร้างโดยใช้ <a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> โดยไม่ต้องขออนุญาตจากฉัน แต่การอ้างว่าคุณสร้างมันขึ้นมาทั้งหมดเป็นเรื่องน่าอาย',
+
+    'Article 3' => 'อย่าทำให้ผู้สร้างที่แบ่งปันงานของพวกเขาฟรีผิดหวังเป็นอันขาด มิฉะนั้นคุณจะพบว่าพวกเขาขายความคิดในอนาคตของพวกเขาในราคาที่คุณไม่สามารถเข้าถึงได้',
+
+    'Three notes should be enough.' => 'สามบันทึกก็น่าจะเพียงพอแล้ว',
+    'I look forward to your support.' => 'เรารอคอยการสนับสนุนจากคุณ',
+    'The fool' => 'คนโง่',
+    'Pretend to agree' => 'แกล้งทำเป็นเห็นด้วย',
+    'Start Installation' => 'เริ่มการติดตั้ง',
+
+    // ฐานข้อมูล
+    'Fill the requested fields below with your database connection.' => 'กรอกข้อมูลในช่องที่ร้องขอด้านล่างด้วยรายละเอียดการเชื่อมต่อฐานข้อมูลของคุณ',
+    'Please fill all required fields!' => 'โปรดกรอกข้อมูลในช่องที่จำเป็นทั้งหมด!',
+    'Database Driver' => 'ไดรเวอร์ฐานข้อมูล',
+    'Initial Database' => 'ฐานข้อมูลเริ่มต้น',
+    'Please choose the correct database driver!' => 'โปรดเลือกไดรเวอร์ฐานข้อมูลที่ถูกต้อง!',
+    'Create database if not exist' => 'สร้างฐานข้อมูลหากไม่มีอยู่',
+
+    // ขั้นตอนสุดท้าย
+    'The timezone is not valid!' => 'เขตเวลาไม่ถูกต้อง!',
+    'The site title cannot be empty!' => 'ชื่อเว็บไซต์ไม่สามารถเว้นว่างได้!',
+    'The site description cannot be empty!' => 'คำอธิบายเว็บไซต์ไม่สามารถเว้นว่างได้!',
+    'File extension must be comma separated alphanumeric only!' => 'นามสกุลไฟล์ต้องเป็นตัวอักษรและตัวเลขเท่านั้น คั่นด้วยเครื่องหมายจุลภาค!',
+    'Image extension must be comma separated alphanumeric only!' => 'นามสกุลภาพต้องเป็นตัวอักษรและตัวเลขเท่านั้น คั่นด้วยเครื่องหมายจุลภาค!',
+    'Maximum upload size must be numeric only!' => 'ขนาดอัปโหลดสูงสุดต้องเป็นตัวเลขเท่านั้น!',
+    'Image dimension must be numeric only!' => 'ขนาดภาพต้องเป็นตัวเลขเท่านั้น!',
+    'Thumbnail dimension must be numeric only!' => 'ขนาดรูปย่อต้องเป็นตัวเลขเท่านั้น!',
+    'Icon dimension must be numeric only!' => 'ขนาดไอคอนต้องเป็นตัวเลขเท่านั้น!',
+    'All catched up!' => 'ทุกอย่างพร้อมแล้ว!',
+    'Your application is ready to install using provided settings.' => 'แอปพลิเคชันของคุณพร้อมที่จะติดตั้งโดยใช้การตั้งค่าที่ให้ไว้',
+    'Just one more step' => 'อีกเพียงขั้นตอนเดียว',
+    'Make sure what you filled in on the previous form is correct.' => 'ตรวจสอบให้แน่ใจว่าสิ่งที่คุณกรอกในแบบฟอร์มก่อนหน้าถูกต้อง',
+    'Once you have successfully run the installer, there is no more back button.' => 'เมื่อคุณรันตัวติดตั้งสำเร็จแล้ว จะไม่มีปุ่มย้อนกลับอีก',
+    'Click run installer to applying your configuration.' => 'คลิก "<b>รันตัวติดตั้ง</b>" เพื่อใช้การตั้งค่าของคุณ',
+    'Run Installer' => 'รันตัวติดตั้ง',
+
+    // การติดตั้ง
+    'Failed to open or create the configuration file!' => 'ไม่สามารถเปิดหรือสร้างไฟล์การตั้งค่า!',
+    'Failed to write the configuration into file!' => 'ไม่สามารถเขียนการตั้งค่าลงในไฟล์!',
+    'Congratulations!' => 'ยินดีด้วย!',
+    'Aksara has been successfully installed on your system!' => '<a href="//aksaracms.com" class="text-primary fw-bold" target="_blank">Aksara</a> ได้รับการติดตั้งบนระบบของคุณสำเร็จแล้ว!',
+    'Notice!' => 'หมายเหตุ!',
+    'Your configuration file or folder is not writable or there was a problem while creating the configuration file.' => 'ไฟล์หรือโฟลเดอร์การตั้งค่าของคุณไม่สามารถเขียนได้ หรือมีปัญหาในการสร้างไฟล์การตั้งค่า',
+    'You will have to create the following code by hand manually and locate to the following directory:' => 'คุณจะต้องสร้างโค้ดต่อไปนี้ด้วยตนเองและวางไว้ในไดเรกทอรีต่อไปนี้:',
+    'Revalidate configuration after the configuration file is created or uploaded.' => 'ตรวจสอบการตั้งค่าอีกครั้งหลังจากสร้างหรืออัปโหลดไฟล์การตั้งค่า',
+    'You can login as superuser using following credential:' => 'คุณสามารถเข้าสู่ระบบในฐานะซูเปอร์ยูสเซอร์โดยใช้ข้อมูลประจำตัวต่อไปนี้:',
+    'Follow our updates to get our other works if you find this useful.' => 'ติดตามการอัปเดตของเราเพื่อรับผลงานอื่นๆ ของเราหากคุณพบว่าสิ่งนี้มีประโยชน์',
+    'Just to remind you, we also collect donations from people like you to support our research.' => 'เพียงเพื่อเตือนคุณ เราเก็บรวบรวมเงินบริจาคจากคนอย่างคุณเพื่อสนับสนุนการวิจัยของเรา',
+    'Regardless of the amount will be very useful.' => 'ไม่ว่าจำนวนเท่าใดก็จะมีประโยชน์มาก',
+    'Cheers' => 'ขอแสดงความยินดี',
+    'Launch Site' => 'เปิดตัวเว็บไซต์',
+    'Revalidate Configuration' => 'ตรวจสอบการตั้งค่าอีกครั้ง',
+
+    // ข้อกำหนด
+    'You just need to pretend to agree!' => 'คุณเพียงแค่ต้องแกล้งทำเป็นเห็นด้วยนะเพื่อน!',
+    'Awesome!' => 'ยอดเยี่ยม!',
+    'You just read our notes and pretend to agree with it.' => 'คุณเพิ่งอ่านบันทึกของเราและแกล้งทำเป็นเห็นด้วย :)',
+    'We will help you to prepare your application using this installation wizard.' => 'เราจะช่วยคุณเตรียมแอปพลิเคชันโดยใช้ตัวช่วยการติดตั้งนี้',
+    'Before you go, make sure this pre-requirements are fulfilled without any warning.' => 'ก่อนที่คุณจะไป ตรวจสอบให้แน่ใจว่าข้อกำหนดเบื้องต้นเหล่านี้ได้รับการเติมเต็มโดยไม่มีคำเตือนใดๆ',
+    'Otherwise your application will not work properly.' => 'มิฉะนั้นแอปพลิเคชันของคุณจะไม่ทำงานอย่างถูกต้อง',
+    'PHP Version' => 'เวอร์ชัน PHP',
+    'Rewrite Module' => 'โมดูลเขียนใหม่',
+    'Internationalization' => 'การทำให้เป็นสากล',
+    'Multibyte String' => 'สตริงหลายไบต์',
+    'PHP GD' => 'PHP GD',
+    'JSON' => 'JSON',
+    'XML' => 'XML',
+    'The minimum required version is' => 'เวอร์ชันขั้นต่ำที่ต้องการคือ',
+    'and the maximum version is' => 'และเวอร์ชันสูงสุดคือ',
+    'Disabled' => 'ปิดใช้งาน',
+    'Enabled' => 'เปิดใช้งาน',
+    'Off' => 'ปิด',
+    'On' => 'เปิด',
+    'Turn it on!' => 'เปิดใช้งาน!',
+    'Optional' => 'ตัวเลือก',
+    'Some requirement are not yet fulfilled.' => 'ข้อกำหนดบางอย่างยังไม่ได้รับการเติมเต็ม',
+    'Please update your server configuration and click on refresh button to continue the installation.' => 'โปรดอัปเดตการตั้งค่าเซิร์ฟเวอร์ของคุณและคลิกปุ่มรีเฟรชเพื่อดำเนินการติดตั้งต่อ',
+    'The rewrite module is disabled by your server.' => 'โมดูลเขียนใหม่ถูกปิดใช้งานโดยเซิร์ฟเวอร์ของคุณ',
+    'You can continue the installation but we recommend to enable it.' => 'คุณสามารถดำเนินการติดตั้งต่อได้แต่เราขอแนะนำให้เปิดใช้งาน',
+
+    // ความปลอดภัย
+    'Enter your secret formula to secure your application.' => 'ป้อนสูตรลับของคุณเพื่อรักษาความปลอดภัยให้กับแอปพลิเคชันของคุณ',
+    'Encryption Key' => 'คีย์การเข้ารหัส',
+    'Your encryption key' => 'คีย์การเข้ารหัสของคุณ',
+    'Cookie Name' => 'ชื่อคุกกี้',
+    'Session Expiration' => 'การหมดอายุของเซสชัน',
+    'The number of seconds you want the session to last.' => 'จำนวนวินาทีที่คุณต้องการให้เซสชันคงอยู่ การตั้งค่าเป็น 0 (ศูนย์) หมายถึงเซสชันจะหมดอายุเมื่อปิดเบราว์เซอร์',
+    'In seconds' => 'ในหน่วยวินาที',
+    'Unique cookie name to prevent session conflict' => 'ชื่อคุกกี้ที่ไม่ซ้ำกันเพื่อป้องกันความขัดแย้งของเซสชัน',
+    'Superuser' => 'ซูเปอร์ยูสเซอร์',
+    'First Name' => 'ชื่อ',
+    'Last Name' => 'นามสกุล',
+    'Email Address' => 'ที่อยู่อีเมล',
+    'Create username for superuser' => 'สร้างชื่อผู้ใช้สำหรับซูเปอร์ยูสเซอร์',
+    'Password for superuser' => 'รหัสผ่านสำหรับซูเปอร์ยูสเซอร์',
+    'Retype the password' => 'พิมพ์รหัสผ่านอีกครั้ง',
+
+    // ระบบ
+    'The encryption key cannot be empty!' => 'คีย์การเข้ารหัสไม่สามารถเว้นว่างได้!',
+    'The encryption key contain unsupported character!' => 'คีย์การเข้ารหัสรวมถึงอักขระที่ไม่ได้รับการสนับสนุน!',
+    'The cookie name cannot be empty!' => 'ชื่อคุกกี้ไม่สามารถเว้นว่างได้!',
+    'The cookie name contain unsupported character!' => 'ชื่อคุกกี้รวมถึงอักขระที่ไม่ได้รับการสนับสนุน!',
+    'The first name cannot be empty!' => 'ชื่อไม่สามารถเว้นว่างได้!',
+    'Please enter your valid email address!' => 'โปรดป้อนที่อยู่อีเมลที่ถูกต้องของคุณ!',
+    'The username must be in alphanumeric only!' => 'ชื่อผู้ใช้ต้องเป็นตัวอักษรและตัวเลขเท่านั้นและต้องมีอย่างน้อย 5 ตัวอักษร!',
+    'The password cannot be empty!' => 'รหัสผ่านไม่สามารถเว้นว่างได้!',
+    'The password confirmation did not match!' => 'การยืนยันรหัสผ่านไม่ตรงกัน!',
+    'Enter the basic system configuration.' => 'ป้อนการตั้งค่าระบบพื้นฐาน',
+    'You will able to change it after the installation.' => 'คุณจะสามารถเปลี่ยนได้หลังการติดตั้ง',
+    'Installation Mode' => 'โหมดการติดตั้ง',
+    'Basic (with sample)' => 'พื้นฐาน (พร้อมตัวอย่าง)',
+    'Developer (without sample)' => 'นักพัฒนา (ไม่มีตัวอย่าง)',
+    'Timezone' => 'เขตเวลา',
+    'Site Settings' => 'การตั้งค่าเว็บไซต์',
+    'Site Title' => 'ชื่อเว็บไซต์',
+    'Enter the site title' => 'ป้อนชื่อเว็บไซต์',
+    'Site Description' => 'คำอธิบายเว็บไซต์',
+    'Enter the site description' => 'ป้อนคำอธิบายเว็บไซต์',
+    'Upload Settings' => 'การตั้งค่าการอัปโหลด',
+    'Allowed File Extension' => 'นามสกุลไฟล์ที่อนุญาต',
+    'Allowed Image Extension' => 'นามสกุลภาพที่อนุญาต',
+    'Separate with comma' => 'คั่นด้วยเครื่องหมายจุลภาค',
+    'Upload Limit' => 'ขีดจำกัดการอัปโหลด',
+    'Image Width Dimension' => 'ขนาดความกว้างของภาพ',
+    'Original' => 'ต้นฉบับ',
+    'Thumbnail' => 'รูปย่อ',
+    'Icon' => 'ไอคอน',
+    'In pixel' => 'ในหน่วยพิกเซล',
+    'ZIP Archiver' => 'ตัวจัดเก็บ ZIP',
+    'Your application is ready to install using the provided configurations.' => 'แอปพลิเคชันของคุณพร้อมที่จะติดตั้งโดยใช้การตั้งค่าที่ให้ไว้',
+    'Agreement' => 'ข้อตกลงใบอนุญาต',
+    'Database Initial' => 'ฐานข้อมูลเริ่มต้น',
+    'Email' => 'อีเมล',
+    'Password Confirmation' => 'การยืนยันรหัสผ่าน',
+    'File Extension' => 'นามสกุลไฟล์ที่อนุญาต',
+    'Image Extension' => 'นามสกุลภาพที่อนุญาต',
+    'Max Upload Size' => 'ขนาดอัปโหลดสูงสุด',
+    'Image Dimension' => 'ขนาดภาพ',
+    'Thumbnail Dimension' => 'ขนาดรูปย่อ',
+    'Icon Dimension' => 'ขนาดไอคอน',
+    'The installer was interrupted!' => 'ตัวติดตั้งถูกขัดจังหวะ!',
+    'The installer was unable to write the configuration file.' => 'ตัวติดตั้งไม่สามารถเขียนไฟล์การตั้งค่าได้',
+    'Please follow the instructions below to continue.' => 'โปรดปฏิบัติตามคำแนะนำด้านล่างเพื่อดำเนินการต่อ',
+    'Problem Found' => 'พบปัญหา',
+    'Unable to create or write file' => 'ไม่สามารถสร้างหรือเขียนไฟล์',
+    'Solution' => 'วิธีแก้ไข',
+    'Please download the configuration file below and upload or paste it manually under the following directory' => 'โปรดดาวน์โหลดไฟล์การตั้งค่าด้านล่างและอัปโหลดหรือวางด้วยตนเองภายใต้ไดเรกทอรีต่อไปนี้',
+    'Download Configuration' => 'ดาวน์โหลดการตั้งค่า',
+    'Once the configuration file were uploaded, please click the refresh button to continue the installation.' => 'เมื่อไฟล์การตั้งค่าถูกอัปโหลดแล้ว โปรดคลิกปุ่มรีเฟรชเพื่อดำเนินการติดตั้งต่อ',
+    'Unable to extract the sample module.' => 'ไม่สามารถแตกโมดูลตัวอย่างได้',
+    'Make sure the following directory is writable' => 'ตรวจสอบให้แน่ใจว่าไดเรกทอรีต่อไปนี้สามารถเขียนได้',
+    'Skip installing the sample module' => 'ข้ามการติดตั้งโมดูลตัวอย่าง',
+
+    // อื่นๆ
+    'Subscribe to my channel' => 'ติดตามช่องของฉัน',
+    'Be my friend' => 'เป็นเพื่อนกับฉัน',
+    'Follow my GitHub' => 'ติดตาม GitHub ของฉัน',
+    'Import sample data' => 'ติดตั้งด้วยข้อมูลตัวอย่าง',
+];

@@ -123,26 +123,26 @@
             )
             .insertBefore($(this))
         }),
-        
+
         $('.--api-debug').on('submit', function(e) {
             e.preventDefault();
 
             $('.mdi.mdi-send').removeClass('mdi-send').addClass('mdi-loading mdi-spin');
             $('.response-result').trigger('click');
-            
+
             if (! $(this).find('input[name=url]').val()) {
                 $('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
                 $('pre code').text(JSON.stringify({error: "<?= phrase('No service URL are given.'); ?>"}, null, 4));
                 Prism.highlightAll();
-                
+
                 return;
             }
-            
+
             let header = {},
                 body = {},
                 method = $(this).find('select[name=method]').val(),
                 parameter = new FormData(this);
-            
+
             $('.param-header-key').each(function(num, value) {
                 let key = $(this).val(),
                     val = $('.param-header-value:eq(' + num + ')').val();
@@ -150,7 +150,7 @@
                     header[key] = val;
                 }
             });
-            
+
             $('.param-body-key').each(function(num, value) {
                 let key = $(this).val(),
                     val = $('.param-body-value:eq(' + num + ')').val();
@@ -158,14 +158,14 @@
                     body[key] = val;
                 }
             });
-            
+
             $.ajax({
                 url: $(this).find('input[name=url]').val(),
                 method: method,
                 data: body,
                 headers: header,
                 beforeSend: function() {
-                    $('pre code').text('<?= phrase('Requesting'); ?>...'),
+                    $('pre code').text('<?= phrase('Requesting...'); ?>'),
                     $('.result-html').html('')
                 }
             })
@@ -175,11 +175,11 @@
                         error: '<?= phrase('The response is not a valid object.'); ?>'
                     };
                 }
-                
+
                 $('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
                 $('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4));
                 Prism.highlightAll();
-                
+
                 if (UA !== 'mobile' && typeof mCustomScrollbar === 'function') {
                     $('.pane-wrapper').mCustomScrollbar({
                         autoHideScrollbar: true,

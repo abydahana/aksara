@@ -115,7 +115,7 @@ class Cleaner extends \Aksara\Laboratory\Core
                         ' . phrase('Garbage Cleaned!') . '
                     </h5>
                     <p>
-                        ' . phrase('There are {{ sessions }} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
+                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
                     </p>
                     <a href="javascript:void(0)" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>

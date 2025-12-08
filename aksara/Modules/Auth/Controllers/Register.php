@@ -186,7 +186,7 @@ class Register extends \Aksara\Laboratory\Core
                 return throw_exception(301, phrase('Follow the link we sent to your email to activate your account.'), base_url('auth', ['activation' => base64_encode(service('encrypter')->encrypt($prepare['user_id']))]));
             }
         } else {
-            return throw_exception(500, phrase('Unable to register your account.') . ' ' . phrase('Please try again later.'));
+            return throw_exception(500, phrase('Unable to register your account, please try again later.'));
         }
     }
 

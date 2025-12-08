@@ -111,10 +111,8 @@ class Assets extends \Aksara\Laboratory\Core
             exit($e->getMessage());
         }
 
-        if (get_userdata('language') && in_array(get_userdata('language'), ['ar'])) {
-            // Apply for RTL users
-        } else {
-            // Apply for non RTL users
+        if (is_rtl()) {
+            $output .= file_get_contents('assets/local/css/override.rtl.min.css') . "\n";
         }
 
 

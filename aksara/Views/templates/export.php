@@ -6,7 +6,7 @@
     if (isset($results->table_data)) {
         foreach($results->table_data as $key => $row) {
             $rows = null;
-            
+
             foreach($row->field_data as $fields => $params) {
                 if($params->hidden) continue;
 
@@ -15,14 +15,14 @@
 
                 // Remove label
                 $params->label = null;
-                
+
                 if(0 == $key) {
                     $thead .= '<th class="bordered">' . $label . '</th>';
                 }
-                
+
                 $rows .= '<td class="bordered">' . form_read($params) . '</td>';
             }
-            
+
             $tbody .= '
                 <tr>
                     ' . $rows . '
@@ -35,7 +35,7 @@
         foreach($results->field_data as $field => $params) {
             // Backup label
             $label = $params->label;
-            
+
             // Remove label
             $params->label = null;
 
@@ -149,7 +149,7 @@
                 width: 50%;
                 float: left;
                 margin: 12px 0;
-                
+
             }
             input {
                 border: 1px solid #aaa!important;
@@ -224,7 +224,7 @@
                 </tr>
             </thead>
         </table>
-        
+
         <div class="separator"></div>
 
         <table class="table">
@@ -245,7 +245,7 @@
                         <tr>
                             <td class="text-muted text-sm">
                                 <i>
-                                    <?= phrase('The document was generated from {{ app_name }} at {{ datetime }}.', ['app_name' => get_setting('app_name'), 'datetime' => date('Y-m-d H:i:s')]); ?>
+                                    <?= phrase('The document was generated from {{app_name}} at {{datetime}}', ['app_name' => get_setting('app_name'), 'datetime' => date('Y-m-d H:i:s')]); ?>
                                 </i>
                             </td>
                             <td class="text-muted text-sm text-end">

@@ -90,13 +90,13 @@ class Summernote extends \Aksara\Laboratory\Core
 
             return make_json([
                 'status' => 'success',
-                'messages' => phrase('Image was successfully removed.')
+                'messages' => phrase('Image was successfully removed')
             ]);
         }
 
         return make_json([
             'status' => 'error',
-            'messages' => phrase('Image was not found.')
+            'messages' => phrase('Image was not found')
         ]);
     }
 }
