@@ -55,6 +55,7 @@ class PostReports extends Migration
         // Add primary and unique index
         $this->forge->addKey('user_id', false, false);
         $this->forge->addKey('post_id', false, false);
+        $this->forge->addKey('post_path', false, false);
 
         // Add foreign key to parent table
         $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');

@@ -86,6 +86,9 @@ class Videos extends Migration
         // Add foreign key to parent table
         $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('videos');
     }

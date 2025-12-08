@@ -125,6 +125,9 @@ class AppUsers extends Migration
         $this->forge->addKey('username', false, true);
         $this->forge->addKey('email', false, true);
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Add foreign key to parent table
         $this->forge->addForeignKey('group_id', 'app__groups', 'group_id', 'CASCADE', 'RESTRICT');
         $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');

@@ -97,6 +97,9 @@ class Peoples extends Migration
         // Add primary and unique index
         $this->forge->addKey('people_id', true, true);
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('peoples');
     }

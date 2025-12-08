@@ -56,6 +56,9 @@ class AppGroups extends Migration
         // Add primary and unique index
         $this->forge->addKey('group_id', true, true);
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('app__groups');
     }

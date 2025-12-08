@@ -107,6 +107,9 @@ class Blogs extends Migration
         $this->forge->addForeignKey('post_category', 'blogs__categories', 'category_id', 'CASCADE', 'RESTRICT');
         $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('blogs');
     }

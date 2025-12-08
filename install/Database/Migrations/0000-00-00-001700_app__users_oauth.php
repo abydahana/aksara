@@ -53,6 +53,9 @@ class AppUsersOauth extends Migration
         $this->forge->addKey('user_id', false, true);
         $this->forge->addKey('service_provider', false, true);
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Add foreign key to parent table
         $this->forge->addForeignKey('user_id', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
 

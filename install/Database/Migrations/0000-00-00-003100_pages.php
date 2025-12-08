@@ -97,6 +97,9 @@ class Pages extends Migration
         $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'RESTRICT');
         $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
 
+        // Add index for status column
+        $this->forge->addKey('status', false, false);
+
         // Create table
         $this->forge->createTable('pages');
     }
