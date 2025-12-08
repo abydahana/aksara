@@ -145,9 +145,10 @@ if (! function_exists('get_module_asset')) {
         $module = $matches[1];
 
         if ($module) {
-            if (file_exists(ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
-                return base_url('modules/aksara/' . $module . '/assets/' . $data);
-            } elseif (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
+            if (
+                file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)
+                || file_exists(ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)
+            ) {
                 return base_url('modules/' . $module . '/assets/' . $data);
             }
         }

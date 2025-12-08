@@ -140,7 +140,7 @@ if (! function_exists('throw_exception')) {
      * @param   mixed|null $data
      * @param   mixed|null $target
      */
-    function throw_exception(int $code = 500, $data = [], $target = null, bool $redirect = false)
+    function throw_exception(int $code = 500, $data = [], $target = null, $redirect = false)
     {
         // Check if data isn't an array
         if ($data && ! is_array($data)) {

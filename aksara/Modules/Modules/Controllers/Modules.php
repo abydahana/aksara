@@ -32,6 +32,15 @@ class Modules extends \Aksara\Laboratory\Core
             helper('download');
 
             return force_download(basename(uri_string()), file_get_contents(ROOTPATH . uri_string()), true);
+        } else {
+            // Fallback, find file in Aksara's core module
+            $source = preg_replace('#^.*modules/#', '', uri_string());
+
+            if (is_file(APPPATH . 'Modules' . DIRECTORY_SEPARATOR . $source) && ! in_array($extension, ['php', 'twig'])) {
+                helper('download');
+
+                return force_download(basename(uri_string()), file_get_contents(APPPATH . 'Modules' . DIRECTORY_SEPARATOR . $source), true);
+            }
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());

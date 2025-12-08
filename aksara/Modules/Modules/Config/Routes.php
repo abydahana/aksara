@@ -15,5 +15,4 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-$routes->get('modules/aksara/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');
 $routes->get('modules/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');
