@@ -30,17 +30,17 @@ if (! function_exists('base_url')) {
      * Segments can be passed in as a string or an array, same as site_url
      * or a URL to a file can be passed in, e.g. to an image file.
      *
-     * @param   string $method
+     * @param   string $path
      * @param   array  $params
      *
      * @return  string
      */
-    function base_url($method = '', $params = [])
+    function base_url($path = '', $params = [])
     {
         $request = service('request');
 
-        if (is_array($method)) {
-            $method = implode('/', array_values($method));
+        if (is_array($path)) {
+            $path = implode('/', array_values($path));
         }
 
         if (is_object($params)) {
@@ -56,25 +56,34 @@ if (! function_exists('base_url')) {
         }
 
         if (is_array($params) && sizeof($params) > 0) {
-            $query_string = [];
+            $query_params = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_string[$key] = $val;
+                $query_params[$key] = $val;
             }
 
-            unset($query_string['aksara']);
+            unset($query_params['aksara']);
 
-            if ($query_string) {
-                $query_string = array_merge(['aksara' => generate_token($query_string, $method)], $query_string);
+            // Get primary keys
+            $primary_keys = explode('|', get_userdata('__query_params'));
+
+            // Get filtered params
+            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+
+            // Generate token
+            $token = generate_token($path, $filtered_params);
+
+            if ($query_params) {
+                $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            $uri = $method . ($query_string ? '?' . http_build_query($query_string) : null);
+            $uri = $path . ($query_params ? '?' . http_build_query($query_params) : null);
         } else {
-            $uri = $method;
+            $uri = $path;
         }
 
         $currentURI = service('request')->getUri();
@@ -118,23 +127,32 @@ if (! function_exists('current_page')) {
         $params = array_merge(service('request')->getGet(), $params);
 
         if (is_array($params) && sizeof($params) > 0) {
-            $query_string = [];
+            $query_params = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_string[$key] = $val;
+                $query_params[$key] = $val;
             }
 
-            unset($query_string['aksara']);
+            unset($query_params['aksara']);
 
-            if ($query_string) {
-                $query_string = array_merge(['aksara' => generate_token($query_string, uri_string() . ($method ? '/' . $method : null))], $query_string);
+            // Get primary keys
+            $primary_keys = explode('|', get_userdata('__query_params'));
+
+            // Get filtered params
+            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+
+            // Generate token
+            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $filtered_params);
+
+            if ($query_params) {
+                $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($query_string ? '?' . http_build_query($query_string) : null);
+            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
         } else {
             return base_url(uri_string()) . ($method ? '/' . $method : null);
         }
@@ -189,23 +207,32 @@ if (! function_exists('go_to')) {
         $params = array_merge(service('request')->getGet(), $params);
 
         if (is_array($params) && sizeof($params) > 0) {
-            $query_string = [];
+            $query_params = [];
 
             foreach ($params as $key => $val) {
                 if (! $val || in_array($key, $params) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_string[$key] = $val;
+                $query_params[$key] = $val;
             }
 
-            unset($query_string['aksara']);
+            unset($query_params['aksara']);
 
-            if ($query_string) {
-                $query_string = array_merge(['aksara' => generate_token($query_string, $final_slug . ($method ? '/' . $method : null))], $query_string);
+            // Get primary keys
+            $primary_keys = explode('|', get_userdata('__query_params'));
+
+            // Get filtered params
+            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+
+            // Generate token
+            $token = generate_token($final_slug . ($method ? '/' . $method : null), $filtered_params);
+
+            if ($query_params) {
+                $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            $uri = $final_slug . ($method ? '/' . $method : null) . ($query_string ? '?' . http_build_query($query_string) : null);
+            $uri = $final_slug . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
         } else {
             $uri = $final_slug . ($method ? '/' . $method : null);
         }
