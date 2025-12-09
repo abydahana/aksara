@@ -86,6 +86,10 @@ th[align="right"] {
 .offcanvas-header {
   padding: 0.75rem 1rem !important;
 }
+.modal-dialog {
+  margin-left: auto!important;
+  margin-right: auto!important
+}
 .modal-body .mCSB_container {
   padding: 3px;
 }
