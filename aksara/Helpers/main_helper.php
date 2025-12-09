@@ -18,66 +18,55 @@
 if (! function_exists('generate_token')) {
     /**
      * Generate security token to validate the query string values
-     *
-     * @param   array $data
-     * @param   string $path
      */
-    function generate_token(?string $path = null, array $data = [])
+    function generate_token(?string $path = null, array $data = []): string
     {
-        if (isset($data['aksara'])) {
-            // Unset previous token
-            unset($data['aksara']);
+        // Validate encryption key
+        if (! defined('ENCRYPTION_KEY') || empty(ENCRYPTION_KEY)) {
+            throw new RuntimeException('ENCRYPTION_KEY must be defined for token generation');
         }
 
-        if (is_array($data)) {
-            // Build query
-            $data = http_build_query(array_filter($data));
+        // Remove existing token from data to prevent token chaining
+        unset($data['aksara']);
+
+        // Normalize data to query string format
+        $queryString = '';
+        if (! empty($data)) {
+            $queryString = http_build_query(array_filter($data, function ($value) {
+                return null !== $value && '' !== $value;
+            }));
         }
 
-        // Get absolute path
-        $path = rtrim(urldecode($path), '/');
-
-        // Include method and timestamp
-        $timestamp = floor(time() / 3600); // Valid for 1 hour
-        $session_id = get_userdata('session_generated');
-
-        // Use HMAC with secret key
-        $signature = implode('|', [
-            $path,
-            $data,
-            $timestamp,
-            $session_id
-        ]);
-
-        return substr(hash_hmac('sha256', $signature, ENCRYPTION_KEY), -12);
-    }
-}
-
-if (! function_exists('get_absolute_path')) {
-    /**
-     * Get absolute path
-     *
-     * @param   string $path
-     */
-    function get_absolute_path($path = '')
-    {
-        $path = str_replace(['/', '\\'], '/', $path ?? '');
-        $parts = array_filter(explode('/', $path), 'strlen');
-        $absolutes = [];
-
-        foreach ($parts as $key => $val) {
-            if ('.' === $val) {
-                continue;
-            }
-
-            if ('..' === $val) {
-                array_pop($absolutes);
-            } else {
-                $absolutes[] = $val;
-            }
+        // Normalize path
+        $normalizedPath = '';
+        if (null !== $path) {
+            $normalizedPath = rtrim(urldecode($path), '/');
         }
 
-        return implode('/', $absolutes);
+        // Get session identifier
+        $sessionId = get_userdata('session_generated') ?? '';
+
+        // TEMPORARY: Timestamp validation disabled
+        // Previous implementation: $timestamp = floor(time() / 3600);
+        // Issue: Tokens created at minute 59 expired at minute 00 (next hour)
+        $timestamp = 0; // Placeholder for future timestamp implementation
+
+        // Create signature payload
+        $payload = [
+            'path' => $normalizedPath,
+            'query' => $queryString,
+            'timestamp' => $timestamp,    // Currently disabled
+            'session' => $sessionId,
+        ];
+
+        // Generate signature
+        $signature = implode('|', array_values($payload));
+
+        // Create HMAC-SHA256 hash
+        $hmac = hash_hmac('sha256', $signature, ENCRYPTION_KEY);
+
+        // Return last 12 characters as token
+        return substr($hmac, -12);
     }
 }
 
