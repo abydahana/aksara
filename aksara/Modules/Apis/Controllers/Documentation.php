@@ -221,8 +221,8 @@ class Documentation extends \Aksara\Laboratory\Core
                     ];
                 }
 
-                if (isset($response->results->query_string) && (isset($response->method) && in_array($response->method, ['read', 'update', 'delete']) || in_array($val, ['create', 'update', 'delete']))) {
-                    $output[$val]['query_string'] = $response->results->query_string;
+                if (isset($response->results->query_params) && (isset($response->method) && in_array($response->method, ['read', 'update', 'delete']) || in_array($val, ['create', 'update', 'delete']))) {
+                    $output[$val]['query_params'] = $response->results->query_params;
                 }
 
                 if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete']) || in_array($val, ['create', 'update', 'delete'])) {

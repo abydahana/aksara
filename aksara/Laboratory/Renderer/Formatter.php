@@ -133,7 +133,7 @@ class Formatter
                 $value = get_image($this->_set_upload_path, $value, (! in_array('original_thumbnail', array_keys($type)) ? 'thumb' : null));
             } elseif (in_array($key, ['hyperlink'])) {
                 // Prepare query string
-                $query_string = [
+                $query_params = [
                     'per_page' => null,
                     'limit' => null
                 ];
@@ -188,7 +188,7 @@ class Formatter
                             $_val = $replacement[$_key];
                         }
 
-                        $query_string[$_key] = $_val;
+                        $query_params[$_key] = $_val;
                     }
                 }
 
@@ -197,10 +197,10 @@ class Formatter
 
                 if (! $external) {
                     // It's local link
-                    $value = base_url($val['parameter'], $query_string);
+                    $value = base_url($val['parameter'], $query_params);
                 } else {
                     // External link
-                    $value = $val['parameter'] . '?' . http_build_query($query_string);
+                    $value = $val['parameter'] . '?' . http_build_query($query_params);
                 }
             } elseif (in_array($key, ['attribution', 'accordion'])) {
                 if (is_json($value)) {

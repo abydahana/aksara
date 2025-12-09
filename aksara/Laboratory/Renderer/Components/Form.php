@@ -341,10 +341,10 @@ class Form
             $highest_column = max($this->_field_position);
         }
 
-        $query_string = array_replace(service('request')->getGet(), $primary_key);
+        $query_params = array_replace(service('request')->getGet(), $primary_key);
 
         if ($this->api_client) {
-            unset($query_string['aksara'], $query_string['limit']);
+            unset($query_params['aksara'], $query_params['limit']);
         }
 
         $output = [
@@ -360,7 +360,7 @@ class Form
             'merged_field' => $this->_merge_field,
             'set_heading' => $this->_set_heading,
             'grouped_field' => $this->_group_field,
-            'query_string' => $query_string
+            'query_params' => $query_params
         ];
 
         return $output;
