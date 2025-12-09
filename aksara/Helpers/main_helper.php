@@ -22,7 +22,7 @@ if (! function_exists('generate_token')) {
      * @param   array $data
      * @param   string $path
      */
-    function generate_token($data = [], $path = null)
+    function generate_token(?string $path = null, array $data = [])
     {
         if (isset($data['aksara'])) {
             // Unset previous token
@@ -34,10 +34,22 @@ if (! function_exists('generate_token')) {
             $data = http_build_query(array_filter($data));
         }
 
-        // Get absolute path and trailing slash
-        $path = rtrim(get_absolute_path($path), '/');
+        // Get absolute path
+        $path = rtrim(urldecode($path), '/');
 
-        return substr(sha1($path . $data . ENCRYPTION_KEY . get_userdata('session_generated')), 12, 12);
+        // Include method and timestamp
+        $timestamp = floor(time() / 3600); // Valid for 1 hour
+        $session_id = get_userdata('session_generated');
+
+        // Use HMAC with secret key
+        $signature = implode('|', [
+            $path,
+            $data,
+            $timestamp,
+            $session_id
+        ]);
+
+        return substr(hash_hmac('sha256', $signature, ENCRYPTION_KEY), -12);
     }
 }
 
@@ -176,6 +188,10 @@ if (! function_exists('throw_exception')) {
             }
         } else {
             $exception = $data;
+        }
+
+        if (! $redirect) {
+            $redirect = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : false);
         }
 
         $output = json_encode([

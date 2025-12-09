@@ -141,8 +141,11 @@ class Core extends Controller
             // Unset field from payload
             unset($_POST['_request'], $_POST['_token']);
 
+            // Generate token
+            $token = generate_token(uri_string(), service('request')->getPost());
+
             return make_json([
-                'callback' => current_page(null, array_merge(service('request')->getPost(), ['aksara' => generate_token(service('request')->getPost()), '_request' => null, '_token' => null]))
+                'callback' => current_page(null, array_merge(service('request')->getPost(), ['aksara' => $token, '_request' => null, '_token' => null]))
             ]);
         }
 
@@ -237,7 +240,7 @@ class Core extends Controller
     public function valid_token(?string $token = null)
     {
         // Match the token validation
-        if (service('request')->getPost() && (($token && get_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY)) === $token) || ($token && sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) || $this->api_client)) {
+        if (service('request')->getPost() && (($token && get_userdata(sha1(uri_string())) === $token) || ($token && sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) || $this->api_client)) {
             // Token match
             return true;
         }
@@ -280,16 +283,16 @@ class Core extends Controller
 
         if (in_array($this->_method, $this->_unset_method)) {
             // Method is restricted
-            return throw_exception(403, phrase('The method you requested is not acceptable.'), ($redirect ? $redirect : base_url()), true);
+            return throw_exception(403, phrase('The method you requested is not acceptable.'));
         } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->_api_token) {
             // User isn't signed in
-            return throw_exception(403, phrase('Your session has been expired.'), ($redirect ? $redirect : base_url()), true);
+            return throw_exception(403, phrase('Your session has been expired.'));
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
-            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
+            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         } elseif ($permissive_group && ! in_array(get_userdata('group_id'), $permissive_group) && ! $this->_api_token) {
             // User been signed in but blocked by group privilege
-            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'), ($redirect ? $redirect : (! service('request')->isAJAX() ? $this->_redirect_back ?? base_url() : null)));
+            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         }
 
         return $this;
@@ -2034,29 +2037,11 @@ class Core extends Controller
 
         if (! service('request')->getPost('_token')) {
             // Set CSRF Token
-            $this->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+            $this->_token = hash_hmac('sha256', uri_string() . get_userdata('session_generated'), ENCRYPTION_KEY);
 
             // There may be a form without using form renderer
             // Set CSRF Token into unique session key
-            set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $this->_token);
-        }
-
-        /**
-         * Token checker and apply only when uri has query string
-         */
-        if (service('request')->getGet() && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-KEY')) {
-            $token = service('request')->getGet('aksara');
-            $query_string = service('request')->getGet();
-
-            // Validate token
-            if (
-                $this->_set_permission &&
-                $query_string &&
-                (generate_token($query_string, uri_string()) != $token && ! $this->api_client)
-            ) {
-                // Token is missmatch, throw an exception
-                return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source.'), base_url());
-            }
+            set_userdata(sha1(uri_string()), $this->_token);
         }
 
         // Validate the restricted action
@@ -2145,18 +2130,43 @@ class Core extends Controller
                 $this->unset_method('update, delete');
             }
 
-            // Get query string
-            $query_string = service('request')->getGet();
+            // Store primary keys
+            set_userdata('__query_params', implode('|', $this->_set_primary));
 
-            foreach ($query_string as $key => $val) {
+            // Get query string
+            $query_params = service('request')->getGet();
+
+            /**
+             * Token checker and apply only when uri has query string
+             */
+            if (
+                service('request')->getGet() &&
+                array_intersect(array_keys($query_params), $this->_set_primary) &&
+                ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-KEY')
+            ) {
+                $token = service('request')->getGet('aksara');
+                $filtered_params = array_intersect_key($query_params, array_flip($this->_set_primary));
+
+                // Validate token
+                if (
+                    $this->_set_permission &&
+                    (! hash_equals(generate_token(uri_string(), $filtered_params), $token) && ! $this->api_client)
+                ) {
+                    // Token is missmatch
+                    return throw_exception(403, phrase('The submitted token has expired or the request is made from a restricted source.'));
+                }
+            }
+
+            // Remove primary query string if method is matched
+            foreach ($query_params as $key => $val) {
                 if (in_array($this->_method, ['read', 'update', 'delete']) && in_array($key, $this->_set_primary)) {
                     // Remove query parameter from URL
-                    $query_string[$key] = null;
+                    $query_params[$key] = null;
                 }
             }
 
             // Assign previous URL
-            $this->_redirect_back = go_to(null, $query_string);
+            $this->_redirect_back = go_to(null, $query_params);
 
             // Check the additional primary key that been sets up
             if (is_array($this->_set_primary) && sizeof($this->_set_primary) > 0) {
@@ -2284,47 +2294,62 @@ class Core extends Controller
                     $this->_prepare('offset', [$this->_offset]);
                 }
 
-                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && ($this->_searchable && ! $this->_like && service('request')->getGet('q')) || ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))) {
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) &&
+                    ($this->_searchable && ! $this->_like && service('request')->getGet('q')) ||
+                    ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))
+                ) {
+                    $is_autocomplete = ('autocomplete' == service('request')->getPost('method'));
+                    $search_query = $is_autocomplete ? service('request')->getPost('q') : service('request')->getGet('q');
+
+                    // Sanitize search query - escape special characters for LIKE
+                    $search_query = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search_query);
+                    $search_query = htmlspecialchars($search_query, ENT_QUOTES, 'UTF-8');
+
                     $group_start = false;
 
-                    if ('autocomplete' != service('request')->getPost('method')) {
+                    if (!$is_autocomplete) {
                         $this->group_start();
-
                         $group_start = true;
                     }
 
-                    $column = (service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : service('request')->getGet('column'));
+                    $column = service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : null;
 
+                    // ========== SEARCH BY SPECIFIC COLUMN ==========
                     if ($column && 'all' != $column) {
+                        // Whitelist: Ensure column is valid
+                        $valid_columns = [];
                         foreach ($this->_compiled_table as $key => $val) {
-                            // Make sure column is exist in compiled table
                             if ($this->model->field_exists($column, $val)) {
-                                // Push like to the prepared query builder
-                                $this->_prepare('like', [$val . '.' . $column, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
+                                $valid_columns[] = $val . '.' . $column;
                             }
                         }
-                    } else {
+
+                        if (!empty($valid_columns)) {
+                            foreach ($valid_columns as $valid_column) {
+                                $this->_prepare('like', [$valid_column, $search_query]);
+                            }
+                        }
+                    }
+                    // ========== SEARCH ALL COLUMNS ==========
+                    else {
                         $columns = $this->model->list_fields($this->_table);
 
+                        // Get columns from joined tables
                         if ($this->_select && $this->_compiled_table) {
-                            // Search from joined table
                             foreach ($this->_compiled_table as $key => $val) {
-                                // Get joined table name
                                 list($joined_table) = explode('.', $val);
 
-                                // Ensure the table is not a primary table
                                 if ($joined_table != $this->_table) {
-                                    // Search column of joinned table from the selection list
                                     $select_search = preg_grep('/^' . preg_quote($joined_table, '/') . '/', $this->_select);
 
                                     if (isset($select_search[0])) {
-                                        // Push matches into column list
                                         $columns[] = $select_search[0];
                                     }
                                 }
                             }
                         }
 
+                        // ========== SEARCH IN TABLE FIELDS ==========
                         if ($columns) {
                             if ($group_start) {
                                 $this->or_group_start();
@@ -2333,63 +2358,105 @@ class Core extends Controller
                             }
 
                             foreach ($columns as $key => $val) {
-                                // Find column exclude table name
+                                // Add table prefix to prevent ambiguous columns
                                 if (strpos($val, '.') === false) {
-                                    // Add the table prefix to prevent ambiguous
                                     $val = $this->_table . '.' . $val;
                                 }
 
-                                // Push like an or like to the prepared query builder
-                                $this->_prepare(($key ? 'or_like' : 'like'), [$val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
+                                $this->_prepare(($key ? 'or_like' : 'like'), [$val, $search_query]);
                             }
 
                             $this->group_end();
                         }
 
+                        // ========== SEARCH IN SELECT FIELDS ==========
                         if ($this->_select) {
-                            if ($group_start) {
-                                $this->or_group_start();
-                            } else {
-                                $this->group_start();
-                            }
-
                             $compiled_like = [];
+                            $search_conditions = [];
+                            $order_by_conditions = [];
 
                             foreach ($this->_select as $key => $val) {
-                                if ($val && stripos($val, ' AS ') !== false) {
-                                    $val = substr($val, 0, stripos($val, ' AS '));
-                                }
-
-                                $field_origin = (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
-
-                                if (! $key || in_array($field_origin, $compiled_like)) {
+                                if (!$val) {
                                     continue;
                                 }
 
-                                // Push like an or like to the prepared query builder
-                                $this->_prepare(($key ? 'or_like' : 'like'), [$val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
-
-                                if (isset($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
-                                    if (is_array($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
-                                        $table = $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
-                                    } else {
-                                        $table = $this->_set_field[service('request')->getPost('origin')]['parameter'];
-                                    }
+                                // Remove AS alias
+                                $original_val = $val;
+                                if (stripos($val, ' AS ') !== false) {
+                                    $val = trim(substr($val, 0, stripos($val, ' AS ')));
                                 }
 
-                                if (isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table)) {
-                                    // Push order by best match to the prepared query builder
-                                    $this->_prepare('order_by', ['(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)']);
+                                // Get field name without table prefix
+                                $field_origin = (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
+
+                                // Skip if already processed or first item
+                                if (!$key || in_array($field_origin, $compiled_like)) {
+                                    continue;
+                                }
+
+                                // Validate field exists in database
+                                $table_name = null;
+                                if (isset($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
+                                    $param = $this->_set_field[service('request')->getPost('origin')]['parameter'];
+                                    $table_name = is_array($param) ? $param[0] : $param;
+                                }
+
+                                // Whitelist: Only fields that exist in database
+                                $field_for_check = (stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val);
+                                $is_valid_field = $table_name && $this->model->field_exists($field_for_check, $table_name);
+
+                                // Collect search conditions
+                                $search_conditions[] = [
+                                    'type' => ($key ? 'or_like' : 'like'),
+                                    'field' => $val,
+                                    'query' => $search_query
+                                ];
+
+                                // Collect order by conditions (only for valid fields)
+                                if ($is_valid_field && $is_autocomplete) {
+                                    // Use parameter binding or prepared statements
+                                    // DON'T directly concatenate user input!
+                                    $order_by_conditions[] = $val;
                                 }
 
                                 $compiled_like[] = $field_origin;
                             }
 
-                            $this->group_end();
+                            // Only create group if there are conditions
+                            if (!empty($search_conditions)) {
+                                if ($group_start) {
+                                    $this->or_group_start();
+                                } else {
+                                    $this->group_start();
+                                }
+
+                                foreach ($search_conditions as $condition) {
+                                    $this->_prepare($condition['type'], [$condition['field'], $condition['query']]);
+                                }
+
+                                $this->group_end();
+
+                                // Add ORDER BY for autocomplete (with safe approach)
+                                if (!empty($order_by_conditions) && $is_autocomplete) {
+                                    foreach ($order_by_conditions as $order_field) {
+                                        // Use query builder that supports parameter binding
+                                        // Example with CodeIgniter 4:
+                                        $escaped_query = $this->model->escape($search_query);
+                                        $this->_prepare('order_by', [
+                                            "(CASE
+                                                WHEN {$order_field} LIKE {$escaped_query} THEN 1
+                                                WHEN {$order_field} LIKE CONCAT({$escaped_query}, '%') THEN 2
+                                                WHEN {$order_field} LIKE CONCAT('%', {$escaped_query}) THEN 4
+                                                ELSE 3
+                                            END)"
+                                        ]);
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    if ('autocomplete' != service('request')->getPost('method')) {
+                    if (!$is_autocomplete) {
                         $this->group_end();
                     }
                 }
@@ -2775,13 +2842,13 @@ class Core extends Controller
                  * Method is requesting document file or print
                  * -------------------------------------------------------------
                  */
-                $query_string = service('request')->getGet();
+                $query_params = service('request')->getGet();
                 $single_print = false;
 
                 if ($this->_set_primary) {
                     foreach ($this->_set_primary as $key => $val) {
                         // Find single item print
-                        if (isset($query_string[$val])) {
+                        if (isset($query_params[$val])) {
                             $single_print = true;
 
                             break;
@@ -2855,12 +2922,12 @@ class Core extends Controller
         }
 
         // Get query string
-        $query_string = service('request')->getGet();
+        $query_params = service('request')->getGet();
 
-        foreach ($query_string as $key => $val) {
+        foreach ($query_params as $key => $val) {
             if (in_array($this->_method, ['read', 'update']) && in_array($key, $this->_set_primary)) {
                 // Remove query parameter from URL
-                $query_string[$key] = null;
+                $query_params[$key] = null;
             }
         }
 
@@ -2881,7 +2948,7 @@ class Core extends Controller
             'prefer' => service('request')->getPost('prefer'),
             'links' => [
                 'base_url' => base_url(),
-                'current_module' => go_to(null, $query_string),
+                'current_module' => go_to(null, $query_params),
                 'current_page' => current_page()
             ],
             'meta' => [
@@ -2892,11 +2959,10 @@ class Core extends Controller
                 'segmentation' => array_map(function ($segment = null) {return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
             ],
             'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_set_primary),
-            'query_string' => service('request')->getGet(),
+            'query_params' => service('request')->getGet(),
             'results' => $results,
             'total' => $total,
             'elapsed_time' => service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time'),
-            '_identifier' => base64_encode(current_page()),
             '_token' => $this->_token
         ];
 
@@ -3636,9 +3702,6 @@ class Core extends Controller
                     $this->after_insert();
                 }
 
-                // Check if reload's needed
-                $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
-
                 // Send to client
                 return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), (! $this->api_client ? $this->_redirect_back : null));
             } else {
@@ -3757,11 +3820,8 @@ class Core extends Controller
                         $this->after_update();
                     }
 
-                    // Check if reload's needed
-                    $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
-
                     // Send to client
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null), $reload);
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null));
                 } else {
                     // Unlink the files
                     $this->_unlink_files(get_userdata('_uploaded_files'));
@@ -3879,11 +3939,8 @@ class Core extends Controller
                         $this->after_delete();
                     }
 
-                    // Check if reload's needed
-                    $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
-
                     // Send to client
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null), $reload);
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null));
                 } else {
                     // Otherwise, the item is cannot be deleted
                     $error = $this->model->error();
@@ -3992,11 +4049,7 @@ class Core extends Controller
 
         if ($affected_rows) {
             // Deletion success
-            // Check if reload's needed
-            $reload = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : null);
-
-            // Send to client
-            return throw_exception(($this->api_client ? 200 : 301), phrase('{{affected_rows}} of {{items}} data was successfully removed.', ['affected_rows' => $affected_rows, 'items' => sizeof($items)]), (! $this->api_client ? $this->_redirect_back : null), $reload);
+            return throw_exception(($this->api_client ? 200 : 301), phrase('{{affected_rows}} of {{items}} data was successfully removed.', ['affected_rows' => $affected_rows, 'items' => sizeof($items)]), (! $this->api_client ? $this->_redirect_back : null));
         } else {
             // Deletion fail
             return throw_exception(403, phrase('Unable to remove the selected data.'), (! $this->api_client ? $this->_redirect_back : null));
