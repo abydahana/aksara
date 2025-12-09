@@ -2307,7 +2307,7 @@ class Core extends Controller
 
                     $group_start = false;
 
-                    if (!$is_autocomplete) {
+                    if (! $is_autocomplete) {
                         $this->group_start();
                         $group_start = true;
                     }
@@ -2324,7 +2324,7 @@ class Core extends Controller
                             }
                         }
 
-                        if (!empty($valid_columns)) {
+                        if (! empty($valid_columns)) {
                             foreach ($valid_columns as $valid_column) {
                                 $this->_prepare('like', [$valid_column, $search_query]);
                             }
@@ -2376,7 +2376,7 @@ class Core extends Controller
                             $order_by_conditions = [];
 
                             foreach ($this->_select as $key => $val) {
-                                if (!$val) {
+                                if (! $val) {
                                     continue;
                                 }
 
@@ -2390,7 +2390,7 @@ class Core extends Controller
                                 $field_origin = (strpos($val, '.') !== false ? substr($val, strpos($val, '.') + 1) : $val);
 
                                 // Skip if already processed or first item
-                                if (!$key || in_array($field_origin, $compiled_like)) {
+                                if (! $key || in_array($field_origin, $compiled_like)) {
                                     continue;
                                 }
 
@@ -2423,7 +2423,7 @@ class Core extends Controller
                             }
 
                             // Only create group if there are conditions
-                            if (!empty($search_conditions)) {
+                            if (! empty($search_conditions)) {
                                 if ($group_start) {
                                     $this->or_group_start();
                                 } else {
@@ -2437,7 +2437,7 @@ class Core extends Controller
                                 $this->group_end();
 
                                 // Add ORDER BY for autocomplete (with safe approach)
-                                if (!empty($order_by_conditions) && $is_autocomplete) {
+                                if (! empty($order_by_conditions) && $is_autocomplete) {
                                     foreach ($order_by_conditions as $order_field) {
                                         // Use query builder that supports parameter binding
                                         // Example with CodeIgniter 4:
@@ -2456,7 +2456,7 @@ class Core extends Controller
                         }
                     }
 
-                    if (!$is_autocomplete) {
+                    if (! $is_autocomplete) {
                         $this->group_end();
                     }
                 }
