@@ -78,13 +78,13 @@
             </form>
         </div>
     </div>
-    
+
     <hr class="mx--3" />
-    
+
     <?= pagination($pagination); ?>
-    
+
     <hr class="mx--3" />
-    
+
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row">
             <?php foreach ($phrases as $key => $val): ?>

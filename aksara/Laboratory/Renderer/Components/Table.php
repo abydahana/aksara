@@ -55,10 +55,10 @@ class Table
         }
 
         // Retrieve query string
-        $query_string = service('request')->getGet();
+        $query_params = service('request')->getGet();
 
         // Unset old token
-        unset($query_string['aksara']);
+        unset($query_params['aksara']);
 
         $output = [];
         $columns = [];
@@ -157,7 +157,7 @@ class Table
                 $columns[$field] = [
                     'field' => $field,
                     'label' => $label,
-                    'url' => go_to(null, array_merge($query_string, ['order' => $field, 'sort' => get_userdata('sortOrder')])),
+                    'url' => go_to(null, array_merge($query_params, ['order' => $field, 'sort' => get_userdata('sortOrder')])),
                     'icon' => 'mdi mdi-sort-' . ('asc' == get_userdata('sortOrder') ? 'ascending' : 'descending'),
                     'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $field_type) ? 'right' : 'left')
                 ];
@@ -288,7 +288,7 @@ class Table
 
         if (! in_array('create', $this->_unset_method)) {
             // Add create button toolbar
-            $buttons[] = $this->_set_link('create', phrase('Create'), 'btn-primary --modal', 'mdi mdi-plus', $query_string);
+            $buttons[] = $this->_set_link('create', phrase('Create'), 'btn-primary --modal', 'mdi mdi-plus', $query_params);
         }
 
         if ($this->_add_toolbar) {
@@ -303,36 +303,36 @@ class Table
 
         if (! $agent->isMobile()) {
             if (! in_array('read', $this->_unset_method) && ! in_array('export', $this->_unset_method)) {
-                $query_string['keep_query'] = true;
+                $query_params['keep_query'] = true;
 
                 // Add export button toolbar
-                $buttons[] = $this->_set_link('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $query_string, true);
+                $buttons[] = $this->_set_link('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $query_params, true);
             }
 
             if (! in_array('read', $this->_unset_method) && ! in_array('print', $this->_unset_method)) {
-                $query_string['keep_query'] = true;
+                $query_params['keep_query'] = true;
 
                 // Add print button toolbar
-                $buttons[] = $this->_set_link('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $query_string, true);
+                $buttons[] = $this->_set_link('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $query_params, true);
             }
 
             if (! in_array('read', $this->_unset_method) && ! in_array('pdf', $this->_unset_method)) {
-                $query_string['keep_query'] = true;
+                $query_params['keep_query'] = true;
 
                 // Add PDF button toolbar
-                $buttons[] = $this->_set_link('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $query_string, true);
+                $buttons[] = $this->_set_link('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $query_params, true);
             }
 
             if (! in_array('delete', $this->_unset_method)) {
                 // Add PDF button toolbar
-                $buttons[] = $this->_set_link('delete', phrase('Batch Delete'), 'btn-danger d-none disabled --open-delete-confirm', 'mdi mdi-delete', $query_string);
+                $buttons[] = $this->_set_link('delete', phrase('Batch Delete'), 'btn-danger d-none disabled --open-delete-confirm', 'mdi mdi-delete', $query_params);
             }
         } else {
             // Add search button toolbar
-            $buttons[] = $this->_set_link(null, phrase('Search'), 'btn-dark', 'mdi mdi-magnify', $query_string, false, 'data-bs-toggle="modal" data-bs-target="#searchModal"');
+            $buttons[] = $this->_set_link(null, phrase('Search'), 'btn-dark', 'mdi mdi-magnify', $query_params, false, 'data-bs-toggle="modal" data-bs-target="#searchModal"');
 
             // Add refresh button toolbar
-            $buttons[] = $this->_set_link(null, phrase('Refresh'), 'btn-secondary --xhr', 'mdi mdi-refresh', $query_string);
+            $buttons[] = $this->_set_link(null, phrase('Refresh'), 'btn-secondary --xhr', 'mdi mdi-refresh', $query_params);
         }
 
         // Override default button if any
@@ -371,7 +371,7 @@ class Table
             'columns' => $columns,
             'table_data' => $output,
             'item_reference' => $this->_item_reference,
-            'query_string' => $query_string,
+            'query_params' => $query_params,
             'toolbar' => [
                 'action' => current_page(null, ['per_page' => null]),
                 'buttons' => $buttons,
@@ -388,7 +388,7 @@ class Table
         return $output;
     }
 
-    private function _get_buttons(array $query_string = [], array $replacement = [])
+    private function _get_buttons(array $query_params = [], array $replacement = [])
     {
         $buttons = [];
 
@@ -398,7 +398,7 @@ class Table
                 'label' => phrase('Read'),
                 'class' => 'btn-primary --modal',
                 'icon' => 'mdi mdi-magnify',
-                'parameter' => $query_string,
+                'parameter' => $query_params,
                 'new_tab' => false
             ];
         }
@@ -409,7 +409,7 @@ class Table
                 'label' => phrase('Update'),
                 'class' => 'btn-info --modal',
                 'icon' => 'mdi mdi-square-edit-outline',
-                'parameter' => $query_string,
+                'parameter' => $query_params,
                 'new_tab' => false
             ];
         }
@@ -424,7 +424,7 @@ class Table
                 'label' => phrase('Delete'),
                 'class' => 'btn-danger --open-delete-confirm',
                 'icon' => 'mdi mdi-delete',
-                'parameter' => $query_string,
+                'parameter' => $query_params,
                 'new_tab' => false
             ];
         }
@@ -455,7 +455,7 @@ class Table
         return $buttons;
     }
 
-    private function _get_dropdowns(array $query_string = [], array $replacement = [])
+    private function _get_dropdowns(array $query_params = [], array $replacement = [])
     {
         $dropdowns = [];
 
@@ -465,7 +465,7 @@ class Table
                 'label' => phrase('Print'),
                 'class' => '',
                 'icon' => 'mdi mdi-printer',
-                'parameter' => $query_string,
+                'parameter' => $query_params,
                 'new_tab' => true
             ];
         }
@@ -476,7 +476,7 @@ class Table
                 'label' => phrase('PDF'),
                 'class' => '',
                 'icon' => 'mdi mdi-file-pdf',
-                'parameter' => $query_string,
+                'parameter' => $query_params,
                 'new_tab' => true
             ];
         }
@@ -506,9 +506,9 @@ class Table
         return $dropdowns;
     }
 
-    private function _set_link($path, $label, $class, $icon, $query_string = [], $new_tab = false, $attribution = null)
+    private function _set_link($path, $label, $class, $icon, $query_params = [], $new_tab = false, $attribution = null)
     {
-        foreach ($query_string as $keyword => $value) {
+        foreach ($query_params as $keyword => $value) {
             if (in_array($path, $this->_unset_method)) {
                 return [];
             } elseif ('read' == $path && isset($this->_unset_read[$keyword]) && in_array($value, $this->_unset_read[$keyword])) {
@@ -522,13 +522,13 @@ class Table
 
         foreach (service('request')->getGet() as $key => $val) {
             // Slice non primary query string
-            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! isset($query_string['keep_query'])) {
-                //$query_string[$key] = null;
+            if (in_array($key, ['per_page', 'q', 'limit', 'offset', 'order', 'sort']) && ! isset($query_params['keep_query'])) {
+                //$query_params[$key] = null;
             }
         }
 
         if (! $path || strpos($path, '://') === false) {
-            $url = go_to($path, $query_string);
+            $url = go_to($path, $query_params);
         } else {
             $url = $path;
             $new_tab = true;

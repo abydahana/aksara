@@ -41,7 +41,7 @@
                         <?= phrase('Getting Started'); ?>
                     </a>
                     <br />
-                    
+
                     <?php
                         if ($modules) {
                             foreach ($modules as $key => $val) {
@@ -88,7 +88,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <h5 class="mt-3"><?= phrase('Request Method'); ?></h5>
                     <?php endif; ?>
                     <?php if ($permission->privileges): ?>
@@ -293,7 +293,7 @@
                         Pengambilan Data
                     </h4>
                     <p>
-                        Saat Anda meminta data, anda akan turut mendapatkan properti <i>query string</i> (properti bernama "<code>query_string</code>") yang akan membantu Anda mengambil data untuk dicocokkan dengan kata kunci. Selain itu, terdapat juga parameter <i>query string</i> untuk mengambil hasil dengan <i>filter</i>.
+                        Saat Anda meminta data, anda akan turut mendapatkan properti <i>query string</i> (properti bernama "<code>query_params</code>") yang akan membantu Anda mengambil data untuk dicocokkan dengan kata kunci. Selain itu, terdapat juga parameter <i>query string</i> untuk mengambil hasil dengan <i>filter</i>.
                     </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm">
@@ -384,42 +384,42 @@
         })
         .done(function(response, status, error) {
             $('.--spinner').remove();
-            
+
             if (response.results) {
                 $.each(response.results, function(key, val) {
-                    if (typeof val.query_string !== 'undefined') {
-                        $.each(val.query_string, function(_key, _val) {
+                    if (typeof val.query_params !== 'undefined') {
+                        $.each(val.query_params, function(_key, _val) {
                             if ($('.--query-' + key).hasClass('d-none')) {
                                 $('.--query-' + key).removeClass('d-none')
                             }
-                            
+
                             $('<tr><td><code>' + _key + '</code></td><td>mixed</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?= phrase('Required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
                         })
                     }
-                    
+
                     if (typeof val.parameter !== 'undefined') {
                         $.each(val.parameter, function(_key, _val) {
                             if ($('.--parameter-' + key).hasClass('d-none')) {
                                 $('.--parameter-' + key).removeClass('d-none')
                             }
-                            
+
                             $('<tr><td><code>' + _key + '</code></td><td>' + _val.type + '</td><td>' + _val.maxlength + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?= phrase('Required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
                         })
                     }
-                    
+
                     if (typeof val.response.success !== 'undefined') {
                         if ($('.--response-success-' + key).hasClass('d-none')) {
                             $('.--response-success-' + key).removeClass('d-none')
                         }
-                        
+
                         $('.--response-success-' + key + ' pre code').text(JSON.stringify(val.response.success, null, 4))
                     }
-                    
+
                     if (typeof val.response.error !== 'undefined') {
                         if ($('.--response-error-' + key).hasClass('d-none')) {
                             $('.--response-error-' + key).removeClass('d-none')
                         }
-                        
+
                         $('.--response-error-' + key + ' pre code').text(JSON.stringify(val.response.error, null, 4))
                     }
                 })
