@@ -411,7 +411,7 @@ class Template
             }
 
             // Intersection key to keep property from unset
-            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_string', 'elapsed_time', 'content', '_identifier', '_token'];
+            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_params', 'elapsed_time', 'content', '_token'];
 
             foreach ($data as $key => $val) {
                 if (! in_array($key, $intersection_key)) {
@@ -507,6 +507,12 @@ class Template
             }
         }
 
+        // Get last breadcrumb
+        $current_page = end($data);
+
+        // Remove last breadcrumb
+        array_pop($data);
+
         foreach ($data as $key => $val) {
             $external = null;
             if (stripos($key, '://')) {
@@ -535,6 +541,12 @@ class Template
                 ];
             }
         }
+
+        $output[] = [
+            'url' => '',
+            'label' => $current_page,
+            'icon' => ''
+        ];
 
         return $output;
     }
@@ -583,7 +595,7 @@ class Template
         $parser = new \Aksara\Libraries\Html_dom();
         $buffer = $parser->str_get_html($pagination);
 
-        $query_string = [];
+        $query_params = [];
 
         foreach (service('request')->getGet() as $key => $val) {
             if (is_array($val)) {
@@ -598,7 +610,7 @@ class Template
                         continue;
                     }
 
-                    $query_string[] = [
+                    $query_params[] = [
                         'name' => $_key,
                         'value' => htmlspecialchars($_val)
                     ];
@@ -613,7 +625,7 @@ class Template
                 continue;
             }
 
-            $query_string[] = [
+            $query_params[] = [
                 'name' => $key,
                 'value' => htmlspecialchars($val)
             ];
@@ -624,7 +636,7 @@ class Template
             'per_page' => $data->per_page,
             'action' => current_page(null, ['per_page' => null]),
             'filters' => [
-                'hidden' => $query_string,
+                'hidden' => $query_params,
                 'select' => [
                     [
                         'name' => 'limit',
