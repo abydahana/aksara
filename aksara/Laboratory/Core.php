@@ -2024,7 +2024,7 @@ class Core extends Controller
 
         if (! service('request')->getPost('_token')) {
             // Set CSRF Token
-            $this->_token = hash_hmac('sha256', uri_string() . get_userdata('session_generated'), ENCRYPTION_KEY);
+            $this->_token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
 
             // There may be a form without using form renderer
             // Set CSRF Token into unique session key
@@ -3689,6 +3689,9 @@ class Core extends Controller
                     $this->after_insert();
                 }
 
+                // Update token timestamp
+                set_userdata('token_timestamp', time());
+
                 // Invalidate token
                 unset_userdata(sha1(uri_string()));
 
@@ -3809,6 +3812,9 @@ class Core extends Controller
                         // Call function after update
                         $this->after_update();
                     }
+
+                    // Update token timestamp
+                    set_userdata('token_timestamp', time());
 
                     // Invalidate token
                     unset_userdata(sha1(uri_string()));
@@ -3932,6 +3938,9 @@ class Core extends Controller
                         $this->after_delete();
                     }
 
+                    // Update token timestamp
+                    set_userdata('token_timestamp', time());
+
                     // Invalidate token
                     unset_userdata(sha1(uri_string()));
 
@@ -4044,6 +4053,9 @@ class Core extends Controller
         }
 
         if ($affected_rows) {
+            // Update token timestamp
+            set_userdata('token_timestamp', time());
+
             // Invalidate token
             unset_userdata(sha1(uri_string()));
 
