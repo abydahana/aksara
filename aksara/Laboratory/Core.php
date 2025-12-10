@@ -136,19 +136,6 @@ class Core extends Controller
             $this->_offset = service('request')->getGet('offset');
         }
 
-        // Check if user is requesting token
-        if ('token' === service('request')->getPost('_request') && $this->valid_token(service('request')->getPost('_token'))) {
-            // Unset field from payload
-            unset($_POST['_request'], $_POST['_token']);
-
-            // Generate token
-            $token = generate_token(uri_string(), service('request')->getPost());
-
-            return make_json([
-                'callback' => current_page(null, array_merge(service('request')->getPost(), ['aksara' => $token, '_request' => null, '_token' => null]))
-            ]);
-        }
-
         // Check if user is requesting theme preview
         if ('preview-theme' == service('request')->getGet('aksara_mode') && sha1(service('request')->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == service('request')->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . service('request')->getGet('aksara_theme'))) {
             // Set the temporary theme
@@ -3702,6 +3689,9 @@ class Core extends Controller
                     $this->after_insert();
                 }
 
+                // Invalidate token
+                unset_userdata(sha1(uri_string()));
+
                 // Send to client
                 return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), (! $this->api_client ? $this->_redirect_back : null));
             } else {
@@ -3819,6 +3809,9 @@ class Core extends Controller
                         // Call function after update
                         $this->after_update();
                     }
+
+                    // Invalidate token
+                    unset_userdata(sha1(uri_string()));
 
                     // Send to client
                     return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null));
@@ -3939,6 +3932,9 @@ class Core extends Controller
                         $this->after_delete();
                     }
 
+                    // Invalidate token
+                    unset_userdata(sha1(uri_string()));
+
                     // Send to client
                     return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null));
                 } else {
@@ -4048,6 +4044,9 @@ class Core extends Controller
         }
 
         if ($affected_rows) {
+            // Invalidate token
+            unset_userdata(sha1(uri_string()));
+
             // Deletion success
             return throw_exception(($this->api_client ? 200 : 301), phrase('{{affected_rows}} of {{items}} data was successfully removed.', ['affected_rows' => $affected_rows, 'items' => sizeof($items)]), (! $this->api_client ? $this->_redirect_back : null));
         } else {
