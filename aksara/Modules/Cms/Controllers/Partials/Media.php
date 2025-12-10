@@ -77,14 +77,14 @@ class Media extends \Aksara\Laboratory\Core
 
         foreach ($parts as $part) {
             // Skip empty parts and current directory references
-            if (empty($part) || $part === '.') {
+            if (empty($part) || '.' === $part) {
                 continue;
             }
 
             // Handle parent directory references with validation
-            if ($part === '..') {
+            if ('..' === $part) {
                 // Only allow going up if we're not at the base directory
-                if (!empty($result)) {
+                if (! empty($result)) {
                     array_pop($result);
                 }
                 continue;
@@ -94,7 +94,7 @@ class Media extends \Aksara\Laboratory\Core
             $part = preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $part);
 
             // Add to result if not empty
-            if (!empty($part)) {
+            if (! empty($part)) {
                 $result[] = $part;
             }
         }
@@ -117,7 +117,7 @@ class Media extends \Aksara\Laboratory\Core
             $full_path = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
 
             // Additional security check
-            if (!$this->_is_within_upload_path($full_path)) {
+            if (! $this->_is_within_upload_path($full_path)) {
                 return throw_exception(403, phrase('Access denied'));
             }
 
@@ -134,7 +134,7 @@ class Media extends \Aksara\Laboratory\Core
         $real_upload_path = realpath(UPLOAD_PATH);
         $real_path = realpath($path);
 
-        if ($real_path === false) {
+        if (false === $real_path) {
             return false;
         }
 
@@ -145,7 +145,7 @@ class Media extends \Aksara\Laboratory\Core
     private function _directory_list($directory = null)
     {
         // Validate that directory is within allowed path
-        if ($directory && !$this->_is_valid_directory($directory)) {
+        if ($directory && ! $this->_is_valid_directory($directory)) {
             return throw_exception(403, phrase('Access denied'));
         }
 
@@ -158,12 +158,12 @@ class Media extends \Aksara\Laboratory\Core
         }
 
         // Additional security check
-        if (!$this->_is_within_upload_path($full_path)) {
+        if (! $this->_is_within_upload_path($full_path)) {
             return throw_exception(403, phrase('Access denied'));
         }
 
         // Check if directory exists
-        if (!is_dir($full_path)) {
+        if (! is_dir($full_path)) {
             $directory = null;
             $full_path = UPLOAD_PATH;
         }
@@ -189,7 +189,7 @@ class Media extends \Aksara\Laboratory\Core
 
         if ($filename && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
             // Security check for file access
-            if (!$this->_is_within_upload_path(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
+            if (! $this->_is_within_upload_path(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
                 return throw_exception(403, phrase('Access denied'));
             }
 
