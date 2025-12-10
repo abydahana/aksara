@@ -40,13 +40,66 @@ class Media extends \Aksara\Laboratory\Core
             return $this->_delete_file(service('request')->getGet('file'));
         }
 
+        $directory = service('request')->getGet('directory');
+
+        // Validasi dan normalisasi path
+        $directory = $this->_sanitize_path($directory);
+
         $this->set_title(phrase('Media'))
         ->set_icon('mdi mdi-folder-image')
         ->set_output([
-            'results' => $this->_directory_list(service('request')->getGet('directory'))
+            'results' => $this->_directory_list($directory)
         ])
-
         ->render();
+    }
+
+    private function _sanitize_path($path = null)
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        // Decode URL encoding
+        $path = urldecode($path);
+
+        // Normalize directory separators
+        $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+        // Remove null bytes (protection against null byte attacks)
+        $path = str_replace(chr(0), '', $path);
+
+        // Remove trailing slash
+        $path = rtrim($path, DIRECTORY_SEPARATOR);
+
+        // Resolve relative paths
+        $parts = explode(DIRECTORY_SEPARATOR, $path);
+        $result = [];
+
+        foreach ($parts as $part) {
+            // Skip empty parts and current directory references
+            if (empty($part) || '.' === $part) {
+                continue;
+            }
+
+            // Handle parent directory references with validation
+            if ('..' === $part) {
+                // Only allow going up if we're not at the base directory
+                if (! empty($result)) {
+                    array_pop($result);
+                }
+                continue;
+            }
+
+            // Sanitize each part
+            $part = preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $part);
+
+            // Add to result if not empty
+            if (! empty($part)) {
+                $result[] = $part;
+            }
+        }
+
+        return implode(DIRECTORY_SEPARATOR, $result);
     }
 
     private function _delete_file($filename = '')
@@ -57,7 +110,18 @@ class Media extends \Aksara\Laboratory\Core
         }
 
         try {
-            unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            // Sanitize filename before deletion
+            $filename = $this->_sanitize_path($filename);
+
+            // Ensure we're deleting within UPLOAD_PATH
+            $full_path = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+
+            // Additional security check
+            if (! $this->_is_within_upload_path($full_path)) {
+                return throw_exception(403, phrase('Access denied'));
+            }
+
+            unlink($full_path);
         } catch (\Throwable $e) {
             return throw_exception(403, $e->getMessage());
         }
@@ -65,29 +129,55 @@ class Media extends \Aksara\Laboratory\Core
         return throw_exception(301, phrase('The file was successfully removed.'), current_page(null, ['file' => null, 'action' => null]));
     }
 
+    private function _is_within_upload_path($path)
+    {
+        $real_upload_path = realpath(UPLOAD_PATH);
+        $real_path = realpath($path);
+
+        if (false === $real_path) {
+            return false;
+        }
+
+        // Check if the real path starts with the real upload path
+        return strpos($real_path, $real_upload_path) === 0;
+    }
+
     private function _directory_list($directory = null)
     {
+        // Validate that directory is within allowed path
+        if ($directory && ! $this->_is_valid_directory($directory)) {
+            return throw_exception(403, phrase('Access denied'));
+        }
+
         /* load required helper */
         helper('filesystem');
 
-        $data = directory_map(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory);
-
-        unset($data['_extension' . DIRECTORY_SEPARATOR], $data['_import_tmp' . DIRECTORY_SEPARATOR], $data['captcha' . DIRECTORY_SEPARATOR], $data['logs' . DIRECTORY_SEPARATOR]);
-
+        $full_path = UPLOAD_PATH;
         if ($directory) {
-            $directory_list = explode(DIRECTORY_SEPARATOR, $directory);
-
-            foreach ($directory_list as $key => $val) {
-                $val = $val . DIRECTORY_SEPARATOR;
-
-                if (isset($data[$val])) {
-                    $data = $data[$val];
-                }
-            }
+            $full_path .= DIRECTORY_SEPARATOR . $directory;
         }
 
-        $filename = (service('request')->getGet('file') ? str_replace('/', DIRECTORY_SEPARATOR, service('request')->getGet('file')) : null);
-        $parent_directory = ($directory ? substr($directory, 0, strpos($directory, '/')) : null);
+        // Additional security check
+        if (! $this->_is_within_upload_path($full_path)) {
+            return throw_exception(403, phrase('Access denied'));
+        }
+
+        // Check if directory exists
+        if (! is_dir($full_path)) {
+            $directory = null;
+            $full_path = UPLOAD_PATH;
+        }
+
+        $data = directory_map($full_path, 1); // Limit depth
+
+        // Remove protected directories
+        $protected_dirs = ['_extension', '_import_tmp', 'captcha', 'logs'];
+        foreach ($protected_dirs as $protected_dir) {
+            unset($data[$protected_dir . DIRECTORY_SEPARATOR]);
+        }
+
+        $filename = (service('request')->getGet('file') ? $this->_sanitize_path(service('request')->getGet('file')) : null);
+        $parent_directory = ($directory ? $this->_get_parent_directory($directory) : null);
         $folders = [];
         $files = [];
 
@@ -97,14 +187,17 @@ class Media extends \Aksara\Laboratory\Core
 
         $description = null;
 
-        if (service('request')->getGet('file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
+        if ($filename && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
+            // Security check for file access
+            if (! $this->_is_within_upload_path(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
+                return throw_exception(403, phrase('Access denied'));
+            }
+
             $file = new \CodeIgniter\Files\File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description = get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description['icon'] = $this->_get_icon($directory, $filename);
             $description['mime_type'] = $file->getMimeType();
             $description['server_path'] = str_replace('\\', '/', $description['server_path']);
-        } elseif (is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory)) {
-            //$description                            = get_dir_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $directory);
         }
 
         return [
@@ -115,14 +208,61 @@ class Media extends \Aksara\Laboratory\Core
         ];
     }
 
+    private function _is_valid_directory($directory)
+    {
+        // Check for directory traversal attempts
+        if (strpos($directory, '..') !== false) {
+            return false;
+        }
+
+        // Check for absolute paths
+        if (strpos($directory, DIRECTORY_SEPARATOR) === 0) {
+            return false;
+        }
+
+        // Check for dangerous patterns
+        $dangerous_patterns = [
+            '://', // URLs
+            '\\\\', // UNC paths
+            '%00', // Null bytes
+        ];
+
+        foreach ($dangerous_patterns as $pattern) {
+            if (strpos($directory, $pattern) !== false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function _get_parent_directory($directory)
+    {
+        $parts = explode(DIRECTORY_SEPARATOR, $directory);
+
+        if (count($parts) <= 1) {
+            return null;
+        }
+
+        array_pop($parts);
+        return implode(DIRECTORY_SEPARATOR, $parts);
+    }
+
     private function _parse_files($data = [], $directory = null)
     {
         if ($data) {
             foreach ($data as $key => $val) {
                 if (strpos($key, DIRECTORY_SEPARATOR) !== false) {
+                    $folder_name = str_replace(DIRECTORY_SEPARATOR, '', $key);
+
+                    // Skip protected directories
+                    if (in_array($folder_name, ['_extension', '_import_tmp', 'captcha', 'logs'])) {
+                        continue;
+                    }
+
                     $this->_folders[] = [
-                        'source' => str_replace(DIRECTORY_SEPARATOR, '', $key),
-                        'label' => str_replace(DIRECTORY_SEPARATOR, '', $key),
+                        'source' => rtrim($folder_name, DIRECTORY_SEPARATOR),
+                        'label' => rtrim($folder_name, DIRECTORY_SEPARATOR),
                         'type' => 'directory',
                         'icon' => base_url('assets/svg/folder')
                     ];
@@ -144,8 +284,8 @@ class Media extends \Aksara\Laboratory\Core
                         }
 
                         $this->_files[] = [
-                            'source' => $val,
-                            'label' => $val,
+                            'source' => rtrim($val, DIRECTORY_SEPARATOR),
+                            'label' => rtrim($val, DIRECTORY_SEPARATOR),
                             'type' => $mime,
                             'icon' => $this->_get_icon($directory, $val)
                         ];
