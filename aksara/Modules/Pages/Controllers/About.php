@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-class About extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class About extends Core
 {
     public function __construct()
     {

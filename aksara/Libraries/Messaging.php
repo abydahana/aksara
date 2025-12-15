@@ -17,6 +17,9 @@
 
 namespace Aksara\Libraries;
 
+use Throwable;
+use Config\Services;
+
 class Messaging
 {
     private $_recipient_email;
@@ -83,11 +86,14 @@ class Messaging
         }
 
         if ($instant) {
+            $encrypter = Services::encrypter();
+            $request = Services::request();
+
             // Send email immediately
             $host = get_setting('smtp_host');
             $username = get_setting('smtp_username');
-            $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : service('request')->getServer('SERVER_ADMIN'));
+            $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
+            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : $request->getServer('SERVER_ADMIN'));
             $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
 
             $email = \Config\Services::email();
@@ -136,7 +142,7 @@ class Messaging
             try {
                 // Send email
                 $email->send();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // return throw_exception(400, array('message' => $email->printDebugger()));
             }
         } else {

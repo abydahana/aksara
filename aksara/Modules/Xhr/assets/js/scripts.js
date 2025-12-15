@@ -258,7 +258,7 @@ $(document).ready(function() {
         <form action="${ htmlspecialchars($(this).data('href')) }" method="POST" enctype="multipart/form-data" class="--validate-form">
           <div class="row g-0">
             <div class="col-11 offset-1 ps-3 text-sm">
-              ${ (typeof phrase.replying_to !== 'undefined' ? phrase.replying_to : 'Replying to') } <b> ${ htmlspecialchars($(this).attr('data-mention')) }</b>
+              ${ phrase('Replying to') } <b> ${ htmlspecialchars($(this).attr('data-mention')) }</b>
             </div>
           </div>
           <div class="form-group mb-3">
@@ -268,9 +268,9 @@ $(document).ready(function() {
               </div>
               <div class="col-11 ps-3">
                 <div class="position-relative">
-                  <textarea name="comments" class="form-control" placeholder="${ (typeof phrase.type_a_reply !== 'undefined' ? phrase.type_a_reply : 'Type a reply') }" rows="1"></textarea>
+                  <textarea name="comments" class="form-control" placeholder="${ phrase('Type a reply') }" rows="1"></textarea>
                   <div class="btn-group position-absolute bottom-0 end-0">
-                    <button type="button" class="btn btn-link" data-bs-toggle="tooltip" title="${ (typeof phrase.attach_photo !== 'undefined' ? phrase.attach_photo : 'Attach photo') }" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
+                    <button type="button" class="btn btn-link" data-bs-toggle="tooltip" title="${ phrase('Attach photo') }" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
                       <i class="mdi mdi-camera text-dark"></i>
                     </button>
                   </div>

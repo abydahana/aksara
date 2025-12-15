@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
-class Search extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Search extends Core
 {
     private $_keywords;
 
@@ -25,17 +27,17 @@ class Search extends \Aksara\Laboratory\Core
     {
         parent::__construct();
 
-        $this->_keywords = htmlspecialchars(service('request')->getGet('q') ?? service('request')->getPost('q') ?? '');
+        $this->_keywords = htmlspecialchars($this->request->getGet('q') ?? $this->request->getPost('q') ?? '');
     }
 
     public function index()
     {
-        if (service('request')->getGet('category')) {
-            $this->where('blogs__categories.category_slug', service('request')->getGet('category'));
+        if ($this->request->getGet('category')) {
+            $this->where('blogs__categories.category_slug', $this->request->getGet('category'));
         }
 
         $this->set_title(phrase('Search'))
-        ->set_description(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : (service('request')->getGet('category') ? '{{ category_title }}' : phrase('all'))))
+        ->set_description(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->request->getGet('category') ? '{{ category_title }}' : phrase('all'))))
         ->set_icon('mdi mdi-magnify')
 
         ->set_output([

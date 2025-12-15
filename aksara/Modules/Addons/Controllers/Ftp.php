@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-class Ftp extends \Aksara\Laboratory\Core
+use Throwable;
+use Aksara\Laboratory\Core;
+
+class Ftp extends Core
 {
     private $_table = 'app__ftp';
 
@@ -68,15 +71,15 @@ class Ftp extends \Aksara\Laboratory\Core
 
     public function before_update()
     {
-        if (service('request')->getPost('checking') && service('request')->getPost('hostname') && service('request')->getPost('port')) {
+        if ($this->request->getPost('checking') && $this->request->getPost('hostname') && $this->request->getPost('port')) {
             try {
                 // Try to connect to FTP
-                $connection = ftp_connect(service('request')->getPost('hostname'), service('request')->getPost('port'), 10);
+                $connection = ftp_connect($this->request->getPost('hostname'), $this->request->getPost('port'), 10);
 
-                if (! $connection || ! ftp_login($connection, service('request')->getPost('username'), service('request')->getPost('password'))) {
+                if (! $connection || ! ftp_login($connection, $this->request->getPost('username'), $this->request->getPost('password'))) {
                     return throw_exception(400, ['hostname' => phrase('Unable to connect to the FTP using the provided configuration.')]);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw_exception(400, ['hostname' => $e->getMessage()]);
             }
         }

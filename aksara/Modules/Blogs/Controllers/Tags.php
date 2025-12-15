@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
-class Tags extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Tags extends Core
 {
     private $_keywords;
 
@@ -27,7 +29,7 @@ class Tags extends \Aksara\Laboratory\Core
 
         $this->limit(24);
 
-        $this->_keywords = (service('request')->getGet('q') || service('request')->getPost('q') ? htmlspecialchars((service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q'))) : null);
+        $this->_keywords = ($this->request->getGet('q') || $this->request->getPost('q') ? htmlspecialchars(($this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q'))) : null);
     }
 
     public function index()

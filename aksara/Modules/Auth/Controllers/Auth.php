@@ -17,15 +17,19 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
+use Throwable;
+use Config\Services;
 use Hybridauth\Hybridauth;
+use Aksara\Libraries\Messaging;
+use Aksara\Laboratory\Core;
 
-class Auth extends \Aksara\Laboratory\Core
+class Auth extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
-        if (service('request')->getGet('privilege_check')) {
+        if ($this->request->getGet('privilege_check')) {
             // Prevent endless redirect
             return throw_exception(403, phrase('You were signed in but have no privilege to access the requested page.'), base_url(null, ['privilege_check' => null, 'redirect' => null]), true);
         }
@@ -45,16 +49,16 @@ class Auth extends \Aksara\Laboratory\Core
                 ]);
             } else {
                 // Requested through browser
-                return throw_exception(301, phrase('You were signed in'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
+                return throw_exception(301, phrase('You were signed in'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
             }
-        } elseif ($this->valid_token(service('request')->getPost('_token')) || ($this->api_client && service('request')->getServer('REQUEST_METHOD') == 'POST')) {
+        } elseif ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
             if (get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time()) {
                 // Blacklist the client IP
                 $this->model->upsert(
                     'app__users_blocked',
                     [
-                        'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                        'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                         'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time')),
                         'blocked_reason' => 'login_attempt'
                     ]
@@ -66,17 +70,17 @@ class Auth extends \Aksara\Laboratory\Core
             $this->form_validation->setRule('username', phrase('Username'), 'required');
             $this->form_validation->setRule('password', phrase('Password'), 'required');
 
-            if (service('request')->getPost('year')) {
+            if ($this->request->getPost('year')) {
                 $this->form_validation->setRule('year', phrase('Year'), 'valid_year');
             }
 
             // Run form validation
-            if ($this->form_validation->run(service('request')->getPost()) === false) {
+            if ($this->form_validation->run($this->request->getPost()) === false) {
                 // Throw validation message
                 return throw_exception(400, $this->form_validation->getErrors());
             } else {
-                $username = service('request')->getPost('username');
-                $password = service('request')->getPost('password');
+                $username = $this->request->getPost('username');
+                $password = $this->request->getPost('password');
 
                 $execute = $this->model->select('
                     user_id,
@@ -102,7 +106,7 @@ class Auth extends \Aksara\Laboratory\Core
                     $blocking_check = $this->model->get_where(
                         'app__users_blocked',
                         [
-                            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
                         ],
                         1
                     )
@@ -118,7 +122,7 @@ class Auth extends \Aksara\Laboratory\Core
                             $this->model->delete(
                                 'app__users_blocked',
                                 [
-                                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
                                 ]
                             );
                         }
@@ -151,7 +155,7 @@ class Auth extends \Aksara\Laboratory\Core
                                             // Update table to skip getting session_id on next execution
                                             $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                         }
-                                    } catch (\Throwable $e) {
+                                    } catch (Throwable $e) {
                                         // Safe abstraction
                                     }
                                 }
@@ -166,7 +170,7 @@ class Auth extends \Aksara\Laboratory\Core
                         'username' => $execute->username,
                         'group_id' => $execute->group_id,
                         'language_id' => $execute->language_id,
-                        'year' => ($this->_get_active_years() ? (service('request')->getPost('year') ? service('request')->getPost('year') : date('Y')) : null),
+                        'year' => ($this->_get_active_years() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
 
@@ -191,7 +195,7 @@ class Auth extends \Aksara\Laboratory\Core
                             'app__sessions',
                             [
                                 'id' => get_userdata('access_token'),
-                                'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                                'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                                 'timestamp' => date('Y-m-d H:i:s'),
                                 'data' => session_encode()
                             ]
@@ -207,8 +211,8 @@ class Auth extends \Aksara\Laboratory\Core
                         // Send notification
                         $this->_send_notification($execute->user_id);
 
-                        $referrer = service('request')->getUserAgent()->getReferrer();
-                        $redirect = service('request')->getGet('redirect');
+                        $referrer = $this->request->getUserAgent()->getReferrer();
+                        $redirect = $this->request->getGet('redirect');
 
                         if (! $redirect && stripos($referrer, base_url()) !== false) {
                             $redirect = str_replace([base_url(), 'index.php'], '', $referrer);
@@ -290,14 +294,14 @@ class Auth extends \Aksara\Laboratory\Core
 
             try {
                 // Instantiate adapter directly
-                $hybridauth = new \Hybridauth\Hybridauth($config);
+                $hybridauth = new Hybridauth($config);
 
                 // Instantiate adapter directly
                 $adapter = $hybridauth->authenticate($provider);
 
                 // Disconnect the adapter (log out)
                 $adapter->disconnect();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -306,7 +310,7 @@ class Auth extends \Aksara\Laboratory\Core
         $this->model->delete(
             'app__sessions',
             [
-                'id' => service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? session_id()
+                'id' => $this->request->getHeaderLine('X-ACCESS-TOKEN') ?? session_id()
             ]
         );
 
@@ -316,7 +320,8 @@ class Auth extends \Aksara\Laboratory\Core
         $_spam_timer = get_userdata('_spam_timer');
 
         // Destroy session
-        service('session')->destroy();
+        $session = Services::session();
+        $session->destroy();
 
         // Rollback login attempt config
         set_userdata([
@@ -361,15 +366,17 @@ class Auth extends \Aksara\Laboratory\Core
      */
     private function _get_activation()
     {
-        if (! service('request')->getGet('activation')) {
+        if (! $this->request->getGet('activation')) {
             return false;
         }
 
         $user_id = 0;
 
         try {
-            $user_id = service('encrypter')->decrypt(base64_decode(service('request')->getGet('activation')));
-        } catch (\Throwable $e) {
+            $encrypter = Services::encrypter();
+
+            $user_id = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -395,7 +402,7 @@ class Auth extends \Aksara\Laboratory\Core
         ->row();
 
         if ($query) {
-            $messaging = new \Aksara\Libraries\Messaging();
+            $messaging = new Messaging();
 
             $messaging->set_email($query->email)
             ->set_phone($query->phone)

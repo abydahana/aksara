@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Galleries\Controllers;
 
-class Read extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Read extends Core
 {
     private $_table = 'galleries';
 

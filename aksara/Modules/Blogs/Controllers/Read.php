@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
-class Read extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Read extends Core
 {
     private $_table = 'blogs';
 
@@ -82,7 +84,7 @@ class Read extends \Aksara\Laboratory\Core
         )
         ->group_start()
         ->where('blogs.post_slug', $slug)
-        ->or_where('blogs.post_id', service('request')->getGet('post_id') ?? 0)
+        ->or_where('blogs.post_id', $this->request->getGet('post_id') ?? 0)
         ->group_end()
         ->where('status', 1)
         ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')

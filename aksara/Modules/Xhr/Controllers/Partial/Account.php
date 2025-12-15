@@ -17,13 +17,15 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Partial;
 
-class Account extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Account extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
-        if ('modal' != service('request')->getPost('prefer')) {
+        if ('modal' != $this->request->getPost('prefer')) {
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
         } elseif (! get_userdata('user_id')) {
             return throw_exception(403, phrase('You do not have a sufficient privileges to access the requested page.'), base_url());

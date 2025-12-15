@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Notifier\Controllers;
 
-class Send extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Send extends Core
 {
     private $_table = 'notifier';
 
@@ -31,7 +35,7 @@ class Send extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        $id = service('request')->getGet('id');
+        $id = $this->request->getGet('id');
 
         // Get unsent email notification
         if ($id) {
@@ -72,15 +76,12 @@ class Send extends \Aksara\Laboratory\Core
         return throw_exception(301, phrase('The message was sent successfully.'), go_to('../', ['id' => null]));
     }
 
-    private function _send_email($data = [])
+    private function _send_email(?object $data)
     {
         if (! isset($data->email) || ! filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
             // Not a valid email
             return false;
         }
-
-        // Load email library
-        $email = \Config\Services::email();
 
         // Default config
         $config = [
@@ -91,12 +92,14 @@ class Send extends \Aksara\Laboratory\Core
             'mailType' => 'html'
         ];
 
+        $encrypter = Services::encrypter();
+
         // To working with Google SMTP, make sure to activate less secure apps setting
         $host = get_setting('smtp_hostname');
         $port = get_setting('smtp_port');
         $username = get_setting('smtp_username');
-        $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password') ?? '')) : null);
-        $sender_email = $username ?? service('request')->getServer('SERVER_ADMIN') ?? 'webmaster@' . service('request')->getServer('SERVER_NAME');
+        $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password') ?? '')) : null);
+        $sender_email = $username ?? $this->request->getServer('SERVER_ADMIN') ?? 'webmaster@' . $this->request->getServer('SERVER_NAME');
 
         if ($host && $username && $password) {
             $config['userAgent'] = 'Aksara';
@@ -106,6 +109,8 @@ class Send extends \Aksara\Laboratory\Core
             $config['SMTPUser'] = $username;
             $config['SMTPPass'] = $password;
         }
+
+        $email = Services::email();
 
         $email->setFrom($sender_email, get_setting('app_name'));
         $email->setTo($data->email);
@@ -126,15 +131,15 @@ class Send extends \Aksara\Laboratory\Core
                     ]
                 );
             }
-        } catch (\Throwable $e) {
-            if ('127.0.0.1' !== service('request')->getServer('REMOTE_ADDR')) {
+        } catch (Throwable $e) {
+            if ('127.0.0.1' !== $this->request->getServer('REMOTE_ADDR')) {
                 // Return for non crontab only
                 return throw_exception(500, $email->printDebugger());
             }
         }
     }
 
-    private function _send_whatsapp($data = [])
+    private function _send_whatsapp(?object $data)
     {
         if (! isset($data->phone) || ! filter_var($data->phone, FILTER_SANITIZE_NUMBER_INT)) {
             // Not a valid phone
@@ -186,7 +191,7 @@ class Send extends \Aksara\Laboratory\Core
             }
 
             // Load cURL library
-            $client = \Config\Services::curlrequest();
+            $client = Services::curlrequest();
 
             $request = $client->request('POST', $notifier_config->whatsapp_api_url, [
                 'verify' => false,
@@ -212,8 +217,8 @@ class Send extends \Aksara\Laboratory\Core
                     ]
                 );
             }
-        } catch (\Throwable $e) {
-            if ('127.0.0.1' !== service('request')->getServer('REMOTE_ADDR')) {
+        } catch (Throwable $e) {
+            if ('127.0.0.1' !== $this->request->getServer('REMOTE_ADDR')) {
                 // Return for non crontab only
                 return throw_exception(500, $e->getMessage());
             }

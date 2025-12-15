@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Groups;
 
-class Groups extends \Aksara\Laboratory\Core
+use stdClass;
+use Aksara\Laboratory\Core;
+
+class Groups extends Core
 {
     private $_table = 'app__groups';
 
@@ -97,7 +100,7 @@ class Groups extends \Aksara\Laboratory\Core
         ->get_where(
             $this->_table,
             [
-                'group_id' => service('request')->getGet('group_id')
+                'group_id' => $this->request->getGet('group_id')
             ],
             1
         )
@@ -113,7 +116,7 @@ class Groups extends \Aksara\Laboratory\Core
             foreach ($modules_collection as $key => $val) {
                 $path = str_replace('/', '__', $val->path);
                 $privilege_output = null;
-                $privileges = ($val->privileges ? json_decode($val->privileges) : new \stdClass());
+                $privileges = ($val->privileges ? json_decode($val->privileges) : new stdClass());
 
                 if (! $privileges) {
                     continue;

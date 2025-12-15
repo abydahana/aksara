@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Years;
 
-class Years extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Years extends Core
 {
     private $_table = 'app__years';
 
@@ -58,7 +60,7 @@ class Years extends \Aksara\Laboratory\Core
 
     public function before_insert()
     {
-        if (service('request')->getPost('default')) {
+        if ($this->request->getPost('default')) {
             $this->model->update(
                 $this->_table,
                 [
@@ -73,7 +75,7 @@ class Years extends \Aksara\Laboratory\Core
 
     public function before_update()
     {
-        if (service('request')->getPost('default')) {
+        if ($this->request->getPost('default')) {
             $this->model->update(
                 $this->_table,
                 [

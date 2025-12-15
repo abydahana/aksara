@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Connections;
 
-class Connections extends \Aksara\Laboratory\Core
+use Throwable;
+use Config\Services;
+use Aksara\Laboratory\Core;
+
+class Connections extends Core
 {
     private $_table = 'app__connections';
 
@@ -35,7 +39,7 @@ class Connections extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if (service('request')->getPost('year')) {
+        if ($this->request->getPost('year')) {
             $this->set_validation('year', 'valid_year');
         }
 
@@ -114,7 +118,7 @@ class Connections extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             $this->_table,
             [
-                'id' => service('request')->getGet('id')
+                'id' => $this->request->getGet('id')
             ],
             1
         )
@@ -125,12 +129,14 @@ class Connections extends \Aksara\Laboratory\Core
         }
 
         try {
+            $encrypter = Services::encrypter();
+
             // Try to decrypting the parameter
             $connection = [
                 'DBDriver' => $query->database_driver,
                 'hostname' => $query->hostname,
-                'username' => service('encrypter')->decrypt(base64_decode($query->username)),
-                'password' => service('encrypter')->decrypt(base64_decode($query->password)),
+                'username' => $encrypter->decrypt(base64_decode($query->username)),
+                'password' => $encrypter->decrypt(base64_decode($query->password)),
                 'database' => $query->database_name,
                 'DBDebug' => (ENVIRONMENT !== 'production')
             ];
@@ -146,7 +152,7 @@ class Connections extends \Aksara\Laboratory\Core
             }
 
             return throw_exception(200, phrase('The database was successfully connected!'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Decrypt error
             return throw_exception(403, $e->getMessage());
         }

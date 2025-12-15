@@ -17,26 +17,56 @@
 
 namespace Aksara\Laboratory;
 
+use stdClass;
+use Throwable;
+use Config\Services;
 use Aksara\Laboratory\Model;
 use Aksara\Libraries\Beautifier;
 use Aksara\Libraries\Html_dom;
 use Aksara\Laboratory\Renderer\Parser;
 
+/**
+ * Template handler class for managing themes, views, and output processing.
+ */
 class Template
 {
-    public $theme;
+    /**
+     * @var string The active theme directory name (e.g., 'frontend' or 'backend').
+     */
+    public string $theme;
 
-    private $_css;
+    /**
+     * @var array|null Stores CSS files/links to be included.
+     */
+    private ?array $_css = null;
 
-    private $_js;
+    /**
+     * @var array|null Stores JavaScript files/links to be included.
+     */
+    private ?array $_js = null;
 
-    private $_model;
+    /**
+     * @var Model The database model instance.
+     */
+    private Model $_model;
 
-    private $_partial_view;
+    /**
+     * @var string|null Stores partial view data.
+     */
+    private ?string $_partial_view = null;
 
-    private $_method;
+    /**
+     * @var string The current controller method name.
+     */
+    private string $_method;
 
-    public function __construct($theme = 'frontend', $method = 'index')
+    /**
+     * Template constructor.
+     *
+     * @param string $theme The theme directory name to use, defaults to 'frontend'.
+     * @param string $method The current controller method name, defaults to 'index'.
+     */
+    public function __construct(string $theme = 'frontend', string $method = 'index')
     {
         $this->theme = $theme;
         $this->_method = $method;
@@ -47,7 +77,7 @@ class Template
             // Throwback the default theme from site configuration
             $site_id = get_setting('id');
 
-            $this->theme = $this->_model->select('frontend_theme')->get_where(
+            $this->theme = (string) $this->_model->select('frontend_theme')->get_where(
                 'app__settings',
                 [
                     'id' => $site_id
@@ -59,9 +89,11 @@ class Template
     }
 
     /**
-     * Getting active theme
+     * Getting active theme name from database configuration.
+     *
+     * @return string|false The active theme directory name or false if the theme type is invalid.
      */
-    public function get_theme()
+    public function get_theme(): string|false
     {
         if (! in_array($this->theme, ['frontend', 'backend'])) {
             return false;
@@ -78,24 +110,24 @@ class Template
         )
         ->row($this->theme . '_theme');
 
-        return $query;
+        return (string) $query;
     }
 
     /**
-     * Getting the theme property
+     * Getting the theme property from theme.json file.
      *
-     * @param   mixed|null $parameter
-     * @param   null|mixed $parameter
+     * @param string|null $parameter The specific property key to retrieve (e.g., 'type').
+     * @return mixed|false The property value or false if the theme.json or property doesn't exist.
      */
-    public function get_theme_property($parameter = null)
+    public function get_theme_property(?string $parameter = null): mixed
     {
         if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/theme.json')) {
             // Check if active theme has a property
-            $property = new \stdClass();
+            $property = new stdClass();
 
             try {
                 $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/theme.json'));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
 
@@ -108,12 +140,20 @@ class Template
     }
 
     /**
-     * Scan the view file location both camelized string and lowercase
+     * Scan the view file location both camelized string and lowercase.
+     *
+     * Finds the most appropriate view file based on theme, module, language, and request type.
+     *
+     * @param string $view The base view file name, defaults to 'index'.
+     * @return string The normalized path to the found view file (relative to ROOTPATH using '../../').
      */
-    public function get_view(string $view = 'index')
+    public function get_view(string $view = 'index'): string
     {
+        $request = Services::request();
+        $router = Services::router();
+
         // Get current controller namespace
-        $view_path = preg_replace(['/\\\\aksara\\\\/i', '/\\\\modules\\\\/i', '/\\\\controllers\\\\/i'], ['\\', '\\', '\Views\\'], service('router')->controllerName(), 1);
+        $view_path = preg_replace(['/\\\\aksara\\\\/i', '/\\\\modules\\\\/i', '/\\\\controllers\\\\/i'], ['\\', '\\', '\Views\\'], $router->controllerName(), 1);
 
         // Get parent module classname
         $parent_module = strtok($view_path, '\\');
@@ -151,13 +191,13 @@ class Template
         $fallback_viewfinder = ROOTPATH . 'aksara/Views/components/core';
 
         // View suffix
-        $suffix = (service('request')->getUserAgent()->isMobile() ? '_mobile' : ('modal' == service('request')->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
+        $suffix = ($request->getUserAgent()->isMobile() ? '_mobile' : ('modal' == $request->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
 
         // Get user language for i18n view
         $language = get_userdata('language');
 
         // Method name to force as view when exists
-        $method = (! in_array(service('router')->methodName(), ['404', 'index', 'create', 'read', 'update']) ? service('router')->methodName() : $view);
+        $method = (! in_array($router->methodName(), ['404', 'index', 'create', 'read', 'update']) ? $router->methodName() : $view);
 
         /**
          * ---------------------------------------------------------------------
@@ -197,7 +237,7 @@ class Template
         } elseif (file_exists($theme_viewfinder . $suffix . '.twig') || file_exists($theme_viewfinder . $suffix . '.php')) {
             // View is found and same as current classname (lowercase)
             $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . $suffix);
-        } elseif (file_exists($theme_viewfinder . $suffix . '.twig') || file_exists($theme_viewfinder . '.php')) {
+        } elseif (file_exists($theme_viewfinder . '.twig') || file_exists($theme_viewfinder . '.php')) {
             // View is found and same as current classname (lowercase)
             $view = str_replace(ROOTPATH, '../../', $theme_viewfinder);
         }
@@ -319,7 +359,7 @@ class Template
             $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder);
         } else {
             // No matches view, check fallback
-            if (service('router')->getMatchedRoute()) {
+            if ($router->getMatchedRoute()) {
                 // No mode
                 $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/error');
             } else {
@@ -344,17 +384,24 @@ class Template
     }
 
     /**
-     * Build output view or object
-     * @param   null|mixed $view
-     * @param   null|mixed $table
+     * Build output view or object.
+     *
+     * Processes the view, applies templates, minifies output, and sends the response.
+     *
+     * @param string|null $view The view file name to render (without extension).
+     * @param array $data Data to be passed to the view.
+     * @param string|null $table Reserved for future use (currently unused).
+     * @return \CodeIgniter\HTTP\Response|object The HTTP Response object for non-AJAX requests or a JSON object for AJAX requests.
      */
-    public function build($view = null, $data = [], $table = null)
+    public function build(?string $view = null, array $data = [], ?string $table = null): \CodeIgniter\HTTP\Response
     {
+        $request = Services::request();
+
         // Fix encoding
         $data = encoding_fixer($data);
 
         // Convert array to object
-        $data = json_decode(json_encode($data));
+        $data = json_decode(json_encode($data), false); // Use false for $associative to ensure object
 
         // Get view
         $view = $this->get_view($view);
@@ -367,7 +414,7 @@ class Template
             // List available helper files
             $helpers = directory_map(ROOTPATH . 'themes/' . $this->theme . '/helpers', 1);
 
-            foreach ($helpers as $key => $helper) {
+            foreach ($helpers as $helper) {
                 if (strtolower(pathinfo($helper, PATHINFO_EXTENSION)) === 'php') {
                     // Load helper
                     include_once ROOTPATH . 'themes/' . $this->theme . '/helpers/' . $helper;
@@ -398,13 +445,16 @@ class Template
         // Set view to response
         $data->view = basename($view);
 
-        if ((file_exists(str_replace('../../', ROOTPATH, $view . '.twig')) || file_exists(str_replace('../../', ROOTPATH, $view . '.php'))) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && ! service('request')->isAJAX()))) {
-            if (file_exists(str_replace('../../', ROOTPATH, $view . '.twig'))) {
+        $view_path_twig = str_replace('../../', ROOTPATH, $view . '.twig');
+        $view_path_php = str_replace('../../', ROOTPATH, $view . '.php');
+
+        if ((file_exists($view_path_twig) || file_exists($view_path_php)) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && ! $request->isAJAX()))) {
+            if (file_exists($view_path_twig)) {
                 // Load Twig template parser
                 $parser = new Parser($this->theme);
 
                 // Build html from result object
-                $data->content = $parser->parse(str_replace('../../', ROOTPATH, $view . '.twig'), (array) $data);
+                $data->content = $parser->parse($view_path_twig, (array) $data);
             } else {
                 // Build html from result object
                 $data->content = view($view, (array) $data);
@@ -421,7 +471,7 @@ class Template
             }
         }
 
-        if (service('request')->isAJAX() && service('request')->getServer('HTTP_REFERER') && stripos(service('request')->getServer('HTTP_REFERER'), service('request')->getServer('SERVER_NAME')) !== false) {
+        if ($request->isAJAX() && $request->getServer('HTTP_REFERER') && stripos($request->getServer('HTTP_REFERER'), $request->getServer('SERVER_NAME')) !== false) {
             // Send to client
             return make_json($data);
         } else {
@@ -429,7 +479,7 @@ class Template
             $data->menus = encoding_fixer($this->_core_menus());
 
             // Convert array to object
-            $data = json_decode(json_encode($data));
+            $data = json_decode(json_encode($data), false); // Use false for $associative to ensure object
 
             if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/layout.twig')) {
                 // Load Twig template parser
@@ -445,37 +495,45 @@ class Template
             // Minify output
             $output = $this->_minify(str_replace('</body>', '<div class="' . implode('', ['ak', 'sa', 'ra', '-', 'fo', 'ot', 'er']) . '"></div></body>', $parsed_view));
 
-            // Add security headers
-            service('response')->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
-            service('response')->setHeader('Referrer-Policy', 'same-origin');
-            service('response')->setHeader('Set-Cookie', 'HttpOnly; Secure');
-            service('response')->setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-            service('response')->setHeader('X-Content-Type-Options', 'nosniff');
-            service('response')->setHeader('X-Frame-Options', 'SAMEORIGIN');
-            service('response')->setHeader('X-XSS-Protection', '1; mode=block');
+            $response = Services::response();
 
-            return service('response')->setBody($output)->sendBody();
+            // Add security headers
+            $response->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
+            $response->setHeader('Referrer-Policy', 'same-origin');
+            $response->setHeader('Set-Cookie', 'HttpOnly; Secure');
+            $response->setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            $response->setHeader('X-Content-Type-Options', 'nosniff');
+            $response->setHeader('X-Frame-Options', 'SAMEORIGIN');
+            $response->setHeader('X-XSS-Protection', '1; mode=block');
+
+            return $response->setBody($output)->sendBody();
         }
     }
 
     /**
-     * Generate breadcrumb
+     * Generate breadcrumb array structure.
      *
-     * @param   mixed|array $data
-     * @param   string $title
+     * @param array $data An associative array of slug => label for breadcrumb segments.
+     * @param string|null $title The title for the current page (last segment label).
+     * @param array $primary Array of primary key names to be preserved in query parameters.
+     * @return array<int, array{url: string, label: string, icon: string}> The array of breadcrumb items.
      */
-    public function breadcrumb($data = [], $title = null, array $primary = [])
+    public function breadcrumb(array $data = [], ?string $title = null, array $primary = []): array
     {
+        $request = Services::request();
+        $router = Services::router();
+        $uri = Services::uri();
+
         $slug = null;
-        $checker = service('uri')->getSegments();
-        $matched_route = service('router')->getMatchedRoute();
+        $checker = $uri->getSegments();
+        $matched_route = $router->getMatchedRoute();
         $matched_route = (isset($matched_route[0]) ? explode('/', $matched_route[0]) : []);
 
-        if (! $data || ! is_array($data)) {
+        if (! $data) {
             $data = [];
 
-            foreach ($checker as $key => $val) {
-                $data[$val] = (end($matched_route) !== service('router')->methodName() && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
+            foreach ($checker as $val) {
+                $data[$val] = (end($matched_route) !== $router->methodName() && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
             }
         }
 
@@ -499,7 +557,7 @@ class Template
 
         $current_slug = end($checker);
         $slug = null;
-        $params = service('request')->getGet();
+        $params = $request->getGet();
 
         foreach ($params as $key => $val) {
             if (in_array($key, array_merge($primary, ['per_page', 'q', 'order', 'sort', 'limit', 'offset']))) {
@@ -552,18 +610,19 @@ class Template
     }
 
     /**
-     * Generate pagination
+     * Generate pagination data structure.
      *
-     * @param   mixed|array $data
+     * @param array $data Array containing pagination details (total_rows, per_page, offset).
+     * @return array<string, mixed> The array of pagination data.
      */
-    public function pagination($data = [])
+    public function pagination(array $data = []): array
     {
         if (! $data) {
             // Safe abstraction
-            $data = new \stdClass();
+            $data = new stdClass();
         } elseif (is_array($data)) {
             // Convert array to object
-            $data = json_decode(json_encode($data));
+            $data = json_decode(json_encode($data), false);
         }
 
         if (! isset($data->total_rows)) {
@@ -581,9 +640,9 @@ class Template
             $data->offset = 0;
         }
 
-        $output = null;
+        $output = [];
 
-        $pager = \Config\Services::pager();
+        $pager = Services::pager();
 
         // Get last page
         $last_page = ($data->total_rows > $data->per_page ? (int) ceil($data->total_rows / $data->per_page) : 1);
@@ -592,12 +651,14 @@ class Template
         $pagination = $pager->makeLinks(1, $data->per_page, $data->total_rows, 'pagination');
 
         // Parse HTML
-        $parser = new \Aksara\Libraries\Html_dom();
+        $parser = new Html_dom();
         $buffer = $parser->str_get_html($pagination);
+
+        $request = Services::request();
 
         $query_params = [];
 
-        foreach (service('request')->getGet() as $key => $val) {
+        foreach ($request->getGet() as $key => $val) {
             if (is_array($val)) {
                 foreach ($val as $_key => $_val) {
                     if (is_array($_val)) {
@@ -632,8 +693,8 @@ class Template
         }
 
         $output = [
-            'total_rows' => $data->total_rows,
-            'per_page' => $data->per_page,
+            'total_rows' => (int) $data->total_rows,
+            'per_page' => (int) $data->per_page,
             'action' => current_page(null, ['per_page' => null]),
             'filters' => [
                 'hidden' => $query_params,
@@ -642,29 +703,29 @@ class Template
                         'name' => 'limit',
                         'values' => [
                             [
-                                'value' => $data->per_page,
-                                'label' => $data->per_page,
+                                'value' => (int) $data->per_page,
+                                'label' => (int) $data->per_page,
                                 'selected' => true
                             ],
                             [
-                                'value' => ($data->per_page * 2),
-                                'label' => ($data->per_page * 2),
-                                'selected' => ($data->per_page * 2) === $data->per_page
+                                'value' => (int) ($data->per_page * 2),
+                                'label' => (int) ($data->per_page * 2),
+                                'selected' => (int) $data->per_page === ($data->per_page * 2)
                             ],
                             [
-                                'value' => ($data->per_page * 4),
-                                'label' => ($data->per_page * 4),
-                                'selected' => ($data->per_page * 4) === $data->per_page
+                                'value' => (int) ($data->per_page * 4),
+                                'label' => (int) ($data->per_page * 4),
+                                'selected' => (int) $data->per_page === ($data->per_page * 4)
                             ],
                             [
-                                'value' => ($data->per_page * 8),
-                                'label' => ($data->per_page * 8),
-                                'selected' => ($data->per_page * 8) === $data->per_page
+                                'value' => (int) ($data->per_page * 8),
+                                'label' => (int) ($data->per_page * 8),
+                                'selected' => (int) $data->per_page === ($data->per_page * 8)
                             ],
                             [
-                                'value' => ($data->per_page * 20),
-                                'label' => ($data->per_page * 20),
-                                'selected' => ($data->per_page * 20) === $data->per_page
+                                'value' => (int) ($data->per_page * 20),
+                                'label' => (int) ($data->per_page * 20),
+                                'selected' => (int) $data->per_page === ($data->per_page * 20)
                             ]
                         ]
                     ]
@@ -672,7 +733,7 @@ class Template
                 'number' => [
                     [
                         'name' => 'per_page',
-                        'value' => (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') ? service('request')->getGet('per_page') : 1),
+                        'value' => (is_numeric($request->getGet('per_page')) && $request->getGet('per_page') ? (int) $request->getGet('per_page') : 1),
                         'min' => 1,
                         'max' => $last_page
                     ]
@@ -690,31 +751,38 @@ class Template
                 [
                     'value' => 25,
                     'label' => 25,
-                    'selected' => 25 === $data->per_page
+                    'selected' => 25 === (int) $data->per_page
                 ]
             ];
 
             $output['filters']['select'][0]['values'] = array_merge($default_limit, $output['filters']['select'][0]['values']);
         }
 
-        foreach ($buffer->find('ul li') as $key => $val) {
-            $output['links'][] = [
-                'id' => $val->find('a', 0)->id,
-                'parent_class' => $val->class,
-                'class' => $val->find('a', 0)->class,
-                'href' => $val->find('a', 0)->href,
-                'label' => trim(str_replace('&amp;', '&', htmlspecialchars($val->find('a', 0)->innertext)))
-            ];
+        $output['links'] = [];
+        foreach ($buffer->find('ul li') as $val) {
+            /** @var \simple_html_dom_node $val */
+            $link = $val->find('a', 0);
+            if ($link) {
+                $output['links'][] = [
+                    'id' => (string) $link->id,
+                    'parent_class' => (string) $val->class,
+                    'class' => (string) $link->class,
+                    'href' => (string) $link->href,
+                    'label' => trim(str_replace('&amp;', '&', htmlspecialchars($link->innertext)))
+                ];
+            }
         }
 
         return $output;
     }
 
     /**
-     * Function to beautify HTML
-     * @param   null|mixed $buffer
+     * Function to beautify HTML.
+     *
+     * @param string|null $buffer The HTML content to beautify.
+     * @return string|null The beautified HTML content.
      */
-    private function _beautify($buffer = null)
+    private function _beautify(?string $buffer = null): ?string
     {
         $beautifier = new Beautifier([
             'indent_inner_html' => true,
@@ -732,10 +800,12 @@ class Template
     }
 
     /**
-     * Function to minify HTML
-     * @param   null|mixed $buffer
+     * Function to minify HTML.
+     *
+     * @param string|null $buffer The HTML content to minify.
+     * @return string|null The minified HTML content.
      */
-    private function _minify($buffer = null)
+    private function _minify(?string $buffer = null): ?string
     {
         if (! is_string($buffer) || trim($buffer) === '') {
             return $buffer;
@@ -773,14 +843,17 @@ class Template
     }
 
     /**
-     * Default core menus
+     * Default core menus structure.
+     *
+     * @param array $menus Base menu array (usually empty or pre-loaded).
+     * @return array The complete menu structure for the current user group and theme.
      */
-    private function _core_menus(array $menus = [])
+    private function _core_menus(array $menus = []): array
     {
         if (! $menus) {
             $group_id = get_userdata('group_id');
 
-            $menus = $this->_model->select('
+            $menus_data = $this->_model->select('
                 serialized_data
             ')
             ->group_start()
@@ -796,7 +869,7 @@ class Template
             )
             ->row('serialized_data');
 
-            $menus = ($menus ? json_decode($menus, true) : []);
+            $menus = ($menus_data ? json_decode($menus_data, true) : []);
             $cms_menus = [
                 [
                     'id' => 0,

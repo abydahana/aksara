@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Testimonials\Controllers;
 
-class Testimonials extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Testimonials extends Core
 {
     private $_table = 'testimonials';
 

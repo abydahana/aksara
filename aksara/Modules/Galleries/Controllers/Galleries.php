@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Galleries\Controllers;
 
-class Galleries extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Galleries extends Core
 {
     private $_table = 'galleries';
 
@@ -25,8 +27,8 @@ class Galleries extends \Aksara\Laboratory\Core
     {
         parent::__construct();
 
-        if (service('request')->getGet('gallery_slug')) {
-            return throw_exception(301, null, go_to(service('request')->getGet('gallery_slug')));
+        if ($this->request->getGet('gallery_slug')) {
+            return throw_exception(301, null, go_to($this->request->getGet('gallery_slug')));
         }
 
         $this->searchable(false);

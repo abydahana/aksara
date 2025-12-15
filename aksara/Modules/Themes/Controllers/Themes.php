@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Themes\Controllers;
 
-class Themes extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Themes extends Core
 {
     public function __construct()
     {

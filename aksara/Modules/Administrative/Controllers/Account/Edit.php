@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Account;
 
-class Edit extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Edit extends Core
 {
     private $_table = 'app__users';
 
@@ -120,13 +122,13 @@ class Edit extends \Aksara\Laboratory\Core
         $language = $this->model->select('code')->get_where(
             'app__languages',
             [
-                'id' => service('request')->getPost('language')
+                'id' => $this->request->getPost('language')
             ]
         )
         ->row('code');
 
         set_userdata([
-            'username' => (service('request')->getPost('username') ? service('request')->getPost('username') : get_userdata('username')),
+            'username' => ($this->request->getPost('username') ? $this->request->getPost('username') : get_userdata('username')),
             'language' => $language
         ]);
     }

@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Widget;
 
-class Comment extends \Aksara\Laboratory\Core
+use DateTime;
+use Aksara\Laboratory\Core;
+
+class Comment extends Core
 {
     private $_table = 'post__comments';
 
@@ -28,12 +31,12 @@ class Comment extends \Aksara\Laboratory\Core
         $this->permission->must_ajax();
         $this->limit(null);
 
-        if (in_array(service('request')->getPost('fetch'), ['comments', 'replies'])) {
+        if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
             return $this->_fetch_comments();
-        } elseif ('token' === service('request')->getPost('fetch')) {
-            $token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+        } elseif ('token' === $this->request->getPost('fetch')) {
+            $token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
 
-            set_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY), $token);
+            set_userdata(sha1(uri_string()), $token);
 
             return make_json([
                 'token' => $token
@@ -43,7 +46,7 @@ class Comment extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             return $this->_validate_form();
         }
 
@@ -54,8 +57,8 @@ class Comment extends \Aksara\Laboratory\Core
             'likes_count' => $this->model->get_where(
                 'post__likes',
                 [
-                    'post_id' => service('request')->getGet('post_id'),
-                    'post_path' => service('request')->getGet('path')
+                    'post_id' => $this->request->getGet('post_id'),
+                    'post_path' => $this->request->getGet('path')
                 ]
             )
             ->num_rows(),
@@ -63,8 +66,8 @@ class Comment extends \Aksara\Laboratory\Core
             'comments_count' => $this->model->get_where(
                 'post__comments',
                 [
-                    'post_id' => service('request')->getGet('post_id'),
-                    'post_path' => service('request')->getGet('path'),
+                    'post_id' => $this->request->getGet('post_id'),
+                    'post_path' => $this->request->getGet('path'),
                     'status' => 1
                 ]
             )
@@ -83,8 +86,8 @@ class Comment extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             'post__likes',
             [
-                'post_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
-                'post_path' => service('request')->getGet('path'),
+                'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
+                'post_path' => $this->request->getGet('path'),
                 'user_id' => get_userdata('user_id')
             ]
         )
@@ -94,8 +97,8 @@ class Comment extends \Aksara\Laboratory\Core
             $query = $this->model->delete(
                 'post__likes',
                 [
-                    'post_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
-                    'post_path' => service('request')->getGet('path'),
+                    'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
+                    'post_path' => $this->request->getGet('path'),
                     'user_id' => get_userdata('user_id')
                 ]
             );
@@ -107,15 +110,15 @@ class Comment extends \Aksara\Laboratory\Core
                     'from_user' => get_userdata('user_id'),
                     'to_user' => get_userdata('user_id'),
                     'type' => 'like',
-                    'path' => service('request')->getGet('path')
+                    'path' => $this->request->getGet('path')
                 ]
             );
         } else {
             $query = $this->model->insert(
                 'post__likes',
                 [
-                    'post_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
-                    'post_path' => service('request')->getGet('path'),
+                    'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
+                    'post_path' => $this->request->getGet('path'),
                     'user_id' => get_userdata('user_id'),
                     'timestamp' => date('Y-m-d H:i:s')
                 ]
@@ -128,8 +131,8 @@ class Comment extends \Aksara\Laboratory\Core
                     'from_user' => get_userdata('user_id'),
                     'to_user' => get_userdata('user_id'),
                     'type' => 'like',
-                    'interaction_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
-                    'path' => service('request')->getGet('path'),
+                    'interaction_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
+                    'path' => $this->request->getGet('path'),
                     'timestamp' => date('Y-m-d H:i:s'),
                 ]
             );
@@ -138,8 +141,8 @@ class Comment extends \Aksara\Laboratory\Core
         $upvotes = $this->model->get_where(
             'post__likes',
             [
-                'post_id' => (service('request')->getGet('post_id') ? service('request')->getGet('post_id') : 0),
-                'post_path' => service('request')->getGet('path')
+                'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
+                'post_path' => $this->request->getGet('path')
             ]
         )
         ->num_rows();
@@ -157,8 +160,8 @@ class Comment extends \Aksara\Laboratory\Core
         return make_json([
             'element' => '.likes-count',
             'content' => ($upvotes ? $upvotes : null),
-            'class_add' => ($upvotes ? service('request')->getPost('classAdd') : service('request')->getPost('classRemove')),
-            'class_remove' => (! $upvotes ? service('request')->getPost('classAdd') : service('request')->getPost('classRemove'))
+            'class_add' => ($upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove')),
+            'class_remove' => (! $upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove'))
         ]);
     }
 
@@ -172,7 +175,7 @@ class Comment extends \Aksara\Laboratory\Core
         $interaction = $this->model->get_where(
             'post__comments',
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ],
             1
         )
@@ -186,7 +189,7 @@ class Comment extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             'post__comments_likes',
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
                 'user_id' => get_userdata('user_id')
             ]
         )
@@ -196,7 +199,7 @@ class Comment extends \Aksara\Laboratory\Core
             $query = $this->model->delete(
                 'post__comments_likes',
                 [
-                    'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+                    'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
                     'user_id' => get_userdata('user_id')
                 ]
             );
@@ -208,14 +211,14 @@ class Comment extends \Aksara\Laboratory\Core
                     'from_user' => get_userdata('user_id'),
                     'to_user' => $interaction->user_id,
                     'type' => 'upvote',
-                    'path' => service('request')->getGet('path')
+                    'path' => $this->request->getGet('path')
                 ]
             );
         } else {
             $query = $this->model->insert(
                 'post__comments_likes',
                 [
-                    'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
+                    'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
                     'user_id' => get_userdata('user_id'),
                     'timestamp' => date('Y-m-d H:i:s')
                 ]
@@ -228,8 +231,8 @@ class Comment extends \Aksara\Laboratory\Core
                     'from_user' => get_userdata('user_id'),
                     'to_user' => $interaction->user_id,
                     'type' => 'upvote',
-                    'interaction_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0),
-                    'path' => service('request')->getGet('path'),
+                    'interaction_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
+                    'path' => $this->request->getGet('path'),
                     'timestamp' => date('Y-m-d H:i:s'),
                 ]
             );
@@ -238,7 +241,7 @@ class Comment extends \Aksara\Laboratory\Core
         $upvotes = $this->model->get_where(
             'post__comments_likes',
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ]
         )
         ->num_rows();
@@ -254,7 +257,7 @@ class Comment extends \Aksara\Laboratory\Core
         }
 
         return make_json([
-            'element' => '#comment-upvote-' . service('request')->getGet('id'),
+            'element' => '#comment-upvote-' . $this->request->getGet('id'),
             'content' => ($upvotes ? $upvotes : null)
         ]);
     }
@@ -268,7 +271,7 @@ class Comment extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             $this->_table,
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ],
             1
         )
@@ -278,11 +281,11 @@ class Comment extends \Aksara\Laboratory\Core
             return throw_exception(404, phrase('The comment you want to update was not found.'));
         }
 
-        if (service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             $this->form_validation->setRule('comments', phrase('Comments'), 'required');
             $this->form_validation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-            if ($this->form_validation->run(service('request')->getPost()) === false) {
+            if ($this->form_validation->run($this->request->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
             }
 
@@ -313,24 +316,24 @@ class Comment extends \Aksara\Laboratory\Core
             $this->model->update(
                 $this->_table,
                 [
-                    'comments' => htmlspecialchars(service('request')->getPost('comments')),
+                    'comments' => htmlspecialchars($this->request->getPost('comments')),
                     'attachment' => $attachment,
                     'edited' => 1
                 ],
                 [
-                    'comment_id' => service('request')->getGet('id')
+                    'comment_id' => $this->request->getGet('id')
                 ]
             );
 
             return make_json([
-                'element' => '#comment-text-' . service('request')->getGet('id'),
-                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="..." /></a></div>' : null) . nl2br(htmlspecialchars(service('request')->getPost('comments')))
+                'element' => '#comment-text-' . $this->request->getGet('id'),
+                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="..." /></a></div>' : null) . nl2br(htmlspecialchars($this->request->getPost('comments')))
             ]);
         }
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form" enctype="multipart/form-data">
-                <input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
                 <div class="form-group mb-3">
                     <label class="d-block text-muted" for="comments_input">
                         '. phrase('Comments') . '
@@ -396,7 +399,7 @@ class Comment extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             $this->_table,
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ],
             1
         )
@@ -406,7 +409,7 @@ class Comment extends \Aksara\Laboratory\Core
             return throw_exception(404, phrase('The comment you want to report was not found.'));
         }
 
-        if (service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             $checker = $this->model->get_where(
                 'post__comments_reports',
                 [
@@ -422,7 +425,7 @@ class Comment extends \Aksara\Laboratory\Core
                 $this->model->update(
                     'post__comments_reports',
                     [
-                        'message' => htmlspecialchars(service('request')->getPost('message')),
+                        'message' => htmlspecialchars($this->request->getPost('message')),
                         'timestamp' => $query->timestamp
                     ],
                     [
@@ -437,7 +440,7 @@ class Comment extends \Aksara\Laboratory\Core
                     [
                         'comment_id' => $query->comment_id,
                         'user_id' => get_userdata('user_id'),
-                        'message' => htmlspecialchars(service('request')->getPost('message')),
+                        'message' => htmlspecialchars($this->request->getPost('message')),
                         'timestamp' => $query->timestamp
                     ]
                 );
@@ -448,7 +451,7 @@ class Comment extends \Aksara\Laboratory\Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
                 <div class="text-center pt-3 pb-3 border-bottom">
                     ' . phrase('Are you sure want to report this comment?') . '
                 </div>
@@ -493,7 +496,7 @@ class Comment extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             $this->_table,
             [
-                'comment_id' => (service('request')->getGet('id') ? service('request')->getGet('id') : 0)
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ],
             1
         )
@@ -503,26 +506,26 @@ class Comment extends \Aksara\Laboratory\Core
             return throw_exception(404, phrase('The comment you want to hide was not found.'));
         }
 
-        if (service('request')->getPost('comment_id') == sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             $this->model->update(
                 $this->_table,
                 [
                     'status' => ($query->status ? 0 : 1)
                 ],
                 [
-                    'comment_id' => service('request')->getGet('id')
+                    'comment_id' => $this->request->getGet('id')
                 ]
             );
 
             return make_json([
-                'element' => '#comment-text-' . service('request')->getGet('id'),
+                'element' => '#comment-text-' . $this->request->getGet('id'),
                 'content' => ($query->status ? '<i class="text-muted">' . phrase('Comment hidden') . '</i>' : $query->comments)
             ]);
         }
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1(service('request')->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>
@@ -562,8 +565,8 @@ class Comment extends \Aksara\Laboratory\Core
     {
         $limit = 10;
         $order = 'DESC';
-        $page = (is_numeric(service('request')->getGet('page')) ? service('request')->getGet('page') : 0);
-        $parent_id = service('request')->getGet('parent_id');
+        $page = (is_numeric($this->request->getGet('page')) ? $this->request->getGet('page') : 0);
+        $parent_id = $this->request->getGet('parent_id');
 
         if ($page) {
             $this->model->offset($limit * $page);
@@ -575,8 +578,8 @@ class Comment extends \Aksara\Laboratory\Core
             $this->model->where('post__comments.reply_id', $parent_id);
         } else {
             $this->model->where([
-                'post__comments.post_id' => service('request')->getGet('post_id'),
-                'post__comments.post_path' => service('request')->getGet('path'),
+                'post__comments.post_id' => $this->request->getGet('post_id'),
+                'post__comments.post_path' => $this->request->getGet('path'),
                 'post__comments.reply_id' => 0
             ]);
         }
@@ -637,11 +640,11 @@ class Comment extends \Aksara\Laboratory\Core
                 $val->links = [
                     'profile_url' => base_url('user/' . $val->username),
                     'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'page' => null]),
-                    'reply_url' => current_page('reply', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'reply' => service('request')->getGet('reply') ?? $val->comment_id]),
-                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]),
-                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null),
-                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => service('request')->getGet('path'), 'parent_id' => null]) : null)
+                    'reply_url' => current_page(null, ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'reply' => $this->request->getGet('reply') ?? $val->comment_id]),
+                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
+                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {
@@ -687,7 +690,7 @@ class Comment extends \Aksara\Laboratory\Core
                 $val->timestamp = time_ago($val->timestamp);
 
                 // Set highlight
-                $val->highlight = service('request')->getGet('comment_highlight') == $val->comment_id;
+                $val->highlight = $this->request->getGet('comment_highlight') == $val->comment_id;
 
                 $output[] = $val;
             }
@@ -706,17 +709,17 @@ class Comment extends \Aksara\Laboratory\Core
     {
         if (DEMO_MODE) {
             // Demo mode
-            return throw_exception(403, phrase('This feature is disabled in demo mode.'), base_url(service('request')->getGet('path')));
+            return throw_exception(403, phrase('This feature is disabled in demo mode.'), base_url($this->request->getGet('path')));
         } elseif (! get_userdata('is_logged')) {
             // Non logged user
             return throw_exception(400, ['comments' => phrase('Please sign in to submit comment.')]);
-        } elseif (! service('request')->getGet('post_id') || ! service('request')->getGet('path')) {
+        } elseif (! $this->request->getGet('post_id') || ! $this->request->getGet('path')) {
             // Invalid post
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread.')]);
         }
 
-        $earlier = new \DateTime(get_userdata('registered_date'));
-        $later = new \DateTime(date('Y-m-d'));
+        $earlier = new DateTime(get_userdata('registered_date'));
+        $later = new DateTime(date('Y-m-d'));
         $difference = $earlier->diff($later);
         $interval = $difference->days;
         $day_minimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
@@ -734,7 +737,7 @@ class Comment extends \Aksara\Laboratory\Core
         $this->form_validation->setRule('comments', phrase('Comments'), 'required');
         $this->form_validation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->form_validation->getErrors());
         }
 
@@ -750,18 +753,18 @@ class Comment extends \Aksara\Laboratory\Core
             }
         }
 
-        $reply_id = (service('request')->getGet('reply') ? service('request')->getGet('reply') : 0);
-        $mention_id = (service('request')->getGet('mention') ? service('request')->getGet('mention') : 0);
+        $reply_id = ($this->request->getGet('reply') ? $this->request->getGet('reply') : 0);
+        $mention_id = ($this->request->getGet('mention') ? $this->request->getGet('mention') : 0);
 
         $this->model->insert(
             $this->_table,
             [
                 'user_id' => get_userdata('user_id'),
-                'post_id' => service('request')->getGet('post_id'),
-                'post_path' => service('request')->getGet('path'),
+                'post_id' => $this->request->getGet('post_id'),
+                'post_path' => $this->request->getGet('path'),
                 'reply_id' => $reply_id,
                 'mention_id' => $mention_id,
-                'comments' => htmlspecialchars(service('request')->getPost('comments')),
+                'comments' => htmlspecialchars($this->request->getPost('comments')),
                 'attachment' => $attachment,
                 'timestamp' => date('Y-m-d H:i:s'),
                 'status' => 1
@@ -790,7 +793,7 @@ class Comment extends \Aksara\Laboratory\Core
                         'to_user' => $interaction->user_id,
                         'type' => 'reply',
                         'interaction_id' => $comment_id,
-                        'path' => service('request')->getGet('path'),
+                        'path' => $this->request->getGet('path'),
                         'timestamp' => date('Y-m-d H:i:s'),
                     ]
                 );
@@ -798,7 +801,7 @@ class Comment extends \Aksara\Laboratory\Core
         }
 
         // Push into log's activity
-        $this->_push_logs(service('request')->getGet('path'));
+        $this->_push_logs($this->request->getGet('path'));
 
         // Set spam timer
         set_userdata('_spam_timer', strtotime('+' . (get_setting('spam_timer') ?? 10) . ' seconds'));
@@ -858,12 +861,12 @@ class Comment extends \Aksara\Laboratory\Core
                         <div id="comment-text-' . $comment_id . '">
                             ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
 
-                            ' . nl2br(htmlspecialchars(service('request')->getPost('comments'))) . '
+                            ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
                             ' . ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-5" alt="..." /></a></div>' : null) . '
                         </div>
                     </div>
                     <div class="py-1 ps-3">
-                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => service('request')->getGet('path')]) . '" class="text-sm --upvote">
+                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
                             <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
                             &nbsp;
                             <b>
@@ -871,7 +874,7 @@ class Comment extends \Aksara\Laboratory\Core
                             </b>
                         </a>
                          &middot;
-                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => service('request')->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>
@@ -909,11 +912,11 @@ class Comment extends \Aksara\Laboratory\Core
      */
     private function _push_logs($path = null, $method = '')
     {
-        $query = service('request')->getGet();
+        $query = $this->request->getGet();
 
         unset($query['aksara'], $query['post_id'], $query['path']);
 
-        $agent = service('request')->getUserAgent();
+        $agent = $this->request->getUserAgent();
 
         if ($agent->isBrowser()) {
             $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
@@ -926,12 +929,12 @@ class Comment extends \Aksara\Laboratory\Core
         }
 
         $prepare = [
-            'user_id' => service('session')->get('user_id'),
+            'user_id' => get_userdata('user_id'),
             'session_id' => COOKIE_NAME . session_id(),
             'path' => $path,
             'method' => $method,
             'query' => json_encode($query),
-            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
             'browser' => $user_agent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')

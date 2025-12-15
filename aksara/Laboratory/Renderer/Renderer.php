@@ -23,56 +23,103 @@ use Aksara\Laboratory\Renderer\Components\Table;
 use Aksara\Laboratory\Renderer\Components\Form;
 use Aksara\Laboratory\Renderer\Components\View;
 
+/**
+ * Main Renderer Dispatcher
+ *
+ * This class acts as the central factory for initializing the correct UI Component
+ * (Table, Form, View, or Core) based on the requested path/context and delegating
+ * the rendering task.
+ */
 class Renderer
 {
     /**
-     * Load trait, get dynamic properties
+     * Load traits to access dynamic properties (context).
      */
     use Traits;
 
-    private $path;
-    private $model;
-    private $api_client;
+    /**
+     * Current rendering path/context ('table', 'form', 'view', 'core').
+     */
+    private ?string $path = null;
 
+    /**
+     * Database Model Instance (injected).
+     */
+    private mixed $model = null;
+
+    /**
+     * API Client Status/Instance (injected).
+     */
+    private mixed $api_client = null;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        // Safe abstraction
+        // No initialization required. Properties are set via setProperty().
     }
 
-    public function setProperty(array $properties)
+    /**
+     * Set dynamic properties inherited from the controller (hydration).
+     *
+     * @param   array $properties Associative array of properties to inject
+     */
+    public function setProperty(array $properties): self
     {
+        // Dynamically assign properties to the instance
         foreach ($properties as $key => $val) {
-            $this->$key = $val;
+            // Check if property exists in class or trait before assignment
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
         }
 
         return $this;
     }
 
-    public function setPath(string $path)
+    /**
+     * Set the rendering path/context.
+     *
+     * @param   string $path The context identifier ('table', 'form', 'view', etc.)
+     */
+    public function setPath(string $path): self
     {
         $this->path = $path;
 
         return $this;
     }
 
-    public function render(array $serialized = [], int $length = 0)
+    /**
+     * Delegates the rendering task to the appropriate Component class.
+     *
+     * @param   array $serialized Data from the model
+     * @param   int   $length     Length of data
+     * @return  mixed Returns the processed component data array
+     */
+    public function render(array $serialized = [], int $length = 0): mixed
     {
-        if ('table' === $this->path) {
-            // Use table component
-            $component = new Table(get_object_vars($this));
-        } elseif ('form' === $this->path) {
-            // Use form component
-            $component = new Form(get_object_vars($this));
-        } elseif ('view' === $this->path) {
-            // Use view component
-            $component = new View(get_object_vars($this));
-        } else {
-            // Use core component
-            $component = new Core(get_object_vars($this));
+        // Pass all current properties (including inherited traits) to the component class
+        $properties = get_object_vars($this);
+
+        // Determine which component to use based on the path
+        switch ($this->path) {
+            case 'table':
+                $component = new Table($properties);
+                break;
+            case 'form':
+                $component = new Form($properties);
+                break;
+            case 'view':
+                $component = new View($properties);
+                break;
+            default:
+                // Default fallback component
+                $component = new Core($properties);
+                break;
         }
 
-        $component = $component->render($serialized, $length);
-
-        return $component;
+        // Call the render method of the instantiated component
+        return $component->render($serialized, $length);
     }
 }

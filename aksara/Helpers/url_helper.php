@@ -66,13 +66,20 @@ if (! function_exists('base_url')) {
                 $query_params[$key] = $val;
             }
 
+            // Unset old token
             unset($query_params['aksara']);
 
             // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
+            $session_query = get_userdata('__query_params');
 
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+            if ($session_query) {
+                // Follow the session rules
+                $primary_keys = explode('|', $session_query);
+                $filtered_params = array_intersect_key($query_params, array_flip($primary_keys));
+            } else {
+                // Protect EVERYTHING (Mirroring Controller logic)
+                $filtered_params = $params;
+            }
 
             // Generate token
             $token = generate_token($path, $filtered_params);
@@ -137,13 +144,20 @@ if (! function_exists('current_page')) {
                 $query_params[$key] = $val;
             }
 
+            // Unset old token
             unset($query_params['aksara']);
 
             // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
+            $session_query = get_userdata('__query_params');
 
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+            if ($session_query) {
+                // Follow the session rules
+                $primary_keys = explode('|', $session_query);
+                $filtered_params = array_intersect_key($query_params, array_flip($primary_keys));
+            } else {
+                // Protect EVERYTHING (Mirroring Controller logic)
+                $filtered_params = $params;
+            }
 
             // Generate token
             $token = generate_token(uri_string() . ($method ? '/' . $method : null), $filtered_params);
@@ -217,13 +231,20 @@ if (! function_exists('go_to')) {
                 $query_params[$key] = $val;
             }
 
+            // Unset old token
             unset($query_params['aksara']);
 
             // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
+            $session_query = get_userdata('__query_params');
 
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
+            if ($session_query) {
+                // Follow the session rules
+                $primary_keys = explode('|', $session_query);
+                $filtered_params = array_intersect_key($query_params, array_flip($primary_keys));
+            } else {
+                // Protect EVERYTHING (Mirroring Controller logic)
+                $filtered_params = $params;
+            }
 
             // Generate token
             $token = generate_token($final_slug . ($method ? '/' . $method : null), $filtered_params);

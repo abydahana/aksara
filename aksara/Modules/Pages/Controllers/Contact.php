@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-class Contact extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+
+class Contact extends Core
 {
     public function __construct()
     {
@@ -26,7 +29,7 @@ class Contact extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             return $this->_send_message();
         }
 
@@ -45,34 +48,32 @@ class Contact extends \Aksara\Laboratory\Core
         $this->form_validation->setRule('messages', phrase('Messages'), 'required');
         $this->form_validation->setRule('copy', phrase('Send copy'), 'boolean');
 
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->form_validation->getErrors());
         }
 
         $this->model->insert(
             'inquiries',
             [
-                'sender_email' => service('request')->getPost('email'),
-                'sender_full_name' => htmlspecialchars(service('request')->getPost('full_name')),
-                'subject' => htmlspecialchars(service('request')->getPost('subject')),
-                'messages' => htmlspecialchars(service('request')->getPost('messages')),
+                'sender_email' => $this->request->getPost('email'),
+                'sender_full_name' => htmlspecialchars($this->request->getPost('full_name')),
+                'subject' => htmlspecialchars($this->request->getPost('subject')),
+                'messages' => htmlspecialchars($this->request->getPost('messages')),
                 'timestamp' => date('Y-m-d H:i:s')
             ]
         );
 
-        if (service('request')->getPost('copy')) {
+        if ($this->request->getPost('copy')) {
             /**
              * To working with Google SMTP, make sure to activate less secure apps setting
              */
-            $this->email = \Config\Services::email();
+            $encrypter = Services::encrypter();
 
             $host = get_setting('smtp_host');
             $username = get_setting('smtp_username');
-            $password = (get_setting('smtp_password') ? service('encrypter')->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : (service('request')->getServer('SERVER_ADMIN') ? service('request')->getServer('SERVER_ADMIN') : 'webmaster@' . service('request')->getServer('SERVER_NAME')));
+            $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
+            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : ($this->request->getServer('SERVER_ADMIN') ? $this->request->getServer('SERVER_ADMIN') : 'webmaster@' . $this->request->getServer('SERVER_NAME')));
             $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
-
-            $this->email = \Config\Services::email();
 
             if ($host && $username && $password) {
                 $config['userAgent'] = 'Aksara';
@@ -93,16 +94,22 @@ class Contact extends \Aksara\Laboratory\Core
             $config['wordWrap'] = true;
             $config['validation'] = true; // Bool whether to validate email or not
 
-            $this->email->initialize($config);
+            $email = Services::email();
 
-            $this->email->setFrom($sender_email, $sender_name);
-            $this->email->setTo(service('request')->getPost('email'));
+            $email->initialize($config);
+            $email->setFrom($sender_email, $sender_name);
+            $email->setTo($this->request->getPost('email'));
+            $email->setSubject($this->request->getPost('subject'));
+            $email->setMessage($this->request->getPost('messages'));
 
-            $this->email->setSubject(service('request')->getPost('subject'));
-            $this->email->setMessage(service('request')->getPost('messages'));
+            if (! $email->send()) {
+                // Get delivery errors
+                $error_message = $email->printDebugger();
 
-            if (! $this->email->send()) {
-                //return throw_exception(400, array('message' => $this->email->printDebugger('header')));
+                // Log errors
+                log_message('error', 'Email failed to send: ' . $error_message);
+
+                return throw_exception(400, array('message' => phrase('An unknown error occurred during email delivery.')));
             }
         }
 

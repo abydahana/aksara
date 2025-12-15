@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Partial;
 
-class Partial extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Partial extends Core
 {
     public function __construct()
     {

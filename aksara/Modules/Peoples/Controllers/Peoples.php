@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Peoples\Controllers;
 
-class Peoples extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Peoples extends Core
 {
     private $_table = 'peoples';
 

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Announcements\Controllers;
 
-class Read extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Read extends Core
 {
     private $_table = 'announcements';
 
@@ -30,8 +32,8 @@ class Read extends \Aksara\Laboratory\Core
 
     public function index($slug = null)
     {
-        if (service('request')->getGet('announcement_slug')) {
-            $slug = service('request')->getGet('announcement_slug');
+        if ($this->request->getGet('announcement_slug')) {
+            $slug = $this->request->getGet('announcement_slug');
         }
 
         $this->set_title('{{ title }}', phrase('Announcements'))

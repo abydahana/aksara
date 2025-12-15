@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Peoples;
 
-class Peoples extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Peoples extends Core
 {
     private $_table = 'peoples';
 
@@ -56,7 +58,7 @@ class Peoples extends \Aksara\Laboratory\Core
         ->set_validation([
             'first_name' => 'required|string',
             'last_name' => 'string',
-            'people_slug' => 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . service('request')->getGet('people_id') . ']',
+            'people_slug' => 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . $this->request->getGet('people_id') . ']',
             'status' => 'boolean'
         ])
         ->merge_field('first_name, last_name')

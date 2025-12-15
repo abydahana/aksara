@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers;
 
-class Cms extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Cms extends Core
 {
     public function __construct()
     {

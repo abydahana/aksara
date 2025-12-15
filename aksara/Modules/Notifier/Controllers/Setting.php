@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Notifier\Controllers;
 
-class Setting extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Setting extends Core
 {
     private $_table = 'notifier__settings';
 

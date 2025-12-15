@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-class Documentation extends \Aksara\Laboratory\Core
+use Throwable;
+use Config\Services;
+use Aksara\Laboratory\Core;
+
+class Documentation extends Core
 {
     private $_primary;
 
@@ -32,10 +36,10 @@ class Documentation extends \Aksara\Laboratory\Core
         $this->set_theme('backend');
         $this->set_method('index');
 
-        $this->_primary = service('request')->getGet('slug');
+        $this->_primary = $this->request->getGet('slug');
 
-        if ($this->_primary && 'fetch' == service('request')->getPost('mode')) {
-            return $this->_fetch_properties($this->_primary, service('request')->getPost('group'));
+        if ($this->_primary && 'fetch' == $this->request->getPost('mode')) {
+            return $this->_fetch_properties($this->_primary, $this->request->getPost('group'));
         }
     }
 
@@ -116,7 +120,7 @@ class Documentation extends \Aksara\Laboratory\Core
             return false;
         }
 
-        $method = service('request')->getPost('method');
+        $method = $this->request->getPost('method');
         $title = $slug;
         $output = [];
         $session_id = session_id();
@@ -150,7 +154,7 @@ class Documentation extends \Aksara\Laboratory\Core
             $this->model->update(
                 'app__sessions',
                 [
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ],
@@ -164,7 +168,7 @@ class Documentation extends \Aksara\Laboratory\Core
                 'app__sessions',
                 [
                     'id' => $session_id,
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ]
@@ -173,7 +177,7 @@ class Documentation extends \Aksara\Laboratory\Core
 
         try {
             // Prepare the cURL
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false,
                 'allow_redirects' => [
@@ -233,7 +237,7 @@ class Documentation extends \Aksara\Laboratory\Core
                     ];
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 

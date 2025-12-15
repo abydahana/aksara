@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
-class Forgot extends \Aksara\Laboratory\Core
+use Aksara\Libraries\Messaging;
+use Aksara\Laboratory\Core;
+
+class Forgot extends Core
 {
     public function __construct()
     {
@@ -31,7 +34,7 @@ class Forgot extends \Aksara\Laboratory\Core
             return throw_exception(301, phrase('You were signed in.'), base_url('dashboard'), true);
         }
 
-        if ($this->valid_token(service('request')->getPost('_token')) || ($this->api_client && service('request')->getServer('REQUEST_METHOD') == 'POST')) {
+        if ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             return $this->_validate_form();
         }
 
@@ -47,7 +50,7 @@ class Forgot extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             'app__users_hashes',
             [
-                'hash' => service('request')->getGet('hash')
+                'hash' => $this->request->getGet('hash')
             ],
             1
         )
@@ -72,7 +75,7 @@ class Forgot extends \Aksara\Laboratory\Core
         $this->form_validation->setRule('username', phrase('Username or email'), 'required');
 
         // Validate form
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             // Validation error
             return throw_exception(400, $this->form_validation->getErrors());
         }
@@ -84,8 +87,8 @@ class Forgot extends \Aksara\Laboratory\Core
             last_name,
             status
         ')
-        ->where('username', service('request')->getPost('username'))
-        ->or_where('email', service('request')->getPost('username'))
+        ->where('username', $this->request->getPost('username'))
+        ->or_where('email', $this->request->getPost('username'))
         ->get_where(
             'app__users',
             [
@@ -103,7 +106,7 @@ class Forgot extends \Aksara\Laboratory\Core
         $query = $this->model->get_where(
             'app__users',
             [
-                'user_id' => $user_id
+                'user_id' => $query->user_id
             ],
             1
         )
@@ -112,7 +115,7 @@ class Forgot extends \Aksara\Laboratory\Core
         if ($query) {
             $token = sha1($query->username . time());
 
-            $messaging = new \Aksara\Libraries\Messaging();
+            $messaging = new Messaging();
 
             $messaging->set_email($query->email)
             ->set_phone($query->phone)
@@ -172,7 +175,7 @@ class Forgot extends \Aksara\Laboratory\Core
         $this->form_validation->setRule('password', phrase('New Password'), 'required');
         $this->form_validation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
 
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->form_validation->getErrors());
         }
 
@@ -190,7 +193,7 @@ class Forgot extends \Aksara\Laboratory\Core
         ->get_where(
             'app__users_hashes',
             [
-                'app__users_hashes.hash' => service('request')->getGet('hash')
+                'app__users_hashes.hash' => $this->request->getGet('hash')
             ],
             1
         )
@@ -202,7 +205,7 @@ class Forgot extends \Aksara\Laboratory\Core
             return throw_exception(400, ['password' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
 
-        $messaging = new \Aksara\Libraries\Messaging();
+        $messaging = new Messaging();
 
         $messaging->set_email($query->email)
         ->set_phone($query->phone)
@@ -234,7 +237,7 @@ class Forgot extends \Aksara\Laboratory\Core
         $this->model->update(
             'app__users',
             [
-                'password' => password_hash(service('request')->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT)
+                'password' => password_hash($this->request->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT)
             ],
             [
                 'user_id' => $query->user_id

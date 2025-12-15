@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Shortlink\Controllers;
 
-class Shortlink extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Shortlink extends Core
 {
     public function __construct()
     {

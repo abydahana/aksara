@@ -17,14 +17,18 @@
 
 namespace Aksara\Modules\Xhr\Controllers;
 
-class Summernote extends \Aksara\Laboratory\Core
+use Config\Mimes;
+use Config\Services;
+use Aksara\Laboratory\Core;
+
+class Summernote extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
         if (! get_userdata('is_logged')) {
-            redirect_to(base_url());
+            return redirect()->to(base_url());
         }
 
         $this->permission->must_ajax(base_url());
@@ -38,13 +42,13 @@ class Summernote extends \Aksara\Laboratory\Core
             }
         }
 
-        $source = service('request')->getFile('image');
+        $source = $this->request->getFile('image');
 
         if (! $source->isValid() || $source->hasMoved()) {
             return false;
         }
 
-        $mime_type = new \Config\Mimes();
+        $mime_type = new Mimes();
         $valid_mime = [];
 
         $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
@@ -65,9 +69,9 @@ class Summernote extends \Aksara\Laboratory\Core
         $width = ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
         $height = ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
         $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-        $this->image = \Config\Services::image('gd');
+        $image = Services::image('gd');
 
-        if ($this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/summernote/' . $filename)) {
+        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/summernote/' . $filename)) {
             return make_json([
                 'status' => 'success',
                 'source' => get_image('summernote', $filename),
@@ -83,7 +87,7 @@ class Summernote extends \Aksara\Laboratory\Core
 
     public function delete()
     {
-        $filename = basename(service('request')->getPost('source'));
+        $filename = basename($this->request->getPost('source'));
 
         if (file_exists(UPLOAD_PATH . '/summernote/' . $filename)) {
             @unlink(UPLOAD_PATH . '/summernote/' . $filename);

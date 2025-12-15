@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Testimonials extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Testimonials extends Core
 {
     private $_table = 'testimonials';
 
@@ -39,8 +41,8 @@ class Testimonials extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         }
 
         $this->set_title(phrase('Testimonials'))
@@ -109,7 +111,7 @@ class Testimonials extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

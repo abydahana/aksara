@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Videos\Controllers;
 
-class Videos extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Videos extends Core
 {
     private $_table = 'videos';
 

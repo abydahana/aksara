@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Menus;
 
-class Menus extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Menus extends Core
 {
     private $_table = 'app__menus';
 
@@ -103,7 +105,7 @@ class Menus extends \Aksara\Laboratory\Core
         ->get_where(
             $this->_table,
             [
-                'menu_id' => service('request')->getGet('menu_id')
+                'menu_id' => $this->request->getGet('menu_id')
             ],
             1
         )

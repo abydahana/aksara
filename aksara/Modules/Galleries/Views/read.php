@@ -2,6 +2,7 @@
     $count = 0;
     $images = (isset($results[0]) ? json_decode($results[0]->gallery_images) : []);
     $attributes = (isset($results[0]) ? json_decode($results[0]->gallery_attributes) : []);
+    $path = service('uri')->getRoutePath();
     $current = service('uri')->getSegment(3);
     $carousel = null;
 
@@ -100,7 +101,7 @@
                 }
             ?>
             <div>
-                <?= comment_widget(['post_id' => $results[0]->gallery_id, 'path' => service('uri')->getRoutePath()]); ?>
+                <?= comment_widget(['post_id' => $results[0]->gallery_id, 'path' => $path]); ?>
             </div>
         </div>
     </div>

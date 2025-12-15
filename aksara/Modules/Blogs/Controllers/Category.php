@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
-class Category extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Category extends Core
 {
     public function __construct()
     {

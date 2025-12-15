@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\User\Controllers;
 
-class User extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class User extends Core
 {
     private $_table = 'app__users';
 
@@ -28,14 +30,14 @@ class User extends \Aksara\Laboratory\Core
         $this->searchable(false);
         $this->limit(10);
 
-        if (service('request')->getGet('user_id')) {
+        if ($this->request->getGet('user_id')) {
             $query = $this->model->select('
                 username
             ')
             ->get_where(
                 $this->_table,
                 [
-                    'user_id' => service('request')->getGet('user_id')
+                    'user_id' => $this->request->getGet('user_id')
                 ],
                 1
             )
@@ -51,8 +53,8 @@ class User extends \Aksara\Laboratory\Core
     {
         if ($username) {
             $this->where('username', $username);
-        } elseif (service('request')->getGet('user_id') > 0) {
-            $this->where('user_id', service('request')->getGet('user_id'));
+        } elseif ($this->request->getGet('user_id') > 0) {
+            $this->where('user_id', $this->request->getGet('user_id'));
         } else {
             $this->where('user_id', get_userdata('user_id'));
         }

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Groups;
 
-class Privileges extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Privileges extends Core
 {
     private $_table = 'app__groups_privileges';
 
@@ -53,7 +55,7 @@ class Privileges extends \Aksara\Laboratory\Core
         ->set_field('last_generated', 'current_timestamp')
         ->order_by('path')
         ->set_validation([
-            'path' => 'required|unique[' . $this->_table . '.path.path.' . service('request')->getGet('path') . ']',
+            'path' => 'required|unique[' . $this->_table . '.path.path.' . $this->request->getGet('path') . ']',
             'privileges' => 'required'
         ])
         ->set_alias([
@@ -76,7 +78,7 @@ class Privileges extends \Aksara\Laboratory\Core
         ->get_where(
             $this->_table,
             [
-                'path' => service('request')->getGet('path')
+                'path' => $this->request->getGet('path')
             ],
             1
         )

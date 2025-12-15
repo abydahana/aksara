@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Announcements extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Announcements extends Core
 {
     private $_table = 'announcements';
 
@@ -37,8 +39,8 @@ class Announcements extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         }
 
         $this->set_title(phrase('Announcements'))
@@ -93,7 +95,7 @@ class Announcements extends \Aksara\Laboratory\Core
             2 => 'col-md-4'
         ])
         ->set_validation([
-            'title' => 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . service('request')->getGet('announcement_id') . ']',
+            'title' => 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . $this->request->getGet('announcement_id') . ']',
             'content' => 'required',
             'language_id' => 'required',
             'start_date' => 'required',
@@ -124,7 +126,7 @@ class Announcements extends \Aksara\Laboratory\Core
 
     public function validate_end_date($value = null)
     {
-        if (strtotime(service('request')->getPost('start_date')) >= strtotime($value)) {
+        if (strtotime($this->request->getPost('start_date')) >= strtotime($value)) {
             $this->form_validation->setError('start_date', 'The end date must be greater than start date');
         }
 
@@ -153,7 +155,7 @@ class Announcements extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

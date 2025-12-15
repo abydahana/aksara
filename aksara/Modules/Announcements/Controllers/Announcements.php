@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Announcements\Controllers;
 
-class Announcements extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Announcements extends Core
 {
     private $_table = 'announcements';
 

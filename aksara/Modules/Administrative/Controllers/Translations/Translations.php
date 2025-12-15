@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
-class Translations extends \Aksara\Laboratory\Core
+use Throwable;
+use Aksara\Laboratory\Core;
+
+class Translations extends Core
 {
     private $_table = 'app__languages';
 
@@ -57,7 +60,7 @@ class Translations extends \Aksara\Laboratory\Core
         ->add_button('translate', phrase('Translate'), 'btn btn-success --xhr', 'mdi mdi-comment-processing-outline', ['id' => 'id', 'code' => 'code', 'keyword' => null])
         ->set_validation([
             'language' => 'required|string|max_length[32]',
-            'code' => 'required|alpha_dash|max_length[32]|unique[app__languages.code.id.' . service('request')->getGet('id') . ']',
+            'code' => 'required|alpha_dash|max_length[32]|unique[app__languages.code.id.' . $this->request->getGet('id') . ']',
             'locale' => 'required|string|max_length[64]',
             'status' => 'boolean'
         ])
@@ -78,13 +81,13 @@ class Translations extends \Aksara\Laboratory\Core
             /* check if language directory is exists */
             if (! is_dir(WRITEPATH . 'translations') && mkdir(WRITEPATH . 'translations', 0755, true)) {
                 /* put content into file */
-                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json', json_encode([]));
+                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json', json_encode([]));
             } else {
                 /* put content into file */
-                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json', json_encode([]));
+                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json', json_encode([]));
             }
-        } catch (Exception $e) {
-            /* failed to write file */
+        } catch (Throwable $e) {
+            return throw_exception(500, $e->getMessage());
         }
     }
 
@@ -93,12 +96,12 @@ class Translations extends \Aksara\Laboratory\Core
         /* try to update language file */
         try {
             /* check if language directory is exists */
-            if (file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getGet('code') . '.json')) {
+            if (file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getGet('code') . '.json')) {
                 /* rename old file */
-                rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . service('request')->getPost('code') . '.json');
+                rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json');
             }
-        } catch (Exception $e) {
-            /* failed to write file */
+        } catch (Throwable $e) {
+            return throw_exception(500, $e->getMessage());
         }
     }
 }

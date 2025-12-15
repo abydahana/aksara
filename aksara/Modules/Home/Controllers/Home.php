@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Home\Controllers;
 
-class Home extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Home extends Core
 {
     public function index()
     {
@@ -42,8 +44,7 @@ class Home extends \Aksara\Laboratory\Core
     {
         $query = $this->model->get_where(
             'blogs',
-            [
-            ],
+            [],
             1
         )
         ->row();

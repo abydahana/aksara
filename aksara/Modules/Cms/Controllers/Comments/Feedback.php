@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Comments;
 
-class Feedback extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Feedback extends Core
 {
     private $_table = 'post__comments_reports';
 
@@ -32,7 +34,7 @@ class Feedback extends \Aksara\Laboratory\Core
 
         $this->unset_method('create, update, clone, delete');
 
-        $this->_primary = (service('request')->getGet('id') ? service('request')->getGet('id') : 0);
+        $this->_primary = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
     }
 
     public function index()
@@ -52,7 +54,7 @@ class Feedback extends \Aksara\Laboratory\Core
                 $this->model->select('
                     blogs.post_slug,
                     blogs.post_title,
-                    
+
                     blogs__categories.category_slug
                 ')
                 ->join(
@@ -68,7 +70,7 @@ class Feedback extends \Aksara\Laboratory\Core
 
         $query = $this->model->select('
             post__comments.comment_id,
-            
+
             app__users.user_id,
             app__users.first_name,
             app__users.last_name
@@ -126,7 +128,7 @@ class Feedback extends \Aksara\Laboratory\Core
 
         ->set_primary('comment_id, user_id')
 
-        ->add_action('toolbar', '../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
+        ->add_toolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
 
         ->set_field([
             'comments' => 'textarea',
@@ -164,10 +166,10 @@ class Feedback extends \Aksara\Laboratory\Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you want to ' . ($query->status ? 'hide' : 'publish') . ' is not found.', current_page('../')));
+            return throw_exception(404, phrase('The comment you want to hide is not found.', current_page('../')));
         }
 
-        if (service('request')->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             $this->model->update(
                 $this->_table,
                 [

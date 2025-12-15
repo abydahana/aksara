@@ -17,7 +17,12 @@
 
 namespace Aksara\Modules\Dashboard\Controllers;
 
-class Dashboard extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+use Aksara\Modules\Administrative\Controllers\Updater\Updater;
+use DateTime;
+use DateInterval;
+
+class Dashboard extends Core
 {
     public function __construct()
     {
@@ -28,7 +33,7 @@ class Dashboard extends \Aksara\Laboratory\Core
 
         $this->set_method('index');
 
-        if ('fetch_information' == service('request')->getPost('request')) {
+        if ('fetch_information' == $this->request->getPost('request')) {
             return $this->_fetch_information();
         }
     }
@@ -123,8 +128,8 @@ class Dashboard extends \Aksara\Laboratory\Core
         $output = [];
 
         foreach (range(1, 7) as $key => $val) {
-            $date = new \DateTime();
-            $date->add(new \DateInterval('P' . $val . 'D'));
+            $date = new DateTime();
+            $date->add(new DateInterval('P' . $val . 'D'));
 
             // Translate day name
             $day = phrase($date->format('l'));

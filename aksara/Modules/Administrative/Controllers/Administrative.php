@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers;
 
-class Administrative extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Administrative extends Core
 {
     public function __construct()
     {

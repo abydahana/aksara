@@ -17,7 +17,16 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Updater;
 
-class Updater extends \Aksara\Laboratory\Core
+use Throwable;
+use ZipArchive;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use AppendIterator;
+use Config\Database;
+use Config\Services;
+use Aksara\Laboratory\Core;
+
+class Updater extends Core
 {
     public function __construct()
     {
@@ -34,7 +43,7 @@ class Updater extends \Aksara\Laboratory\Core
     public static function ping_upstream($changelog = false)
     {
         try {
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false
             ]);
@@ -57,7 +66,7 @@ class Updater extends \Aksara\Laboratory\Core
             );
 
             return json_decode($response->getBody());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -66,13 +75,13 @@ class Updater extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
             }
 
             try {
-                $curl = \Config\Services::curlrequest([
+                $curl = Services::curlrequest([
                     'timeout' => 5,
                     'http_errors' => false
                 ]);
@@ -99,7 +108,7 @@ class Updater extends \Aksara\Laboratory\Core
                     // Run updater
                     return $this->_run_updater($response);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return throw_exception(500, $e->getMessage(), current_page());
             }
 
@@ -119,7 +128,7 @@ class Updater extends \Aksara\Laboratory\Core
     /**
      * Run instant updater
      */
-    private function _run_updater($response = [])
+    private function _run_updater(object $response)
     {
         $updater_path = sha1($response->version);
         $updater_package = null;
@@ -127,7 +136,7 @@ class Updater extends \Aksara\Laboratory\Core
         $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
         $old_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
         $backup_name = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
 
         /**
          * Create backup file
@@ -137,14 +146,14 @@ class Updater extends \Aksara\Laboratory\Core
                 mkdir($tmp_path, 0755, true);
             }
 
-            $zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+            $zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, ZipArchive::CREATE | ZipArchive::OVERWRITE);
             $zip->addFile(ROOTPATH . 'composer.json', 'composer.json');
             $zip->addFile(ROOTPATH . 'composer.lock', 'composer.lock');
 
-            $files = new \AppendIterator();
-            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'aksara'), \RecursiveIteratorIterator::LEAVES_ONLY));
-            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'public'), \RecursiveIteratorIterator::LEAVES_ONLY));
-            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'themes'), \RecursiveIteratorIterator::LEAVES_ONLY));
+            $files = new AppendIterator();
+            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'aksara'), RecursiveIteratorIterator::LEAVES_ONLY));
+            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'public'), RecursiveIteratorIterator::LEAVES_ONLY));
+            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'themes'), RecursiveIteratorIterator::LEAVES_ONLY));
 
             foreach ($files as $name => $file) {
                 // Skip directories (they would be added automatically)
@@ -156,7 +165,7 @@ class Updater extends \Aksara\Laboratory\Core
 
             // Zip archive will be created only after closing object
             $zip->close();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Close zip
             $zip->close();
 
@@ -185,9 +194,11 @@ class Updater extends \Aksara\Laboratory\Core
                     return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
                 }
 
+                $encrypter = Services::encrypter();
+
                 // Configuration found, decrypt password
-                $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                $query->password = service('encrypter')->decrypt(base64_decode($query->password));
+                $query->username = $encrypter->decrypt(base64_decode($query->username));
+                $query->password = $encrypter->decrypt(base64_decode($query->password));
 
                 // Try to connect to FTP
                 $connection = ftp_connect($query->hostname, $query->port, 10);
@@ -215,10 +226,10 @@ class Updater extends \Aksara\Laboratory\Core
                 $updater_name = 'aksara-' . $response->version;
 
                 // Create recursive directory iterator
-                $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), \RecursiveIteratorIterator::LEAVES_ONLY);
+                $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), RecursiveIteratorIterator::LEAVES_ONLY);
 
                 // Create updater package
-                $zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+                $zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
                 // Initialize updater file collections
                 foreach ($files as $name => $file) {
@@ -244,7 +255,7 @@ class Updater extends \Aksara\Laboratory\Core
                 // Close the opened zip
                 $zip->close();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(400, ['package' => $e->getMessage()]);
         }
 
@@ -269,12 +280,12 @@ class Updater extends \Aksara\Laboratory\Core
                 file_put_contents(ROOTPATH . 'composer.json', json_encode($new_dependencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
                 // Run the updater migration
-                $migration = \Config\Services::migrations()->setNamespace('Aksara');
+                $migration = Services::migrations()->setNamespace('Aksara');
 
                 // Migrate the updater database schema
                 if ($migration->latest()) {
                     // Call seeder
-                    $seeder = \Config\Database::seeder();
+                    $seeder = Database::seeder();
 
                     // Run seeder
                     $seeder->call('Aksara\Database\Seeds\Updater');
@@ -362,7 +373,7 @@ class Updater extends \Aksara\Laboratory\Core
                     ],
                     'content' => $html
                 ]);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Update failed
                 return throw_exception(400, ['upgrade' => $e->getMessage()]);
             }
@@ -377,7 +388,7 @@ class Updater extends \Aksara\Laboratory\Core
                 // Remove temporary path
                 $this->_rmdir($tmp_path);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Backup file restore failed
             return throw_exception(400, ['upgrade' => $e->getMessage()]);
         }

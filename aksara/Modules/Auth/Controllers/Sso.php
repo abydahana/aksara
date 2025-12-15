@@ -17,9 +17,13 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
+use Throwable;
+use Config\Services;
 use Hybridauth\Hybridauth;
+use Aksara\Libraries\Messaging;
+use Aksara\Laboratory\Core;
 
-class Sso extends \Aksara\Laboratory\Core
+class Sso extends Core
 {
     public function __construct()
     {
@@ -66,9 +70,9 @@ class Sso extends \Aksara\Laboratory\Core
                 return $this->_validate($provider, $profile);
             } else {
                 // Throw exception
-                throw new \Throwable(phrase('Unable to signing you in using th selected platform.'));
+                throw new Throwable(phrase('Unable to signing you in using th selected platform.'));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage(), base_url('auth'));
         }
     }
@@ -77,7 +81,7 @@ class Sso extends \Aksara\Laboratory\Core
      * do validation
      * @param null|mixed $provider
      */
-    private function _validate($provider = null, $params = [])
+    private function _validate($provider = null, ?object $params = null)
     {
         if (DEMO_MODE) {
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page('../'));
@@ -117,7 +121,7 @@ class Sso extends \Aksara\Laboratory\Core
                 'session_generated' => time()
             ]);
 
-            return throw_exception(301, phrase('Welcome back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('You were signed in.'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
+            return throw_exception(301, phrase('Welcome back') . ', <b>' . get_userdata('first_name') . '</b>! ' . phrase('You were signed in.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard')), true);
         } else {
             $query = $this->model->select('
                 user_id
@@ -196,7 +200,7 @@ class Sso extends \Aksara\Laboratory\Core
                         ]
                     );
 
-                    $this->_send_welcome_email($params);
+                    $this->_send_welcome_email($params, $provider);
                 }
 
                 return $this->_validate($params);
@@ -204,9 +208,9 @@ class Sso extends \Aksara\Laboratory\Core
         }
     }
 
-    private function _send_welcome_email($params = [])
+    private function _send_welcome_email(?object $params = null, ?string $provider = null)
     {
-        $messaging = new \Aksara\Libraries\Messaging();
+        $messaging = new Messaging();
 
         $messaging->set_email($params->email)
         ->set_subject(phrase('Welcome to') . ' ' . get_setting('app_name'))
@@ -268,12 +272,12 @@ class Sso extends \Aksara\Laboratory\Core
         $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 
         // Load image manipulation library
-        $this->image = \Config\Services::image('gd');
+        $image = Services::image('gd');
 
         // Resize image
-        if ($this->image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
             // Crop image after resized
-            $this->image->withFile($target)->fit($width, $height, 'center')->save($target);
+            $image->withFile($target)->fit($width, $height, 'center')->save($target);
         }
     }
 }

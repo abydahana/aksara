@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Videos;
 
-class Videos extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Videos extends Core
 {
     private $_table = 'videos';
 
@@ -53,7 +55,7 @@ class Videos extends \Aksara\Laboratory\Core
         ])
 
         ->set_validation([
-            'title' => 'required|unique[' . $this->_table . '.title.id.' . service('request')->getGet('id') . ']',
+            'title' => 'required|unique[' . $this->_table . '.title.id.' . $this->request->getGet('id') . ']',
             'description' => 'required',
             'video_url' => 'required|valid_url',
             'featured' => 'boolean',

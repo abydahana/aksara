@@ -24,6 +24,9 @@ namespace Aksara\Libraries;
 ini_set('pcre.backtrack_limit', 99999999);
 ini_set('memory_limit', '-1');
 
+use Throwable;
+use Config\Services;
+
 class Document
 {
     /**
@@ -130,13 +133,15 @@ class Document
             // Online doc can be found in https://xxx.xx/
             return $this->_word($html, $filename, $method, $this->_params);
         } else {
+            $response = Services::response();
+
             // Use mPDF instead
             // Online doc can be found in https://mpdf.github.io/
             $output = $this->_mpdf($html, $filename, ('embed' == $method ? 'attach' : 'download'), $this->_params);
 
-            service('response')->setContentType('application/pdf');
+            $response->setContentType('application/pdf');
 
-            return service('response')->setBody($output)->send();
+            return $response->setBody($output)->send();
         }
     }
 
@@ -288,7 +293,7 @@ class Document
                     }
 
                     unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Debug
                 }
             }

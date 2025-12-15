@@ -17,238 +17,223 @@
 
 namespace Aksara\Laboratory\Renderer\Components;
 
+use Config\Services;
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Builder\Builder;
 use Aksara\Laboratory\Renderer\Formatter;
 use Aksara\Laboratory\Renderer\Parser;
 
+/**
+ * View Component Renderer
+ *
+ * This class is responsible for rendering the Detail/Read view of a specific record.
+ * It formats data for display, handles merging fields (e.g. combining First & Last Name),
+ * and parses dynamic content using Twig/Mustache syntax.
+ */
 class View
 {
     /**
-     * Load trait, get dynamic properties
+     * Load traits to access dynamic properties.
      */
     use Traits;
 
-    private $builder;
-    private $formatter;
-    private $parser;
-    private $path;
-    private $model;
-    private $api_client;
+    /**
+     * UI Builder Instance
+     */
+    private Builder $builder;
 
-    public function __construct($properties = [])
+    /**
+     * Data Formatter Instance
+     */
+    private Formatter $formatter;
+
+    /**
+     * Template Parser Instance
+     */
+    private Parser $parser;
+
+    /**
+     * Current Module Path
+     */
+    private ?string $path = null;
+
+    /**
+     * Database Model
+     */
+    private mixed $model = null;
+
+    /**
+     * API Client Instance
+     */
+    private mixed $api_client = null;
+
+    /**
+     * Valid Field Types for View
+     * @var array
+     */
+    private const VALID_TYPES = [
+        'text', 'textarea', 'wysiwyg',
+        'number', 'money', 'percent',
+        'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
+        'date', 'datetime', 'time', 'week', 'month',
+        'hidden', 'email', 'password', 'encryption',
+        'file', 'files', 'image', 'images',
+        'hyperlink',
+        'accordion', 'attribution', 'carousel', 'geospatial',
+        'custom_format'
+    ];
+
+    /**
+     * Constructor
+     *
+     * @param   array $properties Associative array of properties to inject
+     */
+    public function __construct(array $properties = [])
     {
+        // Hydrate properties dynamically
         foreach ($properties as $key => $val) {
-            $this->$key = $val;
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
         }
 
+        // Initialize dependencies
         $this->builder = new Builder();
         $this->formatter = new Formatter(get_object_vars($this));
         $this->parser = new Parser($this->_set_theme);
     }
 
-    public function render(array $serialized = [], int $length = 0)
+    /**
+     * Render the View Component.
+     *
+     * @param   array $serialized Data from the model
+     * @param   int   $length     Length of data
+     * @return  array Returns the processed view configuration
+     */
+    public function render(array $serialized = [], int $length = 0): array
     {
-        if (! $serialized) {
+        if (empty($serialized)) {
             return [];
         }
+
+        $request = Services::request();
 
         $primary_key = [];
         $field_data = [];
         $merged_fields = [];
 
+        // Flatten merged fields
         if ($this->_merge_field) {
-            foreach ($this->_merge_field as $key => $val) {
+            foreach ($this->_merge_field as $val) {
                 $merged_fields = array_merge($merged_fields, $val);
             }
         }
 
+        // Extract first row (Detail view is single record)
         $serialized = $serialized[0];
 
-        if (is_array($this->_view_order) && sizeof($this->_view_order) > 0) {
-            // Indicates field order
-            $view_order = [];
+        // 1. Sort Fields
+        $serialized = $this->_sort_fields($serialized);
 
-            foreach ($this->_view_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $view_order[] = $order_val;
-                }
-            }
-
-            // Flip array and order by user expect
-            $serialized = array_replace(array_flip($view_order), $serialized);
-        } elseif (is_array($this->_field_order) && sizeof($this->_field_order) > 0) {
-            // Indicates field order
-            $field_order = [];
-
-            foreach ($this->_field_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $field_order[] = $order_val;
-                }
-            }
-
-            // Flip array and order by user expect
-            $serialized = array_replace(array_flip($field_order), $serialized);
-        } elseif (is_array($this->_column_order) && sizeof($this->_column_order) > 0) {
-            // Backup order to follow the columns order
-            $column_order = [];
-
-            foreach ($this->_column_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $column_order[] = $order_val;
-                }
-            }
-
-            $serialized = array_replace(array_flip($column_order), $serialized);
-        }
-
+        // 2. Prepare Replacements (for Mustache/Twig parsing)
         $replacement = [];
-
-        // Getting mustache replacer
         foreach ($serialized as $field => $params) {
-            // Pair replacement
             $replacement[$field] = $params['value'];
         }
 
-        // Loop serialized data
+        // 3. Process Fields
         foreach ($serialized as $field => $params) {
             $type = $params['type'];
             $primary = $params['primary'];
             $value = $params['value'];
             $content = $params['content'];
-            $maxlength = $params['maxlength'];
             $hidden = $params['hidden'];
-            $validation = $params['validation'];
-            $required = in_array('required', $validation);
 
             $label = ucwords(str_replace('_', ' ', $field));
-            $placeholder = (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : null);
-            $class = null;
-            $readonly = null;
 
-            // Store primary key as a token
+            // Store primary key
             if ($primary) {
                 $primary_key[$field] = $value;
             }
 
+            // Skip hidden fields
             if ($hidden) {
-                // Skip showing field
                 continue;
             }
 
+            // Label Overrides
             if (isset($this->_merge_label[$field])) {
-                // Use from merge_content()
                 $label = $this->_merge_label[$field];
             } elseif (isset($this->_set_alias[$field])) {
-                // Use alias from set_alias()
                 $label = $this->_set_alias[$field];
             }
 
-            // Valid field type definition
-            $valid_type = [
-                'text', 'textarea', 'wysiwyg',
-                'number', 'money', 'percent',
-                'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
-                'date', 'datetime', 'time', 'week', 'month',
-                'hidden', 'email', 'password', 'encryption',
-                'file', 'files', 'image', 'images',
-                'hyperlink',
-                'accordion', 'attribution', 'carousel', 'geospatial',
-                'custom_format'
-            ];
+            // Determine Input Type
+            $field_type = $this->_get_input_type($type);
+            $final_type = end($field_type);
 
-            // Get field intersection
-            $field_type = array_intersect(array_keys($type), $valid_type);
-
-            if (! $field_type) {
-                // Fallback default input type
-                $field_type = ['text'];
-            }
-
-            if (sizeof($field_type) > 1) {
-                // Remove last element of array
-                array_pop($field_type);
-            }
-
-            // Get formatted content
+            // Masking (Password/Encryption)
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
                 $value = '*****';
                 $content = '*****';
             }
 
+            // Handle Merged Content (Callbacks or Parsing)
             if (isset($this->_merge_content[$field])) {
-                if ($this->_merge_content[$field]['callback']) {
-                    // Get formatted content of merged field (with callback)
-                    $namespace = service('router')->controllerName();
-                    $class = new $namespace();
-                    $callback = $this->_merge_content[$field]['callback'];
-
-                    if (method_exists($class, $callback)) {
-                        // Get callback method of current controller
-                        $content = $class->$callback($replacement);
-                    }
-                } else {
-                    $content = $this->parser->parse($this->_merge_content[$field]['parameter'], $replacement);
-                }
-
+                $content = $this->_merge_content($field, $replacement);
                 $value = $content;
             }
 
-            // Get formatted content
+            // Format Content
             $content = $this->formatter->format($field, $content, $type, $replacement);
 
-            // Add to form data response
+            // Construct Field Data
             $field_data[$field] = [
                 'name' => $field,
                 'label' => $label,
                 'value' => $value,
                 'content' => $content,
-                'type' => end($field_type),
+                'type' => $final_type,
                 'primary' => $primary,
-                'tooltip' => (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
-                'position' => (isset($this->_field_position[$field]) ? $this->_field_position[$field] : 1),
-                'prepend' => (isset($this->_field_prepend[$field]) ? $this->_field_prepend[$field] : null),
-                'append' => (isset($this->_field_append[$field]) ? $this->_field_append[$field] : null),
+                'tooltip' => $this->_set_tooltip[$field] ?? null,
+                'position' => $this->_field_position[$field] ?? 1,
+                'prepend' => $this->_field_prepend[$field] ?? null,
+                'append' => $this->_field_append[$field] ?? null,
                 'merged' => in_array($field, $merged_fields),
                 'escape' => ! isset($this->_merge_content[$field])
             ];
 
-            if (array_intersect($field_type, ['image', 'images', 'carousel'])) {
-                // Image type field
+            // Type-specific adjustments
+            if (in_array($final_type, ['image', 'images', 'carousel'])) {
                 $field_data[$field]['placeholder'] = get_image($this->_set_upload_path, 'placeholder.png', 'thumb');
-            } elseif (array_intersect($field_type, ['hyperlink']) && isset($type['hyperlink']['beta'])) {
-                // File type hyperkink
+            } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
                 $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
             }
 
-            // Find and replace Twig formatted content
-            if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false && strpos($field_data[$field]['content'], '}}')) {
-                // Replace content
+            // Parse Twig within content (Double Parsing check)
+            if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false) {
                 $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
             }
 
-            // Parse content if request is made through non-promise request
-            if (! service('request')->isAJAX() && ! $this->api_client && end($field_type)) {
-                // Get or create component of matches last field type element
-                $component = $this->builder->get_component($this->_set_theme, 'view', end($field_type));
+            // Scaffolding: Create template if missing
+            if (! $request->isAJAX() && ! $this->api_client && $final_type) {
+                $this->builder->get_component($this->_set_theme, 'view', $final_type);
             }
         }
 
-        $column_size = 6;
-        $column_offset = 3;
+        // 4. Final Output Preparation
         $highest_column = 1;
-
-        if (is_array($this->_field_position) && sizeof($this->_field_position) > 0) {
+        if (! empty($this->_field_position)) {
             $highest_column = max($this->_field_position);
         }
 
-        $query_params = array_replace(service('request')->getGet(), $primary_key);
+        $query_params = array_replace($request->getGet(), $primary_key);
 
         if ($this->api_client) {
             unset($query_params['aksara'], $query_params['limit']);
         }
 
-        $output = [
+        return [
             'column_size' => $this->_column_size,
             'column_total' => $highest_column,
             'extra_action' => [
@@ -263,7 +248,75 @@ class View
             'grouped_field' => $this->_group_field,
             'query_params' => $query_params
         ];
+    }
 
-        return $output;
+    /**
+     * Sort fields based on controller configuration.
+     */
+    private function _sort_fields(array $serialized): array
+    {
+        $order_source = [];
+
+        if (! empty($this->_view_order)) {
+            $order_source = $this->_view_order;
+        } elseif (! empty($this->_field_order)) {
+            $order_source = $this->_field_order;
+        } elseif (! empty($this->_column_order)) {
+            $order_source = $this->_column_order;
+        }
+
+        if (! empty($order_source)) {
+            $sorted = [];
+            foreach ($order_source as $val) {
+                if (array_key_exists($val, $serialized)) {
+                    $sorted[] = $val;
+                }
+            }
+            return array_replace(array_flip($sorted), $serialized);
+        }
+
+        return $serialized;
+    }
+
+    /**
+     * Determine valid input type from type definition.
+     */
+    private function _get_input_type(array $type): array
+    {
+        $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
+
+        if (empty($field_type)) {
+            $field_type = ['text'];
+        }
+
+        if (count($field_type) > 1) {
+            array_pop($field_type);
+        }
+
+        return $field_type;
+    }
+
+    /**
+     * Process merge content using Callback or Parser.
+     */
+    private function _merge_content(string $field, array $replacement): mixed
+    {
+        $merge_config = $this->_merge_content[$field];
+
+        if (! empty($merge_config['callback'])) {
+            $router = Services::router();
+
+            // Execute Controller Callback
+            $namespace = $router->controllerName();
+            $class = new $namespace();
+            $callback = $merge_config['callback'];
+
+            if (method_exists($class, $callback)) {
+                return $class->$callback($replacement);
+            }
+        }
+
+        // Execute String Parsing
+        return $this->parser->parse($merge_config['parameter'], $replacement);
     }
 }

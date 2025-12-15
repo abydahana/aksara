@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Media extends \Aksara\Laboratory\Core
+use CodeIgniter\Files\File;
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Media extends Core
 {
     private $_folders = [];
     private $_files = [];
@@ -36,11 +40,11 @@ class Media extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        if (service('request')->getGet('action') == 'delete') {
-            return $this->_delete_file(service('request')->getGet('file'));
+        if ($this->request->getGet('action') == 'delete') {
+            return $this->_delete_file($this->request->getGet('file'));
         }
 
-        $directory = service('request')->getGet('directory');
+        $directory = $this->request->getGet('directory');
 
         // Validasi dan normalisasi path
         $directory = $this->_sanitize_path($directory);
@@ -122,7 +126,7 @@ class Media extends \Aksara\Laboratory\Core
             }
 
             unlink($full_path);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage());
         }
 
@@ -176,7 +180,7 @@ class Media extends \Aksara\Laboratory\Core
             unset($data[$protected_dir . DIRECTORY_SEPARATOR]);
         }
 
-        $filename = (service('request')->getGet('file') ? $this->_sanitize_path(service('request')->getGet('file')) : null);
+        $filename = ($this->request->getGet('file') ? $this->_sanitize_path($this->request->getGet('file')) : null);
         $parent_directory = ($directory ? $this->_get_parent_directory($directory) : null);
         $folders = [];
         $files = [];
@@ -193,7 +197,7 @@ class Media extends \Aksara\Laboratory\Core
                 return throw_exception(403, phrase('Access denied'));
             }
 
-            $file = new \CodeIgniter\Files\File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $file = new File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description = get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description['icon'] = $this->_get_icon($directory, $filename);
             $description['mime_type'] = $file->getMimeType();
@@ -274,7 +278,7 @@ class Media extends \Aksara\Laboratory\Core
                             continue;
                         }
 
-                        $file = new \CodeIgniter\Files\File(UPLOAD_PATH . ($directory ? DIRECTORY_SEPARATOR . $directory : null) . DIRECTORY_SEPARATOR . $val);
+                        $file = new File(UPLOAD_PATH . ($directory ? DIRECTORY_SEPARATOR . $directory : null) . DIRECTORY_SEPARATOR . $val);
                         $mime = $file->getMimeType();
 
                         if ('css' == strtolower(pathinfo($val, PATHINFO_EXTENSION))) {
