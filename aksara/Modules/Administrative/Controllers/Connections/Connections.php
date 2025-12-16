@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Connections;
 
-use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
 
@@ -152,7 +151,7 @@ class Connections extends Core
             }
 
             return throw_exception(200, phrase('The database was successfully connected!'));
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Decrypt error
             return throw_exception(403, $e->getMessage());
         }

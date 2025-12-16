@@ -19,7 +19,6 @@ namespace Aksara\Modules\Notifier\Controllers;
 
 use Config\Services;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Send extends Core
 {
@@ -131,7 +130,7 @@ class Send extends Core
                     ]
                 );
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             if ('127.0.0.1' !== $this->request->getServer('REMOTE_ADDR')) {
                 // Return for non crontab only
                 return throw_exception(500, $email->printDebugger());
@@ -217,7 +216,7 @@ class Send extends Core
                     ]
                 );
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             if ('127.0.0.1' !== $this->request->getServer('REMOTE_ADDR')) {
                 // Return for non crontab only
                 return throw_exception(500, $e->getMessage());

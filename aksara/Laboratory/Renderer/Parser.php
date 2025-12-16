@@ -82,7 +82,7 @@ class Parser
             $output = $twig->render($component, $replacement);
         } catch (\Twig\Error\LoaderError $e) {
             // LoaderError: Template file not found, implies $component is a raw string, proceed to create template
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Other Twig Errors (syntax, etc.), keep output empty
         }
 
@@ -94,7 +94,7 @@ class Parser
             if (file_exists($component) && strtolower(pathinfo($component, PATHINFO_EXTENSION)) === 'twig') {
                 try {
                     $raw_content = file_get_contents($component);
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     // Failed to load file content, return empty string instead of exit()
                     return '';
                 }
@@ -106,7 +106,7 @@ class Parser
 
                 // Render content
                 $output = $template->render($replacement);
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Final safe abstraction if parsing raw content fails
             }
         }

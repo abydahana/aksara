@@ -2068,7 +2068,7 @@ abstract class Core extends Controller
                                 'delta' => null
                             ];
                         }
-                    } catch (Throwable $e) {
+                    } catch (\Throwable $e) {
                         // Safe abstraction
                         exit($e->getMessage());
                     }
@@ -3264,11 +3264,9 @@ abstract class Core extends Controller
 
             // Send to client
             if ('print' == $this->_method) {
-                echo $output;
-
-                return true;
+                return $this->response->setBody($output)->sendBody();
             } else {
-                return $document->generate($output, $title, ('export' == $this->_method ? 'export' : 'embed'));
+                return $document->generate($output, $title, ('export' == $this->_method ? ($this->request->getGet('method') ?? 'export') : 'embed'));
             }
         } elseif ($this->api_client && 'GET' != $this->request->getServer('REQUEST_METHOD')) {
             // The method is requested from REST without GET
@@ -5864,7 +5862,7 @@ abstract class Core extends Controller
                     if ($filename && is_file($path)) {
                         try {
                             unlink($path);
-                        } catch (Throwable $e) {
+                        } catch (\Throwable $e) {
                             // Safe abstraction: error during unlink (e.g., permissions)
                         }
                     }
@@ -6080,7 +6078,7 @@ abstract class Core extends Controller
                     // Update all counters for a new unique visitor (including whole/total visits).
                     $this->_update_visit_counters(['daily', 'weekly', 'monthly', 'yearly', 'whole']);
                 }
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction (logging the error can be added here)
             }
         } else {

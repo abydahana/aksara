@@ -17,7 +17,6 @@
 
 namespace Aksara\Laboratory;
 
-use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Model;
 
@@ -139,7 +138,7 @@ class Permission
                                     // Remove session reference from logs
                                     $this->_model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                 }
-                            } catch (Throwable $e) {
+                            } catch (\Throwable $e) {
                                 // Ignore filesystem errors
                             }
                         }

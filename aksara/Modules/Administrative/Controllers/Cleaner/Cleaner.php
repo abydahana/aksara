@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Cleaner;
 
-use Throwable;
 use Aksara\Laboratory\Core;
 
 class Cleaner extends Core
@@ -85,7 +84,7 @@ class Cleaner extends Core
                             if (unlink($session_path . DIRECTORY_SEPARATOR . $val)) {
                                 $session_cleaned++;
                             }
-                        } catch (Throwable $e) {
+                        } catch (\Throwable $e) {
                             // Safe abstraction
                         }
                     }

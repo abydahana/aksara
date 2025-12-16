@@ -17,11 +17,6 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Updater;
 
-use Throwable;
-use ZipArchive;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use AppendIterator;
 use Config\Database;
 use Config\Services;
 use Aksara\Laboratory\Core;
@@ -66,7 +61,7 @@ class Updater extends Core
             );
 
             return json_decode($response->getBody());
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
@@ -108,7 +103,7 @@ class Updater extends Core
                     // Run updater
                     return $this->_run_updater($response);
                 }
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 return throw_exception(500, $e->getMessage(), current_page());
             }
 
@@ -136,7 +131,7 @@ class Updater extends Core
         $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
         $old_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
         $backup_name = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
 
         /**
          * Create backup file
@@ -146,14 +141,14 @@ class Updater extends Core
                 mkdir($tmp_path, 0755, true);
             }
 
-            $zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
             $zip->addFile(ROOTPATH . 'composer.json', 'composer.json');
             $zip->addFile(ROOTPATH . 'composer.lock', 'composer.lock');
 
-            $files = new AppendIterator();
-            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'aksara'), RecursiveIteratorIterator::LEAVES_ONLY));
-            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'public'), RecursiveIteratorIterator::LEAVES_ONLY));
-            $files->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ROOTPATH . 'themes'), RecursiveIteratorIterator::LEAVES_ONLY));
+            $files = new \AppendIterator();
+            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'aksara'), \RecursiveIteratorIterator::LEAVES_ONLY));
+            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'public'), \RecursiveIteratorIterator::LEAVES_ONLY));
+            $files->append(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(ROOTPATH . 'themes'), \RecursiveIteratorIterator::LEAVES_ONLY));
 
             foreach ($files as $name => $file) {
                 // Skip directories (they would be added automatically)
@@ -165,7 +160,7 @@ class Updater extends Core
 
             // Zip archive will be created only after closing object
             $zip->close();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Close zip
             $zip->close();
 
@@ -226,10 +221,10 @@ class Updater extends Core
                 $updater_name = 'aksara-' . $response->version;
 
                 // Create recursive directory iterator
-                $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), RecursiveIteratorIterator::LEAVES_ONLY);
+                $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), \RecursiveIteratorIterator::LEAVES_ONLY);
 
                 // Create updater package
-                $zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+                $zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 
                 // Initialize updater file collections
                 foreach ($files as $name => $file) {
@@ -255,7 +250,7 @@ class Updater extends Core
                 // Close the opened zip
                 $zip->close();
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return throw_exception(400, ['package' => $e->getMessage()]);
         }
 
@@ -373,7 +368,7 @@ class Updater extends Core
                     ],
                     'content' => $html
                 ]);
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Update failed
                 return throw_exception(400, ['upgrade' => $e->getMessage()]);
             }
@@ -388,7 +383,7 @@ class Updater extends Core
                 // Remove temporary path
                 $this->_rmdir($tmp_path);
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Backup file restore failed
             return throw_exception(400, ['upgrade' => $e->getMessage()]);
         }

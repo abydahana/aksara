@@ -21,7 +21,6 @@ use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Debug\ExceptionHandler;
 use CodeIgniter\Debug\ExceptionHandlerInterface;
 use Psr\Log\LogLevel;
-use Throwable;
 
 /**
  * Setup how the exception handler works.
@@ -114,7 +113,7 @@ class Exceptions extends BaseConfig
      *          return new \App\Libraries\MyExceptionHandler();
      *      }
      */
-    public function handler(int $statusCode, Throwable $exception): ExceptionHandlerInterface
+    public function handler(int $statusCode, \Throwable $exception): ExceptionHandlerInterface
     {
         return new ExceptionHandler($this);
     }

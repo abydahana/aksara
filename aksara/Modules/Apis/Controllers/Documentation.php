@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
 
@@ -237,7 +236,7 @@ class Documentation extends Core
                     ];
                 }
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 

@@ -24,8 +24,16 @@ namespace Aksara\Libraries;
 ini_set('pcre.backtrack_limit', 99999999);
 ini_set('memory_limit', '-1');
 
-use Throwable;
 use Config\Services;
+use Mpdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Html;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpWord\IOFactory as WordIOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\Html as WordHtml;
+use PhpOffice\PhpWord\Settings; // For unit conversion constants
+use PhpOffice\PhpWord\Style\Section; // For orientation constants
 
 class Document
 {
@@ -36,57 +44,9 @@ class Document
      */
     private $_params = [];
 
-    /**
-     * default page width
-     *
-     * @string
-     */
-    private $_pageWidth = '8.5in';
-
-    /**
-     * default page height
-     *
-     * @string
-     */
-    private $_pageHeight = '13in';
-
-    /**
-     * page orientation
-     *
-     * @string
-     */
-    private $_pageOrientation = 'portrait';
-
-    /**
-     * margin top
-     *
-     * @int
-     */
-    private $_pageMarginTop = 0;
-
-    /**
-     * margin right
-     *
-     * @int
-     */
-    private $_pageMarginRight = 0;
-
-    /**
-     * margin bottom
-     *
-     * @int
-     */
-    private $_pageMarginBottom = 0;
-
-    /**
-     * margin left
-     *
-     * @int
-     */
-    private $_pageMarginLeft = 0;
-
     public function __construct()
     {
+        // Nothing to do
     }
 
     public function generate($html = null, $filename = null, $method = 'embed', $params = [])
@@ -128,7 +88,7 @@ class Document
             // Use excel generator
             // Online doc can be found in https://xxx.xx/
             return $this->_excel($html, $filename, $method, $this->_params);
-        } elseif ('doc' == strtolower($method)) {
+        } elseif ('docx' == strtolower($method)) {
             // Use doc generator
             // Online doc can be found in https://xxx.xx/
             return $this->_word($html, $filename, $method, $this->_params);
@@ -204,6 +164,11 @@ class Document
         // Rendering mode
         $params['mode'] = 'utf-8';
 
+        // Chinese, Japan, Korean and Thai font support
+        $params['autoScriptToLang'] = true; // Auto-detect script and language
+        $params['autoLangToFont'] = true;   // Auto-select font based on language
+        $params['cjk'] = true;              // Enable CJK font support
+
         // Auto top margin
         $params['setAutoTopMargin'] = 'stretch';
 
@@ -231,14 +196,14 @@ class Document
         // DPI
         $params['dpi'] = 80;
 
-        /* check if page size is defined */
+        // Check if page size is defined
         if (isset($params['page-width']) && isset($params['page-height'])) {
             // Set the page size
             $params['format'] = [preg_replace('/[^0-9.]/', '', (float) $params['page-width']) * 25.4, (float) preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4];
         }
 
         // Load generator
-        $pdf = new \Mpdf\Mpdf($params);
+        $pdf = new Mpdf($params);
 
         // Render output
         $pdf->SetCreator('Aby Dahana (abydahana.github.io)');
@@ -256,9 +221,7 @@ class Document
 
         $pdf->WriteHTML($html);
 
-        /**
-         * Find attachment
-         */
+        // Find attachment
         preg_match_all('/<import src="(.*?)"/', $html, $attachment);
 
         if (isset($attachment[1]) && $attachment[1]) {
@@ -269,16 +232,15 @@ class Document
                 mkdir(UPLOAD_PATH . '/tmp', 0755, true);
             }
 
-            /**
-             * Import attachment
-             */
+            // Import attachment
             foreach ($attachment[1] as $key => $val) {
-                //$pdf->SetImportUse(); // Only with mPDF <8.0
-
                 $filename = basename($val);
 
                 try {
-                    $file_content = copy(str_replace(base_url(), '', $val), UPLOAD_PATH . '/tmp' . '/' . $filename);
+                    // Copy attachment source
+                    copy(str_replace(base_url(), '', $val), UPLOAD_PATH . '/tmp' . '/' . $filename);
+
+                    // Read attachment
                     $pagecount = $pdf->SetSourceFile(UPLOAD_PATH . '/tmp' . '/' . $filename);
 
                     for ($i = 1; $i <= ($pagecount); $i++) {
@@ -288,12 +250,13 @@ class Document
                         $pdf->UseTemplate($template_id, 0, 0, $size['width'], $size['height'], true);
 
                         if ($i < $pagecount) {
+                            // Add attachment to page
                             $pdf->AddPage();
                         }
                     }
 
                     unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     // Debug
                 }
             }
@@ -313,34 +276,37 @@ class Document
 
     private function _excel($html = null, $filename = null, $method = 'embed', $params = [])
     {
-        if (! $html) {
-            // Safe check
-            return false;
+        if (empty($html) || empty($filename)) {
+            throw new \InvalidArgumentException('HTML and filename are required');
         }
 
         libxml_use_internal_errors(true);
 
-        // Remove special tags
+        // Remove special tags (htmlpagefooter, htmlpageheader)
         $html = preg_replace('/<htmlpagefooter(.*)<\/htmlpagefooter>/iUs', '', preg_replace('/<htmlpageheader(.*)<\/htmlpageheader>/iUs', '', $html));
 
-        // Load dom
+        // Load HTML content into DOM
         $dom = new \DOMDocument();
         $dom->encoding = 'UTF-8';
+
         $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 
-        // Get only style element
+        libxml_clear_errors();
+
+        // Get and concatenate existing style elements
         $styles = $dom->getElementsByTagName('style');
-        $css = null;
+        $css = '';
 
         foreach ($styles as $style) {
-            $css = $dom->saveHTML($style);
+            $css .= $dom->saveHTML($style);
         }
 
-        // Get only table element
+        // Get and concatenate target table elements (class="table")
         $tables = $dom->getElementsByTagName('table');
-        $output = null;
+        $output = '';
 
         foreach ($tables as $table) {
+            // Filter: only process tables with class 'table'
             if ($table->getAttribute('class') !== 'table') {
                 continue;
             }
@@ -348,32 +314,224 @@ class Document
             $output .= $dom->saveHTML($table);
         }
 
-        $output = '<!DOCTYPE html><head><meta charset="UTF-8"><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
+        // Check if any tables were extracted
+        if (empty($output)) {
+            // No tables found with the required class
+            error_log('EXCEL EXPORT: No tables with class "table" found.');
+            return false;
+        }
 
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
-        $spreadsheet = $reader->loadFromString($output);
+
+        // Construct final HTML string for the PhpSpreadsheet HTML Reader
+        $html_for_reader = '<!DOCTYPE html><head><meta charset="UTF-8"><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
+
+        $reader = new Html();
+        $spreadsheet = $reader->loadFromString($html_for_reader);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Arial');
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
 
-        header('Content-Transfer-Encoding: binary');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.xlsx"');
+        // --- EXPLICIT BORDER IMPLEMENTATION ---
+        $sheet = $spreadsheet->getActiveSheet();
 
-        $writer->save('php://output');
+        // 1. Determine the range of cells containing the imported table data
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $range = 'A1:' . $highestColumn . $highestRow;
+
+        // 2. Define the border style array
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    // Use THIN border style
+                    'borderStyle' => Border::BORDER_THIN, // Tambahkan namespace penuh di sini
+                    // Use Black color
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        // 3. Apply the style to the entire data range (for borders)
+        $sheet->getStyle($range)->applyFromArray($styleArray);
+        // --- END BORDER IMPLEMENTATION ---
+
+        // --- BOLD HEADER IMPLEMENTATION START ---
+        // 1. Define the bold style array
+        $boldStyle = [
+            'font' => [
+                'bold' => true,
+            ],
+        ];
+
+        // 2. Determine the header range (Row 1, from A1 to the highest column)
+        $headerRange = 'A1:' . $highestColumn . '1';
+
+        // 3. Apply the bold style to the entire first row
+        $sheet->getStyle($headerRange)->applyFromArray($boldStyle);
+        // --- BOLD HEADER IMPLEMENTATION END ---
+
+        // Use an Exception block to catch issues during file writing
+        try {
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.xlsx';
+
+            // Set required HTTP headers for file download
+            header('Content-Transfer-Encoding: binary');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
+            header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
+
+            // Clear any premature output content before writing the binary file
+            if (ob_get_length() > 0) {
+                ob_clean();
+            }
+
+            $writer->save('php://output');
+
+            // Terminate script execution after file is sent
+            exit;
+
+        } catch (\Throwable $e) {
+            // Log the critical error
+            error_log('PhpSpreadsheet Write Error: ' . $e->getMessage());
+
+            // Clean output buffer to prevent corrupted response
+            if (ob_get_level() > 0) {
+                ob_clean();
+            }
+
+            return false;
+        }
     }
 
     private function _word($html = null, $filename = null, $method = 'embed', $params = [])
     {
+        // --- 0. Configuration & Default Parameters ---
+
+        // Define the core conversion ratio (1 mm = 1440 TWIP / 25.4 mm)
+        // We define this locally as a fallback since Settings::MM_TO_TWIP is missing.
+        $MM_TO_TWIP_VALUE = 1440 / 25.4;
+
+        // Set default values if not present
+        if (! isset($params['page-width'])) {
+            $params['page-width'] = '8.5in'; // Default to 8.5 inches
+        }
+        if (! isset($params['page-height'])) {
+            $params['page-height'] = '13in'; // Default to 13 inches
+        }
+        // Margins (Assuming 10mm)
+        if (! isset($params['margin-top'])) {
+            $params['margin-top'] = 10;
+        }
+        if (! isset($params['margin-right'])) {
+            $params['margin-right'] = 10;
+        }
+        if (! isset($params['margin-bottom'])) {
+            $params['margin-bottom'] = 10;
+        }
+        if (! isset($params['margin-left'])) {
+            $params['margin-left'] = 10;
+        }
+
+        // 1. Safety Check and HTML Preprocessing
+        if (! $html) {
+            return false;
+        }
+
         $html = preg_replace('/<htmlpagefooter[^>].*?<\/htmlpagefooter>/s', '', $html);
+
+        // 2. Initialize PhpWord
+        $phpWord = new PhpWord();
+        $phpWord->setDefaultFontName('Calibri');
+        $phpWord->setDefaultFontSize(11);
+
+        // --- APPLY SECTION STYLE (PAGESIZE & MARGINS) ---
+
+        // Parse dimensions and convert to TWIP
+        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-width'], $width_matches);
+        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-height'], $height_matches);
+
+        // Calculate TWIP values using the helper function and passing the ratio
+        $pageWidthTWIP = $this->_convertToTwip($width_matches[1] ?? 0, $width_matches[2] ?? '', $MM_TO_TWIP_VALUE);
+        $pageHeightTWIP = $this->_convertToTwip($height_matches[1] ?? 0, $height_matches[2] ?? '', $MM_TO_TWIP_VALUE);
+
+        // Define the Section Style Array
+        $sectionStyle = [
+            // Page Size (Converted to TWIP)
+            'pageSizeW' => $pageWidthTWIP,
+            'pageSizeH' => $pageHeightTWIP,
+
+            // Margins (Multiplying millimeter value by the calculated TWIP ratio)
+            'marginTop'    => $params['margin-top'] * $MM_TO_TWIP_VALUE,
+            'marginRight'  => $params['margin-right'] * $MM_TO_TWIP_VALUE,
+            'marginBottom' => $params['margin-bottom'] * $MM_TO_TWIP_VALUE,
+            'marginLeft'   => $params['margin-left'] * $MM_TO_TWIP_VALUE,
+
+            // Auto Orientation
+            'orientation' => ($pageWidthTWIP > $pageHeightTWIP) ? Section::ORIENTATION_LANDSCAPE : Section::ORIENTATION_PORTRAIT,
+        ];
+
+        // Add a section with the defined style
+        $section = $phpWord->addSection($sectionStyle);
+        // --- END APPLY SECTION STYLE ---
+
+        // 3. Table Style with Border
+        $tableStyle = [
+            'borderColor' => '000000',
+            'borderSize'  => 6,  // in half-points (6 = 3pt)
+            'cellMargin'  => 80, // padding in TWIP
+        ];
+
+        $phpWord->addTableStyle('TableWithBorder', $tableStyle);
+
+        // 4. Import HTML Content
+        WordHtml::addHtml($section, $html, false, false);
+
+        // 5. Set Headers for DOCX Download
+        $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.docx';
 
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        header('Content-Type: application/vnd.ms-word');
-        header('Content-Disposition: attachment; filename="' . str_replace('"', '', $filename) . '.doc"');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
 
-        echo $html;
+        if (ob_get_length() > 0) {
+            ob_clean();
+        }
+
+        // 6. Create Writer and Output File
+        try {
+            $writer = WordIOFactory::createWriter($phpWord, 'Word2007');
+            $writer->save('php://output');
+
+            exit;
+        } catch (\Throwable $e) {
+            error_log('PhpWord Write Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Converts a dimension value from a unit (in, mm, cm) to TWIP.
+     * @param float $value The numerical value.
+     * @param string $unit The unit (in, mm, cm).
+     * @param float $mmTwipRatio The calculated ratio of MM to TWIP (e.g., 1440/25.4).
+     * @return int The value in TWIP.
+     */
+    private function _convertToTwip($value, $unit, $mmTwipRatio)
+    {
+        $value = (float) $value;
+        $unit = strtolower($unit);
+
+        switch ($unit) {
+            case 'in': // Inches to TWIP
+                return round($value * 1440);
+            case 'mm': // Millimeters to TWIP (Uses the passed ratio)
+                return round($value * $mmTwipRatio);
+            case 'cm': // Centimeters to TWIP (1 cm = 10 mm)
+                return round($value * 10 * $mmTwipRatio);
+            default:
+                return round($value);
+        }
     }
 }

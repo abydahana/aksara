@@ -17,9 +17,6 @@
 
 namespace Aksara\Laboratory;
 
-use stdClass;
-use DateTime;
-use Throwable;
 use Config\Services;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\Database\Query;
@@ -197,7 +194,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Decrypt error
                 // Assuming throw_exception is a defined global function
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
@@ -209,7 +206,7 @@ class Model
 
                 // Try to initialize the connection
                 $this->db->initialize();
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
             }
         } elseif (is_string($driver) && $hostname && $username && $database) {
@@ -238,7 +235,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
             }
         }
@@ -2692,9 +2689,9 @@ class Model
                 // CodeIgniter treats 'double' as float, matching CI's type mapping
                 $cast_type = 'DOUBLE'; // Or 'FLOAT'
                 $value = (float) $value;
-            } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false)) {
+            } elseif (is_string($value) && (\DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false)) {
                 $cast_type = ('SQLSRV' == $this->db->DBDriver ? 'DATETIME' : 'TIMESTAMP');
-            } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d', $value) !== false)) {
+            } elseif (is_string($value) && (\DateTime::createFromFormat('Y-m-d', $value) !== false)) {
                 $cast_type = 'DATE';
             } elseif (! is_array($value) && null !== $value) {
                 $cast_type = 'VARCHAR' . ('SQLSRV' == $this->db->DBDriver ? '(MAX)' : '');

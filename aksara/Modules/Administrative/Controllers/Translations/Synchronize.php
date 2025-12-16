@@ -17,9 +17,6 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
-use Throwable;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use Aksara\Laboratory\Core;
 
 class Synchronize extends Core
@@ -60,7 +57,7 @@ class Synchronize extends Core
 
                     // Merge phrases
                     $populated_phrases = array_merge($populated_phrases, json_decode($translation, true));
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     // Failed to read file
                     $error++;
                 }
@@ -97,7 +94,7 @@ class Synchronize extends Core
                     ksort($phrases);
 
                     file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     // Failed to read or write file
                     $error++;
                 }
@@ -136,8 +133,8 @@ class Synchronize extends Core
      */
     private function _scan_directory($directory, $fileExtensions, &$translations)
     {
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
         foreach ($iterator as $file) {

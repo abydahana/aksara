@@ -124,7 +124,7 @@ class Builder
                     $component = file_get_contents($requested_file);
                 }
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Log error or handle gracefully instead of exiting
             // exit($e->getMessage()); // Avoid using exit() in libraries
             return false;

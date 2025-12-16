@@ -17,8 +17,6 @@
 
 namespace Aksara\Laboratory;
 
-use stdClass;
-use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Model;
 use Aksara\Libraries\Beautifier;
@@ -123,11 +121,11 @@ class Template
     {
         if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/theme.json')) {
             // Check if active theme has a property
-            $property = new stdClass();
+            $property = new \stdClass();
 
             try {
                 $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/theme.json'));
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
 
@@ -619,7 +617,7 @@ class Template
     {
         if (! $data) {
             // Safe abstraction
-            $data = new stdClass();
+            $data = new \stdClass();
         } elseif (is_array($data)) {
             // Convert array to object
             $data = json_decode(json_encode($data), false);

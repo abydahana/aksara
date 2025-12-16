@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
-use Throwable;
 use Config\Services;
 use Hybridauth\Hybridauth;
 use Aksara\Libraries\Messaging;
@@ -155,7 +154,7 @@ class Auth extends Core
                                             // Update table to skip getting session_id on next execution
                                             $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                         }
-                                    } catch (Throwable $e) {
+                                    } catch (\Throwable $e) {
                                         // Safe abstraction
                                     }
                                 }
@@ -301,7 +300,7 @@ class Auth extends Core
 
                 // Disconnect the adapter (log out)
                 $adapter->disconnect();
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -376,7 +375,7 @@ class Auth extends Core
             $encrypter = Services::encrypter();
 
             $user_id = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Safe abstraction
         }
 
