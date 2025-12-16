@@ -389,7 +389,6 @@ class Document
 
             // Terminate script execution after file is sent
             exit;
-
         } catch (\Throwable $e) {
             // Log the critical error
             error_log('PhpSpreadsheet Write Error: ' . $e->getMessage());
@@ -461,10 +460,10 @@ class Document
             'pageSizeH' => $pageHeightTWIP,
 
             // Margins (Multiplying millimeter value by the calculated TWIP ratio)
-            'marginTop'    => $params['margin-top'] * $MM_TO_TWIP_VALUE,
-            'marginRight'  => $params['margin-right'] * $MM_TO_TWIP_VALUE,
+            'marginTop' => $params['margin-top'] * $MM_TO_TWIP_VALUE,
+            'marginRight' => $params['margin-right'] * $MM_TO_TWIP_VALUE,
             'marginBottom' => $params['margin-bottom'] * $MM_TO_TWIP_VALUE,
-            'marginLeft'   => $params['margin-left'] * $MM_TO_TWIP_VALUE,
+            'marginLeft' => $params['margin-left'] * $MM_TO_TWIP_VALUE,
 
             // Auto Orientation
             'orientation' => ($pageWidthTWIP > $pageHeightTWIP) ? Section::ORIENTATION_LANDSCAPE : Section::ORIENTATION_PORTRAIT,
@@ -477,8 +476,8 @@ class Document
         // 3. Table Style with Border
         $tableStyle = [
             'borderColor' => '000000',
-            'borderSize'  => 6,  // in half-points (6 = 3pt)
-            'cellMargin'  => 80, // padding in TWIP
+            'borderSize' => 6,  // in half-points (6 = 3pt)
+            'cellMargin' => 80, // padding in TWIP
         ];
 
         $phpWord->addTableStyle('TableWithBorder', $tableStyle);

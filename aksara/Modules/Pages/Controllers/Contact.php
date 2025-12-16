@@ -109,7 +109,7 @@ class Contact extends Core
                 // Log errors
                 log_message('error', 'Email failed to send: ' . $error_message);
 
-                return throw_exception(400, array('message' => phrase('An unknown error occurred during email delivery.')));
+                return throw_exception(400, ['message' => phrase('An unknown error occurred during email delivery.')]);
             }
         }
 

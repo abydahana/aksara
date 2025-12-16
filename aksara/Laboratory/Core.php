@@ -10,6 +10,9 @@
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
+ *
+ * When the signs is coming, those who don't believe at "that time"
+ * have only two choices, commit suicide or become brutal.
  */
 
 namespace Aksara\Laboratory;
@@ -33,7 +36,6 @@ abstract class Core extends Controller
 
     /**
      * Flag indicating if the request originated from an API Client.
-     * @var bool
      */
     protected bool $api_client = false;
 
@@ -69,21 +71,19 @@ abstract class Core extends Controller
 
     /**
      * CSRF Token storage.
-     * @var string|null
      */
     private ?string $_token = null;
 
     /**
      * Flag indicating if the submitted API token is valid.
-     * @var bool
      */
     private bool $_api_token = false;
 
     /**
-    * Controller constructor, initializes dependencies and validates request integrity.
-    *
-    * @return void
-    */
+     * Controller constructor, initializes dependencies and validates request integrity.
+     *
+     * @return void
+     */
     public function __construct()
     {
         // Start benchmarking timer.
@@ -318,18 +318,18 @@ abstract class Core extends Controller
         }
 
         // Process permissive group string to array.
-        if (!empty($permissive_group) && !is_array($permissive_group)) {
+        if (! empty($permissive_group) && ! is_array($permissive_group)) {
             $permissive_group = array_map('trim', explode(',', $permissive_group));
         }
 
         // Authorization checks (removed complex conditional logic for brevity, maintaining original flow):
         if (in_array($this->_method, $this->_unset_method)) {
             return throw_exception(403, phrase('The method you requested is not acceptable.'));
-        } elseif ($this->_set_permission && !get_userdata('is_logged') && !$this->_api_token) {
+        } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->_api_token) {
             return throw_exception(403, phrase('Your session has been expired.'));
-        } elseif (!$this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && !$this->_api_token) {
+        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_api_token) {
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
-        } elseif ($permissive_group && !in_array(get_userdata('group_id'), $permissive_group) && !$this->_api_token) {
+        } elseif ($permissive_group && ! in_array(get_userdata('group_id'), $permissive_group) && ! $this->_api_token) {
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         }
 
@@ -854,7 +854,7 @@ abstract class Core extends Controller
         }
 
         // Filter out null values before merging
-        $params = array_filter($params, fn($v) => $v !== null);
+        $params = array_filter($params, fn ($v) => null !== $v);
 
         // Merge array and store to property
         $this->_add_class = array_merge($this->_add_class ?? [], $params);
@@ -886,8 +886,7 @@ abstract class Core extends Controller
         mixed $beta = null,
         mixed $charlie = null,
         ?string $delta = null
-    ): static
-    {
+    ): static {
         // --- 1. Normalize Input to Associative Array [field_name => type_string] ---
         $fields_to_process = [];
 
@@ -901,8 +900,9 @@ abstract class Core extends Controller
 
         // --- 2. Process Each Field and its Type(s) ---
         foreach ($fields_to_process as $field_name => $type_string) {
-
-            if (! $type_string) continue;
+            if (! $type_string) {
+                continue;
+            }
 
             $types = [];
 
@@ -918,7 +918,6 @@ abstract class Core extends Controller
 
             // Loop through each field type (e.g., 'image', 'editable', 'custom_format')
             foreach ($types as $current_type) {
-
                 if ('custom_format' == $current_type) {
                     $this->_custom_format = true;
                 }
@@ -946,8 +945,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params The field name or an associative array [field_name => tooltip_text].
      * @param string|null $value The tooltip text (if $params is a field name).
-     *
-     * @return static
      */
     public function set_tooltip(string|array $params = [], ?string $value = null): static
     {
@@ -966,8 +963,6 @@ abstract class Core extends Controller
      * The function to unset the field from form/update (CREATE/UPDATE methods).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
-     *
-     * @return static
      */
     public function unset_field(string|array $params = []): static
     {
@@ -984,8 +979,6 @@ abstract class Core extends Controller
      * The function to unset the column from table view (INDEX/LIST methods).
      *
      * @param string|array $params Comma-separated column names or an array of column names.
-     *
-     * @return static
      */
     public function unset_column(string|array $params = []): static
     {
@@ -1002,8 +995,6 @@ abstract class Core extends Controller
      * The function to unset the field on view data (READ method).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
-     *
-     * @return static
      */
     public function unset_view(string|array $params = []): static
     {
@@ -1020,8 +1011,6 @@ abstract class Core extends Controller
      * The function to rearrange the columns in the table view.
      *
      * @param string|array $params Comma-separated column names or an array of column names.
-     *
-     * @return static
      */
     public function column_order(string|array $params = []): static
     {
@@ -1038,8 +1027,6 @@ abstract class Core extends Controller
      * The function to rearrange the field on view data (READ method).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
-     *
-     * @return static
      */
     public function view_order(string|array $params = []): static
     {
@@ -1056,8 +1043,6 @@ abstract class Core extends Controller
      * The function to rearrange the field in form (CREATE/UPDATE methods).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
-     *
-     * @return static
      */
     public function field_order(string|array $params = []): static
     {
@@ -1075,8 +1060,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
      * @param array $value Array of primary key values to deny (if $params is a field name).
-     *
-     * @return static
      */
     public function unset_read(string|array $params = [], array $value = []): static
     {
@@ -1096,8 +1079,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
      * @param array $value Array of primary key values to deny (if $params is a field name).
-     *
-     * @return static
      */
     public function unset_update(string|array $params = [], array $value = []): static
     {
@@ -1117,8 +1098,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
      * @param array $value Array of primary key values to deny (if $params is a field name).
-     *
-     * @return static
      */
     public function unset_delete(string|array $params = [], array $value = []): static
     {
@@ -1139,8 +1118,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => default_value].
      * @param mixed|null $value Default value (if $params is a field name).
-     *
-     * @return static
      */
     public function set_default(string|array $params = [], mixed $value = null): static
     {
@@ -1160,8 +1137,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => validation_rules_string|array].
      * @param string|null $value Validation rules string (e.g., 'required|max_length[255]') (if $params is a field name).
-     *
-     * @return static
      */
     public function set_validation(string|array $params = [], ?string $value = null): static
     {
@@ -1219,8 +1194,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => alias_text].
      * @param string|null $value Alias text (if $params is a field name).
-     *
-     * @return static
      */
     public function set_alias(string|array $params = [], ?string $value = null): static
     {
@@ -1240,8 +1213,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => heading_text].
      * @param string|null $value Heading text (if $params is a field name).
-     *
-     * @return static
      */
     public function set_heading(string|array $params = [], ?string $value = null): static
     {
@@ -1261,8 +1232,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Key or an associative array [key => value].
      * @param mixed $value Value (if $params is a key).
-     *
-     * @return static
      */
     public function set_output(string|array $params = [], mixed $value = []): static
     {
@@ -1281,8 +1250,6 @@ abstract class Core extends Controller
      * Prevent the field from being truncated in the table view.
      *
      * @param string|array $field Comma-separated field names or an array of field names.
-     *
-     * @return static
      */
     public function unset_truncate(string|array $field): static
     {
@@ -1310,8 +1277,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => position].
      * @param string|null $value Position (if $params is a field name).
-     *
-     * @return static
      */
     public function field_position(string|array $params = [], ?string $value = null): static
     {
@@ -1331,8 +1296,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Column name or an associative array [column_name => width_percent].
      * @param string|null $value Width percentage string (e.g., '10%') (if $params is a column name).
-     *
-     * @return static
      */
     public function column_size(string|array $params = [], ?string $value = null): static
     {
@@ -1353,8 +1316,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => column_class].
      * @param string|null $value Column class (if $params is a field name).
-     *
-     * @return static
      */
     public function field_size(string|array $params = [], ?string $value = null): static
     {
@@ -1374,8 +1335,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => html_string].
      * @param string|null $value HTML string (if $params is a field name).
-     *
-     * @return static
      */
     public function field_prepend(string|array $params = [], ?string $value = null): static
     {
@@ -1395,8 +1354,6 @@ abstract class Core extends Controller
      *
      * @param string|array $params Field name or an associative array [field_name => html_string].
      * @param string|null $value HTML string (if $params is a field name).
-     *
-     * @return static
      */
     public function field_append(string|array $params = [], ?string $value = null): static
     {
@@ -1667,8 +1624,7 @@ abstract class Core extends Controller
         ?string $group_by = null,
         int $limit = 0,
         bool $translate = false
-    ): static
-    {
+    ): static {
         // --- 1. Initial Setup and Magic String Extraction ---
         $alias = $field;
         preg_match_all('/\{\{(.*?)\}\}/', $output, $matches);
@@ -1716,7 +1672,7 @@ abstract class Core extends Controller
                 $this->_unset_view[] = $key_name;
 
                 // Handle masking for composite keys (original logic)
-                if ($key == 0) {
+                if (0 == $key) {
                     // The first key is often used as the primary identifier for the merged field.
                     // The original code has complex logic to add an alias_masking column here,
                     // which is highly specific to Aksara's rendering.
@@ -1869,8 +1825,7 @@ abstract class Core extends Controller
         array $order_by = [],
         ?string $group_by = null,
         int $limit = 0
-    ): static
-    {
+    ): static {
         // --- 1. Normalize Output and Extract Magic Strings ---
         $value = $output['value'] ?? $output[0] ?? null;
         $label = $output['label'] ?? $output[1] ?? null;
@@ -2184,16 +2139,16 @@ abstract class Core extends Controller
     }
 
     /**
-    * Renders the final result into the appropriate view, API response, or document format.
-    *
-    * This method coordinates security checks, query building, form handling (CRUD),
-    * and output formatting, serving as the main dispatcher for the framework's output.
-    *
-    * @param string|null $table The primary database table to be rendered.
-    * @param string|null $view  The template view file to be used.
-    *
-    * @return object|string Returns the result of the executed controller method (View content string, JSON array, or Exception object).
-    */
+     * Renders the final result into the appropriate view, API response, or document format.
+     *
+     * This method coordinates security checks, query building, form handling (CRUD),
+     * and output formatting, serving as the main dispatcher for the framework's output.
+     *
+     * @param string|null $table The primary database table to be rendered.
+     * @param string|null $view  The template view file to be used.
+     *
+     * @return object|string Returns the result of the executed controller method (View content string, JSON array, or Exception object).
+     */
     public function render(?string $table = null, ?string $view = null): object|array|string
     {
         // Debugger
@@ -3977,8 +3932,6 @@ abstract class Core extends Controller
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or data manipulation
      * immediately before a new record is inserted (CREATE operation).
-     *
-     * @return mixed
      */
     protected function before_insert()
     {
@@ -4002,8 +3955,6 @@ abstract class Core extends Controller
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or data manipulation
      * immediately before an existing record is updated (UPDATE operation).
-     *
-     * @return mixed
      */
     protected function before_update()
     {
@@ -4027,8 +3978,6 @@ abstract class Core extends Controller
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or related tasks
      * immediately before a record is permanently deleted (DELETE operation).
-     *
-     * @return mixed
      */
     protected function before_delete()
     {
@@ -4116,7 +4065,6 @@ abstract class Core extends Controller
 
                 // Send success response
                 return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirect_back);
-
             } else {
                 // --- 6. Failure: Error Handling and Cleanup ---
                 $this->_unlink_files(get_userdata('_uploaded_files'));
@@ -4491,8 +4439,6 @@ abstract class Core extends Controller
      * Select field
      *
      * Possible to use comma separated string or array.
-     *
-     * @param string|array $column
      */
     public function select(string|array $column, bool $escape = true): static
     {
@@ -4587,8 +4533,6 @@ abstract class Core extends Controller
 
     /**
      * Prevent column to be selected
-     *
-     * @param string|array $column
      */
     public function unset_select(string|array $column): static
     {
@@ -4662,8 +4606,6 @@ abstract class Core extends Controller
 
     /**
      * Where clause
-     *
-     * @param string|array $field
      */
     public function where(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4680,8 +4622,6 @@ abstract class Core extends Controller
 
     /**
      * Or where clause
-     *
-     * @param string|array $field
      */
     public function or_where(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4698,8 +4638,6 @@ abstract class Core extends Controller
 
     /**
      * Where in clause
-     *
-     * @param string|array $field
      */
     public function where_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4716,8 +4654,6 @@ abstract class Core extends Controller
 
     /**
      * Or where in clause
-     *
-     * @param string|array $field
      */
     public function or_where_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4734,8 +4670,6 @@ abstract class Core extends Controller
 
     /**
      * Where not in clause
-     *
-     * @param string|array $field
      */
     public function where_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4752,8 +4686,6 @@ abstract class Core extends Controller
 
     /**
      * Or where not in clause
-     *
-     * @param string|array $field
      */
     public function or_where_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4770,8 +4702,6 @@ abstract class Core extends Controller
 
     /**
      * Like clause
-     *
-     * @param string|array $field
      */
     public function like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = true): static
     {
@@ -4790,8 +4720,6 @@ abstract class Core extends Controller
 
     /**
      * Or like clause
-     *
-     * @param string|array $field
      */
     public function or_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -4808,8 +4736,6 @@ abstract class Core extends Controller
 
     /**
      * Not like clause
-     *
-     * @param string|array $field
      */
     public function not_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -4826,8 +4752,6 @@ abstract class Core extends Controller
 
     /**
      * Or not like clause
-     *
-     * @param string|array $field
      */
     public function or_not_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -4844,8 +4768,6 @@ abstract class Core extends Controller
 
     /**
      * Having clause
-     *
-     * @param string|array $field
      */
     public function having(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4862,8 +4784,6 @@ abstract class Core extends Controller
 
     /**
      * Or having clause
-     *
-     * @param string|array $field
      */
     public function or_having(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4880,8 +4800,6 @@ abstract class Core extends Controller
 
     /**
      * Having in clause
-     *
-     * @param string|array $field
      */
     public function having_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4898,8 +4816,6 @@ abstract class Core extends Controller
 
     /**
      * Or having in clause
-     *
-     * @param string|array $field
      */
     public function or_having_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4916,8 +4832,6 @@ abstract class Core extends Controller
 
     /**
      * Having not in clause
-     *
-     * @param string|array $field
      */
     public function having_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4934,8 +4848,6 @@ abstract class Core extends Controller
 
     /**
      * Or having not in clause
-     *
-     * @param string|array $field
      */
     public function or_having_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
@@ -4952,8 +4864,6 @@ abstract class Core extends Controller
 
     /**
      * Having like clause
-     *
-     * @param string|array $field
      */
     public function having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -4970,8 +4880,6 @@ abstract class Core extends Controller
 
     /**
      * Or having like clause
-     *
-     * @param string|array $field
      */
     public function or_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -4988,8 +4896,6 @@ abstract class Core extends Controller
 
     /**
      * Not having like clause
-     *
-     * @param string|array $field
      */
     public function not_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -5006,8 +4912,6 @@ abstract class Core extends Controller
 
     /**
      * Or not having like clause
-     *
-     * @param string|array $field
      */
     public function or_not_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
@@ -5024,8 +4928,6 @@ abstract class Core extends Controller
 
     /**
      * Ordering result query
-     *
-     * @param string|array $field
      */
     public function order_by(string|array $field = [], string $direction = '', bool $escape = true): static
     {
@@ -5478,7 +5380,7 @@ abstract class Core extends Controller
             // Run query with limit/offset for debug output
             $query_builder = $this->_run_query($table);
 
-            if ($this->_limit !== null) {
+            if (null !== $this->_limit) {
                 $query_builder->limit($this->_limit, $this->_offset ?? 0);
             }
             $query = $query_builder->result();
@@ -5498,7 +5400,7 @@ abstract class Core extends Controller
         // Query for results (with LIMIT/OFFSET)
         $results_builder = $this->_run_query($table);
         // Apply limit/offset after running the main query builder parameters
-        if ($this->_limit !== null) {
+        if (null !== $this->_limit) {
             $results_builder->limit($this->_limit, $this->_offset ?? 0);
         }
         $results = $results_builder->result();
@@ -5698,7 +5600,7 @@ abstract class Core extends Controller
 
                     if (is_array($params['primary_key'])) {
                         // Composite key value and selected status determination.
-                        $value = implode('.', array_map(fn($k) => $val->$k ?? 0, $params['primary_key']));
+                        $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['primary_key']));
                         $is_selected = ($value == $selected);
                     }
 
@@ -6091,8 +5993,6 @@ abstract class Core extends Controller
      * Increments the visit counters in the app__stats table for the specified periods.
      *
      * @param array $periods Array of period strings (e.g., ['daily', 'weekly']).
-     *
-     * @return void
      */
     private function _update_visit_counters(array $periods = []): void
     {
@@ -6116,8 +6016,6 @@ abstract class Core extends Controller
      * last visit occurred in a different time period.
      *
      * @param object $previous_visit An object containing the visitor's last visit details (must include 'timestamp' and 'ip_address').
-     *
-     * @return void
      */
     private function _update_visit_counters_if_needed(object $previous_visit): void
     {
@@ -6160,8 +6058,6 @@ abstract class Core extends Controller
 
     /**
      * Automatically resets visit counters (daily, weekly, monthly, yearly) based on date comparison.
-     *
-     * @return void
      */
     private function _auto_reset_counters(): void
     {
@@ -6214,17 +6110,14 @@ abstract class Core extends Controller
     }
 
     /**
-    * Sets the application language based on user session, browser preference, or system default.
-    *
-    * @param string|null $language_id Language ID from the user session (or null if not set).
-    *
-    * @return void
-    */
+     * Sets the application language based on user session, browser preference, or system default.
+     *
+     * @param string|null $language_id Language ID from the user session (or null if not set).
+     */
     private function _set_language(?string $language_id = null): void
     {
         // Check if session language ID is not set.
         if (! get_userdata('language_id') || ! $language_id) {
-
             // Determine Initial Fallback Language ID
             $app_language = get_setting('app_language');
             $language_id = ($app_language > 0 ? $app_language : 1);
@@ -6277,8 +6170,6 @@ abstract class Core extends Controller
      *
      * @param string $function The Query Builder method name (e.g., 'where', 'select').
      * @param array $arguments The array of arguments passed to the method.
-     *
-     * @return void
      */
     private function _prepare(string $function, array $arguments = []): void
     {
