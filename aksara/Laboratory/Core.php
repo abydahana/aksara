@@ -5705,9 +5705,9 @@ abstract class Core extends Controller
      *
      * @return void Returns immediately if the input is not a valid array.
      */
-    private function _unlink_files(array $files = [], ?string $field_name = null, array $field_list = []): void
+    private function _unlink_files(?array $files = [], ?string $field_name = null, array $field_list = []): void
     {
-        foreach ($files as $field => $src) {
+        foreach ($files ?? [] as $field => $src) {
             // Decode JSON source if necessary
             if (is_json($src)) {
                 $src = json_decode($src, true);
