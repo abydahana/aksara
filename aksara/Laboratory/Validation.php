@@ -345,7 +345,7 @@ class Validation
         $mime_type = new Mimes();
         $valid_mime = [];
 
-        if (! $source->getName()) {
+        if (! $source || ! $source->isValid() || ! $source->getName()) {
             // No file are selected
             return false;
         }
@@ -371,7 +371,7 @@ class Validation
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) $source->getSizeByUnit('mb') > MAX_UPLOAD_SIZE) {
+        } elseif ((float) $source->getSize('mb') > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
             $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 

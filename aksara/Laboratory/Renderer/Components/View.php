@@ -129,9 +129,6 @@ class View
             }
         }
 
-        // Extract first row (Detail view is single record)
-        $serialized = $serialized[0];
-
         // 1. Sort Fields
         $serialized = $this->_sort_fields($serialized);
 

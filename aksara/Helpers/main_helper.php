@@ -69,9 +69,9 @@ if (! function_exists('generate_token')) {
         $resolved = [];
 
         foreach ($parts as $part) {
-            if ($part === '..' && count($resolved) > 0) {
+            if ('..' === $part && count($resolved) > 0) {
                 array_pop($resolved);
-            } elseif ($part !== '.' && $part !== '' && $part !== '..') {
+            } elseif ('.' !== $part && '' !== $part && '..' !== $part) {
                 $resolved[] = $part;
             }
         }
@@ -216,7 +216,7 @@ if (! function_exists('throw_exception')) {
         }
 
         if (! $redirect) {
-            $redirect = (service('request')->getPost('__modal_index') <= 1 ? 'soft' : false);
+            $redirect = (service('request')->getPost('__modal_index') <= 1 && 301 === $code ? 'soft' : false);
         }
 
         $output = json_encode([

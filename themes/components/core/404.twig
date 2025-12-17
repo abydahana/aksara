@@ -1,0 +1,44 @@
+<div class="container pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+        <h1 class="text-muted">
+            404
+        </h1>
+        <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center">
+                {{ phrase('Page not found!') }}
+            </h2>
+            <p class="lead text-center mb-5">
+                {{ phrase('The page you requested does not exist or already been archived.') }}
+            </p>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-primary rounded-pill">
+                    <i class="mdi mdi-arrow-left"></i>
+                    {{ phrase('Back to Homepage') }}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% if suggestions %}
+        <div class="row mb-2">
+            <div class="col-md-10 offset-md-1">
+                <h5>
+                    {{ phrase('Our suggestions') }}
+                    <blink>_</blink>
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 offset-md-1">
+                {% for index, page in suggestions %}
+                    {% if index %} &middot; {% endif %}
+                    <a href="{{ links.base_url }}pages/{{ page.page_slug }}" class="--xhr">
+                        {{ page.page_title }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>

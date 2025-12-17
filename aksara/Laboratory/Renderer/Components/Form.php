@@ -124,9 +124,6 @@ class Form
             }
         }
 
-        // Extract first row (forms typically handle one record or a schema definition)
-        $serialized = $serialized[0];
-
         // 1. Sort Fields based on configuration
         $serialized = $this->_sort_fields($serialized);
 

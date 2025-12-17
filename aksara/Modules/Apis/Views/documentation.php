@@ -281,12 +281,12 @@
                         </table>
                     </div>
                     <p>
-                        Contoh payload:
+                        Header example:
                         <br />
                         <code>Authorization: Basic</code> <code class="text-success">YWRtaW46YWRtaW4xMjM=</code>
                     </p>
                     <p>
-                        <code class="text-success">YWRtaW46YWRtaW4xMjM=</code> merupakan enkripsi base64 dari <code>admin:admin123</code>
+                        <code class="text-success">YWRtaW46YWRtaW4xMjM=</code> is a base64 encoding for <code>admin:admin123</code>
                     </p>
                     <hr />
                     <h4>
@@ -383,6 +383,7 @@
             }
         })
         .done(function(response, status, error) {
+            console.log(response);
             $('.--spinner').remove();
 
             if (response.results) {
@@ -397,8 +398,8 @@
                         })
                     }
 
-                    if (typeof val.parameter !== 'undefined') {
-                        $.each(val.parameter, function(_key, _val) {
+                    if (typeof val.field_data !== 'undefined') {
+                        $.each(val.field_data, function(_key, _val) {
                             if ($('.--parameter-' + key).hasClass('d-none')) {
                                 $('.--parameter-' + key).removeClass('d-none')
                             }

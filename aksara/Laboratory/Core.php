@@ -1917,11 +1917,10 @@ abstract class Core extends Controller
      * This method transforms raw database results into a structured array for CRUD views or API output.
      *
      * @param array $data Raw array of database result rows.
-     * @param bool $partial Flag to indicate partial serialization (e.g., only visible fields).
      *
      * @return array The structured, serialized data, or JSON response if requested by API client.
      */
-    public function serialize(array $data = [], bool $partial = false): array
+    public function serialize(array $data): array
     {
         if (! $data && $this->model->table_exists($this->_table)) {
             // Flip columns
@@ -1933,6 +1932,29 @@ abstract class Core extends Controller
             return make_json($data);
         }
 
+        $output = [];
+
+        foreach ($data as $row => $array) {
+            // Process single row
+            $output[$row] = $this->serialize_row($array, false);
+        }
+
+        if ($this->api_client && 'field_data' === $this->request->getGet('format_result')) {
+            // Requested from API Client with field data information
+            return make_json($output);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Serializes a single row
+     *
+     *
+     * @return array The structured, serialized row data
+     */
+    public function serialize_row(array|object $data, bool $return = true): array
+    {
         // Define field data compilation
         $field_data = $this->model->field_data($this->_table);
 
@@ -1943,203 +1965,177 @@ abstract class Core extends Controller
 
             // Add properties to field data compilation
             $field_data[$val->name] = $val;
-
-            // Check if the field has a primary key
-            if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                // Push primary key
-                $this->_set_primary[] = $val->name;
-            }
         }
 
-        // Primary key still not found, find from index data
-        if (! $this->_set_primary) {
-            // Retrieve index data
-            $index_data = $this->model->index_data($this->_table);
+        $output = [];
 
-            // Find the primary key
-            foreach ($index_data as $key => $val) {
-                // Check if the field has a primary key
-                if (in_array($val->type, ['PRIMARY', 'UNIQUE'])) {
-                    // Push primary key
-                    $this->_set_primary = array_merge($this->_set_primary, $val->fields);
-                }
-            }
+        foreach ($data as $field => $value) {
+            $hidden = false;
 
-            // Make the array unique
-            $this->_set_primary = array_unique($this->_set_primary);
-        }
+            // Attempt to get the type
+            $type = strtolower((isset($field_data[$field]->type) ? $field_data[$field]->type : gettype($value)));
 
-        $results = [];
-
-        foreach ($data as $row => $array) {
-            // Rows
-            foreach ($array as $field => $value) {
-                $hidden = false;
-
-                // Attempt to get the type
-                $type = strtolower((isset($field_data[$field]->type) ? $field_data[$field]->type : gettype($value)));
-
-                // Reformat type
-                if (in_array($type, ['tinyint', 'smallint', 'int', 'mediumint', 'bigint', 'year'])) {
-                    // Field type number
-                    $type = 'number';
-                } elseif (in_array($type, ['decimal', 'float', 'double', 'real'])) {
-                    // Field type decimal
-                    if (in_array($type, ['percent'])) {
-                        $type = 'percent';
-                    } else {
-                        $type = 'money';
-                    }
-                } elseif (in_array($type, ['tinytext', 'text'])) {
-                    // Field type textarea
-                    $type = 'textarea';
-                } elseif (in_array($type, ['mediumtext', 'longtext'])) {
-                    // Field type wysiwyg
-                    $type = 'wysiwyg';
-                } elseif (in_array($type, ['date'])) {
-                    // Field type date (Y-m-d)
-                    $type = 'date';
-                } elseif (in_array($type, ['datetime', 'timestamp'])) {
-                    // Field type datetime (Y-m-d H:i:s)
-                    $type = 'datetime';
-                } elseif (in_array($type, ['time'])) {
-                    // Field type time (H:i:s)
-                    $type = 'time';
-                } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
-                    try {
-                        // Get enum list
-                        $enum_query = $this->model->query('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND TABLE_SCHEMA = DATABASE()', [
-                            $this->_table,
-                            $field_data[$field]->name
-                        ])
-                        ->row('COLUMN_TYPE');
-
-                        // Extract enum list
-                        $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
-
-                        if ($enum_list) {
-                            $options = [];
-
-                            foreach ($enum_list as $_key => $_val) {
-                                $options[$_val] = $_val;
-                            }
-
-                            $this->_set_field[$field]['select'] = [
-                                'parameter' => $options,
-                                'alpha' => null,
-                                'beta' => null,
-                                'charlie' => null,
-                                'delta' => null
-                            ];
-                        }
-                    } catch (Throwable $e) {
-                        // Safe abstraction
-                        exit($e->getMessage());
-                    }
+            // Reformat type
+            if (in_array($type, ['tinyint', 'smallint', 'int', 'mediumint', 'bigint', 'year'])) {
+                // Field type number
+                $type = 'number';
+            } elseif (in_array($type, ['decimal', 'float', 'double', 'real'])) {
+                // Field type decimal
+                if (in_array($type, ['percent'])) {
+                    $type = 'percent';
                 } else {
-                    // Fallback field type
-                    $type = 'text';
+                    $type = 'money';
                 }
+            } elseif (in_array($type, ['tinytext', 'text'])) {
+                // Field type textarea
+                $type = 'textarea';
+            } elseif (in_array($type, ['mediumtext', 'longtext'])) {
+                // Field type wysiwyg
+                $type = 'wysiwyg';
+            } elseif (in_array($type, ['date'])) {
+                // Field type date (Y-m-d)
+                $type = 'date';
+            } elseif (in_array($type, ['datetime', 'timestamp'])) {
+                // Field type datetime (Y-m-d H:i:s)
+                $type = 'datetime';
+            } elseif (in_array($type, ['time'])) {
+                // Field type time (H:i:s)
+                $type = 'time';
+            } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
+                try {
+                    // Get enum list
+                    $enum_query = $this->model->query('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND TABLE_SCHEMA = DATABASE()', [
+                        $this->_table,
+                        $field_data[$field]->name
+                    ])->row('COLUMN_TYPE');
 
-                if (! isset($this->_set_field[$field])) {
-                    if (isset($this->_set_relation[$field])) {
-                        $type = 'select';
+                    // Extract enum list
+                    $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
+
+                    if ($enum_list) {
+                        $options = [];
+
+                        foreach ($enum_list as $_key => $_val) {
+                            $options[$_val] = $_val;
+                        }
+
+                        $this->_set_field[$field]['select'] = [
+                            'parameter' => $options,
+                            'alpha' => null,
+                            'beta' => null,
+                            'charlie' => null,
+                            'delta' => null
+                        ];
                     }
+                } catch (Throwable $e) {
+                    // Safe abstraction
+                    exit($e->getMessage());
+                }
+            } else {
+                // Fallback field type
+                $type = 'text';
+            }
 
-                    // Add new field type
-                    $this->_set_field[$field][$type] = [
-                        'parameter' => null,
-                        'alpha' => null,
-                        'beta' => null,
-                        'charlie' => null,
-                        'delta' => null
-                    ];
+            if (! isset($this->_set_field[$field])) {
+                if (isset($this->_set_relation[$field])) {
+                    $type = 'select';
                 }
 
-                // Attempt to get maximum length of column
-                $maxlength = (isset($field_data[$field]->max_length) ? $field_data[$field]->max_length : null);
-
-                // Attempt to get the field validation
-                $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : []);
-
-                // Attempt to get field translation
-                $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
-
-                if ('create' == $this->_method) {
-                    $content = (isset($this->_set_default[$field]) ? $this->_set_default[$field] : (isset($field_data[$field]->default) ? $field_data[$field]->default : null));
-                    $value = null;
-                }
-
-                if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unset_field) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_set_field[$field])))) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unset_view)) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                } elseif (in_array($this->_method, ['index', 'export', 'print', 'pdf']) && in_array($field, $this->_unset_column)) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                }
-
-                if ($value && isset($this->_set_relation[$field])) {
-                    // Get relation content
-                    $content = $this->_get_relation($this->_set_relation[$field], $value);
-                }
-
-                if ($content && array_intersect(['numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
-                    // Get decimal fractional
-                    $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
-
-                    if (array_intersect(['percent'], [$type])) {
-                        // Percent type
-                        $content = number_format($content, $decimal) . '%';
-                    } else {
-                        // Numeric type
-                        $content = number_format($content, $decimal);
-                    }
-                }
-
-                if ($content && array_intersect(['sprintf'], [$type])) {
-                    $parameter = '%02d';
-
-                    if (isset($this->_set_field[$field]['sprintf']['parameter'])) {
-                        $parameter = $this->_set_field[$field]['sprintf']['parameter'];
-                    }
-
-                    // Add zero leading
-                    $content = sprintf(($parameter && ! is_array($parameter) ? $parameter : '%02d'), $content);
-                }
-
-                if ($maxlength) {
-                    if (in_array($type, ['money', 'percent'])) {
-                        // Add extra dot to maxlength
-                        $maxlength = ($maxlength + 1);
-                    }
-
-                    $validation[] = 'max_length[' . $maxlength . ']';
-                }
-
-                // Call assigned method of custom format
-                if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
-                    $method = $this->_set_field[$field]['custom_format']['parameter'];
-                    $content = $this->$method((array) $array);
-                }
-
-                $results[$field] = [
-                    'type' => $this->_set_field[$field],
-                    'primary' => (in_array($field, $this->_set_primary) ? 1 : 0),
-                    'value' => $value,
-                    'content' => $content,
-                    'maxlength' => $maxlength,
-                    'hidden' => $hidden,
-                    'validation' => $validation
+                // Add new field type
+                $this->_set_field[$field][$type] = [
+                    'parameter' => null,
+                    'alpha' => null,
+                    'beta' => null,
+                    'charlie' => null,
+                    'delta' => null
                 ];
             }
 
-            $output[$row] = $results;
+            // Attempt to get maximum length of column
+            $maxlength = (isset($field_data[$field]->max_length) ? $field_data[$field]->max_length : null);
+
+            // Attempt to get the field validation
+            $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : []);
+
+            // Attempt to get field translation
+            $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
+
+            if ('create' == $this->_method) {
+                $content = (isset($this->_set_default[$field]) ? $this->_set_default[$field] : (isset($field_data[$field]->default) ? $field_data[$field]->default : null));
+                $value = null;
+            }
+
+            if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unset_field) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_set_field[$field])))) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unset_view)) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            } elseif (in_array($this->_method, ['index', 'export', 'print', 'pdf']) && in_array($field, $this->_unset_column)) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            }
+
+            if ($value && isset($this->_set_relation[$field])) {
+                // Get relation content
+                $content = $this->_get_relation($this->_set_relation[$field], $value);
+            }
+
+            if ($content && array_intersect(['numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
+                // Get decimal fractional
+                $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
+
+                if (array_intersect(['percent'], [$type])) {
+                    // Percent type
+                    $content = number_format($content, $decimal) . '%';
+                } else {
+                    // Numeric type
+                    $content = number_format($content, $decimal);
+                }
+            }
+
+            if ($content && array_intersect(['sprintf'], [$type])) {
+                $parameter = '%02d';
+
+                if (isset($this->_set_field[$field]['sprintf']['parameter'])) {
+                    $parameter = $this->_set_field[$field]['sprintf']['parameter'];
+                }
+
+                // Add zero leading
+                $content = sprintf(($parameter && ! is_array($parameter) ? $parameter : '%02d'), $content);
+            }
+
+            if ($maxlength) {
+                if (in_array($type, ['money', 'percent'])) {
+                    // Add extra dot to maxlength
+                    $maxlength = ($maxlength + 1);
+                }
+
+                $validation[] = 'max_length[' . $maxlength . ']';
+            }
+
+            // Call assigned method of custom format
+            if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
+                $method = $this->_set_field[$field]['custom_format']['parameter'];
+                $content = $this->$method((array) $data);
+            }
+
+            $output[$field] = [
+                'primary' => in_array($field, $this->_set_primary),
+                'value' => $value,
+                'content' => $content,
+                'maxlength' => $maxlength,
+                'hidden' => $hidden,
+                'type' => $this->_set_field[$field],
+                'validation' => $validation
+            ];
+
+            if ($this->api_client && $return) {
+                $output[$field]['label'] = (isset($this->_set_alias[$field]) ? $this->_set_alias[$field] : ucwords(str_replace('_', ' ', $field) ?? ''));
+            }
         }
 
-        if ($this->api_client && 'field_data' === $this->request->getGet('format_result')) {
+        if ($this->api_client && $return) {
             // Requested from API Client with field data information
             return make_json($output);
         }
@@ -2189,10 +2185,10 @@ abstract class Core extends Controller
                     // Access token is not valid
                     return throw_exception(403, phrase('The access token is invalid or already expired.'));
                 }
-            } elseif (in_array($this->request->getServer('REQUEST_METHOD'), ['POST', 'DELETE']) &&
+            } elseif (in_array($this->request->getMethod(), ['POST', 'DELETE']) &&
             ! in_array($this->_method, ['create', 'update', 'delete'])) {
                 // Check if request is made from promise
-                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? go_to() : null));
+                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethd() . ')', (! $this->api_client ? go_to() : null));
             }
         } elseif ($table && ! $this->_set_permission) {
             // Unset database modification because no permission is set
@@ -2278,20 +2274,26 @@ abstract class Core extends Controller
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
 
-            // Primary key still not found, find from index data
-            if ($this->_table && ! $this->_set_primary) {
-                // Retrieve primary key
-                $field_data = $this->model->field_data($this->_table);
+            // Define field data compilation
+            $field_data = $this->model->field_data($this->_table);
 
-                // Find primary key
-                foreach ($field_data as $key => $val) {
-                    // Check if the field has a primary key
-                    if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                        // Push primary key
-                        $this->_set_primary[] = $val->name;
-                    }
+            // Find primary key
+            foreach ($field_data as $key => $val) {
+                // Unset indexed field data
+                unset($field_data[$key]);
+
+                // Add properties to field data compilation
+                $field_data[$val->name] = $val;
+
+                // Check if the field has a primary key
+                if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
+                    // Push primary key
+                    $this->_set_primary[] = $val->name;
                 }
+            }
 
+            // Primary key still not found, find from index data
+            if (! $this->_set_primary) {
                 // Retrieve index data
                 $index_data = $this->model->index_data($this->_table);
 
@@ -2419,7 +2421,7 @@ abstract class Core extends Controller
                         return $this->$_callback();
                     } else {
                         // Serialize table data
-                        $field_data = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                        $field_data = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
 
                         // Or use the master validation instead
                         return $this->validate_form($field_data);
@@ -2428,7 +2430,7 @@ abstract class Core extends Controller
                     // Token isn't valid, throw exception
                     return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source.'), $this->_redirect_back);
                 }
-            } elseif ($this->api_client && 'POST' == $this->request->getServer('REQUEST_METHOD') && (in_array($this->_method, ['create', 'update']) || ($this->_form_callback && method_exists($this, $this->_form_callback)))) {
+            } elseif ($this->api_client && in_array($this->request->getMethod(), ['POST']) && (in_array($this->_method, ['create', 'update']) || ($this->_form_callback && method_exists($this, $this->_form_callback)))) {
                 // Request is sent from REST
                 if ($this->_form_callback && method_exists($this, $this->_form_callback)) {
                     // Use callback as form validation
@@ -2437,7 +2439,7 @@ abstract class Core extends Controller
                     return $this->$_callback();
                 } else {
                     // Serialize table data
-                    $field_data = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                    $field_data = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
 
                     // Or use the master validation instead
                     return $this->validate_form($field_data);
@@ -2868,7 +2870,7 @@ abstract class Core extends Controller
 
             if (in_array($this->_method, ['create'])) {
                 // List the field properties
-                $results = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                $results = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
                 $total = 0;
             } else {
                 // Run query using prepared property
@@ -2886,7 +2888,8 @@ abstract class Core extends Controller
             // Default description property
             $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 
-            if (isset($results[0])) {
+            // Indicates multiple rows result
+            if (is_array($results) && isset($results[0])) {
                 // Extract magic string
                 preg_match_all('/\{\{(.*?)\}\}/', $title ?? '', $title_replace);
                 preg_match_all('/\{\{(.*?)\}\}/', $description ?? '', $description_replace);
@@ -3184,9 +3187,9 @@ abstract class Core extends Controller
             } else {
                 return $document->generate($output, $title, ('export' == $this->_method ? ($this->request->getGet('method') ?? 'export') : 'embed'));
             }
-        } elseif ($this->api_client && 'GET' != $this->request->getServer('REQUEST_METHOD')) {
+        } elseif ($this->api_client && ! in_array($this->request->getMethod(), ['GET'])) {
             // The method is requested from REST without GET
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? $this->_redirect_back : null));
         }
 
         if ($this->api_client && 'full' === $this->request->getGet('format_result')) {
@@ -3207,17 +3210,17 @@ abstract class Core extends Controller
      *
      * @return array The formatted table data array.
      */
-    public function render_table(array $data = []): array
+    public function render_table(array $data): array
     {
         // If Primary Key is not defined, disable Update and Delete actions for safety.
         if (! $this->_set_primary) {
             $this->_unset_method = array_merge($this->_unset_method, ['update', 'delete']);
         }
 
-        $table_data = [];
-
-        // Serialize data (convert raw objects/arrays into a standardized format).
+        // Serialize data (convert raw objects/arrays into a standardized format)
         $serialized = $this->serialize($data);
+
+        $table_data = [];
 
         if ($serialized) {
             // --- Prepare Properties for Renderer ---
@@ -3259,7 +3262,7 @@ abstract class Core extends Controller
      *
      * @return array The structured form data array containing fields and their properties.
      */
-    public function render_form(array $data = []): array
+    public function render_form(array|object $data): array
     {
         // --- Initial Validation ---
         // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
@@ -3267,10 +3270,10 @@ abstract class Core extends Controller
             return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirect_back);
         }
 
-        $field_data = [];
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data);
 
-        // Serialize data (convert raw objects/arrays into a standardized format).
-        $serialized = $this->serialize($data);
+        $field_data = [];
 
         if ($serialized) {
             // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
@@ -3311,7 +3314,7 @@ abstract class Core extends Controller
      *
      * @return array The structured field data array containing fields and their formatted values.
      */
-    public function render_read(array $data = []): array
+    public function render_read(array|object $data): array
     {
         // --- Initial Validation ---
         // If data is empty, throw a 404 exception.
@@ -3319,10 +3322,10 @@ abstract class Core extends Controller
             return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirect_back);
         }
 
-        $field_data = [];
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data);
 
-        // Serialize data (convert raw objects/arrays into a standardized format).
-        $serialized = $this->serialize($data);
+        $field_data = [];
 
         if ($serialized) {
             // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
@@ -3363,7 +3366,7 @@ abstract class Core extends Controller
      *
      * @return object|null Returns an Exception object (400, 403, 404) or triggers a redirect/API response on success.
      */
-    public function validate_form(array $data = [])
+    public function validate_form(array|object $data)
     {
         // --- 1. Initial Security & Update Check ---
         if ($this->_restrict_on_demo) {
@@ -3376,8 +3379,8 @@ abstract class Core extends Controller
             return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->api_client ? $this->_redirect_back : null));
         }
 
-        // Serialize the fields
-        $serialized = $this->serialize($data);
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data, false);
 
         if ($this->request->getPost() && is_array($serialized) && sizeof($serialized) > 0) {
             // Store upload path to session
@@ -3386,7 +3389,7 @@ abstract class Core extends Controller
             // Default validation
             $validation = false;
 
-            foreach ($serialized[0] as $key => $val) {
+            foreach ($serialized as $key => $val) {
                 $type = array_keys($val['type']);
 
                 // Skip field when it's disabled and has no default value
@@ -3582,7 +3585,7 @@ abstract class Core extends Controller
                 $clone = $this->model->get_where($this->_table, $this->_where, 1)->row_array();
             }
 
-            foreach ($serialized[0] as $field => $value) {
+            foreach ($serialized as $field => $value) {
                 $type = array_keys($value['type']);
 
                 // Skip field when it's disabled and has no default value
@@ -3863,7 +3866,7 @@ abstract class Core extends Controller
                 $this->_unlink_files(get_userdata('_uploaded_files'));
 
                 // Throw the exception messages
-                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? $this->_redirect_back : null));
             }
         } else {
             // No data are found
@@ -3970,9 +3973,9 @@ abstract class Core extends Controller
     public function insert_data(?string $table = null, array $data = []): object|null
     {
         // --- 1. API Method Validation ---
-        if ($this->api_client && 'POST' != $this->request->getServer('REQUEST_METHOD')) {
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['POST'])) {
             $this->_unlink_files(get_userdata('_uploaded_files'));
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', $this->_redirect_back);
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
         // --- 2. Table Existence Check and Execution ---
@@ -4076,9 +4079,9 @@ abstract class Core extends Controller
     public function update_data(?string $table = null, array $data = [], array $where = []): object|bool
     {
         // --- 1. API Method Validation ---
-        if ($this->api_client && 'POST' != $this->request->getServer('REQUEST_METHOD')) {
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['POST'])) {
             $this->_unlink_files(get_userdata('_uploaded_files'));
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', $this->_redirect_back);
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
         // --- 2. Table Existence Check and WHERE Determination ---
@@ -4183,8 +4186,8 @@ abstract class Core extends Controller
     public function delete_data(?string $table = null, array $where = [], int $limit = 1): object|null
     {
         // --- 1. API Method and Demo Mode Validation ---
-        if ($this->api_client && 'DELETE' != $this->request->getServer('REQUEST_METHOD')) {
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', $this->_redirect_back);
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['DELETE'])) {
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
         if ($this->_restrict_on_demo) {
@@ -4282,8 +4285,8 @@ abstract class Core extends Controller
     public function delete_batch(?string $table = null): object|null
     {
         // --- 1. API Method and Demo Mode Validation ---
-        if ($this->api_client && 'DELETE' != $this->request->getServer('REQUEST_METHOD')) {
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getServer('REQUEST_METHOD'). ')', $this->_redirect_back);
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['DELETE'])) {
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
         if ($this->_restrict_on_demo) {
@@ -5344,7 +5347,14 @@ abstract class Core extends Controller
             if (null !== $this->_limit) {
                 $query_builder->limit($this->_limit, $this->_offset ?? 0);
             }
-            $query = $query_builder->result();
+
+            if (in_array($this->_method, ['create', 'read', 'update'])) {
+                // Get single row
+                $query = $query_builder->row();
+            } else {
+                // Get multiple rows
+                $query = $query_builder->result();
+            }
 
             if ('query' == $this->_debugging) {
                 exit(nl2br($this->model->last_query()));
@@ -5364,10 +5374,20 @@ abstract class Core extends Controller
         if (null !== $this->_limit) {
             $results_builder->limit($this->_limit, $this->_offset ?? 0);
         }
-        $results = $results_builder->result();
 
-        // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
-        $total = $this->_run_query($table, true)->count_all_results();
+        if (in_array($this->_method, ['create', 'read', 'update'])) {
+            // Get single row
+            $results = $results_builder->row();
+
+            // Assign total
+            $total = ($results ? 1 : 0);
+        } else {
+            // Get multiple rows
+            $results = $results_builder->result();
+
+            // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
+            $total = $this->_run_query($table, true)->count_all_results();
+        }
 
         // --- 3. Reset and Return ---
         $this->_prepare = []; // Reset preparation property for subsequent queries
@@ -5781,7 +5801,7 @@ abstract class Core extends Controller
         if (! $client && ENCRYPTION_KEY === $api_key) {
             $client = (object) [
                 'ip_range' => $this->request->getServer('SERVER_ADDR'),
-                'method' => json_encode([$this->request->getServer('REQUEST_METHOD')]),
+                'method' => json_encode([$this->request->getMethod()]),
                 'status' => 1
             ];
             $this->_api_token = true;
@@ -5792,8 +5812,8 @@ abstract class Core extends Controller
             return throw_exception(403, phrase('Your API Key is not eligible to access the requested module or its already expired.'));
         } elseif (! $client->status) {
             return throw_exception(403, phrase('Your API Key is temporary deactivated.'));
-        } elseif (! in_array($this->request->getServer('REQUEST_METHOD'), json_decode($client->method, true))) {
-            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . $this->request->getServer('REQUEST_METHOD'));
+        } elseif (! in_array($this->request->getMethod(), json_decode($client->method, true))) {
+            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . $this->request->getMethod());
         } elseif ($client->ip_range && (! $this->_ip_in_range($client->ip_range) || $this->request->getIPAddress() != $this->request->getServer('SERVER_ADDR'))) {
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source.'));
         }

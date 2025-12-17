@@ -57,7 +57,7 @@ class Summernote extends Core
             $valid_mime[] = $mime_type->guessTypeFromExtension($val);
         }
 
-        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByUnit('kb') > (MAX_UPLOAD_SIZE * 1024) || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSize('mb') > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('Upload Error!')
@@ -65,6 +65,19 @@ class Summernote extends Core
         }
 
         $filename = $source->getRandomName();
+
+        // Read file contents
+        $fileContent = file_get_contents($source->getPathName());
+
+        // Check for PHP tags
+        if (preg_match('/<\?php/i', $fileContent)) {
+            // Ensure the file is not contain exploit command
+            return make_json([
+                'status' => 'error',
+                'messages' => phrase('The file is not allowed to upload')
+            ]);
+        }
+
         $imageinfo = getimagesize($source);
         $width = ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
         $height = ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
