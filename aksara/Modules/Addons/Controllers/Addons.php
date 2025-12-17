@@ -19,6 +19,8 @@ namespace Aksara\Modules\Addons\Controllers;
 
 use Config\Services;
 use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
 
 class Addons extends Core
 {
@@ -88,7 +90,7 @@ class Addons extends Core
                         ]
                     ]
                 );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return make_json([
                         'error' => $e->getMessage()
                 ]);
@@ -152,7 +154,7 @@ class Addons extends Core
                         ]
                     ]
                 );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return make_json([
                     'error' => $e->getMessage()
                 ]);
@@ -219,14 +221,14 @@ class Addons extends Core
                             // Close FTP connection
                             ftp_close($connection);
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReasonPhrase(), go_to());
                     }
                 }
 
                 // Load the zip class
-                $zip = new \ZipArchive();
+                $zip = new ZipArchive();
 
                 // Unzip the repository
                 $unzip = $zip->open($tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
@@ -364,7 +366,7 @@ class Addons extends Core
                             if ($migration->latest()) {
                                 //
                             }
-                        } catch (\Throwable $e) {
+                        } catch (Throwable $e) {
                             // Migration error, delete module
                             $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -605,7 +607,7 @@ class Addons extends Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return make_json([
                 'error' => $e->getMessage()
             ]);

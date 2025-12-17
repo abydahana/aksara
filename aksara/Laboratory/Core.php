@@ -17,7 +17,6 @@
 
 namespace Aksara\Laboratory;
 
-use Throwable;
 use Config\Services;
 use CodeIgniter\Controller;
 use Aksara\Laboratory\Traits;
@@ -26,6 +25,7 @@ use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
+use Throwable;
 
 /**
  * Core Controller for Aksara CMS.
@@ -274,13 +274,22 @@ abstract class Core extends Controller
     }
 
     /**
-     * Forces the disabling of URL signature validation.
+     * Set query string parameters to ignore during URL generation.
      *
+     * These parameters will be excluded when building URLs to ensure
+     * consistent URL structure across requests.
+     *
+     * @param array|string $keys Query parameter keys to ignore (comma-separated if string)
      * @return static Current object instance (chainable).
      */
-    protected function ignore_url_signature(): static
+    protected function ignore_query_string(array|string $keys): static
     {
-        $this->_ignore_url_signature = true;
+        if (is_array($keys)) {
+            $keys = implode(',', $keys);
+        }
+
+        // Store ignored query string keys in user session
+        set_userdata('__ignored_query_string', $keys);
 
         return $this;
     }
@@ -2023,7 +2032,7 @@ abstract class Core extends Controller
                                 'delta' => null
                             ];
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Safe abstraction
                         exit($e->getMessage());
                     }
@@ -2244,97 +2253,19 @@ abstract class Core extends Controller
         // Create core component if not exists
         $renderer->render([]);
 
-        // Primary key still not found, find from index data
-        if ($this->_table && ! $this->_set_primary) {
-            // Retrieve primary key
-            $field_data = $this->model->field_data($this->_table);
-
-            // Find primary key
-            foreach ($field_data as $key => $val) {
-                // Check if the field has a primary key
-                if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                    // Push primary key
-                    $this->_set_primary[] = $val->name;
-                }
-            }
-
-            // Retrieve index data
-            $index_data = $this->model->index_data($this->_table);
-
-            // Find the primary key
-            foreach ($index_data as $key => $val) {
-                // Check if the field has a primary key
-                if (in_array($val->type, ['PRIMARY', 'UNIQUE'])) {
-                    // Push primary key
-                    $this->_set_primary = array_merge($this->_set_primary, $val->fields);
-                }
-            }
-
-            // Make the array unique
-            $this->_set_primary = array_unique($this->_set_primary);
-        }
-
-        // Get query string
+        // Query string filters
         $query_params = $this->request->getGet();
 
-        // Remove junk
-        if (isset($query_params['aksara'])) {
-            unset($query_params['aksara']);
-        }
-        if (isset($query_params['_'])) {
-            unset($query_params['_']);
-        }
-
-        // -----------------------------------------------------------
-        // ALWAYS SET THE SESSION RULES FIRST
-        // This must run regardless of whether query_params exists or not
-        // -----------------------------------------------------------
-        if ($this->_set_primary) {
-            // Strict Mode: Define the rules
-            set_userdata('__query_params', implode('|', $this->_set_primary));
-        } else {
-            // Fallback Mode: Clear any previous rules
-            unset_userdata('__query_params');
-        }
-        // -----------------------------------------------------------
-
-        /**
-         * VALIDATION LOGIC
-         */
-        $validation_needed = false;
-
-        if (! $this->_ignore_url_signature && ! empty($query_params)) {
-            if ($this->_set_primary) {
-                // Scenario A: Strict Mode Check
-                // Only validate if URL contains one of the primary keys
-                if (array_intersect(array_keys($query_params), $this->_set_primary)) {
-                    $validation_needed = true;
-                }
-            } else {
-                // Scenario B: Fallback Mode Check
-                // Always validate if params exist
-                $validation_needed = true;
-            }
-        }
-
-        // EXECUTION
-        if (
-            $validation_needed
-            && ENCRYPTION_KEY !== $this->request->getHeaderLine('X-API-KEY')
-        ) {
-            // Prepare params based on the scenario
-            if ($this->_set_primary) {
-                $filtered_params = array_intersect_key($query_params, array_flip($this->_set_primary));
-            } else {
-                $filtered_params = $query_params;
-            }
-
-            // Validate
+        // Token Validation
+        if ($query_params && ENCRYPTION_KEY !== $this->request->getHeaderLine('X-API-KEY')) {
+            // Apply validation for protected page from non API client request
             if ($this->_set_permission && ! $this->api_client) {
-                $expected_token = generate_token(uri_string(), $filtered_params);
+                $expected_token = generate_token(uri_string(), $query_params);
                 $submitted_token = $this->request->getGet('aksara');
 
+                // Token comparison
                 if (! hash_equals($expected_token, (string) $submitted_token)) {
+                    // Token didn't match
                     return throw_exception(403, phrase('The submitted token has expired or the request is made from a restricted source.'));
                 }
             }
@@ -2345,6 +2276,36 @@ abstract class Core extends Controller
             // Check if table is exists
             if (! $this->model->table_exists($this->_table)) {
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
+            }
+
+            // Primary key still not found, find from index data
+            if ($this->_table && ! $this->_set_primary) {
+                // Retrieve primary key
+                $field_data = $this->model->field_data($this->_table);
+
+                // Find primary key
+                foreach ($field_data as $key => $val) {
+                    // Check if the field has a primary key
+                    if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
+                        // Push primary key
+                        $this->_set_primary[] = $val->name;
+                    }
+                }
+
+                // Retrieve index data
+                $index_data = $this->model->index_data($this->_table);
+
+                // Find the primary key
+                foreach ($index_data as $key => $val) {
+                    // Check if the field has a primary key
+                    if (in_array($val->type, ['PRIMARY', 'UNIQUE'])) {
+                        // Push primary key
+                        $this->_set_primary = array_merge($this->_set_primary, $val->fields);
+                    }
+                }
+
+                // Make the array unique
+                $this->_set_primary = array_unique($this->_set_primary);
             }
 
             // Apply primary from where if it's were sets
@@ -5764,7 +5725,7 @@ abstract class Core extends Controller
                     if ($filename && is_file($path)) {
                         try {
                             unlink($path);
-                        } catch (\Throwable $e) {
+                        } catch (Throwable $e) {
                             // Safe abstraction: error during unlink (e.g., permissions)
                         }
                     }
@@ -5980,7 +5941,7 @@ abstract class Core extends Controller
                     // Update all counters for a new unique visitor (including whole/total visits).
                     $this->_update_visit_counters(['daily', 'weekly', 'monthly', 'yearly', 'whole']);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction (logging the error can be added here)
             }
         } else {
@@ -6065,7 +6026,23 @@ abstract class Core extends Controller
         $stats = $this->model->get('app__stats', 1)->row();
 
         if (! $stats) {
-            return;
+            $initial_data = [
+                'daily_visits' => 0,
+                'weekly_visits' => 0,
+                'monthly_visits' => 0,
+                'yearly_visits' => 0,
+                'whole_visits' => 0,
+                'last_daily_reset' => date('Y-m-d'),
+                'last_weekly_reset' => date('Y-m-d'),
+                'last_monthly_reset' => date('Y-m-d'),
+                'last_yearly_reset' => date('Y-m-d')
+            ];
+
+            // Insert record
+            $this->model->insert('app__stats', $initial_data);
+
+            // Set default record
+            $stats = (object) $initial_data;
         }
 
         // Current Date Formats

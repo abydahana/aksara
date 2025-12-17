@@ -19,6 +19,8 @@ namespace Aksara\Modules\Addons\Controllers;
 
 use Config\Services;
 use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
 
 class Themes extends Core
 {
@@ -58,7 +60,7 @@ class Themes extends Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -120,7 +122,7 @@ class Themes extends Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             log_message('error', $e->getMessage());
         }
 
@@ -334,7 +336,7 @@ class Themes extends Core
                 return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
             $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
 

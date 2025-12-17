@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Translations extends Core
 {
@@ -85,7 +86,7 @@ class Translations extends Core
                 /* put content into file */
                 file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json', json_encode([]));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
     }
@@ -99,7 +100,7 @@ class Translations extends Core
                 /* rename old file */
                 rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
     }

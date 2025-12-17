@@ -19,6 +19,9 @@ namespace Aksara\Modules\Addons\Controllers;
 
 use Config\Services;
 use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
+use stdClass;
 
 class Modules extends Core
 {
@@ -58,7 +61,7 @@ class Modules extends Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -120,7 +123,7 @@ class Modules extends Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             log_message('error', $e->getMessage());
         }
 
@@ -198,10 +201,10 @@ class Modules extends Core
                 return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
             $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
-            $package = new \stdClass();
+            $package = new stdClass();
 
             if (true === $unzip) {
                 if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
@@ -306,7 +309,7 @@ class Modules extends Core
                         if ($migration->latest()) {
                             //
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Migration error, delete module
                         $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -565,7 +568,7 @@ class Modules extends Core
 
                         // Trying to run the migration
                         $migration->regress($query->batch);
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         return throw_exception(400, ['module' => $e->getMessage()]);
                     }
                 }

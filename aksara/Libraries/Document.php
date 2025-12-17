@@ -32,8 +32,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpWord\IOFactory as WordIOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Html as WordHtml;
-use PhpOffice\PhpWord\Settings; // For unit conversion constants
-use PhpOffice\PhpWord\Style\Section; // For orientation constants
+use PhpOffice\PhpWord\Style\Section;
+use Throwable;
 
 class Document
 {
@@ -256,7 +256,7 @@ class Document
                     }
 
                     unlink(UPLOAD_PATH . '/tmp' . '/' . $filename);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Debug
                 }
             }
@@ -389,7 +389,7 @@ class Document
 
             // Terminate script execution after file is sent
             exit;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log the critical error
             error_log('PhpSpreadsheet Write Error: ' . $e->getMessage());
 
@@ -504,7 +504,7 @@ class Document
             $writer->save('php://output');
 
             exit;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             error_log('PhpWord Write Error: ' . $e->getMessage());
             return false;
         }

@@ -21,6 +21,7 @@ use Aksara\Laboratory\Builder\Components\Core;
 use Aksara\Laboratory\Builder\Components\Table;
 use Aksara\Laboratory\Builder\Components\Form;
 use Aksara\Laboratory\Builder\Components\View;
+use Throwable;
 
 /**
  * UI Component Builder Class
@@ -124,7 +125,7 @@ class Builder
                     $component = file_get_contents($requested_file);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log error or handle gracefully instead of exiting
             // exit($e->getMessage()); // Avoid using exit() in libraries
             return false;

@@ -20,6 +20,8 @@ namespace Aksara\Laboratory;
 use Config\Mimes;
 use Config\Services;
 use Aksara\Laboratory\Model;
+use DateTime;
+use Throwable;
 
 class Validation
 {
@@ -147,7 +149,7 @@ class Validation
         // Convert value to standardzitation
         $value = date('Y-m-d', strtotime($value));
 
-        $valid_date = \DateTime::createFromFormat('Y-m-d', $value);
+        $valid_date = DateTime::createFromFormat('Y-m-d', $value);
 
         if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
             return false;
@@ -185,7 +187,7 @@ class Validation
         // Convert value to standardzitation
         $value = date('Y-m-d H:i:s', strtotime($value));
 
-        $valid_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+        $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
 
         if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
             return false;
@@ -386,7 +388,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -398,7 +400,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -410,7 +412,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -503,7 +505,7 @@ class Validation
             }
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             log_message('error', 'Image resize failed: ' . $e->getMessage());
 
             return false;

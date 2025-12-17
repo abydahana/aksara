@@ -18,6 +18,8 @@
 namespace Aksara\Modules\Administrative\Controllers\Logs;
 
 use Aksara\Laboratory\Core;
+use DateTime;
+use Throwable;
 
 class Errors extends Core
 {
@@ -92,7 +94,7 @@ class Errors extends Core
             unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename);
 
             $deleted = true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $deleted = false;
         }
 
@@ -175,7 +177,7 @@ class Errors extends Core
                     unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $val);
 
                     $success++;
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                 }
             }
         }
@@ -203,8 +205,8 @@ class Errors extends Core
 
         // Sort DESC
         usort($logs, function ($a, $b) {
-            $dateA = \DateTime::createFromFormat('Y-m-d', substr($a, 4, 10));
-            $dateB = \DateTime::createFromFormat('Y-m-d', substr($b, 4, 10));
+            $dateA = DateTime::createFromFormat('Y-m-d', substr($a, 4, 10));
+            $dateB = DateTime::createFromFormat('Y-m-d', substr($b, 4, 10));
             return $dateB <=> $dateA;
         });
 

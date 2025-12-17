@@ -17,6 +17,10 @@
 
 namespace Aksara\Libraries;
 
+use Aksara\Laboratory\Model;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+use chillerlan\QRCode\QRCode;
+
 /**
  * Miscellaneous Library
  * This class is used to generate any miscellanious features
@@ -34,7 +38,7 @@ class Miscellaneous
      */
     public function qrcode_generator($params = null)
     {
-        $generator = new \chillerlan\QRCode\QRCode();
+        $generator = new QRCode();
 
         if (! file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png')) {
             if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_qrcode')) {
@@ -60,7 +64,7 @@ class Miscellaneous
      */
     public function barcode_generator($params = null)
     {
-        $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
+        $generator = new BarcodeGeneratorPNG();
 
         if (! file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode' . DIRECTORY_SEPARATOR . sha1(json_encode($params)) . '.png')) {
             if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . '_barcode')) {
@@ -87,25 +91,25 @@ class Miscellaneous
             return false;
         }
 
-        $this->model = new \Aksara\Laboratory\Model();
+        $model = new Model();
 
         // Hash generator
         $hash = substr(sha1(uniqid('', true)), -6);
 
         // Check if hash already present
-        if ($this->model->get_where('app__shortlinks', ['hash' => $hash], 1)->row()) {
+        if ($model->get_where('app__shortlinks', ['hash' => $hash], 1)->row()) {
             // Hash already present, repeat generator
             $this->shortlink_generator($params);
         }
 
-        $checker = $this->model->get_where('app__shortlinks', ['url' => $params], 1)->row();
+        $checker = $model->get_where('app__shortlinks', ['url' => $params], 1)->row();
 
         // Check if parameter already present
         if ($checker) {
             $hash = $checker->hash;
         } else {
             // No data present, insert one
-            $this->model->insert(
+            $model->insert(
                 'app__shortlinks',
                 [
                     'hash' => $hash,

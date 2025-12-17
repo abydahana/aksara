@@ -28,7 +28,7 @@ class Summernote extends Core
         parent::__construct();
 
         if (! get_userdata('is_logged')) {
-            return redirect()->to(base_url());
+            return throw_exception(403, phrase('Access denied'), base_url());
         }
 
         $this->permission->must_ajax(base_url());

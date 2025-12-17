@@ -206,12 +206,12 @@ if (! function_exists('phrase')) {
                 try {
                     mkdir(WRITEPATH . 'translations', 0755, true);
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
                 try {
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                 }
             }
         }
@@ -247,7 +247,7 @@ if (! function_exists('phrase')) {
             $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
 
             $phrase = $translated_phrase;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Keep original on error
         }
 

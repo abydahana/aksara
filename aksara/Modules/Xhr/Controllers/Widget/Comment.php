@@ -17,8 +17,8 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Widget;
 
-use DateTime;
 use Aksara\Laboratory\Core;
+use DateTime;
 
 class Comment extends Core
 {

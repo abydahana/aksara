@@ -22,6 +22,8 @@ use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\Database\Query;
 use CodeIgniter\Database\ResultInterface;
 use CodeIgniter\Database\BaseBuilder;
+use DateTime;
+use Throwable;
 
 /**
  * Class Model
@@ -194,7 +196,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Decrypt error
                 // Assuming throw_exception is a defined global function
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
@@ -206,7 +208,7 @@ class Model
 
                 // Try to initialize the connection
                 $this->db->initialize();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
             }
         } elseif (is_string($driver) && $hostname && $username && $database) {
@@ -235,7 +237,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
             }
         }
@@ -1859,7 +1861,7 @@ class Model
      *
      * @param int|string $field The row number to retrieve, or the field name to return directly.
      */
-    public function row(int|string $field = 1)
+    public function row(int|string $field = 0)
     {
         // Apply limit for non-SQLSRV/Postgre or SQLSRV version >= 10 when retrieving a single row object.
         $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
@@ -1869,7 +1871,7 @@ class Model
         }
 
         $this->_prepare[] = [
-            'function' => (is_int($field) ? 'getRowObject' : 'getRow'),
+            'function' => ($field && is_int($field) ? 'getRowObject' : 'getRow'),
             'arguments' => [$field],
         ];
 
@@ -1979,14 +1981,12 @@ class Model
                     'function' => 'set',
                     'arguments' => [$key, $val, $escape],
                 ];
-                $this->_set[$key] = $val; // Store also in _set for later use
             }
         } else {
             $this->_prepare[] = [
                 'function' => 'set',
                 'arguments' => [$column, $value, $escape],
             ];
-            $this->_set[$column] = $value; // Store also in _set for later use
         }
 
         return $this;
@@ -2003,10 +2003,6 @@ class Model
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
-        }
-
-        if ($this->_set) {
-            $set = array_merge($this->_set, $set);
         }
 
         // SQLite3 Auto-Increment handling (original logic adapted)
@@ -2054,16 +2050,6 @@ class Model
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
-        }
-
-        // $set in insertBatch is expected to be an array of arrays
-        // _set typically stores key/value pairs for a single row, so merging might be complex for batch.
-        // Assuming $set overrides and only uses _set if $set is empty.
-        if ($this->_set && empty($set)) {
-            $set = [$this->_set];
-        } elseif ($this->_set) {
-            // Apply current _set to all rows in batch
-            $set = array_map(fn ($row) => array_merge($this->_set, $row), $set);
         }
 
         // SQLite3 Auto-Increment batch handling (original logic adapted)
@@ -2144,8 +2130,6 @@ class Model
             $this->_limit = $limit;
         }
 
-        $set = array_merge($this->_set, $set);
-
         // Normalize where clause (original logic adapted)
         foreach ($where as $key => $val) {
             if (is_array($val) && isset($val['value'])) {
@@ -2181,11 +2165,6 @@ class Model
             $this->_table = $table;
         }
 
-        if ($this->_set) {
-            // Apply current _set to all rows in batch
-            $set = array_map(fn ($row) => array_merge($this->_set, $row), $set);
-        }
-
         if (! $batch_size) {
             $batch_size = sizeof($set);
         }
@@ -2210,10 +2189,6 @@ class Model
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
-        }
-
-        if ($this->_set) {
-            $set = array_merge($this->_set, $set);
         }
 
         // SQLite3 Auto-Increment handling for UPSERT (original logic adapted)
@@ -2262,11 +2237,6 @@ class Model
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
-        }
-
-        if ($this->_set) {
-            // Apply current _set to all rows in batch
-            $set = array_map(fn ($row) => array_merge($this->_set, $row), $set);
         }
 
         // SQLite3 Auto-Increment batch handling for UPSERT (original logic adapted)
@@ -2333,10 +2303,6 @@ class Model
      */
     public function replace(string $table = '', array $set = [])
     {
-        if ($this->_set) {
-            $set = array_merge($this->_set, $set);
-        }
-
         if (! $this->_table && $table) {
             $this->_table = $table;
         }
@@ -2632,10 +2598,8 @@ class Model
         $this->_ordered = false;
         $this->_from = null;
         $this->_table = null;
-        $this->_set = [];
         $this->_limit = null;
         $this->_offset = null;
-        $this->_set = [];
         $this->_get = false;
         $this->_is_query = false;
         $this->_selection = false;
@@ -2689,9 +2653,9 @@ class Model
                 // CodeIgniter treats 'double' as float, matching CI's type mapping
                 $cast_type = 'DOUBLE'; // Or 'FLOAT'
                 $value = (float) $value;
-            } elseif (is_string($value) && (\DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false)) {
+            } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false)) {
                 $cast_type = ('SQLSRV' == $this->db->DBDriver ? 'DATETIME' : 'TIMESTAMP');
-            } elseif (is_string($value) && (\DateTime::createFromFormat('Y-m-d', $value) !== false)) {
+            } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d', $value) !== false)) {
                 $cast_type = 'DATE';
             } elseif (! is_array($value) && null !== $value) {
                 $cast_type = 'VARCHAR' . ('SQLSRV' == $this->db->DBDriver ? '(MAX)' : '');

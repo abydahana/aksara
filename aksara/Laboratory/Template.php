@@ -22,6 +22,8 @@ use Aksara\Laboratory\Model;
 use Aksara\Libraries\Beautifier;
 use Aksara\Libraries\Html_dom;
 use Aksara\Laboratory\Renderer\Parser;
+use Throwable;
+use stdClass;
 
 /**
  * Template handler class for managing themes, views, and output processing.
@@ -121,11 +123,11 @@ class Template
     {
         if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/theme.json')) {
             // Check if active theme has a property
-            $property = new \stdClass();
+            $property = new stdClass();
 
             try {
                 $property = json_decode(file_get_contents(ROOTPATH . 'themes/' . $this->theme . '/theme.json'));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
 
@@ -617,7 +619,7 @@ class Template
     {
         if (! $data) {
             // Safe abstraction
-            $data = new \stdClass();
+            $data = new stdClass();
         } elseif (is_array($data)) {
             // Convert array to object
             $data = json_decode(json_encode($data), false);

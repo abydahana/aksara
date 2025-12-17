@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Administrative\Controllers\Menus;
 
 use Aksara\Laboratory\Core;
+use stdClass;
 
 class Menus extends Core
 {
@@ -111,7 +112,7 @@ class Menus extends Core
         )
         ->row('serialized_data');
 
-        $serialized_menus = ($serialized ? json_decode($serialized) : new \stdClass());
+        $serialized_menus = ($serialized ? json_decode($serialized) : new stdClass());
 
         if ($serialized_menus) {
             foreach ($serialized_menus as $key => $val) {

@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Addons\Controllers;
 
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Ftp extends Core
 {
@@ -78,7 +79,7 @@ class Ftp extends Core
                 if (! $connection || ! ftp_login($connection, $this->request->getPost('username'), $this->request->getPost('password'))) {
                     return throw_exception(400, ['hostname' => phrase('Unable to connect to the FTP using the provided configuration.')]);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw_exception(400, ['hostname' => $e->getMessage()]);
             }
         }

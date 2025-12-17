@@ -20,6 +20,7 @@ namespace Aksara\Modules\Auth\Controllers;
 use Config\Services;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Register extends Core
 {
@@ -41,7 +42,7 @@ class Register extends Core
         if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
             try {
                 unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -63,7 +64,7 @@ class Register extends Core
             if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
                 try {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Safe abstraction
                 }
             }

@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Cms\Controllers\Pages;
 
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Pages extends Core
 {
@@ -229,7 +230,7 @@ class Pages extends Core
                 // Set new page id
                 $page_id = $this->model->insert_id();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 

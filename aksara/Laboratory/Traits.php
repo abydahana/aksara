@@ -230,9 +230,9 @@ trait Traits
     /**
      * Flag to skip URL signature validation (HMAC).
      * Use this for public search pages or reports with dynamic GET parameters.
-     * @var bool
+     * @var array
      */
-    private $_ignore_url_signature = false;
+    private $_ignore_query_string = [];
 
     /**
      * Last inserted ID.

@@ -21,6 +21,7 @@ use Config\Services;
 use Hybridauth\Hybridauth;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Sso extends Core
 {
@@ -71,7 +72,7 @@ class Sso extends Core
                 // Throw exception
                 throw new \Throwable(phrase('Unable to signing you in using th selected platform.'));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage(), base_url('auth'));
         }
     }

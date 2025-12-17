@@ -19,6 +19,7 @@ namespace Aksara\Modules\Administrative\Controllers\Translations;
 
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Translate extends Core
 {
@@ -119,7 +120,7 @@ class Translate extends Core
 
                     // Attempt to update the translation file
                     file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Failed to write file, increase error counts
                     $error++;
                 }
@@ -260,7 +261,7 @@ class Translate extends Core
                 file_put_contents($this->_translation_file, $json_content, LOCK_EX);
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return throw_exception(403, $e->getMessage(), current_page());
             }
         } else {

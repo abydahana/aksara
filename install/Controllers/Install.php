@@ -17,6 +17,12 @@
 
 namespace App\Controllers;
 
+use Config\Database;
+use Config\Services;
+use DateTimeZone;
+use Throwable;
+use ZipArchive;
+
 class Install extends BaseController
 {
     public function __construct()
@@ -159,11 +165,11 @@ class Install extends BaseController
                 // Only if user allow to create database
                 try {
                     // Load database forge class
-                    $forge = \Config\Database::forge();
+                    $forge = Database::forge();
 
                     // Create database
                     $forge->createDatabase(service('request')->getPost('database_initial'), true);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Connection couldn't be made, throw error
                     return $this->response->setJSON([
                         'status' => 403,
@@ -177,11 +183,11 @@ class Install extends BaseController
                 $_ENV['database.default.database'] = service('request')->getPost('database_initial');
 
                 // Connect to database
-                $db = \Config\Database::connect();
+                $db = Database::connect();
 
                 // Initialize database
                 $db->initialize();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Connection couldn't be made, throw error
                 return $this->response->setJSON([
                     'status' => 403,
@@ -267,7 +273,7 @@ class Install extends BaseController
                     'selected' => true
                 ]
             ],
-            'timezone' => \DateTimeZone::listIdentifiers(\DateTimeZone::ALL)
+            'timezone' => DateTimeZone::listIdentifiers(DateTimeZone::ALL)
         ];
 
         return $this->response->setJSON([
@@ -407,11 +413,11 @@ class Install extends BaseController
 
             try {
                 // Initialize parameter to new connection
-                $db = \Config\Database::connect();
+                $db = Database::connect();
 
                 // Initialize database
                 $db->initialize();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Unable to connect to the database
                 return $this->response->setJSON([
                     'status' => 403,
@@ -423,7 +429,7 @@ class Install extends BaseController
             if (session()->get('installation_mode') > 0) {
                 try {
                     // Try unzip the sample modules
-                    $zip = new \ZipArchive();
+                    $zip = new ZipArchive();
 
                     // Read compressed sample module
                     if ($zip->open(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true) {
@@ -433,7 +439,7 @@ class Install extends BaseController
 
                     // Close current opened zip file
                     $zip->close();
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Unable to extract the sample module
                     return $this->response->setJSON([
                         'status' => 403,
@@ -453,12 +459,12 @@ class Install extends BaseController
                     }
 
                     // Load migration library
-                    $migration = \Config\Services::migrations();
+                    $migration = Services::migrations();
 
                     // Migrate the database schema (ASC order)
                     if ($migration->latest()) {
                         // Load seeder library
-                        $seeder = \Config\Database::seeder();
+                        $seeder = Database::seeder();
 
                         // Run main seeder
                         $seeder->call('MainSeeder');
@@ -478,7 +484,7 @@ class Install extends BaseController
 
                     // Mark the migration has been migrated
                     session()->set('migrated', true);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Migration couldn't be executed, throw error
                     return $this->response->setJSON([
                         'status' => 403,
@@ -492,7 +498,7 @@ class Install extends BaseController
                 try {
                     // Try to writing configuration file
                     file_put_contents(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     return $this->response->setJSON([
                         'status' => 200,
                         'active' => '.finalizing',

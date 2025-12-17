@@ -19,6 +19,7 @@ namespace Aksara\Modules\Cms\Controllers\Partials;
 
 use CodeIgniter\Files\File;
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Media extends Core
 {
@@ -125,7 +126,7 @@ class Media extends Core
             }
 
             unlink($full_path);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage());
         }
 

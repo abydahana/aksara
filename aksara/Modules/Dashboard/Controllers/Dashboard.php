@@ -216,7 +216,7 @@ class Dashboard extends Core
         $updater = false;
 
         if (get_setting('update_check')) {
-            $updater = \Aksara\Modules\Administrative\Controllers\Updater\Updater::ping_upstream();
+            $updater = Updater::ping_upstream();
         }
 
         return make_json(

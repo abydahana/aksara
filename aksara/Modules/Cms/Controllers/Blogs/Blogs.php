@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Cms\Controllers\Blogs;
 
 use Aksara\Laboratory\Core;
+use Throwable;
 
 class Blogs extends Core
 {
@@ -264,7 +265,7 @@ class Blogs extends Core
                 // Set new post id
                 $post_id = $this->model->insert_id();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 

@@ -15,11 +15,13 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+use Aksara\Laboratory\Renderer\Parser;
+
 if (! function_exists('generate_token')) {
     /**
      * Generate security token to validate the query string values
      */
-    function generate_token(?string $path = null, array $data = []): string
+    function generate_token(?string $path = null, array $query_params = []): string
     {
         // Validate encryption key
         if (! defined('ENCRYPTION_KEY') || empty(ENCRYPTION_KEY)) {
@@ -27,21 +29,55 @@ if (! function_exists('generate_token')) {
         }
 
         // Remove existing token from data to prevent token chaining
-        unset($data['aksara']);
+        unset($query_params['aksara']);
+
+        // Get ignored query string from userdata
+        $user_ignored = get_userdata('__ignored_query_string');
+
+        // Default ignored params
+        $default_ignored = ['q', 'per_page', 'limit', 'order', 'column', 'sort'];
+
+        // Merge: split user ignored (if exists) with defaults
+        $ignored_query_string = array_merge(
+            $user_ignored ? array_map('trim', explode(',', $user_ignored)) : [],
+            $default_ignored
+        );
+
+        // Trim whitespace and filter empty values
+        $ignored_query_string = array_filter(array_map('trim', $ignored_query_string));
+
+        // Remove duplicates
+        $ignored_query_string = array_unique($ignored_query_string);
+
+        // Exclude ignored params from query params
+        $query_params = array_diff_key($query_params, array_flip($ignored_query_string));
+
+        // Normalize query param order
+        ksort($query_params);
 
         // Normalize data to query string format
         $queryString = '';
-        if (! empty($data)) {
-            $queryString = http_build_query(array_filter($data, function ($value) {
+
+        if (! empty($query_params)) {
+            $queryString = http_build_query(array_filter($query_params, function ($value) {
                 return null !== $value && '' !== $value;
             }));
         }
 
-        // Normalize path
-        $normalizedPath = '';
-        if (null !== $path) {
-            $normalizedPath = rtrim(urldecode($path), '/');
+        // Resolve path using realpath logic
+        $parts = explode('/', $path);
+        $resolved = [];
+
+        foreach ($parts as $part) {
+            if ($part === '..' && count($resolved) > 0) {
+                array_pop($resolved);
+            } elseif ($part !== '.' && $part !== '' && $part !== '..') {
+                $resolved[] = $part;
+            }
         }
+
+        // Normalized path
+        $normalizedPath = implode('/', $resolved);
 
         // Get session identifier
         $sessionId = get_userdata('session_generated') ?? '';
@@ -251,7 +287,7 @@ if (! function_exists('fetch_metadata')) {
             ]);
 
             return json_decode($response->getBody());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $e;
         }
 
@@ -354,14 +390,14 @@ if (! function_exists('pagination')) {
     /**
      * Generate form input
      */
-    function pagination($params = [])
+    function pagination(object $params)
     {
         if (! $params || ($params->total_rows <= $params->per_page && ! service('request')->getGet('limit'))) {
             return false;
         }
 
         $theme = get_theme();
-        $parser = new \Aksara\Laboratory\Renderer\Parser($theme);
+        $parser = new Parser($theme);
 
         return $parser->parse('core/pagination.twig', $params);
     }
