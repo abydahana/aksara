@@ -17,7 +17,12 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
-class Register extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Libraries\Messaging;
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Register extends Core
 {
     public function __construct()
     {
@@ -37,7 +42,7 @@ class Register extends \Aksara\Laboratory\Core
         if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
             try {
                 unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -46,7 +51,7 @@ class Register extends \Aksara\Laboratory\Core
     public function index()
     {
         // Validate token
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             // Token valid, validate form
             return $this->_validate_form();
         }
@@ -59,7 +64,7 @@ class Register extends \Aksara\Laboratory\Core
             if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
                 try {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Safe abstraction
                 }
             }
@@ -120,7 +125,7 @@ class Register extends \Aksara\Laboratory\Core
         if (DEMO_MODE) {
             // Restrict on demo mode
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page());
-        } elseif (! $this->valid_token(service('request')->getPost('_token'))) {
+        } elseif (! $this->valid_token($this->request->getPost('_token'))) {
             // Invalid token
             return throw_exception(403, phrase('The token you submitted has been expired or you are trying to bypass it from the restricted source.'), current_page());
         }
@@ -135,19 +140,19 @@ class Register extends \Aksara\Laboratory\Core
         $this->form_validation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Run validation
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             // Validation error
             return throw_exception(400, $this->form_validation->getErrors());
         }
 
         // Prepare the insert data
         $prepare = [
-            'first_name' => service('request')->getPost('first_name'),
-            'last_name' => service('request')->getPost('last_name'),
-            'username' => service('request')->getPost('username'),
-            'email' => service('request')->getPost('email'),
-            'phone' => service('request')->getPost('phone'),
-            'password' => password_hash(service('request')->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT),
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
+            'username' => $this->request->getPost('username'),
+            'email' => $this->request->getPost('email'),
+            'phone' => $this->request->getPost('phone'),
+            'password' => password_hash($this->request->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT),
             'group_id' => (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3),
             'language_id' => (get_setting('app_language') > 0 ? get_setting('app_language') : 1),
             'registered_date' => date('Y-m-d'),
@@ -177,13 +182,15 @@ class Register extends \Aksara\Laboratory\Core
                 $this->_send_welcome_email($prepare);
 
                 // Return to previous page
-                return throw_exception(301, phrase('Your account has been registered successfully.'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : 'dashboard')), true);
+                return throw_exception(301, phrase('Your account has been registered successfully.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard')), true);
             } else {
                 // Send activation email
                 $this->_send_activation_email($prepare);
 
+                $encrypter = Services::encrypter();
+
                 // Send to client
-                return throw_exception(301, phrase('Follow the link we sent to your email to activate your account.'), base_url('auth', ['activation' => base64_encode(service('encrypter')->encrypt($prepare['user_id']))]));
+                return throw_exception(301, phrase('Follow the link we sent to your email to activate your account.'), base_url('auth', ['activation' => base64_encode($encrypter->encrypt($prepare['user_id']))]));
             }
         } else {
             return throw_exception(500, phrase('Unable to register your account, please try again later.'));
@@ -205,7 +212,7 @@ class Register extends \Aksara\Laboratory\Core
         ->get_where(
             'app__users_hashes',
             [
-                'app__users_hashes.hash' => service('request')->getGet('hash')
+                'app__users_hashes.hash' => $this->request->getGet('hash')
             ],
             1
         )
@@ -239,7 +246,7 @@ class Register extends \Aksara\Laboratory\Core
                 'session_generated' => time()
             ]);
 
-            return throw_exception(301, phrase('Your account has been successfully activated.'), base_url((service('request')->getGet('redirect') ? service('request')->getGet('redirect') : null)));
+            return throw_exception(301, phrase('Your account has been successfully activated.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : null)));
         } else {
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
         }
@@ -259,7 +266,7 @@ class Register extends \Aksara\Laboratory\Core
             ]
         );
 
-        $messaging = new \Aksara\Libraries\Messaging();
+        $messaging = new Messaging();
 
         $messaging->set_email($params['email'])
         ->set_subject(phrase('Account Activation') . ' - ' . get_setting('app_name'))
@@ -292,7 +299,7 @@ class Register extends \Aksara\Laboratory\Core
 
     private function _send_welcome_email($params = [])
     {
-        $messaging = new \Aksara\Libraries\Messaging();
+        $messaging = new Messaging();
 
         $messaging->set_email($params['email'])
         ->set_subject(phrase('Account Activated') . ' - ' . get_setting('app_name'))

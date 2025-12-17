@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Cms\Controllers\Pages;
 
-class Pages extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Pages extends Core
 {
     private $_table = 'pages';
 
@@ -35,8 +38,8 @@ class Pages extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         } else {
             $this->where('language_id', get_setting('app_language') ?? 0);
         }
@@ -96,8 +99,8 @@ class Pages extends \Aksara\Laboratory\Core
             ]
         )
         ->set_validation([
-            'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
-            'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . service('request')->getGet('page_id') . '.language_id.' . (service('request')->getPost('language_id') ?? service('request')->getGet('language') ?? 0) . ']',
+            'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
+            'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . $this->request->getGet('page_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
             'page_content' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
@@ -146,11 +149,11 @@ class Pages extends \Aksara\Laboratory\Core
     {
         $this->set_method('update');
 
-        if (! service('request')->getGet('language')) {
+        if (! $this->request->getGet('language')) {
             $current_language = $this->model->get_where(
                 $this->_table,
                 [
-                    'page_id' => service('request')->getGet('page_id') ?? 0
+                    'page_id' => $this->request->getGet('page_id') ?? 0
                 ],
                 1
             )
@@ -195,7 +198,7 @@ class Pages extends \Aksara\Laboratory\Core
             $data = $this->model->get_where(
                 $this->_table,
                 [
-                    'page_id' => service('request')->getGet('page_id') ?? 0
+                    'page_id' => $this->request->getGet('page_id') ?? 0
                 ],
                 1
             )
@@ -206,7 +209,7 @@ class Pages extends \Aksara\Laboratory\Core
                 $this->_table,
                 [
                     'page_slug' => $data->page_slug,
-                    'language_id' => service('request')->getGet('language') ?? 0
+                    'language_id' => $this->request->getGet('language') ?? 0
                 ],
                 1
             )
@@ -219,7 +222,7 @@ class Pages extends \Aksara\Laboratory\Core
                 unset($data->page_id);
 
                 // Change language id
-                $data->language_id = service('request')->getGet('language');
+                $data->language_id = $this->request->getGet('language');
 
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
@@ -227,7 +230,7 @@ class Pages extends \Aksara\Laboratory\Core
                 // Set new page id
                 $page_id = $this->model->insert_id();
             }
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 
@@ -243,7 +246,7 @@ class Pages extends \Aksara\Laboratory\Core
             'page_id' => $page_id
         ])
         ->set_validation([
-            'page_title' => 'required|max_length[256]|unique[' . $this->_table . '.page_title.page_id.' . service('request')->getGet('page_id') . ']',
+            'page_title' => 'required|max_length[256]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
             'page_content' => 'required'
         ])
         ->set_alias([
@@ -277,7 +280,7 @@ class Pages extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

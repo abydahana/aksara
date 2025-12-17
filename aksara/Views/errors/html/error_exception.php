@@ -1,7 +1,4 @@
 <?php
-use Config\Services;
-use CodeIgniter\CodeIgniter;
-
 $errorId = uniqid('error', true);
 ?>
 <!doctype html>
@@ -28,6 +25,7 @@ $errorId = uniqid('error', true);
         <div class="container">
             <h1><?= esc($title), esc($exception->getCode() ? ' #' . $exception->getCode() : '') ?></h1>
             <p>
+                <?php /** @var \Throwable $exception */ ?>
                 <?= nl2br(esc($exception->getMessage())) ?>
                 <a href="//www.google.com/search?q=<?= urlencode($title . ' ' . preg_replace('#\'.*\'|".*"#Us', '', $exception->getMessage())) ?>"
                    rel="noreferrer" target="_blank">search &rarr;</a>

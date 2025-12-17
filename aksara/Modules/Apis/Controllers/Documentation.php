@@ -17,7 +17,12 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-class Documentation extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+use stdClass;
+
+class Documentation extends Core
 {
     private $_primary;
 
@@ -32,10 +37,10 @@ class Documentation extends \Aksara\Laboratory\Core
         $this->set_theme('backend');
         $this->set_method('index');
 
-        $this->_primary = service('request')->getGet('slug');
+        $this->_primary = $this->request->getGet('slug');
 
-        if ($this->_primary && 'fetch' == service('request')->getPost('mode')) {
-            return $this->_fetch_properties($this->_primary, service('request')->getPost('group'));
+        if ($this->_primary && 'fetch' == $this->request->getPost('mode')) {
+            return $this->_fetch_properties($this->_primary, $this->request->getPost('group'));
         }
     }
 
@@ -60,11 +65,9 @@ class Documentation extends \Aksara\Laboratory\Core
                 'group_id' => 0,
                 'group_name' => phrase('Public'),
                 'group_description' => null,
-                'group_privileges' => json_encode(
-                    [
-                        $slug => ['index']
-                    ]
-                )
+                'group_privileges' => json_encode([
+                    $slug => ['index']
+                ])
 
             ]
         ];
@@ -116,7 +119,7 @@ class Documentation extends \Aksara\Laboratory\Core
             return false;
         }
 
-        $method = service('request')->getPost('method');
+        $method = $this->request->getPost('method');
         $title = $slug;
         $output = [];
         $session_id = session_id();
@@ -150,7 +153,7 @@ class Documentation extends \Aksara\Laboratory\Core
             $this->model->update(
                 'app__sessions',
                 [
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ],
@@ -164,7 +167,7 @@ class Documentation extends \Aksara\Laboratory\Core
                 'app__sessions',
                 [
                     'id' => $session_id,
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ]
@@ -173,7 +176,7 @@ class Documentation extends \Aksara\Laboratory\Core
 
         try {
             // Prepare the cURL
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false,
                 'allow_redirects' => [
@@ -186,54 +189,151 @@ class Documentation extends \Aksara\Laboratory\Core
             ]);
 
             foreach ($method as $key => $val) {
-                // Make a request
-                $request = $curl->get(base_url($slug . ('delete' == $val ? '/update' : ('index' != $val ? '/' . $val : null)), ['limit' => 1]));
+                $output[$val]['response'] = [
+                    'success' => $exception,
+                    'error' => $exception
+                ];
 
-                // Decode the response
-                $response = json_decode($request->getBody());
+                if (in_array($val, ['create', 'update'])) {
+                    // Get field data
+                    $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
+                    $response = json_decode($request->getBody()) ?? [];
 
-                // Push response
-                $output[$val]['response']['success'] = $response ?? trim($request->getHeaderLine('Content-Type'));
-                $output[$val]['response']['error'] = $exception;
+                    foreach ($response as $field => $params) {
+                        if ($params->hidden) {
+                            unset($response->$field);
 
-                if (isset($response->method) && 'update' === $response->method) {
-                    // Make a request
-                    $request = $curl->get(base_url($slug . '/create'));
-
-                    // Decode the response
-                    $response = json_decode($request->getBody());
-                }
-
-                if (isset($response->method) && in_array($response->method, ['create', 'update']) && isset($response->results->field_data) && 'delete' != $val) {
-                    $output[$val]['parameter'] = $response->results->field_data;
-
-                    $validation_error = [];
-
-                    foreach ($response->results->field_data as $_key => $_val) {
-                        if ($_val->required) {
-                            $validation_error[$_key] = phrase('Validation messages');
+                            continue;
                         }
+
+                        if (in_array('required', $params->validation)) {
+                            $response->$field->required = true;
+                        }
+
+                        $response->$field->type = array_keys((array) $params->type);
                     }
 
-                    $output[$val]['response']['error'] = [
-                        'status' => 400,
-                        'message' => $validation_error
-                    ];
+                    $output[$val]['field_data'] = $response;
+                } elseif (in_array($val, ['read'])) {
+                    // Get field data
+                    $request = $curl->get(base_url($slug, ['limit' => 1]));
+                    $response = json_decode($request->getBody());
+
+                    if (isset($response[0])) {
+                        $output[$val]['response']['success'] = $response[0];
+                    }
+                } elseif (! in_array($val, ['delete'])) {
+                    // Get field data
+                    $request = $curl->get(base_url($slug, ['limit' => 1]));
+                    $response = json_decode($request->getBody());
+
+                    $output[$val]['response']['success'] = $response ?? [];
                 }
 
-                if (isset($response->results->query_params) && (isset($response->method) && in_array($response->method, ['read', 'update', 'delete']) || in_array($val, ['create', 'update', 'delete']))) {
-                    $output[$val]['query_params'] = $response->results->query_params;
+                if (in_array($val, ['read', 'update', 'delete', 'export', 'print', 'pdf'])) {
+                    $request = $curl->get(base_url($slug, ['format_result' => 'full', 'limit' => 1]));
+                    $response = json_decode($request->getBody());
+
+                    if (isset($response->results->table_data[0]->primary)) {
+                        $output[$val]['query_params'] = $response->results->table_data[0]->primary;
+                    }
                 }
 
-                if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete']) || in_array($val, ['create', 'update', 'delete'])) {
+
+
+
+                /*
+                // Call API request
+                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete']) ? '/' . $val : null), ['format_result' => 'full', 'limit' => 1]));
+
+                // Decode response
+                $response = json_decode($request->getBody());
+
+                if (isset($response->method)) {
+                    if (in_array($response->method, ['index'])) {
+                        // Push response
+                        $output[$val]['response']['success'] = trim($request->getHeaderLine('Content-Type'));
+                        $output[$val]['response']['error'] = $exception;
+
+                        if (isset($response->results->table_data[0])) {
+                            $field_data = [];
+
+                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
+                                $field_data[$_key] = $_val->content;
+                            }
+
+                            $output[$val]['response']['success'] = $field_data;
+                        }
+                    } elseif (in_array($response->method, ['create', 'update'])) {
+                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
+
+                        // Decode the response
+                        $response = json_decode($request->getBody());
+
+                        if (isset($response[0])) {
+                            // Set field data
+                            $field_data = [];
+                            $validation_error = [];
+
+                            foreach ($response[0] as $_key => $_val) {
+                                if ($_val->hidden) continue;
+
+                                $field_data[$_key] = [
+                                    'type' => array_keys((array)$_val->type),
+                                    'maxlength' => $_val->maxlength,
+                                    'label' => $_key,
+                                    'required' => in_array('required', (array)$_val->validation)
+                                ];
+
+                                if (in_array('required', $_val->validation)) {
+                                    // Set field validation
+                                    $validation_error[$_key] = phrase('Validation messages');
+                                }
+                            }
+
+                            $output[$val]['field_data'] = $field_data;
+                            $output[$val]['response']['success'] = $exception;
+                            $output[$val]['response']['error'] = [
+                                'status' => 400,
+                                'message' => $validation_error
+                            ];
+                        }
+                    } elseif (in_array($response->method, ['read'])) {
+                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
+
+                        // Decode the response
+                        $response = json_decode($request->getBody());
+
+                        if (isset($response[0])) {
+                        }
+                        if (isset($response->results->table_data[0])) {
+                            $field_data = [];
+
+                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
+                                $field_data[$_key] = $_val->content;
+                            }
+
+                            $output[$val]['response']['success'] = $field_data;
+
+                            // Set query params
+                            $output[$val]['query_params'] = $response->results->table_data[0]->primary;
+                        }
+                    }
+                }
+
+                if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete'])) {
+                    // Set exception message
                     $output[$val]['response']['success'] = [
                         'code' => phrase('HTTP status code'),
                         'message' => phrase('Success messages'),
                         'target' => phrase('Redirect URL')
                     ];
                 }
+                    */
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
+            echo $e->getMessage();
+            exit;
             // Safe abstraction
         }
 
@@ -318,6 +418,6 @@ class Documentation extends \Aksara\Laboratory\Core
 
     private function _restricted_resource()
     {
-        return ['administrative/updater', 'assets', 'assets/svg', 'pages/blank', 'shortlink', 'xhr', 'xhr/boot', 'xhr/language', 'xhr/partial', 'xhr/partial/account', 'xhr/partial/language', 'xhr/summernote'];
+        return ['administrative/updater', 'assets', 'assets/svg', 'pages/blank', 'shortlink', 'xhr', 'xhr/boot', 'xhr/language', 'xhr/partial', 'xhr/partial/account', 'xhr/partial/announcement', 'xhr/partial/language', 'xhr/summernote', 'xhr/widget/comment'];
     }
 }

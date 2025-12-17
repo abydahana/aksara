@@ -17,6 +17,7 @@
 
 namespace Aksara\Laboratory;
 
+use Config\Services;
 use CodeIgniter\Controller;
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Model;
@@ -24,164 +25,177 @@ use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
+use Throwable;
 
 /**
- * If it works, it ain't stupid ;)
+ * Core Controller for Aksara CMS.
  */
-class Core extends Controller
+abstract class Core extends Controller
 {
-    /**
-     * Load trait, get dynamic properties
-     */
     use Traits;
 
     /**
-     * A flag whether request is sent from API Client or not
+     * Flag indicating if the request originated from an API Client.
      */
-    protected $api_client = false;
+    protected bool $api_client = false;
 
     /**
-     * Form validation
+     * Form validation service instance.
+     * @var \CodeIgniter\Validation\ValidationInterface
      */
     protected $form_validation;
 
     /**
-     * Typically to access model from modules that are extending to it
+     * Model instance for database interaction.
+     * @var \Aksara\Laboratory\Model
      */
     protected $model;
 
     /**
-     * Get the permission object to restrict or allow module request
-     * for each user or globally
+     * Permission object for access control logic.
+     * @var \Aksara\Laboratory\Permission
      */
     protected $permission;
 
     /**
-     * Typically to load template property from theme
+     * Request service instance.
+     * @var IncomingRequest|null
+     */
+    protected $request;
+
+    /**
+     * Theme template properties.
+     * @var object
      */
     public $template;
 
     /**
-     * CSRF Token
+     * CSRF Token storage.
      */
-    private $_token;
+    private ?string $_token = null;
 
     /**
-     * A flag whether API token is valid or not
+     * Flag indicating if the submitted API token is valid.
      */
-    private $_api_token;
+    private bool $_api_token = false;
 
+    /**
+     * Controller constructor, initializes dependencies and validates request integrity.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        // Start benchmarking
-        service('timer')->start('elapsed_time');
+        // Start benchmarking timer.
+        Services::timer()->start('elapsed_time');
 
-        // Unset previous upload path from the session
+        // Load request class
+        $this->request = Services::request();
+        $this->response = Services::response();
+
+        // Clear previous upload session data.
         unset_userdata('_set_upload_path');
-
-        // Unset previous uploaded files string from the session
         unset_userdata('_uploaded_files');
 
-        if (strtolower(service('request')->getUserAgent()->getBrowser()) == 'internet explorer' && service('request')->getUserAgent()->getVersion() < 11) {
-            // Block outdate user agent
-            die('The ' . service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion() . ' is no longer supported...');
-        } elseif (! filter_var((service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()), FILTER_VALIDATE_IP)) {
-            // Block invalid browser header
-            exit(header('Location: https://google.com?q=' . (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())));
+        // --- User Agent and IP Validation ---
+        $userAgent = $this->request->getUserAgent();
+
+        // Block outdated IE versions.
+        if (strtolower($userAgent->getBrowser()) == 'internet explorer' && $userAgent->getVersion() < 11) {
+            die('The ' . $userAgent->getBrowser() . ' ' . $userAgent->getVersion() . ' is no longer supported...');
         }
 
-        // Load helpers
+        // Validate client IP address.
+        $ipAddress = $this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress();
+        if (! filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+            exit(header('Location: https://google.com?q=' . $ipAddress));
+        }
+
+        // --- Load Dependencies ---
         helper(['url', 'file', 'theme', 'security', 'main', 'string', 'widget']);
 
-        // Load and assign model class
+        // Load core classes.
+        $this->form_validation = Services::validation();
         $this->model = new Model();
-
-        // Load and assign permission class
         $this->permission = new Permission();
 
-        // Load and assign validation class
-        $this->form_validation = \Config\Services::validation();
-
-        // Assign an active database driver
+        // Assign active database driver.
         $this->_db_driver = $this->model->db_driver();
 
-        // Get match route path
-        $path = (isset(service('router')->getMatchedRoute()[0]) ? service('router')->getMatchedRoute()[0] : null);
+        // --- Route Initialization ---
+        $router = Services::router();
+        $path = ($router->getMatchedRoute()[0] ?? null);
+        $this->_method = $router->methodName();
 
-        // Get and assign the requested method
-        $this->_method = service('router')->methodName();
-
-        // Get and assign the module path
+        // Assign the module path.
         $this->_module = ($this->_method && $path && strpos($path, $this->_method) !== false ? preg_replace('/\/' . $this->_method . '$/', '', $path) : $path);
 
-        // Get upload path
-        $upload_path = strtolower(substr(strstr(service('router')->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
-        $upload_path = array_pad(explode('\\', $upload_path), 2, null);
-
-        // Set upload path
+        // Determine and set upload path.
+        $controllerName = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
+        $upload_path = array_pad(explode('\\', $controllerName), 2, null);
         $this->_set_upload_path = $upload_path[1] ?? $upload_path[0];
 
-        // Check if query string has limit
-        if (is_numeric(service('request')->getGet('limit')) && service('request')->getGet('limit')) {
-            // Backup original limit
+        // --- Query Parameter Handling ---
+
+        // Apply URL limit parameter.
+        if (is_numeric($this->request->getGet('limit')) && $this->request->getGet('limit')) {
             $this->_limit_backup = $this->_limit;
-
-            // Apply the limit for query builder
-            $this->_limit = service('request')->getGet('limit');
+            $this->_limit = $this->request->getGet('limit');
         }
 
-        // Check if query string has offset
-        if (is_numeric(service('request')->getGet('offset')) && service('request')->getGet('offset')) {
-            // Apply the offset for query builder
-            $this->_offset = service('request')->getGet('offset');
+        // Apply URL offset parameter.
+        if (is_numeric($this->request->getGet('offset')) && $this->request->getGet('offset')) {
+            $this->_offset = $this->request->getGet('offset');
         }
 
-        // Check if user is requesting theme preview
-        if ('preview-theme' == service('request')->getGet('aksara_mode') && sha1(service('request')->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == service('request')->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . service('request')->getGet('aksara_theme'))) {
-            // Set the temporary theme
-            $this->_set_theme = strip_tags(service('request')->getGet('aksara_theme'));
+        // --- Theme Preview Mode ---
+
+        // Check for theme preview mode.
+        if ('preview-theme' == $this->request->getGet('aksara_mode') && sha1($this->request->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == $this->request->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . $this->request->getGet('aksara_theme'))) {
+            $this->_set_theme = strip_tags($this->request->getGet('aksara_theme'));
         }
 
-        if (service('request')->getHeaderLine('X-API-KEY')) {
-            // Do handshake between REST and Aksara
-            $this->_handshake(service('request')->getHeaderLine('X-API-KEY'));
+        // --- API Handshake & Logging ---
+        if ($this->request->getHeaderLine('X-API-KEY')) {
+            // Perform API handshake.
+            $this->_handshake($this->request->getHeaderLine('X-API-KEY'));
         } else {
-            // Store access logs
+            // Store access logs.
             $this->_push_log();
         }
 
-        // Set user language
+        // Set user language.
         $this->_set_language(get_userdata('language_id'));
     }
 
     /**
-     * Remap method and match the routes.
-     * We give you 5 default arguments to help you to get the segments
-     * from the route arguments without initializing from URI service.
+     * Remaps method based on URI, falling back to index().
      *
-     * @param   mixed|null $method
-     * @param   mixed|null $arg_1
-     * @param   mixed|null $arg_2
-     * @param   mixed|null $arg_3
-     * @param   mixed|null $arg_4
-     * @param   mixed|null $arg_5
+     * @param string $method Requested method name.
+     * @param mixed  ...$params Remaining URI segments.
+     *
+     * @return mixed Execution result of the mapped method.
      */
-    public function _remap(string $method = '', string $arg_1 = '', string $arg_2 = '', string $arg_3 = '', string $arg_4 = '', string $arg_5 = '')
+    public function _remap(string $method = '', mixed ...$params)
     {
         // Check method to prevent conflict
         if (method_exists($this, $method) && ! in_array($method, get_class_methods('\Aksara\Laboratory\Core'))) {
-            // Use non conflict method
-            $this->$method($arg_1, $arg_2, $arg_3, $arg_4, $arg_5);
+            // Call non conflict method
+            call_user_func_array([$this, $method], $params);
         } else {
-            // Throwback default method
-            $this->index($method, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5);
+            // Fallback to CRUD method
+            call_user_func_array([$this, 'index'], array_merge([$method], $params));
         }
     }
 
     /**
-     * Debugging
+     * Enables debugging mode and sets output format.
+     *
+     * @param string|null $result_type Output format ('query', 'parameter', etc.).
+     *
+     * @return static Current object instance (chainable).
      */
-    public function debug(?string $result_type = null)
+    public function debug(?string $result_type = null): static
     {
         $this->_debugging = $result_type;
 
@@ -189,13 +203,13 @@ class Core extends Controller
     }
 
     /**
-     * Function to apply demo mode
+     * Applies restriction flag if DEMO_MODE is active.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function restrict_on_demo()
+    public function restrict_on_demo(): static
     {
-        // Check if demo mode is active
         if (DEMO_MODE) {
-            // Set the restriction property value
             $this->_restrict_on_demo = true;
         }
 
@@ -203,18 +217,24 @@ class Core extends Controller
     }
 
     /**
-     * Database configuration
+     * Configures the database connection.
      *
-     * @param   array|string $driver
+     * @param array<string, mixed>|string $driver Database driver or full config array.
+     * @param string|null                 $hostname Hostname.
+     * @param int|null                    $port Port number.
+     * @param string|null                 $username Username.
+     * @param string|null                 $password Password.
+     * @param string|null                 $database Database name.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function database_config($driver = [], ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null)
+    public function database_config(array|string $driver = [], ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null): static
     {
-        // Check if the parameter is sets with array
-        if (is_array($driver) && isset($driver['driver']) && isset($driver['hostname']) && isset($driver['port']) && isset($driver['username']) && isset($driver['password']) && isset($driver['database'])) {
-            // Use the array parameter as config
+        // Use array configuration if provided.
+        if (is_array($driver) && isset($driver['driver'], $driver['hostname'], $driver['port'], $driver['username'], $driver['password'], $driver['database'])) {
             $this->model->database_config($driver['driver'], $driver['hostname'], $driver['port'], $driver['username'], $driver['password'], $driver['database']);
         } else {
-            // Use the strng parameter as config
+            // Use individual parameters.
             $this->model->database_config($driver, $hostname, $port, $username, $password, $database);
         }
 
@@ -222,63 +242,103 @@ class Core extends Controller
     }
 
     /**
-     * Validate the token that submitted through form
+     * Validates the submitted security token (CSRF or API Key).
+     *
+     * @param string|null $token Submitted token string.
+     *
+     * @return bool TRUE if token is valid or request is from API client.
      */
-    public function valid_token(?string $token = null)
+    public function valid_token(?string $token = null): bool
     {
-        // Match the token validation
-        if (service('request')->getPost() && (($token && get_userdata(sha1(uri_string())) === $token) || ($token && sha1(service('request')->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) || $this->api_client)) {
-            // Token match
-            return true;
+        $is_post_request = Services::request()->getPost();
+
+        // Must be a POST request.
+        if ($is_post_request) {
+            // Check URI-based token match.
+            if ($token && get_userdata(sha1(uri_string())) === $token) {
+                return true;
+            }
+
+            // Check Referer-based token match.
+            if ($token && sha1(Services::request()->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) {
+                return true;
+            }
+
+            // Check API client status (bypasses token check).
+            if ($this->api_client) {
+                return true;
+            }
         }
 
         return false;
     }
 
     /**
-     * Assign the parent module of current class
+     * Set query string parameters to ignore during URL generation.
+     *
+     * These parameters will be excluded when building URLs to ensure
+     * consistent URL structure across requests.
+     *
+     * @param array|string $keys Query parameter keys to ignore (comma-separated if string)
+     * @return static Current object instance (chainable).
      */
-    public function parent_module(string $module)
+    protected function ignore_query_string(array|string $keys): static
     {
-        // Set module
+        if (is_array($keys)) {
+            $keys = implode(',', $keys);
+        }
+
+        // Store ignored query string keys in user session
+        set_userdata('__ignored_query_string', $keys);
+
+        return $this;
+    }
+
+    /**
+     * Assigns the parent module name.
+     *
+     * @param string $module Parent module name.
+     *
+     * @return static Current object instance (chainable).
+     */
+    public function parent_module(string $module): static
+    {
         $this->_module = $module;
 
         return $this;
     }
 
     /**
-     * Set up the permission of module, it's mean that only logged user can
-     * access the module
+     * Sets module access permission and authorization rules.
      *
-     * @param   array|string $permissive_group
+     * @param array<int>|string $permissive_group Allowed group IDs (array or comma-separated string), 0 allows all.
+     * @param string|null       $redirect         Redirect URI on denial (not used if exception is thrown).
+     *
+     * @return static Current object instance (chainable).
+     *
+     * @throws \Exception Throws exception on permission denial.
      */
-    public function set_permission($permissive_group = [], ?string $redirect = null)
+    public function set_permission(array|string $permissive_group = [], ?string $redirect = null): static
     {
-        // This mean the permission is set as true
         $this->_set_permission = true;
 
         if (0 === $permissive_group) {
-            // Allow everyone to do create, update and delete
             return $this;
         }
 
-        // Check if permissive user is set
-        if ($permissive_group && ! is_array($permissive_group)) {
-            // Safe check for array
+        // Process permissive group string to array.
+        if (! empty($permissive_group) && ! is_array($permissive_group)) {
             $permissive_group = array_map('trim', explode(',', $permissive_group));
         }
 
+        // Authorization checks (removed complex conditional logic for brevity, maintaining original flow):
         if (in_array($this->_method, $this->_unset_method)) {
-            // Method is restricted
             return throw_exception(403, phrase('The method you requested is not acceptable.'));
         } elseif ($this->_set_permission && ! get_userdata('is_logged') && ! $this->_api_token) {
-            // User isn't signed in
             return throw_exception(403, phrase('Your session has been expired.'));
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_api_token) {
-            // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         } elseif ($permissive_group && ! in_array(get_userdata('group_id'), $permissive_group) && ! $this->_api_token) {
-            // User been signed in but blocked by group privilege
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         }
 
@@ -286,63 +346,64 @@ class Core extends Controller
     }
 
     /**
-     * Set up the method of module so it will only have one method by default
+     * Manually sets the module's active method.
+     *
+     * @param string $method Method name (defaults to 'index').
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_method(string $method = 'index')
+    public function set_method(string $method = 'index'): static
     {
-        // Set the method property
         $this->_method = $method;
-
-        // Mark if method is called manually
         $this->_set_method = true;
 
         return $this;
     }
 
     /**
-     * Set up the method of module so it will only have one method by default
+     * Gets the currently set method name.
      *
-     * @return  string
+     * @return string The method name.
      */
-    public function get_method()
+    public function get_method(): string
     {
         return $this->_method;
     }
 
     /**
-     * Unset the method from being accessed. The function should be called
-     * before the "set_permission()"
+     * Prevents specific methods from being accessed.
      *
-     * @param   array|string $params
+     * @param array|string $params Method names (array or comma-separated string).
+     *
+     * @return static Current object instance (chainable).
      */
-    public function unset_method($params = [])
+    public function unset_method(array|string $params = []): static
     {
-        // Check if parameter isn't in array format
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
         $this->_unset_method = array_merge($this->_unset_method, $params);
 
         return $this;
     }
 
     /**
-     * Set up the theme. The front/back theme might be different
+     * Sets the theme based on predefined configuration.
+     *
+     * @param string $theme Theme context ('frontend' or 'backend').
+     *
+     * @return static|bool Current object instance (chainable) or FALSE on invalid theme.
      */
-    public function set_theme(string $theme = 'frontend')
+    public function set_theme(string $theme = 'frontend'): static|bool
     {
-        // Validate the theme parameter to match with predefined config
         if (! in_array($theme, ['frontend', 'backend'])) {
             return false;
         }
 
-        // Get site id before run query to prevent nested queue
         $site_id = get_setting('id');
 
-        // Run query to get theme config from site settings
+        // Get theme config from site settings.
         $query = $this->model->select($theme . '_theme')->get_where(
             'app__settings',
             [
@@ -352,172 +413,161 @@ class Core extends Controller
         )
         ->row($theme . '_theme');
 
-        // Set the theme with matched configuration
         $this->_set_theme = $query;
 
         return $this;
     }
 
     /**
-     * Possibility to set the template if the master template isn't enough tho
+     * Sets custom template properties.
      *
-     * @param   array|string $params
+     * @param array|string $params Key-value array or single parameter name.
+     * @param string|null  $value  Value for the single parameter name.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_template($params = [], ?string $value = null)
+    public function set_template(array|string $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
         $this->_set_template = array_merge($this->_set_template, $params);
 
         return $this;
     }
 
     /**
-     * Set up the breadcrumb
+     * Sets custom breadcrumb items.
      *
-     * @param   array|string $params
+     * @param array|string $params Key-value array (URL => Label) or single URL.
+     * @param string|null  $value  Label for the single URL.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_breadcrumb($params = [], ?string $value = null)
+    public function set_breadcrumb(array|string $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
         $this->_set_breadcrumb = array_merge($this->_set_breadcrumb, $params);
 
         return $this;
     }
 
     /**
-     * Set the CRUD primary key when the rendered database table isn't have
-     * at least one primary key
+     * Sets the primary key field(s) for the current CRUD operation.
      *
-     * @param   array|string $field
+     * @param array|string $field Field name(s) (array or comma-separated string).
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_primary($field = [])
+    public function set_primary(array|string $field = []): static
     {
         if (! is_array($field)) {
-            // Explode commas and trim values
             $field = array_map('trim', explode(',', $field));
         }
 
-        // Merge array and store to property
         $this->_set_primary = array_merge($this->_set_primary, $field);
 
         return $this;
     }
 
     /**
-     * Set the title of module. It also will displayed as document title
-     * in the browser.
+     * Sets the module and document title.
      *
-     * A magic string can be wrapped using double curly brackets.
+     * @param array|string $params Key-value array or default title string.
+     * @param string|null  $fallback Fallback title if magic string fails.
      *
-     * @param   array|string $params
+     * @return static Current object instance (chainable).
      */
-    public function set_title($params = [], ?string $fallback = null)
+    public function set_title(array|string $params = [], ?string $fallback = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
             if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                // Make a fallback from original argument
                 $fallback = $params;
             }
 
-            // Convert parameters as array
             $params = [
                 'index' => $params
             ];
         }
 
-        // Merge array and store to property
         $this->_set_title = array_merge($this->_set_title, $params);
-
         $this->_set_title_fallback = $fallback;
 
         return $this;
     }
 
     /**
-     * Set the description of module. It also will displayed as description
-     * of meta.
+     * Sets the module and meta description.
      *
-     * A magic string can be wrapped using curly brackets.
+     * @param array|string $params Key-value array or default description string.
+     * @param string|null  $fallback Fallback description if magic string fails.
      *
-     * @param   array|string $params
+     * @return static Current object instance (chainable).
      */
-    public function set_description($params = [], ?string $fallback = null)
+    public function set_description(array|string $params = [], ?string $fallback = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
             if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                // Make a fallback from original argument
                 $fallback = $params;
             }
 
-            // Convert parameters as array
             $params = [
                 'index' => $params
             ];
         }
 
-        // Merge array and store to property
         $this->_set_description = array_merge($this->_set_description, $params);
-
         $this->_set_description_fallback = $fallback;
 
         return $this;
     }
 
     /**
-     * Set the icon of content title, yeah we need some icon that describe
-     * the module
+     * Sets the content icon.
+     *
+     * @param array|string $params Key-value array or default icon string.
+     * @param string|null  $fallback Fallback icon if magic string fails.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_icon($params = [], ?string $fallback = null)
+    public function set_icon(array|string $params = [], ?string $fallback = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
             if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                // Make a fallback from original argument
                 $fallback = $params;
             }
 
-            // Convert parameters as array
             $params = [
                 'index' => $params
             ];
         }
 
-        // Merge array and store to property
         $this->_set_icon = array_merge($this->_set_icon, $params);
-
         $this->_set_icon_fallback = $fallback;
 
         return $this;
     }
 
     /**
-     * Set the individual message of exception
+     * Overrides individual exception messages.
      *
-     * @param   array|string $params
+     * @param array|string $params Array of messages or single key.
+     * @param int          $code   HTTP status code for single key.
+     * @param string|null  $messages Message string for single key.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_messages($params = [], int $code = 0, ?string $messages = null)
+    public function set_messages(array|string $params = [], int $code = 0, ?string $messages = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => [
                     'code' => $code,
@@ -526,18 +576,26 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
         $this->_set_messages = array_merge($this->_set_messages, $params);
 
         return $this;
     }
 
     /**
-     * Override the existing CRUD button
+     * Overrides or adds a CRUD button.
+     *
+     * @param string      $button    Button key name.
+     * @param string|null $value     URL for the button.
+     * @param string|null $label     Button label.
+     * @param string|null $class     CSS class.
+     * @param string|null $icon      Icon class.
+     * @param array       $parameter URL parameters.
+     * @param bool|null   $new_tab   Open link in a new tab.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function set_button(string $button, ?string $value = null, ?string $label = null, ?string $class = null, ?string $icon = null, $parameter = [], ?bool $new_tab = null)
+    public function set_button(string $button, ?string $value = null, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], ?bool $new_tab = null): static
     {
-        // Push the button properties
         $this->_set_button[$button] = [
             'url' => $value,
             'label' => $label,
@@ -551,14 +609,19 @@ class Core extends Controller
     }
 
     /**
-     * Switch the view as grid
+     * Switches the view to a grid layout.
+     *
+     * @param string $thumbnail Thumbnail image source field.
+     * @param string|null $hyperlink URL for the grid item.
+     * @param array $parameter URL parameters for the hyperlink.
+     * @param bool $new_tab Open hyperlink in a new tab.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function grid_view(string $thumbnail, ?string $hyperlink = null, array $parameter = [], bool $new_tab = false)
+    public function grid_view(string $thumbnail, ?string $hyperlink = null, array $parameter = [], bool $new_tab = false): static
     {
-        // Use grid view instead of data tables
         $_ENV['GRID_VIEW'] = true;
 
-        // Push thumbnail source to the grid view property
         $this->_grid_view = [
             'thumbnail' => $thumbnail,
             'hyperlink' => $hyperlink,
@@ -570,15 +633,16 @@ class Core extends Controller
     }
 
     /**
-     * Add individual filter to CRUD index table
+     * Adds an individual filter control to the CRUD index table.
      *
-     * @param   array|string $filter
+     * @param array|string $filter Filter field key or array definition.
+     * @param array        $options Select field options (if filter is a select type).
+     *
+     * @return static Current object instance (chainable).
      */
-    public function add_filter($filter = [], array $options = [])
+    public function add_filter(array|string $filter = [], array $options = []): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($filter)) {
-            // Convert parameters as array
             $filter = [
                 $filter => [
                     'label' => ucwords($filter),
@@ -587,7 +651,7 @@ class Core extends Controller
             ];
         }
 
-        // Add default field's parameter
+        // Add default field parameters.
         foreach ($filter as $key => $val) {
             $filter[$key] = [
                 'type' => (is_array($val['values']) ? 'select' : 'text'),
@@ -596,18 +660,19 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
         $this->_add_filter = array_merge($this->_add_filter, $filter);
 
         return $this;
     }
 
     /**
-     * The system will autosearch when the query string is contain "q" key.
-     * This method used to prevent system to search even then"q" parameter
-     * is present.
+     * Toggles the automatic search functionality (based on 'q' query string).
+     *
+     * @param bool $active TRUE to enable, FALSE to disable.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function searchable(bool $active = true)
+    public function searchable(bool $active = true): static
     {
         $this->_searchable = $active;
 
@@ -615,9 +680,14 @@ class Core extends Controller
     }
 
     /**
-     * Allow table sort
+     * Enables table row sorting (drag and drop).
+     *
+     * @param string|null $primary_key The primary key column name for the sortable table.
+     * @param string|null $order_key   The column name used to store the row order index.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function sortable(?string $primary_key, ?string $order_key)
+    public function sortable(?string $primary_key, ?string $order_key): static
     {
         $this->_sortable = [
             'sort_url' => current_page(),
@@ -629,11 +699,19 @@ class Core extends Controller
     }
 
     /**
-     * Adding the toolbar action button
+     * Adds an action button to the module's toolbar.
      *
-     * @param   array|string $url
+     * @param array<int, array>|string $url URL(s) for the action, or an array of button definitions.
+     * @param string|null $label Button label (used if $url is a string).
+     * @param string|null $class CSS class(es) (used if $url is a string).
+     * @param string|null $icon Icon class (used if $url is a string).
+     * @param array $parameter URL query parameters.
+     * @param bool $new_tab Open link in a new tab.
+     * @param string|null $attribution Custom HTML attributes.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function add_toolbar($url, string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
+    public function add_toolbar($url, string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
     {
         if (! is_array($url)) {
             $params = [
@@ -669,11 +747,19 @@ class Core extends Controller
     }
 
     /**
-     * Adding the row action button
+     * Adds an action button to each row of the CRUD table.
      *
-     * @param   array|string $url
+     * @param array<int, array>|string $url URL(s) for the action, or an array of button definitions.
+     * @param string|null $label Button label (used if $url is a string).
+     * @param string|null $class CSS class(es) (used if $url is a string).
+     * @param string|null $icon Icon class (used if $url is a string).
+     * @param array $parameter URL query parameters.
+     * @param bool $new_tab Open link in a new tab.
+     * @param string|null $attribution Custom HTML attributes.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function add_button($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
+    public function add_button($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
     {
         if (! is_array($url)) {
             $params = [
@@ -709,11 +795,19 @@ class Core extends Controller
     }
 
     /**
-     * Adding the row action dropdown
+     * Adds a dropdown action button to each row of the CRUD table.
      *
-     * @param   array|string $url
+     * @param array<int, array>|string $url URL(s) for the action, or an array of dropdown item definitions.
+     * @param string|null $label Dropdown item label (used if $url is a string).
+     * @param string|null $class CSS class(es) (used if $url is a string).
+     * @param string|null $icon Icon class (used if $url is a string).
+     * @param array $parameter URL query parameters.
+     * @param bool $new_tab Open link in a new tab.
+     * @param string|null $attribution Custom HTML attributes.
+     *
+     * @return static Current object instance (chainable).
      */
-    public function add_dropdown($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null)
+    public function add_dropdown($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
     {
         if (! is_array($url)) {
             $params = [
@@ -749,78 +843,105 @@ class Core extends Controller
     }
 
     /**
-     * Adding CSS classes to the rendered field
+     * Adds CSS classes to the rendered form field(s).
      *
-     * @param   array|string $params
+     * Supports adding classes via an array ([field => class]) or a key-value pair.
+     *
+     * @param string|array $params The field name (if $value is provided) or an associative array [field => class].
+     * @param string|null $value The CSS class string to apply (if $params is a field name).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function add_class($params = [], ?string $value = null)
+    public function add_class(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
+        // Make sure the parameters are in associative array format
         if (! is_array($params)) {
-            // Convert parameters as array
+            // Convert parameters as array: ['field_name' => 'class_name']
             $params = [
                 $params => $value
             ];
         }
 
+        // Filter out null values before merging
+        $params = array_filter($params, fn ($v) => null !== $v);
+
         // Merge array and store to property
-        $this->_add_class = array_merge($this->_add_class, $params);
+        $this->_add_class = array_merge($this->_add_class ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Set the type of field
+     * Sets the rendering type and custom parameters for one or more fields.
      *
-     * @param   array|string $field
-     * @param   array|string $type
-     * @param   array|string $parameter
-     * @param   null|mixed $alpha
-     * @param   null|mixed $beta
-     * @param   null|mixed $charlie
+     * This method is central to customizing the behavior and appearance of fields in forms and views.
+     * It handles both single field types and comma-separated multiple field types.
+     *
+     * @param string|array $field The field name (if a single field is set) or an associative array [field_name => type_string].
+     * @param string|array|null $type The field type (e.g., 'image', 'wysiwyg') or types (comma-separated string), if $field is a single field name.
+     * @param array|string|null $parameter Primary parameter (e.g., relation table, file path, dimension).
+     * @param mixed $alpha Secondary parameter (e.g., custom format argument).
+     * @param mixed $beta Tertiary parameter.
+     * @param mixed $charlie Quaternary parameter.
+     * @param string|null $delta Quinary parameter.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_field($field = [], $type = [], $parameter = [], $alpha = [], $beta = null, $charlie = null, ?string $delta = null)
-    {
-        // Make sure the parameter is array, otherwise convert it
-        if (! is_array($field)) {
-            // Convert parameters as array
-            $field = [
-                $field => $type
-            ];
+    public function set_field(
+        string|array $field = [],
+        string|array|null $type = null,
+        array|string|null $parameter = null,
+        mixed $alpha = null,
+        mixed $beta = null,
+        mixed $charlie = null,
+        ?string $delta = null
+    ): static {
+        // --- 1. Normalize Input to Associative Array [field_name => type_string] ---
+        $fields_to_process = [];
+
+        if (is_string($field)) {
+            // Handle case: set_field('field_name', 'type_string', ...)
+            $fields_to_process = [$field => $type];
+        } elseif (is_array($field)) {
+            // Handle case: set_field(['field_name' => 'type_string'], ...)
+            $fields_to_process = $field;
         }
 
-        // Add default field's parameter
-        foreach ($field as $key => $type) {
-            if (strpos($type, ',') !== false) {
-                // Explode multiple field type into array
-                $types = array_map('trim', explode(',', $type));
+        // --- 2. Process Each Field and its Type(s) ---
+        foreach ($fields_to_process as $field_name => $type_string) {
+            if (! $type_string) {
+                continue;
+            }
 
-                // Loop multiple field type
-                foreach ($types as $_key => $_type) {
-                    if ('custom_format' == $_type) {
-                        $this->_custom_format = true;
-                    }
+            $types = [];
 
-                    $this->_set_field[$key][$_type] = [
-                        'parameter' => (isset($field[$_type]['parameter']) ? $field[$_type]['parameter'] : $parameter),
-                        'alpha' => (isset($field[$_type]['alpha']) ? $field[$_type]['alpha'] : $alpha),
-                        'beta' => (isset($field[$_type]['beta']) ? $field[$_type]['beta'] : $beta),
-                        'charlie' => (isset($field[$_type]['charlie']) ? $field[$_type]['charlie'] : $charlie),
-                        'delta' => (isset($field[$_type]['delta']) ? $field[$_type]['delta'] : $delta)
-                    ];
-                }
+            // Determine if it's a single type or multiple (comma-separated)
+            if (is_string($type_string) && strpos($type_string, ',') !== false) {
+                $types = array_map('trim', explode(',', $type_string));
+            } elseif (is_string($type_string)) {
+                $types = [$type_string];
             } else {
-                if ('custom_format' == $type) {
+                // Skip if type is not a recognizable string
+                continue;
+            }
+
+            // Loop through each field type (e.g., 'image', 'editable', 'custom_format')
+            foreach ($types as $current_type) {
+                if ('custom_format' == $current_type) {
                     $this->_custom_format = true;
                 }
 
-                // Single field type
-                $this->_set_field[$key][$type] = [
-                    'parameter' => (isset($field[$type]['parameter']) ? $field[$type]['parameter'] : $parameter),
-                    'alpha' => (isset($field[$type]['alpha']) ? $field[$type]['alpha'] : $alpha),
-                    'beta' => (isset($field[$type]['beta']) ? $field[$type]['beta'] : $beta),
-                    'charlie' => (isset($field[$type]['charlie']) ? $field[$type]['charlie'] : $charlie),
-                    'delta' => (isset($field[$type]['delta']) ? $field[$type]['delta'] : $delta)
+                // Define the structure for the current type, prioritizing dedicated array parameters
+                // if the input structure was ['field_name' => ['custom_format' => ['parameter' => '...']]]
+                // over the common parameters ($parameter, $alpha, etc.).
+                $param_source = $fields_to_process[$current_type] ?? [];
+
+                $this->_set_field[$field_name][$current_type] = [
+                    'parameter' => $param_source['parameter'] ?? $parameter,
+                    'alpha' => $param_source['alpha'] ?? $alpha,
+                    'beta' => $param_source['beta'] ?? $beta,
+                    'charlie' => $param_source['charlie'] ?? $charlie,
+                    'delta' => $param_source['delta'] ?? $delta
                 ];
             }
         }
@@ -831,226 +952,204 @@ class Core extends Controller
     /**
      * Add the tooltip on field label when hovered
      *
-     * @param   array|string $params
+     * @param string|array $params The field name or an associative array [field_name => tooltip_text].
+     * @param string|null $value The tooltip text (if $params is a field name).
      */
-    public function set_tooltip($params = [], ?string $value = null)
+    public function set_tooltip(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_tooltip = array_merge($this->_set_tooltip, $params);
+        $this->_set_tooltip = array_merge($this->_set_tooltip ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to unset the field
+     * The function to unset the field from form/update (CREATE/UPDATE methods).
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated field names or an array of field names.
      */
-    public function unset_field($params = [])
-    {
-        // Shorthand possibility, separate with commas
-        $params = array_map('trim', explode(',', $params));
-
-        // Merge array and store to property
-        $this->_unset_field = array_merge($this->_unset_field, $params);
-
-        return $this;
-    }
-
-    /**
-     * The function to unset the column
-     *
-     * @param   array|string $params
-     */
-    public function unset_column($params = [])
+    public function unset_field(string|array $params = []): static
     {
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_unset_column = array_merge($this->_unset_column, $params);
+        $this->_unset_field = array_merge($this->_unset_field ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to unset the field on view data
+     * The function to unset the column from table view (INDEX/LIST methods).
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated column names or an array of column names.
      */
-    public function unset_view($params = [])
+    public function unset_column(string|array $params = []): static
     {
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_unset_view = array_merge($this->_unset_view, $params);
+        $this->_unset_column = array_merge($this->_unset_column ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to rearrange the columns
+     * The function to unset the field on view data (READ method).
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated field names or an array of field names.
      */
-    public function column_order($params = [])
+    public function unset_view(string|array $params = []): static
     {
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_column_order = array_merge($this->_column_order, $params);
+        $this->_unset_view = array_merge($this->_unset_view ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to rearrange the field on view data
+     * The function to rearrange the columns in the table view.
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated column names or an array of column names.
      */
-    public function view_order($params = [])
+    public function column_order(string|array $params = []): static
     {
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_view_order = array_merge($this->_view_order, $params);
+        $this->_column_order = array_merge($this->_column_order ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to rearrange the field in form
+     * The function to rearrange the field on view data (READ method).
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated field names or an array of field names.
      */
-    public function field_order($params = [])
+    public function view_order(string|array $params = []): static
     {
         if (! is_array($params)) {
-            // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_field_order = array_merge($this->_field_order, $params);
+        $this->_view_order = array_merge($this->_view_order ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to deny reading when primary key is matched with unset
+     * The function to rearrange the field in form (CREATE/UPDATE methods).
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated field names or an array of field names.
      */
-    public function unset_read($params = [], array $value = [])
+    public function field_order(string|array $params = []): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
+            $params = array_map('trim', explode(',', $params));
+        }
+
+        $this->_field_order = array_merge($this->_field_order ?? [], $params);
+
+        return $this;
+    }
+
+    /**
+     * The function to deny reading when primary key is matched with unset value.
+     *
+     * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
+     * @param array $value Array of primary key values to deny (if $params is a field name).
+     */
+    public function unset_read(string|array $params = [], array $value = []): static
+    {
+        if (! is_array($params)) {
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_unset_read = array_merge($this->_unset_read, $params);
+        $this->_unset_read = array_merge($this->_unset_read ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to deny updating when primary key is matched with unset
+     * The function to deny updating when primary key is matched with unset value.
      *
-     * @param   array|string $params
+     * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
+     * @param array $value Array of primary key values to deny (if $params is a field name).
      */
-    public function unset_update($params = [], array $value = [])
+    public function unset_update(string|array $params = [], array $value = []): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_unset_update = array_merge($this->_unset_update, $params);
+        $this->_unset_update = array_merge($this->_unset_update ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to deny deleting when primary key is matched with unset
+     * The function to deny deleting when primary key is matched with unset value.
      *
-     * @param   array|string $params
+     * @param string|array $params Primary key field name or an associative array [pk_field => [value_1, value_2]].
+     * @param array $value Array of primary key values to deny (if $params is a field name).
      */
-    public function unset_delete($params = [], array $value = [])
+    public function unset_delete(string|array $params = [], array $value = []): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_unset_delete = array_merge($this->_unset_delete, $params);
+        $this->_unset_delete = array_merge($this->_unset_delete ?? [], $params);
 
         return $this;
     }
 
     /**
      * The function to set default value of form field so user cannot make
-     * any changes from input
+     * any changes from input (fixed value).
      *
-     * @param   array|string $params
-     * @param   null|mixed $value
+     * @param string|array $params Field name or an associative array [field_name => default_value].
+     * @param mixed|null $value Default value (if $params is a field name).
      */
-    public function set_default($params = [], $value = null)
+    public function set_default(string|array $params = [], mixed $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_default = array_merge($this->_set_default, $params);
+        $this->_set_default = array_merge($this->_set_default ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the field to the form validation
+     * Add the field to the form validation.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => validation_rules_string|array].
+     * @param string|null $value Validation rules string (e.g., 'required|max_length[255]') (if $params is a field name).
      */
-    public function set_validation($params = [], ?string $value = null)
+    public function set_validation(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
@@ -1058,16 +1157,18 @@ class Core extends Controller
 
         // Find existing field validation and merge
         foreach ($params as $key => $val) {
-            if ($val && ! is_array($val)) {
-                $val = array_map('trim', explode('|', $val));
+            $val_rules = $val;
+
+            if ($val_rules && is_string($val_rules)) {
+                $val_rules = array_map('trim', explode('|', $val_rules));
             }
 
-            if (isset($this->_set_validation[$key]) && $val) {
-                // Merge validation
-                $this->_set_validation[$key] = array_merge($this->_set_validation[$key], $val);
-            } else {
+            if (isset($this->_set_validation[$key]) && is_array($val_rules)) {
+                // Merge validation, ensuring the property is initialized
+                $this->_set_validation[$key] = array_merge($this->_set_validation[$key] ?? [], $val_rules);
+            } elseif ($val_rules) {
                 // Set new validation
-                $this->_set_validation[$key] = $val;
+                $this->_set_validation[$key] = is_array($val_rules) ? $val_rules : [$val_rules];
             }
         }
 
@@ -1075,9 +1176,9 @@ class Core extends Controller
     }
 
     /**
-     * Set the upload path to follow the custom path
+     * Set the upload path to follow the custom path.
      */
-    public function set_upload_path(?string $path = null)
+    public function set_upload_path(?string $path = null): static
     {
         // Validate the given parameter is a valid path name
         if ($path && preg_match('/^[A-Za-z0-9\-\.\_\/]*$/', $path)) {
@@ -1088,9 +1189,9 @@ class Core extends Controller
     }
 
     /**
-     * Create custom callback of form validation
+     * Create custom callback of form validation.
      */
-    public function form_callback(string $callback)
+    public function form_callback(string $callback): static
     {
         $this->_form_callback = $callback;
 
@@ -1098,89 +1199,82 @@ class Core extends Controller
     }
 
     /**
-     * Set the alias of column, the selected column of database table  will
-     * not translated
+     * Set the alias of column/field, the selected column of database table will be translated.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => alias_text].
+     * @param string|null $value Alias text (if $params is a field name).
      */
-    public function set_alias($params = [], ?string $value = null)
+    public function set_alias(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_alias = array_merge($this->_set_alias, $params);
+        $this->_set_alias = array_merge($this->_set_alias ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add heading before field on form or view
+     * Add heading before field on form or view.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => heading_text].
+     * @param string|null $value Heading text (if $params is a field name).
      */
-    public function set_heading($params = [], ?string $value = null)
+    public function set_heading(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_heading = array_merge($this->_set_heading, $params);
+        $this->_set_heading = array_merge($this->_set_heading ?? [], $params);
 
         return $this;
     }
 
     /**
-     * The function to push the additional data to the response
+     * The function to push the additional data to the response (API/View data).
      *
-     * @param   array|string $params
+     * @param string|array $params Key or an associative array [key => value].
+     * @param mixed $value Value (if $params is a key).
      */
-    public function set_output($params = [], $value = [])
+    public function set_output(string|array $params = [], mixed $value = []): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_output = array_merge($this->_set_output, $params);
+        $this->_set_output = array_merge($this->_set_output ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Prevent the field to be truncated
+     * Prevent the field from being truncated in the table view.
+     *
+     * @param string|array $field Comma-separated field names or an array of field names.
      */
-    public function unset_truncate(string $field)
+    public function unset_truncate(string|array $field): static
     {
         if (! is_array($field)) {
-            // Shorthand possibility, separate with commas
             $field = array_map('trim', explode(',', $field));
         }
 
-        // Merge array and store to property
-        $this->_unset_truncate = array_merge($this->_unset_truncate, $field);
+        $this->_unset_truncate = array_merge($this->_unset_truncate ?? [], $field);
 
         return $this;
     }
 
     /**
-     * Set the width of modal popup will be displayed
+     * Set the width of modal popup will be displayed (e.g., 'modal-xl', 'modal-lg').
      */
-    public function modal_size(string $size)
+    public function modal_size(string $size): static
     {
         $this->_modal_size = strtolower($size);
 
@@ -1188,144 +1282,148 @@ class Core extends Controller
     }
 
     /**
-     * Arrange the field to the position
+     * Arrange the field to a specific position (e.g., 'sidebar', 'column-2').
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => position].
+     * @param string|null $value Position (if $params is a field name).
      */
-    public function field_position($params = [], ?string $value = null)
+    public function field_position(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_field_position = array_merge($this->_field_position, $params);
+        $this->_field_position = array_merge($this->_field_position ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the custom column size
+     * Add the custom column size for the table view.
      *
-     * @param   array|string $params
+     * @param string|array $params Column name or an associative array [column_name => width_percent].
+     * @param string|null $value Width percentage string (e.g., '10%') (if $params is a column name).
      */
-    public function column_size($params = [], ?string $value = null)
+    public function column_size(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array without lossing index and store to property
-        $this->_column_size = array_replace($this->_column_size, $params);
+        // array_replace is used to overwrite existing string keys without losing numeric ones
+        $this->_column_size = array_replace($this->_column_size ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the custom field size
+     * Add the custom field size for form input (e.g., 'col-md-6').
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => column_class].
+     * @param string|null $value Column class (if $params is a field name).
      */
-    public function field_size($params = [], ?string $value = null)
+    public function field_size(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_field_size = array_merge($this->_field_size, $params);
+        $this->_field_size = array_merge($this->_field_size ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the prefix to the field
+     * Add the prefix (prepend) content to the field input in the form.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => html_string].
+     * @param string|null $value HTML string (if $params is a field name).
      */
-    public function field_prepend($params = [], ?string $value = null)
+    public function field_prepend(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_field_prepend = array_merge($this->_field_prepend, $params);
+        $this->_field_prepend = array_merge($this->_field_prepend ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the suffix to the field
+     * Add the suffix (append) content to the field input in the form.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => html_string].
+     * @param string|null $value HTML string (if $params is a field name).
      */
-    public function field_append($params = [], ?string $value = null)
+    public function field_append(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
-            // Convert parameters as array
             $params = [
                 $params => $value
             ];
         }
 
-        // Merge array and store to property
-        $this->_field_append = array_merge($this->_field_append, $params);
+        $this->_field_append = array_merge($this->_field_append ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Merge the multiple field into one
-     * Wrap the string (field name) between double curly braces
+     * Merges multiple data fields into a single column string for List/Read views.
+     *
+     * The fields to be merged are specified within the $magic_string using double curly braces (e.g., "Hello {{first_name}} {{last_name}}").
+     *
+     * @param string $magic_string The template string containing field names wrapped in {{...}}.
+     * @param string|null $alias The alias/label for the new merged column.
+     * @param string|null $callback Optional callback function name (without 'callback_') to process the merged string.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function merge_content(string $magic_string, ?string $alias = null, ?string $callback = null)
+    public function merge_content(string $magic_string, ?string $alias = null, ?string $callback = null): static
     {
         // Get the fields from the magic string
         preg_match_all('/\{\{(.*?)\}\}/', $magic_string, $matches);
 
-        $matches = array_map('trim', $matches[1]);
-        $field = (isset($matches[0]) ? $matches[0] : null);
+        $field_names = array_map('trim', $matches[1]);
+        $primary_field = (isset($field_names[0]) ? $field_names[0] : null);
 
-        // Check if the current method isn't matches with the restricted one
+        // --- 1. Set Alias/Label ---
         if (! in_array($this->_method, ['create', 'update'])) {
-            $this->_set_alias[$field] = ($alias && ! is_array($alias) ? $alias : ucwords(str_replace('_', ' ', $field)));
-            $this->_merge_label[$field] = ($alias && ! is_array($alias) ? $alias : ucwords(str_replace('_', ' ', $field)));
+            $default_label = ucwords(str_replace('_', ' ', $primary_field));
+            $final_alias = $alias ?? $default_label;
+
+            if ($primary_field) {
+                $this->_set_alias[$primary_field] = $final_alias;
+                $this->_merge_label[$primary_field] = $final_alias;
+            }
         }
 
-        // Sets the new key to merge property
-        $this->_merge_content[$field] = [
-            'column' => $matches,
-            'parameter' => ($magic_string && ! is_array($magic_string) ? $magic_string : null),
-            'callback' => ($callback ? str_replace('callback_', '', $callback) : null)
-        ];
+        // --- 2. Sets the Merge Property ---
+        if ($primary_field) {
+            $this->_merge_content[$primary_field] = [
+                'column' => $field_names,
+                'parameter' => $magic_string,
+                'callback' => $callback ? str_replace('callback_', '', $callback) : null
+            ];
+        }
 
-        // Check if matches key is available from given magic string
-        if ($matches) {
-            // Loops the keys
-            foreach ($matches as $key => $val) {
-                // Skip empty key
-                if (! $key) {
-                    continue;
-                }
 
+        // --- 3. Unset Original Columns ---
+        if (count($field_names) > 1) {
+            // Loops the keys starting from the second element (index 1) because the first element
+            // is used as the key for the merged column.
+            $secondary_fields = array_slice($field_names, 1);
+
+            foreach ($secondary_fields as $val) {
                 $this->_unset_column[] = $val;
                 $this->_unset_view[] = $val;
             }
@@ -1335,70 +1433,93 @@ class Core extends Controller
     }
 
     /**
-     * Merge the multiple field in one, useable in form
+     * Merges multiple input fields into a single logical field group for the Form View.
      *
-     * @param   array|string $params
+     * The first element of $params is the primary field, and subsequent elements are merged fields.
+     *
+     * @param string|array $params The fields to merge. If string, it's comma-separated: 'primary_field, field_2, field_3'.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function merge_field($params)
+    public function merge_field(string|array $params): static
     {
         if (! is_array($params)) {
             // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_merge_field[$params[0]] = array_slice($params, 1);
+        if (count($params) < 2) {
+            return $this; // Needs at least a primary field and one merged field
+        }
+
+        $primary_field = $params[0];
+        $merged_fields = array_slice($params, 1);
+
+        // Merge array and store to property: [primary_field => [field_2, field_3, ...]]
+        $this->_merge_field[$primary_field] = $merged_fields;
 
         return $this;
     }
 
     /**
-     * Merge the multiple field in one, useable in form
+     * Merges multiple input fields into a single group for better organization in the form.
      *
-     * @param   array|string $params
+     * @param string|array $params Comma-separated field names, or an array of field names.
+     * @param string|null $group The group name/label to apply to the fields.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function group_field($params = [], ?string $group = null)
+    public function group_field(string|array $params = [], ?string $group = null): static
     {
         if (! is_array($params)) {
             // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
+            // Fill the array with the common group name: [field_1 => 'Group Name', field_2 => 'Group Name']
             $params = array_fill_keys($params, $group);
         }
 
-        $this->_group_field = array_merge($this->_group_field, $params);
+        $this->_group_field = array_merge($this->_group_field ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Group row with the given parent from the field reference
+     * Groups data rows based on a parent field relationship (hierarchical data).
      *
-     * @param   array|string $params
+     * Used for displaying data rows in a tree-like structure, referenced by a parent field.
+     *
+     * @param string|array $params The field name(s) used as a parent reference.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function item_reference($params = [])
+    public function item_reference(string|array $params = []): static
     {
         if (! is_array($params)) {
             // Shorthand possibility, separate with commas
             $params = array_map('trim', explode(',', $params));
         }
 
-        // Merge array and store to property
-        $this->_item_reference = array_merge($this->_item_reference, $params);
+        $this->_item_reference = array_merge($this->_item_reference ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the extra attribute into field input
+     * Adds extra HTML attributes to a field input element.
      *
-     * @param   array|string $params
+     * Automatically merges attributes if called multiple times for the same field.
+     *
+     * @param string|array $params Field name or an associative array [field_name => 'attribute_string'].
+     * @param string|null $value The attribute string (e.g., 'data-foo="bar" required') (if $params is a field name).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_attribute($params = [], ?string $value = null)
+    public function set_attribute(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
+        // Handle single key-value pair and merge if already exists
         if (! is_array($params)) {
             if (isset($this->_set_attribute[$params])) {
-                // Alreade set, merge up
+                // Already set, append the new value
                 $this->_set_attribute[$params] .= ' ' . $value;
 
                 return $this;
@@ -1411,19 +1532,21 @@ class Core extends Controller
         }
 
         // Merge array and store to property
-        $this->_set_attribute = array_merge($this->_set_attribute, $params);
+        $this->_set_attribute = array_merge($this->_set_attribute ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the placeholder into field input
+     * Adds a placeholder text to a form input field.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => placeholder_text].
+     * @param string|null $value The placeholder text (if $params is a field name).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_placeholder($params = [], ?string $value = null)
+    public function set_placeholder(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
             // Convert parameters as array
             $params = [
@@ -1431,20 +1554,21 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_placeholder = array_merge($this->_set_placeholder, $params);
+        $this->_set_placeholder = array_merge($this->_set_placeholder ?? [], $params);
 
         return $this;
     }
 
     /**
-     * Add the extra label into option (select) field
+     * Adds extra labels or descriptions to options within a select/dropdown field.
      *
-     * @param   array|string $params
+     * @param string|array $params Field name or an associative array [field_name => extra_label_template].
+     * @param string|null $value The extra label/template (if $params is a field name).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_option_label($params = [], ?string $value = null)
+    public function set_option_label(string|array $params = [], ?string $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($params)) {
             // Convert parameters as array
             $params = [
@@ -1452,22 +1576,23 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
-        $this->_set_option_label = array_merge($this->_set_option_label, $params);
+        $this->_set_option_label = array_merge($this->_set_option_label ?? [], $params);
 
         return $this;
     }
 
     /**
-     * This function's giving the default value of the field input when add
-     * new data
+     * Sets the default value of a field input when adding new data (CREATE method).
      *
-     * @param   array|string $field
-     * @param null|mixed $value
+     * This is an alias/alternative to set_default(), focused on initial values.
+     *
+     * @param string|array $field Field name or an associative array [field_name => default_value].
+     * @param mixed|null $value Default value (if $field is a field name).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function default_value($field = [], $value = null)
+    public function default_value(string|array $field = [], mixed $value = null): static
     {
-        // Make sure the parameter is array, otherwise convert it
         if (! is_array($field)) {
             // Convert parameters as array
             $field = [
@@ -1475,252 +1600,301 @@ class Core extends Controller
             ];
         }
 
-        // Merge array and store to property
-        $this->_default_value = array_merge($this->_default_value, $field);
+        $this->_default_value = array_merge($this->_default_value ?? [], $field);
 
         return $this;
     }
 
     /**
-     * Set the field as relation, to be related to the other field
+     * Sets the field as a relation field, linking it to another table for display (e.g., dropdowns, autocomplete).
      *
-     * @param   string $group_by
+     * This function handles single-key and composite-key relations, manages required SELECT columns,
+     * sets up necessary JOINs, and applies relation validation rules.
+     *
+     * @param string $field The local field name(s) (comma-separated for composite keys).
+     * @param string $primary_key The foreign key in the related table(s) (comma-separated for composite keys).
+     * @param string $output The magic string defining the output format (e.g., '{{name}} - {{id}}').
+     * @param array $where Optional WHERE conditions for the relation query.
+     * @param array $join Optional extra JOIN clauses for the relation query.
+     * @param array $order_by Optional ORDER BY clauses.
+     * @param string|null $group_by Optional GROUP BY clause.
+     * @param int $limit Max number of results to fetch (0 uses default limit).
+     * @param bool $translate Flag to indicate if the relation field should be translated.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_relation(string $field, string $primary_key, string $output, $where = [], $join = [], $order_by = [], $group_by = null, int $limit = 0, bool $translate = false)
-    {
+    public function set_relation(
+        string $field,
+        string $primary_key,
+        string $output,
+        array $where = [],
+        array $join = [],
+        array $order_by = [],
+        ?string $group_by = null,
+        int $limit = 0,
+        bool $translate = false
+    ): static {
+        // --- 1. Initial Setup and Magic String Extraction ---
         $alias = $field;
-
-        // Extract the fields from the given magic string
         preg_match_all('/\{\{(.*?)\}\}/', $output, $matches);
-
         $select = array_map('trim', $matches[1]);
 
         if ($translate) {
-            // Collect field to translate later
-            foreach ($select as $key => $val) {
+            foreach ($select as $val) {
                 $this->_translate_field[] = substr(strstr($val, '.'), 1);
             }
         }
 
-        if (strpos($field, ',') !== false && strpos($primary_key, ',') !== false) {
-            // Check if given field contains a commas and convert to array
-            $field = array_map('trim', explode(',', $field));
+        $is_composite = (strpos($field, ',') !== false && strpos($primary_key, ',') !== false);
 
-            //Convert selected values to array
-            $primary_key = array_map('trim', explode(',', $primary_key));
+        // Default relation parts
+        $relation_table = null;
+        $relation_keys = [];
+        $field_local = [];
+        $group_by_fields = [];
 
-            // Define variables
-            $alias = $field[0];
-            $relation_key = [];
-            $group_by = [];
+        // --- 2. Handle Composite Keys vs. Single Key ---
+        if ($is_composite) {
+            $field_local = array_map('trim', explode(',', $field));
+            $primary_keys_foreign = array_map('trim', explode(',', $primary_key));
 
-            foreach ($primary_key as $key => $val) {
-                // Check if value exists in selection
+            $alias = $field_local[0];
+            $group_by_fields = [];
+
+            foreach ($primary_keys_foreign as $key => $val) {
+                // Ensure the foreign key is selected
                 if (! in_array($val, $select)) {
                     $select[] = $val;
-                    $group_by[] = $val;
-
-                    // Add values to unset property
-                    $this->_unset_column[] = $val;
-                    $this->_unset_view[] = $val;
+                    $group_by_fields[] = $val;
                 }
 
-                // Explode value contains dot
-                $explode = explode('.', $val);
+                // Extract table and key parts
+                list($table_name, $key_name) = array_pad(explode('.', $val), 2, null);
 
-                // Check if explode contains two index
-                if (sizeof($explode) == 2) {
-                    // Add index to relation variable
-                    $relation_table = $explode[0];
-                    $relation_key[] = $explode[1];
+                if ($table_name && $key_name) {
+                    $relation_table = $table_name;
+                    $relation_keys[] = $key_name;
+                }
 
-                    // Add variables to unset property
-                    $this->_unset_column[] = $explode[1] . '_' . $explode[0];
-                    $this->_unset_view[] = $explode[1] . '_' . $explode[0];
+                // Cleanup: Add related columns to unset properties
+                $this->_unset_column[] = $key_name;
+                $this->_unset_view[] = $key_name;
 
-                    if ($key > 0) {
-                        // Ceck if key index is not zero and add field to unset property
-                        $this->_unset_field[] = $explode[1];
-                    } else {
-                        // Add field to unset property
-                        $this->_unset_column[] = $explode[1];
-                        $this->_unset_view[] = $explode[1];
-
-                        // Add field to the beginning of selection
-                        array_unshift($select, $explode[0] . '.' . $field[0] . ' AS ' . $alias . '_masking');
-                    }
+                // Handle masking for composite keys (original logic)
+                if (0 == $key) {
+                    // The first key is often used as the primary identifier for the merged field.
+                    // The original code has complex logic to add an alias_masking column here,
+                    // which is highly specific to Aksara's rendering.
+                    array_unshift($select, $relation_table . '.' . $field_local[0] . ' AS ' . $alias . '_masking');
                 }
             }
         } else {
-            // Check if selected value is exists in selection
+            // Single Key Relation
+            $field_local = $field;
+
+            // Ensure primary key value is selected, alias it using the local field name if simple
             if (! in_array($primary_key, $select)) {
-                // Add field to selection
                 $select[] = (strpos($primary_key, ' ') !== false ? substr($primary_key, strpos($primary_key, ' ') + 1) : $primary_key) . ' AS ' . $alias;
             }
 
+            // Merge select from existing attributes (e.g., 'data-image="{{image}}"' attribute)
             if (isset($this->_set_attribute[$field])) {
                 preg_match_all('/\{\{(.*?)\}\}/', $this->_set_attribute[$field], $matches_attributes);
-
                 $select = array_merge($select, array_map('trim', $matches_attributes[1]));
             }
 
-            $primary_key = explode('.', $primary_key);
-            $relation_table = (isset($primary_key[0]) ? $primary_key[0] : null);
-            $relation_key = (isset($primary_key[1]) ? $primary_key[1] : null);
+            // Extract relation table and key
+            $parts = explode('.', $primary_key);
+            $relation_table = $parts[0] ?? null;
+            $relation_keys = $parts[1] ?? null;
 
-            if (! $group_by && $relation_table && $relation_key) {
-                //$group_by = (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key;
-            }
-
-            // Add field into unset property
+            // Cleanup: Add local field to unset properties
             $this->_unset_column[] = $field;
             $this->_unset_view[] = $field;
         }
 
-        // Check if have join parameter
+        // --- 3. Additional Query Setup (Join, Where, Select Merge) ---
+
+        // Ensure JOIN input is standardized
         if ($join && ! isset($join[0])) {
             $join = [$join];
         }
 
-        // Check if have where parameter
+        // Standardize WHERE conditions (prefixing if needed)
         if ($where) {
             foreach ($where as $key => $val) {
-                // Check if field are wrapped with brackets
                 if (! preg_match('/[.<=>()]/', $key)) {
-                    // Add assigned field to where
-                    $where[$key] = $val;
+                    $where[$key] = $val; // Assuming the framework adds the table prefix later if necessary
                 }
             }
         }
 
-        // Merge selection
-        $this->_select = array_unique(array_merge($this->_select, $select));
+        // Merge final unique selection list
+        $this->_select = array_unique(array_merge($this->_select ?? [], $select));
 
-        // Check if method is in array
+        // --- 4. Define Framework JOIN and Validation ---
+
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
-            $condition = null;
+            $condition = '';
+            $relation_table_clean = $relation_table;
 
-            if (is_array($field)) {
-                // Check if field is array
-                foreach ($field as $key => $val) {
-                    // Add conditions
-                    $condition .= ($condition ? ' AND ' : null) . (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $val . ' = __PRIMARY_TABLE__.' . $val;
-
-                    // Apply validation
-                    $this->set_validation($val, 'relation_checker[' . (strpos($relation_table, ' ') !== false ? substr($relation_table, 0, strpos($relation_table, ' ')) : $relation_table) . '.' . $val . ']');
-                }
-            } else {
-                // Apply validation
-                $this->set_validation($field, 'relation_checker[' . (strpos($relation_table, ' ') !== false ? substr($relation_table, 0, strpos($relation_table, ' ')) : $relation_table) . '.' . $relation_key . ']');
+            // Clean table name if aliased (e.g., 'table t' -> 't')
+            if (strpos($relation_table, ' ') !== false) {
+                list($base_table, $relation_table_clean) = explode(' ', $relation_table);
             }
 
-            // Add relation table to compilation
-            $this->_compiled_table[] = $relation_table;
+            if (is_array($field_local)) {
+                // Composite JOIN condition
+                foreach ($field_local as $key => $val) {
+                    $fk_key = $relation_keys[$key] ?? $val;
+                    $condition .= ($condition ? ' AND ' : '') . $relation_table_clean . '.' . $fk_key . ' = __PRIMARY_TABLE__.' . $val;
 
-            // Add the relation table into join property
+                    // Apply validation for each key
+                    $this->set_validation($val, 'relation_checker[' . $relation_table_clean . '.' . $fk_key . ']');
+                }
+            } else {
+                // Single JOIN condition
+                $condition = $relation_table_clean . '.' . $relation_keys . ' = __PRIMARY_TABLE__.' . $field_local;
+
+                // Apply validation for the single key
+                $this->set_validation($field_local, 'relation_checker[' . $relation_table_clean . '.' . $relation_keys . ']');
+            }
+
+            // Add the primary relation table to compilation and JOIN property
+            $this->_compiled_table[] = $relation_table;
             $this->_join[$relation_table] = [
-                'condition' => ($condition ? $condition : (strpos($relation_table, ' ') !== false ? substr($relation_table, strpos($relation_table, ' ') + 1) : $relation_table) . '.' . $relation_key . ' = __PRIMARY_TABLE__.' . $field),
+                'condition' => $condition,
                 'type' => 'LEFT',
                 'escape' => true
             ];
 
-            // Check if have join parameter
+            // Add additional JOINs
             if ($join) {
-                foreach ($join as $key => $val) {
-                    // Add table into compilation
+                foreach ($join as $val) {
+                    // $val format: [table, condition, type]
                     $this->_compiled_table[] = $val[0];
-
-                    // Add te relation table into join property
                     $this->_join[$val[0]] = [
                         'condition' => $val[1],
-                        'type' => (isset($val[2]) ? $val[2] : 'LEFT'),
+                        'type' => $val[2] ?? 'LEFT',
                         'escape' => true
                     ];
                 }
             }
         }
 
-        if (! is_numeric($limit) || $limit <= 0) {
-            // Apply limit if not set
-            $limit = $this->_limit;
-        }
+        // --- 5. Finalize Relation Property ---
+        $final_limit = (is_numeric($limit) && $limit > 0) ? $limit : $this->_limit;
+
+        // Calculate offset for paginated requests (used by AJAX SELECT)
+        $offset = (is_numeric(Services::request()->getPost('page')) ? Services::request()->getPost('page') - 1 : 0) * $final_limit;
 
         // Add set relation property
         $this->_set_relation[$alias] = [
             'select' => $select,
-            'primary_key' => $field,
+            'primary_key' => $field_local,
             'relation_table' => $relation_table,
-            'relation_key' => $relation_key,
-            'where' => $where ?? [],
+            'relation_key' => $relation_keys,
+            'where' => $where,
             'join' => $join,
             'order_by' => $order_by,
-            'group_by' => $group_by,
-            'limit' => $limit,
-            'offset' => (is_numeric(service('request')->getPost('page')) ? service('request')->getPost('page') - 1 : 0) * $limit,
+            'group_by' => $group_by ?? (is_array($group_by_fields) ? $group_by_fields : null),
+            'limit' => $final_limit,
+            'offset' => $offset,
             'output' => $output,
             'translate' => $translate
         ];
+
+        // Add visual diagram of relationship setup here
 
         return $this;
     }
 
     /**
-     * Set the field as autocomplete
+     * Sets the field as an Autocomplete input, pulling data from a related table.
+     *
+     * This configures the necessary SELECT fields, JOINs, and the format (output) for the suggestions list.
+     *
+     * @param string $field The local field name to be converted to autocomplete.
+     * @param string $selected_value The foreign key in the related table (e.g., 'table.key_id').
+     * @param array $output An array defining the visual output: ['value', 'label', 'description', 'image'].
+     * @param array $where Optional WHERE conditions for the autocomplete query.
+     * @param array $join Optional extra JOIN clauses.
+     * @param array $order_by Optional ORDER BY clauses.
+     * @param string|null $group_by Optional GROUP BY clause.
+     * @param int $limit Max number of suggestions to fetch (0 means no explicit limit).
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function set_autocomplete(string $field, string $selected_value, string $output, $where = [], $join = [], $order_by = [], ?string $group_by = null, int $limit = 0)
-    {
-        $value = (isset($output['value']) ? $output['value'] : (isset($output[0]) ? $output[0] : null));
-        $label = (isset($output['label']) ? $output['label'] : (isset($output[1]) ? $output[1] : null));
-        $description = (isset($output['description']) ? $output['description'] : (isset($output[2]) ? $output[2] : null));
-        $image = (isset($output['image']) ? $output['image'] : (isset($output[3]) ? $output[3] : null));
-        $select = $value . $label . $description . $image;
+    public function set_autocomplete(
+        string $field,
+        string $selected_value,
+        array $output,
+        array $where = [],
+        array $join = [],
+        array $order_by = [],
+        ?string $group_by = null,
+        int $limit = 0
+    ): static {
+        // --- 1. Normalize Output and Extract Magic Strings ---
+        $value = $output['value'] ?? $output[0] ?? null;
+        $label = $output['label'] ?? $output[1] ?? null;
+        $description = $output['description'] ?? $output[2] ?? null;
+        $image = $output['image'] ?? $output[3] ?? null;
 
-        // Match magic string
-        preg_match_all('/\{\{(.*?)\}\}/', $select, $matches_select);
+        $select_magic = $value . $label . $description . $image;
 
-        $select = (isset($matches_select[1]) ? array_map('trim', $matches_select[1]) : []);
+        // Extract all fields wrapped in {{...}} from the output format
+        preg_match_all('/\{\{(.*?)\}\}/', $select_magic, $matches_select);
+
+        $select = $matches_select[1] ? array_map('trim', $matches_select[1]) : [];
+
+        // Ensure the foreign key is also selected, aliased to the local field name
         $select[] = $selected_value . ' AS ' . $field;
-        $selected_value = explode('.', $selected_value);
-        $relation_table = (isset($selected_value[0]) ? $selected_value[0] : null);
-        $relation_key = (isset($selected_value[1]) ? $selected_value[1] : null);
 
+        list($relation_table, $relation_key) = array_pad(explode('.', $selected_value), 2, null);
+
+        // --- 2. Configuration Cleanup ---
         if ($join && ! isset($join[0])) {
-            $join = [$join];
+            $join = [$join]; // Standardize single JOIN array
         }
 
         if (! $group_by) {
             $group_by = $relation_table . '.' . $relation_key;
         }
 
-        $this->_select = array_unique((sizeof($this->_select) > 0 ? array_merge($this->_select, $select) : $select));
+        // Merge select statements
+        $this->_select = array_unique(array_merge($this->_select ?? [], $select));
+
+        // Unset the local field from being displayed as a normal column/view item
         $this->_unset_column[] = $field;
         $this->_unset_view[] = $field;
 
-        if (! in_array($this->_method, ['create', 'update', 'delete']) || ('autocomplete' == service('request')->getPost('method') && service('request')->getPost('origin'))) {
+        // --- 3. Define Implicit JOIN (Used for initial display or listing) ---
+        $is_not_crud = ! in_array($this->_method, ['create', 'update', 'delete']);
+        $is_autocomplete_request = ('autocomplete' == $this->request->getPost('method') && $this->request->getPost('origin'));
+
+        if ($is_not_crud || $is_autocomplete_request) {
+            // Primary JOIN
             $this->_join[$relation_table] = [
-                'condition' => $relation_table . '.' . $relation_key . ' = __PRIMARY_TABLE__. ' . $field,
+                'condition' => $relation_table . '.' . $relation_key . ' = __PRIMARY_TABLE__.' . $field,
                 'type' => '',
                 'escape' => true
             ];
 
+            // Additional JOINs
             if ($join) {
-                foreach ($join as $key => $val) {
+                foreach ($join as $val) {
+                    // $val format: [table, condition, type]
                     $this->_join[$val[0]] = [
                         'condition' => $val[1],
-                        'type' => (isset($val[2]) ? $val[2] : ''),
+                        'type' => $val[2] ?? '',
                         'escape' => true
                     ];
                 }
             }
         }
 
-        $output = [
-            'value' => $value,
-            'label' => $label,
-            'description' => $description,
-            'image' => $image
-        ];
-
+        // --- 4. Finalize Autocomplete Property ---
         $this->_set_autocomplete[$field] = [
             'select' => $select,
             'output' => $output,
@@ -1738,23 +1912,49 @@ class Core extends Controller
     }
 
     /**
-     * Serialize the field that rendered from the database table and extra
-     * attributes on it.
+     * Serializes data rows, detecting field types, primary keys, and applying formatting.
      *
-     * @return  array
+     * This method transforms raw database results into a structured array for CRUD views or API output.
+     *
+     * @param array $data Raw array of database result rows.
+     *
+     * @return array The structured, serialized data, or JSON response if requested by API client.
      */
-    public function serialize(array $data = [], bool $partial = false)
+    public function serialize(array $data): array
     {
         if (! $data && $this->model->table_exists($this->_table)) {
             // Flip columns
             $data = [array_fill_keys($this->model->list_fields($this->_table), '')];
         }
 
-        if ($this->api_client && (! service('request')->getGet('format_result') || ! in_array(service('request')->getGet('format_result'), ['field_data', 'complete', 'full']))) {
+        if ($this->api_client && (! $this->request->getGet('format_result') || ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full']))) {
             // Requested from API Client in unformatted result
             return make_json($data);
         }
 
+        $output = [];
+
+        foreach ($data as $row => $array) {
+            // Process single row
+            $output[$row] = $this->serialize_row($array, false);
+        }
+
+        if ($this->api_client && 'field_data' === $this->request->getGet('format_result')) {
+            // Requested from API Client with field data information
+            return make_json($output);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Serializes a single row
+     *
+     *
+     * @return array The structured, serialized row data
+     */
+    public function serialize_row(array|object $data, bool $return = true): array
+    {
         // Define field data compilation
         $field_data = $this->model->field_data($this->_table);
 
@@ -1765,197 +1965,177 @@ class Core extends Controller
 
             // Add properties to field data compilation
             $field_data[$val->name] = $val;
-
-            // Check if the field has a primary key
-            if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                // Push primary key
-                $this->_set_primary[] = $val->name;
-            }
         }
 
-        // Primary key still not found, find from index data
-        if (! $this->_set_primary) {
-            // Retrieve index data
-            $this->_index_data = $this->model->index_data($this->_table);
+        $output = [];
 
-            // Find the primary key
-            foreach ($this->_index_data as $key => $val) {
-                // Check if the field has a primary key
-                if (in_array($val->type, ['PRIMARY', 'UNIQUE'])) {
-                    // Push primary key
-                    $this->_set_primary = array_merge($this->_set_primary, $val->fields);
-                }
-            }
+        foreach ($data as $field => $value) {
+            $hidden = false;
 
-            // Make the array unique
-            $this->_set_primary = array_unique($this->_set_primary);
-        }
+            // Attempt to get the type
+            $type = strtolower((isset($field_data[$field]->type) ? $field_data[$field]->type : gettype($value)));
 
-        $results = [];
-
-        foreach ($data as $row => $array) {
-            // Rows
-            foreach ($array as $field => $value) {
-                $hidden = false;
-
-                // Attempt to get the type
-                $type = strtolower((isset($field_data[$field]->type) ? $field_data[$field]->type : gettype($value)));
-
-                // Reformat type
-                if (in_array($type, ['tinyint', 'smallint', 'int', 'mediumint', 'bigint', 'year'])) {
-                    // Field type number
-                    $type = 'number';
-                } elseif (in_array($type, ['decimal', 'float', 'double', 'real'])) {
-                    // Field type decimal
-                    if (in_array($type, ['percent'])) {
-                        $type = 'percent';
-                    } else {
-                        $type = 'money';
-                    }
-                } elseif (in_array($type, ['tinytext', 'text'])) {
-                    // Field type textarea
-                    $type = 'textarea';
-                } elseif (in_array($type, ['mediumtext', 'longtext'])) {
-                    // Field type wysiwyg
-                    $type = 'wysiwyg';
-                } elseif (in_array($type, ['date'])) {
-                    // Field type date (Y-m-d)
-                    $type = 'date';
-                } elseif (in_array($type, ['datetime', 'timestamp'])) {
-                    // Field type datetime (Y-m-d H:i:s)
-                    $type = 'datetime';
-                } elseif (in_array($type, ['time'])) {
-                    // Field type time (H:i:s)
-                    $type = 'time';
-                } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
-                    try {
-                        // Get enum list
-                        $enum_query = $this->model->query('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND TABLE_SCHEMA = DATABASE()', [
-                            $this->_table,
-                            $field_data[$field]->name
-                        ])
-                        ->row('COLUMN_TYPE');
-
-                        // Extract enum list
-                        $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
-
-                        if ($enum_list) {
-                            $options = [];
-
-                            foreach ($enum_list as $_key => $_val) {
-                                $options[$_val] = $_val;
-                            }
-
-                            $this->_set_field[$field]['select'] = [
-                                'parameter' => $options,
-                                'alpha' => null,
-                                'beta' => null,
-                                'charlie' => null,
-                                'delta' => null
-                            ];
-                        }
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                        exit($e->getMessage());
-                    }
+            // Reformat type
+            if (in_array($type, ['tinyint', 'smallint', 'int', 'mediumint', 'bigint', 'year'])) {
+                // Field type number
+                $type = 'number';
+            } elseif (in_array($type, ['decimal', 'float', 'double', 'real'])) {
+                // Field type decimal
+                if (in_array($type, ['percent'])) {
+                    $type = 'percent';
                 } else {
-                    // Fallback field type
-                    $type = 'text';
+                    $type = 'money';
                 }
+            } elseif (in_array($type, ['tinytext', 'text'])) {
+                // Field type textarea
+                $type = 'textarea';
+            } elseif (in_array($type, ['mediumtext', 'longtext'])) {
+                // Field type wysiwyg
+                $type = 'wysiwyg';
+            } elseif (in_array($type, ['date'])) {
+                // Field type date (Y-m-d)
+                $type = 'date';
+            } elseif (in_array($type, ['datetime', 'timestamp'])) {
+                // Field type datetime (Y-m-d H:i:s)
+                $type = 'datetime';
+            } elseif (in_array($type, ['time'])) {
+                // Field type time (H:i:s)
+                $type = 'time';
+            } elseif (in_array($type, ['enum']) && in_array($this->_db_driver, ['MySQLi']) && ! isset($this->_set_field[$field])) {
+                try {
+                    // Get enum list
+                    $enum_query = $this->model->query('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND TABLE_SCHEMA = DATABASE()', [
+                        $this->_table,
+                        $field_data[$field]->name
+                    ])->row('COLUMN_TYPE');
 
-                if (! isset($this->_set_field[$field])) {
-                    if (isset($this->_set_relation[$field])) {
-                        $type = 'select';
+                    // Extract enum list
+                    $enum_list = explode(',', str_ireplace(["enum(", ")", "'"], '', $enum_query));
+
+                    if ($enum_list) {
+                        $options = [];
+
+                        foreach ($enum_list as $_key => $_val) {
+                            $options[$_val] = $_val;
+                        }
+
+                        $this->_set_field[$field]['select'] = [
+                            'parameter' => $options,
+                            'alpha' => null,
+                            'beta' => null,
+                            'charlie' => null,
+                            'delta' => null
+                        ];
                     }
+                } catch (Throwable $e) {
+                    // Safe abstraction
+                    exit($e->getMessage());
+                }
+            } else {
+                // Fallback field type
+                $type = 'text';
+            }
 
-                    // Add new field type
-                    $this->_set_field[$field][$type] = [
-                        'parameter' => null,
-                        'alpha' => null,
-                        'beta' => null,
-                        'charlie' => null,
-                        'delta' => null
-                    ];
+            if (! isset($this->_set_field[$field])) {
+                if (isset($this->_set_relation[$field])) {
+                    $type = 'select';
                 }
 
-                // Attempt to get maximum length of column
-                $maxlength = (isset($field_data[$field]->max_length) ? $field_data[$field]->max_length : null);
-
-                // Attempt to get the field validation
-                $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : []);
-
-                // Attempt to get field translation
-                $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
-
-                if ('create' == $this->_method) {
-                    $content = (isset($this->_set_default[$field]) ? $this->_set_default[$field] : (isset($field_data[$field]->default) ? $field_data[$field]->default : null));
-                    $value = null;
-                }
-
-                if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unset_field) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_set_field[$field])))) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unset_view)) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                } elseif (in_array($this->_method, ['index', 'export', 'print', 'pdf']) && in_array($field, $this->_unset_column)) {
-                    // Indicates that field should not be shown
-                    $hidden = true;
-                }
-
-                if ($value && isset($this->_set_relation[$field])) {
-                    // Get relation content
-                    $content = $this->_get_relation($this->_set_relation[$field], $value);
-                }
-
-                if ($content && array_intersect(['numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
-                    // Get decimal fractional
-                    $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
-
-                    if (array_intersect(['percent'], [$type])) {
-                        // Percent type
-                        $content = number_format($content, $decimal) . '%';
-                    } else {
-                        // Numeric type
-                        $content = number_format($content, $decimal);
-                    }
-                }
-
-                if ($content && array_intersect(['sprintf'], [$type])) {
-                    // Add zero leading
-                    $content = sprintf(($parameter && ! is_array($parameter) ? $parameter : '%02d'), $content);
-                }
-
-                if ($maxlength) {
-                    if (in_array($type, ['money', 'percent'])) {
-                        // Add extra dot to maxlength
-                        $maxlength = ($maxlength + 1);
-                    }
-
-                    $validation[] = 'max_length[' . $maxlength . ']';
-                }
-
-                // Call assigned method of custom format
-                if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
-                    $method = $this->_set_field[$field]['custom_format']['parameter'];
-                    $content = $this->$method((array) $array);
-                }
-
-                $results[$field] = [
-                    'type' => $this->_set_field[$field],
-                    'primary' => (in_array($field, $this->_set_primary) ? 1 : 0),
-                    'value' => $value,
-                    'content' => $content,
-                    'maxlength' => $maxlength,
-                    'hidden' => $hidden,
-                    'validation' => $validation
+                // Add new field type
+                $this->_set_field[$field][$type] = [
+                    'parameter' => null,
+                    'alpha' => null,
+                    'beta' => null,
+                    'charlie' => null,
+                    'delta' => null
                 ];
             }
 
-            $output[$row] = $results;
+            // Attempt to get maximum length of column
+            $maxlength = (isset($field_data[$field]->max_length) ? $field_data[$field]->max_length : null);
+
+            // Attempt to get the field validation
+            $validation = (isset($this->_set_validation[$field]) ? $this->_set_validation[$field] : []);
+
+            // Attempt to get field translation
+            $content = (in_array($field, $this->_translate_field) ? phrase($value) : $value);
+
+            if ('create' == $this->_method) {
+                $content = (isset($this->_set_default[$field]) ? $this->_set_default[$field] : (isset($field_data[$field]->default) ? $field_data[$field]->default : null));
+                $value = null;
+            }
+
+            if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unset_field) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_set_field[$field])))) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unset_view)) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            } elseif (in_array($this->_method, ['index', 'export', 'print', 'pdf']) && in_array($field, $this->_unset_column)) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            }
+
+            if ($value && isset($this->_set_relation[$field])) {
+                // Get relation content
+                $content = $this->_get_relation($this->_set_relation[$field], $value);
+            }
+
+            if ($content && array_intersect(['numeric', 'money', 'percent'], [$type]) && is_numeric($content)) {
+                // Get decimal fractional
+                $decimal = (floor($content) != $content ? strlen(substr(strrchr(rtrim($content, 0), '.'), 1)) : 0);
+
+                if (array_intersect(['percent'], [$type])) {
+                    // Percent type
+                    $content = number_format($content, $decimal) . '%';
+                } else {
+                    // Numeric type
+                    $content = number_format($content, $decimal);
+                }
+            }
+
+            if ($content && array_intersect(['sprintf'], [$type])) {
+                $parameter = '%02d';
+
+                if (isset($this->_set_field[$field]['sprintf']['parameter'])) {
+                    $parameter = $this->_set_field[$field]['sprintf']['parameter'];
+                }
+
+                // Add zero leading
+                $content = sprintf(($parameter && ! is_array($parameter) ? $parameter : '%02d'), $content);
+            }
+
+            if ($maxlength) {
+                if (in_array($type, ['money', 'percent'])) {
+                    // Add extra dot to maxlength
+                    $maxlength = ($maxlength + 1);
+                }
+
+                $validation[] = 'max_length[' . $maxlength . ']';
+            }
+
+            // Call assigned method of custom format
+            if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
+                $method = $this->_set_field[$field]['custom_format']['parameter'];
+                $content = $this->$method((array) $data);
+            }
+
+            $output[$field] = [
+                'primary' => in_array($field, $this->_set_primary),
+                'value' => $value,
+                'content' => $content,
+                'maxlength' => $maxlength,
+                'hidden' => $hidden,
+                'type' => $this->_set_field[$field],
+                'validation' => $validation
+            ];
+
+            if ($this->api_client && $return) {
+                $output[$field]['label'] = (isset($this->_set_alias[$field]) ? $this->_set_alias[$field] : ucwords(str_replace('_', ' ', $field) ?? ''));
+            }
         }
 
-        if ($this->api_client && 'field_data' === service('request')->getGet('format_result')) {
+        if ($this->api_client && $return) {
             // Requested from API Client with field data information
             return make_json($output);
         }
@@ -1964,11 +2144,17 @@ class Core extends Controller
     }
 
     /**
-     * Rendering the result into view
+     * Renders the final result into the appropriate view, API response, or document format.
      *
-     * @return  object|string
+     * This method coordinates security checks, query building, form handling (CRUD),
+     * and output formatting, serving as the main dispatcher for the framework's output.
+     *
+     * @param string|null $table The primary database table to be rendered.
+     * @param string|null $view  The template view file to be used.
+     *
+     * @return object|string Returns the result of the executed controller method (View content string, JSON array, or Exception object).
      */
-    public function render(?string $table = null, ?string $view = null)
+    public function render(?string $table = null, ?string $view = null): object|array|string
     {
         // Debugger
         if (in_array($this->_debugging, ['params', 'parameter'])) {
@@ -1992,17 +2178,17 @@ class Core extends Controller
         if ($this->api_client) {
             // Validate API request
             if ($this->_set_permission) {
-                if (! get_userdata('access_token') && ! service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
+                if (! get_userdata('access_token') && ! $this->request->getHeaderLine('X-ACCESS-TOKEN')) {
                     // Access token is not set
                     return throw_exception(403, phrase('This service is require an access token.'));
                 } elseif (! $this->_api_token) {
                     // Access token is not valid
                     return throw_exception(403, phrase('The access token is invalid or already expired.'));
                 }
-            } elseif (in_array(service('request')->getServer('REQUEST_METHOD'), ['POST', 'DELETE']) &&
+            } elseif (in_array($this->request->getMethod(), ['POST', 'DELETE']) &&
             ! in_array($this->_method, ['create', 'update', 'delete'])) {
                 // Check if request is made from promise
-                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? go_to() : null));
+                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethd() . ')', (! $this->api_client ? go_to() : null));
             }
         } elseif ($table && ! $this->_set_permission) {
             // Unset database modification because no permission is set
@@ -2022,7 +2208,7 @@ class Core extends Controller
             $this->_compiled_table[] = $table;
         }
 
-        if (! service('request')->getPost('_token')) {
+        if (! $this->request->getPost('_token')) {
             // Set CSRF Token
             $this->_token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
 
@@ -2063,6 +2249,24 @@ class Core extends Controller
         // Create core component if not exists
         $renderer->render([]);
 
+        // Query string filters
+        $query_params = $this->request->getGet();
+
+        // Token Validation
+        if ($query_params && ENCRYPTION_KEY !== $this->request->getHeaderLine('X-API-KEY')) {
+            // Apply validation for protected page from non API client request
+            if ($this->_set_permission && ! $this->api_client) {
+                $expected_token = generate_token(uri_string(), $query_params);
+                $submitted_token = $this->request->getGet('aksara');
+
+                // Token comparison
+                if (! hash_equals($expected_token, (string) $submitted_token)) {
+                    // Token didn't match
+                    return throw_exception(403, phrase('The submitted token has expired or the request is made from a restricted source.'));
+                }
+            }
+        }
+
         // Check if given table is exists in database
         if ($this->_table) {
             // Check if table is exists
@@ -2070,20 +2274,26 @@ class Core extends Controller
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
 
+            // Define field data compilation
+            $field_data = $this->model->field_data($this->_table);
+
+            // Find primary key
+            foreach ($field_data as $key => $val) {
+                // Unset indexed field data
+                unset($field_data[$key]);
+
+                // Add properties to field data compilation
+                $field_data[$val->name] = $val;
+
+                // Check if the field has a primary key
+                if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
+                    // Push primary key
+                    $this->_set_primary[] = $val->name;
+                }
+            }
+
             // Primary key still not found, find from index data
             if (! $this->_set_primary) {
-                // Retrieve primary key
-                $field_data = $this->model->field_data($this->_table);
-
-                // Find primary key
-                foreach ($field_data as $key => $val) {
-                    // Check if the field has a primary key
-                    if (isset($val->primary_key) && $val->primary_key && ! in_array($val->name, $this->_set_primary)) {
-                        // Push primary key
-                        $this->_set_primary[] = $val->name;
-                    }
-                }
-
                 // Retrieve index data
                 $index_data = $this->model->index_data($this->_table);
 
@@ -2117,33 +2327,6 @@ class Core extends Controller
                 $this->unset_method('update, delete');
             }
 
-            // Store primary keys
-            set_userdata('__query_params', implode('|', $this->_set_primary));
-
-            // Get query string
-            $query_params = service('request')->getGet();
-
-            /**
-             * Token checker and apply only when uri has query string
-             */
-            if (
-                service('request')->getGet() &&
-                array_intersect(array_keys($query_params), $this->_set_primary) &&
-                ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-KEY')
-            ) {
-                $token = service('request')->getGet('aksara');
-                $filtered_params = array_intersect_key($query_params, array_flip($this->_set_primary));
-
-                // Validate token
-                if (
-                    $this->_set_permission &&
-                    (! hash_equals(generate_token(uri_string(), $filtered_params), $token) && ! $this->api_client)
-                ) {
-                    // Token is missmatch
-                    return throw_exception(403, phrase('The submitted token has expired or the request is made from a restricted source.'));
-                }
-            }
-
             // Remove primary query string if method is matched
             foreach ($query_params as $key => $val) {
                 if (in_array($this->_method, ['read', 'update', 'delete']) && in_array($key, $this->_set_primary)) {
@@ -2158,14 +2341,14 @@ class Core extends Controller
             // Check the additional primary key that been sets up
             if (is_array($this->_set_primary) && sizeof($this->_set_primary) > 0) {
                 foreach ($this->_set_primary as $key => $val) {
-                    if (service('request')->getGet($val) && $this->model->field_exists($val, $this->_table)) {
+                    if ($this->request->getGet($val) && $this->model->field_exists($val, $this->_table)) {
                         if (
-                            ('read' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array(service('request')->getGet($val), $this->_unset_update[$val])) ||
-                            ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array(service('request')->getGet($val), $this->_unset_delete[$val])) ||
-                            ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val]))
+                            ('read' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array($this->request->getGet($val), $this->_unset_update[$val])) ||
+                            ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array($this->request->getGet($val), $this->_unset_delete[$val])) ||
+                            ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val]))
                         ) {
                             if (in_array($this->_method, ['read', 'export', 'print', 'pdf'])) {
                                 // Method isn't allowed to access, throw exception
@@ -2183,7 +2366,7 @@ class Core extends Controller
 
                         if (! in_array($val, array_keys($this->_where ?? []))) {
                             // Push where into prepared statement only if where is not defined in controller
-                            $this->_prepare('where', [$this->_table . '.' . $val, htmlspecialchars(service('request')->getGet($val))]);
+                            $this->_prepare('where', [$this->_table . '.' . $val, htmlspecialchars($this->request->getGet($val))]);
                         }
                     } elseif (
                         in_array($val, $this->_set_primary) &&
@@ -2192,12 +2375,12 @@ class Core extends Controller
                         $this->_set_default[$val]
                     ) {
                         if (
-                            ('read' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array(service('request')->getGet($val), $this->_unset_update[$val])) ||
-                            ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array(service('request')->getGet($val), $this->_unset_delete[$val])) ||
-                            ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val])) ||
-                            ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array(service('request')->getGet($val), $this->_unset_read[$val]))
+                            ('read' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('update' == $this->_method && isset($this->_unset_update[$val]) && in_array($this->request->getGet($val), $this->_unset_update[$val])) ||
+                            ('delete' == $this->_method && isset($this->_unset_delete[$val]) && in_array($this->request->getGet($val), $this->_unset_delete[$val])) ||
+                            ('export' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('print' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val])) ||
+                            ('pdf' == $this->_method && isset($this->_unset_read[$val]) && in_array($this->request->getGet($val), $this->_unset_read[$val]))
                         ) {
                             if (in_array($this->_method, ['read', 'export', 'print', 'pdf'])) {
                                 // Requested method isn't allowed, throw exception
@@ -2224,9 +2407,9 @@ class Core extends Controller
              * Check whether request is post or delete
              * -------------------------------------------------------------
              */
-            if (service('request')->getPost('_token')) {
+            if ($this->request->getPost('_token')) {
                 // Request is sent from browser
-                $token_sent = service('request')->getPost('_token');
+                $token_sent = $this->request->getPost('_token');
 
                 // Validate the token
                 if ($this->valid_token($token_sent)) {
@@ -2238,7 +2421,7 @@ class Core extends Controller
                         return $this->$_callback();
                     } else {
                         // Serialize table data
-                        $field_data = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                        $field_data = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
 
                         // Or use the master validation instead
                         return $this->validate_form($field_data);
@@ -2247,7 +2430,7 @@ class Core extends Controller
                     // Token isn't valid, throw exception
                     return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source.'), $this->_redirect_back);
                 }
-            } elseif ($this->api_client && 'POST' == service('request')->getServer('REQUEST_METHOD') && (in_array($this->_method, ['create', 'update']) || ($this->_form_callback && method_exists($this, $this->_form_callback)))) {
+            } elseif ($this->api_client && in_array($this->request->getMethod(), ['POST']) && (in_array($this->_method, ['create', 'update']) || ($this->_form_callback && method_exists($this, $this->_form_callback)))) {
                 // Request is sent from REST
                 if ($this->_form_callback && method_exists($this, $this->_form_callback)) {
                     // Use callback as form validation
@@ -2256,14 +2439,14 @@ class Core extends Controller
                     return $this->$_callback();
                 } else {
                     // Serialize table data
-                    $field_data = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                    $field_data = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
 
                     // Or use the master validation instead
                     return $this->validate_form($field_data);
                 }
             } elseif ($this->_set_primary && 'delete' == $this->_method) {
                 // Delete data
-                if (1 == service('request')->getPost('batch')) {
+                if (1 == $this->request->getPost('batch')) {
                     // Batch delete
                     return $this->delete_batch($this->_table);
                 } else {
@@ -2272,8 +2455,8 @@ class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page') > 1 && (! $this->_offset_called || (! $this->_offset && gettype($this->_offset) !== 'integer'))) {
-                    $this->_offset = (service('request')->getGet('per_page') - 1) * ($this->_limit ?? $this->_limit_backup);
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && is_numeric($this->request->getGet('per_page')) && $this->request->getGet('per_page') > 1 && (! $this->_offset_called || (! $this->_offset && gettype($this->_offset) !== 'integer'))) {
+                    $this->_offset = ($this->request->getGet('per_page') - 1) * ($this->_limit ?? $this->_limit_backup);
                 }
 
                 if ($this->_offset) {
@@ -2282,11 +2465,11 @@ class Core extends Controller
                 }
 
                 if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) &&
-                    ($this->_searchable && ! $this->_like && service('request')->getGet('q')) ||
-                    ('autocomplete' == service('request')->getPost('method') && $this->_searchable && service('request')->getPost('q'))
+                    ($this->_searchable && ! $this->_like && $this->request->getGet('q')) ||
+                    ('autocomplete' == $this->request->getPost('method') && $this->_searchable && $this->request->getPost('q'))
                 ) {
-                    $is_autocomplete = ('autocomplete' == service('request')->getPost('method'));
-                    $search_query = $is_autocomplete ? service('request')->getPost('q') : service('request')->getGet('q');
+                    $is_autocomplete = ('autocomplete' == $this->request->getPost('method'));
+                    $search_query = $is_autocomplete ? $this->request->getPost('q') : $this->request->getGet('q');
 
                     // Sanitize search query - escape special characters for LIKE
                     $search_query = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search_query);
@@ -2299,7 +2482,7 @@ class Core extends Controller
                         $group_start = true;
                     }
 
-                    $column = service('request')->getGet('column') ? strip_tags(service('request')->getGet('column')) : null;
+                    $column = $this->request->getGet('column') ? strip_tags($this->request->getGet('column')) : null;
 
                     // ========== SEARCH BY SPECIFIC COLUMN ==========
                     if ($column && 'all' != $column) {
@@ -2383,8 +2566,8 @@ class Core extends Controller
 
                                 // Validate field exists in database
                                 $table_name = null;
-                                if (isset($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
-                                    $param = $this->_set_field[service('request')->getPost('origin')]['parameter'];
+                                if (isset($this->_set_field[$this->request->getPost('origin')]['parameter'])) {
+                                    $param = $this->_set_field[$this->request->getPost('origin')]['parameter'];
                                     $table_name = is_array($param) ? $param[0] : $param;
                                 }
 
@@ -2449,7 +2632,7 @@ class Core extends Controller
                 }
             }
 
-            if (service('request')->isAJAX() && 'autocomplete' == service('request')->getPost('method')) {
+            if ($this->request->isAJAX() && 'autocomplete' == $this->request->getPost('method')) {
                 /**
                  * PLEASE NOTE
                  * =============================================================
@@ -2462,9 +2645,9 @@ class Core extends Controller
                  */
                 $suggestions = [];
 
-                if (isset($this->_set_field[service('request')->getPost('origin')]) && in_array('autocomplete', $this->_set_field[service('request')->getPost('origin')]['field_type'])) {
+                if (isset($this->_set_field[$this->request->getPost('origin')]) && in_array('autocomplete', $this->_set_field[$this->request->getPost('origin')]['field_type'])) {
                     // Set the relation table, field and keyword
-                    $field = $this->_set_field[service('request')->getPost('origin')];
+                    $field = $this->_set_field[$this->request->getPost('origin')];
                     $table = (is_array($field['parameter']) ? $field['parameter'][0] : $field['parameter']);
                     $select = (! is_array($field['extra_params']) ? array_map('trim', explode(',', $field['extra_params'])) : $field['extra_params']);
                     $select = [
@@ -2476,7 +2659,7 @@ class Core extends Controller
                     $where = $field['another_params'];
                     $join = $field['skip'];
                     $order = $field['order'];
-                    $keyword = service('request')->getPost('q');
+                    $keyword = $this->request->getPost('q');
                     $columns = [];
                     $num = 0;
 
@@ -2517,14 +2700,14 @@ class Core extends Controller
                     }
 
                     // Order by best match
-                    if ($order_by) {
-                        foreach ($order_by as $key => $val) {
-                            $this->model->order_by($val, null, false);
-                        }
-                    }
-
                     if ($order) {
-                        $this->model->order_by($order);
+                        if (is_array($order)) {
+                            foreach ($order as $key => $val) {
+                                $this->model->order_by($key, $val);
+                            }
+                        } else {
+                            $this->model->order_by($order);
+                        }
                     }
 
                     $this->model->group_by($select['value']);
@@ -2573,19 +2756,19 @@ class Core extends Controller
                         }
 
                         // Push like an or like to the prepared query builder
-                        $this->_prepare(($key ? 'or_like' : 'like'), [$val, htmlspecialchars(('autocomplete' == service('request')->getPost('method') && service('request')->getPost('q') ? service('request')->getPost('q') : service('request')->getGet('q')))]);
+                        $this->_prepare(($key ? 'or_like' : 'like'), [$val, htmlspecialchars(('autocomplete' == $this->request->getPost('method') && $this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q')))]);
 
-                        if (isset($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
-                            if (is_array($this->_set_field[service('request')->getPost('origin')]['parameter'])) {
-                                $table = $this->_set_field[service('request')->getPost('origin')]['parameter'][0];
+                        if (isset($this->_set_field[$this->request->getPost('origin')]['parameter'])) {
+                            if (is_array($this->_set_field[$this->request->getPost('origin')]['parameter'])) {
+                                $table = $this->_set_field[$this->request->getPost('origin')]['parameter'][0];
                             } else {
-                                $table = $this->_set_field[service('request')->getPost('origin')]['parameter'];
+                                $table = $this->_set_field[$this->request->getPost('origin')]['parameter'];
                             }
                         }
 
-                        if (isset($this->_set_field[service('request')->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table)) {
+                        if (isset($this->_set_field[$this->request->getPost('origin')]['parameter']) && $this->model->field_exists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table)) {
                             // Push order by best match to the prepared query builder
-                            $this->_prepare('order_by', ['(CASE WHEN ' . $val . ' LIKE "' . service('request')->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . service('request')->getPost('q') . '" THEN 3 ELSE 2 END)']);
+                            $this->_prepare('order_by', ['(CASE WHEN ' . $val . ' LIKE "' . $this->request->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . $this->request->getPost('q') . '" THEN 3 ELSE 2 END)']);
                         }
 
                         $compiled_like[] = $field_origin;
@@ -2622,7 +2805,7 @@ class Core extends Controller
                         // Loop the result
                         foreach ($val as $field => $value) {
                             // Check if the result value is not contain the search keyword or the field is unset from column (list table)
-                            if (($value['original'] && strpos(strtolower($value['original']), strtolower(service('request')->getPost('q'))) === false) || in_array($field, $this->_unset_column)) {
+                            if (($value['original'] && strpos(strtolower($value['original']), strtolower($this->request->getPost('q'))) === false) || in_array($field, $this->_unset_column)) {
                                 continue;
                             }
 
@@ -2648,15 +2831,15 @@ class Core extends Controller
                 return make_json([
                     'suggestions' => ($suggestions ? $suggestions : null)
                 ]);
-            } elseif (service('request')->isAJAX() && 'ajax_select' == service('request')->getPost('method') && isset($this->_set_relation[service('request')->getPost('source')])) {
+            } elseif ($this->request->isAJAX() && 'ajax_select' == $this->request->getPost('method') && isset($this->_set_relation[$this->request->getPost('source')])) {
                 // Check if data is requested through server side select (jQuery plugin)
-                return $this->_get_relation($this->_set_relation[service('request')->getPost('source')], null, true);
-            } elseif (service('request')->isAJAX() && 'sort_table' == service('request')->getPost('method')) {
+                return $this->_get_relation($this->_set_relation[$this->request->getPost('source')], null, true);
+            } elseif ($this->request->isAJAX() && 'sort_table' == $this->request->getPost('method')) {
                 // Sort table
-                return $this->_sort_table(service('request')->getPost('ordered_id'));
+                return $this->_sort_table($this->request->getPost('ordered_id'));
             }
 
-            if (service('request')->getGet('sort') && 'desc' == strtolower(service('request')->getGet('sort'))) {
+            if ($this->request->getGet('sort') && 'desc' == strtolower($this->request->getGet('sort'))) {
                 // Order ASC from query string
                 set_userdata('sortOrder', 'ASC');
             } else {
@@ -2664,22 +2847,22 @@ class Core extends Controller
                 set_userdata('sortOrder', 'DESC');
             }
 
-            if (service('request')->getGet('order') && $this->model->field_exists(service('request')->getGet('order'), $this->_table)) {
+            if ($this->request->getGet('order') && $this->model->field_exists($this->request->getGet('order'), $this->_table)) {
                 // Match order by the primary table
                 // Push order to the prepared query builder
                 $this->_prepare[] = [
                     'function' => 'order_by',
-                    'arguments' => [$this->_table . '.' . service('request')->getGet('order'), get_userdata('sortOrder')]
+                    'arguments' => [$this->_table . '.' . $this->request->getGet('order'), get_userdata('sortOrder')]
                 ];
             } elseif ($this->_compiled_table) {
                 // Otherwhise, find it from the relation table
                 foreach ($this->_compiled_table as $key => $table) {
                     // Validate the column to check if column is exist in table
-                    if (service('request')->getGet('order') && $this->model->field_exists(service('request')->getGet('order'), $table)) {
+                    if ($this->request->getGet('order') && $this->model->field_exists($this->request->getGet('order'), $table)) {
                         // Push order to the prepared query builder
                         $this->_prepare[] = [
                             'function' => 'order_by',
-                            'arguments' => [$table . '.' . service('request')->getGet('order'), get_userdata('sortOrder')]
+                            'arguments' => [$table . '.' . $this->request->getGet('order'), get_userdata('sortOrder')]
                         ];
                     }
                 }
@@ -2687,7 +2870,7 @@ class Core extends Controller
 
             if (in_array($this->_method, ['create'])) {
                 // List the field properties
-                $results = [array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '')];
+                $results = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
                 $total = 0;
             } else {
                 // Run query using prepared property
@@ -2705,7 +2888,8 @@ class Core extends Controller
             // Default description property
             $description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 
-            if (isset($results[0])) {
+            // Indicates multiple rows result
+            if (is_array($results) && isset($results[0])) {
                 // Extract magic string
                 preg_match_all('/\{\{(.*?)\}\}/', $title ?? '', $title_replace);
                 preg_match_all('/\{\{(.*?)\}\}/', $description ?? '', $description_replace);
@@ -2755,7 +2939,7 @@ class Core extends Controller
                 }
             }
 
-            if (service('request')->getGet('__fetch_metadata') && $this->api_client) {
+            if ($this->request->getGet('__fetch_metadata') && $this->api_client) {
                 return make_json([
                     'title' => $title,
                     'description' => $description,
@@ -2829,7 +3013,7 @@ class Core extends Controller
                  * Method is requesting document file or print
                  * -------------------------------------------------------------
                  */
-                $query_params = service('request')->getGet();
+                $query_params = $this->request->getGet();
                 $single_print = false;
 
                 if ($this->_set_primary) {
@@ -2848,6 +3032,15 @@ class Core extends Controller
 
                 // Get formatted results
                 $results = ($single_print ? $this->render_read($results) : $this->render_table($results));
+
+                // Set icon property
+                $this->_set_icon = ($icon ? $icon : ($this->_set_title_fallback ?? 'mdi mdi-table'));
+
+                // Set title property
+                $this->_set_title = ($title ? $title : ($this->_set_title_fallback ?? phrase('Page not found!')));
+
+                // Set description property
+                $this->_set_description = ($description ? $description : $this->_set_description_fallback);
             } else {
                 /**
                  * -------------------------------------------------------------
@@ -2894,7 +3087,7 @@ class Core extends Controller
             // Default description property
             $this->_set_description = (isset($this->_set_description[$this->_method]) ? $this->_set_description[$this->_method] : (isset($this->_set_description['index']) ? $this->_set_description['index'] : null));
 
-            if (service('request')->getGet('__fetch_metadata') && $this->api_client) {
+            if ($this->request->getGet('__fetch_metadata') && $this->api_client) {
                 return make_json([
                     'title' => $this->_set_title,
                     'description' => $this->_set_description,
@@ -2903,13 +3096,13 @@ class Core extends Controller
             }
         }
 
-        if ($this->api_client && 'complete' === service('request')->getGet('format_result')) {
+        if ($this->api_client && 'complete' === $this->request->getGet('format_result')) {
             // Requested from API Client in formatted result
             return make_json($results);
         }
 
         // Get query string
-        $query_params = service('request')->getGet();
+        $query_params = $this->request->getGet();
 
         foreach ($query_params as $key => $val) {
             if (in_array($this->_method, ['read', 'update']) && in_array($key, $this->_set_primary)) {
@@ -2928,28 +3121,31 @@ class Core extends Controller
             }
         }
 
+        $uri = Services::uri();
+        $timer = Services::timer();
+
         // Prepare output
         $output = [
             'code' => 200,
             'method' => $this->_method,
-            'prefer' => service('request')->getPost('prefer'),
-            'links' => [
-                'base_url' => base_url(),
-                'current_module' => go_to(null, $query_params),
-                'current_page' => current_page()
-            ],
+            'prefer' => $this->request->getPost('prefer'),
             'meta' => [
                 'description' => preg_replace('/[^\S ]+/', '', $this->_set_description ?? ''),
                 'icon' => $this->_set_icon,
                 'title' => $this->_set_title,
                 'modal_size' => ($this->_modal_size ? $this->_modal_size : ''),
-                'segmentation' => array_map(function ($segment = null) {return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, service('uri')->getSegments())
+                'segmentation' => array_map(function ($segment = null) {return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));}, $uri->getSegments())
             ],
             'breadcrumb' => $this->template->breadcrumb($this->_set_breadcrumb, $this->_set_title, $this->_set_primary),
-            'query_params' => service('request')->getGet(),
+            'links' => [
+                'base_url' => base_url(),
+                'current_module' => go_to(null, $query_params),
+                'current_page' => current_page()
+            ],
+            'query_params' => $this->request->getGet(),
             'results' => $results,
             'total' => $total,
-            'elapsed_time' => service('timer')->stop('elapsed_time')->getElapsedTime('elapsed_time'),
+            'elapsed_time' => (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00,
             '_token' => $this->_token
         ];
 
@@ -2987,18 +3183,16 @@ class Core extends Controller
 
             // Send to client
             if ('print' == $this->_method) {
-                echo $output;
-
-                return true;
+                return $this->response->setBody($output)->sendBody();
             } else {
-                return $document->generate($output, $title, ('export' == $this->_method ? 'export' : 'embed'));
+                return $document->generate($output, $title, ('export' == $this->_method ? ($this->request->getGet('method') ?? 'export') : 'embed'));
             }
-        } elseif ($this->api_client && 'GET' != service('request')->getServer('REQUEST_METHOD')) {
+        } elseif ($this->api_client && ! in_array($this->request->getMethod(), ['GET'])) {
             // The method is requested from REST without GET
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? $this->_redirect_back : null));
         }
 
-        if ($this->api_client && 'full' === service('request')->getGet('format_result')) {
+        if ($this->api_client && 'full' === $this->request->getGet('format_result')) {
             // Requested from API Client in full result
             return make_json($output);
         }
@@ -3008,67 +3202,103 @@ class Core extends Controller
     }
 
     /**
-     * Render and format the output of field
+     * Renders and formats the output data into a structured array ready for table view.
      *
-     * @return  array
+     * Applies column customizations and uses a dedicated Renderer for final table output.
+     *
+     * @param array $data The raw result data (array of objects/arrays) retrieved from the database.
+     *
+     * @return array The formatted table data array.
      */
-    public function render_table(array $data = [])
+    public function render_table(array $data): array
     {
+        // If Primary Key is not defined, disable Update and Delete actions for safety.
         if (! $this->_set_primary) {
-            // Merge method to unset from request because primary key not found
             $this->_unset_method = array_merge($this->_unset_method, ['update', 'delete']);
         }
 
-        $table_data = [];
-
-        // Serialize data
+        // Serialize data (convert raw objects/arrays into a standardized format)
         $serialized = $this->serialize($data);
 
-        if ($serialized) {
-            // Safe abstraction to reduce unnecessary property
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view', '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select', '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation', '_set_upload_path', '_sortable', '_table', '_unset_column', '_unset_clone', '_unset_delete', '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model']));
+        $table_data = [];
 
+        if ($serialized) {
+            // --- Prepare Properties for Renderer ---
+
+            // Define essential properties needed by the table renderer (whitelisting for abstraction/safety).
+            $whitelisted_properties = [
+                '_add_button', '_add_dropdown', '_add_toolbar', '_add_filter', '_column_order', '_grid_view',
+                '_item_reference', '_merge_content', '_merge_label', '_method', '_parameter', '_select',
+                '_set_alias', '_set_autocomplete', '_set_button', '_set_field', '_set_relation',
+                '_set_upload_path', '_sortable', '_table', '_unset_column', '_unset_clone', '_unset_delete',
+                '_unset_method', '_unset_read', '_unset_truncate', '_unset_update', 'api_client', 'model'
+            ];
+
+            // Create an array containing only the whitelisted properties from the current object.
+            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelisted_properties));
+
+            // Add theme property
             $properties['_set_theme'] = $this->template->theme;
 
-            // Load renderer
+            // --- Load Renderer ---
             $renderer = new Renderer();
-            $renderer->setProperty($properties);
-            $renderer->setPath('table');
+            $renderer->setProperty($properties); // Send necessary context properties
+            $renderer->setPath('table'); // Specify the renderer path (e.g., table renderer)
 
-            $table_data = $renderer->render($serialized, sizeof($data));
+            // Run the renderer to format the serialized data into final table structure.
+            $table_data = $renderer->render($serialized, count($data));
         }
 
         return $table_data;
     }
 
     /**
-     * Render and format the output of field
+     * Renders and formats the output data into a structured array ready for form view (Create/Update).
      *
-     * @return  array
+     * Applies field customizations (e.g., placeholder, relation, autocomplete) and uses a dedicated Renderer
+     * to generate the final form structure.
+     *
+     * @param array $data The raw result data (array of objects/arrays) retrieved from the database (usually a single row).
+     *
+     * @return array The structured form data array containing fields and their properties.
      */
-    public function render_form(array $data = [])
+    public function render_form(array|object $data): array
     {
-        if (! $data && ! $this->_permit_upsert && 'autocomplete' != service('request')->getPost('method')) {
-            // Data is empty
+        // --- Initial Validation ---
+        // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
+        if (! $data && ! $this->_permit_upsert && 'autocomplete' != $this->request->getPost('method')) {
             return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirect_back);
         }
 
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data);
+
         $field_data = [];
 
-        // Serialize data
-        $serialized = $this->serialize($data);
-
         if ($serialized) {
-            // Safe abstraction to reduce unnecessary property
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_add_class', '_column_order', '_column_size', '_default_value', '_db_driver', '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit', '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete', '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip', '_set_upload_path', '_table', 'api_client', 'model']));
+            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
 
+            $whitelisted_properties = [
+                '_add_class', '_column_order', '_column_size', '_default_value', '_db_driver',
+                '_field_append', '_field_prepend', '_field_order', '_view_order', '_extra_submit',
+                '_field_position', '_field_size', '_group_field', '_merge_field', '_merge_label',
+                '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_autocomplete',
+                '_set_field', '_set_heading', '_set_placeholder', '_set_relation', '_set_tooltip',
+                '_set_upload_path', '_table', 'api_client', 'model'
+            ];
+
+            // Create an array containing only the whitelisted properties from the current object.
+            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelisted_properties));
+
+            // Add theme property
             $properties['_set_theme'] = $this->template->theme;
 
-            // Load renderer
+            // --- Load Renderer ---
             $renderer = new Renderer();
-            $renderer->setProperty($properties);
-            $renderer->setPath('form');
+            $renderer->setProperty($properties); // Send necessary context properties
+            $renderer->setPath('form'); // Specify the renderer path (form renderer)
 
+            // Run the renderer to format the serialized data into final form structure.
             $field_data = $renderer->render($serialized);
         }
 
@@ -3076,33 +3306,50 @@ class Core extends Controller
     }
 
     /**
-     * Render and format the output of field
+     * Renders and formats the output data into a structured array ready for the detailed 'read' view.
      *
-     * @return  array
+     * Applies field customizations and uses a dedicated Renderer for final output structure.
+     *
+     * @param array $data The raw result data (array of objects/arrays) retrieved from the database (expected to be a single row).
+     *
+     * @return array The structured field data array containing fields and their formatted values.
      */
-    public function render_read(array $data = [])
+    public function render_read(array|object $data): array
     {
+        // --- Initial Validation ---
+        // If data is empty, throw a 404 exception.
         if (! $data) {
-            // Data empty, throw exception
             return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirect_back);
         }
 
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data);
+
         $field_data = [];
 
-        // Serialize data
-        $serialized = $this->serialize($data);
-
         if ($serialized) {
-            // Safe abstraction to reduce unnecessary property
-            $properties = array_intersect_key(get_object_vars($this), array_flip(['_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order', '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content', '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias', '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path', '_table', 'api_client']));
+            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
 
+            $whitelisted_properties = [
+                '_column_order', '_column_size', '_field_append', '_field_prepend', '_field_order',
+                '_view_order', '_field_position', '_field_size', '_group_field', '_merge_content',
+                '_merge_field', '_merge_label', '_method', '_modal_size', '_set_alias',
+                '_set_attribute', '_set_field', '_set_heading', '_set_relation', '_set_upload_path',
+                '_table', 'api_client'
+            ];
+
+            // Create an array containing only the whitelisted properties from the current object.
+            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelisted_properties));
+
+            // Add theme property
             $properties['_set_theme'] = $this->template->theme;
 
-            // Load renderer
+            // --- Load Renderer ---
             $renderer = new Renderer();
-            $renderer->setProperty($properties);
-            $renderer->setPath('view');
+            $renderer->setProperty($properties); // Send necessary context properties
+            $renderer->setPath('view'); // Specify the renderer path (view/read renderer)
 
+            // Run the renderer to format the serialized data into final view structure.
             $field_data = $renderer->render($serialized);
         }
 
@@ -3110,14 +3357,20 @@ class Core extends Controller
     }
 
     /**
-     * Validate the data that submitted through form
+     * Validates the data submitted through the form against predefined rules and field types.
+     *
+     * If validation passes, it processes the data, handles file uploads, and dispatches
+     * the prepared data to either insert_data() or update_data().
+     *
+     * @param array $data Serialized array data (usually an empty array or a single row for update context).
+     *
+     * @return object|null Returns an Exception object (400, 403, 404) or triggers a redirect/API response on success.
      */
-    public function validate_form(array $data = [])
+    public function validate_form(array|object $data)
     {
-        // Check if app on demo mode
+        // --- 1. Initial Security & Update Check ---
         if ($this->_restrict_on_demo) {
-            // Demo mode is on
-            return throw_exception(403, phrase('This feature is disabled in demo mode.'), (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(403, phrase('This feature is disabled in demo mode.'), $this->_redirect_back);
         }
 
         // Check if method is update
@@ -3126,17 +3379,17 @@ class Core extends Controller
             return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->api_client ? $this->_redirect_back : null));
         }
 
-        // Serialize the fields
-        $serialized = $this->serialize($data);
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serialize_row($data, false);
 
-        if (service('request')->getPost() && is_array($serialized) && sizeof($serialized) > 0) {
+        if ($this->request->getPost() && is_array($serialized) && sizeof($serialized) > 0) {
             // Store upload path to session
             set_userdata('_set_upload_path', $this->_set_upload_path);
 
             // Default validation
             $validation = false;
 
-            foreach ($serialized[0] as $key => $val) {
+            foreach ($serialized as $key => $val) {
                 $type = array_keys($val['type']);
 
                 // Skip field when it's disabled and has no default value
@@ -3217,7 +3470,7 @@ class Core extends Controller
                     $validation = true;
 
                     // Password validation only when post field has value
-                    if (service('request')->getPost($key)) {
+                    if ($this->request->getPost($key)) {
                         // Password validation rules
                         $this->form_validation->setRule($key, (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), 'min_length[6]');
                         $this->form_validation->setRule($key . '_confirmation', phrase('Confirmation') . ' ' . (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), ('create' == $this->_method ? 'required|matches[' . $key . ']' : 'matches[' . $key . ']'));
@@ -3284,7 +3537,7 @@ class Core extends Controller
                             // Validate only when no default set to field
                             $validation = true;
 
-                            if (is_array(service('request')->getPost($key))) {
+                            if (is_array($this->request->getPost($key))) {
                                 // Array validation rules
                                 $this->form_validation->setRule($key . '.*', (isset($this->_set_alias[$key]) ? $this->_set_alias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                             } else {
@@ -3303,7 +3556,7 @@ class Core extends Controller
             }
 
             // Run validation
-            if ($validation && $this->form_validation->run(service('request')->getPost()) === false) {
+            if ($validation && $this->form_validation->run($this->request->getPost()) === false) {
                 // Unlink the files
                 $this->_unlink_files(get_userdata('_uploaded_files'));
 
@@ -3332,7 +3585,7 @@ class Core extends Controller
                 $clone = $this->model->get_where($this->_table, $this->_where, 1)->row_array();
             }
 
-            foreach ($serialized[0] as $field => $value) {
+            foreach ($serialized as $field => $value) {
                 $type = array_keys($value['type']);
 
                 // Skip field when it's disabled and has no default value
@@ -3345,12 +3598,12 @@ class Core extends Controller
                     continue;
                 }
 
-                if (array_key_exists($field, service('request')->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
+                if (array_key_exists($field, $this->request->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
-                        if (service('request')->getPost($field)) {
+                        if ($this->request->getPost($field)) {
                             // Store new password
-                            $prepare[$field] = password_hash(service('request')->getPost($field) . ENCRYPTION_KEY, PASSWORD_DEFAULT);
+                            $prepare[$field] = password_hash($this->request->getPost($field) . ENCRYPTION_KEY, PASSWORD_DEFAULT);
                         }
 
                         // Cloning
@@ -3360,9 +3613,11 @@ class Core extends Controller
                         }
                     } elseif (array_intersect(['encryption'], $type)) {
                         // Check if value changed
-                        if (service('request')->getPost($field)) {
+                        if ($this->request->getPost($field)) {
+                            $encrypter = Services::encrypter();
+
                             // Store new encryption
-                            $prepare[$field] = base64_encode(service('encrypter')->encrypt(service('request')->getPost($field)));
+                            $prepare[$field] = base64_encode($encrypter->encrypt($this->request->getPost($field)));
                         }
                     } elseif (array_intersect(['image'], $type)) {
                         // Set the default value
@@ -3418,9 +3673,9 @@ class Core extends Controller
                     } elseif (array_intersect(['images', 'files'], $type)) {
                         $files = [];
 
-                        if (is_array(service('request')->getPost($field . '_label'))) {
+                        if (is_array($this->request->getPost($field . '_label'))) {
                             // Reverse file attributes to match with newest upload data
-                            $files = array_reverse(service('request')->getPost($field . '_label'));
+                            $files = array_reverse($this->request->getPost($field . '_label'));
                             $uploaded = (isset($this->_uploaded_files[$field]) ? array_reverse(array_values($this->_uploaded_files[$field])) : []);
 
                             // Combine uploaded files to the old one
@@ -3436,7 +3691,7 @@ class Core extends Controller
                         $prepare[$field] = json_encode(array_reverse($files));
                     } elseif (array_intersect(['carousel'], $type)) {
                         // Get the submitted carousel
-                        $carousel = service('request')->getPost($field);
+                        $carousel = $this->request->getPost($field);
 
                         // Check if submitted data is not supported
                         if (! $carousel || ! isset($carousel['title']) || sizeof($carousel['title']) <= 0) {
@@ -3471,7 +3726,7 @@ class Core extends Controller
                         $prepare[$field] = json_encode($items);
                     } elseif (array_intersect(['accordion'], $type)) {
                         // Get the submitted accordion
-                        $accordion = service('request')->getPost($field);
+                        $accordion = $this->request->getPost($field);
                         $items = [];
 
                         // Check if the accordion has correct value
@@ -3490,7 +3745,7 @@ class Core extends Controller
                         $prepare[$field] = json_encode($items);
                     } elseif (array_intersect(['attribution'], $type)) {
                         // Get the submitted attribution
-                        $attribution = service('request')->getPost($field);
+                        $attribution = $this->request->getPost($field);
                         $items = [];
 
                         // Check if the submitted attribution is in correct format
@@ -3510,40 +3765,40 @@ class Core extends Controller
                         $prepare[$field] = json_encode($items);
                     } elseif (array_intersect(['wysiwyg'], $type)) {
                         // Push the boolean field type to data preparation
-                        $prepare[$field] = service('request')->getPost($field);
+                        $prepare[$field] = $this->request->getPost($field);
                     } elseif (array_intersect(['boolean'], $type)) {
                         // Push the boolean field type to data preparation
-                        $prepare[$field] = service('request')->getPost($field);
+                        $prepare[$field] = $this->request->getPost($field);
                     } elseif (array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['created_timestamp'], $type)) || ('update' === $this->_method && array_intersect(['updated_timestamp'], $type))) {
                         // Push the current timestamp field type to data preparation
                         $prepare[$field] = date('Y-m-d H:i:s');
                     } elseif (array_intersect(['date', 'datepicker'], $type)) {
                         // Push the date field type to data preparation
-                        $prepare[$field] = date('Y-m-d', strtotime(service('request')->getPost($field)));
+                        $prepare[$field] = date('Y-m-d', strtotime($this->request->getPost($field)));
                     } elseif (array_intersect(['datetime', 'datetimepicker'], $type)) {
                         // Push the submitted timestamp field type to data preparation
-                        $prepare[$field] = date('Y-m-d H:i:s', strtotime(service('request')->getPost($field)));
+                        $prepare[$field] = date('Y-m-d H:i:s', strtotime($this->request->getPost($field)));
                     } elseif (array_intersect(['monthpicker'], $type)) {
                         // Push the month field type to data preparation
-                        $prepare[$field] = get_userdata('year') . '-' . service('request')->getPost($field) . '-01';
+                        $prepare[$field] = get_userdata('year') . '-' . $this->request->getPost($field) . '-01';
                     } elseif (array_intersect(['money'], $type)) {
                         // Push the money field type to data preparation
-                        $value = trim(service('request')->getPost($field));
+                        $value = trim($this->request->getPost($field));
                         $value = str_replace(',', '', $value);
                         $prepare[$field] = $value;
                     } elseif (array_intersect(['number_format'], $type)) {
                         // Push the number format field type to data preparation
-                        $value = trim(service('request')->getPost($field));
+                        $value = trim($this->request->getPost($field));
                         $value = str_replace(',', '', $value);
                         $prepare[$field] = $value;
                     } elseif (array_intersect(['slug'], $type)) {
                         // Check if slug has its own post data
-                        if (service('request')->getPost($field)) {
+                        if ($this->request->getPost($field)) {
                             // Use its own data as slug
-                            $title = service('request')->getPost($field);
-                        } elseif (service('request')->getPost($value['type']['slug']['parameter'])) {
+                            $title = $this->request->getPost($field);
+                        } elseif ($this->request->getPost($value['type']['slug']['parameter'])) {
                             // Or match other field from given parameter
-                            $title = service('request')->getPost($value['type']['slug']['parameter']);
+                            $title = $this->request->getPost($value['type']['slug']['parameter']);
                         } else {
                             // Otherwise, use the time instead
                             $title = time();
@@ -3556,7 +3811,7 @@ class Core extends Controller
                         $prepare[$field] = get_userdata('user_id');
                     } else {
                         // Convert the submitted array data as encoded json, or use the original
-                        $prepare[$field] = (is_array(service('request')->getPost($field)) ? json_encode(service('request')->getPost($field)) : service('request')->getPost($field));
+                        $prepare[$field] = (is_array($this->request->getPost($field)) ? json_encode($this->request->getPost($field)) : $this->request->getPost($field));
                     }
 
                     // Apply the formatter when not match any given parameter
@@ -3579,7 +3834,7 @@ class Core extends Controller
                 }
 
                 // Or when it's a boolean and no value
-                elseif (array_intersect(['boolean'], $type) && ! service('request')->getPost($field) && ! in_array($field, $this->_unset_field)) {
+                elseif (array_intersect(['boolean'], $type) && ! $this->request->getPost($field) && ! in_array($field, $this->_unset_field)) {
                     // Sets to "0" instead of null
                     $prepare[$field] = 0;
                 }
@@ -3611,7 +3866,7 @@ class Core extends Controller
                 $this->_unlink_files(get_userdata('_uploaded_files'));
 
                 // Throw the exception messages
-                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? $this->_redirect_back : null));
             }
         } else {
             // No data are found
@@ -3620,9 +3875,16 @@ class Core extends Controller
     }
 
     /**
-     * This function sustain to insert data if there's no data to update
+     * Sets the flag to permit UPSERT (Update or Insert) operations.
+     *
+     * If enabled, this allows the system to proceed with data submission even if no existing record
+     * is found for an 'update' operation, treating it as an 'insert'.
+     *
+     * @param bool $return TRUE to permit upsert (default), FALSE otherwise.
+     *
+     * @return static Returns the current object instance (chainable).
      */
-    public function permit_upsert(bool $return = true)
+    public function permit_upsert(bool $return = true): static
     {
         $this->_permit_upsert = $return;
 
@@ -3630,390 +3892,443 @@ class Core extends Controller
     }
 
     /**
-     * Inserting data to the database
+     * @hook before_insert
+     * Optional method that can be overridden by a derived Controller or Model
+     * to execute custom logic, validation, or data manipulation
+     * immediately before a new record is inserted (CREATE operation).
      */
-    public function insert_data(?string $table = null, array $data = [])
+    protected function before_insert()
     {
-        if ($this->api_client && 'POST' != service('request')->getServer('REQUEST_METHOD')) {
-            // Unlink the files
-            $this->_unlink_files(get_userdata('_uploaded_files'));
+        // Example Use: Setting 'created_at' timestamps or sanitizing user input fields.
+    }
 
-            // Indicates the method is requested through REST
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+    /**
+     * @hook after_insert
+     * * An optional method that can be overridden by a derived Controller/Model
+     * to execute subsequent logic after data has been successfully inserted (CREATE operation).
+     *
+     * @return void
+     */
+    protected function after_insert()
+    {
+        // Example Usage: Updating cache, sending notifications, or queuing a background job.
+    }
+
+    /**
+     * @hook before_update
+     * Optional method that can be overridden by a derived Controller or Model
+     * to execute custom logic, validation, or data manipulation
+     * immediately before an existing record is updated (UPDATE operation).
+     */
+    protected function before_update()
+    {
+        // Example Use: Setting 'updated_at' timestamps or checking for data change conflicts.
+    }
+
+    /**
+     * @hook after_update
+     * * An optional method that can be overridden by a derived Controller/Model
+     * to execute subsequent logic after data has been successfully updated (UPDATE operation).
+     *
+     * @return void
+     */
+    protected function after_update()
+    {
+        // Example Usage: Recording change logs, invalidating related cache entries, or updating search indices.
+    }
+
+    /**
+     * @hook before_delete
+     * Optional method that can be overridden by a derived Controller or Model
+     * to execute custom logic, validation, or related tasks
+     * immediately before a record is permanently deleted (DELETE operation).
+     */
+    protected function before_delete()
+    {
+        // Example Use: Checking user permissions or deleting associated files/images.
+    }
+
+    /**
+     * @hook after_delete
+     * * An optional method that can be overridden by a derived Controller/Model
+     * to execute subsequent logic after data has been successfully deleted (DELETE operation).
+     *
+     * @return void
+     */
+    protected function after_delete()
+    {
+        // Example Usage: Cleaning up associated files/resources, removing cache entries, or sending deletion logs.
+    }
+
+    /**
+     * Inserts data into the specified database table.
+     *
+     * Handles API method validation, before/after insert hooks, file management, and error handling.
+     *
+     * @param string|null $table The target database table name.
+     * @param array $data The data array to be inserted (Field => Value).
+     *
+     * @return object|null Returns an Exception object for redirection/API response, or null on execution failure.
+     */
+    public function insert_data(?string $table = null, array $data = []): object|null
+    {
+        // --- 1. API Method Validation ---
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['POST'])) {
+            $this->_unlink_files(get_userdata('_uploaded_files'));
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
+        // --- 2. Table Existence Check and Execution ---
         if ($table && $this->model->table_exists($table)) {
+            // --- 3. Before Insert Hook ---
             if (method_exists($this, 'before_insert')) {
-                // Call a function before insert
                 $this->before_insert();
             }
 
             if ($this->model->insert($table, $data)) {
+                // --- 4. Success: Get Insert ID and Cleanup ---
+
                 $auto_increment = true;
                 $primary = 0;
 
+                // Special handling for PostgreSQL auto-increment simulation
                 if ('Postgre' == $this->_db_driver) {
-                    // Apply only PostgreSQL database
                     $auto_increment = false;
                     $field_data = $this->model->field_data($table);
 
-                    foreach ($field_data as $key => $val) {
+                    foreach ($field_data as $val) {
                         if (isset($this->_set_default[$val->name])) {
                             $primary = $this->_set_default[$val->name];
                         }
 
-                        if ((isset($val->primary_key) && 1 === $val->primary_key) || (isset($val->default) && $val->default && stripos($val->default, 'nextval(') !== false)) {
-                            // Mock autoincrement
+                        // Check for primary key or PostgreSQL nextval default
+                        if (($val->primary_key ?? false) || (isset($val->default) && $val->default && stripos($val->default, 'nextval(') !== false)) {
                             $auto_increment = true;
                         }
 
                         if ($primary && $auto_increment) {
-                            // Break operation if primary key found
                             break;
                         }
                     }
                 }
 
-                // Get last insert id
-                $this->_insert_id = ($auto_increment ? $this->model->insert_id() : 0);
+                $this->_insert_id = $auto_increment ? $this->model->insert_id() : 0;
 
-                // Unset uploaded files string from session
+                // Cleanup files and tokens
                 unset_userdata('_uploaded_files');
-
-                // Unset CSRF token
                 unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
 
-
+                // --- 5. After Insert Hook ---
                 if (method_exists($this, 'after_insert')) {
-                    // Call user function after insert
                     $this->after_insert();
                 }
 
-                // Update token timestamp
+                // Invalidate token by updating timestamp
                 set_userdata('token_timestamp', time());
-
-                // Invalidate token
                 unset_userdata(sha1(uri_string()));
 
-                // Send to client
-                return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), (! $this->api_client ? $this->_redirect_back : null));
+                // Send success response
+                return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirect_back);
             } else {
-                // Unlink the files
+                // --- 6. Failure: Error Handling and Cleanup ---
                 $this->_unlink_files(get_userdata('_uploaded_files'));
 
-                // Otherwise, the item is cannot be deleted
                 $error = $this->model->error();
+                $error_message = $error['message'] ?? phrase('Unable to submit your data.');
 
-                if (in_array(get_userdata('group_id'), [1]) && ENVIRONMENT != 'production' && isset($error['message'])) {
-                    // For administrator
-                    return throw_exception(500, $error['message'], (! $this->api_client ? $this->_redirect_back : null));
+                // Display detailed error only for Administrator in non-production environments
+                if (get_userdata('group_id') == 1 && ENVIRONMENT != 'production') {
+                    $final_message = $error_message;
+                } else {
+                    $final_message = phrase('Unable to submit your data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (INSERT)</b>';
                 }
 
-                // For user
-                return throw_exception(500, phrase('Unable to submit your data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (INSERT)</b>', (! $this->api_client ? $this->_redirect_back : null));
+                return throw_exception(500, $final_message, $this->_redirect_back);
             }
         } else {
-            // Unlink the files
+            // --- 7. Failure: Table Not Found ---
             $this->_unlink_files(get_userdata('_uploaded_files'));
-
-            return throw_exception(404, phrase('The selected database table does not exist.'), (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirect_back);
         }
     }
 
     /**
-     * Get latest insert id
+     * Retrieves the ID generated by the last successful database INSERT query.
      *
-     * @return  int
+     * This value is typically set internally by the framework after calling insert_data().
+     *
+     * @return int The last inserted ID (0 if not applicable or failed).
      */
-    public function insert_id()
+    public function insert_id(): int
     {
         return $this->_insert_id;
     }
 
     /**
-     * Update data from database
+     * Updates data in the specified database table based on the provided WHERE condition.
+     *
+     * If no WHERE condition is provided, it attempts to derive it from URI query parameters.
+     * Supports file cleanup, before/after hooks, and optional UPSERT capability.
+     *
+     * @param string|null $table The target database table name.
+     * @param array $data The data array to be updated (Field => New Value).
+     * @param array $where Optional explicit WHERE condition array (Field => Value).
+     *
+     * @return object|bool Returns an Exception object for redirection/API response, TRUE on successful execution flow, or FALSE on internal failure.
      */
-    public function update_data(?string $table = null, array $data = [], array $where = [])
+    public function update_data(?string $table = null, array $data = [], array $where = []): object|bool
     {
-        if ($this->api_client && 'POST' != service('request')->getServer('REQUEST_METHOD')) {
-            // Unlink the files
+        // --- 1. API Method Validation ---
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['POST'])) {
             $this->_unlink_files(get_userdata('_uploaded_files'));
-
-            // Indicate the method is requested through REST
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
+        // --- 2. Table Existence Check and WHERE Determination ---
         if ($table && $this->model->table_exists($table)) {
+            // Determine WHERE condition if not explicitly provided
             if (! $where) {
-                // Safe check to make sure the given field parameter is exists in the database table
                 $field_exists = array_flip($this->model->list_fields($table));
+                $where = array_intersect_key($this->request->getGet(), $field_exists);
 
+                // If WHERE is still missing, data cannot be updated
                 if (! $where) {
-                    $where = array_intersect_key(service('request')->getGet(), $field_exists);
+                    $this->_unlink_files(get_userdata('_uploaded_files'));
+                    return throw_exception(404, phrase('The data you would to delete is not found.'), $this->_redirect_back);
                 }
 
-                // Make sure the delete action have where as condition
-                if (! $where) {
-                    // Otherwise, redirect to previous page
-                    return throw_exception(404, phrase('The data you would to delete is not found.'), (! $this->api_client ? $this->_redirect_back : null));
-                }
-
-                foreach ($where as $key => $val) {
-                    // Backup key
-                    $key_backup = $key;
-
-                    // Now find dotted table and column pairs
-                    if (stripos($key, '.') !== false) {
-                        // Extract column
-                        $key = substr($key, stripos($key, '.') + 1);
-                    }
+                // Validate derived WHERE keys against table fields
+                foreach ($where as $key_backup => $val) {
+                    $key = (stripos($key_backup, '.') !== false) ? substr($key_backup, stripos($key_backup, '.') + 1) : $key_backup;
 
                     if (! $this->model->field_exists($key, $table)) {
-                        // Unset column that isn't exist
                         unset($where[$key_backup]);
                     }
                 }
             }
 
-            // Check if data is exist in table
+            // --- 3. Check if Data Exists ---
             $query = $this->model->get_where($table, $where, 1)->row();
 
             if ($query) {
+                // --- 4. Data Exists: Execute Update ---
+
                 if (method_exists($this, 'before_update')) {
-                    // Call function before update
                     $this->before_update();
                 }
 
-                // Set default variables
+                // Collect old files for cleanup
                 $old_files = [];
-
-                if ($query) {
-                    // Attempt to get old files
-                    foreach ($query as $field => $value) {
-                        if (isset($this->_set_field[$field]['field_type']) && array_intersect($this->_set_field[$field]['field_type'], ['file', 'files', 'image', 'images'])) {
-                            $old_files[$field] = $value;
-                        }
-                    }
-                }
-
-                // Attempt to update data
-                if ($this->model->update($table, $data, $where)) {
-                    // Unset uploaded files string from session
-                    unset_userdata('_uploaded_files');
-
-                    // Unset CSRF token
-                    unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
-
-
-                    // Unlink old files
-                    $this->_unlink_files($old_files);
-
-                    if (method_exists($this, 'after_update')) {
-                        // Call function after update
-                        $this->after_update();
-                    }
-
-                    // Update token timestamp
-                    set_userdata('token_timestamp', time());
-
-                    // Invalidate token
-                    unset_userdata(sha1(uri_string()));
-
-                    // Send to client
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), (! $this->api_client ? $this->_redirect_back : null));
-                } else {
-                    // Unlink the files
-                    $this->_unlink_files(get_userdata('_uploaded_files'));
-
-                    // Otherwise, the item is cannot be deleted
-                    $error = $this->model->error();
-
-                    if (in_array(get_userdata('group_id'), [1]) && isset($error['message'])) {
-                        // For administrator
-                        return throw_exception(500, $error['message'], (! $this->api_client ? $this->_redirect_back : null));
-                    }
-
-                    // For user
-                    return throw_exception(500, phrase('Unable to update the data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (UPDATE)</b>', (! $this->api_client ? $this->_redirect_back : null));
-                }
-            } elseif ($this->_permit_upsert) {
-                // Attempt to insert data
-                $this->insert_data($table, $data);
-            } else {
-                // Unlink the files
-                $this->_unlink_files(get_userdata('_uploaded_files'));
-
-                return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->api_client ? $this->_redirect_back : null));
-            }
-        } else {
-            // Unlink the files
-            $this->_unlink_files(get_userdata('_uploaded_files'));
-
-            return throw_exception(404, phrase('The selected database table does not exist.'), (! $this->api_client ? $this->_redirect_back : null));
-        }
-
-        return false;
-    }
-
-    /**
-     * Delete multiple data from the database
-     */
-    public function delete_data(?string $table = null, array $where = [], int $limit = 1)
-    {
-        if ($this->api_client && 'DELETE' != service('request')->getServer('REQUEST_METHOD')) {
-            // Indicate the method is requested through API
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
-        }
-
-        // Check if app on demo mode
-        if ($this->_restrict_on_demo) {
-            return throw_exception(403, phrase('This feature is disabled in demo mode.'), (! $this->api_client ? $this->_redirect_back : null));
-        }
-
-        // Check if delete have a callback message
-        if (isset($this->_set_messages['delete']) && $this->_set_messages['delete']['return']) {
-            // Use the callback message
-            return throw_exception($this->_set_messages['delete']['code'], $this->_set_messages['delete']['messages'], $this->_redirect_back);
-        }
-
-        // Check if targeted table is exists
-        if ($table && $this->model->table_exists($table)) {
-            if (! $where) {
-                // Safe check to make sure the given field parameter is exists in the database table
-                $field_exists = array_flip($this->model->list_fields($table));
-
-                if (! $where) {
-                    $where = array_intersect_key(service('request')->getGet(), $field_exists);
-                }
-
-                // Make sure the delete action have where as condition
-                if (! $where) {
-                    // Otherwise, redirect to previous page
-                    return throw_exception(404, phrase('The data you would to delete is not found.'), (! $this->api_client ? $this->_redirect_back : null));
-                }
-
-                foreach ($where as $key => $val) {
-                    // Backup key
-                    $key_backup = $key;
-
-                    // Now find dotted table and column pairs
-                    if (stripos($key, '.') !== false) {
-                        // Extract column
-                        $key = substr($key, stripos($key, '.') + 1);
-                    }
-
-                    if (! $this->model->field_exists($key, $table)) {
-                        // Unset column that isn't exist
-                        unset($where[$key_backup]);
-                    }
-                }
-            }
-
-            // Check if data is exist in table
-            $query = $this->model->get_where($table, $where, 1)->row();
-
-            if ($query) {
-                if (method_exists($this, 'before_delete')) {
-                    // Call function before delete
-                    $this->before_delete();
-                }
-
-                // Set default variables
-                $old_files = [];
-
-                // Attempt to get old files
                 foreach ($query as $field => $value) {
                     if (isset($this->_set_field[$field]['field_type']) && array_intersect($this->_set_field[$field]['field_type'], ['file', 'files', 'image', 'images'])) {
                         $old_files[$field] = $value;
                     }
                 }
 
-                // Safe check for delete
+                // Attempt to update data
+                if ($this->model->update($table, $data, $where)) {
+                    // Success: Cleanup and Hooks
+                    unset_userdata('_uploaded_files');
+                    unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
+                    $this->_unlink_files($old_files);
+
+                    if (method_exists($this, 'after_update')) {
+                        $this->after_update();
+                    }
+
+                    // Invalidate token
+                    set_userdata('token_timestamp', time());
+                    unset_userdata(sha1(uri_string()));
+
+                    // Send success response
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirect_back);
+                } else {
+                    // Failure: Error Handling
+                    $this->_unlink_files(get_userdata('_uploaded_files'));
+                    $error = $this->model->error();
+
+                    if (get_userdata('group_id') == 1 && isset($error['message'])) {
+                        return throw_exception(500, $error['message'], $this->_redirect_back);
+                    }
+
+                    return throw_exception(500, phrase('Unable to update the data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (UPDATE)</b>', $this->_redirect_back);
+                }
+            } elseif ($this->_permit_upsert) {
+                // --- 5. Data Not Found, but UPSERT is Permitted: Insert Instead ---
+                $this->insert_data($table, $data);
+            } else {
+                // --- 6. Data Not Found, UPSERT Not Permitted ---
+                $this->_unlink_files(get_userdata('_uploaded_files'));
+                return throw_exception(404, phrase('The data you would to update is not found.'), $this->_redirect_back);
+            }
+        } else {
+            // --- 7. Failure: Table Not Found ---
+            $this->_unlink_files(get_userdata('_uploaded_files'));
+            return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirect_back);
+        }
+
+        // Should return an object/exception/true/false earlier, but keeping original return for safety.
+        return false;
+    }
+
+    /**
+     * Deletes data from the specified database table based on the provided WHERE condition.
+     *
+     * If no WHERE condition is provided, it attempts to derive it from URI query parameters.
+     * Handles API method validation, demo mode restriction, file cleanup, and before/after hooks.
+     *
+     * @param string|null $table The target database table name.
+     * @param array $where Optional explicit WHERE condition array (Field => Value).
+     * @param int $limit The maximum number of rows to delete (default: 1 for single delete).
+     *
+     * @return object|null Returns an Exception object for redirection/API response, or null on execution failure.
+     */
+    public function delete_data(?string $table = null, array $where = [], int $limit = 1): object|null
+    {
+        // --- 1. API Method and Demo Mode Validation ---
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['DELETE'])) {
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
+        }
+
+        if ($this->_restrict_on_demo) {
+            return throw_exception(403, phrase('This feature is disabled in demo mode.'), $this->_redirect_back);
+        }
+
+        // Check for explicit callback message set by set_messages('delete')
+        if (isset($this->_set_messages['delete']) && ($this->_set_messages['delete']['return'] ?? false)) {
+            return throw_exception($this->_set_messages['delete']['code'], $this->_set_messages['delete']['messages'], $this->_redirect_back);
+        }
+
+        // --- 2. Table Existence Check and WHERE Determination ---
+        if ($table && $this->model->table_exists($table)) {
+            // Determine WHERE condition if not explicitly provided
+            if (! $where) {
+                $field_exists = array_flip($this->model->list_fields($table));
+                $where = array_intersect_key($this->request->getGet(), $field_exists);
+
+                if (! $where) {
+                    return throw_exception(404, phrase('The data you would to delete is not found.'), $this->_redirect_back);
+                }
+
+                // Validate derived WHERE keys against table fields
+                foreach ($where as $key_backup => $val) {
+                    // Extract column name from potential dotted format (e.g., table.column)
+                    $key = (stripos($key_backup, '.') !== false) ? substr($key_backup, stripos($key_backup, '.') + 1) : $key_backup;
+
+                    if (! $this->model->field_exists($key, $table)) {
+                        unset($where[$key_backup]);
+                    }
+                }
+            }
+
+            // Check if data actually exists before proceeding
+            $query = $this->model->get_where($table, $where, 1)->row();
+
+            if ($query) {
+                // --- 3. Data Exists: Execute Delete ---
+                if (method_exists($this, 'before_delete')) {
+                    $this->before_delete();
+                }
+
+                // Collect old files for cleanup
+                $old_files = [];
+                foreach ($query as $field => $value) {
+                    if (isset($this->_set_field[$field]['field_type']) && array_intersect($this->_set_field[$field]['field_type'], ['file', 'files', 'image', 'images'])) {
+                        $old_files[$field] = $value;
+                    }
+                }
+
+                // Attempt to delete data
                 if ($this->model->delete($table, $where, $limit)) {
-                    // Unlink old files
+                    // Success: Cleanup and Hooks
                     $this->_unlink_files($old_files);
 
                     if (method_exists($this, 'after_delete')) {
-                        // Call function after delete
                         $this->after_delete();
                     }
 
-                    // Update token timestamp
-                    set_userdata('token_timestamp', time());
-
                     // Invalidate token
+                    set_userdata('token_timestamp', time());
                     unset_userdata(sha1(uri_string()));
 
-                    // Send to client
-                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), (! $this->api_client ? $this->_redirect_back : null));
+                    // Send success response
+                    return throw_exception(($this->api_client ? 200 : 301), phrase('The data was successfully deleted.'), $this->_redirect_back);
                 } else {
-                    // Otherwise, the item is cannot be deleted
+                    // Failure: Error Handling
                     $error = $this->model->error();
 
-                    if (in_array(get_userdata('group_id'), [1]) && isset($error['message'])) {
-                        // For administrator
-                        return throw_exception(500, $error['message'], (! $this->api_client ? $this->_redirect_back : null));
+                    if (get_userdata('group_id') == 1 && isset($error['message'])) {
+                        return throw_exception(500, $error['message'], $this->_redirect_back);
                     }
 
-                    // For user
-                    return throw_exception(500, phrase('Unable to delete the requested data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (DELETE)</b>', (! $this->api_client ? $this->_redirect_back : null));
+                    return throw_exception(500, phrase('Unable to delete the requested data.') . ' ' . phrase('Please try again or contact the system administrator.') . ' ' . phrase('Error code') . ': <b>500 (DELETE)</b>', $this->_redirect_back);
                 }
             } else {
-                // No item found
-                return throw_exception(404, phrase('The data you would to delete is not found.'), (! $this->api_client ? $this->_redirect_back : null));
+                // Data not found (query returned empty)
+                return throw_exception(404, phrase('The data you would to delete is not found.'), $this->_redirect_back);
             }
         } else {
-            // The targeted database table isn't exists
-            return throw_exception(404, phrase('The selected database table does not exist.'), (! $this->api_client ? $this->_redirect_back : null));
+            // --- 4. Failure: Table Not Found ---
+            return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirect_back);
         }
     }
 
     /**
-     * Delete multiple data from the database
+     * Deletes multiple data rows from the database based on a batch of posted items.
+     *
+     * Each item is processed individually to ensure before/after hooks and file deletion are handled correctly.
+     *
+     * @param string|null $table The target database table name.
+     *
+     * @return object|null Returns an Exception object for redirection/API response, or null on execution failure.
      */
-    public function delete_batch(?string $table = null)
+    public function delete_batch(?string $table = null): object|null
     {
-        if ($this->api_client && 'DELETE' != service('request')->getServer('REQUEST_METHOD')) {
-            // Indicate the method is requested through API
-            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . service('request')->getServer('REQUEST_METHOD'). ')', (! $this->api_client ? $this->_redirect_back : null));
+        // --- 1. API Method and Demo Mode Validation ---
+        if ($this->api_client && ! in_array($this->request->getMethod(), ['DELETE'])) {
+            return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirect_back);
         }
 
-        // Check if app on demo mode
         if ($this->_restrict_on_demo) {
-            return throw_exception(403, phrase('This feature is disabled in demo mode.'), (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(403, phrase('This feature is disabled in demo mode.'), $this->_redirect_back);
         }
 
-        // Get the checked items
-        $items = service('request')->getPost('items');
+        // --- 2. Get Items and Initialization ---
+        $items = $this->request->getPost('items');
         $affected_rows = 0;
         $ignored_rows = 0;
+        $total_items = is_array($items) ? count($items) : 0;
 
-        if (is_array($items) && sizeof($items) > 0) {
-            // Before delete callback
+        if ($total_items > 0) {
+            // Before delete hook (runs once before the batch loop)
             if (method_exists($this, 'before_delete')) {
-                // Call function before delete
                 $this->before_delete();
             }
 
-            // Safe check to make sure the given field parameter is exists in the database table
+            // Whitelist fields that exist in the table
             $field_exists = array_flip($this->model->list_fields($table));
 
-            foreach ($items as $key => $val) {
-                // Unset the field parameter that not exist in database table
-                $val = array_intersect_key(json_decode($val, true), $field_exists);
+            foreach ($items as $val) {
+                // Decode item JSON (which contains the WHERE clause for the specific row)
+                $where_condition = json_decode($val, true);
 
-                if (! $val) {
-                    // No where clause, skip deleting
-                    continue;
+                if (! is_array($where_condition)) {
+                    continue; // Skip invalid item format
                 }
 
+                // Only keep fields that exist in the table (whitelisting)
+                $where_condition = array_intersect_key($where_condition, $field_exists);
+
+                if (! $where_condition) {
+                    continue; // Skip if no WHERE clause can be formed
+                }
+
+                // --- Check Row Exclusion Rules (if set_unset_delete was used) ---
                 $ignore = false;
-
                 if ($this->_unset_delete) {
-                    foreach ($this->_unset_delete as $_key => $_val) {
-                        if (isset($val[$_key]) && in_array($val[$_key], $_val)) {
+                    foreach ($this->_unset_delete as $field => $excluded_values) {
+                        if (isset($where_condition[$field]) && in_array($where_condition[$field], $excluded_values)) {
                             $ignore = true;
-
                             break;
                         }
                     }
@@ -4021,49 +4336,60 @@ class Core extends Controller
 
                 if ($ignore) {
                     $ignored_rows++;
-
                     continue;
                 }
 
-                // Get old data to prepare file deletion
-                $query = $this->model->get_where($table, $val, 1)->result();
-
-                // Set default variables
+                // --- Get Old Data and Files ---
+                $query = $this->model->get_where($table, $where_condition, 1)->row();
                 $old_files = null;
 
-                // Attempt to get old files
-                foreach ($query as $field => $value) {
-                    if (isset($this->_set_field[$field]['field_type']) && array_intersect($this->_set_field[$field]['field_type'], ['file', 'files', 'image', 'images'])) {
-                        $old_files[$field] = $value;
+                if ($query) {
+                    // Collect old files for unlink
+                    foreach ($query as $field => $value) {
+                        if (isset($this->_set_field[$field]['field_type']) && array_intersect($this->_set_field[$field]['field_type'], ['file', 'files', 'image', 'images'])) {
+                            $old_files[$field] = $value;
+                        }
                     }
-                }
 
-                if ($query && $this->model->delete($table, $val)) {
-                    // Unlink old files
-                    $this->_unlink_files($old_files);
-
-                    $affected_rows++;
+                    // --- Execute Single Delete ---
+                    if ($this->model->delete($table, $where_condition)) {
+                        $this->_unlink_files($old_files);
+                        $affected_rows++;
+                    }
                 }
             }
 
+            // After delete hook (runs once after the batch loop)
             if (method_exists($this, 'after_delete')) {
-                // Call function after delete
                 $this->after_delete();
             }
         }
 
+        // --- 3. Final Response ---
         if ($affected_rows) {
-            // Update token timestamp
+            // Update token timestamp and invalidate token
             set_userdata('token_timestamp', time());
-
-            // Invalidate token
             unset_userdata(sha1(uri_string()));
 
+            $message = phrase('{{affected_rows}} of {{items}} data was successfully removed.', [
+                'affected_rows' => $affected_rows,
+                'items' => $total_items
+            ]);
+
+            // If some rows were ignored, mention it (optional refinement)
+            if ($ignored_rows > 0) {
+                $message .= ' ' . phrase('Note: {{ignored_rows}} rows were skipped due to deletion restrictions.', ['ignored_rows' => $ignored_rows]);
+            }
+
             // Deletion success
-            return throw_exception(($this->api_client ? 200 : 301), phrase('{{affected_rows}} of {{items}} data was successfully removed.', ['affected_rows' => $affected_rows, 'items' => sizeof($items)]), (! $this->api_client ? $this->_redirect_back : null));
+            return throw_exception(($this->api_client ? 200 : 301), $message, $this->_redirect_back);
         } else {
-            // Deletion fail
-            return throw_exception(403, phrase('Unable to remove the selected data.'), (! $this->api_client ? $this->_redirect_back : null));
+            // Deletion fail (either no items were processed or all failed/ignored)
+            $fail_message = ($total_items > 0 && $ignored_rows == $total_items)
+                ? phrase('The selected data cannot be removed due to restrictions.')
+                : phrase('Unable to remove the selected data.');
+
+            return throw_exception(403, $fail_message, $this->_redirect_back);
         }
     }
 
@@ -4072,38 +4398,35 @@ class Core extends Controller
      * Query Builder
      * =========================================================================
      */
+
     /**
      * Select field
      *
-     * Possible to use comma separated
+     * Possible to use comma separated string or array.
      */
-    public function select(string $column, bool $escape = true)
+    public function select(string|array $column, bool $escape = true): static
     {
         if (! is_array($column)) {
             // Split selected by comma, but ignore that inside brackets
             $column = array_map('trim', preg_split('/,(?![^(]+\))/', $column));
         }
 
-        foreach ($column as $key => $val) {
-            // Make backup value for next statement
+        foreach ($column as $val) {
             $backup_val = $val;
-
-            // Push to the select list
             $this->_select[] = $val;
 
-            // Find the prefixed table select
-            if (! preg_match('/[.()]/', $val)) {
-                $val = substr($val, strpos($val, '.') + 1);
+            // Clean up the value for internal compiled select list
+            $val_clean = $val;
+            if (! preg_match('/[.()]/', $val_clean)) {
+                $val_clean = substr($val_clean, strpos($val_clean, '.') + 1);
+            }
+            if (stripos($val_clean, ' AS ') !== false) {
+                $val_clean = substr($val_clean, stripos($val_clean, ' AS ') + 4);
             }
 
-            // Find the aliased selection
-            if (stripos($val, ' AS ') !== false) {
-                $val = substr($val, stripos($val, ' AS ') + 4);
-            }
-
+            // Only push simple columns (no function calls) to compiled select
             if (strpos($backup_val, '(') === false && strpos($backup_val, ')') === false) {
-                // Push to the compilation
-                $this->_compiled_select[] = $val;
+                $this->_compiled_select[] = $val_clean;
             }
         }
 
@@ -4114,10 +4437,8 @@ class Core extends Controller
 
     /**
      * Select count
-     *
-     * Possible to use comma separated
      */
-    public function select_count(string $column, ?string $alias = null)
+    public function select_count(string $column, ?string $alias = null): static
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -4126,10 +4447,8 @@ class Core extends Controller
 
     /**
      * Select sum
-     *
-     * Possible to use comma separated
      */
-    public function select_sum(string $column, ?string $alias = null)
+    public function select_sum(string $column, ?string $alias = null): static
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -4138,10 +4457,8 @@ class Core extends Controller
 
     /**
      * Select minimum
-     *
-     * Possible to use comma separated
      */
-    public function select_min(string $column, ?string $alias = null)
+    public function select_min(string $column, ?string $alias = null): static
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -4150,10 +4467,8 @@ class Core extends Controller
 
     /**
      * Select maximum
-     *
-     * Possible to use comma separated
      */
-    public function select_max(string $column, ?string $alias = null)
+    public function select_max(string $column, ?string $alias = null): static
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -4162,10 +4477,8 @@ class Core extends Controller
 
     /**
      * Select average
-     *
-     * Possible to use comma separated
      */
-    public function select_avg(string $column, ?string $alias = null)
+    public function select_avg(string $column, ?string $alias = null): static
     {
         $this->_prepare(__FUNCTION__, [$column, $alias]);
 
@@ -4175,7 +4488,7 @@ class Core extends Controller
     /**
      * Select from subquery
      */
-    public function select_subquery($subquery, string $alias)
+    public function select_subquery(object|string $subquery, string $alias): static
     {
         $this->_prepare(__FUNCTION__, [$subquery, $alias]);
 
@@ -4184,17 +4497,14 @@ class Core extends Controller
 
     /**
      * Prevent column to be selected
-     *
-     * Possible to use comma separated
      */
-    public function unset_select(string $column)
+    public function unset_select(string|array $column): static
     {
         if (! is_array($column)) {
-            // Split selected by comma, but ignore that inside brackets
             $column = array_map('trim', preg_split('/,(?![^(]+\))/', $column));
         }
 
-        $this->_unset_select = ($this->_unset_select ? array_merge($this->_unset_select, $column) : $column);
+        $this->_unset_select = array_merge($this->_unset_select ?? [], $column);
 
         return $this;
     }
@@ -4202,7 +4512,7 @@ class Core extends Controller
     /**
      * Distinct field
      */
-    public function distinct(bool $flag = true)
+    public function distinct(bool $flag = true): static
     {
         $this->_distinct = $flag;
 
@@ -4212,7 +4522,7 @@ class Core extends Controller
     /**
      * Set the primary table
      */
-    public function from(string $table)
+    public function from(string $table): static
     {
         $this->_table = $table;
 
@@ -4222,7 +4532,7 @@ class Core extends Controller
     /**
      * Select from subquery
      */
-    public function from_subquery($subquery, string $alias)
+    public function from_subquery(object|string $subquery, string $alias): static
     {
         $this->_prepare(__FUNCTION__, [$subquery, $alias]);
 
@@ -4230,11 +4540,9 @@ class Core extends Controller
     }
 
     /**
-     * Set the primary table
-     *
-     * Aliases to "from" method
+     * Set the primary table (Aliases to "from" method)
      */
-    public function table(string $table)
+    public function table(string $table): static
     {
         $this->_table = $table;
 
@@ -4244,11 +4552,12 @@ class Core extends Controller
     /**
      * Join table
      */
-    public function join(string $table, string $condition, string $type = '', bool $escape = true)
+    public function join(string $table, string $condition, string $type = '', bool $escape = true): static
     {
         if (! in_array($this->_method, ['delete'])) {
             $this->_prepare(__FUNCTION__, [$table, $condition, $type, $escape]);
 
+            // Extract table name without alias
             if (strpos($table, ' ') !== false) {
                 $table = substr($table, strrpos($table, ' ') + 1);
             }
@@ -4261,10 +4570,8 @@ class Core extends Controller
 
     /**
      * Where clause
-     *
-     * @param   array|string $field
      */
-    public function where($field = [], $value = '', bool $escape = true)
+    public function where(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4279,10 +4586,8 @@ class Core extends Controller
 
     /**
      * Or where clause
-     *
-     * @param   array|string $field
      */
-    public function or_where($field = [], $value = '', bool $escape = true)
+    public function or_where(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4297,10 +4602,8 @@ class Core extends Controller
 
     /**
      * Where in clause
-     *
-     * @param   array|string $field
      */
-    public function where_in($field = [], $value = '', bool $escape = true)
+    public function where_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4315,10 +4618,8 @@ class Core extends Controller
 
     /**
      * Or where in clause
-     *
-     * @param   array|string $field
      */
-    public function or_where_in($field = [], $value = '', bool $escape = true)
+    public function or_where_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4333,10 +4634,8 @@ class Core extends Controller
 
     /**
      * Where not in clause
-     *
-     * @param   array|string $field
      */
-    public function where_not_in($field = [], $value = '', bool $escape = true)
+    public function where_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4351,10 +4650,8 @@ class Core extends Controller
 
     /**
      * Or where not in clause
-     *
-     * @param   array|string $field
      */
-    public function or_where_not_in($field = [], $value = '', bool $escape = true)
+    public function or_where_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4369,20 +4666,16 @@ class Core extends Controller
 
     /**
      * Like clause
-     *
-     * @param   array|string $field
      */
-    public function like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = true)
+    public function like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
                 $this->_like[$key] = $val;
-
-                $this->_prepare(__FUNCTION__, [$key, $val, $escape]);
+                $this->_prepare(__FUNCTION__, [$key, $val, $side, $escape, $case_insensitive]);
             }
         } else {
             $this->_like[$field] = $match;
-
             $this->_prepare(__FUNCTION__, [$field, $match, $side, $escape, $case_insensitive]);
         }
 
@@ -4391,14 +4684,12 @@ class Core extends Controller
 
     /**
      * Or like clause
-     *
-     * @param   array|string $field
      */
-    public function or_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function or_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
-                $this->_prepare(__FUNCTION__, [$key, $val, $escape]);
+                $this->_prepare(__FUNCTION__, [$key, $val, $side, $escape, $case_insensitive]);
             }
         } else {
             $this->_prepare(__FUNCTION__, [$field, $match, $side, $escape, $case_insensitive]);
@@ -4409,10 +4700,8 @@ class Core extends Controller
 
     /**
      * Not like clause
-     *
-     * @param   array|string $field
      */
-    public function not_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function not_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4427,10 +4716,8 @@ class Core extends Controller
 
     /**
      * Or not like clause
-     *
-     * @param   array|string $field
      */
-    public function or_not_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function or_not_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4445,10 +4732,8 @@ class Core extends Controller
 
     /**
      * Having clause
-     *
-     * @param   array|string $field
      */
-    public function having($field = [], $value = '', bool $escape = true)
+    public function having(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4463,10 +4748,8 @@ class Core extends Controller
 
     /**
      * Or having clause
-     *
-     * @param   array|string $field
      */
-    public function or_having($field = [], $value = '', bool $escape = true)
+    public function or_having(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4481,10 +4764,8 @@ class Core extends Controller
 
     /**
      * Having in clause
-     *
-     * @param   array|string $field
      */
-    public function having_in($field = [], $value = '', bool $escape = true)
+    public function having_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4499,10 +4780,8 @@ class Core extends Controller
 
     /**
      * Or having in clause
-     *
-     * @param   array|string $field
      */
-    public function or_having_in($field = [], $value = '', bool $escape = true)
+    public function or_having_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4517,10 +4796,8 @@ class Core extends Controller
 
     /**
      * Having not in clause
-     *
-     * @param   array|string $field
      */
-    public function having_not_in($field = [], $value = '', bool $escape = true)
+    public function having_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4535,10 +4812,8 @@ class Core extends Controller
 
     /**
      * Or having not in clause
-     *
-     * @param   array|string $field
      */
-    public function or_having_not_in($field = [], $value = '', bool $escape = true)
+    public function or_having_not_in(string|array $field = [], $value = '', bool $escape = true): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4553,10 +4828,8 @@ class Core extends Controller
 
     /**
      * Having like clause
-     *
-     * @param   array|string $field
      */
-    public function having_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4571,10 +4844,8 @@ class Core extends Controller
 
     /**
      * Or having like clause
-     *
-     * @param   array|string $field
      */
-    public function or_having_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function or_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4589,10 +4860,8 @@ class Core extends Controller
 
     /**
      * Not having like clause
-     *
-     * @param   array|string $field
      */
-    public function not_having_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function not_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4607,10 +4876,8 @@ class Core extends Controller
 
     /**
      * Or not having like clause
-     *
-     * @param   array|string $field
      */
-    public function or_not_having_like($field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false)
+    public function or_not_having_like(string|array $field = [], $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): static
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -4625,12 +4892,10 @@ class Core extends Controller
 
     /**
      * Ordering result query
-     *
-     * @param   array|string $field
      */
-    public function order_by($field = [], string $direction = '', bool $escape = true)
+    public function order_by(string|array $field = [], string $direction = '', bool $escape = true): static
     {
-        if (! service('request')->getGet('order')) {
+        if (! Services::request()->getGet('order')) {
             if (is_array($field)) {
                 foreach ($field as $key => $val) {
                     $this->_prepare(__FUNCTION__, [$key, $val, $escape]);
@@ -4646,7 +4911,7 @@ class Core extends Controller
     /**
      * Group query result
      */
-    public function group_by(string $column)
+    public function group_by(string $column): static
     {
         $this->_prepare(__FUNCTION__, [$column]);
 
@@ -4656,14 +4921,14 @@ class Core extends Controller
     /**
      * Limit the query result
      */
-    public function limit(int|null $limit, ?int $offset = null)
+    public function limit(?int $limit, ?int $offset = null): static
     {
         if (in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
             $this->_limit = 1;
             $this->_offset = 0;
         } else {
-            $this->_limit = (is_numeric(service('request')->getGet('limit')) ? service('request')->getGet('limit') : $limit);
-            $this->_offset = (is_numeric(service('request')->getGet('offset')) ? service('request')->getGet('offset') : $offset);
+            $this->_limit = is_numeric($this->request->getGet('limit')) ? (int)$this->request->getGet('limit') : $limit;
+            $this->_offset = is_numeric($this->request->getGet('offset')) ? (int)$this->request->getGet('offset') : $offset;
         }
 
         $this->_prepare(__FUNCTION__, [$limit, $offset]);
@@ -4674,10 +4939,10 @@ class Core extends Controller
     /**
      * Row offset
      */
-    public function offset(int $offset)
+    public function offset(int $offset): static
     {
         if (! in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
-            $this->_offset = (is_numeric(service('request')->getGet('offset')) ? service('request')->getGet('offset') : $offset);
+            $this->_offset = is_numeric($this->request->getGet('offset')) ? (int)$this->request->getGet('offset') : $offset;
 
             $this->_offset_called = true;
         }
@@ -4691,7 +4956,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the WHERE clause
      * of the query.
      */
-    public function group_start()
+    public function group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4704,7 +4969,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the WHERE clause
      * of the query, prefixing it with OR.
      */
-    public function or_group_start()
+    public function or_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4717,7 +4982,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the WHERE clause
      * of the query, prefixing it with NOT.
      */
-    public function not_group_start()
+    public function not_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4730,7 +4995,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the WHERE clause
      * of the query, prefixing it with OR NOT.
      */
-    public function or_not_group_start()
+    public function or_not_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4743,7 +5008,7 @@ class Core extends Controller
      * Ends the current group by adding a closing parenthesis to the WHERE
      * clause of the query.
      */
-    public function group_end()
+    public function group_end(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4756,7 +5021,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the HAVING clause
      * of the query.
      */
-    public function having_group_start()
+    public function having_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4769,7 +5034,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the HAVING clause
      * of the query, prefixing it with OR.
      */
-    public function or_having_group_start()
+    public function or_having_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4782,7 +5047,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the HAVING clause
      * of the query, prefixing it with NOT.
      */
-    public function not_having_group_start()
+    public function not_having_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4795,7 +5060,7 @@ class Core extends Controller
      * Starts a new group by adding an opening parenthesis to the HAVING clause
      * of the query, prefixing it with OR NOT.
      */
-    public function or_not_having_group_start()
+    public function or_not_having_group_start(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4808,7 +5073,7 @@ class Core extends Controller
      * Ends the current group by adding a closing parenthesis to the HAVING
      * clause of the query.
      */
-    public function having_group_end()
+    public function having_group_end(): static
     {
         if (! in_array($this->_method, ['create', 'update', 'delete'])) {
             $this->_prepare(__FUNCTION__);
@@ -4818,11 +5083,17 @@ class Core extends Controller
     }
 
     /**
-     * Running the query of preparated builder parameters
+     * Executes the query based on the collected builder parameters ($this->_prepare).
      *
-     * @param   string $table
+     * This method finalizes the SELECT columns (applying unset rules, aliasing, and table prefixes)
+     * and sequentially runs all stored builder methods on the Model's query object.
+     *
+     * @param string|null $table The primary table to run the query against.
+     * @param bool $recycling If TRUE, skips the complex initial SELECT compilation logic (used for counting).
+     *
+     * @return BaseBuilder|mixed Returns the Query Builder instance ready for execution, or the result of the executed query.
      */
-    private function _run_query($table = null, bool $recycling = false)
+    private function _run_query(?string $table = null, bool $recycling = false): mixed
     {
         // Use the table
         $query = $this->model->table($table);
@@ -5057,192 +5328,188 @@ class Core extends Controller
     }
 
     /**
-     * Fetch the data by running the preparated query builder parameters
+     * Fetches the data by running the prepared query builder parameters.
      *
-     * @param   null|mixed $table
+     * Handles debugging output (query or results) and executes two queries: one for results
+     * (with limit/offset) and one for the total count (recycling the query parameters).
+     *
+     * @param string|null $table The primary table to run the fetch against.
+     *
+     * @return array Returns an array containing 'results' (ResultInterface or array) and 'total' (int).
      */
-    private function _fetch($table = null)
+    private function _fetch(?string $table = null): array
     {
-        // Debugger
+        // --- 1. Debugger ---
         if ($this->_debugging) {
-            // Run query
-            $query = $this->_run_query($table)->limit($this->_limit, $this->_offset)->result();
+            // Run query with limit/offset for debug output
+            $query_builder = $this->_run_query($table);
+
+            if (null !== $this->_limit) {
+                $query_builder->limit($this->_limit, $this->_offset ?? 0);
+            }
+
+            if (in_array($this->_method, ['create', 'read', 'update'])) {
+                // Get single row
+                $query = $query_builder->row();
+            } else {
+                // Get multiple rows
+                $query = $query_builder->result();
+            }
 
             if ('query' == $this->_debugging) {
-                // Print debugger
                 exit(nl2br($this->model->last_query()));
             } else {
                 if (ENVIRONMENT === 'production') {
-                    // Print debugger
                     exit('<pre>' . print_r($query, true) . '</pre>');
                 }
-
-                // Print debugger
                 dd($query);
             }
         }
 
-        // Set output format
-        $output = [
-            // Run query
-            'results' => $this->_run_query($table)->limit($this->_limit, $this->_offset)->result(),
+        // --- 2. Execute Queries ---
 
-            // Run query with compiled parameter
-            'total' => $this->_run_query($table, true)->count_all_results()
+        // Query for results (with LIMIT/OFFSET)
+        $results_builder = $this->_run_query($table);
+        // Apply limit/offset after running the main query builder parameters
+        if (null !== $this->_limit) {
+            $results_builder->limit($this->_limit, $this->_offset ?? 0);
+        }
+
+        if (in_array($this->_method, ['create', 'read', 'update'])) {
+            // Get single row
+            $results = $results_builder->row();
+
+            // Assign total
+            $total = ($results ? 1 : 0);
+        } else {
+            // Get multiple rows
+            $results = $results_builder->result();
+
+            // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
+            $total = $this->_run_query($table, true)->count_all_results();
+        }
+
+        // --- 3. Reset and Return ---
+        $this->_prepare = []; // Reset preparation property for subsequent queries
+
+        return [
+            'results' => $results,
+            'total' => $total
         ];
-
-        // Reset preparation property
-        $this->_prepare = [];
-
-        return $output;
     }
 
     /**
-     * Getting the relation table data of relation type field
+     * Retrieves related table data for a relational field (e.g., dropdown list for foreign keys).
      *
-     * @param   int|string $selected
+     * Constructs a complex query based on provided parameters, handles search ('like'),
+     * joins, where clauses, and formats the output using magic string replacement.
+     *
+     * @param array $params   Array containing relation configuration (select, relation_table, limit, join, where, etc.).
+     * @param int|string $selected The currently selected value(s) (primary key ID or composite key string).
+     * @param bool $ajax       Flag indicating if the request is an AJAX call (for Select2/pagination format).
+     *
+     * @return array The formatted list of results (for AJAX or standard view).
      */
-    private function _get_relation(array $params = [], $selected = 0, bool $ajax = false)
+    private function _get_relation(array $params = [], int|string|null $selected = 0, bool $ajax = false): array|string
     {
-        // Check if selection isn't selected and use default value if any
-        if (! $selected && (isset($this->_default_value[$params['primary_key']]))) {
-            $selected = $this->_default_value[$params['primary_key']];
+        // Use default value if nothing is selected and a default is defined.
+        $field_name_for_default = is_array($params['primary_key']) ? end($params['primary_key']) : ($params['primary_key'] ?? null);
+        if (! $selected && ($this->_default_value[$field_name_for_default] ?? null)) {
+            $selected = $this->_default_value[$field_name_for_default];
         }
 
-        // Set default variables
         $compiled_select = [];
         $like = [];
+        $primary_key = is_array($params['primary_key']) ? end($params['primary_key']) : ($params['primary_key'] ?? null);
 
-        // Get the primary key from the end of the array
-        $primary_key = (is_array($params['primary_key']) ? end($params['primary_key']) : $params['primary_key']);
-
+        // --- 1. SELECT and LIKE Clause Construction ---
         foreach ($params['select'] as $key => $val) {
-            $checker = explode('.', $val);
-            $column = (isset($checker[1]) ? $checker[1] : $val);
-            $table = (isset($checker[0]) ? $checker[0] : null);
+            $parts = explode('.', $val);
+            $column = $parts[1] ?? $val;
+            $table = $parts[0] ?? null;
 
-            // Check if column is in compiled selection
-            if (in_array($column, $compiled_select)) {
-                // Check if table variable isn't same with table property
-                if ($table != $this->_table) {
-                    // Add alias into field
-                    $val = $val . ' AS ' . $column . '_' . $table;
-                }
+            // Handle column aliasing to prevent ambiguity if column names clash.
+            if (in_array($column, $compiled_select) && $table != $this->_table) {
+                $val .= ' AS ' . $column . '_' . $table;
             }
 
-            // Start select query
             $this->model->select($val);
-
             $compiled_select[] = $column;
 
-            // Check payload
-            if (service('request')->getPost('search')) {
-                if ($val && stripos($val, ' AS ') !== false) {
-                    $val = substr($val, 0, stripos($val, ' AS '));
-                }
-
-                // Add keyword into like clause
-                $like[$val] = service('request')->getPost('search');
+            // Build LIKE clause for search payload (used in AJAX).
+            if ($search = $this->request->getPost('search')) {
+                $like_key = (stripos($val, ' AS ') !== false) ? substr($val, 0, stripos($val, ' AS ')) : $val;
+                $like[$like_key] = $search;
             }
         }
 
-        // Check if has like parameter and has no limit
+        // Apply LIKE clauses if present and not retrieving a single selected item.
         if ($like && ! $selected) {
-            $num = 0;
-
-            // Start group query
             $this->model->group_start();
-
+            $num = 0;
             foreach ($like as $key => $val) {
-                if ($num) {
-                    // Like exist, use or
-                    $this->model->or_like($key, $val, 'both', true, true);
-                } else {
-                    // Start like clause
-                    $this->model->like($key, $val, 'both', true, true);
-                }
-
+                $this->model->{(($num) ? 'or_like' : 'like')}($key, $val, 'both', true, true);
                 $num++;
             }
-
-            // Ends group query
             $this->model->group_end();
         }
 
-        // Check if params has join
+        // --- 2. JOIN Clause Construction ---
         if ($params['join']) {
-            foreach ($params['join'] as $key => $val) {
-                // Check if index is less than 3
-                if (! isset($val[0]) || ! isset($val[1])) {
+            foreach ($params['join'] as $val) {
+                // Ensure join parameters (table and condition) exist.
+                if (! isset($val[0], $val[1])) {
                     continue;
                 }
-
-                // Add table to join query
-                $this->model->join($val[0], $val[1], (isset($val[2]) ? $val[2] : ''));
+                $this->model->join($val[0], $val[1], $val[2] ?? '');
             }
         }
 
-        // Check if has selected value
+        // --- 3. WHERE Clause Modification for Selected Item ---
         if ($selected) {
-            $relation_table = $params['relation_table'];
+            // Find the actual table name (stripping alias if present).
+            $relation_table = (strpos($params['relation_table'], ' ') !== false) ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table'];
 
-            if (strpos($relation_table, ' ')) {
-                $relation_table = substr($relation_table, strpos($relation_table, ' ') + 1);
-            }
-
+            // Force WHERE clause to retrieve only the selected item.
             $relation_key = $relation_table . '.' . $params['relation_key'];
             $params['where'][$relation_key] = $selected;
-            $params['limit'] = 1;
+            $params['limit'] = 1; // Limit to 1 result.
         }
 
-        // Check if params has where claues
+        // --- 4. Apply Custom WHERE Clauses ---
         if ($params['where']) {
             foreach ($params['where'] as $key => $val) {
-                // Check if field has dot (merged its table)
-                $field_origin = (strpos($key, '.') !== false ? substr($key, strpos($key, '.') + 1) : $key);
-
-                if (is_numeric($field_origin) && $val && stripos(trim($val), ' NOT IN') !== false) {
-                    // No NOT IN in field origin
-                    $this->model->where($val, null, false);
-                } elseif (is_numeric($field_origin) && $val && stripos(trim($val), ' IN') !== false) {
-                    // No IN in field origin
-                    $this->model->where($val, null, false);
-                } elseif (stripos(trim($key), ' NOT IN') !== false) {
-                    // No NOT IN in field
+                // Complex custom WHERE logic (IN, NOT IN) requiring raw SQL injection (false flag).
+                if (is_numeric(strpos($key, ' IN')) || is_numeric(strpos($key, ' NOT IN'))) {
                     $this->model->where($key, $val, false);
-                } elseif (stripos(trim($key), ' IN') !== false) {
-                    // No IN in field
-                    $this->model->where($key, $val, false);
+                } elseif (is_numeric(strpos($val, ' IN')) || is_numeric(strpos($val, ' NOT IN'))) {
+                    $this->model->where($val, null, false);
                 } else {
-                    // Add where clause
                     $this->model->where($key, $val);
                 }
             }
         }
 
-        // Check if method in not in array
-        if (! in_array($this->_method, ['create', 'update'])) {
+        // Handle WHERE clause for relation key when method is NOT 'create' or 'update'. (Possibly redundant with step 3, but preserved)
+        if (! in_array($this->_method, ['create', 'update']) && $selected) {
+            $relation_table_name = (strpos($params['relation_table'], ' ') !== false ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table']);
+
             if (is_array($params['relation_key'])) {
-                // If relation key is an array
-                $selected = explode('.', $selected);
-
-                foreach ($params['relation_key'] as $key => $val) {
-                    if (! isset($selected[$key])) {
-                        // No field in selection, continue
-                        continue;
+                // Composite key handling
+                $selected_parts = explode('.', $selected);
+                foreach ($params['relation_key'] as $k => $rel_key) {
+                    if ($selected_parts[$k] ?? null) {
+                        $this->model->where($relation_table_name . '.' . $rel_key, $selected_parts[$k]);
                     }
-
-                    $this->model->where((strpos($params['relation_table'], ' ') !== false ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table']) . '.' . $val, $selected[$key]);
                 }
             } else {
-                $this->model->where((strpos($params['relation_table'], ' ') !== false ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table']) . '.' . $params['relation_key'], $selected);
+                $this->model->where($relation_table_name . '.' . $params['relation_key'], $selected);
             }
         }
 
-        // Check if parameter has order by and has no selected value
+        // --- 5. Apply ORDER BY and GROUP BY ---
         if ($params['order_by'] && ! $selected) {
             if (is_array($params['order_by'])) {
-                // Check if order by parameter is an array
                 foreach ($params['order_by'] as $key => $val) {
                     $this->model->order_by($key, $val);
                 }
@@ -5251,45 +5518,37 @@ class Core extends Controller
             }
         }
 
-        // Check if parameter has join and group by, but has no selected value
         if ($params['join'] && $params['group_by'] && ! $selected) {
             $this->model->group_by($params['group_by']);
         }
 
-        if ($ajax) {
-            if (service('request')->getPost('page') <= 1) {
-                $output = [
-                    [
-                        'id' => 0,
-                        'text' => phrase('None')
-                    ]
-                ];
+        // --- 6. Initialize Output Array ---
+        $output = [];
+        if (! $selected) {
+            if ($ajax) {
+                // AJAX (Select2): add "None" option if it's the first page
+                if ($this->request->getPost('page') <= 1) {
+                    $output[] = ['id' => 0, 'text' => phrase('None')];
+                }
             } else {
-                $output = [];
+                // Standard dropdown: add "None" option
+                $output[] = ['value' => 0, 'label' => phrase('None'), 'selected' => false];
             }
-        } else {
-            $output = [
-                [
-                    'value' => 0,
-                    'label' => phrase('None'),
-                    'selected' => false
-                ]
-            ];
         }
 
-        // Run relation query
+        // --- 7. Run Query and Format Results ---
         $query = $this->model->get($params['relation_table'], $params['limit'], $params['offset'])->result();
 
         if ($query) {
             foreach ($query as $key => $val) {
                 $label = $params['output'];
-                $attributes = (isset($this->_set_attribute[$primary_key]) ? $this->_set_attribute[$primary_key] : '');
-                $option_label = (isset($this->_set_option_label[$primary_key]) ? $this->_set_option_label[$primary_key] : '');
+                $attributes = $this->_set_attribute[$primary_key] ?? '';
+                $option_label = $this->_set_option_label[$primary_key] ?? '';
 
+                // Magic string replacement (e.g., {{column_name}})
                 foreach ($params['select'] as $magic => $replace) {
-                    $replace = trim($replace);
                     $replacement = $replace;
-
+                    // Determine the key used in the $val object (stripping alias or table prefix).
                     if (strpos($replace, ' AS ') !== false) {
                         $replacement = substr($replace, strripos($replace, ' AS ') + 4);
                     } elseif (strpos($replace, '.') !== false) {
@@ -5297,60 +5556,55 @@ class Core extends Controller
                     }
 
                     if (isset($val->$replacement)) {
-                        if (isset($this->_set_field[$replacement]['field_type']) && in_array('sprintf', $this->_set_field[$replacement]['field_type'])) {
+                        // Apply custom format (e.g., sprintf for zero leading).
+                        if (isset($this->_set_field[$replacement]['sprintf'])) { // Checking 'sprintf' should be against keys, not field_type
                             $val->$replacement = sprintf('%02d', $val->$replacement);
                         }
 
-                        $label = preg_replace("/\{\{(\s+)?($replace)(\s+)?\}\}/", $val->$replacement, $label);
-                        $attributes = preg_replace("/\{\{(\s+)?($replace)(\s+)?\}\}/", $val->$replacement, $attributes);
-                        $option_label = preg_replace("/\{\{(\s+)?($replace)(\s+)?\}\}/", $val->$replacement, $option_label);
+                        // Replace magic string in label, attributes, and option_label.
+                        $pattern = "/\{\{(\s+)?($replace)(\s+)?\}\}/";
+                        $label = preg_replace($pattern, $val->$replacement, $label);
+                        $attributes = preg_replace($pattern, $val->$replacement, $attributes);
+                        $option_label = preg_replace($pattern, $val->$replacement, $option_label);
                     }
                 }
 
+                // --- Output Formatting based on Method ---
                 if (in_array($this->_method, ['create', 'update'])) {
+                    // Formatting for form field (dropdown/select2)
+
+                    // Determine the value/ID for the option
+                    $value = $val->$primary_key ?? $val->$params['relation_key'] ?? 0;
+
+                    // Determine the selected status
+                    $is_selected = ($value == $selected);
+
                     if (is_array($params['primary_key'])) {
-                        $value = null;
-                        $selected = null;
-
-                        foreach ($params['primary_key'] as $_key => $_val) {
-                            $value .= ($value ? '.' : null) . (isset($val->$_val) ? $val->$_val : 0);
-
-                            if (service('request')->getGet($_val)) {
-                                $selected .= ($selected ? '.' : null) . service('request')->getGet($_val);
-                            }
-                        }
-                    } else {
-                        $primary_key = $params['primary_key'];
-                        $relation_key = $params['relation_key'];
-                        $value = (isset($val->$primary_key) ? $val->$primary_key : (isset($val->$relation_key) ? $val->$relation_key : 0));
+                        // Composite key value and selected status determination.
+                        $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['primary_key']));
+                        $is_selected = ($value == $selected);
                     }
 
                     if ($ajax) {
-                        $output[] = [
-                            'id' => $value,
-                            'text' => ($params['translate'] ? phrase($label) : $label)
-                        ];
+                        $output[] = ['id' => $value, 'text' => ($params['translate'] ? phrase($label) : $label)];
                     } else {
-                        $output[] = [
-                            'value' => $value,
-                            'label' => ($params['translate'] ? phrase($label) : $label),
-                            'selected' => ($value == $selected)
-                        ];
+                        $output[] = ['value' => $value, 'label' => ($params['translate'] ? phrase($label) : $label), 'selected' => $is_selected];
                     }
                 } else {
+                    // Formatting for read/index view (single label string)
                     $output = ($params['translate'] ? phrase($label) : $label);
 
+                    // If it's a read method, only one label is needed, so return immediately.
                     return $output;
                 }
             }
         }
 
+        // --- 8. Final Output Return ---
         if ($ajax) {
             return make_json([
                 'results' => $output,
-                'pagination' => [
-                    'more' => ($output && sizeof($output) >= $params['limit'] ? true : false)
-                ]
+                'pagination' => ['more' => ($output && count($output) >= $params['limit'])]
             ]);
         }
 
@@ -5358,10 +5612,17 @@ class Core extends Controller
     }
 
     /**
-     * Sort table
+     * Executes the drag-and-drop sorting of table rows based on the new ordered list of primary keys.
+     *
+     * It swaps the old order keys (retrieved from the database) with the new positions in the submitted list.
+     *
+     * @param array $ordered_id Array of primary key values in their new desired order.
+     *
+     * @return array The JSON response array (status and message).
      */
-    private function _sort_table($ordered_id = [])
+    private function _sort_table(array $ordered_id = []): array
     {
+        // Check if sorting is enabled or if the input format is invalid.
         if (! $this->_sortable || ! is_array($ordered_id)) {
             return make_json([
                 'status' => 400,
@@ -5369,32 +5630,41 @@ class Core extends Controller
             ]);
         }
 
-        // Get original order
-        $query = $this->model->select($this->_sortable['primary_key'])
-        ->select($this->_sortable['order_key'])
-        ->where_in($this->_sortable['primary_key'], $ordered_id)
-        ->order_by($this->_sortable['order_key'], 'ASC')
-        ->get_where(
-            $this->_table,
-            []
-        )
-        ->result_array();
+        // --- 1. Retrieve Original Order Keys ---
+        $primary_key_field = $this->_sortable['primary_key'];
+        $order_key_field = $this->_sortable['order_key'];
 
-        // Create new order
+        // Get the existing order keys corresponding to the submitted IDs.
+        $query = $this->model->select($primary_key_field)
+            ->select($order_key_field)
+            ->where_in($primary_key_field, $ordered_id)
+            // Order by the original order key to get a clean sequence of old order values.
+            ->order_by($order_key_field, 'ASC')
+            ->get_where($this->_table, [])
+            ->result_array();
+
+        // --- 2. Create New Order Key Sequence ---
+        // Extract the original order keys into a simple, indexed array.
+        // This array ($new_order) now holds the old order values (e.g., 1, 2, 3, 4, ...)
+        // which will be assigned to the new positions.
         $new_order = [];
-        foreach ($query as $key => $val) {
-            $new_order[] = $val[$this->_sortable['order_key']];
+        foreach ($query as $val) {
+            $new_order[] = $val[$order_key_field];
         }
 
+        // --- 3. Apply New Order ---
+        // $ordered_id is the list of IDs in their NEW desired position.
+        // $new_order is the list of ORIGINAL order keys to be assigned.
         foreach ($ordered_id as $key => $val) {
-            // Update order
+            // $val is the ID (primary key)
+            // $new_order[$key] is the old order key (which represents the new order position)
             $this->model->update(
                 $this->_table,
                 [
-                    $this->_sortable['order_key'] => $new_order[$key]
+                    $order_key_field => $new_order[$key]
                 ],
                 [
-                    $this->_sortable['primary_key'] => $val
+                    $primary_key_field => $val
                 ]
             );
         }
@@ -5406,111 +5676,78 @@ class Core extends Controller
     }
 
     /**
-     * Unlink the uploaded data
+     * Recursively unlinks uploaded files and their associated thumbnails/icons.
      *
-     * @param   mixed|array $files
-     * @param   array $field_list
+     * Designed to handle nested file paths stored in arrays or JSON strings.
+     *
+     * @param array $files      An array of file fields/paths to be processed (field_name => path/array).
+     * @param string|null $field_name  Internal tracking of the current field name (used for recursive calls).
+     * @param array $field_list Internal tracking of file lists for exclusion logic.
+     *
+     * @return void Returns immediately if the input is not a valid array.
      */
-    private function _unlink_files($files = [], ?string $field_name = null, $field_list = [])
+    private function _unlink_files(?array $files = [], ?string $field_name = null, array $field_list = []): void
     {
-        if (! is_array($files)) {
-            // Ensure the variable is an array
-            return false;
-        }
-
-        foreach ($files as $field => $src) {
-            // Check if source file is JSON
+        foreach ($files ?? [] as $field => $src) {
+            // Decode JSON source if necessary
             if (is_json($src)) {
-                // Source is json, decode as array
                 $src = json_decode($src, true);
             }
 
-            // Rename field for next condition
-            if (! $field_name) {
-                // The suffix indicates that the file is not deleted
-                $field_name = $field . '_label';
+            // --- Recursive Call Handling ---
+            if (is_array($src)) {
+                // Rename field for next condition (used for tracking array paths)
+                $new_field_name = $field_name ?? ($field . '_label');
+
+                // Merge field list for exclusion logic
+                $field_list[$new_field_name] = array_merge($field_list[$new_field_name] ?? [], $src);
+
+                // Reinitialize function recursively
+                $this->_unlink_files($src, $new_field_name, $field_list);
+
+                continue; // Move to the next item once recursion is handled.
             }
 
-            if (is_array($src)) {
-                // Apply when source file is an array
-                if (! $field_list) {
-                    // Field list is empty
-                    $field_list[$field_name] = (is_array($src) ? $src : [$src]);
-                } else {
-                    // Merge field list
-                    $field_list[$field_name] = array_merge($field_list[$field_name], (is_array($src) ? $src : [$src]));
-                }
+            // --- File Unlinking Logic ---
 
-                // Reinitialize function
-                $this->_unlink_files($src, $field_name, $field_list);
-            } else {
-                // Convert the field list to string
-                $input_name = urldecode(http_build_query($field_list));
+            // Determine the input name used in POST data for exclusion check.
+            $input_name = urldecode(http_build_query($field_list));
+            $input_name = substr($input_name, 0, strpos($input_name, '='));
 
-                // Remove everything after equal sign, include the sign itself
-                $input_name = substr($input_name, 0, strpos($input_name, '='));
+            // Define exclusion conditions:
+            // 1. Placeholder file should never be deleted.
+            // 2. File is marked for preservation in POST data (i.e., the user didn't change it).
+            // 3. File upload slot is empty in $_FILES (meaning user didn't upload a new file).
+            $file_uploaded_empty = (! is_array($field) && isset($_FILES[$field]['tmp_name']) && empty($_FILES[$field]['tmp_name']));
 
-                // Check whether file is allows to remove
-                if ('placeholder.png' == $src || service('request')->getPost($input_name) || (! is_array($field) && isset($_FILES[$field]['tmp_name']) || empty($_FILES[$field]['tmp_name']))) {
-                    // Skip unlink placeholder file
-                    continue;
-                }
+            if ('placeholder.png' == $src || $this->request->getPost($input_name) || $file_uploaded_empty) {
+                continue; // Skip unlink
+            }
 
-                // Sanitize input to prevent hack
-                $src = basename($src);
-                $field = basename($field);
+            // Sanitize input file names to prevent directory traversal.
+            $safe_src = basename($src);
+            $safe_field = basename((string) $field); // Ensure $field is treated as string
 
-                if (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src)) {
-                    // Use source file
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $src);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
-                } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $field)) {
-                    // Source file not found, check if it's in field name
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/' . $field);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
-                }
+            // Define potential file names to check (source file name and field name).
+            $files_to_check = [$safe_src, $safe_field];
 
-                if (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src)) {
-                    // Use source file
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $src);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
-                } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $field)) {
-                    // Source file not found, check if it's in field name
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/thumbs/' . $field);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
-                }
+            // Define the directories to check (main upload, thumbs, icons).
+            $subdirectories = ['', 'thumbs/', 'icons/'];
 
-                if (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src)) {
-                    // Use source file
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $src);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
-                    }
-                } elseif (is_file(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $field)) {
-                    // Source file not found, check if it's in field name
-                    try {
-                        // Attempt to unlink source file
-                        unlink(UPLOAD_PATH . '/' . $this->_set_upload_path . '/icons/' . $field);
-                    } catch (\Throwable $e) {
-                        // Safe abstraction
+            // Base upload path for the current module.
+            $base_dir = UPLOAD_PATH . '/' . $this->_set_upload_path . '/';
+
+            // Loop through all potential paths and attempt deletion.
+            foreach ($subdirectories as $subdir) {
+                foreach ($files_to_check as $filename) {
+                    $path = $base_dir . $subdir . $filename;
+
+                    if ($filename && is_file($path)) {
+                        try {
+                            unlink($path);
+                        } catch (Throwable $e) {
+                            // Safe abstraction: error during unlink (e.g., permissions)
+                        }
                     }
                 }
             }
@@ -5518,31 +5755,38 @@ class Core extends Controller
     }
 
     /**
-     * Do handshake between API client and API endpoint
+     * Performs handshake and validation between API client and API endpoint.
      *
-     * @param   string|int $api_key
+     * Handles Basic Auth, API Key validation, IP range checks, and session/access token verification.
+     *
+     * @param string|int $api_key The submitted API Key (expected from X-API-KEY header).
+     *
+     * @return static Returns the current object instance (chainable) on success, or throws an exception on failure.
      */
-    private function _handshake($api_key = 0)
+    private function _handshake(string|int $api_key = 0): static
     {
-        if (! service('request')->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== service('request')->getHeaderLine('X-API-TOKEN')) {
-            // Basic Auth
-            $account = base64_decode(str_ireplace('Basic ', '', service('request')->getHeaderLine('Authorization')));
-            list($username, $password) = array_pad(explode(':', $account), 2, '');
+        // --- 1. Basic Authentication (Fallback) ---
+        // If no access token is provided and API token doesn't match encryption key, check Basic Auth.
+        if (! $this->request->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== $this->request->getHeaderLine('X-API-TOKEN')) {
+            $auth_header = $this->request->getHeaderLine('Authorization');
 
-            if ($username && $password) {
-                // Get authorization
-                $authorize = $this->permission->authorize($username, $password);
+            if (str_starts_with($auth_header, 'Basic ')) {
+                $account = base64_decode(str_ireplace('Basic ', '', $auth_header));
+                list($username, $password) = array_pad(explode(':', $account), 2, '');
 
-                if (is_bool($authorize) && $authorize) {
-                    $this->_api_token = true;
+                if ($username && $password) {
+                    $authorize = $this->permission->authorize($username, $password);
+                    if (is_bool($authorize) && $authorize) {
+                        $this->_api_token = true; // Auth succeeded
+                    }
                 }
             }
         }
 
-        // Set client header
-        service('request')->setHeader('X-Requested-With', 'XMLHttpRequest');
+        // Set client header to recognize as an AJAX/API request.
+        $this->request->setHeader('X-Requested-With', 'XMLHttpRequest');
 
-        // Get client
+        // --- 2. Retrieve REST Client Configuration ---
         $client = $this->model->get_where(
             'app__rest_clients',
             [
@@ -5551,72 +5795,63 @@ class Core extends Controller
                 'valid_until >= ' => date('Y-m-d')
             ],
             1
-        )
-        ->row();
+        )->row();
 
-        if (! $client) {
-            // Client doesn't exist
-            if (ENCRYPTION_KEY === $api_key) {
-                // Indicates the request is made from current app
-                $client = (object) [
-                    'ip_range' => service('request')->getServer('SERVER_ADDR'),
-                    'method' => json_encode([service('request')->getServer('REQUEST_METHOD')]),
-                    'status' => 1
-                ];
-
-                $this->_api_token = true;
-            }
+        // Check if the request is made internally (same app, bypasses client table lookup).
+        if (! $client && ENCRYPTION_KEY === $api_key) {
+            $client = (object) [
+                'ip_range' => $this->request->getServer('SERVER_ADDR'),
+                'method' => json_encode([$this->request->getMethod()]),
+                'status' => 1
+            ];
+            $this->_api_token = true;
         }
 
+        // --- 3. Client Validation Checks (Denial Flow) ---
         if (! $client) {
-            // Request denied
             return throw_exception(403, phrase('Your API Key is not eligible to access the requested module or its already expired.'));
         } elseif (! $client->status) {
-            // Client status inactive
             return throw_exception(403, phrase('Your API Key is temporary deactivated.'));
-        } elseif (! in_array(service('request')->getServer('REQUEST_METHOD'), json_decode($client->method, true))) {
-            // Client request method limited
-            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . service('request')->getServer('REQUEST_METHOD'));
-        } elseif ($client->ip_range && (($client->ip_range && ! $this->_ip_in_range($client->ip_range)) || service('request')->getIPAddress() != service('request')->getServer('SERVER_ADDR'))) {
-            // Client IP blocked
+        } elseif (! in_array($this->request->getMethod(), json_decode($client->method, true))) {
+            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . $this->request->getMethod());
+        } elseif ($client->ip_range && (! $this->_ip_in_range($client->ip_range) || $this->request->getIPAddress() != $this->request->getServer('SERVER_ADDR'))) {
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source.'));
         }
 
+        // --- 4. Session/Access Token Verification ---
         if (session_status() === PHP_SESSION_NONE) {
-            // Start session
             session_start();
         }
 
-        // Get cookie
+        $accessToken = get_userdata('access_token') ?? $this->request->getHeaderLine('X-ACCESS-TOKEN');
+        $clientIp = ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress());
+
+        // Retrieve session data using the access token.
         $cookie = $this->model->select('data')->get_where(
             'app__sessions',
             [
-                'id' => get_userdata('access_token') ?? service('request')->getHeaderLine('X-ACCESS-TOKEN') ?? 0,
-                'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()) ?? 0,
+                'id' => $accessToken ?? 0,
+                'ip_address' => $clientIp ?? 0,
+                // Check session expiry based on configured time
                 'timestamp >= ' => date('Y-m-d H:i:s', (time() - config('Session')->expiration))
             ],
             1
-        )
-        ->row('data');
+        )->row('data');
 
+        // Handle PostgreSQL specific bytea un-escaping.
         if ($cookie && 'Postgre' === $this->_db_driver) {
-            // Un-escape bytea from PostgreSQL result
             $cookie = pg_unescape_bytea($cookie);
         }
 
+        // Decode and restore session data if valid.
         if ($cookie && session_decode($cookie)) {
-            // Set API token as valid
             $this->_api_token = true;
-
-            // Set the cookie to session
             set_userdata(array_filter($_SESSION));
-
-            // Set the user language session
             $this->_set_language(get_userdata('language_id'));
         }
 
-        if (get_userdata('access_token') || service('request')->getHeaderLine('X-ACCESS-TOKEN')) {
-            // Update expiration time
+        // --- 5. Update Session Expiration ---
+        if ($accessToken) {
             $this->model->update(
                 'app__sessions',
                 [
@@ -5624,134 +5859,148 @@ class Core extends Controller
                     'timestamp' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => get_userdata('access_token') ?? service('request')->getHeaderLine('X-ACCESS-TOKEN')
+                    'id' => $accessToken
                 ]
             );
         }
 
-        // Update property state
+        // Final state update
         $this->api_client = true;
 
         return $this;
     }
 
     /**
-     * Check the IP if it's being blacklisted or not
+     * Checks if the client's IP address is present in the specified whitelist range.
      *
-     * @param   array|string $whitelist
-     * @return  bool
+     * Supports exact IP match and basic wildcard matching (e.g., 192.168.1.*).
+     *
+     * @param array|string $whitelist Array of allowed IP addresses/ranges, or a comma-separated string.
+     *
+     * @return bool Returns TRUE if the client IP is in the whitelist, FALSE otherwise.
      */
-    private function _ip_in_range($whitelist = [])
+    private function _ip_in_range(array|string $whitelist = []): bool
     {
-        if ($whitelist && ! is_array($whitelist)) {
-            // Explode sparated comma
+        // Ensure whitelist is an array, converting from a comma-separated string if necessary.
+        if (! is_array($whitelist)) {
             $whitelist = array_map('trim', explode(',', $whitelist));
         }
 
-        if (in_array(service('request')->getServer('REMOTE_ADDR'), $whitelist)) {
-            // Client IP's in whitelist
-            return true;
-        } else {
-            // Loop whitelist IP
-            foreach ($whitelist as $key => $val) {
-                // Find wildcard
-                $wildcardPos = strpos($val, '*');
+        $clientIp = Services::request()->getServer('REMOTE_ADDR');
 
-                if (false !== $wildcardPos && substr(service('request')->getServer('REMOTE_ADDR'), 0, $wildcardPos) . '*' == $val) {
-                    // Client IP's in wildcard
+        // 1. Check for Exact IP Match
+        if (in_array($clientIp, $whitelist)) {
+            return true;
+        }
+
+        // 2. Check for Wildcard Match
+        foreach ($whitelist as $whitelisted_ip) {
+            $wildcardPos = strpos($whitelisted_ip, '*');
+
+            if (false !== $wildcardPos) {
+                // Check if the beginning part of the client IP matches the non-wildcard part of the whitelisted IP.
+                $ip_prefix = substr($whitelisted_ip, 0, $wildcardPos);
+
+                if (str_starts_with($clientIp, $ip_prefix)) {
+                    // Check if the whitelisted IP is just the prefix + wildcard (e.g., "192.168.1.*").
+                    // The original logic simplified: substr($clientIp, 0, $wildcardPos) . '*' == $whitelisted_ip
+                    // We use str_starts_with for clearer comparison.
                     return true;
                 }
             }
         }
 
-        // Not validated
+        // IP not found in the list.
         return false;
     }
 
     /**
-     * Store the record of visitor to the log table
+     * Stores the record of a visitor to the log table and updates visit counters.
+     *
+     * Checks for user agent type, handles IP address retrieval, and calls counter updates/resets.
+     *
+     * @return bool|void Returns FALSE if the user agent is unidentifiable, otherwise void.
      */
-    private function _push_log()
+    private function _push_log(): void
     {
-        // Check and reset counters first before processing visitor
+        // 1. Check and reset time-based counters first (Daily, Weekly, etc.).
         $this->_auto_reset_counters();
 
-        if (service('request')->getUserAgent()->isBrowser()) {
-            // Browser
-            $user_agent = service('request')->getUserAgent()->getBrowser() . ' ' . service('request')->getUserAgent()->getVersion();
-        } elseif (service('request')->getUserAgent()->isRobot()) {
-            // Robot
-            $user_agent = service('request')->getUserAgent()->getRobot();
-        } elseif (service('request')->getUserAgent()->isMobile()) {
-            // Mobile
-            $user_agent = service('request')->getUserAgent()->getMobile();
-        } else {
-            // Not listed
-            return false;
+        $userAgent = Services::request()->getUserAgent();
+        $user_agent = '';
+
+        // User agent detection
+        if ($userAgent->isBrowser()) {
+            $user_agent = $userAgent->getBrowser() . ' ' . $userAgent->getVersion();
+        } elseif ($userAgent->isRobot()) {
+            $user_agent = $userAgent->getRobot();
+        } elseif ($userAgent->isMobile()) {
+            $user_agent = $userAgent->getMobile();
         }
 
+        // Prepare log data
         $prepare = [
-            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
             'browser' => $user_agent,
-            'platform' => service('request')->getUserAgent()->getPlatform(),
+            'platform' => $userAgent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        // Get visitor log by IP address (check all time, not just today)
-        $query = $this->model->get_where(
-            'app__log_visitors',
-            [
-                'ip_address' => $prepare['ip_address']
-            ],
-            1
-        )
-        ->row();
+        // 2. Check for existing visitor log by IP address.
+        $query = $this->model->get_where('app__log_visitors', ['ip_address' => $prepare['ip_address']], 1)->row();
 
         if (! $query) {
+            // New unique visitor
             try {
-                // Insert new visitor log
                 $log_insert = $this->model->insert('app__log_visitors', $prepare);
 
                 if (! $log_insert) {
-                    // Trap suspicious access
+                    // Trap suspicious access if insertion fails.
                     file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
                 } else {
-                    // Update all counters for new unique visitor (including whole_visits)
+                    // Update all counters for a new unique visitor (including whole/total visits).
                     $this->_update_visit_counters(['daily', 'weekly', 'monthly', 'yearly', 'whole']);
                 }
-            } catch (\Throwable $e) {
-                // Safe abstraction
+            } catch (Throwable $e) {
+                // Safe abstraction (logging the error can be added here)
             }
         } else {
-            // Check if visitor came in different period
+            // Check if the visitor's last visit was in a different time period.
             $this->_update_visit_counters_if_needed($query);
         }
     }
 
     /**
-     * Update visit counters based on specified periods
+     * Increments the visit counters in the app__stats table for the specified periods.
+     *
+     * @param array $periods Array of period strings (e.g., ['daily', 'weekly']).
      */
-    private function _update_visit_counters($periods = [])
+    private function _update_visit_counters(array $periods = []): void
     {
         if (empty($periods)) {
             return;
         }
 
-        // Build increment query for each period
+        // Build the SQL increment query for each specified period.
         foreach ($periods as $period) {
             $field = $period . '_visits';
+            // Use SET to construct the increment operation directly in SQL: SET field = field + 1
             $this->model->set($field, "$field + 1", false);
         }
 
-        // Update app__stats table (single row, no WHERE needed)
+        // Update the app__stats table (typically a single-row table).
         $this->model->update('app__stats');
     }
 
     /**
-     * Update counters only if visitor's last visit was in a different period
+     * Updates visit counters (daily, weekly, monthly, yearly) only if the visitor's
+     * last visit occurred in a different time period.
+     *
+     * @param object $previous_visit An object containing the visitor's last visit details (must include 'timestamp' and 'ip_address').
      */
-    private function _update_visit_counters_if_needed($previous_visit)
+    private function _update_visit_counters_if_needed(object $previous_visit): void
     {
+        // Convert timestamps for comparison
         $last_visit = strtotime($previous_visit->timestamp);
         $now = time();
 
@@ -5779,157 +6028,155 @@ class Core extends Controller
 
         // Update counters if any period changed
         if (! empty($periods_to_update)) {
+            // Execute the counter update logic.
             $this->_update_visit_counters($periods_to_update);
 
-            // Update last visit timestamp
+            // Update the last visit timestamp for the current visitor.
             $this->model->where('ip_address', $previous_visit->ip_address);
             $this->model->update('app__log_visitors', ['timestamp' => date('Y-m-d H:i:s')]);
         }
     }
 
     /**
-     * Auto reset counters based on date comparison
+     * Automatically resets visit counters (daily, weekly, monthly, yearly) based on date comparison.
      */
-    private function _auto_reset_counters()
+    private function _auto_reset_counters(): void
     {
+        // Retrieve the single row statistics data.
         $stats = $this->model->get('app__stats', 1)->row();
 
         if (! $stats) {
-            return;
+            $initial_data = [
+                'daily_visits' => 0,
+                'weekly_visits' => 0,
+                'monthly_visits' => 0,
+                'yearly_visits' => 0,
+                'whole_visits' => 0,
+                'last_daily_reset' => date('Y-m-d'),
+                'last_weekly_reset' => date('Y-m-d'),
+                'last_monthly_reset' => date('Y-m-d'),
+                'last_yearly_reset' => date('Y-m-d')
+            ];
+
+            // Insert record
+            $this->model->insert('app__stats', $initial_data);
+
+            // Set default record
+            $stats = (object) $initial_data;
         }
 
+        // Current Date Formats
         $today = date('Y-m-d');
-        $current_week = date('Y-W');
+        $current_week = date('Y-W'); // Year-Week number format
         $current_month = date('Y-m');
         $current_year = date('Y');
 
         $updates = [];
 
-        // Check daily reset - hanya reset kalau beda hari
-        if (! $stats->last_daily_reset || $stats->last_daily_reset !== $today) {
+        // Reset if the last reset date is not today.
+        if (($stats->last_daily_reset ?? null) !== $today) {
             $updates['daily_visits'] = 0;
             $updates['last_daily_reset'] = $today;
         }
 
-        // Check weekly reset - hanya reset kalau beda minggu
-        if (! $stats->last_weekly_reset) {
+        // Check if it's the first run OR if the current week is different from the last reset week.
+        $last_weekly_reset_week = ($stats->last_weekly_reset ? date('Y-W', strtotime($stats->last_weekly_reset)) : null);
+        if (! $stats->last_weekly_reset || $last_weekly_reset_week !== $current_week) {
             $updates['weekly_visits'] = 0;
             $updates['last_weekly_reset'] = $today;
-        } else {
-            $last_weekly_reset_week = date('Y-W', strtotime($stats->last_weekly_reset));
-            if ($last_weekly_reset_week !== $current_week) {
-                $updates['weekly_visits'] = 0;
-                $updates['last_weekly_reset'] = $today;
-            }
         }
 
-        // Check monthly reset - hanya reset kalau beda bulan
-        if (! $stats->last_monthly_reset) {
+        // Check if it's the first run OR if the current month is different from the last reset month.
+        $last_monthly_reset_month = ($stats->last_monthly_reset ? date('Y-m', strtotime($stats->last_monthly_reset)) : null);
+        if (! $stats->last_monthly_reset || $last_monthly_reset_month !== $current_month) {
             $updates['monthly_visits'] = 0;
             $updates['last_monthly_reset'] = $today;
-        } else {
-            $last_monthly_reset_month = date('Y-m', strtotime($stats->last_monthly_reset));
-            if ($last_monthly_reset_month !== $current_month) {
-                $updates['monthly_visits'] = 0;
-                $updates['last_monthly_reset'] = $today;
-            }
         }
 
-        // Check yearly reset - hanya reset kalau beda tahun
-        if (! $stats->last_yearly_reset) {
+        // Check if it's the first run OR if the current year is different from the last reset year.
+        $last_yearly_reset_year = ($stats->last_yearly_reset ? date('Y', strtotime($stats->last_yearly_reset)) : null);
+        if (! $stats->last_yearly_reset || $last_yearly_reset_year !== $current_year) {
             $updates['yearly_visits'] = 0;
             $updates['last_yearly_reset'] = $today;
-        } else {
-            $last_yearly_reset_year = date('Y', strtotime($stats->last_yearly_reset));
-            if ($last_yearly_reset_year !== $current_year) {
-                $updates['yearly_visits'] = 0;
-                $updates['last_yearly_reset'] = $today;
-            }
         }
 
-        // Update if there are changes
         if (! empty($updates)) {
+            // Since app__stats is expected to be a single-row table, no WHERE clause is typically needed.
             $this->model->update('app__stats', $updates);
         }
     }
 
     /**
-     * Set the language based on user browser if matched with available
-     * translation within the app. Otherwise, use the user session or fallback
-     * to the system default language
+     * Sets the application language based on user session, browser preference, or system default.
+     *
+     * @param string|null $language_id Language ID from the user session (or null if not set).
      */
-    private function _set_language(?string $language_id = null)
+    private function _set_language(?string $language_id = null): void
     {
+        // Check if session language ID is not set.
         if (! get_userdata('language_id') || ! $language_id) {
-            // Set default language
+            // Determine Initial Fallback Language ID
             $app_language = get_setting('app_language');
             $language_id = ($app_language > 0 ? $app_language : 1);
 
-            // Session has no language_id, get locale
-            $locales = explode(',', (service('request')->getServer('HTTP_ACCEPT_LANGUAGE') ? service('request')->getServer('HTTP_ACCEPT_LANGUAGE') : 'en-us'));
+            // Get browser accepted locales (e.g., "en-US,en;q=0.9,id;q=0.8").
+            $locales = explode(',', (Services::request()->getServer('HTTP_ACCEPT_LANGUAGE') ?: 'en-us'));
 
-            // Get language list
-            $languages = $this->model->get_where(
-                'app__languages',
-                [
-                    'status' => 1
-                ]
-            )
-            ->result();
+            // Retrieve available and active languages from the database.
+            $languages = $this->model->get_where('app__languages', ['status' => 1])->result();
 
+            // Match Browser Locale to Available Languages
             foreach ($languages as $language) {
-                $items = array_map('trim', explode(',', strtolower($language->locale)));
+                $items = array_map('trim', explode(',', strtolower($language->locale))); // Available locales for this language
 
                 foreach ($locales as $loc) {
-                    if (in_array(strtolower($loc), $items)) {
+                    if (in_array(strtolower(trim($loc)), $items)) {
                         $language_id = $language->id;
 
-                        break 2; // Break both loops on first match
+                        break 2; // Found match, break both loops.
                     }
                 }
             }
 
-            // Set language id to user session
+            // Store the determined language ID in the user session.
             set_userdata('language_id', $language_id);
         }
 
-        // Get language code
-        $language_code = $this->model->select('
-            code
-        ')
-        ->get_where(
-            'app__languages',
-            [
-                'id' => $language_id
-            ],
-            1
-        )
-        ->row('code');
+        // Get the language code (e.g., 'en', 'id') from the determined ID.
+        $language_code = $this->model->select('code')
+            ->get_where('app__languages', ['id' => $language_id], 1)
+            ->row('code');
 
-        // Set language code to property
+        // Set language code to internal property.
         $this->_language = $language_code;
 
-        // Check whether language file is exists
+        // Check if the corresponding language translation file directory exists.
         if (is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . $language_code)) {
-            // Set language to session
+            // Set language code to session (legacy/redundant, but preserved).
             set_userdata('language', $language_code);
 
-            // Set locale to service language
-            service('language')->setLocale($language_code);
+            // Set locale to the framework's language service.
+            Services::language()->setLocale($language_code);
         }
     }
 
     /**
-     * Prepare the given parameter as the query builder queue
+     * Prepares the given Query Builder function and arguments into an internal queue.
+     *
+     * It also maintains a separate list for 'where' clauses.
+     *
+     * @param string $function The Query Builder method name (e.g., 'where', 'select').
+     * @param array $arguments The array of arguments passed to the method.
      */
-    private function _prepare(string $function, array $arguments = [])
+    private function _prepare(string $function, array $arguments = []): void
     {
+        // If the function is 'where', store it separately for easy access/manipulation.
         if ('where' == $function) {
-            // Apply for where
+            // Assuming arguments[0] is the field and arguments[1] is the value/condition.
             $this->_where[$arguments[0]] = $arguments[1];
         }
 
-        // Apply to property
+        // Add the function call to the main preparation queue.
         $this->_prepare[] = [
             'function' => $function,
             'arguments' => $arguments
@@ -5937,21 +6184,34 @@ class Core extends Controller
     }
 
     /**
-     * XSS safe
+     * Removes potentially dangerous HTML tags and event handlers to mitigate XSS risks.
+     *
+     * Note: This method implements a basic sanitization logic. For robust security,
+     * it is recommended to use the framework's built-in XSS filter service or a dedicated HTML Purifier library.
+     *
+     * @param string $input The raw input string to be sanitized.
+     *
+     * @return string The sanitized string with harmful elements removed.
      */
-    private function _sanitize_input($input = '')
+    private function _sanitize_input(string $input = ''): string
     {
-        // Define an array of tags to remove
+        // Define an array of tags considered highly dangerous (often block-level or script-related).
         $tagsToRemove = ['applet', 'base', 'basefont', 'body', 'command', 'embed', 'frame', 'frameset', 'head', 'html', 'iframe', 'keygen', 'link', 'meta', 'noframes', 'noscript', 'object', 'param', 'script', 'style', 'title'];
 
-        // Loop through each tag and remove it using a regular expression
+        // Loop through each tag and remove it using a regular expression.
         foreach ($tagsToRemove as $tag) {
-            $input = preg_replace('/<' . $tag . '.*?>.*?<\/' . $tag . '>/is', '', $input); // Remove the tag and its content
-            $input = preg_replace('/<' . $tag . '.*?\/?>/is', '', $input); // Remove the self-closing tag (e.g., <meta />)
-            $input = preg_replace('/<' . $tag . '.*?>/is', '', $input); // Remove the no closing tag (e.g., <noscript>)
+            // 1. Remove the tag and its content (e.g., <script>...</script>)
+            $input = preg_replace('/<' . $tag . '.*?>.*?<\/' . $tag . '>/is', '', $input);
+
+            // 2. Remove self-closing tags (e.g., <meta />)
+            $input = preg_replace('/<' . $tag . '.*?\/?>/is', '', $input);
+
+            // 3. Remove opening tags that might not have a closing counterpart (e.g., <link ...>)
+            $input = preg_replace('/<' . $tag . '.*?>/is', '', $input);
         }
 
         // Remove event handler attributes (e.g., onclick, onerror, etc.)
+        // This regex targets any attribute starting with 'on' followed by word characters.
         $input = preg_replace('/\s*(on\w+)\s*=\s*[^>]+/is', '', $input);
 
         return $input;

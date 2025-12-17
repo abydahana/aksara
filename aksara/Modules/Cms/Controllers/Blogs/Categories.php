@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Blogs;
 
-class Categories extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Categories extends Core
 {
     protected $_table = 'blogs__categories';
 
@@ -40,8 +42,8 @@ class Categories extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         }
 
         $this->set_title(phrase('Blog Categories'))
@@ -67,8 +69,8 @@ class Categories extends \Aksara\Laboratory\Core
             ]
         )
         ->set_validation([
-            'category_title' => 'required|max_length[64]|unique[' . $this->_table . '.category_title.category_id.' . service('request')->getGet('category_id') . ']',
-            'category_slug' => 'max_length[64]|unique[' . $this->_table . '.category_slug.category_id.' . service('request')->getGet('category_id') . ']',
+            'category_title' => 'required|max_length[64]|unique[' . $this->_table . '.category_title.category_id.' . $this->request->getGet('category_id') . ']',
+            'category_slug' => 'max_length[64]|unique[' . $this->_table . '.category_slug.category_id.' . $this->request->getGet('category_id') . ']',
             'category_description' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
@@ -110,7 +112,7 @@ class Categories extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

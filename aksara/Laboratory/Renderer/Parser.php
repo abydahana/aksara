@@ -17,9 +17,11 @@
 
 namespace Aksara\Laboratory\Renderer;
 
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 use Twig\TwigFunction;
+use Throwable;
 
 class Parser
 {
@@ -35,7 +37,7 @@ class Parser
      *
      * @param   object|array $replacement
      */
-    public function parse(string $component, $replacement = [])
+    public function parse(string $component, $replacement = []): string
     {
         try {
             if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/core')) {
@@ -95,7 +97,7 @@ class Parser
                 // Copy master views
                 copy(APPPATH . 'Views/components/core/404.twig', ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Directory creation failed, stop operation
             exit($e->getMessage());
         }
@@ -108,7 +110,7 @@ class Parser
         ]);
 
         // Debug extension
-        $twig->addExtension(new \Twig\Extension\DebugExtension());
+        $twig->addExtension(new DebugExtension());
 
         $twig->addFunction(new TwigFunction('phrase', function ($words) {
             return phrase($words);
@@ -127,7 +129,7 @@ class Parser
         try {
             // Attempt to get the template component
             $output = $twig->render($component, $replacement);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -137,7 +139,7 @@ class Parser
                 try {
                     // Attempt to get the template component
                     $component = file_get_contents($component);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Fail to load component file into string
                     exit($e->getMessage());
                 }

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Inquiries extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Inquiries extends Core
 {
     private $_table = 'inquiries';
 

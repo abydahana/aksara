@@ -17,7 +17,10 @@
 
 namespace Aksara\Modules\Cms\Controllers\Blogs;
 
-class Blogs extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Blogs extends Core
 {
     private $_table = 'blogs';
 
@@ -35,11 +38,11 @@ class Blogs extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('category')) {
+        if ($this->request->getGet('category')) {
             $query = $this->model->get_where(
                 'blogs__categories',
                 [
-                    'category_id' => service('request')->getGet('category')
+                    'category_id' => $this->request->getGet('category')
                 ]
             )
             ->row();
@@ -65,8 +68,8 @@ class Blogs extends \Aksara\Laboratory\Core
             }
         }
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         } else {
             $this->where('language_id', get_setting('app_language') ?? 0);
         }
@@ -104,8 +107,8 @@ class Blogs extends \Aksara\Laboratory\Core
         )
 
         ->set_validation([
-            'post_title' => 'required|max_length[255]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
-            'post_slug' => 'max_length[255]|unique[' . $this->_table . '.post_slug.post_id.' . service('request')->getGet('post_id') . '.language_id.' . (service('request')->getPost('language_id') ?? service('request')->getGet('language') ?? 0) . ']',
+            'post_title' => 'required|max_length[255]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
+            'post_slug' => 'max_length[255]|unique[' . $this->_table . '.post_slug.post_id.' . $this->request->getGet('post_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
             'post_content' => 'required',
             'post_category' => 'required',
             'language_id' => 'required',
@@ -181,11 +184,11 @@ class Blogs extends \Aksara\Laboratory\Core
     {
         $this->set_method('update');
 
-        if (! service('request')->getGet('language')) {
+        if (! $this->request->getGet('language')) {
             $current_language = $this->model->get_where(
                 $this->_table,
                 [
-                    'post_id' => service('request')->getGet('post_id') ?? 0
+                    'post_id' => $this->request->getGet('post_id') ?? 0
                 ],
                 1
             )
@@ -230,7 +233,7 @@ class Blogs extends \Aksara\Laboratory\Core
             $data = $this->model->get_where(
                 $this->_table,
                 [
-                    'post_id' => service('request')->getGet('post_id') ?? 0
+                    'post_id' => $this->request->getGet('post_id') ?? 0
                 ],
                 1
             )
@@ -241,7 +244,7 @@ class Blogs extends \Aksara\Laboratory\Core
                 $this->_table,
                 [
                     'post_slug' => $data->post_slug,
-                    'language_id' => service('request')->getGet('language') ?? 0
+                    'language_id' => $this->request->getGet('language') ?? 0
                 ],
                 1
             )
@@ -254,7 +257,7 @@ class Blogs extends \Aksara\Laboratory\Core
                 unset($data->post_id);
 
                 // Change language id
-                $data->language_id = service('request')->getGet('language');
+                $data->language_id = $this->request->getGet('language');
 
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
@@ -262,7 +265,7 @@ class Blogs extends \Aksara\Laboratory\Core
                 // Set new post id
                 $post_id = $this->model->insert_id();
             }
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 
@@ -279,7 +282,7 @@ class Blogs extends \Aksara\Laboratory\Core
             'post_id' => $post_id
         ])
         ->set_validation([
-            'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . service('request')->getGet('post_id') . ']',
+            'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
             'post_content' => 'required',
             'post_tags' => 'required'
         ])
@@ -312,7 +315,7 @@ class Blogs extends \Aksara\Laboratory\Core
                 'status' => 1
             ]
         )
-        ->result();
+        ->result_array();
 
         $languages = [
             [
@@ -334,7 +337,7 @@ class Blogs extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
-class Blogs extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Blogs extends Core
 {
     public function __construct()
     {

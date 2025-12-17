@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-class License extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class License extends Core
 {
     public function __construct()
     {

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Galleries\Controllers;
 
-class Category extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Category extends Core
 {
     private $_table = 'galleries';
 
@@ -30,13 +32,13 @@ class Category extends \Aksara\Laboratory\Core
         $this->searchable(false);
         $this->limit(10);
 
-        $this->_primary = service('request')->getGet('gallery_id');
+        $this->_primary = $this->request->getGet('gallery_id');
     }
 
     public function index($slug = null)
     {
-        if (! $slug && service('request')->getGet('gallery_slug')) {
-            $slug = service('request')->getGet('gallery_slug');
+        if (! $slug && $this->request->getGet('gallery_slug')) {
+            $slug = $this->request->getGet('gallery_slug');
         }
 
         $this->set_title('{{ gallery_title }}', phrase('Album not found!'))

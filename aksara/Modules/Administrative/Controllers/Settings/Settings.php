@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Settings;
 
-class Settings extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Settings extends Core
 {
     private $_table = 'app__settings';
 
@@ -46,27 +48,27 @@ class Settings extends \Aksara\Laboratory\Core
         $required_google_client_id = null;
         $required_google_client_secret = null;
 
-        if (service('request')->getPost('openlayers_search_provider') && in_array(service('request')->getPost('openlayers_search_provider'), ['google', 'osm'])) {
+        if ($this->request->getPost('openlayers_search_provider') && in_array($this->request->getPost('openlayers_search_provider'), ['google', 'osm'])) {
             $required_api_key = 'required|';
         }
 
-        if (service('request')->getPost('default_map_tile')) {
+        if ($this->request->getPost('default_map_tile')) {
             $default_map_tile = 'valid_url';
         }
 
-        if (service('request')->getPost('google_analytics_key')) {
+        if ($this->request->getPost('google_analytics_key')) {
             $required_analytic_key = 'required|';
         }
 
-        if (service('request')->getPost('facebook_app_id')) {
+        if ($this->request->getPost('facebook_app_id')) {
             $required_facebook_app_secret = 'required';
-        } elseif (service('request')->getPost('facebook_app_secret')) {
+        } elseif ($this->request->getPost('facebook_app_secret')) {
             $required_facebook_app_id = 'required';
         }
 
-        if (service('request')->getPost('google_client_id')) {
+        if ($this->request->getPost('google_client_id')) {
             $required_google_client_secret = 'required';
-        } elseif (service('request')->getPost('google_client_secret')) {
+        } elseif ($this->request->getPost('google_client_secret')) {
             $required_google_client_id = 'required';
         }
 

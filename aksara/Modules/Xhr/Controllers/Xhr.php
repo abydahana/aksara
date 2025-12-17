@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers;
 
-class Xhr extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Xhr extends Core
 {
     public function __construct()
     {
@@ -33,7 +35,7 @@ class Xhr extends \Aksara\Laboratory\Core
     {
         $output = [];
 
-        if (service('request')->getPost('hideGreeting')) {
+        if ($this->request->getPost('hideGreeting')) {
             set_userdata('hideGreeting', true);
 
             $output['hideGreeting'] = true;

@@ -17,15 +17,33 @@
 
 namespace Aksara\Laboratory\Builder\Components;
 
+/**
+ * Core Component Builder
+ *
+ * This class contains raw Twig templates used to build the primary UI components
+ * of the CMS, such as data tables, forms, grids, toolbars, and modals.
+ */
 class Core
 {
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        // Safe abstraction
+        // No initialization required
     }
 
-    public function index($type = null)
+    /**
+     * Generate Table View Component.
+     * Renders a standard data grid (table) with checkboxes, column sorting,
+     * action buttons, and dynamic data rows.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function index(): array
     {
+        // Template for Table View
+        // Includes: Toolbar, Bulk Delete Checkbox, Sortable Headers, Data Loop, and Pagination
         $component = <<<EOF
         <div class="container-fluid">
             <div role="toolbar" class="alias-table-toolbar py-1 border-bottom">
@@ -127,8 +145,16 @@ class Core
         ];
     }
 
-    public function index_grid($type = null)
+    /**
+     * Generate Grid View Component.
+     * Renders a card-based layout, useful for galleries or blogs.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function index_grid(): array
     {
+        // Template for Grid View
+        // Includes: Toolbar, Card Loop (Bootstrap Grid), Image Carousel logic, and Pagination
         $component = <<<EOF
         <div role="toolbar" class="alias-table-toolbar py-2 border-bottom">
             <div class="container-fluid">
@@ -222,8 +248,16 @@ class Core
         ];
     }
 
-    public function index_mobile($type = null)
+    /**
+     * Generate Mobile View Component.
+     * Renders a simplified card-based layout optimized for mobile screens.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function index_mobile(): array
     {
+        // Template for Mobile View
+        // Includes: Card Grid, Pagination, and Bottom Toolbar
         $component = <<<EOF
         <div role="grid" class="pt-3">
             <div class="container-fluid">
@@ -317,8 +351,17 @@ class Core
         ];
     }
 
-    public function toolbar($type = null)
+    /**
+     * Generate Toolbar Component.
+     * Renders the top action buttons (Create, Export, Print) and the
+     * search/filter inputs (Text search, Dropdowns).
+     *
+     * @return  array Returns component configuration array
+     */
+    public function toolbar(): array
     {
+        // Template for Desktop Toolbar
+        // Includes: Action Buttons Group and Filter Form (Input/Select)
         $component = <<<EOF
         <div class="row">
             <div class="col">
@@ -360,8 +403,16 @@ class Core
         ];
     }
 
-    public function toolbar_mobile($type = null)
+    /**
+     * Generate Mobile Toolbar Component.
+     * Renders a sticky action bar and a modal for searching/filtering data.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function toolbar_mobile(): array
     {
+        // Template for Mobile Toolbar
+        // Includes: Sticky Bottom Buttons (limited to 3, rest in 'More') and Search Modal
         $component = <<<EOF
         <div class="opt-btn-overlap-fix"></div>
         <div class="btn-group btn-group-sm rounded-0 opt-btn">
@@ -425,8 +476,16 @@ class Core
         ];
     }
 
-    public function pagination($type = null)
+    /**
+     * Generate Pagination Component.
+     * Renders page links, "results info", and per-page limits selector.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function pagination(): array
     {
+        // Template for Pagination
+        // Includes: Page Links, Info Text, and Hidden Inputs for persistent filtering
         $component = <<<EOF
         <div class="row align-items-center">
             <div class="col-sm-6 text-center text-sm-start">
@@ -478,8 +537,17 @@ class Core
         ];
     }
 
-    public function form($type = null)
+    /**
+     * Generate Form View Component.
+     * Renders the Create/Update form structure, including field grouping,
+     * merging, layout positioning, and form validation attributes.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function form(): array
     {
+        // Template for CRUD Form
+        // Includes: Form Tag, Field Loop (with positioning logic), Merged Fields, and Submit Buttons
         $component = <<<EOF
         <div class="py-3">
             <div class="container-fluid">
@@ -556,8 +624,16 @@ class Core
         ];
     }
 
-    public function form_modal($type = null)
+    /**
+     * Generate Modal Form Component.
+     * Renders the Create/Update form structure inside a modal dialog.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function form_modal(): array
     {
+        // Template for Modal Form
+        // Includes: Modal Wrapper, Form Body with field logic, and Modal Footer Actions
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
@@ -639,8 +715,17 @@ class Core
         ];
     }
 
-    public function read($type = null)
+    /**
+     * Generate Read View Component.
+     * Renders a read-only detail view of a record, using field layout logic
+     * similar to the form view but with static text/displays.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function read(): array
     {
+        // Template for Read/Detail View
+        // Includes: Field Loop (using form_read logic) and Back Button
         $component = <<<EOF
         <div class="py-3">
             <div class="container-fluid">
@@ -708,8 +793,16 @@ class Core
         ];
     }
 
-    public function read_modal($type = null)
+    /**
+     * Generate Modal Read Component.
+     * Renders the read-only detail view inside a modal dialog.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function read_modal(): array
     {
+        // Template for Modal Read/Detail View
+        // Includes: Modal Wrapper and Read-Only Field Loop
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
@@ -786,8 +879,17 @@ class Core
         ];
     }
 
-    public function form_input($type = null)
+    /**
+     * Generate Form Input Wrapper.
+     * Renders a single form input container, including label, tooltip,
+     * prepend/append addons, and the actual input field template.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function form_input(): array
     {
+        // Wrapper template for Input Fields
+        // Includes: Label, Tooltip Info, Required Asterisk, Input Group (Prepend/Append)
         $component = <<<EOF
         <div class="mb-3">
             {% if params.label and params.type != 'geospatial' %}
@@ -822,8 +924,17 @@ class Core
         ];
     }
 
-    public function form_read($type = null)
+    /**
+     * Generate Read Field Wrapper.
+     * Renders a single read-only field container, similar to form_input
+     * but optimized for data display (view mode).
+     *
+     * @return  array Returns component configuration array
+     */
+    public function form_read(): array
     {
+        // Wrapper template for Read-Only Fields
+        // Includes: Label and Read-Only Value Display
         $component = <<<EOF
         <div class="mb-3">
             {% if params.label and params.type != 'geospatial' %}
@@ -858,8 +969,17 @@ class Core
         ];
     }
 
-    public function modal($type = null)
+    /**
+     * Generate Generic Modal Component.
+     * Renders a blank modal container, typically used for loading states
+     * or dynamic content injection via AJAX.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function modal(): array
     {
+        // Template for Generic/Loading Modal
+        // Includes: Title with Icon, Close Button, and Spinner (Loader)
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
@@ -897,8 +1017,16 @@ class Core
         ];
     }
 
-    public function exception($type = null)
+    /**
+     * Generate Exception Toast Component.
+     * Renders a floating toast notification for alerts or error messages.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function exception(): array
     {
+        // Template for Toast Notification
+        // Includes: Icon, Message Body, and Color Context
         $component = <<<EOF
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div class="toast align-items-center text-bg-{{ color }} fade show" role="alert" aria-live="assertive" aria-atomic="true">
@@ -923,8 +1051,16 @@ class Core
         ];
     }
 
-    public function error($type = null)
+    /**
+     * Generate Full Screen Error Component.
+     * Renders a CLI-style error screen for critical failures or debugging.
+     *
+     * @return  array Returns component configuration array
+     */
+    public function error(): array
     {
+        // Template for Critical Error Screen
+        // Includes: Console-like output with troubleshooting steps
         $component = <<<EOF
         <div class="container-fluid">
             <div class="row bg-dark full-height">

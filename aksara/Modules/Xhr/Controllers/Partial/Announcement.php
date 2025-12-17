@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Partial;
 
-class Announcement extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Announcement extends Core
 {
     public function __construct()
     {
@@ -30,7 +32,7 @@ class Announcement extends \Aksara\Laboratory\Core
             'announcements',
             [
                 'status' => 1,
-                'placement' => (service('request')->getGet('placement') ? 'backend' : 'frontend'),
+                'placement' => ($this->request->getGet('placement') ? 'backend' : 'frontend'),
                 'start_date <= ' => date('Y-m-d'),
                 'end_date >= ' => date('Y-m-d')
             ],

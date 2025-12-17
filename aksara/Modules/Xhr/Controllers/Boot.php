@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers;
 
-class Boot extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Boot extends Core
 {
     public function index()
     {

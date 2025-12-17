@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Comments;
 
-class Comments extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Comments extends Core
 {
     private $_table = 'post__comments';
 
@@ -67,7 +69,7 @@ class Comments extends \Aksara\Laboratory\Core
     {
         $this->permission->must_ajax(current_page('../'));
 
-        $comment_id = (service('request')->getGet('id') ? service('request')->getGet('id') : 0);
+        $comment_id = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
 
         $query = $this->model->get_where(
             $this->_table,
@@ -79,10 +81,10 @@ class Comments extends \Aksara\Laboratory\Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you would to ' . ($query->status ? 'hide' : 'publish') . ' is not found', current_page('../')));
+            return throw_exception(404, phrase('The comment you want to hide is not found', current_page('../')));
         }
 
-        if (service('request')->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             if (DEMO_MODE) {
                 // Demo mode
                 return throw_exception(403, phrase('This feature is disabled in demo mode.'), go_to(null, ['id' => null]));

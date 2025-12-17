@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Peoples\Controllers;
 
-class Read extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Read extends Core
 {
     private $_table = 'peoples';
 
@@ -30,8 +32,8 @@ class Read extends \Aksara\Laboratory\Core
 
     public function index($slug = null)
     {
-        if (service('request')->getGet('people_slug')) {
-            $slug = service('request')->getGet('people_slug');
+        if ($this->request->getGet('people_slug')) {
+            $slug = $this->request->getGet('people_slug');
         }
 
         $this->set_title('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))

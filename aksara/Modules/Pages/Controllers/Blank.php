@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-class Blank extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Blank extends Core
 {
     public function __construct()
     {
@@ -26,6 +28,6 @@ class Blank extends \Aksara\Laboratory\Core
 
     public function index()
     {
-        echo phrase('Loading...');
+        return $this->response->setBody(phrase('Loading...'))->sendBody();
     }
 }

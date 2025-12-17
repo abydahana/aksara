@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Account;
 
-class Account extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Account extends Core
 {
     public function __construct()
     {

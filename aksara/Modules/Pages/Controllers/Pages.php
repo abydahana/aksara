@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-class Pages extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Pages extends Core
 {
     private $_table = 'pages';
 
@@ -66,7 +68,7 @@ class Pages extends \Aksara\Laboratory\Core
         )
         ->group_start()
         ->where('pages.page_slug', $slug)
-        ->or_where('pages.page_id', service('request')->getGet('page_id') ?? 0)
+        ->or_where('pages.page_id', $this->request->getGet('page_id') ?? 0)
         ->group_end()
         ->where('status', 1)
         ->order_by('(CASE WHEN pages.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')

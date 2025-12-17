@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Partials extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Partials extends Core
 {
     public function __construct()
     {

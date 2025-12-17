@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-class Apis extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Apis extends Core
 {
     public function __construct()
     {

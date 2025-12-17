@@ -19,7 +19,9 @@ namespace Aksara\Modules\Administrative\Controllers\Logs;
 
 ini_set('memory_limit', -1);
 
-class Activities extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Activities extends Core
 {
     private $_table = 'app__log_activities';
 

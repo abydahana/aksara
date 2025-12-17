@@ -55,7 +55,10 @@ if (! function_exists('base_url')) {
             $params = array_merge($request->getGet(), $params);
         }
 
-        if (is_array($params) && sizeof($params) > 0) {
+        if (! empty($params)) {
+            // Unset old token
+            unset($params['aksara']);
+
             $query_params = [];
 
             foreach ($params as $key => $val) {
@@ -66,16 +69,8 @@ if (! function_exists('base_url')) {
                 $query_params[$key] = $val;
             }
 
-            unset($query_params['aksara']);
-
-            // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
-
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
-
             // Generate token
-            $token = generate_token($path, $filtered_params);
+            $token = generate_token($path, $query_params);
 
             if ($query_params) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
@@ -126,7 +121,10 @@ if (! function_exists('current_page')) {
 
         $params = array_merge(service('request')->getGet(), $params);
 
-        if (is_array($params) && sizeof($params) > 0) {
+        if (! empty($params)) {
+            // Unset old token
+            unset($params['aksara']);
+
             $query_params = [];
 
             foreach ($params as $key => $val) {
@@ -137,16 +135,8 @@ if (! function_exists('current_page')) {
                 $query_params[$key] = $val;
             }
 
-            unset($query_params['aksara']);
-
-            // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
-
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
-
             // Generate token
-            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $filtered_params);
+            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $query_params);
 
             if ($query_params) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
@@ -187,9 +177,8 @@ if (! function_exists('go_to')) {
 
         $slug = strtolower(str_replace('\\', '/', service('router')->controllerName()));
         $slug = preg_replace(['/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'], ['', '', '/'], $slug, 1);
-        $slug = $slug;
 
-        $destructure = explode('/', $slug);
+        $destructure = explode('/', $slug ?? '');
 
         $final_slug = [];
         $previous_segment = null;
@@ -206,7 +195,10 @@ if (! function_exists('go_to')) {
 
         $params = array_merge(service('request')->getGet(), $params);
 
-        if (is_array($params) && sizeof($params) > 0) {
+        if (! empty($params)) {
+            // Unset old token
+            unset($params['aksara']);
+
             $query_params = [];
 
             foreach ($params as $key => $val) {
@@ -217,16 +209,8 @@ if (! function_exists('go_to')) {
                 $query_params[$key] = $val;
             }
 
-            unset($query_params['aksara']);
-
-            // Get primary keys
-            $primary_keys = explode('|', get_userdata('__query_params'));
-
-            // Get filtered params
-            $filtered_params = array_intersect_key($params, array_flip($primary_keys));
-
             // Generate token
-            $token = generate_token($final_slug . ($method ? '/' . $method : null), $filtered_params);
+            $token = generate_token($final_slug . ($method ? '/' . $method : null), $query_params);
 
             if ($query_params) {
                 $query_params = array_merge(['aksara' => $token], $query_params);

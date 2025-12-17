@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers\Partial;
 
-class Language extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Language extends Core
 {
     public function __construct()
     {
@@ -27,10 +29,10 @@ class Language extends \Aksara\Laboratory\Core
     public function index()
     {
         // Validate request
-        if ('dropdown' == service('request')->getPost('prefer')) {
+        if ('dropdown' == $this->request->getPost('prefer')) {
             // Prefer dropdown
             return $this->_languages(true);
-        } elseif ('modal' != service('request')->getPost('prefer')) {
+        } elseif ('modal' != $this->request->getPost('prefer')) {
             // Redirect non modal request
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
         }

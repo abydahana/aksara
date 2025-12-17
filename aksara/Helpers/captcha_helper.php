@@ -88,7 +88,7 @@ if (! function_exists('create_captcha')) {
             }
 
             @closedir($current_dir);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
         }
 
         if (! is_string($word)) {

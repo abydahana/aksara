@@ -17,91 +17,120 @@
 
 namespace Aksara\Laboratory\Renderer\Components;
 
+use Config\Services;
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Builder\Builder;
 use Aksara\Laboratory\Renderer\Formatter;
 
+/**
+ * Form Component Renderer
+ *
+ * This class handles the complex logic of transforming serialized database definition data
+ * into a structured array ready for the Form Builder. It handles input type detection,
+ * value formatting, auto-increment generation (custom), and field attributes.
+ */
 class Form
 {
     /**
-     * Load trait, get dynamic properties
+     * Load traits to access dynamic properties.
      */
     use Traits;
 
-    private $builder;
-    private $formatter;
-    private $path;
-    private $model;
-    private $api_client;
+    /**
+     * UI Builder Instance.
+     */
+    private Builder $builder;
 
-    public function __construct($properties = [])
+    /**
+     * Data Formatter Instance.
+     */
+    private Formatter $formatter;
+
+    /**
+     * Current module path.
+     */
+    private ?string $path = null;
+
+    /**
+     * Database Model Instance.
+     */
+    private mixed $model = null;
+
+    /**
+     * API Client Status/Instance.
+     */
+    private mixed $api_client = null;
+
+    /**
+     * Valid HTML5 and Custom Input Types supported by the builder.
+     * @var array
+     */
+    private const VALID_TYPES = [
+        'text', 'textarea', 'wysiwyg',
+        'number', 'money', 'percent',
+        'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
+        'date', 'datetime', 'time', 'week', 'month',
+        'hidden', 'email', 'password', 'encryption',
+        'file', 'files', 'image', 'images',
+        'accordion', 'attribution', 'carousel', 'geospatial',
+        'custom_format'
+    ];
+
+    /**
+     * Constructor
+     *
+     * @param   array $properties Associative array of properties to inject
+     */
+    public function __construct(array $properties = [])
     {
+        // Hydrate properties dynamically
         foreach ($properties as $key => $val) {
-            $this->$key = $val;
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
         }
 
+        // Initialize dependencies
         $this->builder = new Builder();
         $this->formatter = new Formatter(get_object_vars($this));
     }
 
-    public function render(array $serialized = [], int $length = 0)
+    /**
+     * Render the Form Data.
+     *
+     * Processes serialized data, determines input types, handles values,
+     * and prepares the structure for the view.
+     *
+     * @param   array $serialized Data from the model
+     * @param   int   $length     Length of data (unused in this context but kept for interface consistency)
+     * @return  array Returns the processed form configuration
+     */
+    public function render(array $serialized = [], int $length = 0): array
     {
-        if (! $serialized) {
+        if (empty($serialized)) {
             return [];
         }
+
+        $request = Services::request();
 
         $primary_key = [];
         $field_data = [];
         $merged_fields = [];
 
+        // Flatten merged fields for easy lookup
         if ($this->_merge_field) {
             foreach ($this->_merge_field as $key => $val) {
                 $merged_fields = array_merge($merged_fields, $val);
             }
         }
 
-        $serialized = $serialized[0];
+        // 1. Sort Fields based on configuration
+        $serialized = $this->_sort_fields($serialized);
 
-        if (is_array($this->_field_order) && sizeof($this->_field_order) > 0) {
-            // Indicates field order
-            $field_order = [];
-
-            foreach ($this->_field_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $field_order[] = $order_val;
-                }
-            }
-
-            // Flip array and order by user expect
-            $serialized = array_replace(array_flip($field_order), $serialized);
-        } elseif (is_array($this->_view_order) && sizeof($this->_view_order) > 0) {
-            // Indicates field order
-            $view_order = [];
-
-            foreach ($this->_view_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $view_order[] = $order_val;
-                }
-            }
-
-            // Flip array and order by user expect
-            $serialized = array_replace(array_flip($view_order), $serialized);
-        } elseif (is_array($this->_column_order) && sizeof($this->_column_order) > 0) {
-            // Backup order to follow the columns order
-            $column_order = [];
-
-            foreach ($this->_column_order as $order_key => $order_val) {
-                if (array_key_exists($order_val, $serialized)) {
-                    $column_order[] = $order_val;
-                }
-            }
-
-            $serialized = array_replace(array_flip($column_order), $serialized);
-        }
-
-        // Loop serialized data
+        // 2. Loop serialized data to process each field
         foreach ($serialized as $field => $params) {
-            $type = $params['type'];
+            // Extract parameters
+            $type = $params['type']; // Array of types/attributes
             $primary = $params['primary'];
             $value = $params['value'];
             $content = $params['content'];
@@ -110,244 +139,125 @@ class Form
             $validation = $params['validation'];
             $required = in_array('required', $validation);
 
+            // Default label from field name
             $label = ucwords(str_replace('_', ' ', $field));
-            $placeholder = (isset($this->_set_placeholder[$field]) ? $this->_set_placeholder[$field] : null);
-            $class = null;
+            $placeholder = $this->_set_placeholder[$field] ?? null;
+            $class = $this->_add_class[$field] ?? null;
             $readonly = null;
 
-            // Store primary key as a token
+            // Collect Primary Key
             if ($primary) {
                 $primary_key[$field] = $value;
             }
 
+            // Skip hidden fields or timestamps
             if ($hidden || array_intersect(['current_timestamp'], array_keys($type))) {
-                // Skip showing field
                 continue;
             }
 
+            // Override Labels
             if (isset($this->_merge_label[$field])) {
-                // Use from merge_content()
                 $label = $this->_merge_label[$field];
             } elseif (isset($this->_set_alias[$field])) {
-                // Use alias from set_alias()
                 $label = $this->_set_alias[$field];
             }
 
-            if (in_array('slug', array_keys($type))) {
-                // Override placeholder
+            // Handle Placeholders based on Type Key
+            if (array_key_exists('slug', $type)) {
                 $placeholder = phrase('Leave blank to generate automatically');
-            } elseif (in_array('boolean', array_keys($type))) {
-                // Override placeholder
+            } elseif (array_key_exists('boolean', $type)) {
                 $placeholder = phrase('Check to activate');
-            } elseif (array_intersect(array_keys($type), ['select'])) {
-                // Override placeholder
+            } elseif (array_key_exists('select', $type)) {
                 $placeholder = phrase('Please choose');
             }
 
-            if (in_array('readonly', array_keys($type))) {
-                // Readonly
+            // Handle Readonly/Disabled attributes
+            if (array_key_exists('readonly', $type)) {
                 $readonly = 'readonly';
-
-                // Slice readonly field type
                 unset($type['readonly']);
-            } elseif (in_array('disabled', array_keys($type))) {
-                // Disabled
+            } elseif (array_key_exists('disabled', $type)) {
                 $readonly = 'disabled';
-
-                // Slice readonly field type
                 unset($type['disabled']);
             }
 
-            // Valid field type definition
-            $valid_type = [
-                'text', 'textarea', 'wysiwyg',
-                'number', 'money', 'percent',
-                'select', 'checkbox', 'radio', 'boolean', 'range', 'color',
-                'date', 'datetime', 'time', 'week', 'month',
-                'hidden', 'email', 'password', 'encryption',
-                'file', 'files', 'image', 'images',
-                'accordion', 'attribution', 'carousel', 'geospatial',
-                'custom_format'
-            ];
+            // Determine Input Type
+            $field_type = $this->_determine_input_type($type);
+            $final_type = end($field_type); // Get the specific type (e.g., 'text')
 
-            // Get field intersection
-            $field_type = array_intersect(array_keys($type), $valid_type);
-
-            if (! $field_type) {
-                // Fallback default input type
-                $field_type = ['text'];
-            }
-
-            if (sizeof($field_type) > 1) {
-                // Remove last element of array
-                array_pop($field_type);
-            }
-
-            // Get formatted content
+            // Format Value & Content
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
                 $value = '*****';
                 $content = '*****';
-            } elseif (array_intersect(['geospatial'], array_keys($type)) && ! sizeof(json_decode($value, true) ?? [])) {
+            } elseif (array_key_exists('geospatial', $type) && empty(json_decode($value ?? '', true))) {
                 $value = get_setting('office_map');
                 $content = $value;
             } else {
                 $content = $this->formatter->format($field, $content, $type);
             }
 
-            $checked = $value || false;
+            $checked = $value ? true : false;
 
+            // --- Handle Logic based on Method (Create vs Update) ---
             if ('create' === $this->_method) {
-                if (isset($this->_default_value[$field])) {
-                    $value = $this->_default_value[$field];
-                } elseif (array_intersect(['boolean'], array_keys($type))) {
-                    $checked = true;
-                }
-
-                if (array_intersect(['last_insert'], array_keys($type))) {
-                    if (! isset($this->_default_value[$field])) {
-                        $parameter = $type['last_insert']['parameter'];
-                        $extra_params = $type['last_insert']['alpha'];
-                        $type_key = array_search('{1}', explode('/', $parameter));
-                        $where = [];
-
-                        if ($this->_where) {
-                            foreach ($this->_where as $key => $val) {
-                                if ($this->model->field_exists($key, $this->_table)) {
-                                    $where[$key] = $val;
-                                }
-                            }
-                        }
-
-                        if (in_array($this->_db_driver, ['SQLSRV'])) {
-                            $cast_field = 'CONVERT(' . $field . ', SIGNED INTEGER)';
-                        } else {
-                            $cast_field = 'CAST(' . $field . ' AS SIGNED INTEGER)';
-                        }
-
-                        if (1 == 1) { // Skip
-                            if ($extra_params) {
-                                $this->model->where($extra_params);
-                            }
-
-                            $last_insert = $this->model->select((in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get($this->_table, 1)->row($field);
-                        } else {
-                            $last_insert = $this->model->select((in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field)->order_by($field, 'desc')->get_where($this->_table, $where, 1)->row($field);
-                        }
-
-                        if ($last_insert) {
-                            $last_insert = (strpos($last_insert, '/') !== false ? explode('/', $last_insert) : [$last_insert]);
-                            $last_insert = (isset($last_insert[$type_key]) ? $last_insert[$type_key] : $last_insert[0]);
-                            $last_insert = preg_replace('/[^0-9]/', '', $last_insert);
-                        }
-
-                        $last_insert = (! is_array($last_insert) && $last_insert > 0 ? $last_insert : 0) + 1;
-
-                        $value = ($last_insert > 0 ? $last_insert : 1);
-
-                        if (array_intersect(['sprintf'], array_keys($type))) {
-                            $value = sprintf(($extra_params ? $extra_params : '%04d'), $value);
-                        }
-
-                        if ($parameter && ! is_array($parameter)) {
-                            $value = str_replace('{1}', $value, $parameter);
-                        }
-                    }
-                }
+                // CREATE MODE
+                list($value, $checked) = $this->_handle_create_mode($field, $type, $value, $checked);
             } else {
-                if (array_intersect(['select'], array_keys($type)) && is_array($content)) {
-                    foreach ($content as $key => $val) {
-                        // Match selected value
-                        $content[$key]['selected'] = $value == $val['value'];
-                    }
-                } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
-                    $has_checked = false;
-
-                    foreach ($content as $key => $val) {
-                        // Match checked value
-                        $content[$key]['checked'] = $value == $val['value'];
-
-                        if (! $has_checked && $value == $val['value']) {
-                            // Checked found
-                            $has_checked = true;
-                        }
-                    }
-
-                    if (! $has_checked) {
-                        // Backup default checked
-                        foreach ($content as $key => $val) {
-                            $content[$key]['checked'] = true;
-
-                            break;
-                        }
-                    }
-                }
-
-                if (array_intersect(['sprintf'], array_keys($type))) {
-                    $parameter = $type['sprintf']['parameter'];
-                    $extra_params = $type['sprintf']['alpha'];
-                    $value = sprintf(($extra_params ? $extra_params : '%04d'), $value);
-
-                    if ($parameter && ! is_array($parameter)) {
-                        $value = str_replace('{1}', $value, $parameter);
-                    }
-                }
+                // UPDATE MODE
+                list($value, $content) = $this->_handle_update_mode($type, $value, $content);
             }
 
-            // Add to form data response
+            // Prepare Field Data Structure
             $field_data[$field] = [
                 'name' => $field,
                 'label' => $label,
                 'value' => $value,
                 'content' => $content,
-                'type' => end($field_type),
+                'type' => $final_type,
                 'primary' => $primary,
                 'maxlength' => $maxlength,
-                'class' => (isset($this->_add_class[$field]) ? $this->_add_class[$field] : null),
+                'class' => $class,
                 'placeholder' => $placeholder,
                 'required' => $required,
                 'checked' => $checked,
                 'readonly' => $readonly,
                 'accept' => gettype($value),
                 'relation' => isset($this->_set_relation[$field]),
-                'tooltip' => (isset($this->_set_tooltip[$field]) ? $this->_set_tooltip[$field] : null),
-                'attribution' => (isset($this->_set_attribute[$field]) ? $this->_set_attribute[$field] : null),
-                'position' => (isset($this->_field_position[$field]) ? $this->_field_position[$field] : 1),
-                'prepend' => (isset($this->_field_prepend[$field]) ? $this->_field_prepend[$field] : null),
-                'append' => (isset($this->_field_append[$field]) ? $this->_field_append[$field] : null),
+                'tooltip' => $this->_set_tooltip[$field] ?? null,
+                'attribution' => $this->_set_attribute[$field] ?? null,
+                'position' => $this->_field_position[$field] ?? 1,
+                'prepend' => $this->_field_prepend[$field] ?? null,
+                'append' => $this->_field_append[$field] ?? null,
                 'merged' => in_array($field, $merged_fields)
             ];
 
-            if (array_intersect($field_type, ['image', 'images', 'carousel'])) {
-                // Image type field
+            // Specific handling for File/Image inputs
+            if (in_array($final_type, ['image', 'images', 'carousel'])) {
                 $field_data[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED))));
                 $field_data[$field]['placeholder'] = get_image($this->_set_upload_path, 'placeholder.png', 'thumb');
-            } elseif (array_intersect($field_type, ['file', 'files'])) {
-                // File type field
+            } elseif (in_array($final_type, ['file', 'files'])) {
                 $field_data[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))));
             }
 
-            // Parse content if request is made through non-promise request
-            if (! service('request')->isAJAX() && ! $this->api_client && end($field_type)) {
-                // Get or create component of matches last field type element
-                $component = $this->builder->get_component($this->_set_theme, 'form', end($field_type));
+            // Scaffolding: Ensure template exists
+            if (! $request->isAJAX() && ! $this->api_client && $final_type) {
+                $this->builder->get_component($this->_set_theme, 'form', $final_type);
             }
         }
 
-        $column_size = 6;
-        $column_offset = 3;
+        // 3. Prepare Final Output
         $highest_column = 1;
-
-        if (is_array($this->_field_position) && sizeof($this->_field_position) > 0) {
+        if (! empty($this->_field_position)) {
             $highest_column = max($this->_field_position);
         }
 
-        $query_params = array_replace(service('request')->getGet(), $primary_key);
+        // Merge query string with primary keys
+        $query_params = array_replace($request->getGet(), $primary_key);
 
         if ($this->api_client) {
             unset($query_params['aksara'], $query_params['limit']);
         }
 
-        $output = [
+        return [
             'column_size' => $this->_column_size,
             'column_total' => $highest_column,
             'extra_action' => [
@@ -362,7 +272,155 @@ class Form
             'grouped_field' => $this->_group_field,
             'query_params' => $query_params
         ];
+    }
 
-        return $output;
+    /**
+     * Sort fields based on controller configuration.
+     */
+    private function _sort_fields(array $serialized): array
+    {
+        $order_source = [];
+
+        if (! empty($this->_field_order)) {
+            $order_source = $this->_field_order;
+        } elseif (! empty($this->_view_order)) {
+            $order_source = $this->_view_order;
+        } elseif (! empty($this->_column_order)) {
+            $order_source = $this->_column_order;
+        }
+
+        if (! empty($order_source)) {
+            $sorted = [];
+            foreach ($order_source as $val) {
+                if (array_key_exists($val, $serialized)) {
+                    $sorted[] = $val;
+                }
+            }
+            // Merge flipped sorted keys with original data to reorder
+            return array_replace(array_flip($sorted), $serialized);
+        }
+
+        return $serialized;
+    }
+
+    /**
+     * Determine valid input type from type definition.
+     */
+    private function _determine_input_type(array $type): array
+    {
+        // Get intersection between defined types and valid builder types
+        $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
+
+        if (empty($field_type)) {
+            $field_type = ['text'];
+        }
+
+        if (count($field_type) > 1) {
+            // If multiple valid types found, remove the last one (legacy logic behavior)
+            array_pop($field_type);
+        }
+
+        return $field_type;
+    }
+
+    /**
+     * Handle logic specific to 'Create' mode.
+     * Includes setting default values and calculating 'Last Insert' custom IDs.
+     */
+    private function _handle_create_mode(string $field, array $type, mixed $value, bool $checked): array
+    {
+        if (isset($this->_default_value[$field])) {
+            $value = $this->_default_value[$field];
+        } elseif (array_key_exists('boolean', $type)) {
+            $checked = true;
+        }
+
+        // Logic for custom Auto-Increment (e.g., INV/2024/0001)
+        if (array_key_exists('last_insert', $type)) {
+            if (! isset($this->_default_value[$field])) {
+                $parameter = $type['last_insert']['parameter'];
+                $extra_params = $type['last_insert']['alpha'];
+                $type_key = array_search('{1}', explode('/', $parameter));
+
+                // Construct CAST statement based on DB Driver
+                $cast_field = in_array($this->_db_driver, ['SQLSRV'])
+                    ? 'CONVERT(' . $field . ', SIGNED INTEGER)'
+                    : 'CAST(' . $field . ' AS SIGNED INTEGER)';
+
+                // Build Query
+                if ($extra_params) {
+                    $this->model->where($extra_params);
+                }
+
+                $max_func = (in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field;
+
+                $last_insert = $this->model->select($max_func)
+                    ->order_by($field, 'desc')
+                    ->get($this->_table, 1)
+                    ->row($field);
+
+                // Process result
+                if ($last_insert) {
+                    $last_insert_parts = (strpos($last_insert, '/') !== false ? explode('/', $last_insert) : [$last_insert]);
+                    $segment = $last_insert_parts[$type_key] ?? $last_insert_parts[0];
+                    $last_insert = preg_replace('/[^0-9]/', '', $segment);
+                }
+
+                $next_val = (intval($last_insert) > 0 ? intval($last_insert) : 0) + 1;
+                $value = $next_val;
+
+                // Format with sprintf if requested
+                if (array_key_exists('sprintf', $type)) {
+                    $value = sprintf(($extra_params ?: '%04d'), $value);
+                }
+
+                // Replace placeholder in parameter
+                if ($parameter && ! is_array($parameter)) {
+                    $value = str_replace('{1}', $value, $parameter);
+                }
+            }
+        }
+
+        return [$value, $checked];
+    }
+
+    /**
+     * Handle logic specific to 'Update' mode.
+     * Includes marking selected options in Select/Checkbox/Radio.
+     */
+    private function _handle_update_mode(array $type, mixed $value, mixed $content): array
+    {
+        if (array_key_exists('select', $type) && is_array($content)) {
+            foreach ($content as $key => $val) {
+                $content[$key]['selected'] = ($value == $val['value']);
+            }
+        } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
+            $has_checked = false;
+
+            foreach ($content as $key => $val) {
+                $content[$key]['checked'] = ($value == $val['value']);
+                if (! $has_checked && $value == $val['value']) {
+                    $has_checked = true;
+                }
+            }
+
+            // Fallback: Check the first option if nothing matches (optional safety)
+            if (! $has_checked && ! empty($content)) {
+                $content[array_key_first($content)]['checked'] = true;
+            }
+        }
+
+        // Apply sprintf formatting on update if defined
+        if (array_key_exists('sprintf', $type)) {
+            $parameter = $type['sprintf']['parameter'];
+            $extra_params = $type['sprintf']['alpha'];
+            $value = sprintf(($extra_params ?: '%04d'), $value);
+
+            if ($parameter && ! is_array($parameter)) {
+                $value = str_replace('{1}', $value, $parameter);
+            }
+        }
+
+        return [$value, $content];
     }
 }

@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Galleries;
 
-class Galleries extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Galleries extends Core
 {
     private $_table = 'galleries';
 
@@ -68,8 +70,8 @@ class Galleries extends \Aksara\Laboratory\Core
         )
         ->merge_content('{{ first_name }} {{ last_name }}', 'Author')
         ->set_validation([
-            'gallery_title' => 'required|max_length[64]|unique[' . $this->_table . '.gallery_title.gallery_id.' . service('request')->getGet('gallery_id') . ']',
-            'gallery_slug' => 'max_length[64]|unique[' . $this->_table . '.gallery_slug.gallery_id.' . service('request')->getGet('gallery_id') . ']',
+            'gallery_title' => 'required|max_length[64]|unique[' . $this->_table . '.gallery_title.gallery_id.' . $this->request->getGet('gallery_id') . ']',
+            'gallery_slug' => 'max_length[64]|unique[' . $this->_table . '.gallery_slug.gallery_id.' . $this->request->getGet('gallery_id') . ']',
             'gallery_description' => 'required',
             'featured' => 'boolean',
             'status' => 'boolean'

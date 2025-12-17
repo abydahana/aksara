@@ -17,8 +17,11 @@
 
 namespace Aksara\Laboratory;
 
-use Aksara\Laboratory\Model;
 use Config\Mimes;
+use Config\Services;
+use Aksara\Laboratory\Model;
+use DateTime;
+use Throwable;
 
 class Validation
 {
@@ -28,71 +31,88 @@ class Validation
 
     public function __construct()
     {
+        // No initialization needed
     }
 
     /**
-     * Check if data is already exist in the database table. It's similar to
-     * is_unique but it's most advanced.
+     * Check if data is already exist in the database table.
+     * Similar to is_unique but more advanced with additional conditions.
      *
-     * @param   mixed|null $value
-     * @param   string $params
-     * @param   array $data
+     * @param mixed|null $value The field value to check
+     * @param string|null $params Database table and field parameters (format: table.field,where_field,where_value,...)
+     * @param array<string, mixed> $data Complete data array being validated
+     * @return bool True if unique, false if exists
      */
-    public function unique($value = null, $params = null, $data = []): bool
+    public function unique($value = null, ?string $params = null, array $data = []): bool
     {
+        // Normalize parameter separators: Replace commas with dots, then split by dot.
+        // This is necessary to separate table.field.where_field.where_value parameters.
         $params = explode('.', str_replace(',', '.', $params));
 
         if ($params) {
             $model = new Model();
 
             if (isset($_ENV['DBDriver'])) {
-                // Cross database connection
+                // Check if cross-database connection is configured via environment variables.
+                // If set, apply the configuration to the model instance.
                 $model->database_config($_ENV);
             }
 
+            // Slice parameters starting from index 2 to get the WHERE conditions (key-value pairs).
             $sliced = array_slice($params, 2, sizeof($params));
             $where = [];
 
+            // Iterate over the sliced parameters to build an associative array of WHERE conditions.
             foreach ($sliced as $key => $val) {
+                // Ensure we only process key names (which are at even indices relative to $sliced).
                 if ($key % 2 === 0) {
+                    // Assign the key (field name) its corresponding value (at the next index).
                     $where[$val] = (isset($sliced[$key + 1]) ? $sliced[$key + 1] : '');
                 }
             }
 
+            // Initialize a counter to track the position of the WHERE condition (used to apply '!=' to the first condition).
             $num = 0;
 
+            // Apply the extracted WHERE conditions to the model query.
             foreach ($where as $key => $val) {
-                // Check if value not empty
+                // Condition check 1: Skip if the WHERE value is effectively empty (not set or not numeric 0).
                 if (! $val && ! is_numeric($val)) {
-                    // Change the loop number
+                    // Change the loop number before skipping.
                     $num++;
 
                     // Value is empty, continue next loops
                     continue;
                 }
 
-                // Check if not first loop
+                // Condition check 2: Determine if this is the first condition being applied.
                 if (! $num) {
-                    // Where value is not in statement
+                    // First condition: Assume this is typically the primary key exclusion (e.g., ID != current_ID).
+                    // Apply a 'NOT EQUAL' condition (e.g., where('id !=', 5)).
                     $model->where($key . ' != ', $val);
                 } else {
-                    // Where value is in statement
+                    // Subsequent conditions: Apply a standard 'EQUAL' condition (e.g., where('user_id', 10)).
                     $model->where($key, $val);
                 }
 
                 $num++;
             }
 
+            // Final check: Select the field and execute the query with the main validation condition
+            // (table.field = $value) AND the custom WHERE conditions applied above.
+            // Returns TRUE if the number of resulting rows is 0 (meaning the value is unique), FALSE otherwise.
             return $model->select($params[1])->get_where($params[0], [$params[1] => $value])->num_rows() === 0;
         }
 
+        // Returns FALSE if $params is empty (e.g., validator parameter was not properly formatted or missing).
         return false;
     }
 
     /**
-     * Check if field is valid boolean
+     * Check if field is valid boolean (0 or 1).
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid boolean, false otherwise
      */
     public function boolean($value = null): bool
     {
@@ -104,9 +124,10 @@ class Validation
     }
 
     /**
-     * Check if field is valid currency
+     * Check if field is valid currency format.
      *
-     * @param mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid currency, false otherwise
      */
     public function currency($value = null): bool
     {
@@ -118,16 +139,17 @@ class Validation
     }
 
     /**
-     * Check if field is valid date
+     * Check if field is valid date.
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid date, false otherwise
      */
     public function valid_date($value = null): bool
     {
         // Convert value to standardzitation
         $value = date('Y-m-d', strtotime($value));
 
-        $valid_date = \DateTime::createFromFormat('Y-m-d', $value);
+        $valid_date = DateTime::createFromFormat('Y-m-d', $value);
 
         if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
             return false;
@@ -137,9 +159,10 @@ class Validation
     }
 
     /**
-     * Check if field is valid time
+     * Check if field is valid time (HH:MM format).
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid time, false otherwise
      */
     public function valid_time($value = null): bool
     {
@@ -154,16 +177,17 @@ class Validation
     }
 
     /**
-     * Check if field is valid date and time
+     * Check if field is valid date and time.
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid datetime, false otherwise
      */
     public function valid_datetime($value = null): bool
     {
         // Convert value to standardzitation
         $value = date('Y-m-d H:i:s', strtotime($value));
 
-        $valid_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+        $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
 
         if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
             return false;
@@ -173,9 +197,10 @@ class Validation
     }
 
     /**
-     * Check if field is valid year
+     * Check if field is valid year (between 1970 and 2100).
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid year, false otherwise
      */
     public function valid_year($value = null): bool
     {
@@ -189,9 +214,10 @@ class Validation
     }
 
     /**
-     * Check if field is valid hex
+     * Check if field is valid hex color code.
      *
-     * @param   mixed|null $value
+     * @param mixed|null $value The value to check
+     * @return bool True if valid hex color, false otherwise
      */
     public function valid_hex($value = null): bool
     {
@@ -203,11 +229,13 @@ class Validation
     }
 
     /**
-     * Check relation table
+     * Check if value exists in related database table.
      *
-     * @param   mixed|null $params
+     * @param mixed $value The value to check
+     * @param string|null $params Table and field parameters (format: table.field)
+     * @return bool True if relation exists, false otherwise
      */
-    public function relation_checker($value = 0, $params = null): bool
+    public function relation_checker($value = 0, ?string $params = null): bool
     {
         $model = new Model();
 
@@ -230,15 +258,17 @@ class Validation
     }
 
     /**
-     * We used to extract image in traditional way because of possibility
-     * of multiple image can be uploaded with different field name
+     * Validate and process file uploads.
+     * Handles single and multiple file uploads with image processing.
      *
-     * @param   mixed|null $value
-     * @param   mixed|null $params
+     * @param mixed|null $value Not used, required for validation callback
+     * @param string|null $params Field name and file type (format: field.type)
+     * @return bool Always returns true, sets validation errors if needed
      */
-    public function validate_upload($value = null, $params = null): bool
+    public function validate_upload($value = null, ?string $params = null): bool
     {
-        $validation = \Config\Services::validation();
+        $request = Services::request();
+        $validation = Services::validation();
 
         list($field, $type) = array_pad(explode('.', $params), 2, null);
 
@@ -249,7 +279,7 @@ class Validation
             $suffix = null;
         }
 
-        $files = service('request')->getFile($field . $suffix) ?? service('request')->getFileMultiple($field . $suffix);
+        $files = $request->getFile($field . $suffix) ?? $request->getFileMultiple($field . $suffix);
 
         if (is_array($files)) {
             foreach ($files as $key => $val) {
@@ -290,29 +320,32 @@ class Validation
     }
 
     /**
-     * Execute the file upload
+     * Execute the file upload process.
      *
-     * @param   string|null $filename
-     * @param   string|null $field
-     * @param   string|null $type
-     * @param   mixed|null $index
-     * @param   mixed|null $_index
+     * @param string|null $filename The file input name
+     * @param string|null $field The form field name
+     * @param string|null $type The file type (image/document)
+     * @param int|string|null $index Array index for multiple files
+     * @param int|string|null $_index Nested array index
+     * @return bool True if upload successful, false otherwise
      */
-    private function _do_upload($filename = null, $field = null, $type = null, $index = 0, $_index = null)
+    private function _do_upload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
     {
+        $request = Services::request();
+        $router = Services::router();
         $upload_path = get_userdata('_set_upload_path');
 
         if (! $upload_path) {
-            $upload_path = strtolower(substr(strstr(service('router')->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
+            $upload_path = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
             $upload_path = array_pad(explode('\\', $upload_path), 2, null);
             $upload_path = $upload_path[1] ?? $upload_path[0];
         }
 
-        $source = service('request')->getFile($filename);
+        $source = $request->getFile($filename);
         $mime_type = new Mimes();
         $valid_mime = [];
 
-        if (! $source->getName()) {
+        if (! $source || ! $source->isValid() || ! $source->getName()) {
             // No file are selected
             return false;
         }
@@ -338,7 +371,7 @@ class Validation
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) $source->getSizeByUnit('mb') > MAX_UPLOAD_SIZE) {
+        } elseif ((float) $source->getSize('mb') > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
             $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 
@@ -355,7 +388,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -367,7 +400,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -379,7 +412,7 @@ class Validation
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
                 return false;
@@ -413,7 +446,7 @@ class Validation
                 $height = $original_dimension;
 
                 // Load image manipulation library
-                $image = \Config\Services::image('gd');
+                $image = Services::image('gd');
 
                 // Resize image and move to upload directory
                 $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
@@ -437,18 +470,21 @@ class Validation
             // Collect uploaded data (single name)
             $this->_uploaded_files[$field][$index] = $filename;
         }
+
+        return true;
     }
 
     /**
-     * Generate the thumbnail of uploaded image
+     * Resize image to create thumbnail or icon.
      *
-     * @param   string|null $path
-     * @param   string|null $filename
-     * @param   string|null $type
-     * @param   int $width
-     * @param   int $height
+     * @param string $path The upload path
+     * @param string $filename The original filename
+     * @param string $type The image type (thumbs/icons)
+     * @param int $width The target width
+     * @param int $height The target height
+     * @return bool True if resize successful, false otherwise
      */
-    private function _resize_image($path = null, $filename = null, $type = null, $width = 0, $height = 0)
+    private function _resize_image(string $path, string $filename, string $type, int $width, int $height): bool
     {
         $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
@@ -456,15 +492,23 @@ class Validation
         $imageinfo = getimagesize($source);
         $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 
-        // Load image manipulation library
-        $image = \Config\Services::image('gd');
+        try {
+            // Load image manipulation library
+            $image = Services::image('gd');
 
-        // Resize image
-        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
-            // Crop image after resized
-            $image->withFile($target)
-                ->fit($width, $height, 'center')
-                ->save($target);
+            // Resize image
+            if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+                // Crop image after resized
+                $image->withFile($target)
+                    ->fit($width, $height, 'center')
+                    ->save($target);
+            }
+
+            return true;
+        } catch (Throwable $e) {
+            log_message('error', 'Image resize failed: ' . $e->getMessage());
+
+            return false;
         }
     }
 }

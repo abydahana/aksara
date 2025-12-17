@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Xhr\Controllers;
 
-class Language extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Language extends Core
 {
     public function __construct()
     {
@@ -46,6 +48,6 @@ class Language extends \Aksara\Laboratory\Core
             }
         }
 
-        return throw_exception(301, null, service('request')->getServer('HTTP_REFERER'), true);
+        return throw_exception(301, null, $this->request->getServer('HTTP_REFERER'), true);
     }
 }

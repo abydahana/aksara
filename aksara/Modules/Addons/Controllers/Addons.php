@@ -17,7 +17,12 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-class Addons extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
+
+class Addons extends Core
 {
     private $_primary;
 
@@ -32,9 +37,9 @@ class Addons extends \Aksara\Laboratory\Core
 
         helper('filesystem');
 
-        $this->_primary = service('request')->getGet('item');
+        $this->_primary = $this->request->getGet('item');
 
-        if ('market' == service('request')->getPost('source')) {
+        if ('market' == $this->request->getPost('source')) {
             return $this->_listing();
         }
     }
@@ -62,7 +67,7 @@ class Addons extends \Aksara\Laboratory\Core
 
         if (! $package) {
             try {
-                $curl = \Config\Services::curlrequest(
+                $curl = Services::curlrequest(
                     [
                         'timeout' => 5,
                         'http_errors' => false
@@ -79,13 +84,13 @@ class Addons extends \Aksara\Laboratory\Core
                             'Referer' => base_url()
                         ],
                         'form_params' => [
-                            'type' => service('request')->getGet('type'),
-                            'initial' => service('request')->getGet('item'),
+                            'type' => $this->request->getGet('type'),
+                            'initial' => $this->request->getGet('item'),
                             'version' => aksara('version')
                         ]
                     ]
                 );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return make_json([
                         'error' => $e->getMessage()
                 ]);
@@ -99,7 +104,7 @@ class Addons extends \Aksara\Laboratory\Core
         }
 
         $this->set_title((isset($package->name) ? $package->name : phrase('No item found!')))
-        ->set_icon('mdi ' . (service('request')->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
+        ->set_icon('mdi ' . ($this->request->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
         ->set_output([
             'detail' => $package
         ])
@@ -125,9 +130,9 @@ class Addons extends \Aksara\Laboratory\Core
             ];
         }
 
-        if (in_array(service('request')->getGet('type'), ['theme', 'module'])) {
+        if (in_array($this->request->getGet('type'), ['theme', 'module'])) {
             try {
-                $curl = \Config\Services::curlrequest([
+                $curl = Services::curlrequest([
                     'timeout' => 5,
                     'http_errors' => false
                 ]);
@@ -142,14 +147,14 @@ class Addons extends \Aksara\Laboratory\Core
                             'Referer' => base_url()
                         ],
                         'form_params' => [
-                            'type' => service('request')->getGet('type'),
-                            'initial' => service('request')->getGet('item'),
+                            'type' => $this->request->getGet('type'),
+                            'initial' => $this->request->getGet('item'),
                             'version' => aksara('version'),
                             'install' => true
                         ]
                     ]
                 );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return make_json([
                     'error' => $e->getMessage()
                 ]);
@@ -161,7 +166,7 @@ class Addons extends \Aksara\Laboratory\Core
                 return throw_exception(403, $response->getReasonPhrase(), go_to());
             }
 
-            if ('theme' == service('request')->getGet('type')) {
+            if ('theme' == $this->request->getGet('type')) {
                 $type = 'theme';
                 $path = 'themes';
             } else {
@@ -171,7 +176,7 @@ class Addons extends \Aksara\Laboratory\Core
 
             if ($package) {
                 // Get update package from remote server
-                $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . service('request')->getGet('item');
+                $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->request->getGet('item');
 
                 // Check if temporary path is available
                 if (! is_dir($tmp_path)) {
@@ -197,9 +202,11 @@ class Addons extends \Aksara\Laboratory\Core
                                 return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
                             }
 
+                            $encrypter = Services::encrypter();
+
                             // Configuration found, decrypt password
-                            $query->username = service('encrypter')->decrypt(base64_decode($query->username));
-                            $query->password = service('encrypter')->decrypt(base64_decode($query->password));
+                            $query->username = $encrypter->decrypt(base64_decode($query->username));
+                            $query->password = $encrypter->decrypt(base64_decode($query->password));
 
                             // Try to connect to FTP
                             $connection = ftp_connect($query->hostname, $query->port, 10);
@@ -214,14 +221,14 @@ class Addons extends \Aksara\Laboratory\Core
                             // Close FTP connection
                             ftp_close($connection);
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReasonPhrase(), go_to());
                     }
                 }
 
                 // Load the zip class
-                $zip = new \ZipArchive();
+                $zip = new ZipArchive();
 
                 // Unzip the repository
                 $unzip = $zip->open($tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
@@ -290,7 +297,7 @@ class Addons extends \Aksara\Laboratory\Core
                     }
 
                     // Check if the directory already exists
-                    if (is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path) && service('request')->getPost('upgrade') != service('request')->getGet('item')) {
+                    if (is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path) && $this->request->getPost('upgrade') != $this->request->getGet('item')) {
                         // Close opened zip
                         $zip->close();
 
@@ -304,7 +311,7 @@ class Addons extends \Aksara\Laboratory\Core
                                     ' . phrase('The {{type}} package with same structure is already installed.', ['type' => $type]) . ' ' . phrase('Do you want to upgrade the {{type}} instead?', ['type' => $type]) . '
                                 </div>
                                 <hr class="mx--3 border-secondary" />
-                                <input type="hidden" name="upgrade" value="' . service('request')->getGet('item') . '" />
+                                <input type="hidden" name="upgrade" value="' . $this->request->getGet('item') . '" />
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="d-grid">
@@ -347,17 +354,19 @@ class Addons extends \Aksara\Laboratory\Core
 
                     if ($extract && is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path)) {
                         try {
+                            $autoloader = Services::autoloader();
+
                             // Push module namespace to filelocator
-                            $loader = \Config\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                            $loader = $autoloader->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
                             // Run install migration
-                            $migration = \Config\Services::migrations()->setNameSpace('Modules\\' . $package_path);
+                            $migration = Services::migrations()->setNameSpace('Modules\\' . $package_path);
 
                             // Trying to run the migration
                             if ($migration->latest()) {
                                 //
                             }
-                        } catch (\Throwable $e) {
+                        } catch (Throwable $e) {
                             // Migration error, delete module
                             $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -573,7 +582,7 @@ class Addons extends \Aksara\Laboratory\Core
         }
 
         try {
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false
             ]);
@@ -589,8 +598,8 @@ class Addons extends \Aksara\Laboratory\Core
                     ],
                     'form_params' => [
                         'version' => aksara('version'),
-                        'order' => service('request')->getPost('order'),
-                        'keyword' => service('request')->getPost('keyword'),
+                        'order' => $this->request->getPost('order'),
+                        'keyword' => $this->request->getPost('keyword'),
                         'installed' => json_encode([
                             'themes' => $installed_themes,
                             'modules' => $installed_modules
@@ -598,7 +607,7 @@ class Addons extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return make_json([
                 'error' => $e->getMessage()
             ]);

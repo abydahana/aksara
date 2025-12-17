@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Users;
 
-class Users extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Users extends Core
 {
     private $_table = 'app__users';
 
@@ -39,9 +41,9 @@ class Users extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('group')) {
+        if ($this->request->getGet('group')) {
             $this->where([
-                'group_id' => service('request')->getGet('group')
+                'group_id' => $this->request->getGet('group')
             ]);
         }
 
@@ -108,8 +110,8 @@ class Users extends \Aksara\Laboratory\Core
         ->set_validation([
             'first_name' => 'required|string|max_length[32]',
             'last_name' => 'string|max_length[32]',
-            'username' => 'required|alpha_numeric|unique[app__users.username.user_id.' . service('request')->getGet('user_id') . ']',
-            'email' => 'required|valid_email|unique[app__users.email.user_id.' . service('request')->getGet('user_id') . ']',
+            'username' => 'required|alpha_numeric|unique[app__users.username.user_id.' . $this->request->getGet('user_id') . ']',
+            'email' => 'required|valid_email|unique[app__users.email.user_id.' . $this->request->getGet('user_id') . ']',
             'language_id' => 'required',
             'group_id' => 'required',
             'status' => 'boolean'
@@ -165,7 +167,7 @@ class Users extends \Aksara\Laboratory\Core
                 $groups[] = [
                     'id' => $val->group_id,
                     'label' => $val->group_name,
-                    'selected' => service('request')->getGet('group') == $val->group_id ?? false
+                    'selected' => $this->request->getGet('group') == $val->group_id ?? false
                 ];
             }
         }

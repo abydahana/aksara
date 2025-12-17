@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Logs;
 
-class Logs extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Logs extends Core
 {
     public function __construct()
     {

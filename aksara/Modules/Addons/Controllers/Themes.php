@@ -17,7 +17,12 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-class Themes extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
+
+class Themes extends Core
 {
     private $_primary;
 
@@ -32,7 +37,7 @@ class Themes extends \Aksara\Laboratory\Core
 
         helper('filesystem');
 
-        $this->_primary = service('request')->getGet('item');
+        $this->_primary = $this->request->getGet('item');
     }
 
     public function index()
@@ -55,7 +60,7 @@ class Themes extends \Aksara\Laboratory\Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -96,7 +101,7 @@ class Themes extends \Aksara\Laboratory\Core
         }
 
         try {
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false
             ]);
@@ -117,8 +122,8 @@ class Themes extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
-            return throw_excetion(404, $e->getMessage());
+        } catch (Throwable $e) {
+            log_message('error', $e->getMessage());
         }
 
         $upstream = json_decode($response->getBody());
@@ -186,7 +191,7 @@ class Themes extends \Aksara\Laboratory\Core
 
         $this->permission->must_ajax(current_page('../', ['item' => null]));
 
-        if (! service('request')->getPost('theme')) {
+        if (! $this->request->getPost('theme')) {
             $html = '
                 <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
@@ -228,11 +233,11 @@ class Themes extends \Aksara\Laboratory\Core
 
         if (DEMO_MODE) {
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
-        } elseif (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
+        } elseif (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
             return throw_exception(404, phrase('No theme package manifest were found.'), current_page('../', ['item' => null]));
         }
 
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
+        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
         if (! $package || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
             return throw_exception(403, phrase('Unable to activate the theme with invalid package manifest.'), current_page('../', ['item' => null]));
@@ -249,7 +254,7 @@ class Themes extends \Aksara\Laboratory\Core
         $query = $this->model->update(
             'app__settings',
             [
-                $target => service('request')->getPost('theme')
+                $target => $this->request->getPost('theme')
             ],
             [
                 'id' => $site_id
@@ -281,14 +286,14 @@ class Themes extends \Aksara\Laboratory\Core
         $package->folder = $this->_primary;
         $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
             } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json')) {
                 return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
             }
 
-            $package->colorscheme = service('request')->getPost('colorscheme');
+            $package->colorscheme = $this->request->getPost('colorscheme');
             $folder = $package->folder;
 
             unset($package->folder, $package->integrity);
@@ -316,14 +321,14 @@ class Themes extends \Aksara\Laboratory\Core
      */
     public function import()
     {
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
             $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->form_validation->run(service('request')->getPost()) === false) {
+            if ($this->form_validation->run($this->request->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No theme package were chosen.')]);
@@ -331,7 +336,7 @@ class Themes extends \Aksara\Laboratory\Core
                 return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
             $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
 
@@ -407,7 +412,7 @@ class Themes extends \Aksara\Laboratory\Core
                     return throw_exception(400, ['file' => phrase('No package manifest found on your theme package.')]);
                 }
 
-                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path) && ! service('request')->getPost('upgrade')) {
+                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path) && ! $this->request->getPost('upgrade')) {
                     // Close the opened zip
                     $zip->close();
 
@@ -455,7 +460,7 @@ class Themes extends \Aksara\Laboratory\Core
         $this->permission->must_ajax(current_page('../', ['item' => null]));
 
         // Delete confirmation
-        if (! service('request')->getPost('theme')) {
+        if (! $this->request->getPost('theme')) {
             $html = '
                 <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
@@ -497,19 +502,19 @@ class Themes extends \Aksara\Laboratory\Core
 
         $this->form_validation->setRule('theme', phrase('Theme'), 'required');
 
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             return throw_exception(400, ['theme' => $this->form_validation->getErrors()]);
         }
 
         //C heck if requested theme to delete is match
-        if (service('request')->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'))) {
+        if ($this->request->getPost('theme') && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme'))) {
             if (DEMO_MODE) {
                 return throw_exception(400, ['theme' => phrase('Changes will not saved in demo mode.')]);
             }
 
             // Check if theme property is exists
-            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
-                $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
+            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
+                $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
                 if (! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall theme with invalid package.')]);
@@ -527,12 +532,12 @@ class Themes extends \Aksara\Laboratory\Core
                 )
                 ->row($package->type . '_theme');
 
-                if (service('request')->getPost('theme') == $active_theme) {
+                if ($this->request->getPost('theme') == $active_theme) {
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use.')]);
                 }
 
                 // Delete theme
-                $this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . service('request')->getPost('theme'));
+                $this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme'));
             } else {
                 // Theme property is not found
                 return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstall from the theme manager.')]);

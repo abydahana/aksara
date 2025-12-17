@@ -15,35 +15,46 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+use CodeIgniter\CodeIgniter;
+use Aksara\Laboratory\Model;
+
 if (! function_exists('aksara')) {
     /**
-     * Get Aksara variable
+     * Retrieve Aksara CMS core information.
+     * Used to get version number, build info, or core modification date.
+     *
+     * @param   string $parameter Can be 'version', 'build_version', or 'date_modified'
+     * @return  string Returns specific info string or empty string if parameter invalid
      */
-    function aksara(?string $parameter = null)
+    function aksara(string $parameter): string
     {
-        $version = '5.2.1';
+        $version = '5.2.3';
 
         if ('version' == $parameter) {
             return $version;
         } elseif ('build_version' == $parameter) {
-            return $version . \CodeIgniter\CodeIgniter::CI_VERSION;
+            return $version . CodeIgniter::CI_VERSION;
         } elseif ('date_modified' == $parameter) {
             $modified = filemtime(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php');
 
             return date('F d Y H:i:s', $modified);
         }
 
-        return false;
+        return '';
     }
 }
 
 if (! function_exists('get_setting')) {
     /**
-     * Get setting variable
+     * Retrieve application setting value from database.
+     * Fetches a specific field from the 'app__settings' table.
+     *
+     * @param   string $parameter The column name to retrieve
+     * @return  mixed Returns the setting value or null if not found
      */
-    function get_setting(?string $parameter = null)
+    function get_setting(string $parameter): string
     {
-        $model = new \Aksara\Laboratory\Model();
+        $model = new Model();
 
         if ($model->field_exists($parameter, 'app__settings')) {
             return $model->select($parameter)->get_where(
@@ -56,20 +67,26 @@ if (! function_exists('get_setting')) {
             ->row($parameter);
         }
 
-        return false;
+        return '';
     }
 }
 
 if (! function_exists('get_userdata')) {
     /**
-     * Get user session
+     * Retrieve user session data.
+     * Prioritizes session storage, falls back to database lookup.
+     *
+     * @param   string $field The key to retrieve
+     * @return  mixed Returns session data or null
      */
-    function get_userdata(string $field = '')
+    function get_userdata(string $field = ''): mixed
     {
+        // Check if data is missing in session but user is logged in
         if (! service('session')->get($field) && service('session')->get('user_id')) {
-            $model = new \Aksara\Laboratory\Model();
+            $model = new Model();
             $user_id = service('session')->get('user_id');
 
+            // Attempt to fetch from privileges table first
             if ($model->field_exists($field, 'app__users_privileges')) {
                 return $model->select($field)->get_where(
                     'app__users_privileges',
@@ -79,7 +96,9 @@ if (! function_exists('get_userdata')) {
                     1
                 )
                 ->row($field);
-            } elseif ($model->field_exists($field, 'app__users')) {
+            }
+            // Attempt to fetch from main users table
+            elseif ($model->field_exists($field, 'app__users')) {
                 return $model->select(
                     $field
                 )
@@ -93,7 +112,7 @@ if (! function_exists('get_userdata')) {
                 ->row($field);
             }
 
-            return false;
+            return null;
         }
 
         return service('session')->get($field);
@@ -102,11 +121,13 @@ if (! function_exists('get_userdata')) {
 
 if (! function_exists('set_userdata')) {
     /**
-     * Set user data
+     * Set user session data.
+     * $key is mandatory. $value is optional only if $key is an array.
      *
-     * @param   mixed|null $value
+     * @param   array|string $key Key or array of key-value pairs
+     * @param   mixed|null   $value Value (required if key is string)
      */
-    function set_userdata($key = [], $value = null)
+    function set_userdata(array|string $key, mixed $value = null): void
     {
         if (! is_array($key)) {
             $key = [
@@ -114,61 +135,60 @@ if (! function_exists('set_userdata')) {
             ];
         }
 
-        return service('session')->set($key);
+        service('session')->set($key);
     }
 }
 
 if (! function_exists('unset_userdata')) {
     /**
-     * Unset user data
+     * Unset user session data.
+     *
+     * @param   array|string $key Key or array of keys to remove
      */
-    function unset_userdata($key = [])
+    function unset_userdata(array|string $key): void
     {
-        return service('session')->remove($key);
+        service('session')->remove($key);
     }
 }
 
 if (! function_exists('phrase')) {
     /**
-     * Get phrase of translation
+     * Translate a string/phrase.
+     *
+     * @param   string $phrase The string to translate (Required)
+     * @param   array  $replacement Associative array for variable replacement
+     * @return  string Returns translated string or empty string if input invalid
      */
-    function phrase(?string $phrase = null, array $replacement = [])
+    function phrase(string $phrase, array $replacement = []): string
     {
-        // Set internal encoding to UTF-8
         mb_internal_encoding('UTF-8');
 
-        // Make sure the phrase and language is valid
-        if (! $phrase || is_numeric($phrase)) {
-            // Otherwise, throwback the null result
-            return false;
+        // Since type hint is string, we just check for numeric string or empty
+        if (is_numeric($phrase)) {
+            // Cast numeric string to ensure string manipulation works
+            $phrase = (string) $phrase;
         }
 
-        // Load model
-        $model = new \Aksara\Laboratory\Model();
+        if (empty($phrase)) {
+            return '';
+        }
 
-        // Transform the phrase into safe-string
+        $model = new Model();
+
+        // Sanitize and Normalize
         $phrase = preg_replace('/[^\w\s\p{P}\p{L}]/u', ' ', $phrase);
-
-        // Replace square braces to parentheses
         $phrase = str_replace(['[', ']'], ['(', ')'], $phrase);
-
-        // Remove multiple whitespace
         $phrase = preg_replace('/\s+/', ' ', $phrase);
-
-        // Trim whitespace
         $phrase = trim($phrase);
 
-        // Get locale by session
+        // 1. Determine Language
         $language = get_userdata('language');
 
-        // Check if language session isn't available
         if (! $language) {
             $app_language = get_setting('app_language');
             $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
 
-            $language = $model->select('
-                code
-            ')
+            $language = $model->select('code')
             ->get_where(
                 'app__languages',
                 [
@@ -178,53 +198,37 @@ if (! function_exists('phrase')) {
             ->row('code');
         }
 
+        // 2. File Handling
         $translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
 
         if (! file_exists($translation_file)) {
-            // Translation file not exists
             if (! is_dir(WRITEPATH . 'translations')) {
-                // Translation directory not exists
                 try {
-                    // Try to create directory
                     mkdir(WRITEPATH . 'translations', 0755, true);
-
-                    // Put default content to file with UTF-8 encoding
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
-                    // Safe abstraction
+                } catch (Throwable $e) {
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
-                // Translation directory is exists
                 try {
-                    // Put content into file with UTF-8 encoding
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
-                    // Safe abstraction
+                } catch (Throwable $e) {
                 }
             }
         }
 
         try {
-            // Get existing translation
+            // 3. Process Translation
             $buffer = file_get_contents($translation_file);
-
-            // Decode json from translation
             $phrases = (is_json($buffer) ? json_decode($buffer, true) : []);
 
-            // Ensure $phrases is array
             if (! is_array($phrases)) {
                 $phrases = [];
             }
 
-            // Check if language property is valid
             if (! isset($phrases[$phrase])) {
-                // Set new phrase and push into existing
                 $phrases[$phrase] = $phrase;
-
-                // Sort and humanize the order of phrase
                 ksort($phrases);
 
-                // Put new phrase into existing language with proper UTF-8 encoding
                 if (file_exists($translation_file) && is_writable($translation_file)) {
                     $json_content = json_encode(
                         $phrases,
@@ -232,30 +236,24 @@ if (! function_exists('phrase')) {
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
                     );
-
-                    // Write with explicit UTF-8 encoding
                     file_put_contents($translation_file, $json_content, LOCK_EX);
                 }
             }
 
-            // Get the translated phrase
             $translated_phrase = $phrases[$phrase] ?? $phrase;
 
-            // Replace "word" to "word"
+            // Typographical beautification
             $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
-
-            // Replace quotes to apostrophes
             $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
 
             $phrase = $translated_phrase;
-        } catch (\Throwable $e) {
-            // Safe abstraction - keep original phrase
+        } catch (Throwable $e) {
+            // Keep original on error
         }
 
+        // 4. Replacements
         if ($replacement) {
-            // Find and replace
             foreach ($replacement as $keyword => $replace) {
-                // Replace string between double braces
                 $phrase = preg_replace("/\{\{(\s+)?(" . preg_quote($keyword, '/') . ")(\s+)?\}\}/", $replace, $phrase);
             }
         }
@@ -266,9 +264,9 @@ if (! function_exists('phrase')) {
 
 if (! function_exists('is_rtl')) {
     /**
-     * Get RTL status
+     * Check if the current language uses Right-to-Left (RTL) script.
      */
-    function is_rtl()
+    function is_rtl(): bool
     {
         return in_array(get_userdata('language'), [
             'ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw',
@@ -279,12 +277,14 @@ if (! function_exists('is_rtl')) {
 
 if (! function_exists('is_liked')) {
     /**
-     * Get if post is liked
+     * Check if a post has been liked by the current user.
+     *
+     * @param   int         $post_id The ID of the post (Required)
+     * @param   string|null $post_path The path/type of the post
      */
-    function is_liked(int $post_id = 0, ?string $post_path = null)
+    function is_liked(int $post_id, ?string $post_path = null): bool
     {
-        // Load model
-        $model = new \Aksara\Laboratory\Model();
+        $model = new Model();
 
         return $model->get_where(
             'post__likes',

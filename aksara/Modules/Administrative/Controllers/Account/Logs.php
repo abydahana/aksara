@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Account;
 
-class Logs extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Logs extends Core
 {
     private $_table = 'app__log_activities';
 
@@ -33,8 +35,8 @@ class Logs extends \Aksara\Laboratory\Core
         $this->set_theme('backend');
         $this->set_method('index');
 
-        if (service('request')->getPost('fetch') == 'ip-info') {
-            return $this->_get_ip_info(service('request')->getPost('ip_address'), service('request')->getPost('key'));
+        if ($this->request->getPost('fetch') == 'ip-info') {
+            return $this->_get_ip_info($this->request->getPost('ip_address'), $this->request->getPost('key'));
         }
     }
 
@@ -52,13 +54,13 @@ class Logs extends \Aksara\Laboratory\Core
 
     public function kick()
     {
-        if (service('request')->getGet('session')) {
-            if (service('request')->getGet('session') && file_exists(WRITEPATH . 'session/' . service('request')->getGet('session'))) {
-                unlink(WRITEPATH . 'session/' . service('request')->getGet('session'));
+        if ($this->request->getGet('session')) {
+            if ($this->request->getGet('session') && file_exists(WRITEPATH . 'session/' . $this->request->getGet('session'))) {
+                unlink(WRITEPATH . 'session/' . $this->request->getGet('session'));
             }
 
             // Update table to skip getting session_id on next execution
-            $this->model->update($this->_table, ['session_id' => ''], ['session_id' => service('request')->getGet('session')]);
+            $this->model->update($this->_table, ['session_id' => ''], ['session_id' => $this->request->getGet('session')]);
 
             return throw_exception(301, phrase('The device was successfully kicked.'), current_page('../', ['session' => null]));
         }

@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Logs;
 
-class Errors extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+use DateTime;
+use Throwable;
+
+class Errors extends Core
 {
     public function __construct()
     {
@@ -46,13 +50,13 @@ class Errors extends \Aksara\Laboratory\Core
     {
         $this->permission->must_ajax();
 
-        if (! service('request')->getPost('log')) {
+        if (! $this->request->getPost('log')) {
             $html = '
                 <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center mb-3">
                         ' . phrase('Are you sure want to delete this log?') . '
                     </div>
-                    <input type="hidden" name="log" value="' . service('request')->getGet('log') . '" />
+                    <input type="hidden" name="log" value="' . $this->request->getGet('log') . '" />
                     <hr class="mx--3 border-secondary-subtle" />
                     <div class="row">
                         <div class="col-6">
@@ -84,13 +88,13 @@ class Errors extends \Aksara\Laboratory\Core
             ]);
         }
 
-        $filename = basename(service('request')->getPost('log'));
+        $filename = basename($this->request->getPost('log'));
 
         try {
             unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename);
 
             $deleted = true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $deleted = false;
         }
 
@@ -105,7 +109,7 @@ class Errors extends \Aksara\Laboratory\Core
     {
         $this->permission->must_ajax();
 
-        if (! service('request')->getPost('confirm')) {
+        if (! $this->request->getPost('confirm')) {
             $html = '
                 <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center mb-3">
@@ -173,7 +177,7 @@ class Errors extends \Aksara\Laboratory\Core
                     unlink(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $val);
 
                     $success++;
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                 }
             }
         }
@@ -201,8 +205,8 @@ class Errors extends \Aksara\Laboratory\Core
 
         // Sort DESC
         usort($logs, function ($a, $b) {
-            $dateA = \DateTime::createFromFormat('Y-m-d', substr($a, 4, 10));
-            $dateB = \DateTime::createFromFormat('Y-m-d', substr($b, 4, 10));
+            $dateA = DateTime::createFromFormat('Y-m-d', substr($a, 4, 10));
+            $dateB = DateTime::createFromFormat('Y-m-d', substr($b, 4, 10));
             return $dateB <=> $dateA;
         });
 
@@ -211,11 +215,11 @@ class Errors extends \Aksara\Laboratory\Core
 
     private function _report()
     {
-        if (! service('request')->getGet('report')) {
+        if (! $this->request->getGet('report')) {
             return false;
         }
 
-        $filename = basename(service('request')->getGet('report'));
+        $filename = basename($this->request->getGet('report'));
 
         if (file_exists(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename) && is_readable(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename)) {
             $report = htmlspecialchars(file_get_contents(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename));

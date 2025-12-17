@@ -17,22 +17,44 @@
 
 namespace Aksara\Laboratory;
 
+use Config\Services;
 use Aksara\Laboratory\Model;
+use Throwable;
 
+/**
+ * Permission Class
+ *
+ * Handles user authentication, authorization, access control lists (ACL),
+ * and activity logging.
+ */
 class Permission
 {
+    /**
+     * Database model instance
+     * @var Model
+     */
     private $_model;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->_model = new Model();
     }
 
     /**
-     * API Authorization
+     * Authenticate user credentials and establish session.
+     * Handles login throttling, blocking, and single-device login policy.
+     *
+     * @param   string $username
+     * @param   string $password
      */
     public function authorize($username = '', $password = '')
     {
+        $request = Services::request();
+
+        // Retrieve user by username or email
         $query = $this->_model->select('
             user_id,
             username,
@@ -49,37 +71,37 @@ class Permission
         )
         ->row();
 
-        // Check if user is inactive
+        // Validate user status and password
         if ($query && 1 != $query->status) {
+            // User exists but inactive
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
-            // Check if login attempts failed from the previous session
+            // Security: Check for brute force blocking (based on IP)
             $blocking_check = $this->_model->get_where(
                 'app__users_blocked',
                 [
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                    'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
                 ],
                 1
             )
             ->row();
 
             if ($blocking_check) {
-                // Check if blocking time is still available
+                // Check if blocking time is still active
                 if (strtotime($blocking_check->blocked_until) >= time()) {
-                    // Throw the blocking messages
                     return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
                 } else {
-                    // Remove the record from blocking table
+                    // Release the block if time passed
                     $this->_model->delete(
                         'app__users_blocked',
                         [
-                            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress())
+                            'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
                         ]
                     );
                 }
             }
 
-            // Update the last login timestamp
+            // Update last login timestamp
             $this->_model->update(
                 'app__users',
                 [
@@ -91,9 +113,9 @@ class Permission
                 1
             );
 
-            // Check if system apply one device login
+            // Policy: One Device Login (Optional)
             if (get_setting('one_device_login')) {
-                // Get older sessions
+                // Retrieve active sessions for this user
                 $sessions = $this->_model->select('
                     session_id,
                     timestamp
@@ -108,25 +130,24 @@ class Permission
                 ->result();
 
                 if ($sessions) {
-                    // Older sessions exist
+                    // Iterate and destroy older sessions
                     foreach ($sessions as $key => $val) {
                         if ($val->session_id && file_exists(WRITEPATH . 'session/' . $val->session_id)) {
-                            // Older session found
                             try {
-                                // Unlink older session
+                                // Force logout other device
                                 if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
-                                    // Update table to skip getting session_id on next execution
+                                    // Remove session reference from logs
                                     $this->_model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                 }
-                            } catch (\Throwable $e) {
-                                // Safe abstraction
+                            } catch (Throwable $e) {
+                                // Ignore filesystem errors
                             }
                         }
                     }
                 }
             }
 
-            // Set the user credential into session
+            // Set current session data
             set_userdata([
                 'is_logged' => true,
                 'user_id' => $query->user_id,
@@ -137,11 +158,12 @@ class Permission
                 'access_token' => session_id()
             ]);
 
-            if (service('request')->getPost('year')) {
-                set_userdata('year', service('request')->getPost('year'));
+            // Optional: Store financial year if provided
+            if ($request->getPost('year')) {
+                set_userdata('year', $request->getPost('year'));
             }
 
-            // Get existing session
+            // Manage Session Table (Prevent duplication)
             $session_exists = $this->_model->get_where(
                 'app__sessions',
                 [
@@ -151,7 +173,6 @@ class Permission
             ->row();
 
             if ($session_exists) {
-                // Session exists, delete record
                 $this->_model->delete(
                     'app__sessions',
                     [
@@ -160,36 +181,44 @@ class Permission
                 );
             }
 
-            // Store session to database
+            // Store new session to database
             return $this->_model->insert(
                 'app__sessions',
                 [
                     'id' => get_userdata('access_token'),
-                    'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+                    'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => session_encode()
                 ]
             );
         } else {
+            // Password mismatch or user not found
             return throw_exception(400, ['password' => phrase('Username or email and password combination does not match.')]);
         }
     }
 
     /**
-     * Allow to accessing method
+     * Check if the user is allowed to access the requested path and method.
+     * Also handles automatic privilege registration for unknown paths.
      *
-     * @param   mixed|null $path
-     * @param   mixed|null $method
-     * @param   mixed|null $redirect
+     * @param   string|null $path
+     * @param   string|null $method
+     * @param   int         $user_id
+     * @param   string|null $redirect
+     * @return  bool
      */
     public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
     {
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists(service('router')->controllerName(), $method))) {
+        $router = Services::router();
+
+        // Normalize method name
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
         }
 
+        // Identify the user
         $user = $this->_model->select('
             user_id,
             group_id
@@ -197,7 +226,7 @@ class Permission
         ->get_where(
             'app__users',
             [
-                'user_id' => ($user_id ? $user_id : service('session')->get('user_id')),
+                'user_id' => ($user_id ? $user_id : get_userdata('user_id')),
                 'status' => 1
             ],
             1
@@ -205,7 +234,7 @@ class Permission
         ->row();
 
         if (! $user) {
-            // Destroy previous session to prevent hijacking
+            // User invalid/not logged in, destroy session
             if (session_status() == PHP_SESSION_ACTIVE) {
                 session_destroy();
             }
@@ -213,6 +242,7 @@ class Permission
             return false;
         }
 
+        // Fetch privileges for the user's group
         $privileges = $this->_model->select('
             group_privileges
         ')
@@ -227,17 +257,22 @@ class Permission
 
         $privileges = json_decode($privileges, true);
 
+        // Check access rights
         if (! isset($path, $privileges[$path]) || ! in_array($method, $privileges[$path])) {
-            if (method_exists(service('router')->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
-                // Push to group privileges
+            // Access Denied
+
+            // Auto-Discovery: If method exists but privilege not registered, register it
+            if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
                 $this->_push_privileges($path, $method);
             }
 
             return false;
         } else {
-            // Write log activities
-            if ('modal' != service('request')->getPost('prefer')) {
-                // Only if request is not from session storage
+            // Access Granted
+            $request = Services::request();
+
+            // Log activity (exclude modal requests)
+            if ('modal' != $request->getPost('prefer')) {
                 $this->_push_logs($path, $method);
             }
 
@@ -248,27 +283,33 @@ class Permission
     }
 
     /**
-     * Restrict for accessing method
+     * Enforce access restriction.
+     * Throws an exception if the user does not have sufficient privileges.
      *
-     * @param   mixed|null $path
-     * @param   mixed|null $method
-     * @param   mixed|null $redirect
+     * @param   string|null $path
+     * @param   string|null $method
+     * @param   string|null $redirect
+     * @return  mixed|void
      */
     public function restrict($path = null, $method = null, $redirect = null)
     {
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists(service('router')->controllerName(), $method))) {
+        $router = Services::router();
+
+        // Normalize method
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
         }
 
+        // Fetch privileges
         $privileges = $this->_model->select('
             group_privileges
         ')
         ->get_where(
             'app__groups',
             [
-                'group_id' => service('session')->get('group_id')
+                'group_id' => get_userdata('group_id')
             ],
             1
         )
@@ -276,34 +317,41 @@ class Permission
 
         $privileges = json_decode($privileges, true);
 
-        if (isset($privileges[$path]) && in_array($method, $privileges[$path])) {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
-        } else {
+        // Verify access
+        // Check if privilege is NOT set or method is NOT in the allowed list
+        if (! isset($privileges[$path]) || ! in_array($method, $privileges[$path])) {
+            // Access DENIED
             return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         }
     }
 
     /**
-     * Allow only access through ajax
+     * Ensure the request is made via AJAX.
+     * Throws 403 exception if accessed via standard HTTP request.
      *
-     * @param   mixed|null $redirect
+     * @param   string|null $redirect
+     * @return  void|mixed
      */
     public function must_ajax($redirect = null)
     {
-        if (! service('request')->isAJAX()) {
-            // Non AJAX, redirect to somewhere
+        $request = Services::request();
+
+        if (! $request->isAJAX()) {
+            // Block non-AJAX requests
             return throw_exception(403, phrase('You cannot perform the requested action.'), ($redirect ? $redirect : base_url()));
         }
     }
 
     /**
-     * Store accessed method to privileges
+     * Register a new path or method to the privileges table.
+     * Used for auto-discovery of new features/controllers.
      *
-     * @param   mixed|null $path
-     * @param   mixed|null $method
+     * @param   string|null $path
+     * @param   string      $method
      */
     private function _push_privileges($path = null, $method = '')
     {
+        // Get existing privileges for the path
         $privileges = $this->_model->select('
             privileges
         ')
@@ -319,6 +367,7 @@ class Permission
         $privileges = ($privileges ? json_decode($privileges, true) : []);
 
         if ($privileges) {
+            // Path exists, append method if missing
             if (! in_array($method, $privileges)) {
                 $privileges[] = $method;
 
@@ -337,6 +386,7 @@ class Permission
                 );
             }
         } else {
+            // Path does not exist, check existence before insert
             $checker = $this->_model->get_where(
                 'app__groups_privileges',
                 [
@@ -347,6 +397,7 @@ class Permission
             ->row();
 
             if (! $checker) {
+                // Initialize new path privilege
                 $privileges[] = $method;
 
                 $prepare = [
@@ -361,18 +412,21 @@ class Permission
     }
 
     /**
-     * Store activity logs into database
+     * Record user activity logs including IP, browser, and platform.
      *
-     * @param   mixed|null $path
-     * @param   mixed|null $method
+     * @param   string|null $path
+     * @param   string      $method
      */
     private function _push_logs($path = null, $method = '')
     {
-        $query = service('request')->getGet();
+        $request = Services::request();
 
+        // Prepare query string (remove token)
+        $query = $request->getGet();
         unset($query['aksara']);
 
-        $agent = service('request')->getUserAgent();
+        // Parse User Agent
+        $agent = $request->getUserAgent();
 
         if ($agent->isBrowser()) {
             $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
@@ -384,18 +438,20 @@ class Permission
             $user_agent = phrase('Unknown');
         }
 
+        // Prepare Log Data
         $prepare = [
-            'user_id' => service('session')->get('user_id'),
+            'user_id' => get_userdata('user_id'),
             'session_id' => COOKIE_NAME . session_id(),
             'path' => $path,
             'method' => $method,
             'query' => json_encode($query),
-            'ip_address' => (service('request')->hasHeader('x-forwarded-for') ? service('request')->getHeaderLine('x-forwarded-for') : service('request')->getIPAddress()),
+            'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
             'browser' => $user_agent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
+        // Save to Database
         $this->_model->insert('app__log_activities', $prepare);
     }
 }

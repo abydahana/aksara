@@ -18,8 +18,10 @@
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
 use Aksara\Laboratory\Template;
+use Aksara\Laboratory\Core;
+use Throwable;
 
-class Translate extends \Aksara\Laboratory\Core
+class Translate extends Core
 {
     private $_table = 'app__languages';
     private $_primary;
@@ -40,18 +42,18 @@ class Translate extends \Aksara\Laboratory\Core
         $this->set_theme('backend');
         $this->searchable(false);
 
-        $this->_primary = service('request')->getGet('id');
+        $this->_primary = $this->request->getGet('id');
 
         if (! $this->_primary) {
             return throw_exception(404, phrase('Please choose the language to translate.'), current_page('../'));
         }
 
-        $this->_code = service('request')->getGet('code');
+        $this->_code = $this->request->getGet('code');
         $this->_translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->_code . '.json';
         $this->_total_phrases = 0;
         $this->_limit_backup = 99;
-        $this->_limit = (service('request')->getGet('limit') ? service('request')->getGet('limit') : $this->_limit_backup);
-        $this->_offset = (service('request')->getGet('per_page') > 1 ? (service('request')->getGet('per_page') * $this->_limit) - $this->_limit : 0);
+        $this->_limit = ($this->request->getGet('limit') ? $this->request->getGet('limit') : $this->_limit_backup);
+        $this->_offset = ($this->request->getGet('per_page') > 1 ? ($this->request->getGet('per_page') * $this->_limit) - $this->_limit : 0);
     }
 
     public function index()
@@ -72,7 +74,7 @@ class Translate extends \Aksara\Laboratory\Core
                     'total_rows' => $this->_total_phrases,
                     'url' => current_page(null, ['per_page' => null])
                 ],
-                ($this->api_client || service('request')->isAJAX())
+                ($this->api_client || $this->request->isAJAX())
             )
         ])
         ->form_callback('validate_translation')
@@ -91,7 +93,7 @@ class Translate extends \Aksara\Laboratory\Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
-        $delete_key = service('request')->getGet('phrase');
+        $delete_key = $this->request->getGet('phrase');
 
         helper('filesystem');
 
@@ -118,7 +120,7 @@ class Translate extends \Aksara\Laboratory\Core
 
                     // Attempt to update the translation file
                     file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Failed to write file, increase error counts
                     $error++;
                 }
@@ -145,7 +147,7 @@ class Translate extends \Aksara\Laboratory\Core
 
                 $translation = file_get_contents($this->_translation_file);
                 $phrases = json_decode($translation, true);
-                $phrases_input = service('request')->getPost('phrases');
+                $phrases_input = $this->request->getPost('phrases');
 
                 if (! is_array($phrases)) {
                     $phrases = [];
@@ -259,7 +261,7 @@ class Translate extends \Aksara\Laboratory\Core
                 file_put_contents($this->_translation_file, $json_content, LOCK_EX);
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return throw_exception(403, $e->getMessage(), current_page());
             }
         } else {
@@ -278,7 +280,7 @@ class Translate extends \Aksara\Laboratory\Core
 
             if ($phrases) {
                 foreach ($phrases as $key => $val) {
-                    if (service('request')->getGet('q') && stripos($val, service('request')->getGet('q')) === false) {
+                    if ($this->request->getGet('q') && stripos($val, $this->request->getGet('q')) === false) {
                         // Unset unmatched phrase
                         unset($phrases[$key]);
                     } else {

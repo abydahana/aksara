@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-class Services extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Services extends Core
 {
     private $_table = 'app__rest_clients';
 
@@ -34,7 +36,7 @@ class Services extends \Aksara\Laboratory\Core
 
         $this->unset_method('clone');
 
-        $this->_primary = service('request')->getGet('id');
+        $this->_primary = $this->request->getGet('id');
     }
 
     public function index()

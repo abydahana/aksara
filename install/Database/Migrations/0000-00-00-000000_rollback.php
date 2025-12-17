@@ -18,7 +18,11 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use Throwable;
 
+/**
+ * @property \CodeIgniter\Database\BaseConnection $db
+ */
 class Rollback extends Migration
 {
     public function up()
@@ -49,7 +53,7 @@ class Rollback extends Migration
                     try {
                         // Drop foreign key
                         $this->forge->dropForeignKey($_val->table_name, $_val->constraint_name);
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Safe abstraction
                     }
                 }

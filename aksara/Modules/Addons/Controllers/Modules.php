@@ -17,7 +17,13 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-class Modules extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+use ZipArchive;
+use stdClass;
+
+class Modules extends Core
 {
     private $_primary;
 
@@ -32,7 +38,7 @@ class Modules extends \Aksara\Laboratory\Core
 
         helper('filesystem');
 
-        $this->_primary = service('request')->getGet('item');
+        $this->_primary = $this->request->getGet('item');
     }
 
     public function index()
@@ -55,7 +61,7 @@ class Modules extends \Aksara\Laboratory\Core
 
         try {
             $package = json_decode(file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -96,7 +102,7 @@ class Modules extends \Aksara\Laboratory\Core
         }
 
         try {
-            $curl = \Config\Services::curlrequest([
+            $curl = Services::curlrequest([
                 'timeout' => 5,
                 'http_errors' => false
             ]);
@@ -117,8 +123,8 @@ class Modules extends \Aksara\Laboratory\Core
                     ]
                 ]
             );
-        } catch (\Throwable $e) {
-            return throw_excetion(404, $e->getMessage());
+        } catch (Throwable $e) {
+            log_message('error', $e->getMessage());
         }
 
         $upstream = json_decode($response->getBody());
@@ -180,14 +186,14 @@ class Modules extends \Aksara\Laboratory\Core
      */
     public function import()
     {
-        if ($this->valid_token(service('request')->getPost('_token'))) {
+        if ($this->valid_token($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
             $this->form_validation->setRule('file', phrase('Module Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->form_validation->run(service('request')->getPost()) === false) {
+            if ($this->form_validation->run($this->request->getPost()) === false) {
                 return throw_exception(400, $this->form_validation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No module package were chosen.')]);
@@ -195,10 +201,10 @@ class Modules extends \Aksara\Laboratory\Core
                 return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
             }
 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
             $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
-            $package = new \stdClass();
+            $package = new stdClass();
 
             if (true === $unzip) {
                 if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
@@ -273,7 +279,7 @@ class Modules extends \Aksara\Laboratory\Core
                     return throw_exception(400, ['file' => phrase('No package manifest found on your module package.')]);
                 }
 
-                if (is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && ! service('request')->getPost('upgrade')) {
+                if (is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && ! $this->request->getPost('upgrade')) {
                     // Close the opened zip
                     $zip->close();
 
@@ -294,16 +300,16 @@ class Modules extends \Aksara\Laboratory\Core
                 if ($extract && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path)) {
                     try {
                         // Push module namespace to filelocator
-                        $loader = \Config\Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                        $loader = Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
                         // Run install migration
-                        $migration = \Config\Services::migrations()->setNamespace('Modules\\' . $package_path);
+                        $migration = Services::migrations()->setNamespace('Modules\\' . $package_path);
 
                         // Trying to run the migration
                         if ($migration->latest()) {
                             //
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Migration error, delete module
                         $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
 
@@ -489,7 +495,7 @@ class Modules extends \Aksara\Laboratory\Core
         $this->permission->must_ajax(current_page('../', ['item' => null]));
 
         // Delete confirmation
-        if (! service('request')->getPost('module')) {
+        if (! $this->request->getPost('module')) {
             $html = '
                 <form action="' . current_page() . '" method="POST" class="--validate-form">
                     <div class="text-center">
@@ -531,22 +537,22 @@ class Modules extends \Aksara\Laboratory\Core
 
         $this->form_validation->setRule('module', phrase('Module'), 'required');
 
-        if ($this->form_validation->run(service('request')->getPost()) === false) {
+        if ($this->form_validation->run($this->request->getPost()) === false) {
             return throw_exception(400, ['module' => $this->form_validation->getErrors()]);
         }
 
         // Check if requested module to delete is match
-        if (service('request')->getPost('module') && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'))) {
+        if ($this->request->getPost('module') && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module'))) {
             if (DEMO_MODE) {
                 return throw_exception(400, ['module' => phrase('Changes will not saved in demo mode.')]);
             }
 
             // Check if module property is exists
-            if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json')) {
+            if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json')) {
                 $query = $this->model->order_by('id', 'DESC')->get_where(
                     config('Migrations')->table,
                     [
-                        'namespace' => 'Modules\\' . service('request')->getPost('module')
+                        'namespace' => 'Modules\\' . $this->request->getPost('module')
                     ],
                     1
                 )
@@ -555,14 +561,14 @@ class Modules extends \Aksara\Laboratory\Core
                 if ($query) {
                     try {
                         // Push module namespace to filelocator
-                        $loader = \Config\Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
+                        $loader = Services::autoloader()->addNamespace($query->namespace, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module'));
 
                         // Run uninstall migration
-                        $migration = \Config\Services::migrations()->setNamespace($query->namespace);
+                        $migration = Services::migrations()->setNamespace($query->namespace);
 
                         // Trying to run the migration
                         $migration->regress($query->batch);
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         return throw_exception(400, ['module' => $e->getMessage()]);
                     }
                 }
@@ -570,7 +576,7 @@ class Modules extends \Aksara\Laboratory\Core
                 /**
                  * Prepare to remove unused privileges
                  */
-                $package = file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json');
+                $package = file_get_contents(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json');
                 $package = json_decode($package);
 
                 /**
@@ -595,7 +601,7 @@ class Modules extends \Aksara\Laboratory\Core
                             // Loops the menu to update links
                             foreach ($menus as $_key => $_val) {
                                 // Check if the link id related to uninstalled module
-                                if (isset($_val->id) && sha1(service('request')->getPost('module')) == $_val->id) {
+                                if (isset($_val->id) && sha1($this->request->getPost('module')) == $_val->id) {
                                     // Link relate to uninstalled module, unset it
                                     unset($menus[$_key]);
                                 }
@@ -663,7 +669,7 @@ class Modules extends \Aksara\Laboratory\Core
                 }
 
                 // Delete module
-                $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . service('request')->getPost('module'));
+                $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module'));
             } else {
                 // Module property is not found
                 return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstall from the module manager.')]);

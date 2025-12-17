@@ -17,7 +17,11 @@
 
 namespace Aksara\Modules\Assets\Controllers;
 
-class Assets extends \Aksara\Laboratory\Core
+use Config\Services;
+use Aksara\Laboratory\Core;
+use Throwable;
+
+class Assets extends Core
 {
     public function __construct()
     {
@@ -107,7 +111,7 @@ class Assets extends \Aksara\Laboratory\Core
                     }
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             exit($e->getMessage());
         }
 
@@ -137,11 +141,11 @@ class Assets extends \Aksara\Laboratory\Core
 
             EOF;
 
-        service('response')->setHeader('Content-Type', 'text/css');
-        service('response')->setBody($credits);
-        service('response')->appendBody($output);
+        $this->response->setHeader('Content-Type', 'text/css');
+        $this->response->setBody($credits);
+        $this->response->appendBody($output);
 
-        return service('response')->send();
+        return $this->response->send();
     }
 
     /**
@@ -177,11 +181,11 @@ class Assets extends \Aksara\Laboratory\Core
             // Event listener
             $output .= file_get_contents('assets/local/js/global.min.js');
 
-            if (strtolower(service('request')->getUserAgent()->getBrowser()) == 'internet explorer') {
+            if (strtolower($this->request->getUserAgent()->getBrowser()) == 'internet explorer') {
                 // IE fixer
                 $output .= file_get_contents('assets/local/js/ie.fix.min.js');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             exit($e->getMessage());
         }
 
@@ -209,21 +213,23 @@ class Assets extends \Aksara\Laboratory\Core
 
             EOF;
 
-        service('response')->setHeader('Content-Type', 'text/javascript');
-        service('response')->setBody($credits);
-        service('response')->appendBody('const config = ' . $this->_get_configs($theme) . ';');
-        service('response')->appendBody('const phrases = ' . $this->_get_phrases() . ';');
-        service('response')->appendBody('const components = ' . $this->_get_components($theme) . ';');
-        service('response')->appendBody($output);
+        $this->response->setHeader('Content-Type', 'text/javascript');
+        $this->response->setBody($credits);
+        $this->response->appendBody('const config = ' . $this->_get_configs($theme) . ';');
+        $this->response->appendBody('const phrases = ' . $this->_get_phrases() . ';');
+        $this->response->appendBody('const components = ' . $this->_get_components($theme) . ';');
+        $this->response->appendBody($output);
 
-        return service('response')->send();
+        return $this->response->send();
     }
 
     private function _get_configs($theme = null)
     {
+        $uri = Services::uri();
+
         $configs = [
             'base_url' => preg_replace('/\?.*/', '', base_url()),
-            'current_slug' => str_replace('.', '-', service('uri')->setSilent()->getPath()),
+            'current_slug' => str_replace('.', '-', $uri->setSilent()->getPath()),
             'document_extension_allowed' => (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : []),
             'image_extension_allowed' => (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : []),
             'max_upload_size' => (MAX_UPLOAD_SIZE ? (MAX_UPLOAD_SIZE * 1024) : 0),
@@ -246,7 +252,7 @@ class Assets extends \Aksara\Laboratory\Core
                     // Merge main configs and theme package
                     $configs = array_merge($configs, $theme_package['configs']);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Safe abstraction
             }
         }
@@ -263,7 +269,7 @@ class Assets extends \Aksara\Laboratory\Core
                 $phrases = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . get_userdata('language') . '.json');
                 $phrases = json_decode($phrases, true);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 
@@ -314,7 +320,7 @@ class Assets extends \Aksara\Laboratory\Core
                     unset($components[$path]);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Safe abstraction
         }
 

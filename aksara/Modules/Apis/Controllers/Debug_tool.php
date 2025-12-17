@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Apis\Controllers;
 
-class Debug_tool extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Debug_tool extends Core
 {
     public function __construct()
     {

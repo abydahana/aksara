@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Users;
 
-class Privileges extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Privileges extends Core
 {
     private $_table = 'app__users_privileges';
 
@@ -35,7 +37,7 @@ class Privileges extends \Aksara\Laboratory\Core
         $this->set_method('update');
         $this->permit_upsert();
 
-        $this->_primary = service('request')->getGet('user_id');
+        $this->_primary = $this->request->getGet('user_id');
 
         $this->_user = $this->model->select('
             app__users.user_id,
@@ -85,7 +87,7 @@ class Privileges extends \Aksara\Laboratory\Core
         ])
         ->set_default([
             'user_id' => $this->_primary,
-            'access_year' => service('request')->getPost('year')
+            'access_year' => $this->request->getPost('year')
         ])
         ->where('user_id', $this->_primary)
         ->limit(1)

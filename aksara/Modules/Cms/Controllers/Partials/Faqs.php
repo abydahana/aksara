@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
-class Faqs extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Faqs extends Core
 {
     private $_table = 'pages__faqs';
 
@@ -37,8 +39,8 @@ class Faqs extends \Aksara\Laboratory\Core
     {
         $this->add_filter($this->_filter());
 
-        if (service('request')->getGet('language')) {
-            $this->where('language_id', service('request')->getGet('language'));
+        if ($this->request->getGet('language')) {
+            $this->where('language_id', $this->request->getGet('language'));
         }
 
         $this->set_title(phrase('FAQs'))
@@ -105,7 +107,7 @@ class Faqs extends \Aksara\Laboratory\Core
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
-                    'selected' => service('request')->getGet('language') === $val->id
+                    'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
         }

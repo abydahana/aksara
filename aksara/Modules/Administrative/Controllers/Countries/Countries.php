@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Countries;
 
-class Countries extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Countries extends Core
 {
     private $_table = 'app__countries';
 
@@ -34,7 +36,7 @@ class Countries extends \Aksara\Laboratory\Core
 
         $this->unset_method('clone');
 
-        $this->_primary = service('request')->getGet('id');
+        $this->_primary = $this->request->getGet('id');
     }
 
     public function index()

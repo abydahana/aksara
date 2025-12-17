@@ -17,7 +17,9 @@
 
 namespace Aksara\Modules\Notifier\Controllers;
 
-class Notifier extends \Aksara\Laboratory\Core
+use Aksara\Laboratory\Core;
+
+class Notifier extends Core
 {
     private $_table = 'notifier';
 
