@@ -5946,11 +5946,15 @@ abstract class Core extends Controller
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        // 2. Check for existing visitor log by IP address.
-        $query = $this->model->get_where('app__log_visitors', ['ip_address' => $prepare['ip_address']], 1)->row();
+        // 2. Check if this IP has visited TODAY
+        $today = date('Y-m-d');
+        $query = $this->model->get_where('app__log_visitors', [
+            'ip_address' => $prepare['ip_address'],
+            'DATE(timestamp)' => $today  // Check if already visited today
+        ], 1)->row();
 
         if (! $query) {
-            // New unique visitor
+            // Visitor hasn't visited today (could be new or returning visitor)
             try {
                 $log_insert = $this->model->insert('app__log_visitors', $prepare);
 
@@ -5958,16 +5962,14 @@ abstract class Core extends Controller
                     // Trap suspicious access if insertion fails.
                     file_put_contents(WRITEPATH . 'logs/log-' . date('Y-m-d') . '.txt', current_page() . PHP_EOL . json_encode($prepare) . PHP_EOL, FILE_APPEND | LOCK_EX);
                 } else {
-                    // Update all counters for a new unique visitor (including whole/total visits).
+                    // Update all counters for a new visitor today
                     $this->_update_visit_counters(['daily', 'weekly', 'monthly', 'yearly', 'whole']);
                 }
             } catch (Throwable $e) {
                 // Safe abstraction (logging the error can be added here)
             }
-        } else {
-            // Check if the visitor's last visit was in a different time period.
-            $this->_update_visit_counters_if_needed($query);
         }
+        // If visitor already came today, don't increment counters
     }
 
     /**
@@ -5984,57 +5986,11 @@ abstract class Core extends Controller
         // Build the SQL increment query for each specified period.
         foreach ($periods as $period) {
             $field = $period . '_visits';
-            // Use SET to construct the increment operation directly in SQL: SET field = field + 1
             $this->model->set($field, "$field + 1", false);
         }
 
         // Update the app__stats table (typically a single-row table).
         $this->model->update('app__stats');
-    }
-
-    /**
-     * Updates visit counters (daily, weekly, monthly, yearly) only if the visitor's
-     * last visit occurred in a different time period.
-     *
-     * @param object $previous_visit An object containing the visitor's last visit details (must include 'timestamp' and 'ip_address').
-     */
-    private function _update_visit_counters_if_needed(object $previous_visit): void
-    {
-        // Convert timestamps for comparison
-        $last_visit = strtotime($previous_visit->timestamp);
-        $now = time();
-
-        $periods_to_update = [];
-
-        // Check if different day
-        if (date('Y-m-d', $last_visit) !== date('Y-m-d', $now)) {
-            $periods_to_update[] = 'daily';
-        }
-
-        // Check if different week
-        if (date('Y-W', $last_visit) !== date('Y-W', $now)) {
-            $periods_to_update[] = 'weekly';
-        }
-
-        // Check if different month
-        if (date('Y-m', $last_visit) !== date('Y-m', $now)) {
-            $periods_to_update[] = 'monthly';
-        }
-
-        // Check if different year
-        if (date('Y', $last_visit) !== date('Y', $now)) {
-            $periods_to_update[] = 'yearly';
-        }
-
-        // Update counters if any period changed
-        if (! empty($periods_to_update)) {
-            // Execute the counter update logic.
-            $this->_update_visit_counters($periods_to_update);
-
-            // Update the last visit timestamp for the current visitor.
-            $this->model->where('ip_address', $previous_visit->ip_address);
-            $this->model->update('app__log_visitors', ['timestamp' => date('Y-m-d H:i:s')]);
-        }
     }
 
     /**
@@ -6058,50 +6014,45 @@ abstract class Core extends Controller
                 'last_yearly_reset' => date('Y-m-d')
             ];
 
-            // Insert record
             $this->model->insert('app__stats', $initial_data);
-
-            // Set default record
             $stats = (object) $initial_data;
         }
 
-        // Current Date Formats
         $today = date('Y-m-d');
-        $current_week = date('Y-W'); // Year-Week number format
+        $current_week = date('Y-W');
         $current_month = date('Y-m');
         $current_year = date('Y');
 
         $updates = [];
 
-        // Reset if the last reset date is not today.
+        // Reset daily if day changed
         if (($stats->last_daily_reset ?? null) !== $today) {
             $updates['daily_visits'] = 0;
             $updates['last_daily_reset'] = $today;
         }
 
-        // Check if it's the first run OR if the current week is different from the last reset week.
+        // Reset weekly if week changed
         $last_weekly_reset_week = ($stats->last_weekly_reset ? date('Y-W', strtotime($stats->last_weekly_reset)) : null);
-        if (! $stats->last_weekly_reset || $last_weekly_reset_week !== $current_week) {
+        if (! $last_weekly_reset_week || $last_weekly_reset_week !== $current_week) {
             $updates['weekly_visits'] = 0;
             $updates['last_weekly_reset'] = $today;
         }
 
-        // Check if it's the first run OR if the current month is different from the last reset month.
+        // Reset monthly if month changed
         $last_monthly_reset_month = ($stats->last_monthly_reset ? date('Y-m', strtotime($stats->last_monthly_reset)) : null);
-        if (! $stats->last_monthly_reset || $last_monthly_reset_month !== $current_month) {
+        if (! $last_monthly_reset_month || $last_monthly_reset_month !== $current_month) {
             $updates['monthly_visits'] = 0;
             $updates['last_monthly_reset'] = $today;
         }
 
-        // Check if it's the first run OR if the current year is different from the last reset year.
+        // Reset yearly if year changed
         $last_yearly_reset_year = ($stats->last_yearly_reset ? date('Y', strtotime($stats->last_yearly_reset)) : null);
-        if (! $stats->last_yearly_reset || $last_yearly_reset_year !== $current_year) {
+        if (! $last_yearly_reset_year || $last_yearly_reset_year !== $current_year) {
             $updates['yearly_visits'] = 0;
             $updates['last_yearly_reset'] = $today;
         }
 
         if (! empty($updates)) {
-            // Since app__stats is expected to be a single-row table, no WHERE clause is typically needed.
             $this->model->update('app__stats', $updates);
         }
     }
