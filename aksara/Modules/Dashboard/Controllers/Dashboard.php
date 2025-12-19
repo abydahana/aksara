@@ -76,41 +76,24 @@ class Dashboard extends Core
         ->render();
     }
 
-    private function _card()
+    /**
+     * Get summary counts for dashboard cards.
+     *
+     * @return array<string, int>
+     */
+    private function _card(): array
     {
-        $blogs = $this->model->get_where(
-            'blogs',
-            [
-            ]
-        )
-        ->num_rows();
-
-        $pages = $this->model->get_where(
-            'pages',
-            [
-            ]
-        )
-        ->num_rows();
-
-        $galleries = $this->model->get_where(
-            'galleries',
-            [
-            ]
-        )
-        ->num_rows();
-
-        $users = $this->model->get_where(
-            'app__users',
-            [
-            ]
-        )
-        ->num_rows();
+        // Fetch counts from database tables
+        $blogs = $this->model->table('blogs')->count_all_results();
+        $pages = $this->model->table('pages')->count_all_results();
+        $galleries = $this->model->table('galleries')->count_all_results();
+        $users = $this->model->table('app__users')->count_all_results();
 
         return [
-            'blogs' => ($blogs ? $blogs : 0),
-            'pages' => ($pages ? $pages : 0),
-            'galleries' => ($galleries ? $galleries : 0),
-            'users' => ($users ? $users : 0)
+            'blogs' => (int) ($blogs ?: 0),
+            'pages' => (int) ($pages ?: 0),
+            'galleries' => (int) ($galleries ?: 0),
+            'users' => (int) ($users ?: 0)
         ];
     }
 

@@ -51,7 +51,7 @@ class Privileges extends Core
         ->unset_column('id, privileges')
         ->unset_view('id')
         ->unset_field('id, last_generated')
-        ->set_field('privileges', 'custom_format', $this->_privileges())
+        ->set_field('privileges', 'custom_format', 'format_privileges')
         ->set_field('last_generated', 'current_timestamp')
         ->order_by('path')
         ->set_validation([
@@ -66,25 +66,12 @@ class Privileges extends Core
         ->render($this->_table);
     }
 
-    private function _privileges()
+    protected function format_privileges(array $data)
     {
-        $query = null;
         $output = null;
         $privileges = [];
 
-        $query = $this->model->select('
-            privileges
-        ')
-        ->get_where(
-            $this->_table,
-            [
-                'path' => $this->request->getGet('path')
-            ],
-            1
-        )
-        ->row('privileges');
-
-        $privileges = ($query ? json_decode($query, true) : []);
+        $privileges = ($data['privileges'] ? json_decode($data['privileges'], true) : []);
 
         if (is_array($privileges) && sizeof($privileges) > 0 && $this->get_method() != 'create') {
             foreach ($privileges as $key => $val) {

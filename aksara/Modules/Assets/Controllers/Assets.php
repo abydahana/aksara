@@ -33,10 +33,28 @@ class Assets extends Core
      */
     public function index()
     {
-        if (is_file(FCPATH . uri_string())) {
-            helper('download');
+        // Get the path from URI
+        $path = uri_string();
 
-            return force_download(basename(uri_string()), file_get_contents(FCPATH . uri_string()), true);
+        // Resolve the absolute path
+        $targetFile = FCPATH . $path;
+        $realPath = realpath($targetFile);
+
+        /**
+         * Security Check:
+         * - realpath() returns false if the file doesn't exist.
+         * - strpos() ensures the resolved path MUST still start with FCPATH.
+         * This prevents users from using ../../../etc/passwd
+         */
+        if (false === $realPath || strpos($realPath, realpath(FCPATH)) !== 0) {
+            return throw_exception(403, phrase('Access Denied'), base_url());
+        }
+
+        if (is_file($realPath)) {
+            return $this->response
+                ->download($realPath, null)
+                ->setFileName(basename($realPath))
+                ->send();
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
@@ -46,181 +64,168 @@ class Assets extends Core
      * Load CSS properties
      * @param null|mixed $theme
      */
-    public function styles($theme = null)
+    public function styles(?string $theme = null)
     {
-        // Fallback ke theme default jika tidak ada
-        if (! $theme) {
-            $theme = get_setting('frontend_theme') ?? 'default';
-        }
-
+        // Fallback to default theme if not provided
+        $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');
         $output = '';
 
+        // Define local CSS files to load
+        $local_css = [
+            'assets/local/css/override.min.css',
+            'assets/local/css/ie.fix.min.css'
+        ];
+
+        if (is_rtl()) {
+            $local_css[] = 'assets/local/css/override.rtl.min.css';
+        }
+
+        // Load local CSS content with safety checks
+        foreach ($local_css as $file) {
+            if (is_file(FCPATH . $file)) {
+                $output .= file_get_contents(FCPATH . $file) . "\n";
+            }
+        }
+
         try {
-            $output .= file_get_contents('assets/local/css/override.min.css') . "\n";
-            $output .= file_get_contents('assets/local/css/ie.fix.min.css') . "\n";
+            $theme_config_path = ROOTPATH . 'themes/' . $theme . '/theme.json';
 
-            if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {
-                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
-                $theme_package = json_decode($theme_package);
+            if (is_file($theme_config_path)) {
+                $theme_package = json_decode(file_get_contents($theme_config_path));
+                $configs = $theme_package->configs ?? null;
+                $colors = $theme_package->colorscheme ?? null;
 
-                if (isset($theme_package->configs->wrapper) && isset($theme_package->colorscheme)) {
-                    $colorscheme = $theme_package->colorscheme;
+                if (isset($configs->wrapper) && $colors) {
+                    // Map JSON keys to CSS selectors to eliminate redundant if-else blocks
+                    $mapping = [
+                        'page' => 'body',
+                        'header' => $configs->wrapper->header ?? null,
+                        'footer' => $configs->wrapper->footer ?? null,
+                        'breadcrumb' => $configs->wrapper->breadcrumb ?? null,
+                        'sidebar' => $configs->wrapper->sidebar ?? null,
+                        'content' => $configs->wrapper->content ?? null
+                    ];
 
-                    $page_background = (isset($colorscheme->page->background) ? $colorscheme->page->background : '#fff');
-                    $page_text = (isset($colorscheme->page->text) ? $colorscheme->page->text : '#333');
-                    $header_background = (isset($colorscheme->header->background) ? $colorscheme->header->background : '#fff');
-                    $header_text = (isset($colorscheme->header->text) ? $colorscheme->header->text : '#333');
-                    $footer_background = (isset($colorscheme->footer->background) ? $colorscheme->footer->background : '#fff');
-                    $footer_text = (isset($colorscheme->footer->text) ? $colorscheme->footer->text : '#333');
-                    $breadcrumb_background = (isset($colorscheme->breadcrumb->background) ? $colorscheme->breadcrumb->background : '#fff');
-                    $breadcrumb_text = (isset($colorscheme->breadcrumb->text) ? $colorscheme->breadcrumb->text : '#333');
-                    $sidebar_background = (isset($colorscheme->sidebar->background) ? $colorscheme->sidebar->background : '#fff');
-                    $sidebar_text = (isset($colorscheme->sidebar->text) ? $colorscheme->sidebar->text : '#333');
+                    foreach ($mapping as $key => $selector) {
+                        // Generate CSS if selector is defined and colors exist for this key
+                        if ($selector && isset($colors->$key)) {
+                            $bg = $colors->$key->background ?? '#fff';
+                            $txt = $colors->$key->text ?? '#333';
 
-                    $wrapper = (isset($theme_package->configs->wrapper) ? $theme_package->configs->wrapper : []);
-
-                    $page_wrapper = (isset($wrapper->page) ? $wrapper->page : null);
-                    $content_wrapper = (isset($wrapper->content) ? $wrapper->content : null);
-                    $header_wrapper = (isset($wrapper->header) ? $wrapper->header : null);
-                    $footer_wrapper = (isset($wrapper->footer) ? $wrapper->footer : null);
-                    $breadcrumb_wrapper = (isset($wrapper->breadcrumb) ? $wrapper->breadcrumb : null);
-                    $sidebar_wrapper = (isset($wrapper->sidebar) ? $wrapper->sidebar : null);
-
-                    if ($page_wrapper) {
-                        $output .= 'body{background: ' . $page_background . '!important; color: ' . $page_text . '!important}' . "\n";
-                    }
-
-                    if ($content_wrapper) {
-                        $output .= 'body{background: ' . $page_background . '!important; color: ' . $page_text . '!important}' . "\n";
-                    }
-
-                    if ($header_wrapper) {
-                        $output .= $header_wrapper . '{background: ' . $header_background . '!important; color: ' . $header_text . '!important}' . "\n";
-                    }
-
-                    if ($footer_wrapper) {
-                        $output .= $footer_wrapper . '{background: ' . $footer_background . '!important; color: ' . $footer_text . '!important}' . "\n";
-                    }
-
-                    if ($breadcrumb_wrapper) {
-                        $output .= $breadcrumb_wrapper . '{background: ' . $breadcrumb_background . '!important; color: ' . $breadcrumb_text . '!important}' . "\n";
-                    }
-
-                    if ($sidebar_wrapper) {
-                        $output .= $sidebar_wrapper . '{background: ' . $sidebar_background . '!important; color: ' . $sidebar_text . '!important}' . "\n";
+                            $output .= "{$selector} { background: {$bg} !important; color: {$txt} !important; }\n";
+                        }
                     }
                 }
             }
         } catch (Throwable $e) {
-            exit($e->getMessage());
-        }
+            // Output error as a CSS comment instead of crashing or exiting
+            log_message('error', '[Aksara] Styles Loader: ' . $e->getMessage());
 
-        if (is_rtl()) {
-            $output .= file_get_contents('assets/local/css/override.rtl.min.css') . "\n";
+            $output .= "/* Theme Engine Error: " . addslashes($e->getMessage()) . " */";
         }
-
 
         /**
          * Ideally, you don't need to change any code beyond this point.
          */
         $credits = <<<EOF
-            /**
-             * This file is part of Aksara CMS, both framework and publishing
-             * platform.
-             *
-             * @author     Aby Dahana <abydahana@gmail.com>
-             * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
-             * @license    MIT License
-             *
-             * This source file is subject to the MIT license that is bundled
-             * with this source code in the LICENSE.txt file.
-             *
-             * When the signs is coming, those who don't believe at "that time"
-             * have only two choices, commit suicide or become brutal.
-             */
+        /**
+         * This file is part of Aksara CMS, both framework and publishing
+         * platform.
+         *
+         * @author     Aby Dahana <abydahana@gmail.com>
+         * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+         * @license    MIT License
+         *
+         * This source file is subject to the MIT license that is bundled
+         * with this source code in the LICENSE.txt file.
+         *
+         * When the signs is coming, those who don't believe at "that time"
+         * have only two choices, commit suicide or become brutal.
+         */
+        EOF;
 
-            EOF;
-
-        $this->response->setHeader('Content-Type', 'text/css');
-        $this->response->setBody($credits);
-        $this->response->appendBody($output);
-
-        return $this->response->send();
+        // Return optimized response with caching
+        return $this->response
+            ->setHeader('Content-Type', 'text/css')
+            ->setCache(['max-age' => 3600, 'public', 'must-revalidate'])
+            ->setBody($credits . "\n\n" . $output)
+            ->send();
     }
 
     /**
-     * Load required javascript's assets. The order must be as preserved.
-     * @param null|mixed $theme
+     * Load required javascript assets. The order is preserved.
+     * @return \CodeIgniter\HTTP\Response
      */
-    public function scripts($theme = null)
+    public function scripts(?string $theme = null)
     {
-        // Fallback ke theme default jika tidak ada
-        if (! $theme) {
-            $theme = get_setting('frontend_theme') ?? 'default';
-        }
+        // Fallback to default theme if not provided
+        $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');
 
         $output = '';
 
-        try {
-            // Include core plugins, the order must be as preserved
-            $output .= file_get_contents('assets/jquery/jquery.min.js');
-            $output .= file_get_contents('assets/actual/actual.min.js');
-            $output .= file_get_contents('assets/visible/visible.min.js');
+        // Define the manifest of scripts to be loaded in order
+        $scripts = [
+            'assets/jquery/jquery.min.js',
+            'assets/actual/actual.min.js',
+            'assets/visible/visible.min.js',
+            'assets/local/js/require.min.js',
+            'assets/twig/twig.min.js',
+            'assets/local/js/function.min.js',
+            'assets/local/js/parser.min.js',
+            'assets/local/js/global.min.js'
+        ];
 
-            // JS and CSS loader with require function
-            $output .= file_get_contents('assets/local/js/require.min.js');
-
-            // Twig template parser
-            $output .= file_get_contents('assets/twig/twig.min.js');
-
-            // Global function
-            $output .= file_get_contents('assets/local/js/function.min.js');
-
-            // Template parser, require TwigJS
-            $output .= file_get_contents('assets/local/js/parser.min.js');
-            // Event listener
-            $output .= file_get_contents('assets/local/js/global.min.js');
-
-            if (strtolower($this->request->getUserAgent()->getBrowser()) == 'internet explorer') {
-                // IE fixer
-                $output .= file_get_contents('assets/local/js/ie.fix.min.js');
-            }
-        } catch (Throwable $e) {
-            exit($e->getMessage());
+        // Add IE Fixer if browser is Internet Explorer
+        $agent = $this->request->getUserAgent();
+        if ($agent->isBrowser('Internet Explorer')) {
+            $scripts[] = 'assets/local/js/ie.fix.min.js';
         }
 
-        // Remove comment like this (double slashes)
+        try {
+            foreach ($scripts as $file) {
+                $path = FCPATH . $file;
+                if (is_file($path)) {
+                    $output .= file_get_contents($path) . "\n";
+                }
+            }
+        } catch (Throwable $e) {
+            // Log error internally and prevent script crash
+            log_message('error', '[Aksara] Scripts Loader: ' . $e->getMessage());
+
+            $output .= "\n/* Error loading some assets. Check server logs. */";
+        }
+
+        // Clean up double-slash comments to reduce file size
         $output = preg_replace('/\n(\s+)?\/\/[^\n]*/', '', $output);
 
-        /**
-         * Ideally, you don't need to change any code beyond this point.
-         */
+        // Define JS configuration variables
+        $config = 'const config = ' . ($this->_get_configs($theme) ?: '{}') . ';';
+        $phrases = 'const phrases = ' . ($this->_get_phrases() ?: '{}') . ';';
+        $components = 'const components = ' . ($this->_get_components($theme) ?: '{}') . ';';
+
         $credits = <<<EOF
-            /**
-             * This file is part of Aksara CMS, both framework and publishing
-             * platform.
-             *
-             * @author     Aby Dahana <abydahana@gmail.com>
-             * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
-             * @license    MIT License
-             *
-             * This source file is subject to the MIT license that is bundled
-             * with this source code in the LICENSE.txt file.
-             *
-             * When the signs is coming, those who don't believe at "that time"
-             * have only two choices, commit suicide or become brutal.
-             */
+        /**
+         * This file is part of Aksara CMS, both framework and publishing
+         * platform.
+         *
+         * @author     Aby Dahana <abydahana@gmail.com>
+         * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+         * @license    MIT License
+         *
+         * This source file is subject to the MIT license that is bundled
+         * with this source code in the LICENSE.txt file.
+         *
+         * When the signs is coming, those who don't believe at "that time"
+         * have only two choices, commit suicide or become brutal.
+         */
+        EOF;
 
-            EOF;
-
-        $this->response->setHeader('Content-Type', 'text/javascript');
-        $this->response->setBody($credits);
-        $this->response->appendBody('const config = ' . $this->_get_configs($theme) . ';');
-        $this->response->appendBody('const phrases = ' . $this->_get_phrases() . ';');
-        $this->response->appendBody('const components = ' . $this->_get_components($theme) . ';');
-        $this->response->appendBody($output);
-
-        return $this->response->send();
+        // Return optimized response with caching
+        return $this->response
+            ->setHeader('Content-Type', 'text/javascript')
+            ->setCache(['max-age' => 3600, 'public', 'must-revalidate'])
+            ->setBody($credits . "\n\n" . $config . "\n\n" . $phrases . "\n\n" . $components . "\n\n" . $output)
+            ->send();
     }
 
     private function _get_configs($theme = null)
@@ -229,7 +234,7 @@ class Assets extends Core
 
         $configs = [
             'base_url' => preg_replace('/\?.*/', '', base_url()),
-            'current_slug' => str_replace('.', '-', $uri->setSilent()->getPath()),
+            'current_slug' => str_replace('.', '-', $uri->getPath()),
             'document_extension_allowed' => (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : []),
             'image_extension_allowed' => (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : []),
             'max_upload_size' => (MAX_UPLOAD_SIZE ? (MAX_UPLOAD_SIZE * 1024) : 0),
@@ -253,7 +258,7 @@ class Assets extends Core
                     $configs = array_merge($configs, $theme_package['configs']);
                 }
             } catch (Throwable $e) {
-                // Safe abstraction
+                log_message('error', '[Aksara] JavaScript Config: ' . $e->getMessage());
             }
         }
 
@@ -270,60 +275,60 @@ class Assets extends Core
                 $phrases = json_decode($phrases, true);
             }
         } catch (Throwable $e) {
-            // Safe abstraction
+            log_message('error', '[Aksara] Phrase Loader: ' . $e->getMessage());
         }
 
         return json_encode($phrases, JSON_UNESCAPED_SLASHES);
     }
 
-    private function _get_components($theme = null)
+    private function _get_components(?string $theme = null): string
     {
-        $components = [];
+        $results = [];
+        $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');
+        $base_path = ROOTPATH . 'themes/' . $theme . '/components' . DIRECTORY_SEPARATOR;
+
+        // Allowed component types/directories
+        $allowed_types = ['core', 'table', 'form', 'view'];
 
         try {
-            helper('filesystem');
+            if (is_dir($base_path)) {
+                helper('filesystem');
 
-            $components = directory_map(ROOTPATH . 'themes/' . $theme . '/components', 2);
+                // Map the directory with a depth of 2
+                $map = directory_map($base_path, 2);
 
-            foreach ($components as $path => $component) {
-                // Theme path
-                if (! is_array($component)) {
-                    unset($components[$path]);
+                if (is_array($map)) {
+                    foreach ($map as $folder => $files) {
+                        // Clean folder name from Directory Separator (e.g., "core/" -> "core")
+                        $type = strtolower(rtrim($folder, DIRECTORY_SEPARATOR));
 
-                    continue;
-                }
+                        if (! is_array($files) || ! in_array($type, $allowed_types)) {
+                            continue;
+                        }
 
-                foreach ($component as $index => $template) {
-                    // Component path
-                    $type = strtolower(str_replace(DIRECTORY_SEPARATOR, '', $path));
+                        foreach ($files as $file) {
+                            // We only care about .twig files
+                            if (pathinfo($file, PATHINFO_EXTENSION) !== 'twig') {
+                                continue;
+                            }
 
-                    if (! $template || ! in_array($type, ['core', 'table', 'form', 'view'])) {
-                        unset($components[$path][$index]);
+                            $full_path = $base_path . $type . DIRECTORY_SEPARATOR . $file;
 
-                        continue;
+                            if (is_file($full_path)) {
+                                $content = file_get_contents($full_path);
+
+                                // Minify the Twig template string (remove extra whitespace/newlines)
+                                // and store it with the key "type/filename.twig"
+                                $results[$type . '/' . $file] = preg_replace('/\s+/', ' ', $content);
+                            }
+                        }
                     }
-
-                    // Template path
-                    $filename = pathinfo($template, PATHINFO_FILENAME);
-                    $extension = pathinfo($template, PATHINFO_EXTENSION);
-
-                    if (strtolower($extension) !== 'twig' || ! file_exists(ROOTPATH . 'themes/' . $theme . '/components/' . $type . '/' . $template)) {
-                        unset($components[$path]);
-
-                        continue;
-                    }
-
-                    $template_string = file_get_contents(ROOTPATH . 'themes/' . $theme . '/components/' . $type . '/' . $template);
-
-                    $components[$type . '/' . $template] = preg_replace('/\s+/', ' ', $template_string);
-
-                    unset($components[$path]);
                 }
             }
         } catch (Throwable $e) {
-            // Safe abstraction
+            log_message('error', '[Aksara] Component Loader: ' . $e->getMessage());
         }
 
-        return json_encode($components, JSON_UNESCAPED_SLASHES);
+        return json_encode($results, JSON_UNESCAPED_SLASHES);
     }
 }

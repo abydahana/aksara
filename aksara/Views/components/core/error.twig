@@ -5,20 +5,21 @@
                 [info@localhost ~]# aksara trace -exception
             </p>
             <p class="text-danger">
-                {{ phrase('No response could be loaded.') }} {{ phrase('Make sure to check the following mistake:') }}
+                {{ phrase('No response could be loaded') }}.
+                {{ phrase('Make sure to check the following mistake') }}:
             </p>
             <ol>
                 <li class="text-danger">
-                    {{ phrase('Module structure') }};
+                    {{ phrase('Module structure') }},
                 </li>
                 <li class="text-danger">
-                    {{ phrase('Incorrect view path') }};
+                    {{ phrase('Incorrect view path') }},
                 </li>
                 <li class="text-danger">
-                    {{ phrase('Database table existence') }};
+                    {{ phrase('Database table existence') }},
                 </li>
                 <li class="text-danger">
-                    {{ phrase('Something caused by typo') }}.
+                    {{ phrase('Something caused by typo') }}
                 </li>
             </ol>
             <p class="mb-0 text-success">

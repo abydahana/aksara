@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Groups;
 
-use stdClass;
 use Aksara\Laboratory\Core;
 
 class Groups extends Core
@@ -61,7 +60,7 @@ class Groups extends Core
             'group_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('group_privileges', 'custom_format', $this->_privileges())
+        ->set_field('group_privileges', 'custom_format', 'format_privileges')
         ->set_validation([
             'group_name' => 'required',
             'group_description' => 'required'
@@ -80,12 +79,8 @@ class Groups extends Core
         ->render($this->_table);
     }
 
-    private function _privileges()
+    protected function format_privileges(array $data)
     {
-        if (! in_array($this->get_method(), ['create', 'read', 'update'])) {
-            return false;
-        }
-
         $modules_collection = $this->model->select('
             path,
             privileges
@@ -94,29 +89,16 @@ class Groups extends Core
         ->get('app__groups_privileges')
         ->result();
 
-        $current = $this->model->select('
-            group_privileges
-        ')
-        ->get_where(
-            $this->_table,
-            [
-                'group_id' => $this->request->getGet('group_id')
-            ],
-            1
-        )
-        ->row('group_privileges');
-
-        $current = ($current ? json_decode($current, true) : []);
+        $current = ($data['group_privileges'] ? json_decode($data['group_privileges'], true) : []);
         $output = null;
 
         if ($modules_collection) {
-            $prepare = [];
             $modules = [];
 
             foreach ($modules_collection as $key => $val) {
                 $path = str_replace('/', '__', $val->path);
                 $privilege_output = null;
-                $privileges = ($val->privileges ? json_decode($val->privileges) : new stdClass());
+                $privileges = ($val->privileges ? json_decode($val->privileges) : []);
 
                 if (! $privileges) {
                     continue;
@@ -125,31 +107,22 @@ class Groups extends Core
                 foreach ($privileges as $key => $privilege) {
                     if ('index' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-primary';
                     } elseif ('create' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-success';
                     } elseif ('read' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-info';
                     } elseif ('update' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-warning';
                     } elseif ('delete' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-danger';
                     } elseif ('export' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-success';
                     } elseif ('print' == $privilege) {
                         $label = phrase(ucfirst($privilege));
-                        $badge_color = 'bg-warning';
                     } elseif ('pdf' == $privilege) {
                         $label = phrase(strtoupper($privilege));
-                        $badge_color = 'bg-danger';
                     } else {
                         $label = phrase(ucwords(str_replace('_', ' ', $privilege)));
-                        $badge_color = 'bg-secondary';
                     }
 
                     if ('read' === $this->get_method()) {

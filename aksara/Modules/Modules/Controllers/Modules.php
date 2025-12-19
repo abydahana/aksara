@@ -28,23 +28,38 @@ class Modules extends Core
 
     public function index()
     {
-        $extension = strtolower(pathinfo(uri_string(), PATHINFO_EXTENSION));
+        $uriString = uri_string();
+        $extension = strtolower(pathinfo($uriString, PATHINFO_EXTENSION));
 
-        if (is_file(ROOTPATH . uri_string()) && ! in_array($extension, ['php', 'twig'])) {
-            helper('download');
+        // Security Check: Block sensitive files and direct code execution
+        $blockedExtensions = ['php', 'twig', 'env', 'json', 'lock', 'sql', 'log'];
+        if (in_array($extension, $blockedExtensions) || empty($extension)) {
+            return $this->_error404();
+        }
 
-            return force_download(basename(uri_string()), file_get_contents(ROOTPATH . uri_string()), true);
-        } else {
-            // Fallback, find file in Aksara's core module
-            $source = preg_replace('#^.*modules/#', '', uri_string());
+        // Define search locations (Priority: ROOT then APPPATH)
+        $locations = [
+            ROOTPATH . $uriString,
+            APPPATH . 'Modules' . DIRECTORY_SEPARATOR . preg_replace('#^.*modules/#', '', $uriString)
+        ];
 
-            if (is_file(APPPATH . 'Modules' . DIRECTORY_SEPARATOR . $source) && ! in_array($extension, ['php', 'twig'])) {
-                helper('download');
+        foreach ($locations as $path) {
+            // Resolve real path to prevent directory traversal attacks (e.g. ../../)
+            $realPath = realpath($path);
 
-                return force_download(basename(uri_string()), file_get_contents(APPPATH . 'Modules' . DIRECTORY_SEPARATOR . $source), true);
+            if ($realPath && is_file($realPath)) {
+                // Ensure the file is actually inside ROOTPATH or APPPATH for safety
+                if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
+                    return $this->response->download($realPath, null, true)->setFileName(basename($realPath))->send();
+                }
             }
         }
 
+        return $this->_error404();
+    }
+
+    private function _error404()
+    {
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
     }
 }

@@ -167,8 +167,8 @@
                 html2canvas
             </a>
             &middot;
-            <a href="//highcharts.com" target="_blank">
-                HighCharts
+            <a href="//echarts.apache.org" target="_blank">
+                Apache ECharts
             </a>
             &middot;
             <a href="//jquery.com" target="_blank">
