@@ -15,187 +15,161 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-/**
- * CodeIgniter CAPTCHA Helper
- *
- * @category    Helpers
- * @author      EllisLab Dev Team
- * @see         https://codeigniter.com/user_guide/helpers/captcha_helper.html
- */
-
-// ------------------------------------------------------------------------
+use GdImage;
+use Throwable;
 
 if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
      *
-     * @param array  $data      Data for the CAPTCHA
-     * @param string $img_path  Path to create the image in (deprecated)
-     * @param string $img_url   URL to the CAPTCHA image folder (deprecated)
-     * @param string $font_path Server path to font (deprecated)
-     *
-     * @return string
+     * @param array|string $data      Data for the CAPTCHA or word
+     * @param string       $img_path  Path to create the image in
+     * @param string       $img_url   URL to the CAPTCHA image folder
+     * @param string       $font_path Server path to font
      */
-    function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = '')
+    function create_captcha(array|string $data = [], string $img_path = '', string $img_url = '', string $font_path = ''): array|bool
     {
         $defaults = [
             'word' => '',
-            'img_path' => '',
-            'img_url' => '',
-            'img_width' => '150',
-            'img_height' => '30',
-            'font_path' => '',
+            'img_path' => $img_path,
+            'img_url' => $img_url,
+            'img_width' => 150,
+            'img_height' => 35,
+            'font_path' => $font_path,
             'expiration' => 7200,
-            'word_length' => 8,
+            'word_length' => 6,
             'font_size' => 16,
-            'img_id' => '',
-            'pool' => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'img_id' => 'captcha-' . uniqid(),
+            'pool' => '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ',
             'colors' => [
                 'background' => [255, 255, 255],
-                'border' => [153, 102, 102],
-                'text' => [204, 153, 153],
-                'grid' => [255, 182, 182]
+                'border' => [200, 200, 200],
+                'text' => [50, 50, 50],
+                'grid' => [235, 235, 235]
             ]
         ];
 
-        foreach ($defaults as $key => $val) {
-            if (! is_array($data) && empty($$key)) {
-                $$key = $val;
-            } else {
-                $$key = isset($data[$key]) ? $data[$key] : $val;
-            }
-        }
+        // Merge configuration
+        $config = is_array($data) ? array_merge($defaults, $data) : $defaults;
 
-        if ('' === $img_path or '' === $img_url
-                             or ! is_dir($img_path) or ! is_really_writable($img_path)
-                             or ! extension_loaded('gd')) {
+        // Check for GD extension and basic requirements
+        if (! extension_loaded('gd') || empty($config['img_path']) || ! is_dir($config['img_path']) || ! is_writable($config['img_path'])) {
             return false;
         }
 
         // -----------------------------------
-        // Remove old images
+        // 1. Remove old images (Cleanup)
         // -----------------------------------
-
         $now = microtime(true);
-
-        try {
-            $current_dir = @opendir($img_path);
-            while ($filename = @readdir($current_dir)) {
-                if (in_array(substr($filename, -4), ['.jpg', '.png'])
-                    && (str_replace(['.jpg', '.png'], '', $filename) + $expiration) < $now) {
-                    @unlink($img_path.$filename);
+        if ($handle = @opendir($config['img_path'])) {
+            while (false !== ($filename = readdir($handle))) {
+                if (preg_match('/^(\d+\.\d+)\.png$/', $filename, $matches)) {
+                    if (($matches[1] + $config['expiration']) < $now) {
+                        @unlink($config['img_path'] . $filename);
+                    }
                 }
             }
-
-            @closedir($current_dir);
-        } catch (Throwable $e) {
-        }
-
-        if (! is_string($word)) {
-            $word = (string) $word;
-        } elseif (empty($word)) {
-            $word = substr(str_shuffle(str_repeat($pool, ceil($word_length / strlen($pool)))), 1, $word_length);
+            closedir($handle);
         }
 
         // -----------------------------------
-        // Determine angle and position
+        // 2. Generate Word
         // -----------------------------------
-        $length = strlen($word);
-        $angle = ($length >= 6) ? mt_rand(-($length - 6), ($length - 6)) : 0;
-        $x_axis = mt_rand(6, (360 / $length) - 16);
-        $y_axis = ($angle >= 0) ? mt_rand($img_height, $img_width) : mt_rand(6, $img_height);
-
-        // Create image
-        // PHP.net recommends imagecreatetruecolor(), but it isn't always available
-        $im = function_exists('imagecreatetruecolor')
-            ? imagecreatetruecolor($img_width, $img_height)
-            : imagecreate($img_width, $img_height);
-
-        // -----------------------------------
-        //  Assign colors
-        // ----------------------------------
-
-        is_array($colors) or $colors = $defaults['colors'];
-
-        foreach (array_keys($defaults['colors']) as $key) {
-            // Check for a possible missing value
-            is_array($colors[$key]) or $colors[$key] = $defaults['colors'][$key];
-            $colors[$key] = imagecolorallocate($im, $colors[$key][0], $colors[$key][1], $colors[$key][2]);
-        }
-
-        // Create the rectangle
-        ImageFilledRectangle($im, 0, 0, $img_width, $img_height, $colors['background']);
-
-        // -----------------------------------
-        //  Create the spiral pattern
-        // -----------------------------------
-        $theta = 1;
-        $thetac = 7;
-        $radius = 16;
-        $circles = 20;
-        $points = 32;
-
-        for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
-            $theta += $thetac;
-            $rad = $radius * ($i / $points);
-            $x = (int) ($rad * cos($theta)) + $x_axis;
-            $y = (int) ($rad * sin($theta)) + $y_axis;
-            $theta += $thetac;
-            $rad1 = $radius * (($i + 1) / $points);
-            $x1 = (int) ($rad1 * cos($theta)) + $x_axis;
-            $y1 = (int) ($rad1 * sin($theta)) + $y_axis;
-            imageline($im, $x, $y, $x1, $y1, $colors['grid']);
-            $theta -= $thetac;
-        }
-
-        // -----------------------------------
-        //  Write the text
-        // -----------------------------------
-
-        $use_font = ('' !== $font_path && file_exists($font_path) && function_exists('imagettftext'));
-        if (false === $use_font) {
-            ($font_size > 5) && $font_size = 5;
-            $x = mt_rand(0, $img_width / ($length / 3));
-            $y = 0;
-        } else {
-            ($font_size > 30) && $font_size = 30;
-            $x = mt_rand(0, $img_width / ($length / 1.5));
-            $y = $font_size + 2;
-        }
-
-        for ($i = 0; $i < $length; $i++) {
-            if (false === $use_font) {
-                $y = mt_rand(0, $img_height / 2);
-                imagestring($im, $font_size, $x, $y, $word[$i], $colors['text']);
-                $x += ($font_size * 2);
-            } else {
-                $y = mt_rand($img_height / 2, $img_height - 3);
-                imagettftext($im, $font_size, $angle, $x, $y, $colors['text'], $font_path, $word[$i]);
-                $x += $font_size;
+        $word = $config['word'];
+        if (empty($word)) {
+            $word = '';
+            $pool_length = strlen($config['pool']);
+            for ($i = 0; $i < $config['word_length']; $i++) {
+                try {
+                    $word .= $config['pool'][random_int(0, $pool_length - 1)];
+                } catch (Throwable $e) {
+                    $word .= $config['pool'][mt_rand(0, $pool_length - 1)];
+                }
             }
         }
 
-        // Create the border
-        imagerectangle($im, 0, 0, $img_width - 1, $img_height - 1, $colors['border']);
-
         // -----------------------------------
-        //  Generate the image
+        // 3. Image Creation (With Error Trapping)
         // -----------------------------------
-        $img_url = rtrim($img_url, '/').'/';
+        try {
+            $im = imagecreatetruecolor($config['img_width'], $config['img_height']);
 
-        if (function_exists('imagejpeg')) {
-            $img_filename = $now.'.jpg';
-            imagejpeg($im, $img_path.$img_filename);
-        } elseif (function_exists('imagepng')) {
-            $img_filename = $now.'.png';
-            imagepng($im, $img_path.$img_filename);
-        } else {
+            // Validate that $im is actually a GdImage object (solves Intelephense P1007)
+            if (! $im instanceof GdImage) {
+                return false;
+            }
+
+            // Assign colors
+            $colors = [];
+            foreach ($config['colors'] as $key => $rgb) {
+                $colors[$key] = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+            }
+
+            // Create background
+            imagefilledrectangle($im, 0, 0, $config['img_width'], $config['img_height'], $colors['background']);
+
+            // -----------------------------------
+            // 4. Distortions (Grid & Noise)
+            // -----------------------------------
+            // Draw subtle grid
+            for ($i = 0; $i < $config['img_width']; $i += 15) {
+                imageline($im, $i, 0, $i, $config['img_height'], $colors['grid']);
+            }
+            for ($i = 0; $i < $config['img_height']; $i += 15) {
+                imageline($im, 0, $i, $config['img_width'], $i, $colors['grid']);
+            }
+
+            // Add random noise pixels
+            for ($i = 0; $i < 60; $i++) {
+                imagesetpixel($im, mt_rand(0, $config['img_width']), mt_rand(0, $config['img_height']), $colors['text']);
+            }
+
+            // -----------------------------------
+            // 5. Write Text
+            // -----------------------------------
+            $use_font = (! empty($config['font_path']) && file_exists($config['font_path']));
+            $x = 12;
+            $length = strlen($word);
+
+            for ($i = 0; $i < $length; $i++) {
+                if ($use_font) {
+                    $angle = mt_rand(-15, 15);
+                    $y = mt_rand((int) ($config['img_height'] / 1.5), $config['img_height'] - 5);
+                    imagettftext($im, $config['font_size'], $angle, (int) $x, (int) $y, $colors['text'], $config['font_path'], $word[$i]);
+                } else {
+                    $y = mt_rand(2, (int) ($config['img_height'] / 4));
+                    imagestring($im, 5, (int) $x, (int) $y, $word[$i], $colors['text']);
+                }
+                $x += ($config['img_width'] - 20) / $length;
+            }
+
+            // Add Border
+            imagerectangle($im, 0, 0, $config['img_width'] - 1, $config['img_height'] - 1, $colors['border']);
+
+            // -----------------------------------
+            // 6. Output & Cleanup
+            // -----------------------------------
+            $img_filename = $now . '.png';
+            $img_url = rtrim($config['img_url'], '/') . '/';
+
+            // Generate PNG file
+            if (! imagepng($im, $config['img_path'] . $img_filename)) {
+                return false;
+            }
+
+            // PHP 8+ Garbage Collection takes care of the GdImage object.
+            // Setting to null is the modern way to explicitly free it.
+            $im = null;
+
+            return [
+                'word' => $word,
+                'time' => $now,
+                'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $config['img_width'] . 'px; height: ' . $config['img_height'] . 'px; border: 0;" alt="CAPTCHA" />',
+                'filename' => $img_filename
+            ];
+        } catch (Throwable $e) {
+            // Gracefully fail if something goes wrong during image processing
             return false;
         }
-
-        $img = '<img '.('' === $img_id ? '' : 'id="'.$img_id.'"').' src="'.$img_url.$img_filename.'" style="width: '.$img_width.'px; height: '.$img_height .'px; border: 0;" alt=" " />';
-        ImageDestroy($im);
-
-        return ['word' => $word, 'time' => $now, 'image' => $img, 'filename' => $img_filename];
     }
 }
