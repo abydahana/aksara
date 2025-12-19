@@ -18,7 +18,6 @@
 namespace Aksara\Modules\Administrative\Controllers\Menus;
 
 use Aksara\Laboratory\Core;
-use stdClass;
 
 class Menus extends Core
 {
@@ -45,7 +44,7 @@ class Menus extends Core
         ->column_order('menu_label, menu_placement, menu_description, group_name')
         ->unset_field('menu_id')
         ->set_primary('menu_id')
-        ->set_field('serialized_data', 'custom_format', $this->_menus())
+        ->set_field('serialized_data', 'custom_format', 'format_menus')
         ->set_field(
             'menu_placement',
             'select',
@@ -96,23 +95,12 @@ class Menus extends Core
         ->render($this->_table);
     }
 
-    private function _menus()
+    protected function format_menus(array $data)
     {
         $output = null;
         $menus = null;
-        $serialized = $this->model->select('
-            serialized_data
-        ')
-        ->get_where(
-            $this->_table,
-            [
-                'menu_id' => $this->request->getGet('menu_id')
-            ],
-            1
-        )
-        ->row('serialized_data');
 
-        $serialized_menus = ($serialized ? json_decode($serialized) : new stdClass());
+        $serialized_menus = ($data['serialized_data'] ? json_decode($data['serialized_data']) : []);
 
         if ($serialized_menus) {
             foreach ($serialized_menus as $key => $val) {
@@ -176,7 +164,7 @@ class Menus extends Core
                     </li>
                     ' . $menus . '
                 </ul>
-                <input type="hidden" name="serialized_data" value="' . ($serialized ? htmlspecialchars($serialized) : '[]') . '" class="serialized_data" />
+                <input type="hidden" name="serialized_data" value="' . ($data['serialized_data'] ? htmlspecialchars($data['serialized_data']) : '[]') . '" class="serialized_data" />
             </div>
         ';
 

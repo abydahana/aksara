@@ -3,29 +3,42 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-white border-end">
-            <!-- View Toggle Buttons -->
-            <div class="d-flex justify-content-between mb-3">
-                <div>
-                    <?php if ($view_mode == 'list' && $results->directory && ! isset($key)): ?>
-                        <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $view_mode]); ?>" class="btn btn-outline-secondary btn-sm --xhr">
-                            <i class="mdi mdi-arrow-left"></i> <?= phrase('Back'); ?>
-                        </a>
-                    <?php endif; ?>
+            <div class="row align-items-center mb-3">
+                <div class="col-md-9">
+                    <?php
+                        $directories = explode('/', service('request')->getGet('directory'));
+                        $paths = null;
+                        $breadcrumbs = null;
+
+                        foreach ($directories as $key => $val) {
+                            $breadcrumbs .= '<li class="breadcrumb-item"><a href="' . current_page(null, ['directory' => $paths . $val]) . '" class="--xhr">' . $val . '</a></li>';
+
+                            $paths .= $val . '/';
+                        }
+                    ?>
+                    <nav class="d-none d-md-block" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="<?= current_page(null, ['directory' => null]); ?>" class="--xhr"><?= phrase('Media') ?></a></li>
+                            <?=  $breadcrumbs; ?>
+                        </ol>
+                    </nav>
                 </div>
-                <div class="btn-group btn-group-sm" role="group" aria-label="View Toggle">
-                    <a href="<?= current_page(null, ['mode' => 'grid']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') !== 'list') ? 'active' : '' ?> --xhr">
-                        <i class="mdi mdi-view-grid"></i> <?= phrase('Grid'); ?>
-                    </a>
-                    <a href="<?= current_page(null, ['mode' => 'list']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') === 'list') ? 'active' : '' ?> --xhr">
-                        <i class="mdi mdi-view-list"></i> <?= phrase('List'); ?>
-                    </a>
+                <div class="col-md-3">
+                    <div class="btn-group btn-group-sm w-100" role="group" aria-label="View Toggle">
+                        <a href="<?= current_page(null, ['mode' => 'grid']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') !== 'list') ? 'active' : '' ?> --xhr">
+                            <i class="mdi mdi-view-grid"></i> <?= phrase('Grid'); ?>
+                        </a>
+                        <a href="<?= current_page(null, ['mode' => 'list']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') === 'list') ? 'active' : '' ?> --xhr">
+                            <i class="mdi mdi-view-list"></i> <?= phrase('List'); ?>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <?php if ($view_mode === 'grid'): ?>
                 <!-- Grid View -->
                 <div class="row align-items-end">
-                    <?php if ($results->directory && ! isset($key)): ?>
+                    <?php if ($results->directory): ?>
                         <div class="col-4 col-sm-3 col-xl-2 text-center">
                             <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $view_mode]); ?>" class="--xhr">
                                 <div class="p-3">

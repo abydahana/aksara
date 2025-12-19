@@ -92,7 +92,7 @@
 <?php endif; ?>
 
 <div class="<?= ($articles ? 'bg-light' : null); ?>">
-    <div class="py-3 py-md-5">
+    <div class="py-3">
         <div class="container">
             <?php if ($articles): ?>
                 <?php foreach ($articles as $key => $val): ?>

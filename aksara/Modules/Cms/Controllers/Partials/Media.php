@@ -172,18 +172,22 @@ class Media extends Core
             $full_path = UPLOAD_PATH;
         }
 
-        $data = directory_map($full_path, 1); // Limit depth
+        // Map directory with depth 1
+        $data = directory_map($full_path, 1);
 
-        // Remove protected directories
-        $protected_dirs = ['_extension', '_import_tmp', 'captcha', 'logs'];
-        foreach ($protected_dirs as $protected_dir) {
-            unset($data[$protected_dir . DIRECTORY_SEPARATOR]);
+        if (is_array($data)) {
+            // Define protected values (directory_map adds a trailing slash to folders)
+            $protected_dirs = ['_extension/', '_import_tmp/', 'captcha/', 'logs/'];
+
+            // Remove protected folders by comparing values
+            $data = array_diff($data, $protected_dirs);
+
+            // Optional: Re-index the array to 0, 1, 2...
+            $data = array_values($data);
         }
 
         $filename = ($this->request->getGet('file') ? $this->_sanitize_path($this->request->getGet('file')) : null);
         $parent_directory = ($directory ? $this->_get_parent_directory($directory) : null);
-        $folders = [];
-        $files = [];
 
         if ($data) {
             $this->_parse_files($data, $directory);
@@ -204,10 +208,22 @@ class Media extends Core
             $description['server_path'] = str_replace('\\', '/', $description['server_path']);
         }
 
+        // Merge folder and files
+        $data = array_merge($this->_folders, $this->_files);
+
+        // Sort by folder first
+        usort($data, function($sourceA, $sourceB) {
+            if ($sourceA['type'] == $sourceB['type']) {
+                return strcmp($sourceA['label'], $sourceB['label']);
+            }
+
+            return ($sourceA['type'] == 'directory') ? -1 : 1;
+        });
+
         return [
             'parent_directory' => $parent_directory,
             'directory' => $directory,
-            'data' => array_merge($this->_folders, $this->_files),
+            'data' => $data,
             'description' => $description
         ];
     }

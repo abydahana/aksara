@@ -390,10 +390,9 @@ class Template
      *
      * @param string|null $view The view file name to render (without extension).
      * @param array $data Data to be passed to the view.
-     * @param string|null $table Reserved for future use (currently unused).
      * @return \CodeIgniter\HTTP\Response|object The HTTP Response object for non-AJAX requests or a JSON object for AJAX requests.
      */
-    public function build(?string $view = null, array $data = [], ?string $table = null): \CodeIgniter\HTTP\Response
+    public function build(?string $view = null, array $data = []): \CodeIgniter\HTTP\Response|string
     {
         $request = Services::request();
 

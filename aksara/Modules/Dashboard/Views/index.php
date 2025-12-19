@@ -409,56 +409,59 @@
     $(document).ready(function() {
         if (typeof interval !== 'undefined') {
             clearInterval(interval)
+        } else {
+            var interval;
         }
 
-        var interval;
+        require.js('<?= base_url('assets/echarts/echarts.min.js'); ?>', function() {
+            // Initialize chart
+            const visitorChart = echarts.init(document.getElementById('visitor-chart'));
 
-        require.js('<?= base_url('assets/highcharts/highcharts.js'); ?>', function() {
-            Highcharts.chart('visitor-chart', {
-                chart: {
-                    type: 'areaspline'
-                },
+            // Render chart
+            visitorChart.setOption({
                 title: {
-                    text: `<b><?= phrase('Visitor Graph'); ?></b>`
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 150,
-                    y: 100,
-                    floating: true,
-                    borderWidth: 1,
-                    borderRadius: 5
-                },
-                xAxis: {
-                    categories: <?= (isset($visitors->categories) ? json_encode($visitors->categories) : '[]'); ?>,
-                    plotBands: [{
-                        from: 5.5,
-                        to: 7.5,
-                        color: 'rgba(68, 170, 213, .2)'
-                    }]
-                },
-                yAxis: {
-                    title: {
-                        text: `<?= phrase('Visitor Total'); ?>`
-                    },
-                    allowDecimals: false
-                },
-                tooltip: {
-                    shared: true,
-                    valueSuffix: ` <?= phrase('Visits'); ?>`
-                },
-                plotOptions: {
-                    areaspline: {
-                        fillOpacity: .5
+                    text: '<?= phrase('Visitor Graph'); ?>',
+                    textStyle: {
+                        fontWeight: 'bold'
                     }
                 },
+                tooltip: {
+                    trigger: 'axis',
+                    valueFormatter: function(value) {
+                        return value + ' <?= phrase('Visits'); ?>';
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '3%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: <?= (isset($visitors->categories) ? json_encode($visitors->categories) : '[]'); ?>
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '<?= phrase('Visitor Total'); ?>',
+                    minInterval: 1
+                },
                 series: [{
-                    name: `<?= phrase('Visitors'); ?>`,
-                    data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>
+                    name: '<?= phrase('Visitors'); ?>',
+                    type: 'line',
+                    smooth: true,
+                    areaStyle: {
+                        opacity: 0.5
+                    },
+                    data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>,
                 }]
-            })
+            });
+
+            // Responsive resize
+            window.addEventListener('resize', function() {
+                visitorChart.resize();
+            });
         });
 
         $.ajax ({

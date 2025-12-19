@@ -102,11 +102,21 @@ class Parser
             exit($e->getMessage());
         }
 
+        // Search paths
+        $searchPaths = [
+            ROOTPATH . 'themes/' . $this->_theme . '/components/',
+            ROOTPATH . 'themes/' . $this->_theme . '/views/',
+            APPPATH . 'Views/components/'
+        ];
+
+        // Load search paths to twig loader
+        $filesystemLoader = new FilesystemLoader($searchPaths);
+
         // Load Twig environment
-        $twig = new Environment(new FilesystemLoader([ROOTPATH . 'themes/' . $this->_theme . '/components', ROOTPATH . 'themes/' . $this->_theme . '/views']), [
+        $twig = new Environment($filesystemLoader, [
             'cache' => WRITEPATH . 'cache/twig',
-            'auto_reload' => true,
-            'debug' => true
+            'auto_reload' => (ENVIRONMENT === 'development'),
+            'debug' => (ENVIRONMENT === 'development')
         ]);
 
         // Debug extension
@@ -120,39 +130,31 @@ class Parser
             return truncate($string, $length, $delimeter);
         }));
 
-        // Convert replacement object into array
-        $replacement = json_decode(json_encode($replacement), true);
-
-        // Default output
-        $output = null;
+        $replacement = json_decode(json_encode($replacement), true) ?? [];
 
         try {
-            // Attempt to get the template component
-            $output = $twig->render($component, $replacement);
-        } catch (Throwable $e) {
-            // Safe abstraction
-        }
-
-        if (! $output) {
-            if (file_exists($component) && strtolower(pathinfo($component, PATHINFO_EXTENSION)) === 'twig') {
-                // Twig file exists, load component file as string
-                try {
-                    // Attempt to get the template component
-                    $component = file_get_contents($component);
-                } catch (Throwable $e) {
-                    // Fail to load component file into string
-                    exit($e->getMessage());
+            // Check if component is a file path (ends with .twig)
+            if (str_ends_with($component, '.twig')) {
+                foreach ($searchPaths as $path) {
+                    // If the component starts with one of base paths, strip it
+                    if (strpos($component, $path) === 0) {
+                        $component = str_replace($path, '', $component);
+                        break;
+                    }
                 }
+
+                return $twig->render($component, $replacement);
             }
 
-            // Create temporary template from component string
-            $template = $twig->createTemplate($component);
+            // Otherwise, treat component as a template string
+            return $twig->createTemplate($component)->render($replacement);
+        } catch (Throwable $e) {
+            // Log error and return message instead of killing the script
+            if (ENVIRONMENT === 'development') {
+                return '<div style="color:red; border:1px solid red; padding:1rem;">Twig Error: ' . $e->getMessage() . '</div>';
+            }
 
-            // Set new output
-            $output = $template->render($replacement);
+            return '';
         }
-
-        // Return rendered template component
-        return $output;
     }
 }

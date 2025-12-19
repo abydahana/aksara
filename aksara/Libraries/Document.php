@@ -289,7 +289,7 @@ class Document
         $dom = new \DOMDocument();
         $dom->encoding = 'UTF-8';
 
-        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        $dom->loadHTML(mb_encode_numericentity($html, [0x80, 0x10ffff, 0, 0x1fffff], 'UTF-8'));
 
         libxml_clear_errors();
 
