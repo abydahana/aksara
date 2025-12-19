@@ -15,17 +15,16 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+use Config\Services;
+
 if (! function_exists('truncate')) {
     /**
      * Truncate the string
-     *
-     * @param   string $string
-     * @param   string $pad
      */
-    function truncate($string = null, int $limit = 0, $pad = '...')
+    function truncate(?string $string = '', ?int $limit = 0, string $pad = '...'): string
     {
         if (! $string) {
-            return;
+            $string = '';
         }
 
         $string = strip_tags(str_replace('<', ' <', $string));
@@ -42,10 +41,8 @@ if (! function_exists('truncate')) {
 if (! function_exists('custom_nl2br')) {
     /**
      * Limit new line into break
-     *
-     * @param   string $string
      */
-    function custom_nl2br($string = '')
+    function custom_nl2br(string $string = ''): string
     {
         return preg_replace('/(<br(?: \\/)?>\\r?\\n?\\r?)(?=\\1\\1)/is', '', nl2br($string));
     }
@@ -57,7 +54,7 @@ if (! function_exists('is_json')) {
      *
      * @param   mixed|null $string
      */
-    function is_json($string = null)
+    function is_json(string $string = ''): bool
     {
         if ($string && is_string($string)) {
             $string = json_decode($string, true);
@@ -74,11 +71,8 @@ if (! function_exists('is_json')) {
 if (! function_exists('make_json')) {
     /**
      * Generate the response as JSON format
-     *
-     * @param   object|array $data
-     * @param   string $filename
      */
-    function make_json($data = [], $filename = null)
+    function make_json(array|object $data = [], string $filename = ''): string
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', -1);
@@ -125,8 +119,12 @@ if (! function_exists('encoding_fixer')) {
      *
      * @param   array|string $data
      */
-    function encoding_fixer($data = [])
+    function encoding_fixer(mixed $data = [])
     {
+        if (! is_string($data) || ! is_array($data)) {
+            return $data;
+        }
+
         if (is_string($data)) {
             $encoding = mb_detect_encoding($data);
             $data = mb_convert_encoding($data, 'UTF-8', $encoding);
@@ -142,13 +140,21 @@ if (! function_exists('encoding_fixer')) {
 
 if (! function_exists('time_ago')) {
     /**
-     * Convert timestamp to time ago
+     * Convert a datetime string into a "time ago" format.
      *
-     * @param   string $datetime
+     * This function calculates the difference between the provided datetime
+     * and the current time, returning a human-readable string (e.g., "2 hours ago").
+     * If the input is null or empty, it returns a default phrase.
+     *
+     * @param string|null $datetime The datetime string to be converted.
+     * @param bool $short           Whether to use short format (e.g., "2h" instead of "2 hours").
+     * @param bool $full            Whether to return a full detailed string (for complex diffs).
+     * @return string               The human-readable time difference or a default message.
      */
-    function time_ago($datetime = null, bool $short = false, bool $full = true)
+    function time_ago(string $datetime = '', bool $short = false, bool $full = true): string
     {
-        if (! $datetime) {
+        // Handle null or empty string input
+        if (! $datetime || empty(trim($datetime))) {
             return phrase('Just now');
         }
 
@@ -212,7 +218,7 @@ if (! function_exists('format_slug')) {
      *
      * @param   mixed|null $string
      */
-    function format_slug($string = null)
+    function format_slug(string $string = ''): string
     {
         $string = strtolower(preg_replace('/[\-\s]+/', '-', preg_replace('/[^A-Za-z0-9-]+/', '-', trim($string))));
 
@@ -226,9 +232,15 @@ if (! function_exists('format_slug')) {
 
 if (! function_exists('valid_hex')) {
     /**
-     * Validate hex color
+     * Validate if a string is a valid hexadecimal color code.
+     *
+     * This function checks for both 3-character and 6-character hex formats
+     * starting with a hash (#) symbol.
+     *
+     * @param string|null $string The hex color string to validate.
+     * @return bool               Returns true if valid, false otherwise.
      */
-    function valid_hex(string $string = null)
+    function valid_hex(string $string = ''): bool
     {
         if ($string && preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $string)) {
             return true;
@@ -239,10 +251,16 @@ if (! function_exists('valid_hex')) {
 }
 
 if (! function_exists('number2alpha')) {
-    /*
-     * Convert an integer to a string of uppercase letters (A-Z, AA-ZZ, AAA-ZZZ, etc.)
+    /**
+     * Convert an integer to a string of uppercase letters (A-Z, AA-ZZ, etc.).
+     *
+     * Useful for generating spreadsheet-like column headers or alphabetical indexing.
+     *
+     * @param int|null $number    The integer to convert (starting from 0).
+     * @param string|null $suffix An optional string to append to the result.
+     * @return string|null        The resulting alphabetical string with suffix.
      */
-    function number2alpha($number = 0, $suffix = null)
+    function number2alpha(int $number = 0, string $suffix = ''): string
     {
         for ($alpha = ''; $number >= 0; $number = intval($number / 26) - 1) {
             $alpha = chr($number % 26 + 0x41) . $alpha;
@@ -253,15 +271,21 @@ if (! function_exists('number2alpha')) {
 }
 
 if (! function_exists('alpha2number')) {
-    /*
-     * Convert a string of uppercase letters to an integer.
+    /**
+     * Convert a string of uppercase letters back to an integer.
+     *
+     * Reverses the transformation performed by number2alpha.
+     *
+     * @param string|null $alpha  The alphabetical string to convert.
+     * @param string|null $suffix An optional string to append to the result.
+     * @return string             The resulting integer as a string with suffix.
      */
-    function alpha2number($alpa = null, $suffix = null)
+    function alpha2number(string $alpha = '', string $suffix = ''): string
     {
         $length = strlen($alpha);
         $number = 0;
 
-        for ($i = 0; $i < $l; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $number = $number * 26 + ord($alpha[$i]) - 0x40;
         }
 
@@ -270,32 +294,38 @@ if (! function_exists('alpha2number')) {
 }
 
 if (! function_exists('encrypt')) {
-    /*
-     * Encryption
+    /**
+     * Encrypt a string and encode the result to base64.
+     *
+     * @param string $passphrase The raw string to be encrypted.
+     * @return string            The base64 encoded encrypted string, or empty string if input is empty.
      */
-    function encrypt($passphrase = null)
+    function encrypt(string $passphrase = ''): string
     {
         if (! $passphrase) {
-            return false;
+            return '';
         }
 
-        $encrypter = \Config\Services::encrypter();
+        $encrypter = Services::encrypter();
 
         return base64_encode($encrypter->encrypt($passphrase));
     }
 }
 
 if (! function_exists('decrypt')) {
-    /*
-     * Decryption
+    /**
+     * Decode a base64 string and decrypt the result.
+     *
+     * @param string $source The base64 encoded encrypted string.
+     * @return string        The decrypted raw string, or empty string if input is empty.
      */
-    function decrypt($source = null)
+    function decrypt(string $source = ''): string
     {
         if (! $source) {
-            return false;
+            return '';
         }
 
-        $encrypter = \Config\Services::encrypter();
+        $encrypter = Services::encrypter();
 
         return $encrypter->decrypt(base64_decode($source));
     }

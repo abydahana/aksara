@@ -18,10 +18,8 @@
 if (! function_exists('comment_widget')) {
     /**
      * Load comment widget
-     *
-     * @param   array $params
      */
-    function comment_widget($params = [])
+    function comment_widget(?array $params = []): string
     {
         return '<div role="widget" data-source="' . base_url('xhr/widget/comment', $params) . '"></div>';
     }
