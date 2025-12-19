@@ -15,64 +15,88 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-/**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
- *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-function geojson2png($geojson = '[]', $stroke_color = '#ff0000', $fill_color = '#ff0000', $width = 600, $height = 600)
-{
-    $geojson = json_decode($geojson);
-    $paths = '';
-    $markers = '';
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 
-    if (isset($geojson->features)) {
-        foreach ($geojson->features as $key => $val) {
-            $properties = [];
+if (! function_exists('geojson2png')) {
+    /**
+     * Convert GeoJSON data to a Google Static Maps URL
+     */
+    function geojson2png(string $geojson = '[]', string $stroke_color = '#ff0000', string $fill_color = '#ff0000', int $width = 600, int $height = 600): string
+    {
+        $data = json_decode($geojson);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return '';
+        }
 
-            if (in_array($val->geometry->type, ['LineString', 'MultiLineString'])) {
-                $paths .= '&path=color:0x' . str_replace('#', '', $stroke_color) . '99|weight:1';
+        $paths = [];
+        $markers = [];
 
-                foreach ($val->geometry->coordinates as $_key => $_val) {
-                    if (is_array($_val)) {
-                        foreach ($_val as $__key => $__val) {
-                            $paths .= '|' . $__val[1] . ',' . $__val[0];
+        // Helper to format hex for Google API (removes # and prepends 0x)
+        $clean_stroke = '0x' . ltrim($stroke_color, '#');
+        $clean_fill = '0x' . ltrim($fill_color, '#');
+
+        if (isset($data->features) && is_array($data->features)) {
+            foreach ($data->features as $feature) {
+                $type = $feature->geometry->type ?? '';
+                $coords = $feature->geometry->coordinates ?? [];
+
+                if (in_array($type, ['LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'])) {
+                    $prefix = ('Polygon' === $type || 'MultiPolygon' === $type)
+                        ? "path=color:{$clean_stroke}|weight:1|fillcolor:{$clean_fill}"
+                        : "path=color:{$clean_stroke}99|weight:1";
+
+                    $points = [];
+                    // Flatten coordinates regardless of nesting depth
+                    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
+                    $temp_coords = [];
+                    foreach ($iterator as $v) {
+                        $temp_coords[] = $v;
+                        if (count($temp_coords) === 2) {
+                            // GeoJSON is [lng, lat], Google Static Maps is [lat, lng]
+                            $points[] = $temp_coords[1] . ',' . $temp_coords[0];
+                            $temp_coords = [];
                         }
-                    } else {
-                        $paths .= '|' . $_val[1] . ',' . $_val[0];
+                    }
+
+                    if (! empty($points)) {
+                        $paths[] = $prefix . '|' . implode('|', $points);
+                    }
+                } elseif (in_array($type, ['Point', 'MultiPoint'])) {
+                    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
+                    $temp_coords = [];
+                    foreach ($iterator as $v) {
+                        $temp_coords[] = $v;
+                        if (count($temp_coords) === 2) {
+                            $markers[] = $temp_coords[1] . ',' . $temp_coords[0];
+                            $temp_coords = [];
+                        }
                     }
                 }
-            } elseif (in_array($val->geometry->type, ['Polygon', 'MultiPolygon'])) {
-                $paths .= '&path=color:0x' . str_replace('#', '', $stroke_color) . '|weight:1|fillcolor:0x' . str_replace('#', '', $fill_color);
+            }
+        } elseif (isset($data->lat, $data->lng)) {
+            $markers[] = $data->lat . ',' . $data->lng;
+        }
 
-                foreach ($val->geometry->coordinates as $_key => $_val) {
-                    foreach ($_val as $__key => $__val) {
-                        if (is_array($__val)) {
-                            $paths .= '|' . $__val[1] . ',' . $__val[0];
-                        }
-                    }
-                }
-            } elseif (in_array($val->geometry->type, ['Point', 'MultiPoint'])) {
-                $markers .= '&markers=scale:1';
-                $markers .= '|' . $val->geometry->coordinates[1] . ',' . $val->geometry->coordinates[0];
+        // Build URL
+        $params = [
+            'key' => get_setting('openlayers_search_key'),
+            'size' => $width . 'x' . $height,
+            'sensor' => 'false'
+        ];
+
+        $url = 'https://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params);
+
+        if (! empty($markers)) {
+            $url .= '&markers=scale:1|' . implode('|', $markers);
+        }
+
+        if (! empty($paths)) {
+            foreach ($paths as $path) {
+                $url .= '&' . $path;
             }
         }
-    } elseif (isset($geojson->lat) && isset($geojson->lng)) {
-        $markers .= '&markers=scale:1';
-        $markers .= '|' . $geojson->lat . ',' . $geojson->lng;
+
+        return $url;
     }
-
-    $params = [
-        'key' => get_setting('openlayers_search_key'),
-        'zoom' => '',
-        'size' => $width . 'x' . $height
-    ];
-
-    return 'http://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params) . $markers . $paths;
 }
