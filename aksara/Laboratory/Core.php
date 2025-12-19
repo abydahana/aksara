@@ -25,6 +25,7 @@ use Aksara\Laboratory\Permission;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
+use ReflectionMethod;
 use Throwable;
 
 /**
@@ -166,6 +167,19 @@ abstract class Core extends Controller
 
         // Set user language.
         $this->_set_language(get_userdata('language_id'));
+
+        /**
+         * Check if the application is set to BACKEND_ONLY mode.
+         * If true, non-API requests (requests that expect HTML/Template output)
+         * will be blocked with a 403 Forbidden response.
+         */
+        if (defined('BACKEND_ONLY') && constant('BACKEND_ONLY') === true && ! $this->api_client) {
+            return make_json([
+                'code' => 403,
+                'error' => true,
+                'message' => phrase('The requested page is accessible in API-only mode')
+            ]);
+        }
     }
 
     /**
@@ -178,12 +192,24 @@ abstract class Core extends Controller
      */
     public function _remap(string $method = '', mixed ...$params)
     {
-        // Check method to prevent conflict
         if (method_exists($this, $method) && ! in_array($method, get_class_methods('\Aksara\Laboratory\Core'))) {
-            // Call non conflict method
-            call_user_func_array([$this, $method], $params);
+            // We use reflection to get method visibility
+            $ref = new ReflectionMethod($this, $method);
+
+            // This forces 'protected' methods to fall through to the fallback.
+            if ($ref->isPublic()) {
+                // Ensure it's not a core Aksara method
+                call_user_func_array([$this, $method], $params);
+            } else {
+                // For security reason, redirect to homepage
+                return redirect()->to(base_url());
+            }
         } else {
-            // Fallback to CRUD method
+            /**
+             * FALLBACK
+             * If the method is Protected, Private, or doesn't exist:
+             * We pass the method name as the first parameter to index().
+             */
             call_user_func_array([$this, 'index'], array_merge([$method], $params));
         }
     }
@@ -594,7 +620,15 @@ abstract class Core extends Controller
      *
      * @return static Current object instance (chainable).
      */
-    public function set_button(string $button, ?string $value = null, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], ?bool $new_tab = null): static
+    public function set_button(
+        string $button,
+        ?string $value = null,
+        ?string $label = null,
+        ?string $class = null,
+        ?string $icon = null,
+        array $parameter = [],
+        ?bool $new_tab = null
+    ): static
     {
         $this->_set_button[$button] = [
             'url' => $value,
@@ -711,7 +745,15 @@ abstract class Core extends Controller
      *
      * @return static Current object instance (chainable).
      */
-    public function add_toolbar($url, string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
+    public function add_toolbar(
+        string $url,
+        string $label,
+        ?string $class = null,
+        ?string $icon = null,
+        ?array $parameter = [],
+        bool $new_tab = false,
+        ?string $attribution = null
+    ): static
     {
         if (! is_array($url)) {
             $params = [
@@ -759,7 +801,15 @@ abstract class Core extends Controller
      *
      * @return static Current object instance (chainable).
      */
-    public function add_button($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
+    public function add_button(
+        string $url,
+        string $label,
+        ?string $class = null,
+        ?string $icon = null,
+        ?array $parameter = [],
+        bool $new_tab = false,
+        ?string $attribution = null
+    ): static
     {
         if (! is_array($url)) {
             $params = [
@@ -807,7 +857,15 @@ abstract class Core extends Controller
      *
      * @return static Current object instance (chainable).
      */
-    public function add_dropdown($url, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], bool $new_tab = false, ?string $attribution = null): static
+    public function add_dropdown(
+        string $url,
+        string $label,
+        ?string $class = null,
+        ?string $icon = null,
+        ?array $parameter = [],
+        bool $new_tab = false,
+        ?string $attribution = null
+    ): static
     {
         if (! is_array($url)) {
             $params = [
@@ -927,10 +985,6 @@ abstract class Core extends Controller
 
             // Loop through each field type (e.g., 'image', 'editable', 'custom_format')
             foreach ($types as $current_type) {
-                if ('custom_format' == $current_type) {
-                    $this->_custom_format = true;
-                }
-
                 // Define the structure for the current type, prioritizing dedicated array parameters
                 // if the input structure was ['field_name' => ['custom_format' => ['parameter' => '...']]]
                 // over the common parameters ($parameter, $alpha, etc.).
@@ -1391,7 +1445,7 @@ abstract class Core extends Controller
     public function merge_content(string $magic_string, ?string $alias = null, ?string $callback = null): static
     {
         // Get the fields from the magic string
-        preg_match_all('/\{\{(.*?)\}\}/', $magic_string, $matches);
+        preg_match_all('/\{\{(.*?)\}\}/', $magic_string ?? '', $matches);
 
         $field_names = array_map('trim', $matches[1]);
         $primary_field = (isset($field_names[0]) ? $field_names[0] : null);
@@ -1636,7 +1690,7 @@ abstract class Core extends Controller
     ): static {
         // --- 1. Initial Setup and Magic String Extraction ---
         $alias = $field;
-        preg_match_all('/\{\{(.*?)\}\}/', $output, $matches);
+        preg_match_all('/\{\{(.*?)\}\}/', $output ?? '', $matches);
         $select = array_map('trim', $matches[1]);
 
         if ($translate) {
@@ -1699,7 +1753,7 @@ abstract class Core extends Controller
 
             // Merge select from existing attributes (e.g., 'data-image="{{image}}"' attribute)
             if (isset($this->_set_attribute[$field])) {
-                preg_match_all('/\{\{(.*?)\}\}/', $this->_set_attribute[$field], $matches_attributes);
+                preg_match_all('/\{\{(.*?)\}\}/', $this->_set_attribute[$field] ?? '', $matches_attributes);
                 $select = array_merge($select, array_map('trim', $matches_attributes[1]));
             }
 
@@ -1844,7 +1898,7 @@ abstract class Core extends Controller
         $select_magic = $value . $label . $description . $image;
 
         // Extract all fields wrapped in {{...}} from the output format
-        preg_match_all('/\{\{(.*?)\}\}/', $select_magic, $matches_select);
+        preg_match_all('/\{\{(.*?)\}\}/', $select_magic ?? '', $matches_select);
 
         $select = $matches_select[1] ? array_map('trim', $matches_select[1]) : [];
 
@@ -1918,9 +1972,9 @@ abstract class Core extends Controller
      *
      * @param array $data Raw array of database result rows.
      *
-     * @return array The structured, serialized data, or JSON response if requested by API client.
+     * @return array|string The structured, serialized data, or JSON response if requested by API client.
      */
-    public function serialize(array $data): array
+    public function serialize(array $data): array|string
     {
         if (! $data && $this->model->table_exists($this->_table)) {
             // Flip columns
@@ -1951,9 +2005,9 @@ abstract class Core extends Controller
      * Serializes a single row
      *
      *
-     * @return array The structured, serialized row data
+     * @return array|string The structured, serialized row data or JSON response if requested by API client.
      */
-    public function serialize_row(array|object $data, bool $return = true): array
+    public function serialize_row(array|object $data, bool $return = true): array|string
     {
         // Define field data compilation
         $field_data = $this->model->field_data($this->_table);
@@ -2116,8 +2170,17 @@ abstract class Core extends Controller
 
             // Call assigned method of custom format
             if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
+                // Get callback method
                 $method = $this->_set_field[$field]['custom_format']['parameter'];
-                $content = $this->$method((array) $data);
+
+                // We use reflection to get method visibility
+                $ref = new ReflectionMethod($this, $method);
+
+                if ($ref->isProtected()) {
+                    $content = $this->$method((array) $data);
+                } else {
+                    $content = $method . '() must be protected';
+                }
             }
 
             $output[$field] = [
@@ -2154,7 +2217,7 @@ abstract class Core extends Controller
      *
      * @return object|string Returns the result of the executed controller method (View content string, JSON array, or Exception object).
      */
-    public function render(?string $table = null, ?string $view = null): object|array|string
+    public function render(?string $table = null, ?string $view = null): object|array|string|null
     {
         // Debugger
         if (in_array($this->_debugging, ['params', 'parameter'])) {
@@ -2188,7 +2251,7 @@ abstract class Core extends Controller
             } elseif (in_array($this->request->getMethod(), ['POST', 'DELETE']) &&
             ! in_array($this->_method, ['create', 'update', 'delete'])) {
                 // Check if request is made from promise
-                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethd() . ')', (! $this->api_client ? go_to() : null));
+                return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? go_to() : null));
             }
         } elseif ($table && ! $this->_set_permission) {
             // Unset database modification because no permission is set
@@ -2260,7 +2323,7 @@ abstract class Core extends Controller
                 $submitted_token = $this->request->getGet('aksara');
 
                 // Token comparison
-                if (! hash_equals($expected_token, (string) $submitted_token)) {
+                if (! hash_equals((string) $expected_token, (string) $submitted_token)) {
                     // Token didn't match
                     return throw_exception(403, phrase('The submitted token has expired or the request is made from a restricted source.'));
                 }
@@ -2873,8 +2936,15 @@ abstract class Core extends Controller
                 $results = array_fill_keys(array_keys(array_flip($this->model->list_fields($this->_table))), '');
                 $total = 0;
             } else {
+                $single_row = false;
+
+                if (in_array($this->_method, ['read', 'update']) || (in_array($this->_method, ['export', 'print', 'pdf']) && array_intersect_key($this->request->getGet(), array_flip($this->_set_primary)))) {
+                    // Request single row
+                    $single_row = true;
+                }
+
                 // Run query using prepared property
-                $query = $this->_fetch($this->_table);
+                $query = $this->_fetch($this->_table, $single_row);
                 $results = $query['results'];
                 $total = $query['total'];
             }
@@ -2923,17 +2993,17 @@ abstract class Core extends Controller
                 }
             } else {
                 // No result found
-                if (preg_match_all('/\{\{(.*?)\}\}/', $title)) {
+                if (preg_match_all('/\{\{(.*?)\}\}/', $title ?? '')) {
                     // Unset title contains magic string
                     $title = null;
                 }
 
-                if (preg_match_all('/\{\{(.*?)\}\}/', $description)) {
+                if (preg_match_all('/\{\{(.*?)\}\}/', $description ?? '')) {
                     // Unset description contains magic string
                     $description = null;
                 }
 
-                if (preg_match_all('/\{\{(.*?)\}\}/', $icon)) {
+                if (preg_match_all('/\{\{(.*?)\}\}/', $icon ?? '')) {
                     // Unset icon contains magic string
                     $icon = null;
                 }
@@ -3144,19 +3214,15 @@ abstract class Core extends Controller
             ],
             'query_params' => $this->request->getGet(),
             'results' => $results,
-            'total' => $total,
-            'elapsed_time' => (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00,
             '_token' => $this->_token
         ];
 
         if (in_array($this->_method, ['create', 'read', 'update'])) {
             unset($output['total']);
         } else {
-            // Add limit
-            $output['limit'] = $this->_limit;
-
             // Add pagination
             $output['pagination'] = $this->template->pagination([
+                'total' => $total,
                 'limit' => $this->_limit_backup,
                 'offset' => $this->_offset,
                 'per_page' => $this->_limit,
@@ -3170,15 +3236,15 @@ abstract class Core extends Controller
             $output = array_merge($output, $this->_set_output);
         }
 
+        // Elapsed time
+        $output['elapsed_time'] = (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00;
+
         // Generate the output
         if (in_array($this->_method, ['print', 'export', 'pdf'])) {
             $document = new Document();
 
             $document->pageSize('13in 8.5in');
 
-            $output['meta']['title'] = $title;
-            $output['meta']['description'] = $description;
-            $output['meta']['icon'] = $icon;
             $output = view('templates/export', (array) json_decode(json_encode($output)));
 
             // Send to client
@@ -3192,8 +3258,21 @@ abstract class Core extends Controller
             return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? $this->_redirect_back : null));
         }
 
-        if ($this->api_client && 'full' === $this->request->getGet('format_result')) {
-            // Requested from API Client in full result
+        if ($this->api_client) {
+            // API calls, remove unnecessary indexes
+            unset(
+                $output['breadcrumb'],
+                $output['links'],
+                $output['pagination']['action'],
+                $output['pagination']['filters'],
+                $output['pagination']['information'],
+                $output['pagination']['links'],
+                $output['query_params'],
+                $output['total'],
+                $output['_token']
+            );
+
+            // Send result to API client
             return make_json($output);
         }
 
@@ -5337,7 +5416,7 @@ abstract class Core extends Controller
      *
      * @return array Returns an array containing 'results' (ResultInterface or array) and 'total' (int).
      */
-    private function _fetch(?string $table = null): array
+    private function _fetch(?string $table = null, ?bool $row = false): array
     {
         // --- 1. Debugger ---
         if ($this->_debugging) {
@@ -5348,7 +5427,7 @@ abstract class Core extends Controller
                 $query_builder->limit($this->_limit, $this->_offset ?? 0);
             }
 
-            if (in_array($this->_method, ['create', 'read', 'update'])) {
+            if ($row) {
                 // Get single row
                 $query = $query_builder->row();
             } else {
@@ -5375,7 +5454,7 @@ abstract class Core extends Controller
             $results_builder->limit($this->_limit, $this->_offset ?? 0);
         }
 
-        if (in_array($this->_method, ['create', 'read', 'update'])) {
+        if ($row) {
             // Get single row
             $results = $results_builder->row();
 
@@ -5620,7 +5699,7 @@ abstract class Core extends Controller
      *
      * @return array The JSON response array (status and message).
      */
-    private function _sort_table(array $ordered_id = []): array
+    private function _sort_table(array $ordered_id = []): string
     {
         // Check if sorting is enabled or if the input format is invalid.
         if (! $this->_sortable || ! is_array($ordered_id)) {
