@@ -628,8 +628,7 @@ abstract class Core extends Controller
         ?string $icon = null,
         array $parameter = [],
         ?bool $new_tab = null
-    ): static
-    {
+    ): static {
         $this->_set_button[$button] = [
             'url' => $value,
             'label' => $label,
@@ -753,8 +752,7 @@ abstract class Core extends Controller
         ?array $parameter = [],
         bool $new_tab = false,
         ?string $attribution = null
-    ): static
-    {
+    ): static {
         if (! is_array($url)) {
             $params = [
                 'url' => $url,
@@ -809,8 +807,7 @@ abstract class Core extends Controller
         ?array $parameter = [],
         bool $new_tab = false,
         ?string $attribution = null
-    ): static
-    {
+    ): static {
         if (! is_array($url)) {
             $params = [
                 'url' => $url,
@@ -865,8 +862,7 @@ abstract class Core extends Controller
         ?array $parameter = [],
         bool $new_tab = false,
         ?string $attribution = null
-    ): static
-    {
+    ): static {
         if (! is_array($url)) {
             $params = [
                 'url' => $url,

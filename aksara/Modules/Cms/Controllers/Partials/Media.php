@@ -212,12 +212,12 @@ class Media extends Core
         $data = array_merge($this->_folders, $this->_files);
 
         // Sort by folder first
-        usort($data, function($sourceA, $sourceB) {
+        usort($data, function ($sourceA, $sourceB) {
             if ($sourceA['type'] == $sourceB['type']) {
                 return strcmp($sourceA['label'], $sourceB['label']);
             }
 
-            return ($sourceA['type'] == 'directory') ? -1 : 1;
+            return ('directory' == $sourceA['type']) ? -1 : 1;
         });
 
         return [
