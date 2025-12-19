@@ -107,11 +107,7 @@ class Formatter
                     $value = '{}';
                 }
             }
-            // 10. Custom Format (Static Value)
-            elseif ('custom_format' === $key) {
-                $value = $val['parameter'] ?? null;
-            }
-            // 11. Date
+            // 10. Date
             elseif ('date' === $key && $value && '0000-00-00' !== $value) {
                 $timestamp = strtotime($value);
                 if ($timestamp) {
@@ -119,7 +115,7 @@ class Formatter
                     $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp);
                 }
             }
-            // 12. DateTime
+            // 11. DateTime
             elseif ('datetime' === $key && $value && '0000-00-00 00:00:00' !== $value) {
                 $timestamp = strtotime($value);
                 if ($timestamp) {
@@ -127,7 +123,7 @@ class Formatter
                     $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
                 }
             }
-            // 13. Sprintf Formatting
+            // 12. Sprintf Formatting
             elseif ('sprintf' === $key) {
                 $value = $this->_format_sprintf($value, $val);
             }

@@ -120,12 +120,6 @@ trait Traits
     private $_compiled_table = [];
 
     /**
-     * Custom formatting status.
-     * @var bool
-     */
-    private $_custom_format = false;
-
-    /**
      * Container for retrieved data.
      * @var array
      */
