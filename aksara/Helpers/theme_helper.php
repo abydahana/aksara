@@ -17,142 +17,128 @@
 
 if (! function_exists('asset_loader')) {
     /**
-     * Load additional CSS or JS files.
-     * Auto-detect: check theme assets first, fallback to core assets
-     *
-     * @param array|string $assets Array or comma-separated string of file paths
+     * Load additional CSS or JS files efficiently.
+     * * @param array|string $assets Array or comma-separated string of file paths
      * @return string|false HTML tags for loading assets
      */
-    function asset_loader($assets = [])
+    function asset_loader(string|array $assets = []): string
     {
-        $theme = null;
-        $backtrace = debug_backtrace();
+        // Use the optimized helper instead of debug_backtrace
+        $theme = get_theme();
 
-        // Auto-detect theme from backtrace
-        foreach ($backtrace as $key => $val) {
-            if (isset($val['file']) && ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file']) {
-                if (isset($val['object']->template->theme)) {
-                    $theme = $val['object']->template->theme;
-                } elseif (isset($val['object']->theme)) {
-                    $theme = $val['object']->theme;
-                }
-            }
-        }
-
-        // Fallback: try get_theme() helper
-        if (! $theme) {
-            $theme = get_theme();
-        }
-
-        // Final fallback: from settings
+        // Fallback: from settings if helper returns null
         if (! $theme) {
             $theme = get_setting('frontend_theme') ?? 'default';
         }
 
-        // Convert string to array
+        // Normalize assets to array
         if (! is_array($assets)) {
             $assets = array_map('trim', explode(',', $assets));
         }
 
         $output = '';
 
-        foreach ($assets as $key => $val) {
+        foreach ($assets as $val) {
             $val = trim($val);
-
             if (empty($val)) {
                 continue;
             }
 
             $extension = strtolower(pathinfo($val, PATHINFO_EXTENSION));
-            $file_exists = false;
             $file_url = '';
 
-            // Priority 1: Check theme assets
-            $theme_path = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $val);
-
-            if (file_exists($theme_path)) {
-                $file_exists = true;
+            // Priority 1: Check theme assets directory
+            if (file_exists(ROOTPATH . 'themes/' . $theme . '/assets/' . $val)) {
                 $file_url = base_url('themes/' . $theme . '/assets/' . $val);
-            } else {
-                // Priority 2: Fallback to core assets
-                $core_path = ROOTPATH . 'assets' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $val);
-
-                if (file_exists($core_path)) {
-                    $file_exists = true;
-                    $file_url = base_url('assets/' . $val);
-                }
+            }
+            // Priority 2: Fallback to core assets directory
+            elseif (file_exists(ROOTPATH . 'assets/' . $val)) {
+                $file_url = base_url('assets/' . $val);
             }
 
-            // Generate HTML tag
-            if ($file_exists) {
+            // Generate HTML tags based on extension
+            if ($file_url) {
                 if ('css' === $extension) {
                     $output .= '<link rel="stylesheet" type="text/css" href="' . $file_url . '" />' . "\n";
                 } elseif ('js' === $extension) {
                     $output .= '<script type="text/javascript" src="' . $file_url . '"></script>' . "\n";
-                } else {
-                    // Log warning for unrecognized extension
-                    log_message('warning', "Unknown asset extension: {$val}");
                 }
             } else {
-                // Log warning if file not found
                 log_message('warning', "Asset not found: {$val} (theme: {$theme})");
             }
         }
 
-        return $output ?: false;
+        return $output;
     }
 }
 
 if (! function_exists('get_theme_asset')) {
     /**
      * Load theme asset.
-     * The file location is directive to a folder named "assets" for security
-     * purpose.
+     * The file location is directed to a folder named "assets" within the active theme.
      *
-     * @param mixed|null $data
+     * @param string|null $data The relative path to the asset file
+     * @return string The asset URL or '#' if not found
      */
-    function get_theme_asset($data = null)
+    function get_theme_asset(string $data): string
     {
-        $theme = false;
-        $backtrace = debug_backtrace();
+        // Use the optimized helper instead of scanning backtrace
+        $theme = get_theme();
 
-        foreach ($backtrace as $key => $val) {
-            if (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->template->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->template->theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
-                return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->template->theme . '/assets/' . $data));
-            } elseif (isset($val['file']) && ROOTPATH .  'aksara' . DIRECTORY_SEPARATOR . 'Laboratory' . DIRECTORY_SEPARATOR . 'Core.php' == $val['file'] && isset($val['object']->theme) && file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $val['object']->theme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)) {
-                return str_replace('/index.php/', '/', base_url('themes/' . $val['object']->theme . '/assets/' . $data));
+        if ($theme) {
+            // Define the local path and web URL
+            $asset_path = ROOTPATH . 'themes/' . $theme . '/assets/' . $data;
+
+            // Check if the file exists within the theme's asset directory
+            if (file_exists($asset_path)) {
+                // Return the cleaned base URL
+                return str_replace('/index.php/', '/', base_url('themes/' . $theme . '/assets/' . $data));
             }
         }
 
+        // Return a dummy link if theme is not detected or file doesn't exist
         return '#';
     }
 }
 
 if (! function_exists('get_module_asset')) {
     /**
-     * Load module asset.
-     * The file location is directive to a folder named "assets" for security
-     * purpose.
+     * Load a module-specific asset.
      *
-     * @param mixed|null $data
+     * This function identifies the active module by parsing the current controller's
+     * namespace via the router service. It checks for the file's existence within
+     * the 'assets' directory of both user-defined modules and core modules.
+     *
+     * @param string|null $data The relative path to the asset file (e.g., 'assets/css/style.css').
+     * @return string           Returns the full URL to the asset if found; otherwise, returns '#'.
      */
-    function get_module_asset($data = null, $x = false)
+    function get_module_asset(?string $data = null): string
     {
+        // Get the fully qualified class name of the current controller
         $controller = service('router')->controllerName();
 
+        // Extract the module name using regex to capture the segment between \Modules\ and \Controllers\
         preg_match('/\\\Modules\\\(.*?)\\\Controllers\\\/', $controller, $matches);
 
-        $module = $matches[1];
+        // Get the captured module name from the regex matches
+        $module = $matches[1] ?? null;
 
         if ($module) {
+            /**
+             * Check if the asset exists in:
+             * 1. The custom modules directory (/modules/...)
+             * 2. The core Aksara modules directory (/aksara/Modules/...)
+             */
             if (
-                file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)
-                || file_exists(ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $data)
+                file_exists(ROOTPATH . "modules/$module/assets/$data")
+                || file_exists(APPPATH . "$module/assets/$data")
             ) {
-                return base_url('modules/' . $module . '/assets/' . $data);
+                // Return the base URL pointing to the assets directory
+                return base_url("modules/$module/assets/$data");
             }
         }
 
+        // Return a dummy link if the module cannot be determined or the file is missing
         return '#';
     }
 }
@@ -161,8 +147,18 @@ if (! function_exists('generate_menu')) {
     /**
      * Menu generator
      */
-    function generate_menu($menus = [], $ul_class = 'navbar-nav', $li_class = 'nav-item', $a_class = 'nav-link', $toggle_class = 'dropdown-toggle', $toggle_initial = 'data-bs-toggle="dropdown"', $dropdown_class = 'dropdown', $sub_ul_class = 'dropdown-menu', $is_children = false, $level = 0)
-    {
+    function generate_menu(
+        array|object $menus,
+        string $ul_class = 'navbar-nav',
+        string $li_class = 'nav-item',
+        string $a_class = 'nav-link',
+        string $toggle_class = 'dropdown-toggle',
+        string $toggle_initial = 'data-bs-toggle="dropdown"',
+        string $dropdown_class = 'dropdown',
+        string $sub_ul_class = 'dropdown-menu',
+        bool $is_children = false,
+        int $level = 0
+    ): string {
         $output = null;
 
         foreach ($menus as $key => $val) {

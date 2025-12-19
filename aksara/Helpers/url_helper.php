@@ -15,12 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\SiteURI;
-use CodeIgniter\HTTP\URI;
-use CodeIgniter\Router\Exceptions\RouterException;
-use Config\App;
 
 if (! function_exists('base_url')) {
     /**
@@ -31,11 +26,8 @@ if (! function_exists('base_url')) {
      * or a URL to a file can be passed in, e.g. to an image file.
      *
      * @param   string $path
-     * @param   array  $params
-     *
-     * @return  string
      */
-    function base_url($path = '', $params = [])
+    function base_url(string|array|null $path = null, ?array $params = []): string
     {
         $request = service('request');
 
@@ -72,7 +64,7 @@ if (! function_exists('base_url')) {
             // Generate token
             $token = generate_token($path, $query_params);
 
-            if ($query_params) {
+            if ($query_params && $token) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
@@ -101,12 +93,8 @@ if (! function_exists('current_page')) {
      * on it.
      *
      * @param   string $method
-     * @param   array  $params
-     * @param   string $unset
-     *
-     * @return  string
      */
-    function current_page($method = null, $params = [], $unset = null)
+    function current_page(string|array|null $method = null, ?array $params = [], ?string $unset = null): string
     {
         if (is_object($params)) {
             $params = (array) $params;
@@ -138,7 +126,7 @@ if (! function_exists('current_page')) {
             // Generate token
             $token = generate_token(uri_string() . ($method ? '/' . $method : null), $query_params);
 
-            if ($query_params) {
+            if ($query_params && $token) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
@@ -157,11 +145,8 @@ if (! function_exists('go_to')) {
      * extra parameter on it.
      *
      * @param   string $method
-     * @param   array  $params
-     *
-     * @return  string
      */
-    function go_to($method = null, $params = [])
+    function go_to(string|array|null $method = null, array $params = []): string
     {
         if (is_array($method)) {
             $method = implode('/', $method);
@@ -212,7 +197,7 @@ if (! function_exists('go_to')) {
             // Generate token
             $token = generate_token($final_slug . ($method ? '/' . $method : null), $query_params);
 
-            if ($query_params) {
+            if ($query_params && $token) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
@@ -232,10 +217,8 @@ if (! function_exists('asset_url')) {
      * Create a local URL based on your basepath.
      * Segments can be passed in as a string or an array, same as site_url
      * or a URL to a file can be passed in, e.g. to an image file.
-     *
-     * @return  string
      */
-    function asset_url($file = '')
+    function asset_url(string $file): string
     {
         return base_url('assets/' . $file);
     }
