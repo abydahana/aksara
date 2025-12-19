@@ -15,6 +15,9 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+use Config\Services;
+use CodeIgniter\Files\File;
+
 if (! function_exists('get_file')) {
     /**
      * Get URL of uploaded file
@@ -136,14 +139,14 @@ if (! function_exists('resize_image')) {
 
                 // Uploaded file is image format, prepare image manipulation
                 $imageinfo = getimagesize($source);
-                $source = new \CodeIgniter\Files\File($source);
+                $source = new File($source);
                 $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
                 $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
                 $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
                 $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
                 // Load image manipulation library
-                $image = \Config\Services::image('gd');
+                $image = Services::image('gd');
 
                 if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
                     // Resize image and move to upload directory
