@@ -166,7 +166,7 @@ class Feedback extends Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you want to hide is not found.', current_page('../')));
+            return throw_exception(404, phrase('The comment you want to hide is not found', current_page('../')));
         }
 
         if ($this->request->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated'))) {

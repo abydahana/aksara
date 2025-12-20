@@ -47,7 +47,7 @@ class Assets extends Core
          * This prevents users from using ../../../etc/passwd
          */
         if (false === $realPath || strpos($realPath, realpath(FCPATH)) !== 0) {
-            return throw_exception(403, phrase('Access Denied'), base_url());
+            return throw_exception(403, phrase('Access denied'), base_url());
         }
 
         if (is_file($realPath)) {
