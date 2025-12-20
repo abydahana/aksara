@@ -6,7 +6,7 @@
             <div class="row align-items-center mb-3">
                 <div class="col-md-9">
                     <?php
-                        $directories = explode('/', service('request')->getGet('directory'));
+                        $directories = explode('/', service('request')->getGet('directory') ?? '');
                         $paths = null;
                         $breadcrumbs = null;
 
