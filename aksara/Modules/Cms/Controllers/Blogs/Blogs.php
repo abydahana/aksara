@@ -32,6 +32,9 @@ class Blogs extends Core
 
         $this->set_permission();
         $this->set_theme('backend');
+
+        // Ignore query string signature
+        $this->ignore_query_string('category, language');
     }
 
     public function index()
