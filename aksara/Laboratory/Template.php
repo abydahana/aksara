@@ -532,7 +532,7 @@ class Template
             $data = [];
 
             foreach ($checker as $val) {
-                $data[$val] = (end($matched_route) !== $router->methodName() && in_array($val, $matched_route) ? phrase(ucwords(str_replace('_', ' ', $val))) : ucwords(str_replace('_', ' ', $val)));
+                $data[$val] = str_replace('_', ' ', $val);
             }
         }
 
@@ -554,7 +554,6 @@ class Template
             ];
         }
 
-        $current_slug = end($checker);
         $slug = null;
         $params = $request->getGet();
 
@@ -593,7 +592,7 @@ class Template
 
                 $output[] = [
                     'url' => $external ?? base_url($slug, $breadcrumb_params),
-                    'label' => $label,
+                    'label' => phrase($label, [], true), // Use phrase only if exist in translation
                     'icon' => ''
                 ];
             }
@@ -601,7 +600,7 @@ class Template
 
         $output[] = [
             'url' => '',
-            'label' => $current_page,
+            'label' => $title ?? $current_page,
             'icon' => ''
         ];
 

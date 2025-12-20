@@ -157,9 +157,10 @@ if (! function_exists('phrase')) {
      *
      * @param   string $phrase The string to translate (Required)
      * @param   array  $replacement Associative array for variable replacement
+     * @param   bool  $checking Only use existing translation without append new phrase
      * @return  string Returns translated string or empty string if input invalid
      */
-    function phrase(string $phrase, array $replacement = []): string
+    function phrase(string $phrase, ?array $replacement = [], bool $checking = false): string
     {
         mb_internal_encoding('UTF-8');
 
@@ -225,22 +226,37 @@ if (! function_exists('phrase')) {
                 $phrases = [];
             }
 
-            if (! isset($phrases[$phrase])) {
+            if (! isset($phrases[$phrase]) && ! $checking) {
+                // Only append new phrase if checking is false
                 $phrases[$phrase] = $phrase;
+
+                // Sort phrases by key
                 ksort($phrases);
 
                 if (file_exists($translation_file) && is_writable($translation_file)) {
+                    // No translation exists
                     $json_content = json_encode(
                         $phrases,
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
                     );
+
+                    // Create new translation file
                     file_put_contents($translation_file, $json_content, LOCK_EX);
                 }
             }
 
-            $translated_phrase = $phrases[$phrase] ?? $phrase;
+            if ($checking) {
+                // Only check, use existing translation
+                $phrases_reversed = array_reverse($phrases, true);
+                $phrases_upper = array_change_key_case($phrases_reversed, CASE_UPPER);
+                $upper_phrase = strtoupper($phrase);
+                $translated_phrase = (isset($phrases_upper[$upper_phrase]) ? $phrases_upper[$upper_phrase] : $phrase);
+            } else {
+                // Try to using existing or appended phrase
+                $translated_phrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
+            }
 
             // Typographical beautification
             $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
