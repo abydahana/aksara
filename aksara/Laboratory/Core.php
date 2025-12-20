@@ -2161,7 +2161,7 @@ abstract class Core extends Controller
                 if (
                     (in_array($this->_method, ['index']) && ! in_array($field, $this->_unset_column))
                     || (in_array($this->_method, ['create', 'update']) && ! in_array($field, $this->_unset_field))
-                    || (in_array($this->_method, ['read']) && ! in_array($field, $this->_unset_read))
+                    || (in_array($this->_method, ['read']) && ! in_array($field, $this->_unset_view))
                 ) {
                     // Get callback method
                     $method = $this->_set_field[$field]['custom_format']['parameter'];
