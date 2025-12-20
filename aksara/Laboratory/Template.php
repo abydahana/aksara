@@ -450,7 +450,7 @@ class Template
         if ((file_exists($view_path_twig) || file_exists($view_path_php)) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && ! $request->isAJAX()))) {
             if (file_exists($view_path_twig)) {
                 // Load Twig template parser
-                $parser = new Parser($this->theme);
+                $parser = new Parser();
 
                 // Build html from result object
                 $data->content = $parser->parse($view_path_twig, (array) $data);
@@ -482,7 +482,7 @@ class Template
 
             if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/layout.twig')) {
                 // Load Twig template parser
-                $parser = new Parser($this->theme);
+                $parser = new Parser();
 
                 // Build html from result object
                 $parsed_view = $parser->parse(ROOTPATH . 'themes/' . $this->theme . '/layout.twig', (array) $data);

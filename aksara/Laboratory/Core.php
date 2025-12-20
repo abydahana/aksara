@@ -19,6 +19,7 @@ namespace Aksara\Laboratory;
 
 use Config\Services;
 use CodeIgniter\Controller;
+use CodeIgniter\HTTP\Response;
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Model;
 use Aksara\Laboratory\Permission;
@@ -167,19 +168,6 @@ abstract class Core extends Controller
 
         // Set user language.
         $this->_set_language(get_userdata('language_id'));
-
-        /**
-         * Check if the application is set to BACKEND_ONLY mode.
-         * If true, non-API requests (requests that expect HTML/Template output)
-         * will be blocked with a 403 Forbidden response.
-         */
-        if (defined('BACKEND_ONLY') && constant('BACKEND_ONLY') === true && ! $this->api_client) {
-            return make_json([
-                'code' => 403,
-                'error' => true,
-                'message' => phrase('The requested page is accessible in API-only mode')
-            ]);
-        }
     }
 
     /**
@@ -202,7 +190,7 @@ abstract class Core extends Controller
                 call_user_func_array([$this, $method], $params);
             } else {
                 // For security reason, redirect to homepage
-                return redirect()->to(base_url());
+                return $this->response->redirect(base_url('/'));
             }
         } else {
             /**
@@ -344,7 +332,7 @@ abstract class Core extends Controller
      *
      * @throws \Exception Throws exception on permission denial.
      */
-    public function set_permission(array|string $permissive_group = [], ?string $redirect = null): static
+    public function set_permission(array|string $permissive_group = [], ?string $redirect = null): static|Response
     {
         $this->_set_permission = true;
 
@@ -2165,17 +2153,28 @@ abstract class Core extends Controller
             }
 
             // Call assigned method of custom format
-            if (isset($this->_set_field[$field]) && in_array('custom_format', array_keys($this->_set_field[$field])) && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])) {
-                // Get callback method
-                $method = $this->_set_field[$field]['custom_format']['parameter'];
-
-                // We use reflection to get method visibility
-                $ref = new ReflectionMethod($this, $method);
-
-                if ($ref->isProtected()) {
+            if (
+                isset($this->_set_field[$field])
+                && in_array('custom_format', array_keys($this->_set_field[$field]))
+                && method_exists($this, $this->_set_field[$field]['custom_format']['parameter'])
+            ) {
+                if (
+                    (in_array($this->_method, ['index']) && ! in_array($field, $this->_unset_column))
+                    || (in_array($this->_method, ['create', 'update']) && ! in_array($field, $this->_unset_field))
+                    || (in_array($this->_method, ['read']) && ! in_array($field, $this->_unset_read))
+                ) {
+                    // Get callback method
+                    $method = $this->_set_field[$field]['custom_format']['parameter'];
                     $content = $this->$method((array) $data);
-                } else {
-                    $content = $method . '() must be protected';
+
+                    // We use reflection to get method visibility
+                    $ref = new ReflectionMethod($this, $method);
+
+                    if ($ref->isProtected()) {
+                        $content = $this->$method((array) $data);
+                    } else {
+                        $content = $method . '() must be protected';
+                    }
                 }
             }
 

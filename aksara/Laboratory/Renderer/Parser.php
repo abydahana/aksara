@@ -27,9 +27,9 @@ class Parser
 {
     private $_theme;
 
-    public function __construct($theme = null)
+    public function __construct()
     {
-        $this->_theme = $theme;
+        $this->_theme = get_theme();
     }
 
     /**

@@ -454,11 +454,8 @@ if (! function_exists('form_input')) {
      */
     function form_input(array|object $params = []): string
     {
-        // Identify the active theme to locate the correct template
-        $theme = get_theme();
-
         // Initialize the Twig parser with theme context
-        $parser = new \Aksara\Laboratory\Renderer\Parser($theme);
+        $parser = new Parser();
 
         // Parse and return the form input component
         return $parser->parse('core/form_input.twig', ['params' => $params]);
@@ -477,11 +474,8 @@ if (! function_exists('form_read')) {
      */
     function form_read(array|object $params = []): string
     {
-        // Identify the active theme
-        $theme = get_theme();
-
         // Initialize the Twig parser with theme context
-        $parser = new \Aksara\Laboratory\Renderer\Parser($theme);
+        $parser = new Parser();
 
         // Parse and return the form read component
         return $parser->parse('core/form_read.twig', ['params' => $params]);
@@ -506,11 +500,8 @@ if (! function_exists('pagination')) {
             return false;
         }
 
-        // Identify the active theme to locate the correct template
-        $theme = get_theme();
-
         // Initialize the Twig parser with theme context
-        $parser = new Parser($theme);
+        $parser = new Parser();
 
         // Parse and return the pagination component
         return $parser->parse('core/pagination.twig', $params);

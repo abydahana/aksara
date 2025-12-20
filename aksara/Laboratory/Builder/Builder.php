@@ -58,7 +58,7 @@ class Builder
 
         try {
             // 1. Set working directory path for the theme components
-            $directory = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'components';
+            $directory = ROOTPATH . "themes/$theme/components";
 
             // 2. Instantiate the appropriate Builder Class based on path
             switch ($path) {
@@ -98,7 +98,6 @@ class Builder
                 }
 
                 // Generate component data
-                // Note: We do not pass arguments here as the Component classes define parameterless methods
                 $component_data = $builder->$template();
 
                 // Define target file path
@@ -127,7 +126,8 @@ class Builder
             }
         } catch (Throwable $e) {
             // Log error or handle gracefully instead of exiting
-            // exit($e->getMessage()); // Avoid using exit() in libraries
+            log_message('error', '[COMPONENT] ' . $e->getMessage());
+
             return false;
         }
 

@@ -208,11 +208,13 @@ if (! function_exists('phrase')) {
                     mkdir(WRITEPATH . 'translations', 0755, true);
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (Throwable $e) {
+                    log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
                 try {
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (Throwable $e) {
+                    log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
             }
         }
@@ -264,7 +266,7 @@ if (! function_exists('phrase')) {
 
             $phrase = $translated_phrase;
         } catch (Throwable $e) {
-            // Keep original on error
+            log_message('error', '[TRANSLATION] ' . $e->getMessage());
         }
 
         // 4. Replacements
