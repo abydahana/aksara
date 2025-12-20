@@ -32,6 +32,9 @@ class Pages extends Core
 
         $this->set_permission();
         $this->set_theme('backend');
+
+        // Ignore query string signature
+        $this->ignore_query_string('language');
     }
 
     public function index()

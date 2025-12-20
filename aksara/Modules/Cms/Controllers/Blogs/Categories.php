@@ -36,6 +36,9 @@ class Categories extends Core
 
         $this->set_upload_path('blogs');
         $this->unset_delete('category_id', [1]);
+
+        // Ignore query string signature
+        $this->ignore_query_string('language');
     }
 
     public function index()

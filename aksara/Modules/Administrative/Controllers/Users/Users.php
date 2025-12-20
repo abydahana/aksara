@@ -35,6 +35,9 @@ class Users extends Core
         $this->unset_method('clone');
 
         $this->unset_delete('user_id', [1]);
+
+        // Ignore query string signature
+        $this->ignore_query_string('group');
     }
 
     public function index()

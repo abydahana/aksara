@@ -35,6 +35,9 @@ class Carousels extends Core
         $this->unset_method('clone');
 
         $this->set_upload_path('carousels');
+
+        // Ignore query string signature
+        $this->ignore_query_string('language');
     }
 
     public function index()

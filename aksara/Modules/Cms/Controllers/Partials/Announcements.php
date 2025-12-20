@@ -33,6 +33,9 @@ class Announcements extends Core
         $this->set_theme('backend');
 
         $this->unset_method('clone');
+
+        // Ignore query string signature
+        $this->ignore_query_string('language');
     }
 
     public function index()

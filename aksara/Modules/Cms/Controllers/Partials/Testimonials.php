@@ -35,6 +35,9 @@ class Testimonials extends Core
         $this->unset_method('clone');
 
         $this->set_upload_path('testimonials');
+
+        // Ignore query string signature
+        $this->ignore_query_string('language');
     }
 
     public function index()
