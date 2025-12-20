@@ -52,6 +52,12 @@ Vagrantfile
 config.php
 
 #-------------------------
+# Components Files
+#-------------------------
+themes/**/components
+!themes/**/components/README
+
+#-------------------------
 # Modules Files
 #-------------------------
 modules/*

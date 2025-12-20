@@ -105,7 +105,7 @@ class Table
         // Initialize dependencies
         $this->builder = new Builder();
         $this->formatter = new Formatter(get_object_vars($this));
-        $this->parser = new Parser($this->_set_theme);
+        $this->parser = new Parser();
     }
 
     /**

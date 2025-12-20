@@ -175,7 +175,7 @@ class Privileges extends Core
                             <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input"' . (isset($item->children) && $item->children ? ' role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
-                            ' . phrase($item->label) . '
+                            ' . phrase($item->label, [], true) . '
                         </label>
                         ' . (isset($item->children) ? $this->_children_menu($item->children, $existing_menu) : null) . '
                     </li>
@@ -208,7 +208,7 @@ class Privileges extends Core
                             <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input checker-children"' . (isset($item->children) && $item->children ? ' role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
-                            ' . phrase($item->label) . '
+                            ' . phrase($item->label, [], true) . '
                         </label>
                         ' . (isset($item->children) ? $this->_children_menu($item->children) : null) . '
                     </li>

@@ -51,10 +51,7 @@ class Assets extends Core
         }
 
         if (is_file($realPath)) {
-            return $this->response
-                ->download($realPath, null)
-                ->setFileName(basename($realPath))
-                ->send();
+            return $this->response->download($realPath, null)->send();
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
