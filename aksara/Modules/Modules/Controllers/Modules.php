@@ -50,7 +50,7 @@ class Modules extends Core
             if ($realPath && is_file($realPath)) {
                 // Ensure the file is actually inside ROOTPATH or APPPATH for safety
                 if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
-                    return $this->response->download($realPath, null, true)->setFileName(basename($realPath))->send();
+                    return $this->response->download($realPath, null, true)->send();
                 }
             }
         }

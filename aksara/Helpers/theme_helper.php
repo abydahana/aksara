@@ -131,7 +131,7 @@ if (! function_exists('get_module_asset')) {
              */
             if (
                 file_exists(ROOTPATH . "modules/$module/assets/$data")
-                || file_exists(APPPATH . "$module/assets/$data")
+                || file_exists(APPPATH . "Modules/$module/assets/$data")
             ) {
                 // Return the base URL pointing to the assets directory
                 return base_url("modules/$module/assets/$data");
