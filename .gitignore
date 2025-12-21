@@ -54,7 +54,7 @@ config.php
 #-------------------------
 # Components Files
 #-------------------------
-themes/*/components
+themes/*/components/*
 !themes/*/components/README
 
 #-------------------------
