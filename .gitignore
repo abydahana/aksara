@@ -54,8 +54,8 @@ config.php
 #-------------------------
 # Components Files
 #-------------------------
-themes/**/components
-!themes/**/components/README
+themes/*/components
+!themes/*/components/README
 
 #-------------------------
 # Modules Files
@@ -81,8 +81,8 @@ writable/session/*
 writable/uploads/*
 !writable/uploads/index.html
 
-writable/**/*.db
-writable/**/*.sqlite
+writable/*/*.db
+writable/*/*.sqlite
 
 public/uploads/*
 !public/uploads/_extension

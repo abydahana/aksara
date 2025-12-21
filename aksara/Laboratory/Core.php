@@ -2243,8 +2243,7 @@ abstract class Core extends Controller
                     // Access token is not valid
                     return throw_exception(403, phrase('The access token is invalid or already expired.'));
                 }
-            } elseif (in_array($this->request->getMethod(), ['POST', 'DELETE']) &&
-            ! in_array($this->_method, ['create', 'update', 'delete'])) {
+            } elseif (in_array($this->request->getMethod(), ['POST', 'DELETE']) && ! in_array($this->_method, ['create', 'update', 'delete'])) {
                 // Check if request is made from promise
                 return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->api_client ? go_to() : null));
             }
