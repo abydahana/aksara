@@ -1665,9 +1665,9 @@ abstract class Core extends Controller
         string $field,
         string $primary_key,
         string $output,
-        array $where = [],
-        array $join = [],
-        array $order_by = [],
+        ?array $where = [],
+        ?array $join = [],
+        ?array $order_by = [],
         ?string $group_by = null,
         int $limit = 0,
         bool $translate = false
