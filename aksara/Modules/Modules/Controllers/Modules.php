@@ -33,6 +33,7 @@ class Modules extends Core
 
         // Security Check: Block sensitive files and direct code execution
         $blockedExtensions = ['php', 'twig', 'env', 'json', 'lock', 'sql', 'log'];
+
         if (in_array($extension, $blockedExtensions) || empty($extension)) {
             return $this->_error404();
         }
@@ -50,7 +51,15 @@ class Modules extends Core
             if ($realPath && is_file($realPath)) {
                 // Ensure the file is actually inside ROOTPATH or APPPATH for safety
                 if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
-                    return $this->response->download($realPath, null, true)->inline()->send();
+                    $response = $this->response->download($realPath, null, true)->inline();
+
+                    // Set header
+                    $response->setHeader('Cache-Control', 'public, max-age=31536000')
+                    ->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
+
+                    $response->send();
+
+                    exit;
                 }
             }
         }
