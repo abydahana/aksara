@@ -287,9 +287,6 @@ if (! function_exists('show_flashdata')) {
             $icon = (service('session')->getFlashdata('success') ? 'check-circle-outline' : (service('session')->getFlashdata('warning') ? 'alert-octagram-outline' : 'emoticon-sad-outline'));
             $message = (service('session')->getFlashdata('success') ?: (service('session')->getFlashdata('warning') ?: service('session')->getFlashdata('error')));
 
-            // Clear flashdata
-            service('session')->remove(['success', 'warning', 'error']);
-
             return '
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
                     <div class="toast align-items-center text-bg-' . $type . ' fade show" role="alert" aria-live="assertive" aria-atomic="true">
