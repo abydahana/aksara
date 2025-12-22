@@ -48,8 +48,20 @@ class Themes extends Core
             return $this->_error404();
         }
 
-        // Serve file
-        return $this->response->download($realPath, null, true)->setFileName(basename($realPath))->send();
+        if ($realPath && is_file($realPath)) {
+            // Ensure the file is actually inside ROOTPATH or APPPATH for safety
+            if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
+                $response = $this->response->download($realPath, null, true)->inline();
+
+                // Set header
+                $response->setHeader('Cache-Control', 'public, max-age=31536000')
+                ->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
+
+                $response->send();
+
+                exit;
+            }
+        }
     }
 
     private function _error404()
