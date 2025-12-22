@@ -19,6 +19,7 @@ namespace Aksara\Laboratory;
 
 use Config\Mimes;
 use Config\Services;
+use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Model;
 use DateTime;
 use Throwable;
@@ -371,7 +372,7 @@ class Validation
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) $source->getSize('mb') > MAX_UPLOAD_SIZE) {
+        } elseif ((float) $source->getSizeByBinaryUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
             $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
 
