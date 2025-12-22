@@ -254,15 +254,19 @@ if (! function_exists('throw_exception')) {
             $redirect = ($request->getPost('__modal_index') <= 1 && 301 === $code ? 'soft' : false);
         }
 
-        $output = [
+        $output = json_encode([
             'code' => $code,
             'message' => $exception,
             'target' => $target ?: '',
             'redirect' => $redirect
-        ];
+        ]);
 
-        // Send JSON response using CI4 Response Class
-        return $response->setStatusCode($code)->setJSON($output)->send();
+        // Set header response code
+        http_response_code($code);
+
+        header('Content-Type: application/json');
+
+        exit($output);
     }
 }
 
