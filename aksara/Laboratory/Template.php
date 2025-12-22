@@ -513,11 +513,11 @@ class Template
      * Generate breadcrumb array structure.
      *
      * @param array $data An associative array of slug => label for breadcrumb segments.
-     * @param string|null $title The title for the current page (last segment label).
+     * @param array|string|null $title The title for the current page (last segment label).
      * @param array $primary Array of primary key names to be preserved in query parameters.
      * @return array<int, array{url: string, label: string, icon: string}> The array of breadcrumb items.
      */
-    public function breadcrumb(array $data = [], ?string $title = null, array $primary = []): array
+    public function breadcrumb(array $data = [], array|string|null $title = null, array $primary = []): array
     {
         $request = Services::request();
         $router = Services::router();
@@ -600,7 +600,7 @@ class Template
 
         $output[] = [
             'url' => '',
-            'label' => $title ?? $current_page,
+            'label' => (! is_array($title) && $title ? $title : $current_page),
             'icon' => ''
         ];
 
