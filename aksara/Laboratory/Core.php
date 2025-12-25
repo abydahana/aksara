@@ -733,7 +733,7 @@ abstract class Core extends Controller
      * @return static Current object instance (chainable).
      */
     public function add_toolbar(
-        string $url,
+        ?string $url,
         string $label,
         ?string $class = null,
         ?string $icon = null,
@@ -788,7 +788,7 @@ abstract class Core extends Controller
      * @return static Current object instance (chainable).
      */
     public function add_button(
-        string $url,
+        ?string $url,
         string $label,
         ?string $class = null,
         ?string $icon = null,
@@ -843,7 +843,7 @@ abstract class Core extends Controller
      * @return static Current object instance (chainable).
      */
     public function add_dropdown(
-        string $url,
+        ?string $url,
         string $label,
         ?string $class = null,
         ?string $icon = null,
@@ -2316,6 +2316,9 @@ abstract class Core extends Controller
                 $expected_token = generate_token(uri_string(), $query_params);
                 $submitted_token = $this->request->getGet('aksara');
 
+                // Unset validated ignored query string
+                unset_userdata('__ignored_query_string');
+
                 // Token comparison
                 if (! hash_equals((string) $expected_token, (string) $submitted_token)) {
                     // Token didn't match
@@ -3599,10 +3602,10 @@ abstract class Core extends Controller
                         $val['validation'][] = 'max_length[2]';
                     } elseif (array_intersect(['date', 'datepicker'], $type)) {
                         // Date (YYYY-MM-DD) validation rules
-                        $val['validation'][] = 'valid_date';
+                        $val['validation'][] = 'valid_date[Y-m-d]';
                     } elseif (array_intersect(['timestamp', 'datetime', 'datetimepicker'], $type)) {
                         // Full timestamp validation rules
-                        $val['validation'][] = 'valid_datetime';
+                        $val['validation'][] = 'valid_date[Y-m-d H:i:s]';
                     }
 
                     if ($val['validation']) {

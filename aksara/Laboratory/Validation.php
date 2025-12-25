@@ -140,64 +140,6 @@ class Validation
     }
 
     /**
-     * Check if field is valid date.
-     *
-     * @param mixed|null $value The value to check
-     * @return bool True if valid date, false otherwise
-     */
-    public function valid_date($value = null): bool
-    {
-        // Convert value to standardzitation
-        $value = date('Y-m-d', strtotime($value));
-
-        $valid_date = DateTime::createFromFormat('Y-m-d', $value);
-
-        if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if field is valid time (HH:MM format).
-     *
-     * @param mixed|null $value The value to check
-     * @return bool True if valid time, false otherwise
-     */
-    public function valid_time($value = null): bool
-    {
-        //Assume $value SHOULD be entered as HH:MM
-        list($hh, $mm) = array_pad(explode(':', $value), 2, '00');
-
-        if (! is_numeric($hh) || ! is_numeric($mm) || (int) $hh > 24 || (int) $mm > 59 || mktime((int) $hh, (int) $mm) === false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if field is valid date and time.
-     *
-     * @param mixed|null $value The value to check
-     * @return bool True if valid datetime, false otherwise
-     */
-    public function valid_datetime($value = null): bool
-    {
-        // Convert value to standardzitation
-        $value = date('Y-m-d H:i:s', strtotime($value));
-
-        $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
-
-        if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Check if field is valid year (between 1970 and 2100).
      *
      * @param mixed|null $value The value to check
