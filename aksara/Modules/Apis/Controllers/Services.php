@@ -67,7 +67,7 @@ class Services extends Core
             'description' => 'required|string',
             'api_key' => 'required|alpha_numeric|min_length[32]',
             'method' => 'required|in_list[GET,POST,DELETE]',
-            'valid_until' => 'required|valid_date',
+            'valid_until' => 'required|valid_date[Y-m-d]',
             'status' => 'boolean'
         ])
 
