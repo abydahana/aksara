@@ -726,7 +726,7 @@ class Model
             // Run where command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val);
+                $cast = $this->_cast_column($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'where',
@@ -735,7 +735,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value);
+            $cast = $this->_cast_column($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'where',
@@ -760,7 +760,7 @@ class Model
             // Run or where command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val);
+                $cast = $this->_cast_column($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'orWhere',
@@ -769,7 +769,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value);
+            $cast = $this->_cast_column($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'orWhere',
@@ -927,7 +927,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'like',
@@ -977,7 +977,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orLike',
@@ -1027,7 +1027,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'notLike',
@@ -1077,7 +1077,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orNotLike',
@@ -1102,7 +1102,7 @@ class Model
             // Run having command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val);
+                $cast = $this->_cast_column($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'having',
@@ -1111,7 +1111,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value);
+            $cast = $this->_cast_column($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'having',
@@ -1136,7 +1136,7 @@ class Model
             // Run or having command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val);
+                $cast = $this->_cast_column($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'orHaving',
@@ -1145,7 +1145,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value);
+            $cast = $this->_cast_column($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'orHaving',
@@ -1303,7 +1303,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'havingLike',
@@ -1353,7 +1353,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orHavingLike',
@@ -1403,7 +1403,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'notHavingLike',
@@ -1453,7 +1453,7 @@ class Model
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match']);
+            $cast = $this->_cast_column($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orNotHavingLike',
@@ -2612,11 +2612,10 @@ class Model
      * @param mixed $value The value for comparison.
      * @return array{column: string, value: mixed, escape: bool}
      */
-    private function _cast_column(?string $column = null, mixed $value = ''): array
+    private function _cast_column(?string $column = null, mixed $value = '', bool $escape = true): array
     {
         $column = trim((string) $column);
         $operand = null;
-        $escape = true;
 
         if (strpos($column, ' ') !== false) {
             // Get operand if any
