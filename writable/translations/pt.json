@@ -994,6 +994,7 @@
     "user": "usuário",
     "users": "usuários",
     "week": "semana",
+    "week_plural": "semanas",
     "year": "ano",
     "yr": "ano",
     "{{affected_rows}} of {{items}} data was successfully removed.": "{{affected_rows}} de {{items}} dados foram removidos com sucesso.",

@@ -994,6 +994,7 @@
     "user": "sailor",
     "users": "sailors",
     "week": "week",
+    "week_plural": "weeks",
     "year": "year",
     "yr": "yr",
     "{{affected_rows}} of {{items}} data was successfully removed.": "{{affected_rows}} of {{items}} loot sent to the Locker!",

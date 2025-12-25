@@ -994,6 +994,7 @@
     "user": "ผู้ใช้",
     "users": "ผู้ใช้",
     "week": "สัปดาห์",
+    "week_plural": "สัปดาห์",
     "year": "ปี",
     "yr": "ปี",
     "{{affected_rows}} of {{items}} data was successfully removed.": "ลบข้อมูล {{affected_rows}} จาก {{items}} รายการสำเร็จแล้ว",

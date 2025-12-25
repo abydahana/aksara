@@ -994,6 +994,7 @@
     "user": "ユーザー",
     "users": "ユーザー",
     "week": "週",
+    "week_plural": "週",
     "year": "年",
     "yr": "年",
     "{{affected_rows}} of {{items}} data was successfully removed.": "{{items}}件中{{affected_rows}}件のデータが正常に削除されました。",

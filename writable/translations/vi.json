@@ -994,6 +994,7 @@
     "user": "người dùng",
     "users": "các người dùng",
     "week": "tuần",
+    "week_plural": "tuần",
     "year": "năm",
     "yr": "năm",
     "{{affected_rows}} of {{items}} data was successfully removed.": "Đã xóa thành công {{affected_rows}} trong tổng số {{items}} dữ liệu.",
