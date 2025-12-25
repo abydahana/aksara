@@ -994,6 +994,7 @@
     "user": "مستخدم",
     "users": "مستخدمون",
     "week": "أسبوع",
+    "week_plural": "أسابيع",
     "year": "سنة",
     "yr": "سنة",
     "{{affected_rows}} of {{items}} data was successfully removed.": "تمت إزالة {{affected_rows}} من أصل {{items}} بيانات بنجاح.",

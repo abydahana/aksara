@@ -994,6 +994,7 @@
     "user": "пользователь",
     "users": "пользователи",
     "week": "неделя",
+    "week_plural": "недели",
     "year": "год",
     "yr": "г",
     "{{affected_rows}} of {{items}} data was successfully removed.": "{{affected_rows}} из {{items}} данных успешно удалены.",

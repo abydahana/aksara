@@ -994,6 +994,7 @@
     "user": "gebruiker",
     "users": "gebruikers",
     "week": "week",
+    "week_plural": "weken",
     "year": "jaar",
     "yr": "jr",
     "{{affected_rows}} of {{items}} data was successfully removed.": "{{affected_rows}} van {{items}} gegevens zijn succesvol verwijderd.",

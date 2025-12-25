@@ -994,6 +994,7 @@
     "user": "用户",
     "users": "用户",
     "week": "周",
+    "week_plural": "周",
     "year": "年",
     "yr": "年",
     "{{affected_rows}} of {{items}} data was successfully removed.": "已成功移除 {{items}} 条数据中的 {{affected_rows}} 条。",

@@ -994,6 +994,7 @@
     "user": "pengguna",
     "users": "pengguna",
     "week": "minggu",
+    "week_plural": "minggu",
     "year": "tahun",
     "yr": "th",
     "{{affected_rows}} of {{items}} data was successfully removed.": "Sebanyak {{affected_rows}} dari {{items}} data berhasil dihapus.",
