@@ -212,7 +212,7 @@ if (! function_exists('throw_exception')) {
      * @param string|null $target   The redirect target URL
      * @param mixed $redirect       Redirection mode ('soft', 'full', or boolean)
      */
-    function throw_exception(int $code = 500, string|array $data = [], ?string $target = null, mixed $redirect = false)
+    function throw_exception(int $code = 500, string|array|null $data = [], ?string $target = null, mixed $redirect = false)
     {
         $request = service('request');
         $response = service('response');
@@ -232,8 +232,8 @@ if (! function_exists('throw_exception')) {
 
             $target = $target ?: base_url();
 
-            // Perform redirect using CI4 response helper
-            return $response->redirect($target)->send();
+            // Redirect to target
+            exit(header('Location: ' . $target));
         }
 
         // Logic for AJAX Request: Return JSON Response
