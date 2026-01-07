@@ -15,27 +15,24 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-use GdImage;
-use Throwable;
-
 if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
      *
      * @param array|string $data      Data for the CAPTCHA or word
-     * @param string       $img_path  Path to create the image in
-     * @param string       $img_url   URL to the CAPTCHA image folder
-     * @param string       $font_path Server path to font
+     * @param string       $imgPath  Path to create the image in
+     * @param string       $imgUrl   URL to the CAPTCHA image folder
+     * @param string       $fontPath Server path to font
      */
-    function create_captcha(array|string $data = [], string $img_path = '', string $img_url = '', string $font_path = ''): array|bool
+    function create_captcha(array|string $data = [], string $imgPath = '', string $imgUrl = '', string $fontPath = ''): array|bool
     {
         $defaults = [
             'word' => '',
-            'img_path' => $img_path,
-            'img_url' => $img_url,
+            'img_path' => $imgPath,
+            'img_url' => $imgUrl,
             'img_width' => 150,
             'img_height' => 35,
-            'font_path' => $font_path,
+            'font_path' => $fontPath,
             'expiration' => 7200,
             'word_length' => 6,
             'font_size' => 16,
@@ -78,12 +75,12 @@ if (! function_exists('create_captcha')) {
         $word = $config['word'];
         if (empty($word)) {
             $word = '';
-            $pool_length = strlen($config['pool']);
+            $poolLength = strlen($config['pool']);
             for ($i = 0; $i < $config['word_length']; $i++) {
                 try {
-                    $word .= $config['pool'][random_int(0, $pool_length - 1)];
+                    $word .= $config['pool'][random_int(0, $poolLength - 1)];
                 } catch (Throwable $e) {
-                    $word .= $config['pool'][mt_rand(0, $pool_length - 1)];
+                    $word .= $config['pool'][mt_rand(0, $poolLength - 1)];
                 }
             }
         }
@@ -127,12 +124,12 @@ if (! function_exists('create_captcha')) {
             // -----------------------------------
             // 5. Write Text
             // -----------------------------------
-            $use_font = (! empty($config['font_path']) && file_exists($config['font_path']));
+            $useFont = (! empty($config['font_path']) && file_exists($config['font_path']));
             $x = 12;
             $length = strlen($word);
 
             for ($i = 0; $i < $length; $i++) {
-                if ($use_font) {
+                if ($useFont) {
                     $angle = mt_rand(-15, 15);
                     $y = mt_rand((int) ($config['img_height'] / 1.5), $config['img_height'] - 5);
                     imagettftext($im, $config['font_size'], $angle, (int) $x, (int) $y, $colors['text'], $config['font_path'], $word[$i]);
@@ -149,11 +146,11 @@ if (! function_exists('create_captcha')) {
             // -----------------------------------
             // 6. Output & Cleanup
             // -----------------------------------
-            $img_filename = $now . '.png';
-            $img_url = rtrim($config['img_url'], '/') . '/';
+            $imgFilename = $now . '.png';
+            $imgUrl = rtrim($config['img_url'], '/') . '/';
 
             // Generate PNG file
-            if (! imagepng($im, $config['img_path'] . $img_filename)) {
+            if (! imagepng($im, $config['img_path'] . $imgFilename)) {
                 return false;
             }
 
@@ -164,8 +161,8 @@ if (! function_exists('create_captcha')) {
             return [
                 'word' => $word,
                 'time' => $now,
-                'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $config['img_width'] . 'px; height: ' . $config['img_height'] . 'px; border: 0;" alt="CAPTCHA" />',
-                'filename' => $img_filename
+                'image' => '<img id="' . $config['img_id'] . '" src="' . $imgUrl . $imgFilename . '" style="width: ' . $config['img_width'] . 'px; height: ' . $config['img_height'] . 'px; border: 0;" alt="CAPTCHA" />',
+                'filename' => $imgFilename
             ];
         } catch (Throwable $e) {
             // Gracefully fail if something goes wrong during image processing

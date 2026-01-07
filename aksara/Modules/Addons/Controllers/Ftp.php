@@ -28,48 +28,48 @@ class Ftp extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         $this->searchable(false);
 
-        $this->set_method('update');
-        $this->permit_upsert();
+        $this->setMethod('update');
+        $this->permitUpsert();
     }
 
     public function index()
     {
-        $this->set_title(phrase('FTP Configuration'))
-        ->set_icon('mdi mdi-console-network')
-        ->unset_field('site_id')
-        ->set_field([
+        $this->setTitle(phrase('FTP Configuration'))
+        ->setIcon('mdi mdi-console-network')
+        ->unsetField('site_id')
+        ->setField([
             'port' => 'number',
             'password' => 'encryption'
         ])
-        ->set_validation([
+        ->setValidation([
             'hostname' => 'required',
             'port' => 'required',
             'username' => 'required',
             'password' => 'required'
         ])
-        ->set_default([
+        ->setDefault([
             'site_id' => get_setting('id')
         ])
         ->where([
             'site_id' => get_setting('id')
         ])
-        ->merge_field('hostname, port')
-        ->merge_field('username, password')
-        ->field_size([
+        ->mergeField('hostname, port')
+        ->mergeField('username, password')
+        ->fieldSize([
             'hostname' => 'col-md-9',
             'port' => 'col-md-3'
         ])
         ->render($this->_table);
     }
 
-    public function before_update()
+    public function beforeUpdate()
     {
         if ($this->request->getPost('checking') && $this->request->getPost('hostname') && $this->request->getPost('port')) {
             try {

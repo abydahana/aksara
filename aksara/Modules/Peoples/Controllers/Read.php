@@ -36,13 +36,13 @@ class Read extends Core
             $slug = $this->request->getGet('people_slug');
         }
 
-        $this->set_title('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))
-        ->set_description('{{ biography }}')
-        ->set_icon('mdi mdi-account-outline')
-        ->set_output(
+        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))
+        ->setDescription('{{ biography }}')
+        ->setIcon('mdi mdi-account-outline')
+        ->setOutput(
             'similar',
             $this->model
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'people_slug !=' => $slug

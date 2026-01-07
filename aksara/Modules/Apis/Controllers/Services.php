@@ -29,29 +29,29 @@ class Services extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
         $this->_primary = $this->request->getGet('id');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Manage Services'))
-        ->set_icon('mdi mdi-link-variant')
-        ->unset_column('id, method, ip_range')
-        ->unset_field('id')
-        ->unset_view('id')
-        ->set_field([
+        $this->setTitle(phrase('Manage Services'))
+        ->setIcon('mdi mdi-link-variant')
+        ->unsetColumn('id, method, ip_range')
+        ->unsetField('id')
+        ->unsetView('id')
+        ->setField([
             'description' => 'textarea',
             'ip_range' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field(
+        ->setField(
             'method',
             'checkbox',
             [
@@ -60,9 +60,9 @@ class Services extends Core
                 'DELETE' => 'DELETE '
             ]
         )
-        ->default_value('api_key', $this->_api_key_generator())
-        ->merge_field('valid_until, status')
-        ->set_validation([
+        ->defaultValue('api_key', $this->_api_key_generator())
+        ->mergeField('valid_until, status')
+        ->setValidation([
             'title' => 'required|string|max_length[64]|unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
             'description' => 'required|string',
             'api_key' => 'required|alpha_numeric|min_length[32]',
@@ -71,7 +71,7 @@ class Services extends Core
             'status' => 'boolean'
         ])
 
-        ->set_alias([
+        ->setAlias([
             'title' => phrase('Title'),
             'description' => phrase('Description'),
             'api_key' => phrase('API Key'),
@@ -88,17 +88,17 @@ class Services extends Core
     {
         $characters = '0123456789ABCDEF';
 
-        $char_length = strlen($characters);
+        $charLength = strlen($characters);
         $output = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $output .= $characters[rand(0, $char_length - 1)];
+            $output .= $characters[rand(0, $charLength - 1)];
         }
 
         $exist = $this->model->select('
             api_key
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'api_key' => $output

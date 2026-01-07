@@ -30,10 +30,10 @@ class Addons extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         helper('filesystem');
 
@@ -46,8 +46,8 @@ class Addons extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Add-Ons Market'))
-        ->set_icon('mdi mdi-cart')
+        $this->setTitle(phrase('Add-Ons Market'))
+        ->setIcon('mdi mdi-cart')
 
         ->render();
     }
@@ -103,12 +103,12 @@ class Addons extends Core
             }
         }
 
-        $this->set_title((isset($package->name) ? $package->name : phrase('No item found!')))
-        ->set_icon('mdi ' . ($this->request->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
-        ->set_output([
+        $this->setTitle((isset($package->name) ? $package->name : phrase('No item found!')))
+        ->setIcon('mdi ' . ($this->request->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
+        ->setOutput([
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render(null, 'detail');
     }
@@ -130,7 +130,7 @@ class Addons extends Core
             ];
         }
 
-        if (in_array($this->request->getGet('type'), ['theme', 'module'])) {
+        if (in_array($this->request->getGet('type'), ['theme', 'module'], true)) {
             try {
                 $curl = Services::curlrequest([
                     'timeout' => 5,
@@ -176,23 +176,23 @@ class Addons extends Core
 
             if ($package) {
                 // Get update package from remote server
-                $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->request->getGet('item');
+                $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->request->getGet('item');
 
                 // Check if temporary path is available
-                if (! is_dir($tmp_path)) {
+                if (! is_dir($tmpPath)) {
                     try {
                         // Try create temporary path
-                        mkdir($tmp_path, 0755, true);
+                        mkdir($tmpPath, 0755, true);
 
                         // Copy the repository to temporary path
-                        if (! copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip')) {
+                        if (! copy($package->repository, $tmpPath . DIRECTORY_SEPARATOR . 'file.zip')) {
                             // Unable to copy file, use FTP instead
-                            $site_id = get_setting('id');
+                            $siteId = get_setting('id');
 
-                            $query = $this->model->get_where(
+                            $query = $this->model->getWhere(
                                 'app__ftp',
                                 [
-                                    'site_id' => $site_id
+                                    'site_id' => $siteId
                                 ],
                                 1
                             )
@@ -216,7 +216,7 @@ class Addons extends Core
                             }
 
                             // Download file over FTP
-                            ftp_get($connection, $package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip', FTP_BINARY);
+                            ftp_get($connection, $package->repository, $tmpPath . DIRECTORY_SEPARATOR . 'file.zip', FTP_BINARY);
 
                             // Close FTP connection
                             ftp_close($connection);
@@ -231,13 +231,13 @@ class Addons extends Core
                 $zip = new ZipArchive();
 
                 // Unzip the repository
-                $unzip = $zip->open($tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
+                $unzip = $zip->open($tmpPath . DIRECTORY_SEPARATOR . 'file.zip');
 
                 if (true === $unzip) {
                     // Extract the repository
-                    $zip->extractTo($tmp_path);
+                    $zip->extractTo($tmpPath);
 
-                    $files = directory_map($tmp_path);
+                    $files = directory_map($tmpPath);
 
                     if (! $files) {
                         // Close opened zip
@@ -246,13 +246,13 @@ class Addons extends Core
                         return throw_exception(400, ['file' => phrase('Unable to extract the selected ' . $type . ' package.')]);
                     }
 
-                    $valid_package = false;
-                    $package_path = null;
+                    $validPackage = false;
+                    $packagePath = null;
                     $extract = false;
 
                     foreach ($files as $key => $val) {
-                        if (! $package_path) {
-                            $package_path = str_replace(DIRECTORY_SEPARATOR, '', $key);
+                        if (! $packagePath) {
+                            $packagePath = str_replace(DIRECTORY_SEPARATOR, '', $key);
                         }
 
                         if (! is_array($val)) {
@@ -260,49 +260,49 @@ class Addons extends Core
                         }
 
                         foreach ($val as $_key => $_val) {
-                            if ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
-                                $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+                            if ('theme.json' == $_val && file_exists($tmpPath . DIRECTORY_SEPARATOR . $key . $_val)) {
+                                $package = json_decode(file_get_contents($tmpPath . DIRECTORY_SEPARATOR . $key . $_val));
 
-                                if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['module', 'backend', 'frontend'])) {
+                                if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['module', 'backend', 'frontend'], true)) {
                                     // Close opened zip
                                     $zip->close();
 
                                     // Remove temporary directory
-                                    $this->_rmdir($tmp_path);
+                                    $this->_rmdir($tmpPath);
 
                                     return throw_exception(403, phrase('The package manifest was invalid.'));
-                                } elseif (! in_array(aksara('version'), $package->compatibility)) {
+                                } elseif (! in_array(aksara('version'), $package->compatibility, true)) {
                                     // Close opened zip
                                     $zip->close();
 
                                     // Remove temporary directory
-                                    $this->_rmdir($tmp_path);
+                                    $this->_rmdir($tmpPath);
 
                                     return throw_exception(403, phrase('The {{type}} package is not compatible with your current Aksara version.', ['type' => $type]));
                                 }
 
-                                $valid_package = true;
+                                $validPackage = true;
                             }
                         }
                     }
 
-                    if (! $valid_package) {
+                    if (! $validPackage) {
                         // Close opened zip
                         $zip->close();
 
                         // Remove temporary directory
-                        $this->_rmdir($tmp_path);
+                        $this->_rmdir($tmpPath);
 
                         return throw_exception(403, phrase('No package manifest found on your module package.'));
                     }
 
                     // Check if the directory already exists
-                    if (is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path) && $this->request->getPost('upgrade') != $this->request->getGet('item')) {
+                    if (is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $packagePath) && $this->request->getPost('upgrade') != $this->request->getGet('item')) {
                         // Close opened zip
                         $zip->close();
 
                         // Remove temporary directory
-                        $this->_rmdir($tmp_path);
+                        $this->_rmdir($tmpPath);
 
                         // Offer upgrade version of selected module or theme
                         $html = '
@@ -352,15 +352,15 @@ class Addons extends Core
                         $zip->close();
                     }
 
-                    if ($extract && is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $package_path)) {
+                    if ($extract && is_dir(ROOTPATH . $path . DIRECTORY_SEPARATOR . $packagePath)) {
                         try {
                             $autoloader = Services::autoloader();
 
                             // Push module namespace to filelocator
-                            $loader = $autoloader->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                            $loader = $autoloader->addNamespace('Modules\\' . $packagePath, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath);
 
                             // Run install migration
-                            $migration = Services::migrations()->setNameSpace('Modules\\' . $package_path);
+                            $migration = Services::migrations()->setNameSpace('Modules\\' . $packagePath);
 
                             // Trying to run the migration
                             if ($migration->latest()) {
@@ -368,7 +368,7 @@ class Addons extends Core
                             }
                         } catch (Throwable $e) {
                             // Migration error, delete module
-                            $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                            $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath);
 
                             return throw_exception(400, ['file' => $e->getMessage()]);
                         }
@@ -378,7 +378,7 @@ class Addons extends Core
                             // Assign the available menus
                             foreach ($package->menu as $key => $val) {
                                 // Check if theme property contain valid menu
-                                if (! isset($val->placement) || ! in_array($val->placement, ['header', 'sidebar']) || ! isset($val->group) || ! isset($val->link) || ! is_array($val->link) || ! $val->link) {
+                                if (! isset($val->placement) || ! in_array($val->placement, ['header', 'sidebar'], true) || ! isset($val->group) || ! isset($val->link) || ! is_array($val->link) || ! $val->link) {
                                     continue;
                                 }
 
@@ -389,7 +389,7 @@ class Addons extends Core
                                 }
 
                                 // Populate given links as array with adding the unique id
-                                $links = str_replace('"label":"', '"id":"' . sha1($package_path) . '","label":"', json_encode($val->link));
+                                $links = str_replace('"label":"', '"id":"' . sha1($packagePath) . '","label":"', json_encode($val->link));
                                 $links = json_decode($links, true);
 
                                 // Check if links is available or continue
@@ -400,7 +400,7 @@ class Addons extends Core
                                 // Loops the given group
                                 foreach ($val->group as $_key => $_val) {
                                     // Get the existing menu from the database
-                                    $existing = $this->model->get_where(
+                                    $existing = $this->model->getWhere(
                                         'app__menus',
                                         [
                                             'menu_placement' => $val->placement,
@@ -417,7 +417,7 @@ class Addons extends Core
                                     // Check if obtained links is populated
                                     if ($serialized) {
                                         // Make links unique
-                                        $serialized = $this->_array_unique($serialized, 'slug', $package_path);
+                                        $serialized = $this->_array_unique($serialized, 'slug', $packagePath);
 
                                         // Merge the old link with new one
                                         $links = array_merge($serialized, $links);
@@ -462,7 +462,7 @@ class Addons extends Core
                                 // Loops the given permission
                                 foreach ($val as $_key => $_val) {
                                     // Get the privileges from the database
-                                    $privileges = $this->model->get_where(
+                                    $privileges = $this->model->getWhere(
                                         'app__groups_privileges',
                                         [
                                             'path' => $_key
@@ -498,7 +498,7 @@ class Addons extends Core
                                 }
 
                                 // Get the existing group privileges
-                                $group_privileges = $this->model->get_where(
+                                $groupPrivileges = $this->model->getWhere(
                                     'app__groups',
                                     [
                                         'group_id' => $key
@@ -508,12 +508,12 @@ class Addons extends Core
                                 ->row('group_privileges');
 
                                 // Check if group privileges has result
-                                if ($group_privileges) {
+                                if ($groupPrivileges) {
                                     // Update the group privileges obtained
                                     $this->model->update(
                                         'app__groups',
                                         [
-                                            'group_privileges' => json_encode(array_merge(json_decode($group_privileges, true), json_decode(json_encode($val), true)))
+                                            'group_privileges' => json_encode(array_merge(json_decode($groupPrivileges, true), json_decode(json_encode($val), true)))
                                         ],
                                         [
                                             'group_id' => $key
@@ -524,7 +524,7 @@ class Addons extends Core
                         }
 
                         // Remove temporary directory
-                        $this->_rmdir($tmp_path);
+                        $this->_rmdir($tmpPath);
 
                         return throw_exception(301, phrase('The selected {{type}} package was successfully installed.', ['type' => $type]), current_page('../' . $type, ['item' => null, 'type' => null]));
                     } else {
@@ -533,7 +533,7 @@ class Addons extends Core
                 }
 
                 // Remove temporary directory
-                $this->_rmdir($tmp_path);
+                $this->_rmdir($tmpPath);
 
                 return throw_exception(403, phrase('Unable to install the selected {{type}}.', ['type' => $type]));
             }
@@ -560,23 +560,23 @@ class Addons extends Core
         }
 
         $themes = directory_map(ROOTPATH . 'themes', 1);
-        $installed_themes = [];
+        $installedThemes = [];
 
         if ($themes) {
             foreach ($themes as $key => $val) {
                 if (strpos($val, DIRECTORY_SEPARATOR) !== false) {
-                    $installed_themes[] = str_replace(DIRECTORY_SEPARATOR, '', $val);
+                    $installedThemes[] = str_replace(DIRECTORY_SEPARATOR, '', $val);
                 }
             }
         }
 
         $modules = directory_map(ROOTPATH . 'modules', 1);
-        $installed_modules = [];
+        $installedModules = [];
 
         if ($modules) {
             foreach ($modules as $key => $val) {
                 if (strpos($val, DIRECTORY_SEPARATOR) !== false) {
-                    $installed_modules[] = str_replace(DIRECTORY_SEPARATOR, '', $val);
+                    $installedModules[] = str_replace(DIRECTORY_SEPARATOR, '', $val);
                 }
             }
         }
@@ -601,8 +601,8 @@ class Addons extends Core
                         'order' => $this->request->getPost('order'),
                         'keyword' => $this->request->getPost('keyword'),
                         'installed' => json_encode([
-                            'themes' => $installed_themes,
-                            'modules' => $installed_modules
+                            'themes' => $installedThemes,
+                            'modules' => $installedModules
                         ])
                     ]
                 ]

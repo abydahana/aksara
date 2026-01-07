@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Partials;
+namespace Aksara\Modules\CMS\Controllers\Partials;
 
 use Aksara\Laboratory\Core;
 
@@ -27,40 +27,40 @@ class Testimonials extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->set_upload_path('testimonials');
+        $this->setUploadPath('testimonials');
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
 
-        $this->set_title(phrase('Testimonials'))
-        ->set_icon('mdi mdi-comment-account-outline')
-        ->set_primary('testimonial_id')
-        ->unset_column('testimonial_id, testimonial_content, timestamp, language')
-        ->unset_field('testimonial_id')
-        ->unset_view('testimonial_id')
-        ->set_field([
+        $this->setTitle(phrase('Testimonials'))
+        ->setIcon('mdi mdi-comment-account-outline')
+        ->setPrimary('testimonial_id')
+        ->unsetColumn('testimonial_id, testimonial_content, timestamp, language')
+        ->unsetField('testimonial_id')
+        ->unsetView('testimonial_id')
+        ->setField([
             'photo' => 'image',
             'testimonial_content' => 'textarea',
             'timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -68,7 +68,7 @@ class Testimonials extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'first_name' => 'required|string',
             'last_name' => 'string',
             'testimonial_title' => 'required|string',
@@ -76,7 +76,7 @@ class Testimonials extends Core
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),
             'testimonial_title' => phrase('Title'),
@@ -84,10 +84,10 @@ class Testimonials extends Core
             'language_id' => phrase('Language'),
             'status' => phrase('Status')
         ])
-        ->merge_field('first_name, last_name')
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeField('first_name, last_name')
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
@@ -101,7 +101,7 @@ class Testimonials extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
+        $languagesQuery = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1
@@ -109,8 +109,8 @@ class Testimonials extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,

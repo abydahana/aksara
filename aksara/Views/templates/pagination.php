@@ -1,25 +1,25 @@
 <?php
     $pager->setSurroundCount(0);
 
-    $current_page = 1;
-    $last_page = parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
-    $last_page = (isset($output['page']) ? $output['page'] : 0);
+    $currentPage = 1;
+    $lastPage = parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
+    $lastPage = (isset($output['page']) ? $output['page'] : 0);
 
     if (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page')) {
-        $current_page = service('request')->getGet('per_page');
+        $currentPage = service('request')->getGet('per_page');
     }
 ?>
 
 <ul class="pagination pagination-sm mb-0">
-    <li class="page-item<?= ($current_page <= 1 ? ' disabled' : null); ?>">
-        <a href="<?= ($current_page > 1 ? current_page(null, ['per_page' => 0]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="first" aria-label="<?= phrase('First'); ?>">
+    <li class="page-item<?= ($currentPage <= 1 ? ' disabled' : null); ?>">
+        <a href="<?= ($currentPage > 1 ? current_page(null, ['per_page' => 0]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="first" aria-label="<?= phrase('First'); ?>">
             <?= phrase('First'); ?>
         </a>
     </li>
 
-    <?php if ($current_page > 1): ?>
+    <?php if ($currentPage > 1): ?>
     <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page - 1)]); ?>" class="page-link --xhr" id="prev" aria-label="<?= phrase('Previous'); ?>">
+        <a href="<?= current_page(null, ['per_page' => ($currentPage - 1)]); ?>" class="page-link --xhr" id="prev" aria-label="<?= phrase('Previous'); ?>">
             <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Prev') : '&lt;'); ?>
         </a>
     </li>
@@ -27,20 +27,20 @@
 
     <li class="page-item active">
         <a href="javascript:void(0)" class="page-link" id="current">
-            <?= $current_page; ?>
+            <?= $currentPage; ?>
         </a>
     </li>
 
-    <?php if ($last_page > $current_page): ?>
+    <?php if ($lastPage > $currentPage): ?>
     <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page + 1)]); ?>" class="page-link --xhr" id="next" aria-label="<?= phrase('Next'); ?>">
+        <a href="<?= current_page(null, ['per_page' => ($currentPage + 1)]); ?>" class="page-link --xhr" id="next" aria-label="<?= phrase('Next'); ?>">
             <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Next') : '&gt;'); ?>
         </a>
     </li>
     <?php endif; ?>
 
-    <li class="page-item<?= ($last_page <= $current_page ? ' disabled' : null); ?>">
-        <a href="<?= ($last_page > $current_page ? current_page(null, ['per_page' => $last_page]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="last" aria-label="<?= phrase('Last'); ?>">
+    <li class="page-item<?= ($lastPage <= $currentPage ? ' disabled' : null); ?>">
+        <a href="<?= ($lastPage > $currentPage ? current_page(null, ['per_page' => $lastPage]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="last" aria-label="<?= phrase('Last'); ?>">
             <?= phrase('Last'); ?>
         </a>
     </li>

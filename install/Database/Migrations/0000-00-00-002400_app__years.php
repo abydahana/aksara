@@ -26,7 +26,7 @@ class AppYears extends Migration
         // Add columns to table
         $this->forge->addField([
             'year' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'int' : 'year'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'int' : 'year'),
                 'constraint' => 4,
                 'null' => false
             ],

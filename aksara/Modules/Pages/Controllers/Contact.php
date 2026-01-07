@@ -29,27 +29,27 @@ class Contact extends Core
 
     public function index()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             return $this->_send_message();
         }
 
-        $this->set_title(phrase('Contact Us'))
-        ->set_icon('mdi mdi-phone-classic')
-        ->set_description(phrase('Submit your inquiries or questions to us.'))
+        $this->setTitle(phrase('Contact Us'))
+        ->setIcon('mdi mdi-phone-classic')
+        ->setDescription(phrase('Submit your inquiries or questions to us.'))
 
         ->render();
     }
 
     public function _send_message()
     {
-        $this->form_validation->setRule('full_name', phrase('Full Name'), 'required');
-        $this->form_validation->setRule('email', phrase('Email'), 'required|valid_email');
-        $this->form_validation->setRule('subject', phrase('Subject'), 'required');
-        $this->form_validation->setRule('messages', phrase('Messages'), 'required');
-        $this->form_validation->setRule('copy', phrase('Send copy'), 'boolean');
+        $this->formValidation->setRule('full_name', phrase('Full Name'), 'required');
+        $this->formValidation->setRule('email', phrase('Email'), 'required|valid_email');
+        $this->formValidation->setRule('subject', phrase('Subject'), 'required');
+        $this->formValidation->setRule('messages', phrase('Messages'), 'required');
+        $this->formValidation->setRule('copy', phrase('Send copy'), 'boolean');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->form_validation->getErrors());
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $this->model->insert(
@@ -72,8 +72,8 @@ class Contact extends Core
             $host = get_setting('smtp_host');
             $username = get_setting('smtp_username');
             $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : ($this->request->getServer('SERVER_ADMIN') ? $this->request->getServer('SERVER_ADMIN') : 'webmaster@' . $this->request->getServer('SERVER_NAME')));
-            $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+            $senderEmail = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : ($this->request->getServer('SERVER_ADMIN') ? $this->request->getServer('SERVER_ADMIN') : 'webmaster@' . $this->request->getServer('SERVER_NAME')));
+            $senderName = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
 
             if ($host && $username && $password) {
                 $config['userAgent'] = 'Aksara';
@@ -97,17 +97,17 @@ class Contact extends Core
             $email = Services::email();
 
             $email->initialize($config);
-            $email->setFrom($sender_email, $sender_name);
+            $email->setFrom($senderEmail, $senderName);
             $email->setTo($this->request->getPost('email'));
             $email->setSubject($this->request->getPost('subject'));
             $email->setMessage($this->request->getPost('messages'));
 
             if (! $email->send()) {
                 // Get delivery errors
-                $error_message = $email->printDebugger();
+                $errorMessage = $email->printDebugger();
 
                 // Log errors
-                log_message('error', 'Email failed to send: ' . $error_message);
+                log_message('error', 'Email failed to send: ' . $errorMessage);
 
                 return throw_exception(400, ['message' => phrase('An unknown error occurred during email delivery.')]);
             }

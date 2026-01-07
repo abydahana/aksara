@@ -27,30 +27,30 @@ class Years extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->set_primary('year');
+        $this->setPrimary('year');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Years'))
-        ->set_icon('mdi mdi-calendar-clock')
-        ->set_field([
+        $this->setTitle(phrase('Years'))
+        ->setIcon('mdi mdi-calendar-clock')
+        ->setField([
             'default' => 'boolean',
             'status' => 'boolean'
         ])
-        ->set_validation([
+        ->setValidation([
             'year' => 'required|numeric|max_length[4]',
             'default' => 'boolean',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'year' => phrase('Year'),
             'default' => phrase('Default'),
             'status' => phrase('Status')
@@ -58,7 +58,7 @@ class Years extends Core
         ->render($this->_table);
     }
 
-    public function before_insert()
+    public function beforeInsert()
     {
         if ($this->request->getPost('default')) {
             $this->model->update(
@@ -73,7 +73,7 @@ class Years extends Core
         }
     }
 
-    public function before_update()
+    public function beforeUpdate()
     {
         if ($this->request->getPost('default')) {
             $this->model->update(

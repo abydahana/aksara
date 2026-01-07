@@ -29,35 +29,35 @@ class Connections extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
     }
 
     public function index()
     {
         if ($this->request->getPost('year')) {
-            $this->set_validation('year', 'valid_year');
+            $this->setValidation('year', 'valid_year');
         }
 
-        $this->set_title(phrase('Third Party Connection'))
-        ->set_icon('mdi mdi-power-plug')
-        ->unset_column('hostname, port, username, password, database_name')
-        ->unset_field('id')
+        $this->setTitle(phrase('Third Party Connection'))
+        ->setIcon('mdi mdi-power-plug')
+        ->unsetColumn('hostname, port, username, password, database_name')
+        ->unsetField('id')
 
-        ->add_button('connect', phrase('Check Connection'), 'btn btn-success --xhr show-progress', 'mdi mdi-sync', ['id' => 'id'])
+        ->addButton('connect', phrase('Check Connection'), 'btn btn-success --xhr show-progress', 'mdi mdi-sync', ['id' => 'id'])
 
-        ->set_field([
+        ->setField([
             'description' => 'textarea',
             'username' => 'encryption',
             'password' => 'encryption',
             'port' => 'integer',
             'status' => 'boolean'
         ])
-        ->set_field(
+        ->setField(
             'database_driver',
             'select',
             [
@@ -68,7 +68,7 @@ class Connections extends Core
                 'OCI8' => 'Oracle (OCI8)'
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'year',
             'app__years.year',
             '{{ app__years.year AS year_label }}',
@@ -76,7 +76,7 @@ class Connections extends Core
                 'app__years.status' => 1
             ]
         )
-        ->field_position([
+        ->fieldPosition([
             'database_driver' => 2,
             'hostname' => 2,
             'port' => 2,
@@ -85,12 +85,12 @@ class Connections extends Core
             'database_name' => 2,
             'status' => 2
         ])
-        ->merge_field('hostname, port')
-        ->field_size([
+        ->mergeField('hostname, port')
+        ->fieldSize([
             'hostname' => 'col-sm-8',
             'port' => 'col-sm-4'
         ])
-        ->set_validation([
+        ->setValidation([
             'name' => 'required',
             'database_driver' => 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]',
             'hostname' => 'required',
@@ -98,7 +98,7 @@ class Connections extends Core
             'username' => 'required',
             'database_name' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'year' => phrase('Year'),
             'year_label' => phrase('Year'),
             'name' => phrase('Connection Name'),
@@ -115,7 +115,7 @@ class Connections extends Core
     {
         $this->permission->must_ajax();
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'id' => $this->request->getGet('id')
@@ -145,7 +145,7 @@ class Connections extends Core
                 $connection['port'] = $query->port;
             }
 
-            $connector = $this->model->database_config($connection);
+            $connector = $this->model->databaseConfig($connection);
 
             if (is_array($connector) && isset($connector['code'])) {
                 return throw_exception(403, $connector['message']);

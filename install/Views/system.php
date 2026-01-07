@@ -2,17 +2,17 @@
     // Get installation mode options
     $options = null;
 
-    foreach($installation_mode as $key => $val)
+    foreach($installationMode as $key => $val)
     {
         $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
     }
 
     // Get timezone options
-    $timezone_list = null;
+    $timezoneList = null;
 
     foreach ($timezone as $key => $val)
     {
-        $timezone_list .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
+        $timezoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
     }
 ?>
 
@@ -46,7 +46,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <select name="timezone" class="form-select form-select-sm rounded-pill">
-                    <?= $timezone_list; ?>
+                    <?= $timezoneList; ?>
                 </select>
             </div>
         </div>

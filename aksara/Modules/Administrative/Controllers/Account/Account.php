@@ -25,16 +25,16 @@ class Account extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Account Settings'))
-        ->set_icon('mdi mdi-account-edit')
+        $this->setTitle(phrase('Account Settings'))
+        ->setIcon('mdi mdi-account-edit')
         ->render();
     }
 }

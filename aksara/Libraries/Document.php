@@ -244,10 +244,10 @@ class Document
                     $pagecount = $pdf->SetSourceFile(UPLOAD_PATH . '/tmp' . '/' . $filename);
 
                     for ($i = 1; $i <= ($pagecount); $i++) {
-                        $template_id = $pdf->ImportPage($i);
-                        $size = $pdf->getTemplateSize($template_id);
+                        $templateId = $pdf->ImportPage($i);
+                        $size = $pdf->getTemplateSize($templateId);
 
-                        $pdf->UseTemplate($template_id, 0, 0, $size['width'], $size['height'], true);
+                        $pdf->UseTemplate($templateId, 0, 0, $size['width'], $size['height'], true);
 
                         if ($i < $pagecount) {
                             // Add attachment to page
@@ -323,10 +323,10 @@ class Document
 
 
         // Construct final HTML string for the PhpSpreadsheet HTML Reader
-        $html_for_reader = '<!DOCTYPE html><head><meta charset="UTF-8"><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
+        $htmlForReader = '<!DOCTYPE html><head><meta charset="UTF-8"><title>' . $filename . '</title>' . $css . '</head><body>' . $output . '</body></html>';
 
         $reader = new Html();
-        $spreadsheet = $reader->loadFromString($html_for_reader);
+        $spreadsheet = $reader->loadFromString($htmlForReader);
         $spreadsheet->getDefaultStyle()->getFont()->setName('Arial');
 
         // --- EXPLICIT BORDER IMPLEMENTATION ---
@@ -371,14 +371,14 @@ class Document
         // Use an Exception block to catch issues during file writing
         try {
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.xlsx';
+            $safeFilename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.xlsx';
 
             // Set required HTTP headers for file download
             header('Content-Transfer-Encoding: binary');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
-            header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
+            header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
 
             // Clear any premature output content before writing the binary file
             if (ob_get_length() > 0) {
@@ -408,7 +408,7 @@ class Document
 
         // Define the core conversion ratio (1 mm = 1440 TWIP / 25.4 mm)
         // We define this locally as a fallback since Settings::MM_TO_TWIP is missing.
-        $MM_TO_TWIP_VALUE = 1440 / 25.4;
+        $MMToTwipValue = 1440 / 25.4;
 
         // Set default values if not present
         if (! isset($params['page-width'])) {
@@ -446,12 +446,12 @@ class Document
         // --- APPLY SECTION STYLE (PAGESIZE & MARGINS) ---
 
         // Parse dimensions and convert to TWIP
-        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-width'], $width_matches);
-        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-height'], $height_matches);
+        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-width'], $widthMatches);
+        preg_match('/([0-9.]+)([a-z]+)/i', $params['page-height'], $heightMatches);
 
         // Calculate TWIP values using the helper function and passing the ratio
-        $pageWidthTWIP = $this->_convertToTwip($width_matches[1] ?? 0, $width_matches[2] ?? '', $MM_TO_TWIP_VALUE);
-        $pageHeightTWIP = $this->_convertToTwip($height_matches[1] ?? 0, $height_matches[2] ?? '', $MM_TO_TWIP_VALUE);
+        $pageWidthTWIP = $this->_convertToTwip($widthMatches[1] ?? 0, $widthMatches[2] ?? '', $MMToTwipValue);
+        $pageHeightTWIP = $this->_convertToTwip($heightMatches[1] ?? 0, $heightMatches[2] ?? '', $MMToTwipValue);
 
         // Define the Section Style Array
         $sectionStyle = [
@@ -460,10 +460,10 @@ class Document
             'pageSizeH' => $pageHeightTWIP,
 
             // Margins (Multiplying millimeter value by the calculated TWIP ratio)
-            'marginTop' => $params['margin-top'] * $MM_TO_TWIP_VALUE,
-            'marginRight' => $params['margin-right'] * $MM_TO_TWIP_VALUE,
-            'marginBottom' => $params['margin-bottom'] * $MM_TO_TWIP_VALUE,
-            'marginLeft' => $params['margin-left'] * $MM_TO_TWIP_VALUE,
+            'marginTop' => $params['margin-top'] * $MMToTwipValue,
+            'marginRight' => $params['margin-right'] * $MMToTwipValue,
+            'marginBottom' => $params['margin-bottom'] * $MMToTwipValue,
+            'marginLeft' => $params['margin-left'] * $MMToTwipValue,
 
             // Auto Orientation
             'orientation' => ($pageWidthTWIP > $pageHeightTWIP) ? Section::ORIENTATION_LANDSCAPE : Section::ORIENTATION_PORTRAIT,
@@ -486,13 +486,13 @@ class Document
         WordHtml::addHtml($section, $html, false, false);
 
         // 5. Set Headers for DOCX Download
-        $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.docx';
+        $safeFilename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename) . '.docx';
 
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
+        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
 
         if (ob_get_length() > 0) {
             ob_clean();

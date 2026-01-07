@@ -40,7 +40,7 @@ class Auth extends Core
         // Check if use is already signed in
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
-            if ($this->api_client) {
+            if ($this->apiClient) {
                 // Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
@@ -51,7 +51,7 @@ class Auth extends Core
                 // Requested through browser
                 return throw_exception(301, phrase('You were signed in'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
             }
-        } elseif ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
+        } elseif ($this->validToken($this->request->getPost('_token')) || ($this->apiClient && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
             if (get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time()) {
                 // Blacklist the client IP
@@ -67,17 +67,17 @@ class Auth extends Core
                 return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
             }
 
-            $this->form_validation->setRule('username', phrase('Username'), 'required');
-            $this->form_validation->setRule('password', phrase('Password'), 'required');
+            $this->formValidation->setRule('username', phrase('Username'), 'required');
+            $this->formValidation->setRule('password', phrase('Password'), 'required');
 
             if ($this->request->getPost('year')) {
-                $this->form_validation->setRule('year', phrase('Year'), 'valid_year');
+                $this->formValidation->setRule('year', phrase('Year'), 'valid_year');
             }
 
             // Run form validation
-            if ($this->form_validation->run($this->request->getPost()) === false) {
+            if ($this->formValidation->run($this->request->getPost()) === false) {
                 // Throw validation message
-                return throw_exception(400, $this->form_validation->getErrors());
+                return throw_exception(400, $this->formValidation->getErrors());
             } else {
                 $username = $this->request->getPost('username');
                 $password = $this->request->getPost('password');
@@ -91,7 +91,7 @@ class Auth extends Core
                     status
                 ')
                 ->where('username', $username)
-                ->or_where('email', $username)
+                ->orWhere('email', $username)
                 ->get(
                     'app__users',
                     1
@@ -103,7 +103,7 @@ class Auth extends Core
                     return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
                 } elseif ($execute && password_verify($password . ENCRYPTION_KEY, $execute->password)) {
                     // Check if login attempts failed from the previous session
-                    $blocking_check = $this->model->get_where(
+                    $blockingCheck = $this->model->getWhere(
                         'app__users_blocked',
                         [
                             'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
@@ -112,9 +112,9 @@ class Auth extends Core
                     )
                     ->row();
 
-                    if ($blocking_check) {
+                    if ($blockingCheck) {
                         // Check if blocking time is still available
-                        if (strtotime($blocking_check->blocked_until) >= time()) {
+                        if (strtotime($blockingCheck->blocked_until) >= time()) {
                             // Throw the blocking messages
                             return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
                         } else {
@@ -135,8 +135,8 @@ class Auth extends Core
                             session_id,
                             timestamp
                         ')
-                        ->group_by('session_id')
-                        ->get_where(
+                        ->groupBy('session_id')
+                        ->getWhere(
                             'app__log_activities',
                             [
                                 'user_id' => $execute->user_id
@@ -169,7 +169,7 @@ class Auth extends Core
                         'user_id' => $execute->user_id,
                         'username' => $execute->username,
                         'group_id' => $execute->group_id,
-                        'language_id' => $execute->language_id,
+                        'language_id' => $execute->languageId,
                         'year' => ($this->_get_active_years() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
@@ -187,7 +187,7 @@ class Auth extends Core
                     );
 
                     // Check if request is made through API or not
-                    if ($this->api_client) {
+                    if ($this->apiClient) {
                         // Set access token
                         set_userdata('access_token', session_id());
 
@@ -234,16 +234,16 @@ class Auth extends Core
             }
         }
 
-        $this->set_title(phrase('Dashboard Access'))
-        ->set_icon('mdi mdi-lock-open-outline')
-        ->set_description(phrase('Please enter your account information to signing in.'))
+        $this->setTitle(phrase('Dashboard Access'))
+        ->setIcon('mdi mdi-lock-open-outline')
+        ->setDescription(phrase('Please enter your account information to signing in.'))
 
-        ->set_output([
+        ->setOutput([
             'years' => $this->_get_active_years(),
             'activation' => $this->_get_activation()
         ])
 
-        ->modal_size((get_setting('frontend_registration') ? 'modal-lg' : 'modal-md'))
+        ->modalSize((get_setting('frontend_registration') ? 'modal-lg' : 'modal-md'))
 
         ->render();
     }
@@ -251,14 +251,14 @@ class Auth extends Core
     /**
      * Sign out
      */
-    public function sign_out()
+    public function signOut()
     {
         /**
          * Prepare to revoke provider token
          */
         if (get_userdata('oauth_uid')) {
             // Retrieve service provider from sso uid
-            $provider = $this->model->get_where(
+            $provider = $this->model->getWhere(
                 'app__users_oauth',
                 [
                     'access_token' => get_userdata('oauth_uid')
@@ -315,9 +315,9 @@ class Auth extends Core
         );
 
         // Backup session items
-        $_login_attempt = get_userdata('_login_attempt');
-        $_login_attempt_time = get_userdata('_login_attempt_time');
-        $_spam_timer = get_userdata('_spam_timer');
+        $_loginAttempt = get_userdata('_login_attempt');
+        $_loginAttemptTime = get_userdata('_login_attempt_time');
+        $_spamTimer = get_userdata('_spam_timer');
 
         // Destroy session
         $session = Services::session();
@@ -325,9 +325,9 @@ class Auth extends Core
 
         // Rollback login attempt config
         set_userdata([
-            '_login_attempt' => $_login_attempt,
-            '_login_attempt_time' => $_login_attempt_time,
-            '_spam_timer' => $_spam_timer
+            '_login_attempt' => $_loginAttempt,
+            '_login_attempt_time' => $_loginAttemptTime,
+            '_spam_timer' => $_spamTimer
         ]);
 
         return throw_exception(301, phrase('You were signed out'), base_url(), true);
@@ -340,7 +340,7 @@ class Auth extends Core
     {
         $output = [];
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__years',
             [
                 'status' => 1
@@ -370,17 +370,17 @@ class Auth extends Core
             return false;
         }
 
-        $user_id = 0;
+        $userId = 0;
 
         try {
             $encrypter = Services::encrypter();
 
-            $user_id = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
+            $userId = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
         } catch (Throwable $e) {
             // Safe abstraction
         }
 
-        if ($this->model->get_where('app__users_hashes', ['user_id' => $user_id], 1)->row()) {
+        if ($this->model->getWhere('app__users_hashes', ['user_id' => $userId], 1)->row()) {
             return true;
         }
 
@@ -390,12 +390,12 @@ class Auth extends Core
     /**
      * Send notification
      */
-    private function _send_notification($user_id = 0)
+    private function _send_notification($userId = 0)
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__users',
             [
-                'user_id' => $user_id
+                'user_id' => $userId
             ],
             1
         )

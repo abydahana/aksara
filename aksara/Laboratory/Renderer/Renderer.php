@@ -50,7 +50,7 @@ class Renderer
     /**
      * API Client Status/Instance (injected).
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Constructor
@@ -72,6 +72,18 @@ class Renderer
             // Check if property exists in class or trait before assignment
             if (property_exists($this, $key)) {
                 $this->$key = $val;
+            } else {
+                // Try camelCase
+                $camelKey = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+                
+                 // Handle private property convention (starts with _)
+                if (strpos($key, '_') === 0 && strpos($camelKey, '_') !== 0) {
+                     $camelKey = '_' . $camelKey;
+                }
+                
+                if (property_exists($this, $camelKey)) {
+                    $this->$camelKey = $val;
+                }
             }
         }
 

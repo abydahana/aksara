@@ -33,18 +33,18 @@ class Announcements extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Announcements'))
-        ->set_description(phrase('Announcements'))
-        ->set_icon('mdi mdi-bullhorn-outline')
-        ->set_primary('announcements_slug')
+        $this->setTitle(phrase('Announcements'))
+        ->setDescription(phrase('Announcements'))
+        ->setIcon('mdi mdi-bullhorn-outline')
+        ->setPrimary('announcements_slug')
 
         ->where([
             'status' => 1,
             'end_date > ' => date('Y-m-d')
         ])
 
-        ->order_by('end_date', 'DESC')
-        ->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('end_date', 'DESC')
+        ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render($this->_table);
     }

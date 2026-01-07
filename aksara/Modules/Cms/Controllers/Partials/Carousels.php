@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Partials;
+namespace Aksara\Modules\CMS\Controllers\Partials;
 
 use Aksara\Laboratory\Core;
 
@@ -27,40 +27,40 @@ class Carousels extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->set_upload_path('carousels');
+        $this->setUploadPath('carousels');
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
 
-        $this->set_title(phrase('Carousels'))
-        ->set_icon('mdi mdi-view-carousel')
-        ->unset_column('carousel_id, created_timestamp, updated_timestamp, language')
-        ->unset_field('carousel_id')
-        ->unset_view('carousel_id')
-        ->set_field([
+        $this->setTitle(phrase('Carousels'))
+        ->setIcon('mdi mdi-view-carousel')
+        ->unsetColumn('carousel_id, created_timestamp, updated_timestamp, language')
+        ->unsetField('carousel_id')
+        ->unsetView('carousel_id')
+        ->setField([
             'carousel_description' => 'textarea',
             'carousel_content' => 'carousel',
             'created_timestamp' => 'created_timestamp',
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -68,12 +68,12 @@ class Carousels extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'carousel_title' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'carousel_title' => phrase('Title'),
             'carousel_description' => phrase('Description'),
             'carousel_content' => phrase('Contents'),
@@ -96,7 +96,7 @@ class Carousels extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
+        $languagesQuery = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1
@@ -104,8 +104,8 @@ class Carousels extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,

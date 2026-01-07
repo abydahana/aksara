@@ -65,7 +65,7 @@ class View
     /**
      * API Client Instance
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Valid Field Types for View
@@ -118,19 +118,19 @@ class View
 
         $request = Services::request();
 
-        $primary_key = [];
-        $field_data = [];
-        $merged_fields = [];
+        $primaryKey = [];
+        $fieldData = [];
+        $mergedFields = [];
 
         // Flatten merged fields
-        if ($this->_merge_field) {
-            foreach ($this->_merge_field as $val) {
-                $merged_fields = array_merge($merged_fields, $val);
+        if ($this->_mergeField) {
+            foreach ($this->_mergeField as $val) {
+                $mergedFields = array_merge($mergedFields, $val);
             }
         }
 
         // 1. Sort Fields
-        $serialized = $this->_sort_fields($serialized);
+        $serialized = $this->_sortFields($serialized);
 
         // 2. Prepare Replacements (for Mustache/Twig parsing)
         $replacement = [];
@@ -150,7 +150,7 @@ class View
 
             // Store primary key
             if ($primary) {
-                $primary_key[$field] = $value;
+                $primaryKey[$field] = $value;
             }
 
             // Skip hidden fields
@@ -159,15 +159,15 @@ class View
             }
 
             // Label Overrides
-            if (isset($this->_merge_label[$field])) {
-                $label = $this->_merge_label[$field];
-            } elseif (isset($this->_set_alias[$field])) {
-                $label = $this->_set_alias[$field];
+            if (isset($this->_mergeLabel[$field])) {
+                $label = $this->_mergeLabel[$field];
+            } elseif (isset($this->_setAlias[$field])) {
+                $label = $this->_setAlias[$field];
             }
 
             // Determine Input Type
-            $field_type = $this->_get_input_type($type);
-            $final_type = end($field_type);
+            $fieldType = $this->_getInputType($type);
+            $finalType = end($fieldType);
 
             // Masking (Password/Encryption)
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
@@ -176,8 +176,8 @@ class View
             }
 
             // Handle Merged Content (Callbacks or Parsing)
-            if (isset($this->_merge_content[$field])) {
-                $content = $this->_merge_content($field, $replacement);
+            if (isset($this->_mergeContent[$field])) {
+                $content = $this->_mergeContent($field, $replacement);
                 $value = $content;
             }
 
@@ -185,86 +185,86 @@ class View
             $content = $this->formatter->format($field, $content, $type, $replacement);
 
             // Construct Field Data
-            $field_data[$field] = [
+            $fieldData[$field] = [
                 'name' => $field,
                 'label' => $label,
                 'value' => $value,
                 'content' => $content,
-                'type' => $final_type,
+                'type' => $finalType,
                 'primary' => $primary,
-                'tooltip' => $this->_set_tooltip[$field] ?? null,
-                'position' => $this->_field_position[$field] ?? 1,
-                'prepend' => $this->_field_prepend[$field] ?? null,
-                'append' => $this->_field_append[$field] ?? null,
-                'merged' => in_array($field, $merged_fields),
-                'escape' => ! isset($this->_merge_content[$field])
+                'tooltip' => $this->_setTooltip[$field] ?? null,
+                'position' => $this->_fieldPosition[$field] ?? 1,
+                'prepend' => $this->_fieldPrepend[$field] ?? null,
+                'append' => $this->_fieldAppend[$field] ?? null,
+                'merged' => in_array($field, $mergedFields, true),
+                'escape' => ! isset($this->_mergeContent[$field])
             ];
 
             // Type-specific adjustments
-            if (in_array($final_type, ['image', 'images', 'carousel'])) {
-                $field_data[$field]['placeholder'] = get_image($this->_set_upload_path, 'placeholder.png', 'thumb');
-            } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
-                $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
+            if (in_array($finalType, ['image', 'images', 'carousel'], true)) {
+                $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
+            } elseif ('hyperlink' === $finalType && isset($type['hyperlink']['beta'])) {
+                $fieldData[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
             }
 
             // Parse Twig within content (Double Parsing check)
-            if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false) {
-                $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
+            if (is_string($fieldData[$field]['content']) && strpos($fieldData[$field]['content'], '{{') !== false) {
+                $fieldData[$field]['content'] = $this->parser->parse($fieldData[$field]['content'], $replacement);
             }
 
             // Scaffolding: Create template if missing
-            if (! $request->isAJAX() && ! $this->api_client && $final_type) {
-                $this->builder->get_component($this->_set_theme, 'view', $final_type);
+            if (! $request->isAJAX() && ! $this->apiClient && $finalType) {
+                $component = $this->builder->getComponent($this->_setTheme, 'view');
             }
         }
 
         // 4. Final Output Preparation
-        $highest_column = 1;
-        if (! empty($this->_field_position)) {
-            $highest_column = max($this->_field_position);
+        $highestColumn = 1;
+        if (! empty($this->_fieldPosition)) {
+            $highestColumn = max($this->_fieldPosition);
         }
 
-        $query_params = array_replace($request->getGet(), $primary_key);
+        $queryParams = array_replace($request->getGet(), $primaryKey);
 
-        if ($this->api_client) {
-            unset($query_params['aksara'], $query_params['limit']);
+        if ($this->apiClient) {
+            unset($queryParams['aksara'], $queryParams['limit']);
         }
 
         return [
-            'column_size' => $this->_column_size,
-            'column_total' => $highest_column,
+            'column_size' => $this->_columnSize,
+            'column_total' => $highestColumn,
             'extra_action' => [
-                'submit' => $this->_extra_submit
+                'submit' => $this->_extraSubmit
             ],
-            'form_size' => ($this->_modal_size ? str_replace('modal', 'form', $this->_modal_size) : ''),
-            'field_size' => $this->_field_size,
-            'field_data' => $field_data,
-            'merged_content' => $this->_merge_content,
-            'merged_field' => $this->_merge_field,
-            'set_heading' => $this->_set_heading,
-            'grouped_field' => $this->_group_field,
-            'query_params' => $query_params
+            'form_size' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
+            'field_size' => $this->_fieldSize,
+            'field_data' => $fieldData,
+            'merged_content' => $this->_mergeContent,
+            'merged_field' => $this->_mergeField,
+            'set_heading' => $this->_setHeading,
+            'grouped_field' => $this->_groupField,
+            'query_params' => $queryParams
         ];
     }
 
     /**
      * Sort fields based on controller configuration.
      */
-    private function _sort_fields(array $serialized): array
+    private function _sortFields(array $serialized): array
     {
-        $order_source = [];
+        $orderSource = [];
 
-        if (! empty($this->_view_order)) {
-            $order_source = $this->_view_order;
-        } elseif (! empty($this->_field_order)) {
-            $order_source = $this->_field_order;
-        } elseif (! empty($this->_column_order)) {
-            $order_source = $this->_column_order;
+        if (! empty($this->_viewOrder)) {
+            $orderSource = $this->_viewOrder;
+        } elseif (! empty($this->_fieldOrder)) {
+            $orderSource = $this->_fieldOrder;
+        } elseif (! empty($this->_columnOrder)) {
+            $orderSource = $this->_columnOrder;
         }
 
-        if (! empty($order_source)) {
+        if (! empty($orderSource)) {
             $sorted = [];
-            foreach ($order_source as $val) {
+            foreach ($orderSource as $val) {
                 if (array_key_exists($val, $serialized)) {
                     $sorted[] = $val;
                 }
@@ -278,35 +278,35 @@ class View
     /**
      * Determine valid input type from type definition.
      */
-    private function _get_input_type(array $type): array
+    private function _getInputType(array $type): array
     {
-        $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
+        $fieldType = array_intersect(array_keys($type), self::VALID_TYPES);
 
-        if (empty($field_type)) {
-            $field_type = ['text'];
+        if (empty($fieldType)) {
+            $fieldType = ['text'];
         }
 
-        if (count($field_type) > 1) {
-            array_pop($field_type);
+        if (count($fieldType) > 1) {
+            array_pop($fieldType);
         }
 
-        return $field_type;
+        return $fieldType;
     }
 
     /**
      * Process merge content using Callback or Parser.
      */
-    private function _merge_content(string $field, array $replacement): mixed
+    private function _mergeContent(string $field, array $replacement): mixed
     {
-        $merge_config = $this->_merge_content[$field];
+        $mergeConfig = $this->_mergeContent[$field];
 
-        if (! empty($merge_config['callback'])) {
+        if (! empty($mergeConfig['callback'])) {
             $router = Services::router();
 
             // Execute Controller Callback
             $namespace = $router->controllerName();
             $class = new $namespace();
-            $callback = $merge_config['callback'];
+            $callback = $mergeConfig['callback'];
 
             if (method_exists($class, $callback)) {
                 return $class->$callback($replacement);
@@ -314,6 +314,6 @@ class View
         }
 
         // Execute String Parsing
-        return $this->parser->parse($merge_config['parameter'], $replacement);
+        return $this->parser->parse($mergeConfig['parameter'], $replacement);
     }
 }

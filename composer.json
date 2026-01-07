@@ -29,14 +29,28 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",
-        "phpstan/phpdoc-parser": "^1.16"
+        "phpstan/phpdoc-parser": "^1.16",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/extension-installer": "^1.4",
+        "phpunit/phpunit": "^12.5",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "codeigniter4/codeigniter4-standard": "^1.1"
     },
     "scripts": {
         "cs-fix": [
             "php-cs-fixer fix --ansi"
-        ]
+        ],
+        "test": "phpunit",
+        "analyze": "phpstan analyse --memory-limit=1G"
     },
     "scripts-descriptions": {
-        "cs-fix": "Fixing the coding style"
+        "cs-fix": "Fixing the coding style",
+        "test": "Run unit tests",
+        "analyze": "Run static analysis with PHPStan"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }

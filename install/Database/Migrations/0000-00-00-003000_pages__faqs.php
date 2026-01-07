@@ -42,7 +42,7 @@ class PagesFaqs extends Migration
                 'null' => false
             ],
             'faq_content' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'created_timestamp' => [

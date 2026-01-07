@@ -30,10 +30,10 @@ class Themes extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         helper('filesystem');
 
@@ -42,9 +42,9 @@ class Themes extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Theme Manager'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Manager'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'installed' => $this->_installed()
         ])
 
@@ -69,12 +69,12 @@ class Themes extends Core
             $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
         }
 
-        $this->set_title(phrase('Theme Detail'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Detail'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render();
     }
@@ -239,7 +239,7 @@ class Themes extends Core
 
         $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
-        if (! $package || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
+        if (! $package || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'], true)) {
             return throw_exception(403, phrase('Unable to activate the theme with invalid package manifest.'), current_page('../', ['item' => null]));
         }
 
@@ -249,7 +249,7 @@ class Themes extends Core
             $target = 'frontend_theme';
         }
 
-        $site_id = get_setting('id');
+        $siteId = get_setting('id');
 
         $query = $this->model->update(
             'app__settings',
@@ -257,7 +257,7 @@ class Themes extends Core
                 $target => $this->request->getPost('theme')
             ],
             [
-                'id' => $site_id
+                'id' => $siteId
             ]
         );
 
@@ -286,7 +286,7 @@ class Themes extends Core
         $package->folder = $this->_primary;
         $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
             } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json')) {
@@ -305,13 +305,13 @@ class Themes extends Core
             return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
         }
 
-        $this->set_title(phrase('Theme Customization'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Customization'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'writable' => (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json') ? true : false),
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render();
     }
@@ -321,15 +321,15 @@ class Themes extends Core
      */
     public function import()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
-            $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+            $this->formValidation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->form_validation->run($this->request->getPost()) === false) {
-                return throw_exception(400, $this->form_validation->getErrors());
+            if ($this->formValidation->run($this->request->getPost()) === false) {
+                return throw_exception(400, $this->formValidation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No theme package were chosen.')]);
             } elseif (! class_exists('ZipArchive')) {
@@ -338,35 +338,35 @@ class Themes extends Core
 
             $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
-            $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+            $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
 
             if (true === $unzip) {
-                if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
+                if (! is_dir($tmpPath) && ! mkdir($tmpPath, 0755, true)) {
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
                 // Extract the repository
-                $zip->extractTo($tmp_path);
+                $zip->extractTo($tmpPath);
 
-                $files = directory_map($tmp_path);
+                $files = directory_map($tmpPath);
 
                 if (! $files) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
-                $valid_package = false;
-                $package_path = null;
+                $validPackage = false;
+                $packagePath = null;
                 $extract = false;
 
                 foreach ($files as $key => $val) {
-                    if (! $package_path) {
-                        $package_path = str_replace(DIRECTORY_SEPARATOR, '', $key);
+                    if (! $packagePath) {
+                        $packagePath = str_replace(DIRECTORY_SEPARATOR, '', $key);
                     }
 
                     if (! is_array($val)) {
@@ -376,48 +376,48 @@ class Themes extends Core
                     foreach ($val as $_key => $_val) {
                         if (strpos($_key, ' ') !== false) {
                             break;
-                        } elseif ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
-                            $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+                        } elseif ('theme.json' == $_val && file_exists($tmpPath . DIRECTORY_SEPARATOR . $key . $_val)) {
+                            $package = json_decode(file_get_contents($tmpPath . DIRECTORY_SEPARATOR . $key . $_val));
 
-                            if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
+                            if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'], true)) {
                                 // Close the opened zip
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('The package manifest was invalid.')]);
-                            } elseif (! in_array(aksara('version'), $package->compatibility)) {
+                            } elseif (! in_array(aksara('version'), $package->compatibility, true)) {
                                 // Close the opened zip
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('This theme package is not compatible with your current Aksara version.')]);
                             }
 
-                            $valid_package = true;
+                            $validPackage = true;
                         }
                     }
                 }
 
-                if (! $valid_package) {
+                if (! $validPackage) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('No package manifest found on your theme package.')]);
                 }
 
-                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path) && ! $this->request->getPost('upgrade')) {
+                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $packagePath) && ! $this->request->getPost('upgrade')) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['theme' => phrase('The theme package with same structure is already installed.')]);
                 }
@@ -431,9 +431,9 @@ class Themes extends Core
                 }
 
                 // Remove temporary directory
-                $this->_rmdir($tmp_path);
+                $this->_rmdir($tmpPath);
 
-                if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path)) {
+                if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $packagePath)) {
                     return throw_exception(301, phrase('Your theme package was successfully imported.'), current_page('../'));
                 } else {
                     return throw_exception(400, ['file' => phrase('Your theme folder seems cannot be writable.')]);
@@ -443,8 +443,8 @@ class Themes extends Core
             return throw_exception(400, ['file' => phrase('Unable to extract the theme package.')]);
         }
 
-        $this->set_title(phrase('Theme Importer'))
-        ->set_icon('mdi mdi-import')
+        $this->setTitle(phrase('Theme Importer'))
+        ->setIcon('mdi mdi-import')
         ->render();
     }
 
@@ -500,10 +500,10 @@ class Themes extends Core
             ]);
         }
 
-        $this->form_validation->setRule('theme', phrase('Theme'), 'required');
+        $this->formValidation->setRule('theme', phrase('Theme'), 'required');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, ['theme' => $this->form_validation->getErrors()]);
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, ['theme' => $this->formValidation->getErrors()]);
         }
 
         //C heck if requested theme to delete is match
@@ -516,23 +516,23 @@ class Themes extends Core
             if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
                 $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 
-                if (! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
+                if (! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'], true)) {
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall theme with invalid package.')]);
                 }
 
                 // Get the site id
-                $site_id = get_setting('id');
+                $siteId = get_setting('id');
 
-                $active_theme = $this->model->get_where(
+                $activeTheme = $this->model->getWhere(
                     'app__settings',
                     [
-                        'id' => $site_id
+                        'id' => $siteId
                     ],
                     1
                 )
                 ->row($package->type . '_theme');
 
-                if ($this->request->getPost('theme') == $active_theme) {
+                if ($this->request->getPost('theme') == $activeTheme) {
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use.')]);
                 }
 

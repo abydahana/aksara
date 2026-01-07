@@ -29,8 +29,8 @@ class Send extends Core
     {
         parent::__construct();
 
-        $this->set_theme('backend');
-        $this->parent_module('notifier');
+        $this->setTheme('backend');
+        $this->parentModule('notifier');
     }
 
     public function index()
@@ -42,7 +42,7 @@ class Send extends Core
             $this->model->where('id', $id);
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'status' => 0
@@ -60,7 +60,7 @@ class Send extends Core
             $this->model->where('id', $id);
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'status != ' => 2
@@ -99,7 +99,7 @@ class Send extends Core
         $port = get_setting('smtp_port');
         $username = get_setting('smtp_username');
         $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password') ?? '')) : null);
-        $sender_email = $username ?? $this->request->getServer('SERVER_ADMIN') ?? 'webmaster@' . $this->request->getServer('SERVER_NAME');
+        $senderEmail = $username ?? $this->request->getServer('SERVER_ADMIN') ?? 'webmaster@' . $this->request->getServer('SERVER_NAME');
 
         if ($host && $username && $password) {
             $config['userAgent'] = 'Aksara';
@@ -112,7 +112,7 @@ class Send extends Core
 
         $email = Services::email();
 
-        $email->setFrom($sender_email, get_setting('app_name'));
+        $email->setFrom($senderEmail, get_setting('app_name'));
         $email->setTo($data->email);
         $email->setSubject($data->title);
         $email->setMessage($data->message);
@@ -147,7 +147,7 @@ class Send extends Core
         }
 
         // Get notification config
-        $notifier_config = $this->model->get_where(
+        $notifierConfig = $this->model->getWhere(
             'notifier__settings',
             [
                 'site_id' => get_setting('id')
@@ -156,17 +156,17 @@ class Send extends Core
         )
         ->row();
 
-        if (! $notifier_config || ! $notifier_config->whatsapp_api_url) {
+        if (! $notifierConfig || ! $notifierConfig->whatsapp_api_url) {
             return false;
         }
 
         try {
             $headers = [];
             $payloads = [];
-            $api_headers = json_decode($notifier_config->whatsapp_api_header ?? '[]', true) ?? [];
-            $api_payloads = json_decode($notifier_config->whatsapp_api_payload ?? '[]', true) ?? [];
+            $apiHeaders = json_decode($notifierConfig->whatsapp_api_header ?? '[]', true) ?? [];
+            $apiPayloads = json_decode($notifierConfig->whatsapp_api_payload ?? '[]', true) ?? [];
 
-            foreach ($api_headers as $key => $val) {
+            foreach ($apiHeaders as $key => $val) {
                 if (! $key || ! $val) {
                     continue;
                 }
@@ -175,7 +175,7 @@ class Send extends Core
                 $headers[$key] = $val;
             }
 
-            foreach ($api_payloads as $key => $val) {
+            foreach ($apiPayloads as $key => $val) {
                 if (! $key || ! $val) {
                     continue;
                 }
@@ -193,7 +193,7 @@ class Send extends Core
             // Load cURL library
             $client = Services::curlrequest();
 
-            $request = $client->request('POST', $notifier_config->whatsapp_api_url, [
+            $request = $client->request('POST', $notifierConfig->whatsapp_api_url, [
                 'verify' => false,
                 'headers' => $headers,
                 'json' => $payloads

@@ -13,7 +13,7 @@
             <?= phrase('Encryption Key'); ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Your encryption key'); ?>" value="<?= $encryption_key; ?>" />
+        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Your encryption key'); ?>" value="<?= $encryptionKey; ?>" />
     </div>
     <div class="row">
         <div class="col-sm-6">
@@ -22,7 +22,7 @@
                     <?= phrase('Cookie Name'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Unique cookie name to prevent session conflict'); ?>" value="<?= $cookie_name; ?>" />
+                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Unique cookie name to prevent session conflict'); ?>" value="<?= $cookieName; ?>" />
             </div>
         </div>
         <div class="col-sm-6">

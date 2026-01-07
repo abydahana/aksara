@@ -333,7 +333,7 @@ class Form
     {
         // Template for Time Input
         $component = <<<EOF
-        <input type="time" name="{{ name }}" role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="time" step="1" name="{{ name }}" role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [

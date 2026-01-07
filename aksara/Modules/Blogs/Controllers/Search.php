@@ -36,12 +36,14 @@ class Search extends Core
             $this->where('blogs__categories.category_slug', $this->request->getGet('category'));
         }
 
-        $this->set_title(phrase('Search'))
-        ->set_description(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->request->getGet('category') ? '{{ category_title }}' : phrase('all'))))
-        ->set_icon('mdi mdi-magnify')
+        $this->setTitle(phrase('Search'))
+        ->setDescription(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->request->getGet('category') ? '{{ category_title }}' : phrase('all'))))
+        ->setIcon('mdi mdi-magnify')
 
-        ->set_output([
+        ->setOutput([
             'keywords' => $this->_keywords,
+
+            'total' => $this->_get_total_results(),
 
             // List of category
             'categories' => $this->_get_categories(),
@@ -75,19 +77,47 @@ class Search extends Core
             'app__users.user_id = blogs.author'
         )
 
-        ->group_start()
+        ->groupStart()
         ->like('blogs.post_title', $this->_keywords)
-        ->or_like('blogs.post_excerpt', $this->_keywords)
-        ->group_end()
+        ->orLike('blogs.post_excerpt', $this->_keywords)
+        ->groupEnd()
 
         ->where([
             'blogs.status' => 1
         ])
 
-        ->order_by('blogs.updated_timestamp', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('blogs.updated_timestamp', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render('blogs');
+    }
+
+    private function _get_total_results()
+    {
+        $query = $this->model->select('
+            COUNT(blogs.post_id) AS total_data
+        ')
+        ->join(
+            'blogs__categories',
+            'blogs__categories.category_id = blogs.post_category'
+        )
+        ->join(
+            'app__users',
+            'app__users.user_id = blogs.author'
+        )
+
+        ->groupStart()
+        ->like('blogs.post_title', $this->_keywords)
+        ->orLike('blogs.post_excerpt', $this->_keywords)
+        ->groupEnd()
+
+        ->where([
+            'blogs.status' => 1
+        ])
+        ->get('blogs')
+        ->row('total_data');
+
+        return $query;
     }
 
     private function _get_categories()
@@ -107,9 +137,9 @@ class Search extends Core
             'blogs__categories.status' => 1,
             'blogs.status' => 1
         ])
-        ->order_by('category_title', 'RANDOM')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->orderBy('category_title', 'RANDOM')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
         ->get('blogs__categories')
         ->result();
 
@@ -140,9 +170,9 @@ class Search extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1

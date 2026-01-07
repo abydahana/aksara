@@ -30,7 +30,7 @@ class Language extends Core
 
     public function index($params = null)
     {
-        $query = $this->model->select('id')->get_where(
+        $query = $this->model->select('id')->getWhere(
             'app__languages',
             [
                 'code' => $params

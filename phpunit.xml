@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         failOnNotice="true"
+         failOnWarning="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">aksara</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">aksara/Views</directory>
+            <directory suffix=".php">aksara/Config</directory>
+        </exclude>
+    </source>
+
+    <php>
+        <server name="app.baseURL" value="http://localhost:8080"/>
+        <server name="CODEIGNITER_SCREAM_DEPRECATIONS" value="1"/>
+        <!-- Directory containing the Paths config file -->
+        <const name="CONFIGPATH" value="aksara/Config/"/>
+        <!-- Directory containing the front controller (index.php) -->
+        <const name="PUBLICPATH" value="public/"/>
+    </php>
+</phpunit>

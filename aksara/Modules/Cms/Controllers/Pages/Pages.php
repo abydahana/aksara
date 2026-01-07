@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Pages;
+namespace Aksara\Modules\CMS\Controllers\Pages;
 
 use Aksara\Laboratory\Core;
 use Throwable;
@@ -28,18 +28,18 @@ class Pages extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
@@ -47,37 +47,37 @@ class Pages extends Core
             $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
-        $this->set_title(phrase('Pages'))
-        ->set_icon('mdi mdi-file-document-outline')
-        ->set_primary('page_id')
-        ->unset_column('page_id, author, page_slug, page_content, carousel_title, faq_title, created_timestamp, updated_timestamp, language')
-        ->unset_field('page_id, author')
-        ->unset_view('page_id, author')
-        ->column_order('page_title, page_description, carousel_title, faq_title, updated, status')
-        ->field_order('page_title, page_description, carousel_id, faq_id, language_id, created_timestamp, updated_timestamp, status')
-        ->set_field([
+        $this->setTitle(phrase('Pages'))
+        ->setIcon('mdi mdi-file-document-outline')
+        ->setPrimary('page_id')
+        ->unsetColumn('page_id, author, page_slug, page_content, carousel_title, faq_title, created_timestamp, updated_timestamp, language')
+        ->unsetField('page_id, author')
+        ->unsetView('page_id, author')
+        ->columnOrder('page_title, page_description, carousel_title, faq_title, updated, status')
+        ->fieldOrder('page_title, page_description, carousel_id, faq_id, language_id, created_timestamp, updated_timestamp, status')
+        ->setField([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',
             'created_timestamp' => 'created_timestamp',
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field('page_slug', 'slug', 'page_title')
-        ->set_field('page_title', 'hyperlink', 'pages', ['page_id' => 'page_id'], true)
+        ->setField('page_slug', 'slug', 'page_title')
+        ->setField('page_title', 'hyperlink', 'pages', ['page_id' => 'page_id'], true)
 
-        ->add_button('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
-        ->add_button('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
+        ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
+        ->addButton('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
 
-        ->field_append(
+        ->fieldAppend(
             'carousel_id',
             '<a href="' . go_to('../../cms/partials/carousels/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
         )
-        ->field_append(
+        ->fieldAppend(
             'faq_id',
             '<a href="' . go_to('../../cms/partials/faqs/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
         )
 
-        ->set_relation(
+        ->setRelation(
             'carousel_id',
             'pages__carousels.carousel_id',
             '{{ pages__carousels.carousel_title }}',
@@ -85,7 +85,7 @@ class Pages extends Core
                 'pages__carousels.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'faq_id',
             'pages__faqs.faq_id',
             '{{ pages__faqs.faq_title }}',
@@ -93,7 +93,7 @@ class Pages extends Core
                 'pages__faqs.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -101,17 +101,17 @@ class Pages extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
             'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . $this->request->getGet('page_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
             'page_content' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_default([
+        ->setDefault([
             'author' => get_userdata('user_id')
         ])
-        ->set_alias([
+        ->setAlias([
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_slug' => phrase('Slug'),
@@ -125,10 +125,10 @@ class Pages extends Core
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
         ])
-        ->set_placeholder([
+        ->setPlaceholder([
             'page_description' => phrase('Page summary to improve SEO')
         ])
-        ->field_position([
+        ->fieldPosition([
             'carousel_id' => 2,
             'carousel_title' => 2,
             'faq_id' => 2,
@@ -139,21 +139,21 @@ class Pages extends Core
             'language_id' => 2,
             'language' => 2
         ])
-        ->column_size([
+        ->columnSize([
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render($this->_table);
     }
 
     public function translate()
     {
-        $this->set_method('update');
+        $this->setMethod('update');
 
         if (! $this->request->getGet('language')) {
-            $current_language = $this->model->get_where(
+            $currentLanguage = $this->model->getWhere(
                 $this->_table,
                 [
                     'page_id' => $this->request->getGet('page_id') ?? 0
@@ -162,25 +162,25 @@ class Pages extends Core
             )
             ->row('language_id');
 
-            $languages = $this->model->get_where(
+            $languages = $this->model->getWhere(
                 'app__languages',
                 [
-                    'id !=' => $current_language,
+                    'id !=' => $currentLanguage,
                     'status' => 1
                 ]
             )
             ->result();
 
             // Build language list
-            $language_list = '';
+            $languageList = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
+                $languageList .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
                     <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
                 </a>';
             }
 
-            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+            $content = '<div class="list-group list-group-flush">' . $languageList . '</div>';
 
             return make_json([
                 'meta' => [
@@ -194,11 +194,11 @@ class Pages extends Core
         }
 
         // Initialize page id
-        $page_id = 0;
+        $pageId = 0;
 
         try {
             // Get current data
-            $data = $this->model->get_where(
+            $data = $this->model->getWhere(
                 $this->_table,
                 [
                     'page_id' => $this->request->getGet('page_id') ?? 0
@@ -208,7 +208,7 @@ class Pages extends Core
             ->row();
 
             // Check if translation already exists
-            $checker = $this->model->get_where(
+            $checker = $this->model->getWhere(
                 $this->_table,
                 [
                     'page_slug' => $data->page_slug,
@@ -218,46 +218,46 @@ class Pages extends Core
             )
             ->row();
 
-            $page_id = $checker->page_id ?? 0;
+            $pageId = $checker->page_id ?? 0;
 
             if (! $checker) {
                 // Noop, modify data and create new translation
                 unset($data->page_id);
 
                 // Change language id
-                $data->language_id = $this->request->getGet('language');
+                $data->languageId = $this->request->getGet('language');
 
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
 
                 // Set new page id
-                $page_id = $this->model->insert_id();
+                $pageId = $this->model->insertId();
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 
-        $this->set_title(phrase('Translate Page'))
-        ->set_icon('mdi mdi-translate')
-        ->unset_field('page_id, language_id, page_slug, author, carousel_id, faq_id, status, created_timestamp, updated_timestamp')
-        ->set_field([
+        $this->setTitle(phrase('Translate Page'))
+        ->setIcon('mdi mdi-translate')
+        ->unsetField('page_id, language_id, page_slug, author, carousel_id, faq_id, status, created_timestamp, updated_timestamp')
+        ->setField([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',
             'status' => 'boolean'
         ])
         ->where([
-            'page_id' => $page_id
+            'page_id' => $pageId
         ])
-        ->set_validation([
+        ->setValidation([
             'page_title' => 'required|max_length[256]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
             'page_content' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_content' => phrase('Content'),
         ])
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
         ->render($this->_table);
     }
 
@@ -270,7 +270,7 @@ class Pages extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
+        $languagesQuery = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1
@@ -278,8 +278,8 @@ class Pages extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,

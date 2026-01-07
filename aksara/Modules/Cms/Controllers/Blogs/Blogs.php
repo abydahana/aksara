@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Blogs;
+namespace Aksara\Modules\CMS\Controllers\Blogs;
 
 use Aksara\Laboratory\Core;
 use Throwable;
@@ -28,21 +28,21 @@ class Blogs extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         // Ignore query string signature
-        $this->ignore_query_string('category, language');
+        $this->ignoreQueryString('category, language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('category')) {
-            $query = $this->model->get_where(
+            $query = $this->model->getWhere(
                 'blogs__categories',
                 [
                     'category_id' => $this->request->getGet('category')
@@ -51,7 +51,7 @@ class Blogs extends Core
             ->row();
 
             if ($query) {
-                $this->set_description('
+                $this->setDescription('
                     <div class="row">
                         <div class="col-4 col-sm-3 col-md-2 text-muted text-uppercase">
                             ' . phrase('Category') . '
@@ -61,8 +61,8 @@ class Blogs extends Core
                         </div>
                     </div>
                 ')
-                ->unset_field('post_category')
-                ->set_default([
+                ->unsetField('post_category')
+                ->setDefault([
                     'post_category' => $query->category_id
                 ])
                 ->where([
@@ -77,16 +77,16 @@ class Blogs extends Core
             $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
-        $this->set_title(phrase('Blogs'))
-        ->set_icon('mdi mdi-newspaper')
-        ->set_primary('post_id')
-        ->unset_column('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, headline, language')
-        ->unset_field('post_id, author, created_timestamp, updated_timestamp')
-        ->unset_view('post_id')
-        ->column_order('featured_image, post_title, category_title, first_name, headline, updated_timestamp, status')
-        ->field_order('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
-        ->view_order('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, headline, status')
-        ->set_field([
+        $this->setTitle(phrase('Blogs'))
+        ->setIcon('mdi mdi-newspaper')
+        ->setPrimary('post_id')
+        ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, headline, language')
+        ->unsetField('post_id, author, created_timestamp, updated_timestamp')
+        ->unsetView('post_id')
+        ->columnOrder('featured_image, post_title, category_title, first_name, headline, updated_timestamp, status')
+        ->fieldOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
+        ->viewOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, headline, status')
+        ->setField([
             'post_excerpt' => 'textarea',
             'post_content' => 'wysiwyg',
             'post_tags' => 'tagsinput',
@@ -97,19 +97,19 @@ class Blogs extends Core
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field('post_slug', 'slug', 'post_title')
-        ->set_field('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
-        ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
+        ->setField('post_slug', 'slug', 'post_title')
+        ->setField('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
+        ->setField('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
 
-        ->add_button('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['post_id' => 'post_id'])
-        ->add_button('../../blogs/read', phrase('View Post'), 'btn-success', 'mdi mdi-eye', ['post_id' => 'post_id'], true)
+        ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['post_id' => 'post_id'])
+        ->addButton('../../blogs/read', phrase('View Post'), 'btn-success', 'mdi mdi-eye', ['post_id' => 'post_id'], true)
 
-        ->field_append(
+        ->fieldAppend(
             'post_category',
             '<a href="' . go_to('categories/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
         )
 
-        ->set_validation([
+        ->setValidation([
             'post_title' => 'required|max_length[255]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
             'post_slug' => 'max_length[255]|unique[' . $this->_table . '.post_slug.post_id.' . $this->request->getGet('post_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
             'post_content' => 'required',
@@ -119,17 +119,17 @@ class Blogs extends Core
             'headline' => 'boolean',
             'status' => 'boolean'
         ])
-        ->set_relation(
+        ->setRelation(
             'post_category',
             'blogs__categories.category_id',
             '{{ blogs__categories.category_title }}'
         )
-        ->set_relation(
+        ->setRelation(
             'author',
             'app__users.user_id',
             '{{ app__users.first_name }} {{ app__users.last_name }}'
         )
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -137,8 +137,8 @@ class Blogs extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Author'))
-        ->set_alias([
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Author'))
+        ->setAlias([
             'post_title' => phrase('Title'),
             'post_slug' => phrase('Slug'),
             'post_excerpt' => phrase('Excerpt'),
@@ -154,11 +154,11 @@ class Blogs extends Core
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
         ])
-        ->set_placeholder([
+        ->setPlaceholder([
             'post_excerpt' => phrase('Article summary to improve SEO'),
             'post_tags' => phrase('Separate with commas')
         ])
-        ->field_position([
+        ->fieldPosition([
             'post_category' => 2,
             'category_title' => 2,
             'post_tags' => 2,
@@ -168,15 +168,15 @@ class Blogs extends Core
             'language_id' => 2,
             'language' => 2
         ])
-        ->column_size([
+        ->columnSize([
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
-        ->modal_size('modal-xl')
-        ->set_default([
+        ->modalSize('modal-xl')
+        ->setDefault([
             'author' => get_userdata('user_id')
         ])
-        ->item_reference([
+        ->itemReference([
             'category_title'
         ])
 
@@ -185,10 +185,10 @@ class Blogs extends Core
 
     public function translate()
     {
-        $this->set_method('update');
+        $this->setMethod('update');
 
         if (! $this->request->getGet('language')) {
-            $current_language = $this->model->get_where(
+            $currentLanguage = $this->model->getWhere(
                 $this->_table,
                 [
                     'post_id' => $this->request->getGet('post_id') ?? 0
@@ -197,25 +197,25 @@ class Blogs extends Core
             )
             ->row('language_id');
 
-            $languages = $this->model->get_where(
+            $languages = $this->model->getWhere(
                 'app__languages',
                 [
-                    'id !=' => $current_language,
+                    'id !=' => $currentLanguage,
                     'status' => 1
                 ]
             )
             ->result();
 
             // Build language list
-            $language_list = '';
+            $languageList = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
+                $languageList .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
                     <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
                 </a>';
             }
 
-            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+            $content = '<div class="list-group list-group-flush">' . $languageList . '</div>';
 
             return make_json([
                 'meta' => [
@@ -229,11 +229,11 @@ class Blogs extends Core
         }
 
         // Initialize post id
-        $post_id = 0;
+        $postId = 0;
 
         try {
             // Get current data
-            $data = $this->model->get_where(
+            $data = $this->model->getWhere(
                 $this->_table,
                 [
                     'post_id' => $this->request->getGet('post_id') ?? 0
@@ -243,7 +243,7 @@ class Blogs extends Core
             ->row();
 
             // Check if translation already exists
-            $checker = $this->model->get_where(
+            $checker = $this->model->getWhere(
                 $this->_table,
                 [
                     'post_slug' => $data->post_slug,
@@ -253,55 +253,55 @@ class Blogs extends Core
             )
             ->row();
 
-            $post_id = $checker->post_id ?? 0;
+            $postId = $checker->post_id ?? 0;
 
             if (! $checker) {
                 // Noop, modify data and create new translation
                 unset($data->post_id);
 
                 // Change language id
-                $data->language_id = $this->request->getGet('language');
+                $data->languageId = $this->request->getGet('language');
 
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
 
                 // Set new post id
-                $post_id = $this->model->insert_id();
+                $postId = $this->model->insertId();
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
 
-        $this->set_title(phrase('Translate Blog Post'))
-        ->set_icon('mdi mdi-translate')
-        ->unset_field('post_id, post_category, language_id, post_slug, featured_image, author, headline, status, created_timestamp, updated_timestamp')
-        ->set_field([
+        $this->setTitle(phrase('Translate Blog Post'))
+        ->setIcon('mdi mdi-translate')
+        ->unsetField('post_id, post_category, language_id, post_slug, featured_image, author, headline, status, created_timestamp, updated_timestamp')
+        ->setField([
             'post_excerpt' => 'textarea',
             'post_content' => 'wysiwyg',
             'post_tags' => 'tagsinput',
             'status' => 'boolean'
         ])
         ->where([
-            'post_id' => $post_id
+            'post_id' => $postId
         ])
-        ->set_validation([
+        ->setValidation([
             'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
             'post_content' => 'required',
             'post_tags' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'post_title' => phrase('Title'),
             'post_excerpt' => phrase('Excerpt'),
             'post_content' => phrase('Content'),
             'post_tags' => phrase('Tags')
         ])
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
         ->render($this->_table);
     }
 
     private function _filter()
     {
-        $all_categories = [
+        $allCategories = [
             [
                 'id' => 0,
                 'label' => phrase('All categories')
@@ -312,13 +312,13 @@ class Blogs extends Core
             category_id AS id,
             category_title AS label
         ')
-        ->get_where(
+        ->getWhere(
             'blogs__categories',
             [
                 'status' => 1
             ]
         )
-        ->result_array();
+        ->resultArray();
 
         $languages = [
             [
@@ -327,7 +327,7 @@ class Blogs extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
+        $languagesQuery = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1
@@ -335,8 +335,8 @@ class Blogs extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,
@@ -348,7 +348,7 @@ class Blogs extends Core
         return [
             'category' => [
                 'label' => phrase('Category'),
-                'values' => array_merge($all_categories, $categories)
+                'values' => array_merge($allCategories, $categories)
             ],
             'language' => [
                 'label' => phrase('Language'),

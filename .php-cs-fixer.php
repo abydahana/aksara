@@ -6,7 +6,8 @@ $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/aksara',
         __DIR__ . '/install',
-        __DIR__ . '/modules'
+        __DIR__ . '/modules',
+        __DIR__ . '/tests'
     ])
     ->notPath([
         'Views',

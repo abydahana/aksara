@@ -27,21 +27,21 @@ class Groups extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->unset_delete('group_id', [1, 2, 3]);
+        $this->unsetDelete('group_id', [1, 2, 3]);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Manage Groups'))
-        ->set_icon('mdi mdi-key')
-        ->set_description('
+        $this->setTitle(phrase('Manage Groups'))
+        ->setIcon('mdi mdi-key')
+        ->setDescription('
             <div class="row">
                 <div class="col-12">
                     ' . phrase('The listed privileges below is created automatically from') . '
@@ -53,51 +53,51 @@ class Groups extends Core
                 </div>
             </div>
         ')
-        ->unset_column('group_id, group_privileges')
-        ->unset_view('group_id')
-        ->unset_field('group_id')
-        ->set_field([
+        ->unsetColumn('group_id, group_privileges')
+        ->unsetView('group_id')
+        ->unsetField('group_id')
+        ->setField([
             'group_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('group_privileges', 'custom_format', 'format_privileges')
-        ->set_validation([
+        ->setField('group_privileges', 'custom_format', 'formatPrivileges')
+        ->setValidation([
             'group_name' => 'required',
             'group_description' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'group_name' => phrase('Group Name'),
             'group_description' => phrase('Description'),
             'group_privileges' => phrase('Privileges'),
             'status' => phrase('Status')
         ])
 
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
 
-        ->order_by('group_id')
+        ->orderBy('group_id')
 
         ->render($this->_table);
     }
 
-    protected function format_privileges(array $data)
+    protected function formatPrivileges(array $data)
     {
-        $modules_collection = $this->model->select('
+        $modulesCollection = $this->model->select('
             path,
             privileges
         ')
-        ->order_by('path')
+        ->orderBy('path')
         ->get('app__groups_privileges')
         ->result();
 
         $current = ($data['group_privileges'] ? json_decode($data['group_privileges'], true) : []);
         $output = null;
 
-        if ($modules_collection) {
+        if ($modulesCollection) {
             $modules = [];
 
-            foreach ($modules_collection as $key => $val) {
+            foreach ($modulesCollection as $key => $val) {
                 $path = str_replace('/', '__', $val->path);
-                $privilege_output = null;
+                $privilegeOutput = null;
                 $privileges = ($val->privileges ? json_decode($val->privileges) : []);
 
                 if (! $privileges) {
@@ -125,19 +125,19 @@ class Groups extends Core
                         $label = phrase(ucwords(str_replace('_', ' ', $privilege)));
                     }
 
-                    if ('read' === $this->get_method()) {
-                        $privilege_output .= '
+                    if ('read' === $this->getMethod()) {
+                        $privilegeOutput .= '
                             <div class="col-6 col-md-3">
                                 <label class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
-                                    <i class="fw-bold mdi ' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? 'mdi-checkbox-marked-circle text-primary' : 'mdi-checkbox-blank-circle-outline') . '"></i> ' . $label . '
+                                    <i class="fw-bold mdi ' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path], true) ? 'mdi-checkbox-marked-circle text-primary' : 'mdi-checkbox-blank-circle-outline') . '"></i> ' . $label . '
                                 </label>
                             </div>
                         ';
                     } else {
-                        $privilege_output .= '
+                        $privilegeOutput .= '
                             <div class="col-6 col-md-3 bg-white">
                                 <div class="form-check form-switch mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
-                                    <input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="form-check-input checker-children" id="' . $path . '_' . $privilege . '"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
+                                    <input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="form-check-input checker-children" id="' . $path . '_' . $privilege . '"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path], true) ? ' checked' : '') . ' />
                                     <label class="form-check-label" for="' . $path . '_' . $privilege . '">
                                         ' . $label . '
                                     </label>
@@ -149,14 +149,14 @@ class Groups extends Core
 
                 $paths = explode('/', $val->path);
                 list($module) = array_pad($paths, 1, null);
-                $module_path = null;
+                $modulePath = null;
 
                 foreach ($paths as $_key => $_val) {
-                    $module_path .= ($_key ? ' &gt; ' : null) . phrase(ucwords(str_replace('_', ' ', $_val)));
+                    $modulePath .= ($_key ? ' &gt; ' : null) . phrase(ucwords(str_replace('_', ' ', $_val)));
                 }
 
                 $output .= '
-                    ' . (! in_array($module, $modules) ? '
+                    ' . (! in_array($module, $modules, true) ? '
                     ' . ($modules ? '<hr />' : null) . '
                     <a href="' . base_url($val->path) . '" target="_blank">
                         <b>
@@ -167,22 +167,22 @@ class Groups extends Core
                     </a>
                     ' : '') . '
                     <div class="check-group w-100">
-                        <div class="' . (in_array($this->get_method(), ['create', 'update']) ? 'form-check form-switch' : null) . '">
-                            ' . (in_array($this->get_method(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
+                        <div class="' . (in_array($this->getMethod(), ['create', 'update'], true) ? 'form-check form-switch' : null) . '">
+                            ' . (in_array($this->getMethod(), ['create', 'update'], true) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
                             <label class="fw-bold" for="' . $path . '">
-                                ' . $module_path . '
+                                ' . $modulePath . '
                             </label>
                             <a href="' . base_url($val->path) . '" target="_blank">
                                 <i class="mdi mdi-launch"></i>
                             </a>
                         </div>
                         <div class="row mb-3">
-                            ' . $privilege_output . '
+                            ' . $privilegeOutput . '
                         </div>
                     </div>
                 ';
 
-                if (! in_array($module, $modules)) {
+                if (! in_array($module, $modules, true)) {
                     $modules[] = $module;
                 }
             }

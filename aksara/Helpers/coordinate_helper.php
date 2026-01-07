@@ -15,14 +15,11 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
-
 if (! function_exists('geojson2png')) {
     /**
      * Convert GeoJSON data to a Google Static Maps URL
      */
-    function geojson2png(string $geojson = '[]', string $stroke_color = '#ff0000', string $fill_color = '#ff0000', int $width = 600, int $height = 600): string
+    function geojson2png(string $geojson = '[]', string $strokeColor = '#ff0000', string $fillColor = '#ff0000', int $width = 600, int $height = 600): string
     {
         $data = json_decode($geojson);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -33,43 +30,43 @@ if (! function_exists('geojson2png')) {
         $markers = [];
 
         // Helper to format hex for Google API (removes # and prepends 0x)
-        $clean_stroke = '0x' . ltrim($stroke_color, '#');
-        $clean_fill = '0x' . ltrim($fill_color, '#');
+        $cleanStroke = '0x' . ltrim($strokeColor, '#');
+        $cleanFill = '0x' . ltrim($fillColor, '#');
 
         if (isset($data->features) && is_array($data->features)) {
             foreach ($data->features as $feature) {
                 $type = $feature->geometry->type ?? '';
                 $coords = $feature->geometry->coordinates ?? [];
 
-                if (in_array($type, ['LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'])) {
+                if (in_array($type, ['LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'], true)) {
                     $prefix = ('Polygon' === $type || 'MultiPolygon' === $type)
-                        ? "path=color:{$clean_stroke}|weight:1|fillcolor:{$clean_fill}"
-                        : "path=color:{$clean_stroke}99|weight:1";
+                        ? "path=color:{$cleanStroke}|weight:1|fillcolor:{$cleanFill}"
+                        : "path=color:{$cleanStroke}99|weight:1";
 
                     $points = [];
                     // Flatten coordinates regardless of nesting depth
                     $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
-                    $temp_coords = [];
+                    $tempCoords = [];
                     foreach ($iterator as $v) {
-                        $temp_coords[] = $v;
-                        if (count($temp_coords) === 2) {
+                        $tempCoords[] = $v;
+                        if (count($tempCoords) === 2) {
                             // GeoJSON is [lng, lat], Google Static Maps is [lat, lng]
-                            $points[] = $temp_coords[1] . ',' . $temp_coords[0];
-                            $temp_coords = [];
+                            $points[] = $tempCoords[1] . ',' . $tempCoords[0];
+                            $tempCoords = [];
                         }
                     }
 
                     if (! empty($points)) {
                         $paths[] = $prefix . '|' . implode('|', $points);
                     }
-                } elseif (in_array($type, ['Point', 'MultiPoint'])) {
+                } elseif (in_array($type, ['Point', 'MultiPoint'], true)) {
                     $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
-                    $temp_coords = [];
+                    $tempCoords = [];
                     foreach ($iterator as $v) {
-                        $temp_coords[] = $v;
-                        if (count($temp_coords) === 2) {
-                            $markers[] = $temp_coords[1] . ',' . $temp_coords[0];
-                            $temp_coords = [];
+                        $tempCoords[] = $v;
+                        if (count($tempCoords) === 2) {
+                            $markers[] = $tempCoords[1] . ',' . $tempCoords[0];
+                            $tempCoords = [];
                         }
                     }
                 }

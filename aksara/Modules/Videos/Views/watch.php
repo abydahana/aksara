@@ -1,16 +1,16 @@
 <?php
-    $video_type = null;
+    $videoType = null;
 
     if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
-        $video_type = 'video/x-youtube';
+        $videoType = 'video/x-youtube';
     } else if (stripos($results->field_data->video_url->value, 'facebook.com') !== false) {
-        $video_type = 'video/facebook';
+        $videoType = 'video/facebook';
     } else if (stripos($results->field_data->video_url->value, 'vimeo.com') !== false) {
-        $video_type = 'video/vimeo';
+        $videoType = 'video/vimeo';
     } else if (stripos($results->field_data->video_url->value, 'dailymotion.com') !== false || stripos($results->field_data->video_url->value, 'dai.ly') !== false) {
-        $video_type = 'video/dailymotion';
+        $videoType = 'video/dailymotion';
     } else if (stripos($results->field_data->video_url->value, 'twitch.tv') !== false) {
-        $video_type = 'video/twitch';
+        $videoType = 'video/twitch';
     }
 ?>
 
@@ -19,7 +19,7 @@
         <div class="sticky-top">
             <div class="full-height bg-secondary p-3 d-flex align-items-center">
                 <video role="videoplayer" id="video" class="rounded-4">
-                    <source src="<?= $results->field_data->video_url->value; ?>" type="<?= $video_type; ?>">
+                    <source src="<?= $results->field_data->video_url->value; ?>" type="<?= $videoType; ?>">
                 </video>
             </div>
         </div>

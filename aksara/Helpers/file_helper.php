@@ -27,7 +27,7 @@ if (! function_exists('get_file')) {
      */
     function get_file($path = null, $file = null)
     {
-        return base_url(UPLOAD_PATH . '/' . ($path ? $path . '/' : null) . $file);
+        return base_url(UPLOAD_PATH . '/' . ($path ? $path . '/' : '') . $file);
     }
 }
 
@@ -42,7 +42,7 @@ if (! function_exists('get_image')) {
     function get_image($type = null, $name = null, $dimension = null)
     {
         if ('thumb' == $dimension) {
-            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png')) {
+            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'thumbs/placeholder.png')) {
                 try {
                     if ($type && ! is_dir(UPLOAD_PATH . '/' . $type . '/thumbs')) {
                         // Try to make directory
@@ -50,16 +50,16 @@ if (! function_exists('get_image')) {
                     }
 
                     // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'thumbs/placeholder.png');
                 } catch (Throwable $e) {
                     // Keep silent
                 }
             }
 
-            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png';
-            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/' . $name;
+            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'thumbs/placeholder.png';
+            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'thumbs/' . $name;
         } elseif ('icon' == $dimension) {
-            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png')) {
+            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'icons/placeholder.png')) {
                 try {
                     if ($type && ! is_dir(UPLOAD_PATH . '/' . $type . '/icons')) {
                         // Try to make directory
@@ -67,16 +67,16 @@ if (! function_exists('get_image')) {
                     }
 
                     // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'icons/placeholder.png');
                 } catch (Throwable $e) {
                     // Keep silent
                 }
             }
 
-            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png';
-            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/' . $name;
+            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'icons/placeholder.png';
+            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'icons/' . $name;
         } else {
-            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png')) {
+            if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'placeholder.png')) {
                 try {
                     if ($type && ! is_dir(UPLOAD_PATH . '/' . $type)) {
                         // Try to make directory
@@ -84,14 +84,14 @@ if (! function_exists('get_image')) {
                     }
 
                     // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'placeholder.png');
                 } catch (Throwable $e) {
                     // Keep silent
                 }
             }
 
-            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png';
-            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . $name;
+            $placeholder = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . 'placeholder.png';
+            $file = UPLOAD_PATH . '/' . ($type ? $type . '/' : '') . $name;
         }
 
         if (is_file($file) && file_exists($file)) {
@@ -102,7 +102,7 @@ if (! function_exists('get_image')) {
 
         $method = substr(uri_string(), strrpos(uri_string(), '/') + 1);
 
-        if ((in_array(service('request')->getGet('method'), ['print', 'embed', 'pdf', 'download']) || 'document' == service('request')->getGet('r')) && 'print' != $method && 'embed' != $method) {
+        if ((in_array(service('request')->getGet('method'), ['print', 'embed', 'pdf', 'download'], true) || 'document' == service('request')->getGet('r')) && 'print' != $method && 'embed' != $method) {
             $type = pathinfo(ROOTPATH . $image, PATHINFO_EXTENSION);
             $data = file_get_contents($image);
             return 'data:image/' . $type . ';base64,' . base64_encode($data);
@@ -140,34 +140,34 @@ if (! function_exists('resize_image')) {
                 // Uploaded file is image format, prepare image manipulation
                 $imageinfo = getimagesize($source);
                 $source = new File($source);
-                $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-                $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-                $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-                $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+                $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+                $originalDimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+                $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+                $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
                 // Load image manipulation library
                 $image = Services::image('gd');
 
-                if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+                if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $originalDimension) {
                     // Resize image and move to upload directory
                     $image->withFile($source)
-                        ->resize($original_dimension, $original_dimension, true, $master_dimension)
+                        ->resize($originalDimension, $originalDimension, true, $masterDimension)
                         ->save($path . '/' . $filename);
                 }
 
                 // Create thumbnail
-                if ($image->withFile($source)->resize($thumbnail_dimension, $thumbnail_dimension, true, $master_dimension)->save($path . '/thumbs/' . $filename)) {
+                if ($image->withFile($source)->resize($thumbnailDimension, $thumbnailDimension, true, $masterDimension)->save($path . '/thumbs/' . $filename)) {
                     // Crop image after resized
                     $image->withFile($path . '/thumbs/' . $filename)
-                        ->fit($thumbnail_dimension, $thumbnail_dimension, 'center')
+                        ->fit($thumbnailDimension, $thumbnailDimension, 'center')
                         ->save($path . '/thumbs/' . $filename);
                 }
 
                 // Create icon
-                if ($image->withFile($source)->resize($icon_dimension, $icon_dimension, true, $master_dimension)->save($path . '/icons/' . $filename)) {
+                if ($image->withFile($source)->resize($iconDimension, $iconDimension, true, $masterDimension)->save($path . '/icons/' . $filename)) {
                     // Crop image after resized
                     $image->withFile($path . '/icons/' . $filename)
-                        ->fit($icon_dimension, $icon_dimension, 'center')
+                        ->fit($iconDimension, $iconDimension, 'center')
                         ->save($path . '/icons/' . $filename);
                 }
             } catch (Throwable $e) {
@@ -187,7 +187,7 @@ if (! function_exists('get_filesize')) {
     function get_filesize($path = null, $file = null)
     {
         $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        $bytes = @filesize(FCPATH . UPLOAD_PATH . '/' . ($path ? $path . '/' : null) . $file);
+        $bytes = @filesize(FCPATH . UPLOAD_PATH . '/' . ($path ? $path . '/' : '') . $file);
         $factor = floor((strlen($bytes) - 1) / 3);
 
         return sprintf('%.2f', ($bytes / pow(1024, $factor))) . @$size[$factor];

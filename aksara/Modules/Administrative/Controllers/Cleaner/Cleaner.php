@@ -26,19 +26,19 @@ class Cleaner extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
+        $this->setPermission();
 
-        $this->set_theme('backend');
+        $this->setTheme('backend');
 
         $this->searchable(false);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Session Garbage Cleaner'))
-        ->set_icon('mdi mdi-trash-can')
+        $this->setTitle(phrase('Session Garbage Cleaner'))
+        ->setIcon('mdi mdi-trash-can')
 
         ->render();
     }
@@ -59,31 +59,31 @@ class Cleaner extends Core
         /**
          * Clean session garbage
          */
-        $session_driver = (config('Session')->driver ? config('Session')->driver : '');
-        $session_name = config('Session')->cookieName;
-        $session_expiration = config('Session')->expiration;
-        $session_path = config('Session')->savePath;
-        $session_match_ip = config('Session')->matchIP;
-        $session_cleaned = 0;
+        $sessionDriver = (config('Session')->driver ? config('Session')->driver : '');
+        $sessionName = config('Session')->cookieName;
+        $sessionExpiration = config('Session')->expiration;
+        $sessionPath = config('Session')->savePath;
+        $sessionMatchIp = config('Session')->matchIP;
+        $sessionCleaned = 0;
 
-        if (stripos($session_driver, 'file') !== false) {
+        if (stripos($sessionDriver, 'file') !== false) {
             // File session handler
-            if (is_writable($session_path)) {
+            if (is_writable($sessionPath)) {
                 helper('filesystem');
 
-                $session = directory_map($session_path);
+                $session = directory_map($sessionPath);
 
                 if ($session) {
                     foreach ($session as $key => $val) {
-                        $modified_time = filemtime($session_path . DIRECTORY_SEPARATOR . $val);
+                        $modifiedTime = filemtime($sessionPath . DIRECTORY_SEPARATOR . $val);
 
-                        if ('index.html' == $val || ! is_file($session_path . DIRECTORY_SEPARATOR . $val) || ! $modified_time || $modified_time > (time() - $session_expiration)) {
+                        if ('index.html' == $val || ! is_file($sessionPath . DIRECTORY_SEPARATOR . $val) || ! $modifiedTime || $modifiedTime > (time() - $sessionExpiration)) {
                             continue;
                         }
 
                         try {
-                            if (unlink($session_path . DIRECTORY_SEPARATOR . $val)) {
-                                $session_cleaned++;
+                            if (unlink($sessionPath . DIRECTORY_SEPARATOR . $val)) {
+                                $sessionCleaned++;
                             }
                         } catch (Throwable $e) {
                             // Safe abstraction
@@ -93,23 +93,23 @@ class Cleaner extends Core
             } else {
                 $error = phrase('The session save path is not writable!');
             }
-        } elseif (stripos($session_driver, 'database') !== false) {
+        } elseif (stripos($sessionDriver, 'database') !== false) {
             // Database session handler
             if ('Postgre' == DB_DRIVER) {
-                $this->model->where('extract(epoch from timestamp) < ', (time() - $session_expiration));
+                $this->model->where('extract(epoch from timestamp) < ', (time() - $sessionExpiration));
             } else {
-                $this->model->where('timestamp < ', (time() - $session_expiration));
+                $this->model->where('timestamp < ', (time() - $sessionExpiration));
             }
 
-            $this->model->delete($session_path);
+            $this->model->delete($sessionPath);
 
-            $session_cleaned = $this->model->affected_rows();
+            $sessionCleaned = $this->model->affectedRows();
         }
 
         if ($error) {
             // Throw with error
             return throw_exception(403, $error, go_to());
-        } elseif ($session_cleaned > 0) {
+        } elseif ($sessionCleaned > 0) {
             // Throw with amount of cleaned garbage
             $html = '
                 <div class="text-center">
@@ -118,7 +118,7 @@ class Cleaner extends Core
                         ' . phrase('Garbage Cleaned!') . '
                     </h5>
                     <p>
-                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
+                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($sessionCleaned)]) . '
                     </p>
                     <a href="javascript:void(0)" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>

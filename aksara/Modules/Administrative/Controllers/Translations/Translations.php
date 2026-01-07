@@ -28,43 +28,43 @@ class Translations extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->unset_update('id', [1]);
-        $this->unset_delete('id', [1]);
+        $this->unsetUpdate('id', [1]);
+        $this->unsetDelete('id', [1]);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Translations'))
-        ->set_icon('mdi mdi-translate')
-        ->set_description('
+        $this->setTitle(phrase('Translations'))
+        ->setIcon('mdi mdi-translate')
+        ->setDescription('
             <div class="row">
                 <div class="col-12">
                     ' . phrase('Click the synchronize button to equate the phrases for each translations.') . '
                 </div>
             </div>
         ')
-        ->unset_column('id')
-        ->unset_field('id')
-        ->unset_view('id')
-        ->set_field([
+        ->unsetColumn('id')
+        ->unsetField('id')
+        ->unsetView('id')
+        ->setField([
             'status' => 'boolean'
         ])
-        ->add_toolbar('synchronize', phrase('Synchronize'), 'btn btn-info --xhr show-progress', 'mdi mdi-reload')
-        ->add_button('translate', phrase('Translate'), 'btn btn-success --xhr', 'mdi mdi-comment-processing-outline', ['id' => 'id', 'code' => 'code', 'keyword' => null])
-        ->set_validation([
+        ->addToolbar('synchronize', phrase('Synchronize'), 'btn btn-info --xhr show-progress', 'mdi mdi-reload')
+        ->addButton('translate', phrase('Translate'), 'btn btn-success --xhr', 'mdi mdi-comment-processing-outline', ['id' => 'id', 'code' => 'code', 'keyword' => null])
+        ->setValidation([
             'language' => 'required|string|max_length[32]',
             'code' => 'required|alpha_dash|max_length[32]|unique[app__languages.code.id.' . $this->request->getGet('id') . ']',
             'locale' => 'required|string|max_length[64]',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'language' => phrase('Language'),
             'code' => phrase('Code'),
             'locale' => phrase('Locale'),
@@ -74,7 +74,7 @@ class Translations extends Core
         ->render($this->_table);
     }
 
-    public function after_insert()
+    public function afterInsert()
     {
         /* try to add language file */
         try {
@@ -91,7 +91,7 @@ class Translations extends Core
         }
     }
 
-    public function after_update()
+    public function afterUpdate()
     {
         /* try to update language file */
         try {

@@ -47,7 +47,7 @@ class Pages extends Migration
                 'null' => false
             ],
             'page_content' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'carousel_id' => [

@@ -30,8 +30,8 @@ class Shortlink extends Core
     {
         $query = null;
 
-        if ($this->model->table_exists('app__shortlinks')) {
-            $query = $this->model->get_where(
+        if ($this->model->tableExists('app__shortlinks')) {
+            $query = $this->model->getWhere(
                 'app__shortlinks',
                 [
                     'hash' => $params

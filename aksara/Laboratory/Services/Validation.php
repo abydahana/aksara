@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Laboratory;
+namespace Aksara\Laboratory\Services;
 
 use Config\Mimes;
 use Config\Services;
@@ -26,9 +26,9 @@ use Throwable;
 
 class Validation
 {
-    private $_uploaded_files = [];
+    private $_uploadedFiles = [];
 
-    private $_upload_error;
+    private $_uploadError;
 
     public function __construct()
     {
@@ -56,7 +56,7 @@ class Validation
             if (isset($_ENV['DBDriver'])) {
                 // Check if cross-database connection is configured via environment variables.
                 // If set, apply the configuration to the model instance.
-                $model->database_config($_ENV);
+                $model->databaseConfig($_ENV);
             }
 
             // Slice parameters starting from index 2 to get the WHERE conditions (key-value pairs).
@@ -102,7 +102,7 @@ class Validation
             // Final check: Select the field and execute the query with the main validation condition
             // (table.field = $value) AND the custom WHERE conditions applied above.
             // Returns TRUE if the number of resulting rows is 0 (meaning the value is unique), FALSE otherwise.
-            return $model->select($params[1])->get_where($params[0], [$params[1] => $value])->num_rows() === 0;
+            return $model->select($params[1])->getWhere($params[0], [$params[1] => $value])->numRows() === 0;
         }
 
         // Returns FALSE if $params is empty (e.g., validator parameter was not properly formatted or missing).
@@ -117,11 +117,12 @@ class Validation
      */
     public function boolean($value = null): bool
     {
-        if (null != $value && 1 != $value) {
-            return false;
+        // Accept null, 0, 1, '0', '1'
+        if (null === $value || 0 === $value || 1 === $value || '0' === $value || '1' === $value) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -142,14 +143,14 @@ class Validation
     /**
      * Check if field is valid year (between 1970 and 2100).
      *
-     * @param mixed|null $value The value to check
+     * @param int|string $value The value to check
      * @return bool True if valid year, false otherwise
      */
-    public function valid_year($value = null): bool
+    public function valid_year(int|string $value = null): bool
     {
-        $valid_year = range(1970, 2100);
+        $validYear = range(1970, 2100);
 
-        if (! in_array($value, $valid_year)) {
+        if (! in_array((int) $value, $validYear, true)) {
             return false;
         }
 
@@ -164,7 +165,7 @@ class Validation
      */
     public function valid_hex($value = null): bool
     {
-        if (! preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value)) {
+        if (null === $value || ! preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value)) {
             return false;
         }
 
@@ -184,7 +185,7 @@ class Validation
 
         if (isset($_ENV['DBDriver'])) {
             // Cross database connection
-            $model->database_config($_ENV);
+            $model->databaseConfig($_ENV);
         }
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
@@ -193,7 +194,7 @@ class Validation
             $table = substr($table, 0, strrpos($table, ' '));
         }
 
-        if (! $model->table_exists($table) || ! $model->field_exists($field, $table) || ! $model->select($field)->get_where($table, [$field => $value])->row($field)) {
+        if (! $model->tableExists($table) || ! $model->fieldExists($field, $table) || ! $model->select($field)->getWhere($table, [$field => $value])->row($field)) {
             return false;
         }
 
@@ -229,25 +230,25 @@ class Validation
                 if (is_array($val)) {
                     foreach ($val as $_key => $_val) {
                         // Typically using nested input like field[foo][bar]
-                        $this->_do_upload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
+                        $this->_doUpload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
                     }
                 } else {
                     // Typically using nested input like field[foo]
-                    $this->_do_upload($field . $suffix . '.' . $key, $field, $type, $key);
+                    $this->_doUpload($field . $suffix . '.' . $key, $field, $type, $key);
                 }
             }
         } else {
-            $this->_do_upload($field . $suffix, $field, $type);
+            $this->_doUpload($field . $suffix, $field, $type);
         }
 
-        if ($this->_upload_error) {
+        if ($this->_uploadError) {
             // Validation error
-            $validation->setError($field, $this->_upload_error);
-        } elseif (! $this->_uploaded_files) {
+            $validation->setError($field, $this->_uploadError);
+        } elseif (! $this->_uploadedFiles) {
             // Find required
             $rules = $validation->getRules();
 
-            if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
+            if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'], true)) {
                 // Field is required
                 $validation->setError($field, phrase('Please choose the file to upload'));
             }
@@ -257,7 +258,7 @@ class Validation
          * Because the property isn't accessible from its parent, put
          * the upload data collection to temporary session instead
          */
-        set_userdata('_uploaded_files', $this->_uploaded_files);
+        set_userdata('_uploaded_files', $this->_uploadedFiles);
 
         return true;
     }
@@ -272,21 +273,21 @@ class Validation
      * @param int|string|null $_index Nested array index
      * @return bool True if upload successful, false otherwise
      */
-    private function _do_upload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
+    private function _doUpload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
     {
         $request = Services::request();
         $router = Services::router();
-        $upload_path = get_userdata('_set_upload_path');
+        $uploadPath = get_userdata('_set_upload_path');
 
-        if (! $upload_path) {
-            $upload_path = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
-            $upload_path = array_pad(explode('\\', $upload_path), 2, null);
-            $upload_path = $upload_path[1] ?? $upload_path[0];
+        if (! $uploadPath) {
+            $uploadPath = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
+            $uploadPath = array_pad(explode('\\', $uploadPath), 2, null);
+            $uploadPath = $uploadPath[1] ?? $uploadPath[0];
         }
 
         $source = $request->getFile($filename);
-        $mime_type = new Mimes();
-        $valid_mime = [];
+        $mimeType = new Mimes();
+        $validMime = [];
 
         if (! $source || ! $source->isValid() || ! $source->getName()) {
             // No file are selected
@@ -298,18 +299,18 @@ class Validation
             $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
 
             foreach ($filetype as $key => $val) {
-                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+                $validMime[] = $mimeType->guessTypeFromExtension($val);
             }
         } else {
             // The selected file is non-image format
             $filetype = array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED));
 
             foreach ($filetype as $key => $val) {
-                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+                $validMime[] = $mimeType->guessTypeFromExtension($val);
             }
         }
 
-        if (! in_array($source->getMimeType(), $valid_mime)) {
+        if (! in_array($source->getMimeType(), $validMime, true)) {
             // Mime is invalid
             $this->_upload_error = phrase('The selected file format is not allowed to upload');
 
@@ -326,11 +327,11 @@ class Validation
             return false;
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path)) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath)) {
             // Attempt to new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
-                copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
+                mkdir(UPLOAD_PATH . '/' . $uploadPath, 0755, true);
+                copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $uploadPath . '/placeholder.png');
             } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
@@ -338,11 +339,11 @@ class Validation
             }
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/thumbs')) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs')) {
             // Attempt to new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
-                copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
+                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs', 0755, true);
+                copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $uploadPath . '/thumbs/placeholder.png');
             } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
@@ -350,11 +351,11 @@ class Validation
             }
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/icons')) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/icons')) {
             // Attempt to new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
-                copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
+                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/icons', 0755, true);
+                copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $uploadPath . '/icons/placeholder.png');
             } catch (Throwable $e) {
                 $this->_upload_error = $e->getMessage();
 
@@ -375,43 +376,43 @@ class Validation
             return false;
         }
 
-        if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'])) {
+        if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
             // Uploaded file is image format, prepare image manipulation
             $imageinfo = getimagesize($source);
-            $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-            $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-            $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-            $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+            $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+            $originalDimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+            $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+            $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
-            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $originalDimension) {
                 // Resize image for non-gif format
-                $width = $original_dimension;
-                $height = $original_dimension;
+                $width = $originalDimension;
+                $height = $originalDimension;
 
                 // Load image manipulation library
                 $image = Services::image('gd');
 
                 // Resize image and move to upload directory
-                $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
+                $image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/' . $uploadPath . '/' . $filename);
             } else {
                 // Move file to upload directory
-                $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+                $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
             }
 
             // Create thumbnail and icon of image
-            $this->_resize_image($upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-            $this->_resize_image($upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
+            $this->_resizeImage($uploadPath, $filename, 'thumbs', $thumbnailDimension, $thumbnailDimension);
+            $this->_resizeImage($uploadPath, $filename, 'icons', $iconDimension, $iconDimension);
         } else {
             // Non-image format, move directly to upload directory
-            $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+            $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
         }
 
         if (null !== $_index) {
             // Collect uploaded data (has sub-name)
-            $this->_uploaded_files[$field][$index][$_index] = $filename;
+            $this->_uploadedFiles[$field][$index][$_index] = $filename;
         } else {
             // Collect uploaded data (single name)
-            $this->_uploaded_files[$field][$index] = $filename;
+            $this->_uploadedFiles[$field][$index] = $filename;
         }
 
         return true;
@@ -427,20 +428,20 @@ class Validation
      * @param int $height The target height
      * @return bool True if resize successful, false otherwise
      */
-    private function _resize_image(string $path, string $filename, string $type, int $width, int $height): bool
+    private function _resizeImage(string $path, string $filename, string $type, int $width, int $height): bool
     {
         $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
 
         $imageinfo = getimagesize($source);
-        $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 
         try {
             // Load image manipulation library
             $image = Services::image('gd');
 
             // Resize image
-            if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+            if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save($target)) {
                 // Crop image after resized
                 $image->withFile($target)
                     ->fit($width, $height, 'center')

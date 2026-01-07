@@ -56,8 +56,8 @@ if (! function_exists('get_setting')) {
     {
         $model = new Model();
 
-        if ($model->field_exists($parameter, 'app__settings')) {
-            return $model->select($parameter)->get_where(
+        if ($model->fieldExists($parameter, 'app__settings')) {
+            return $model->select($parameter)->getWhere(
                 'app__settings',
                 [
                     'id' => 1
@@ -84,28 +84,28 @@ if (! function_exists('get_userdata')) {
         // Check if data is missing in session but user is logged in
         if (! service('session')->get($field) && service('session')->get('user_id')) {
             $model = new Model();
-            $user_id = service('session')->get('user_id');
+            $userId = service('session')->get('user_id');
 
             // Attempt to fetch from privileges table first
-            if ($model->field_exists($field, 'app__users_privileges')) {
-                return $model->select($field)->get_where(
+            if ($model->fieldExists($field, 'app__users_privileges')) {
+                return $model->select($field)->getWhere(
                     'app__users_privileges',
                     [
-                        'user_id' => $user_id
+                        'user_id' => $userId
                     ],
                     1
                 )
                 ->row($field);
             }
             // Attempt to fetch from main users table
-            elseif ($model->field_exists($field, 'app__users')) {
+            elseif ($model->fieldExists($field, 'app__users')) {
                 return $model->select(
                     $field
                 )
-                ->get_where(
+                ->getWhere(
                     'app__users',
                     [
-                        'user_id' => $user_id
+                        'user_id' => $userId
                     ],
                     1
                 )
@@ -186,33 +186,33 @@ if (! function_exists('phrase')) {
         $language = get_userdata('language');
 
         if (! $language) {
-            $app_language = get_setting('app_language');
-            $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
+            $appLanguage = get_setting('app_language');
+            $languageId = (get_userdata('language_id') ? get_userdata('language_id') : ($appLanguage > 0 ? $appLanguage : 1));
 
             $language = $model->select('code')
-            ->get_where(
+            ->getWhere(
                 'app__languages',
                 [
-                    'id' => $language_id
+                    'id' => $languageId
                 ]
             )
             ->row('code');
         }
 
         // 2. File Handling
-        $translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
+        $translationFile = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
 
-        if (! file_exists($translation_file)) {
+        if (! file_exists($translationFile)) {
             if (! is_dir(WRITEPATH . 'translations')) {
                 try {
                     mkdir(WRITEPATH . 'translations', 0755, true);
-                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    file_put_contents($translationFile, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (Throwable $e) {
                     log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
                 try {
-                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    file_put_contents($translationFile, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (Throwable $e) {
                     log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
@@ -221,7 +221,7 @@ if (! function_exists('phrase')) {
 
         try {
             // 3. Process Translation
-            $buffer = file_get_contents($translation_file);
+            $buffer = file_get_contents($translationFile);
             $phrases = (is_json($buffer) ? json_decode($buffer, true) : []);
 
             if (! is_array($phrases)) {
@@ -235,9 +235,9 @@ if (! function_exists('phrase')) {
                 // Sort phrases by key
                 ksort($phrases);
 
-                if (file_exists($translation_file) && is_writable($translation_file)) {
+                if (file_exists($translationFile) && is_writable($translationFile)) {
                     // No translation exists
-                    $json_content = json_encode(
+                    $jsonContent = json_encode(
                         $phrases,
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
@@ -245,26 +245,26 @@ if (! function_exists('phrase')) {
                     );
 
                     // Create new translation file
-                    file_put_contents($translation_file, $json_content, LOCK_EX);
+                    file_put_contents($translationFile, $jsonContent, LOCK_EX);
                 }
             }
 
             if ($checking) {
                 // Only check, use existing translation
-                $phrases_reversed = array_reverse($phrases, true);
-                $phrases_upper = array_change_key_case($phrases_reversed, CASE_UPPER);
-                $upper_phrase = strtoupper($phrase);
-                $translated_phrase = (isset($phrases_upper[$upper_phrase]) ? $phrases_upper[$upper_phrase] : $phrase);
+                $phrasesReversed = array_reverse($phrases, true);
+                $phrasesUpper = array_change_key_case($phrasesReversed, CASE_UPPER);
+                $upperPhrase = strtoupper($phrase);
+                $translatedPhrase = (isset($phrasesUpper[$upperPhrase]) ? $phrasesUpper[$upperPhrase] : $phrase);
             } else {
                 // Try to using existing or appended phrase
-                $translated_phrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
+                $translatedPhrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
             }
 
             // Typographical beautification
-            $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
-            $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
+            $translatedPhrase = preg_replace('/"([^"]+)"/', '“$1”', $translatedPhrase);
+            $translatedPhrase = str_replace(['`', "'"], '’', $translatedPhrase);
 
-            $phrase = $translated_phrase;
+            $phrase = $translatedPhrase;
         } catch (Throwable $e) {
             log_message('error', '[TRANSLATION] ' . $e->getMessage());
         }
@@ -289,7 +289,7 @@ if (! function_exists('is_rtl')) {
         return in_array(get_userdata('language'), [
             'ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw',
             'ks', 'ku', 'ps', 'ur', 'yi', 'sd', 'ug',
-        ]);
+        ], true);
     }
 }
 
@@ -297,22 +297,22 @@ if (! function_exists('is_liked')) {
     /**
      * Check if a post has been liked by the current user.
      *
-     * @param   int         $post_id The ID of the post (Required)
-     * @param   string|null $post_path The path/type of the post
+     * @param   int         $postId The ID of the post (Required)
+     * @param   string|null $postPath The path/type of the post
      */
-    function is_liked(int $post_id, ?string $post_path = null): bool
+    function is_liked(int $postId, ?string $postPath = null): bool
     {
         $model = new Model();
 
-        return $model->get_where(
+        return $model->getWhere(
             'post__likes',
             [
                 'user_id' => get_userdata('user_id'),
-                'post_id' => $post_id,
-                'post_path' => $post_path
+                'post_id' => $postId,
+                'post_path' => $postPath
             ],
             1
         )
-        ->num_rows() > 0;
+        ->numRows() > 0;
     }
 }

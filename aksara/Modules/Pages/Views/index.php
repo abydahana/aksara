@@ -6,11 +6,11 @@
 
         if ($carousel) {
             $navigation = null;
-            $carousel_items = null;
+            $carouselItems = null;
 
             foreach ($carousel as $key => $val) {
                 $navigation .= '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $key . '"' . ($key == 0 ? ' class="active"' : '') . '></button>';
-                $carousel_items .= '
+                $carouselItems .= '
                     <div class="carousel-item' . ($key == 0 || sizeof((array) $carousel) == 1 ? ' active' : '') . '" >
                         <img src="' . get_image('carousels', (isset($val->background) ? $val->background : 'placeholder.png')) . '" alt="..." class="d-block w-100" style="max-height:640px;object-fit: cover" />
                         <div class="clip gradient-top"></div>
@@ -40,7 +40,7 @@
                     </div>
                     ' : '') . '
                     <div class="carousel-inner">
-                        ' . $carousel_items . '
+                        ' . $carouselItems . '
                     </div>
                     ' . (sizeof((array) $carousel) > 1 ? '
                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">

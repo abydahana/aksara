@@ -33,16 +33,16 @@ class Testimonials extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Testimonials'))
-        ->set_description(phrase('What was people said about us'))
-        ->set_icon('mdi mdi-bullhorn-outline')
+        $this->setTitle(phrase('Testimonials'))
+        ->setDescription(phrase('What was people said about us'))
+        ->setIcon('mdi mdi-bullhorn-outline')
 
         ->where([
             'status' => 1
         ])
 
-        ->order_by('timestamp', 'desc')
-        ->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('timestamp', 'desc')
+        ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render($this->_table);
     }

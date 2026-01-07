@@ -47,7 +47,7 @@ class AppRestClients extends Migration
                 'null' => false
             ],
             'method' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'tinytext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'tinytext'),
                 'null' => false
             ],
             'ip_range' => [

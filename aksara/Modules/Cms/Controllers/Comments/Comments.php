@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Comments;
+namespace Aksara\Modules\CMS\Controllers\Comments;
 
 use Aksara\Laboratory\Core;
 
@@ -27,40 +27,40 @@ class Comments extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone,  delete');
+        $this->unsetMethod('create, update, clone,  delete');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Comments'))
-        ->set_icon('mdi mdi-comment-multiple-outline')
-        ->unset_column('post_id, post_type, reply_id, mention_id, edited, attachment')
-        ->unset_view('post_id, post_type, reply_id, mention_id, edited, attachment')
+        $this->setTitle(phrase('Comments'))
+        ->setIcon('mdi mdi-comment-multiple-outline')
+        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment')
+        ->unsetView('post_id, post_type, reply_id, mention_id, edited, attachment')
 
-        ->column_order('first_name, post_id, post_path, comments, timestamp, status')
+        ->columnOrder('first_name, post_id, post_path, comments, timestamp, status')
 
-        ->add_button('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
+        ->addButton('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
 
-        ->set_field([
+        ->setField([
             'comments' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_field('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
+        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setField('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
 
-        ->set_relation(
+        ->setRelation(
             'user_id',
             'app__users.user_id',
             '{{ app__users.first_name }} {{ app__users.last_name }}'
         )
 
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
-        ->merge_content('{{ comment_id }}', phrase('Feedback'), 'callback_get_feedback')
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeContent('{{ comment_id }}', phrase('Feedback'), 'callback_get_feedback')
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
@@ -69,12 +69,12 @@ class Comments extends Core
     {
         $this->permission->must_ajax(current_page('../'));
 
-        $comment_id = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
+        $commentId = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
-                'comment_id' => $comment_id
+                'comment_id' => $commentId
             ],
             1
         )
@@ -84,7 +84,7 @@ class Comments extends Core
             return throw_exception(404, phrase('The comment you want to hide is not found', current_page('../')));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == sha1($commentId . ENCRYPTION_KEY . get_userdata('session_generated'))) {
             if (DEMO_MODE) {
                 // Demo mode
                 return throw_exception(403, phrase('This feature is disabled in demo mode.'), go_to(null, ['id' => null]));
@@ -96,7 +96,7 @@ class Comments extends Core
                     'status' => ($query->status ? 0 : 1)
                 ],
                 [
-                    'comment_id' => $comment_id
+                    'comment_id' => $commentId
                 ]
             );
 
@@ -105,7 +105,7 @@ class Comments extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . sha1($commentId . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>
@@ -140,19 +140,19 @@ class Comments extends Core
         ]);
     }
 
-    public function get_feedback($params = [])
+    public function getFeedback($params = [])
     {
         if (! isset($params['comment_id'])) {
             return false;
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'post__comments_reports',
             [
                 'comment_id' => $params['comment_id']
             ]
         )
-        ->num_rows();
+        ->numRows();
 
         if ($query) {
             return '<a href="' . current_page('feedback', ['id' => $params['comment_id'], 'column' => null, 'q' => null, 'per_page' => null, 'order' => null, 'sort' => null]) . '" class="badge bg-danger --xhr">' . number_format($query) . ' ' . ($query > 1 ? phrase('reports') : phrase('report')) . '</a>';

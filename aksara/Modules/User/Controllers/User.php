@@ -34,7 +34,7 @@ class User extends Core
             $query = $this->model->select('
                 username
             ')
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'user_id' => $this->request->getGet('user_id')
@@ -59,18 +59,18 @@ class User extends Core
             $this->where('user_id', get_userdata('user_id'));
         }
 
-        $this->set_title('{{ first_name }} {{ last_name }}', phrase('User not found'))
-        ->set_icon('mdi mdi-account')
+        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('User not found'))
+        ->setIcon('mdi mdi-account')
 
-        ->set_output([
+        ->setOutput([
             'suggestions' => $this->model->select('
                 user_id,
                 username,
                 first_name,
                 last_name
             ')
-            ->order_by('username', 'RANDOM')
-            ->get_where(
+            ->orderBy('username', 'RANDOM')
+            ->getWhere(
                 $this->_table,
                 [
                     'status' => 1,
@@ -96,7 +96,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -111,9 +111,9 @@ class User extends Core
             $title = phrase('Activities');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-account-clock-outline')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-account-clock-outline')
+        ->setOutput([
             'user' => $user
         ])
         ->join(
@@ -124,7 +124,7 @@ class User extends Core
             'app__users.username' => $username,
             'post__comments.status' => 1
         ])
-        ->order_by([
+        ->orderBy([
             'post__comments.timestamp' => 'DESC'
         ])
         ->render('post__comments', 'activities');
@@ -139,7 +139,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -154,9 +154,9 @@ class User extends Core
             $title = phrase('Likes');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-heart')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-heart')
+        ->setOutput([
             'user' => $user
         ])
         ->join(
@@ -166,7 +166,7 @@ class User extends Core
         ->where([
             'app__users.username' => $username
         ])
-        ->order_by([
+        ->orderBy([
             'post__likes.timestamp' => 'DESC'
         ])
         ->render('post__likes', 'likes');
@@ -181,7 +181,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -196,9 +196,9 @@ class User extends Core
             $title = phrase('Guest Book');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-book')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-book')
+        ->setOutput([
             'user' => $user
         ])
         ->render();

@@ -28,7 +28,7 @@ class Announcement extends Core
 
     public function index()
     {
-        $query = $this->model->order_by('announcement_id', 'desc')->get_where(
+        $query = $this->model->orderBy('announcement_id', 'desc')->getWhere(
             'announcements',
             [
                 'status' => 1,

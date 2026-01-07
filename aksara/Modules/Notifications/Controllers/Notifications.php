@@ -34,8 +34,8 @@ class Notifications extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Notifications'))
-        ->set_icon('mdi mdi-bell-ring')
+        $this->setTitle(phrase('Notifications'))
+        ->setIcon('mdi mdi-bell-ring')
         ->render($this->_table);
     }
 
@@ -54,8 +54,8 @@ class Notifications extends Core
             'app__users',
             'app__users.user_id = notifications.from_user'
         )
-        ->order_by('notifications.timestamp', 'DESC')
-        ->get_where(
+        ->orderBy('notifications.timestamp', 'DESC')
+        ->getWhere(
             $this->_table,
             [
                 'from_user != ' => get_userdata('user_id'),
@@ -78,16 +78,16 @@ class Notifications extends Core
             );
 
             foreach ($query as $key => $val) {
-                $query_params = [];
+                $queryParams = [];
 
-                if (in_array($val->type, ['comment', 'reply', 'upvote'])) {
-                    $query_params['comment_highlight'] = $val->interaction_id;
+                if (in_array($val->type, ['comment', 'reply', 'upvote'], true)) {
+                    $queryParams['comment_highlight'] = $val->interaction_id;
                 }
 
                 $query[$key]->user = $val->first_name . ' ' . $val->last_name;
                 $query[$key]->avatar = get_image('users', $val->avatar, 'icon');
                 $query[$key]->text = ('comment' === $val->type ? phrase('commented on your post.') : ('reply' === $val->type ? phrase('replying to your comment.') : ('like' === $val->type ? phrase('likes your post') : ('upvote' === $val->type ? phrase('upvoted your comment.') : phrase('reacted to your post.')))));
-                $query[$key]->url = base_url($val->url, $query_params);
+                $query[$key]->url = base_url($val->url, $queryParams);
                 $query[$key]->timestamp = time_ago($val->timestamp);
             }
         }
@@ -97,7 +97,7 @@ class Notifications extends Core
 
     public function polling()
     {
-        $query = $this->model->select_count('*', 'total')->get_where(
+        $query = $this->model->selectCount('*', 'total')->getWhere(
             $this->_table,
             [
                 'from_user != ' => get_userdata('user_id'),

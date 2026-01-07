@@ -2,8 +2,8 @@
 <?php
     $toc = null;
     $article = null;
-    $featured_image = null;
-    $post_tags = null;
+    $featuredImage = null;
+    $postTags = null;
 
     if ($results) {
         $tags = [];
@@ -16,7 +16,7 @@
                 foreach ($tags as $tag => $label) {
                     if (! $label) continue; // empty label
 
-                    $post_tags .= '
+                    $postTags .= '
                         <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="--xhr">
                             <span class="badge bg-secondary">
                                 ' . trim($label) . '
@@ -32,12 +32,12 @@
 
         if ($results[0]->featured_image && $results[0]->featured_image != 'placeholder.png') {
             // Get featured image
-            $featured_image = $results[0]->featured_image;
+            $featuredImage = $results[0]->featured_image;
         }
     }
 ?>
 
-<div class="bg-light background-clip" style="background:url(<?= get_image('blogs', $featured_image); ?>) center center no-repeat; background-size:cover">
+<div class="bg-light background-clip" style="background:url(<?= get_image('blogs', $featuredImage); ?>) center center no-repeat; background-size:cover">
     <div class="py-3 py-md-5">
         <div class="container py-lg-5">
             <h1 class="text-center text-md-start text-light">
@@ -99,8 +99,8 @@
                             </div>
                         </div>
 
-                        <?php if ($featured_image): ?>
-                            <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="img-fluid rounded d-none" width="100%" /></a>
+                        <?php if ($featuredImage): ?>
+                            <a href="<?= get_image('blogs', $featuredImage); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featuredImage); ?>" class="img-fluid rounded d-none" width="100%" /></a>
                         <?php endif; ?>
 
                         <?php if ($toc): ?>
@@ -122,7 +122,7 @@
                         </div>
 
                         <div class="tags">
-                            <?= $post_tags; ?>
+                            <?= $postTags; ?>
                         </div>
 
                         <div>

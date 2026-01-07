@@ -47,11 +47,11 @@
                 <div class="row">
                     <?php foreach ($results as $key => $val): ?>
                         <?php
-                            $item_tags = array_map('trim', explode(',', $val->post_tags));
+                            $itemTags = array_map('trim', explode(',', $val->post_tags));
                             $tags = null;
 
-                            if (sizeof($item_tags) > 0) {
-                                foreach ($item_tags as $label => $badge) {
+                            if (sizeof($itemTags) > 0) {
+                                foreach ($itemTags as $label => $badge) {
                                     if ($label == 2) {
                                         break;
                                     }

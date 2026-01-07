@@ -29,11 +29,11 @@ if (file_exists(ROOTPATH . 'modules/Home/Controllers/Home.php')) {
 $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
-$routes->set404Override('Aksara\Modules\Pages\Controllers\Pages::not_found');
+$routes->set404Override('Aksara\Modules\Pages\Controllers\Pages::notFound');
 
 $routes->add('/', 'Home::index');
 
 /**
  * Register the directory based routes
  */
-$routes_automation = new \Aksara\Laboratory\Router($routes);
+$routesAutomation = new \Aksara\Laboratory\Router($routes);

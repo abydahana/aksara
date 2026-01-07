@@ -88,7 +88,8 @@ th[align="right"] {
 }
 .modal-dialog {
   margin-left: auto!important;
-  margin-right: auto!important
+  margin-right: auto!important;
+  padding: 1rem!important
 }
 .modal-body .mCSB_container {
   padding: 3px;

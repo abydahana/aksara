@@ -28,7 +28,7 @@ class Register extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
         // Check if user is already signed in
         if (get_userdata('is_logged')) {
@@ -51,7 +51,7 @@ class Register extends Core
     public function index()
     {
         // Validate token
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             // Token valid, validate form
             return $this->_validate_form();
         }
@@ -103,16 +103,16 @@ class Register extends Core
             'captcha_file' => $captcha['filename']
         ]);
 
-        $this->set_output([
+        $this->setOutput([
             'captcha' => [
                 'image' => ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
                 'string' => (! $captcha['filename'] ? $captcha['word'] : null)
             ]
         ]);
 
-        $this->set_title(phrase('Register an Account'))
-        ->set_icon('mdi mdi-account-plus')
-        ->set_description(phrase('Fill all the required fields below to register your account.'))
+        $this->setTitle(phrase('Register an Account'))
+        ->setIcon('mdi mdi-account-plus')
+        ->setDescription(phrase('Fill all the required fields below to register your account.'))
 
         ->render();
     }
@@ -125,24 +125,24 @@ class Register extends Core
         if (DEMO_MODE) {
             // Restrict on demo mode
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page());
-        } elseif (! $this->valid_token($this->request->getPost('_token'))) {
+        } elseif (! $this->validToken($this->request->getPost('_token'))) {
             // Invalid token
             return throw_exception(403, phrase('The token you submitted has been expired or you are trying to bypass it from the restricted source.'), current_page());
         }
 
         // Set validation rules
-        $this->form_validation->setRule('first_name', phrase('First Name'), 'required|max_length[32]');
-        $this->form_validation->setRule('last_name', phrase('Last Name'), 'max_length[32]');
-        $this->form_validation->setRule('username', phrase('Username'), 'required|alpha_numeric|unique[app__users.username]');
-        $this->form_validation->setRule('email', phrase('Email Address'), 'required|valid_email|unique[app__users.email]');
-        $this->form_validation->setRule('phone', phrase('Phone Number'), 'required|min_length[8]|max_length[16]');
-        $this->form_validation->setRule('password', phrase('Password'), 'required|min_length[6]');
-        $this->form_validation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
+        $this->formValidation->setRule('first_name', phrase('First Name'), 'required|max_length[32]');
+        $this->formValidation->setRule('last_name', phrase('Last Name'), 'max_length[32]');
+        $this->formValidation->setRule('username', phrase('Username'), 'required|alpha_numeric|unique[app__users.username]');
+        $this->formValidation->setRule('email', phrase('Email Address'), 'required|valid_email|unique[app__users.email]');
+        $this->formValidation->setRule('phone', phrase('Phone Number'), 'required|min_length[8]|max_length[16]');
+        $this->formValidation->setRule('password', phrase('Password'), 'required|min_length[6]');
+        $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Run validation
-        if ($this->form_validation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             // Validation error
-            return throw_exception(400, $this->form_validation->getErrors());
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         // Prepare the insert data
@@ -162,18 +162,18 @@ class Register extends Core
 
         // Insert user with safe checkpoint
         if ($this->model->insert('app__users', $prepare, 1)) {
-            $prepare['user_id'] = $this->model->insert_id();
+            $prepare['user_id'] = $this->model->insertId();
 
             // Unset stored captcha
             unset_userdata(['captcha', 'captcha_file']);
 
             if (get_setting('auto_active_registration')) {
-                $default_membership_group = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
+                $defaultMembershipGroup = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
 
                 // Set the user credential into session
                 set_userdata([
                     'user_id' => $prepare['user_id'],
-                    'group_id' => $default_membership_group,
+                    'group_id' => $defaultMembershipGroup,
                     'language_id' => $prepare['language_id'],
                     'is_logged' => true
                 ]);
@@ -209,7 +209,7 @@ class Register extends Core
             'app__users',
             'app__users.user_id = app__users_hashes.user_id'
         )
-        ->get_where(
+        ->getWhere(
             'app__users_hashes',
             [
                 'app__users_hashes.hash' => $this->request->getGet('hash')
@@ -241,7 +241,7 @@ class Register extends Core
                 'user_id' => $query->user_id,
                 'username' => $query->username,
                 'group_id' => $query->group_id,
-                'language_id' => $query->language_id,
+                'language_id' => $query->languageId,
                 'is_logged' => true,
                 'session_generated' => time()
             ]);

@@ -67,7 +67,7 @@ class Core
                                 {% set colspan = colspan + 1 %}
                                 <th align="{{ column.align }}" class="no-wrap">
                                     {% if column.url %}
-                                        <a href="{{ column.url }}" class="fw-bold {{ column.class }}">
+                                        <a href="{{ column.url }}" class="fw-bold {{ column.class ?? '--xhr' }}">
                                             {{ column.label }}
                                             <i class="{{ column.icon }}"></i>
                                         </a>

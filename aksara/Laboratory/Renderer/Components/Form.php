@@ -59,7 +59,7 @@ class Form
     /**
      * API Client Status/Instance.
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Valid HTML5 and Custom Input Types supported by the builder.
@@ -113,19 +113,19 @@ class Form
 
         $request = Services::request();
 
-        $primary_key = [];
-        $field_data = [];
-        $merged_fields = [];
+        $primaryKey = [];
+        $fieldData = [];
+        $mergedFields = [];
 
         // Flatten merged fields for easy lookup
-        if ($this->_merge_field) {
-            foreach ($this->_merge_field as $key => $val) {
-                $merged_fields = array_merge($merged_fields, $val);
+        if ($this->_mergeField) {
+            foreach ($this->_mergeField as $key => $val) {
+                $mergedFields = array_merge($mergedFields, $val);
             }
         }
 
         // 1. Sort Fields based on configuration
-        $serialized = $this->_sort_fields($serialized);
+        $serialized = $this->_sortFields($serialized);
 
         // 2. Loop serialized data to process each field
         foreach ($serialized as $field => $params) {
@@ -137,17 +137,17 @@ class Form
             $maxlength = $params['maxlength'];
             $hidden = $params['hidden'];
             $validation = $params['validation'];
-            $required = in_array('required', $validation);
+            $required = in_array('required', $validation, true);
 
             // Default label from field name
             $label = ucwords(str_replace('_', ' ', $field));
-            $placeholder = $this->_set_placeholder[$field] ?? null;
-            $class = $this->_add_class[$field] ?? null;
+            $placeholder = $this->_setPlaceholder[$field] ?? null;
+            $class = $this->_addClass[$field] ?? null;
             $readonly = null;
 
             // Collect Primary Key
             if ($primary) {
-                $primary_key[$field] = $value;
+                $primaryKey[$field] = $value;
             }
 
             // Skip hidden fields or timestamps
@@ -156,10 +156,10 @@ class Form
             }
 
             // Override Labels
-            if (isset($this->_merge_label[$field])) {
-                $label = $this->_merge_label[$field];
-            } elseif (isset($this->_set_alias[$field])) {
-                $label = $this->_set_alias[$field];
+            if (isset($this->_mergeLabel[$field])) {
+                $label = $this->_mergeLabel[$field];
+            } elseif (isset($this->_setAlias[$field])) {
+                $label = $this->_setAlias[$field];
             }
 
             // Handle Placeholders based on Type Key
@@ -181,8 +181,8 @@ class Form
             }
 
             // Determine Input Type
-            $field_type = $this->_determine_input_type($type);
-            $final_type = end($field_type); // Get the specific type (e.g., 'text')
+            $fieldType = $this->_determineInputType($type);
+            $finalType = end($fieldType); // Get the specific type (e.g., 'text')
 
             // Format Value & Content
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
@@ -200,19 +200,19 @@ class Form
             // --- Handle Logic based on Method (Create vs Update) ---
             if ('create' === $this->_method) {
                 // CREATE MODE
-                list($value, $checked) = $this->_handle_create_mode($field, $type, $value, $checked);
+                list($value, $checked) = $this->_handleCreateMode($field, $type, $value, $checked);
             } else {
                 // UPDATE MODE
-                list($value, $content) = $this->_handle_update_mode($type, $value, $content);
+                list($value, $content) = $this->_handleUpdateMode($type, $value, $content);
             }
 
             // Prepare Field Data Structure
-            $field_data[$field] = [
+            $fieldData[$field] = [
                 'name' => $field,
                 'label' => $label,
                 'value' => $value,
                 'content' => $content,
-                'type' => $final_type,
+                'type' => $finalType,
                 'primary' => $primary,
                 'maxlength' => $maxlength,
                 'class' => $class,
@@ -221,77 +221,77 @@ class Form
                 'checked' => $checked,
                 'readonly' => $readonly,
                 'accept' => gettype($value),
-                'relation' => isset($this->_set_relation[$field]),
-                'tooltip' => $this->_set_tooltip[$field] ?? null,
-                'attribution' => $this->_set_attribute[$field] ?? null,
-                'position' => $this->_field_position[$field] ?? 1,
-                'prepend' => $this->_field_prepend[$field] ?? null,
-                'append' => $this->_field_append[$field] ?? null,
-                'merged' => in_array($field, $merged_fields)
+                'relation' => isset($this->_setRelation[$field]),
+                'tooltip' => $this->_setTooltip[$field] ?? null,
+                'attribution' => $this->_setAttribute[$field] ?? null,
+                'position' => $this->_fieldPosition[$field] ?? 1,
+                'prepend' => $this->_fieldPrepend[$field] ?? null,
+                'append' => $this->_fieldAppend[$field] ?? null,
+                'merged' => in_array($field, $mergedFields, true)
             ];
 
             // Specific handling for File/Image inputs
-            if (in_array($final_type, ['image', 'images', 'carousel'])) {
-                $field_data[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED))));
-                $field_data[$field]['placeholder'] = get_image($this->_set_upload_path, 'placeholder.png', 'thumb');
-            } elseif (in_array($final_type, ['file', 'files'])) {
-                $field_data[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))));
+            if (in_array($finalType, ['image', 'images', 'carousel'], true)) {
+                $fieldData[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED))));
+                $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
+            } elseif (in_array($finalType, ['file', 'files'], true)) {
+                $fieldData[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED))));
             }
 
             // Scaffolding: Ensure template exists
-            if (! $request->isAJAX() && ! $this->api_client && $final_type) {
-                $this->builder->get_component($this->_set_theme, 'form', $final_type);
+            if (! $request->isAJAX() && ! $this->apiClient && $finalType) {
+                $component = $this->builder->getComponent($this->_setTheme, 'form', $finalType);
             }
         }
 
         // 3. Prepare Final Output
-        $highest_column = 1;
-        if (! empty($this->_field_position)) {
-            $highest_column = max($this->_field_position);
+        $highestColumn = 1;
+        if (! empty($this->_fieldPosition)) {
+            $highestColumn = max($this->_fieldPosition);
         }
 
         // Merge query string with primary keys
-        $query_params = array_replace($request->getGet(), $primary_key);
+        $queryParams = array_replace($request->getGet(), $primaryKey);
 
-        if ($this->api_client) {
-            unset($query_params['aksara'], $query_params['limit']);
+        if ($this->apiClient) {
+            unset($queryParams['aksara'], $queryParams['limit']);
         }
 
         return [
-            'column_size' => $this->_column_size,
-            'column_total' => $highest_column,
+            'column_size' => $this->_columnSize,
+            'column_total' => $highestColumn,
             'extra_action' => [
-                'submit' => $this->_extra_submit
+                'submit' => $this->_extraSubmit
             ],
-            'form_size' => ($this->_modal_size ? str_replace('modal', 'form', $this->_modal_size) : ''),
-            'field_size' => $this->_field_size,
-            'field_data' => $field_data,
-            'merged_content' => $this->_merge_content,
-            'merged_field' => $this->_merge_field,
-            'set_heading' => $this->_set_heading,
-            'grouped_field' => $this->_group_field,
-            'query_params' => $query_params
+            'form_size' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
+            'field_size' => $this->_fieldSize,
+            'field_data' => $fieldData,
+            'merged_content' => $this->_mergeContent,
+            'merged_field' => $this->_mergeField,
+            'set_heading' => $this->_setHeading,
+            'grouped_field' => $this->_groupField,
+            'query_params' => $queryParams
         ];
     }
 
     /**
      * Sort fields based on controller configuration.
      */
-    private function _sort_fields(array $serialized): array
+    private function _sortFields(array $serialized): array
     {
-        $order_source = [];
+        $orderSource = [];
 
-        if (! empty($this->_field_order)) {
-            $order_source = $this->_field_order;
-        } elseif (! empty($this->_view_order)) {
-            $order_source = $this->_view_order;
-        } elseif (! empty($this->_column_order)) {
-            $order_source = $this->_column_order;
+        if (! empty($this->_fieldOrder)) {
+            $orderSource = $this->_fieldOrder;
+        } elseif (! empty($this->_viewOrder)) {
+            $orderSource = $this->_viewOrder;
+        } elseif (! empty($this->_columnOrder)) {
+            $orderSource = $this->_columnOrder;
         }
 
-        if (! empty($order_source)) {
+        if (! empty($orderSource)) {
             $sorted = [];
-            foreach ($order_source as $val) {
+            foreach ($orderSource as $val) {
                 if (array_key_exists($val, $serialized)) {
                     $sorted[] = $val;
                 }
@@ -306,72 +306,72 @@ class Form
     /**
      * Determine valid input type from type definition.
      */
-    private function _determine_input_type(array $type): array
+    private function _determineInputType(array $type): array
     {
         // Get intersection between defined types and valid builder types
-        $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
+        $fieldType = array_intersect(array_keys($type), self::VALID_TYPES);
 
-        if (empty($field_type)) {
-            $field_type = ['text'];
+        if (empty($fieldType)) {
+            $fieldType = ['text'];
         }
 
-        if (count($field_type) > 1) {
+        if (count($fieldType) > 1) {
             // If multiple valid types found, remove the last one (legacy logic behavior)
-            array_pop($field_type);
+            array_pop($fieldType);
         }
 
-        return $field_type;
+        return $fieldType;
     }
 
     /**
      * Handle logic specific to 'Create' mode.
      * Includes setting default values and calculating 'Last Insert' custom IDs.
      */
-    private function _handle_create_mode(string $field, array $type, mixed $value, bool $checked): array
+    private function _handleCreateMode(string $field, array $type, mixed $value, bool $checked): array
     {
-        if (isset($this->_default_value[$field])) {
-            $value = $this->_default_value[$field];
+        if (isset($this->_defaultValue[$field])) {
+            $value = $this->_defaultValue[$field];
         } elseif (array_key_exists('boolean', $type)) {
             $checked = true;
         }
 
         // Logic for custom Auto-Increment (e.g., INV/2024/0001)
         if (array_key_exists('last_insert', $type)) {
-            if (! isset($this->_default_value[$field])) {
+            if (! isset($this->_defaultValue[$field])) {
                 $parameter = $type['last_insert']['parameter'];
-                $extra_params = $type['last_insert']['alpha'];
-                $type_key = array_search('{1}', explode('/', $parameter));
+                $extraParams = $type['last_insert']['alpha'];
+                $typeKey = array_search('{1}', explode('/', $parameter));
 
                 // Construct CAST statement based on DB Driver
-                $cast_field = in_array($this->_db_driver, ['SQLSRV'])
+                $castField = in_array($this->_dbDriver, ['SQLSRV'], true)
                     ? 'CONVERT(' . $field . ', SIGNED INTEGER)'
                     : 'CAST(' . $field . ' AS SIGNED INTEGER)';
 
                 // Build Query
-                if ($extra_params) {
-                    $this->model->where($extra_params);
+                if ($extraParams) {
+                    $this->model->where($extraParams);
                 }
 
-                $max_func = (in_array($this->_db_driver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $cast_field . '), 0) AS ' . $field;
+                $maxFunc = (in_array($this->_dbDriver, ['Postgre'], true) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $castField . '), 0) AS ' . $field;
 
-                $last_insert = $this->model->select($max_func)
-                    ->order_by($field, 'desc')
+                $lastInsert = $this->model->select($maxFunc)
+                    ->orderBy($field, 'desc')
                     ->get($this->_table, 1)
                     ->row($field);
 
                 // Process result
-                if ($last_insert) {
-                    $last_insert_parts = (strpos($last_insert, '/') !== false ? explode('/', $last_insert) : [$last_insert]);
-                    $segment = $last_insert_parts[$type_key] ?? $last_insert_parts[0];
-                    $last_insert = preg_replace('/[^0-9]/', '', $segment);
+                if ($lastInsert) {
+                    $lastInsertParts = (strpos($lastInsert, '/') !== false ? explode('/', $lastInsert) : [$lastInsert]);
+                    $segment = $lastInsertParts[$typeKey] ?? $lastInsertParts[0];
+                    $lastInsert = preg_replace('/[^0-9]/', '', $segment);
                 }
 
-                $next_val = (intval($last_insert) > 0 ? intval($last_insert) : 0) + 1;
-                $value = $next_val;
+                $nextVal = (intval($lastInsert) > 0 ? intval($lastInsert) : 0) + 1;
+                $value = $nextVal;
 
                 // Format with sprintf if requested
                 if (array_key_exists('sprintf', $type)) {
-                    $value = sprintf(($extra_params ?: '%04d'), $value);
+                    $value = sprintf(($extraParams ?: '%04d'), $value);
                 }
 
                 // Replace placeholder in parameter
@@ -388,24 +388,24 @@ class Form
      * Handle logic specific to 'Update' mode.
      * Includes marking selected options in Select/Checkbox/Radio.
      */
-    private function _handle_update_mode(array $type, mixed $value, mixed $content): array
+    private function _handleUpdateMode(array $type, mixed $value, mixed $content): array
     {
         if (array_key_exists('select', $type) && is_array($content)) {
             foreach ($content as $key => $val) {
                 $content[$key]['selected'] = ($value == $val['value']);
             }
         } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
-            $has_checked = false;
+            $hasChecked = false;
 
             foreach ($content as $key => $val) {
                 $content[$key]['checked'] = ($value == $val['value']);
-                if (! $has_checked && $value == $val['value']) {
-                    $has_checked = true;
+                if (! $hasChecked && $value == $val['value']) {
+                    $hasChecked = true;
                 }
             }
 
             // Fallback: Check the first option if nothing matches (optional safety)
-            if (! $has_checked && ! empty($content)) {
+            if (! $hasChecked && ! empty($content)) {
                 $content[array_key_first($content)]['checked'] = true;
             }
         }
@@ -413,8 +413,8 @@ class Form
         // Apply sprintf formatting on update if defined
         if (array_key_exists('sprintf', $type)) {
             $parameter = $type['sprintf']['parameter'];
-            $extra_params = $type['sprintf']['alpha'];
-            $value = sprintf(($extra_params ?: '%04d'), $value);
+            $extraParams = $type['sprintf']['alpha'];
+            $value = sprintf(($extraParams ?: '%04d'), $value);
 
             if ($parameter && ! is_array($parameter)) {
                 $value = str_replace('{1}', $value, $parameter);

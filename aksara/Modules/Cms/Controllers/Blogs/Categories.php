@@ -21,49 +21,49 @@ use Aksara\Laboratory\Core;
 
 class Categories extends Core
 {
-    protected $_table = 'blogs__categories';
+    private $_table = 'blogs__categories';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->set_upload_path('blogs');
-        $this->unset_delete('category_id', [1]);
+        $this->setUploadPath('blogs');
+        $this->unsetDelete('category_id', [1]);
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
 
-        $this->set_title(phrase('Blog Categories'))
-        ->set_icon('mdi mdi-sitemap')
-        ->set_primary('category_id')
-        ->unset_column('category_id, language')
-        ->unset_field('category_id')
-        ->unset_view('category_id')
-        ->column_order('category_image')
-        ->set_field([
+        $this->setTitle(phrase('Blog Categories'))
+        ->setIcon('mdi mdi-sitemap')
+        ->setPrimary('category_id')
+        ->unsetColumn('category_id, language')
+        ->unsetField('category_id')
+        ->unsetView('category_id')
+        ->columnOrder('category_image')
+        ->setField([
             'category_image' => 'image',
             'category_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('category_slug', 'slug', 'category_title')
-        ->set_field('category_title', 'hyperlink', 'cms/blogs', ['category' => 'category_id'])
-        ->set_relation(
+        ->setField('category_slug', 'slug', 'category_title')
+        ->setField('category_title', 'hyperlink', 'cms/blogs', ['category' => 'category_id'])
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -71,14 +71,14 @@ class Categories extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'category_title' => 'required|max_length[64]|unique[' . $this->_table . '.category_title.category_id.' . $this->request->getGet('category_id') . ']',
             'category_slug' => 'max_length[64]|unique[' . $this->_table . '.category_slug.category_id.' . $this->request->getGet('category_id') . ']',
             'category_description' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'category_image' => phrase('Image'),
             'category_title' => phrase('Title'),
             'category_slug' => phrase('Slug'),
@@ -86,7 +86,7 @@ class Categories extends Core
             'language' => phrase('Language'),
             'language_id' => phrase('Language')
         ])
-        ->set_placeholder([
+        ->setPlaceholder([
             'category_description' => phrase('Category details to improve SEO')
         ])
 
@@ -102,7 +102,7 @@ class Categories extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
+        $languagesQuery = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1
@@ -110,8 +110,8 @@ class Categories extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->language,

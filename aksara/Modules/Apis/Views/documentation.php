@@ -1,7 +1,7 @@
 <?php
     $selected = service('request')->getGet('group');
-    $group_collector = [];
-    $access_token = false;
+    $groupCollector = [];
+    $accessToken = false;
     $method = [];
 
     if ($permission->groups) {
@@ -10,19 +10,19 @@
 
         foreach ($permission->groups as $key => $val)
         {
-            $group_collector[] = $val->group_id;
+            $groupCollector[] = $val->group_id;
             $actions = null;
-            $extract_privileges = json_decode($val->group_privileges);
+            $extractPrivileges = json_decode($val->group_privileges);
 
-            if (isset($extract_privileges->$active)) {
-                foreach ($extract_privileges->$active as $_key => $_val)
+            if (isset($extractPrivileges->$active)) {
+                foreach ($extractPrivileges->$active as $_key => $_val)
                 {
                     $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
                 }
             }
 
             if ($val->group_id) {
-                $access_token = true;
+                $accessToken = true;
             }
 
             $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
@@ -97,7 +97,7 @@
                             <div class="mb-3" id="--method-<?= $val; ?>">
                                 <h5 class="mb-1">
                                     <span class="badge bg-primary bg-md">
-                                        <?= (in_array($val, ['create', 'update']) ? 'POST' : (in_array($val, ['delete']) ? 'DELETE' : 'GET')); ?>
+                                        <?= (in_array($val, ['create', 'update'], true) ? 'POST' : (in_array($val, ['delete'], true) ? 'DELETE' : 'GET')); ?>
                                     </span>
                                 </h5>
                                 <div class="rounded pt-2 pe-3 pb-2 ps-3 bg-dark">
@@ -130,7 +130,7 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        <?php if ($access_token): ?>
+                                        <?php if ($accessToken): ?>
                                         <tr>
                                             <td>
                                                 <code>
@@ -376,7 +376,7 @@
             method: 'POST',
             data: {
                 mode: 'fetch',
-                group: '<?= ($selected ? $selected : (isset($group_collector[0]) ? $group_collector[0] : 0)); ?>',
+                group: '<?= ($selected ? $selected : (isset($groupCollector[0]) ? $groupCollector[0] : 0)); ?>',
                 method: JSON.parse('<?= json_encode($method); ?>')
             },
             beforeSend: function() {

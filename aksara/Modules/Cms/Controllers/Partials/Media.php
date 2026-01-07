@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Partials;
+namespace Aksara\Modules\CMS\Controllers\Partials;
 
 use CodeIgniter\Files\File;
 use Aksara\Laboratory\Core;
@@ -30,12 +30,12 @@ class Media extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
     }
 
     public function index()
@@ -49,9 +49,9 @@ class Media extends Core
         // Validasi dan normalisasi path
         $directory = $this->_sanitize_path($directory);
 
-        $this->set_title(phrase('Media'))
-        ->set_icon('mdi mdi-folder-image')
-        ->set_output([
+        $this->setTitle(phrase('Media'))
+        ->setIcon('mdi mdi-folder-image')
+        ->setOutput([
             'results' => $this->_directory_list($directory)
         ])
         ->render();
@@ -118,14 +118,14 @@ class Media extends Core
             $filename = $this->_sanitize_path($filename);
 
             // Ensure we're deleting within UPLOAD_PATH
-            $full_path = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $fullPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
 
             // Additional security check
-            if (! $this->_is_within_upload_path($full_path)) {
+            if (! $this->_is_within_upload_path($fullPath)) {
                 return throw_exception(403, phrase('Access denied'));
             }
 
-            unlink($full_path);
+            unlink($fullPath);
         } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage());
         }
@@ -135,15 +135,15 @@ class Media extends Core
 
     private function _is_within_upload_path($path)
     {
-        $real_upload_path = realpath(UPLOAD_PATH);
-        $real_path = realpath($path);
+        $realUploadPath = realpath(UPLOAD_PATH);
+        $realPath = realpath($path);
 
-        if (false === $real_path) {
+        if (false === $realPath) {
             return false;
         }
 
         // Check if the real path starts with the real upload path
-        return strpos($real_path, $real_upload_path) === 0;
+        return strpos($realPath, $realUploadPath) === 0;
     }
 
     private function _directory_list($directory = null)
@@ -156,38 +156,38 @@ class Media extends Core
         /* load required helper */
         helper('filesystem');
 
-        $full_path = UPLOAD_PATH;
+        $fullPath = UPLOAD_PATH;
         if ($directory) {
-            $full_path .= DIRECTORY_SEPARATOR . $directory;
+            $fullPath .= DIRECTORY_SEPARATOR . $directory;
         }
 
         // Additional security check
-        if (! $this->_is_within_upload_path($full_path)) {
+        if (! $this->_is_within_upload_path($fullPath)) {
             return throw_exception(403, phrase('Access denied'));
         }
 
         // Check if directory exists
-        if (! is_dir($full_path)) {
+        if (! is_dir($fullPath)) {
             $directory = null;
-            $full_path = UPLOAD_PATH;
+            $fullPath = UPLOAD_PATH;
         }
 
         // Map directory with depth 1
-        $data = directory_map($full_path, 1);
+        $data = directory_map($fullPath, 1);
 
         if (is_array($data)) {
             // Define protected values (directory_map adds a trailing slash to folders)
-            $protected_dirs = ['_extension/', '_import_tmp/', 'captcha/', 'logs/'];
+            $protectedDirs = ['_extension/', '_import_tmp/', 'captcha/', 'logs/'];
 
             // Remove protected folders by comparing values
-            $data = array_diff($data, $protected_dirs);
+            $data = array_diff($data, $protectedDirs);
 
             // Optional: Re-index the array to 0, 1, 2...
             $data = array_values($data);
         }
 
         $filename = ($this->request->getGet('file') ? $this->_sanitize_path($this->request->getGet('file')) : null);
-        $parent_directory = ($directory ? $this->_get_parent_directory($directory) : null);
+        $parentDirectory = ($directory ? $this->_get_parent_directory($directory) : null);
 
         if ($data) {
             $this->_parse_files($data, $directory);
@@ -221,7 +221,7 @@ class Media extends Core
         });
 
         return [
-            'parent_directory' => $parent_directory,
+            'parent_directory' => $parentDirectory,
             'directory' => $directory,
             'data' => $data,
             'description' => $description
@@ -241,13 +241,13 @@ class Media extends Core
         }
 
         // Check for dangerous patterns
-        $dangerous_patterns = [
+        $dangerousPatterns = [
             '://', // URLs
             '\\\\', // UNC paths
             '%00', // Null bytes
         ];
 
-        foreach ($dangerous_patterns as $pattern) {
+        foreach ($dangerousPatterns as $pattern) {
             if (strpos($directory, $pattern) !== false) {
                 return false;
             }
@@ -273,16 +273,16 @@ class Media extends Core
         if ($data) {
             foreach ($data as $key => $val) {
                 if (strpos($key, DIRECTORY_SEPARATOR) !== false) {
-                    $folder_name = str_replace(DIRECTORY_SEPARATOR, '', $key);
+                    $folderName = str_replace(DIRECTORY_SEPARATOR, '', $key);
 
                     // Skip protected directories
-                    if (in_array($folder_name, ['_extension', '_import_tmp', 'captcha', 'logs'])) {
+                    if (in_array($folderName, ['_extension', '_import_tmp', 'captcha', 'logs'], true)) {
                         continue;
                     }
 
                     $this->_folders[] = [
-                        'source' => rtrim($folder_name, DIRECTORY_SEPARATOR),
-                        'label' => rtrim($folder_name, DIRECTORY_SEPARATOR),
+                        'source' => rtrim($folderName, DIRECTORY_SEPARATOR),
+                        'label' => rtrim($folderName, DIRECTORY_SEPARATOR),
                         'type' => 'directory',
                         'icon' => base_url('assets/svg/folder')
                     ];
@@ -320,11 +320,11 @@ class Media extends Core
         $filename = (strpos($filename, DIRECTORY_SEPARATOR) !== false ? substr($filename, strrpos($filename, DIRECTORY_SEPARATOR) + 1) : $filename);
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-        if (! in_array($extension, ['png', 'jpg', 'jpeg', 'gif', 'bmp'])) {
+        if (! in_array($extension, ['png', 'jpg', 'jpeg', 'gif', 'bmp'], true)) {
             $directory = (strpos($filename, DIRECTORY_SEPARATOR) !== false ? substr($filename, 0, strpos($filename, DIRECTORY_SEPARATOR)) : null);
         }
 
-        if (in_array($extension, ['png', 'jpg', 'jpeg', 'gif'])) {
+        if (in_array($extension, ['png', 'jpg', 'jpeg', 'gif'], true)) {
             return get_image($directory, $filename);
         } else {
             return get_image('_extension', $extension . '.png');

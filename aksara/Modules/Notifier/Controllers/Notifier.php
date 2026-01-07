@@ -27,35 +27,35 @@ class Notifier extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->unset_method('create, update')
-        ->set_title(phrase('Notifier'))
-        ->set_icon('mdi mdi-bullhorn')
+        $this->unsetMethod('create, update')
+        ->setTitle(phrase('Notifier'))
+        ->setIcon('mdi mdi-bullhorn')
 
-        ->add_toolbar('send', phrase('Resend'), 'btn-primary --xhr show-progress', 'mdi mdi-send')
-        ->add_toolbar('setting', phrase('Setting'), 'btn-dark --modal', 'mdi mdi-cogs')
+        ->addToolbar('send', phrase('Resend'), 'btn-primary --xhr show-progress', 'mdi mdi-send')
+        ->addToolbar('setting', phrase('Setting'), 'btn-dark --modal', 'mdi mdi-cogs')
 
-        ->add_button('send', phrase('Resend'), 'btn-dark --xhr show-progress', 'mdi mdi-send', ['id' => 'id'])
+        ->addButton('send', phrase('Resend'), 'btn-dark --xhr show-progress', 'mdi mdi-send', ['id' => 'id'])
 
-        ->unset_column('id, message')
-        ->unset_view('id')
+        ->unsetColumn('id, message')
+        ->unsetView('id')
 
-        ->set_field([
+        ->setField([
             'message' => 'textarea',
             'timestamp' => 'datetime'
         ])
-        ->set_field('status', 'radio', [
+        ->setField('status', 'radio', [
             0 => phrase('Pending'),
             1 => phrase('Partially Sent'),
             2 => phrase('Fully Sent')
         ])
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }

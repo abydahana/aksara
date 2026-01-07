@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Partials;
+namespace Aksara\Modules\CMS\Controllers\Partials;
 
 use Aksara\Laboratory\Core;
 
@@ -27,28 +27,28 @@ class Inquiries extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone');
+        $this->unsetMethod('create, update, clone');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Inquiries'))
-        ->set_icon('mdi mdi-message-text')
-        ->unset_column('id')
-        ->unset_field('id')
-        ->unset_view('id')
+        $this->setTitle(phrase('Inquiries'))
+        ->setIcon('mdi mdi-message-text')
+        ->unsetColumn('id')
+        ->unsetField('id')
+        ->unsetView('id')
 
-        ->set_alias([
+        ->setAlias([
             'sender_email' => phrase('Email'),
             'sender_full_name' => phrase('Sender')
         ])
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }

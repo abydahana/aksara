@@ -25,16 +25,16 @@ class Logs extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Logs'))
-        ->set_icon('mdi mdi-information-outline')
+        $this->setTitle(phrase('Logs'))
+        ->setIcon('mdi mdi-information-outline')
 
         ->render();
     }

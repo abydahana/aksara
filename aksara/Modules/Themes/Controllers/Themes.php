@@ -33,7 +33,7 @@ class Themes extends Core
 
         // Security: Block sensitive file types
         $blocked = ['php', 'twig', 'json', 'env', 'sql', 'lock', 'log'];
-        if (in_array($extension, $blocked) || empty($extension)) {
+        if (in_array($extension, $blocked, true) || empty($extension)) {
             return $this->_error404();
         }
 

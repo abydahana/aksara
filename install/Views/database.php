@@ -1,10 +1,10 @@
 <?php
     // Database driver options
-    $driver_list = null;
+    $driverList = null;
 
     foreach ($driver as $key => $val)
     {
-        $driver_list .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+        $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
     }
 ?>
 <form action="<?= site_url('security'); ?>" method="POST" class="--validate-form">
@@ -25,7 +25,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <select name="database_driver" class="form-select form-select-sm rounded-pill">
-                    <?= $driver_list; ?>
+                    <?= $driverList; ?>
                 </select>
             </div>
         </div>

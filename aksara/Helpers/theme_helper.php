@@ -45,23 +45,23 @@ if (! function_exists('asset_loader')) {
             }
 
             $extension = strtolower(pathinfo($val, PATHINFO_EXTENSION));
-            $file_url = '';
+            $fileUrl = '';
 
             // Priority 1: Check theme assets directory
             if (file_exists(ROOTPATH . 'themes/' . $theme . '/assets/' . $val)) {
-                $file_url = base_url('themes/' . $theme . '/assets/' . $val);
+                $fileUrl = base_url('themes/' . $theme . '/assets/' . $val);
             }
             // Priority 2: Fallback to core assets directory
             elseif (file_exists(ROOTPATH . 'assets/' . $val)) {
-                $file_url = base_url('assets/' . $val);
+                $fileUrl = base_url('assets/' . $val);
             }
 
             // Generate HTML tags based on extension
-            if ($file_url) {
+            if ($fileUrl) {
                 if ('css' === $extension) {
-                    $output .= '<link rel="stylesheet" type="text/css" href="' . $file_url . '" />' . "\n";
+                    $output .= '<link rel="stylesheet" type="text/css" href="' . $fileUrl . '" />' . "\n";
                 } elseif ('js' === $extension) {
-                    $output .= '<script type="text/javascript" src="' . $file_url . '"></script>' . "\n";
+                    $output .= '<script type="text/javascript" src="' . $fileUrl . '"></script>' . "\n";
                 }
             } else {
                 log_message('warning', "Asset not found: {$val} (theme: {$theme})");
@@ -87,10 +87,10 @@ if (! function_exists('get_theme_asset')) {
 
         if ($theme) {
             // Define the local path and web URL
-            $asset_path = ROOTPATH . 'themes/' . $theme . '/assets/' . $data;
+            $assetPath = ROOTPATH . 'themes/' . $theme . '/assets/' . $data;
 
             // Check if the file exists within the theme's asset directory
-            if (file_exists($asset_path)) {
+            if (file_exists($assetPath)) {
                 // Return the cleaned base URL
                 return str_replace('/index.php/', '/', base_url('themes/' . $theme . '/assets/' . $data));
             }
@@ -149,14 +149,14 @@ if (! function_exists('generate_menu')) {
      */
     function generate_menu(
         array|object $menus,
-        string $ul_class = 'navbar-nav',
-        string $li_class = 'nav-item',
-        string $a_class = 'nav-link',
-        string $toggle_class = 'dropdown-toggle',
-        string $toggle_initial = 'data-bs-toggle="dropdown"',
-        string $dropdown_class = 'dropdown',
-        string $sub_ul_class = 'dropdown-menu',
-        bool $is_children = false,
+        string $ulClass = 'navbar-nav',
+        string $liClass = 'nav-item',
+        string $aClass = 'nav-link',
+        string $toggleClass = 'dropdown-toggle',
+        string $toggleInitial = 'data-bs-toggle="dropdown"',
+        string $dropdownClass = 'dropdown',
+        string $subUlClass = 'dropdown-menu',
+        bool $isChildren = false,
         int $level = 0
     ): string {
         $output = null;
@@ -165,9 +165,9 @@ if (! function_exists('generate_menu')) {
             if (isset($val->id) && isset($val->label) && isset($val->slug)) {
                 if ('---' == $val->slug) {
                     $output .= '
-                        <li class="' . $li_class . (isset($val->class) ? ' ' . $val->class : null) . '">
-                            <span class="' . $a_class . '">
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
+                        <li class="' . $liClass . (isset($val->class) ? ' ' . $val->class : null) . '">
+                            <span class="' . $aClass . '">
+                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank'], true) ? '<i class="' . $val->icon . '"></i>' : null) . '<b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
                             </span>
                         </li>
                     ';
@@ -183,17 +183,17 @@ if (! function_exists('generate_menu')) {
                     }
 
                     $output .= '
-                        <li class="' . $li_class . ($children && $dropdown_class ? ' ' . $dropdown_class : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
-                            <a href="' . ($children ? '#' : $val->slug) . '" class="' . $a_class . ($children ? ' ' . $toggle_class : null) . '"' . ($children ? ' ' . $toggle_initial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<span class="hide-on-collapse">' . $val->label . '</span>
+                        <li class="' . $liClass . ($children && $dropdownClass ? ' ' . $dropdownClass : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
+                            <a href="' . ($children ? '#' : $val->slug) . '" class="' . $aClass . ($children ? ' ' . $toggleClass : null) . '"' . ($children ? ' ' . $toggleInitial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
+                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank'], true) ? '<i class="' . $val->icon . '"></i>' : null) . '<span class="hide-on-collapse">' . $val->label . '</span>
                             </a>
-                            ' . ($children ? generate_menu($children, $ul_class, $li_class, $a_class, $toggle_class, $toggle_initial, $dropdown_class, $sub_ul_class, true, ($level + 1)) : null) . '
+                            ' . ($children ? generate_menu($children, $ulClass, $liClass, $aClass, $toggleClass, $toggleInitial, $dropdownClass, $subUlClass, true, ($level + 1)) : null) . '
                         </li>
                     ';
                 }
             }
         }
 
-        return '<ul class="' . ($is_children ? $sub_ul_class : $ul_class) . '">' . $output . '</ul>';
+        return '<ul class="' . ($isChildren ? $subUlClass : $ulClass) . '">' . $output . '</ul>';
     }
 }

@@ -27,22 +27,22 @@ class Users extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->unset_delete('user_id', [1]);
+        $this->unsetDelete('user_id', [1]);
 
         // Ignore query string signature
-        $this->ignore_query_string('group');
+        $this->ignoreQueryString('group');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('group')) {
             $this->where([
@@ -50,26 +50,26 @@ class Users extends Core
             ]);
         }
 
-        if (in_array($this->get_method(), ['create'])) {
-            $this->set_validation('password', 'required|min_length[6]');
-            $this->set_default('registered_date', date('Y-m-d'));
+        if (in_array($this->getMethod(), ['create'], true)) {
+            $this->setValidation('password', 'required|min_length[6]');
+            $this->setDefault('registered_date', date('Y-m-d'));
         }
 
-        $this->set_title(phrase('Manage Users'))
-        ->set_icon('mdi mdi-account-group-outline')
+        $this->setTitle(phrase('Manage Users'))
+        ->setIcon('mdi mdi-account-group-outline')
 
-        ->set_primary('user_id, username')
+        ->setPrimary('user_id, username')
 
         // Add extra option button
-        ->add_button('privileges', phrase('Individual Privilege'), 'btn-success --xhr', 'mdi mdi-account-check-outline', ['user_id' => 'user_id'])
+        ->addButton('privileges', phrase('Individual Privilege'), 'btn-success --xhr', 'mdi mdi-account-check-outline', ['user_id' => 'user_id'])
 
-        ->unset_column('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')
-        ->unset_field('user_id, bio, phone, address, postal_code, country_id, last_login, is_logged, registered_date')
-        ->unset_view('user_id, password')
-        ->column_order('photo, username, first_name, email, group_name')
-        ->field_order('photo, first_name, last_name, gender, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
-        ->view_order('photo, first_name, last_name, gender, username, email, language, group_name, language_id, group_id, phone, address, postal_code, country, bio, registered_date, last_login, status')
-        ->set_field([
+        ->unsetColumn('user_id, password, phone, gender, bio, address, country, language, postal_code, registered_date')
+        ->unsetField('user_id, bio, phone, address, postal_code, country_id, last_login, is_logged, registered_date')
+        ->unsetView('user_id, password')
+        ->columnOrder('photo, username, first_name, email, group_name')
+        ->fieldOrder('photo, first_name, last_name, gender, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
+        ->viewOrder('photo, first_name, last_name, gender, username, email, language, group_name, language_id, group_id, phone, address, postal_code, country, bio, registered_date, last_login, status')
+        ->setField([
             'password' => 'password',
             'photo' => 'image',
             'last_login' => 'datetime',
@@ -78,7 +78,7 @@ class Users extends Core
             'is_logged' => 'boolean',
             'status' => 'boolean'
         ])
-        ->set_field(
+        ->setField(
             'gender',
             'radio',
             [
@@ -86,7 +86,7 @@ class Users extends Core
                 1 => phrase('Female')
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -94,7 +94,7 @@ class Users extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'country_id',
             'app__countries.id',
             '{{ app__countries.country }}',
@@ -102,7 +102,7 @@ class Users extends Core
                 'app__countries.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'group_id',
             'app__groups.group_id',
             '{{ app__groups.group_name }}',
@@ -110,7 +110,7 @@ class Users extends Core
                 'app__groups.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'first_name' => 'required|string|max_length[32]',
             'last_name' => 'string|max_length[32]',
             'username' => 'required|alpha_numeric|unique[app__users.username.user_id.' . $this->request->getGet('user_id') . ']',
@@ -119,7 +119,7 @@ class Users extends Core
             'group_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),
             'username' => phrase('Username'),
@@ -137,13 +137,13 @@ class Users extends Core
             'group_name' => phrase('Group')
         ])
 
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
-        ->merge_field('first_name, last_name', phrase('Full Name'))
-        ->merge_field('username, email')
-        ->merge_field('language_id, group_id')
-        ->merge_field('language, group_name')
-        ->merge_field('postal_code, country')
-        ->merge_field('registered_date, last_login')
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeField('first_name, last_name', phrase('Full Name'))
+        ->mergeField('username, email')
+        ->mergeField('language_id, group_id')
+        ->mergeField('language, group_name')
+        ->mergeField('postal_code, country')
+        ->mergeField('registered_date, last_login')
 
         ->render($this->_table);
     }
@@ -157,7 +157,7 @@ class Users extends Core
             ]
         ];
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__groups',
             [
                 'status' => 1

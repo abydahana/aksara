@@ -83,13 +83,13 @@ if (! function_exists('make_json')) {
 
         $data = encoding_fixer($data);
 
-        $minify_pattern = [
+        $minifyPattern = [
             '/\>[^\S ]+/s' => '>',      // Strip whitespaces after tags, except space
             '/[^\S ]+\</s' => '<',      // Strip whitespaces before tags, except space
             '/<!--(.|\s)*?-->/' => ''   // Remove HTML comments
         ];
 
-        $output = preg_replace(array_keys($minify_pattern), array_values($minify_pattern), json_encode($data));
+        $output = preg_replace(array_keys($minifyPattern), array_values($minifyPattern), json_encode($data));
 
         http_response_code(200);
 
@@ -158,9 +158,9 @@ if (! function_exists('time_ago')) {
             return phrase('Just now');
         }
 
-        $time_difference = time() - strtotime($datetime);
+        $timeDifference = time() - strtotime($datetime);
 
-        if ($time_difference < 30) {
+        if ($timeDifference < 30) {
             return phrase('Just now');
         }
 
@@ -178,9 +178,9 @@ if (! function_exists('time_ago')) {
         }
 
         foreach ($conditions as $seconds => $labels) {
-            if ($time_difference >= $seconds) {
-                $time = (int)($time_difference / $seconds);
-                $label_key = $full ? 'full' : 'short';
+            if ($timeDifference >= $seconds) {
+                $time = (int)($timeDifference / $seconds);
+                $labelKey = $full ? 'full' : 'short';
 
                 // Handle "Yesterday" special case
                 if ($full && 86400 === $seconds && 1 === $time) {
@@ -192,12 +192,12 @@ if (! function_exists('time_ago')) {
                 }
 
                 // Pakai suffix _plural hanya jika time > 1
-                $phrase_key = $labels[$label_key];
+                $phraseKey = $labels[$labelKey];
                 if ($time > 1) {
-                    $phrase_key .= '_plural';
+                    $phraseKey .= '_plural';
                 }
 
-                $label = phrase($phrase_key);
+                $label = phrase($phraseKey);
                 $result = $time . ' ' . $label;
 
                 if (! $short) {

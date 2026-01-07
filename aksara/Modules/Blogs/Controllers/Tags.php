@@ -34,11 +34,11 @@ class Tags extends Core
 
     public function index()
     {
-        $this->set_title('#' . $this->_keywords)
-        ->set_description(phrase('Post tagged with') . ' #' . $this->_keywords)
-        ->set_icon('mdi mdi-pound')
+        $this->setTitle('#' . $this->_keywords)
+        ->setDescription(phrase('Post tagged with') . ' #' . $this->_keywords)
+        ->setIcon('mdi mdi-pound')
 
-        ->set_output([
+        ->setOutput([
             'keywords' => $this->_keywords,
 
             /* list of category */
@@ -79,7 +79,7 @@ class Tags extends Core
             'blogs.status' => 1
         ])
 
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render('blogs');
     }
@@ -101,9 +101,9 @@ class Tags extends Core
             'blogs__categories.status' => 1,
             'blogs.status' => 1
         ])
-        ->order_by('category_title', 'RANDOM')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->orderBy('category_title', 'RANDOM')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
         ->get('blogs__categories')
         ->result();
 
@@ -134,9 +134,9 @@ class Tags extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1

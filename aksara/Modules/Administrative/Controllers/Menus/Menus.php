@@ -27,25 +27,25 @@ class Menus extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_delete('menu_id', [1]);
+        $this->unsetDelete('menu_id', [1]);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Menu Management'))
-        ->set_icon('mdi mdi-menu')
-        ->unset_column('menu_id, serialized_data')
-        ->unset_view('menu_id')
-        ->column_order('menu_label, menu_placement, menu_description, group_name')
-        ->unset_field('menu_id')
-        ->set_primary('menu_id')
-        ->set_field('serialized_data', 'custom_format', 'format_menus')
-        ->set_field(
+        $this->setTitle(phrase('Menu Management'))
+        ->setIcon('mdi mdi-menu')
+        ->unsetColumn('menu_id, serialized_data')
+        ->unsetView('menu_id')
+        ->columnOrder('menu_label, menu_placement, menu_description, group_name')
+        ->unsetField('menu_id')
+        ->setPrimary('menu_id')
+        ->setField('serialized_data', 'custom_format', 'formatMenus')
+        ->setField(
             'menu_placement',
             'select',
             [
@@ -53,8 +53,8 @@ class Menus extends Core
                 'sidebar' => phrase('Sidebar')
             ]
         )
-        ->set_field('status', 'boolean')
-        ->set_relation(
+        ->setField('status', 'boolean')
+        ->setRelation(
             'group_id',
             'app__groups.group_id',
             '{{ app__groups.group_name }}',
@@ -62,7 +62,7 @@ class Menus extends Core
                 'app__groups.status' => 1
             ]
         )
-        ->set_alias([
+        ->setAlias([
             'menu_placement' => phrase('Placement'),
             'menu_label' => phrase('Menu Label'),
             'menu_description' => phrase('Description'),
@@ -72,38 +72,38 @@ class Menus extends Core
             'status' => phrase('Status')
         ])
 
-        ->set_validation([
+        ->setValidation([
             'menu_label' => 'required',
             'menu_placement' => 'required|in_list[header,sidebar]',
             'status' => 'boolean'
         ])
 
-        ->merge_field('menu_label, menu_placement')
-        ->merge_field('group_id, status')
+        ->mergeField('menu_label, menu_placement')
+        ->mergeField('group_id, status')
 
-        ->field_size([
+        ->fieldSize([
             'menu_label' => 'col-md-6',
             'menu_placement' => 'col-md-6',
             'group_id' => 'col-md-6',
             'status' => 'col-md-6'
         ])
 
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
 
-        ->order_by('menu_id')
+        ->orderBy('menu_id')
 
         ->render($this->_table);
     }
 
-    protected function format_menus(array $data)
+    protected function formatMenus(array $data)
     {
         $output = null;
         $menus = null;
 
-        $serialized_menus = ($data['serialized_data'] ? json_decode($data['serialized_data']) : []);
+        $serializedMenus = ($data['serialized_data'] ? json_decode($data['serialized_data']) : []);
 
-        if ($serialized_menus) {
-            foreach ($serialized_menus as $key => $val) {
+        if ($serializedMenus) {
+            foreach ($serializedMenus as $key => $val) {
                 if (! isset($val->id) || ! isset($val->label) || ! isset($val->slug)) {
                     continue;
                 }
@@ -168,15 +168,15 @@ class Menus extends Core
             </div>
         ';
 
-        if ('read' != $this->get_method()) {
+        if ('read' != $this->getMethod()) {
             return $output;
         }
 
         $output = null;
         $menus = null;
 
-        if ($serialized_menus) {
-            foreach ($serialized_menus as $key => $val) {
+        if ($serializedMenus) {
+            foreach ($serializedMenus as $key => $val) {
                 if (! isset($val->id) || ! isset($val->label) || ! isset($val->slug)) {
                     continue;
                 }

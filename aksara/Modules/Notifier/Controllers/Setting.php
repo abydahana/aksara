@@ -27,40 +27,40 @@ class Setting extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
-        $this->parent_module('notifier');
+        $this->setPermission();
+        $this->setTheme('backend');
+        $this->parentModule('notifier');
 
-        $this->set_method('update');
-        $this->permit_upsert();
+        $this->setMethod('update');
+        $this->permitUpsert();
     }
 
     public function index()
     {
-        $this->set_title(phrase('WhatsApp API Settings'))
-        ->set_icon('mdi mdi-whatsapp')
+        $this->setTitle(phrase('WhatsApp API Settings'))
+        ->setIcon('mdi mdi-whatsapp')
 
-        ->set_description('Cron job command: <br /><input value="*/1 * * * * curl ' . base_url('notifier/send') . ' > /dev/null 2>&1" class="form-control" disabled>')
+        ->setDescription('Cron job command: <br /><input value="*/1 * * * * curl ' . base_url('notifier/send') . ' > /dev/null 2>&1" class="form-control" disabled>')
 
-        ->unset_field('site_id')
+        ->unsetField('site_id')
 
-        ->set_field([
+        ->setField([
             'whatsapp_api_header' => 'attribution',
             'whatsapp_api_payload' => 'attribution'
         ])
 
-        ->set_validation([
+        ->setValidation([
             'whatsapp_api_url' => 'required|valid_url'
         ])
 
-        ->set_alias([
+        ->setAlias([
             'whatsapp_api_url' => phrase('WhatsApp API URL'),
             'whatsapp_api_header' => phrase('WhatsApp API Headers'),
             'whatsapp_api_payload' => phrase('WhatsApp API Payloads')
         ])
 
         ->where('site_id', get_setting('id'))
-        ->set_default('site_id', get_setting('id'))
+        ->setDefault('site_id', get_setting('id'))
 
         ->render($this->_table);
     }

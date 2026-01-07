@@ -27,13 +27,13 @@ class Logs extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->parent_module('administrative/account');
+        $this->parentModule('administrative/account');
 
-        $this->set_permission();
-        $this->set_theme('backend');
-        $this->set_method('index');
+        $this->setPermission();
+        $this->setTheme('backend');
+        $this->setMethod('index');
 
         if ($this->request->getPost('fetch') == 'ip-info') {
             return $this->_get_ip_info($this->request->getPost('ip_address'), $this->request->getPost('key'));
@@ -42,10 +42,10 @@ class Logs extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Login Activities'))
-        ->set_icon('mdi mdi-information-outline')
+        $this->setTitle(phrase('Login Activities'))
+        ->setIcon('mdi mdi-information-outline')
 
-        ->set_output([
+        ->setOutput([
             'logs' => $this->_get_logs()
         ])
 
@@ -77,8 +77,8 @@ class Logs extends Core
             platform,
             timestamp
         ')
-        ->order_by('timestamp', 'DESC')
-        ->get_where(
+        ->orderBy('timestamp', 'DESC')
+        ->getWhere(
             $this->_table,
             [
                 'user_id' => get_userdata('user_id'),
@@ -88,30 +88,30 @@ class Logs extends Core
         ->result();
 
         $output = [];
-        $ip_addresses = [];
+        $ipAddresses = [];
 
         foreach ($query as $key => $val) {
             // Unique by IP Address
-            if (in_array($val->ip_address, $ip_addresses)) {
+            if (in_array($val->ip_address, $ipAddresses, true)) {
                 continue;
             }
 
             $output[$val->platform][] = $val;
 
             // Add IP Address into collections
-            $ip_addresses[] = $val->ip_address;
+            $ipAddresses[] = $val->ip_address;
         }
 
         return $output;
     }
 
-    private function _get_ip_info($ip_address = null, $key = null)
+    private function _get_ip_info($ipAddress = null, $key = null)
     {
-        if (! $ip_address || '::1' === $ip_address) {
+        if (! $ipAddress || '::1' === $ipAddress) {
             return false;
         }
 
-        $information = file_get_contents('https://www.aksaracms.com/ip/' . $ip_address);
+        $information = file_get_contents('https://www.aksaracms.com/ip/' . $ipAddress);
 
         return make_json(json_decode($information));
     }

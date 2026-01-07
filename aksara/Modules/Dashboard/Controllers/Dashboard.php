@@ -28,50 +28,50 @@ class Dashboard extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
 
         if ('fetch_information' == $this->request->getPost('request')) {
-            return $this->_fetch_information();
+            return $this->_fetchInformation();
         }
     }
 
     public function index()
     {
         if (get_userdata('group_id') > 2) {
-            $this->set_template('index', 'index_subscriber');
+            $this->setTemplate('index', 'index_subscriber');
 
-            $this->set_output([
+            $this->setOutput([
                 'announcements' => $this->_announcements()
             ]);
         } elseif (get_userdata('group_id') > 1) {
-            $this->set_template('index', 'index_technical');
+            $this->setTemplate('index', 'index_technical');
 
-            $this->set_output([
+            $this->setOutput([
                 'card' => $this->_card(),
                 'visitors' => $this->_visitors(),
-                'recent_signed' => $this->_recent_signed(),
-                'system_language' => $this->_system_language(),
+                'recentSigned' => $this->_recentSigned(),
+                'systemLanguage' => $this->_systemLanguage(),
                 'announcements' => $this->_announcements()
             ]);
         } else {
-            $this->set_output([
+            $this->setOutput([
                 'card' => $this->_card(),
                 'permission' => [
                     'uploads' => (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
                     'writable' => (is_dir(WRITEPATH) && is_writable(WRITEPATH) ? true : false),
                 ],
                 'visitors' => $this->_visitors(),
-                'recent_signed' => $this->_recent_signed(),
-                'system_language' => $this->_system_language(),
+                'recentSigned' => $this->_recentSigned(),
+                'systemLanguage' => $this->_systemLanguage(),
                 'announcements' => $this->_announcements()
             ]);
         }
 
-        $this->set_title(phrase('Dashboard'))
-        ->set_icon('mdi mdi-monitor-dashboard')
+        $this->setTitle(phrase('Dashboard'))
+        ->setIcon('mdi mdi-monitor-dashboard')
 
         ->render();
     }
@@ -84,10 +84,10 @@ class Dashboard extends Core
     private function _card(): array
     {
         // Fetch counts from database tables
-        $blogs = $this->model->table('blogs')->count_all_results();
-        $pages = $this->model->table('pages')->count_all_results();
-        $galleries = $this->model->table('galleries')->count_all_results();
-        $users = $this->model->table('app__users')->count_all_results();
+        $blogs = $this->model->table('blogs')->countAllResults();
+        $pages = $this->model->table('pages')->countAllResults();
+        $galleries = $this->model->table('galleries')->countAllResults();
+        $users = $this->model->table('app__users')->countAllResults();
 
         return [
             'blogs' => (int) ($blogs ?: 0),
@@ -99,7 +99,7 @@ class Dashboard extends Core
 
     private function _visitors()
     {
-        $visitors = $this->model->get_where(
+        $visitors = $this->model->getWhere(
             'app__log_visitors',
             [
                 'DATE(timestamp) >= ' => date('Y-m-d', strtotime('-6 days')),
@@ -167,7 +167,7 @@ class Dashboard extends Core
         ];
     }
 
-    private function _recent_signed()
+    private function _recentSigned()
     {
         $query = $this->model->select('
             app__users.user_id,
@@ -181,8 +181,8 @@ class Dashboard extends Core
             'app__groups',
             'app__groups.group_id = app__users.group_id'
         )
-        ->order_by('last_login', 'DESC')
-        ->get_where(
+        ->orderBy('last_login', 'DESC')
+        ->getWhere(
             'app__users',
             [
                 'app__users.status' => 1
@@ -194,12 +194,12 @@ class Dashboard extends Core
         return $query;
     }
 
-    private function _fetch_information()
+    private function _fetchInformation()
     {
         $updater = false;
 
         if (get_setting('update_check')) {
-            $updater = Updater::ping_upstream();
+            $updater = Updater::pingUpstream();
         }
 
         return make_json(
@@ -209,14 +209,14 @@ class Dashboard extends Core
         );
     }
 
-    private function _system_language()
+    private function _systemLanguage()
     {
-        $language_id = get_setting('app_language');
+        $languageId = get_setting('app_language');
 
-        $query = $this->model->select('language')->get_where(
+        $query = $this->model->select('language')->getWhere(
             'app__languages',
             [
-                'id' => $language_id
+                'id' => $languageId
             ]
         )
         ->row('language');
@@ -226,9 +226,9 @@ class Dashboard extends Core
 
     private function _announcements()
     {
-        $query = $this->model->order_by('end_date', 'DESC')
-        ->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        $query = $this->model->orderBy('end_date', 'DESC')
+        ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'announcements',
             [
                 'placement' => 1,

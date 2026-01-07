@@ -36,7 +36,7 @@ class AppSessions extends Migration
                 'null' => false
             ],
             'data' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre']) ? 'bytea' : (in_array($this->db->DBDriver, ['SQLSRV']) ? 'binary' : 'blob')),
+                'type' => (in_array($this->db->DBDriver, ['Postgre'], true) ? 'bytea' : (in_array($this->db->DBDriver, ['SQLSRV'], true) ? 'binary' : 'blob')),
                 'null' => false
             ],
             'timestamp' => [

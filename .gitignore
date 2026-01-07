@@ -102,4 +102,14 @@ composer.lock
 #-------------------------
 # Extra Files
 #-------------------------
+build
+uploads
+themes/components
+phpstan-baseline.neon
+teamcity.txt
+teamcity_main.txt
+teamcity_full.txt
+teamcity_final.txt
 .php-cs-fixer.cache
+.phpunit.cache
+.phpunit.result.cache

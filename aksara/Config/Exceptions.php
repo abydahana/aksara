@@ -106,7 +106,7 @@ class Exceptions extends BaseConfig
      * Custom handlers can be returned if you want to handle one or more specific
      * error codes yourself like:
      *
-     *      if (in_array($statusCode, [400, 404, 500])) {
+     *      if (in_array($statusCode, [400, 404, 500], true)) {
      *          return new \App\Libraries\MyExceptionHandler();
      *      }
      *      if ($exception instanceOf PageNotFoundException) {

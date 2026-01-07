@@ -9,7 +9,7 @@
     if ($images) {
         foreach ($images as $key => $val) {
             $carousel .= '
-                <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null) . '">
+                <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images, true)) ? ' active' : null) . '">
                     <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
                         <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
                         <div class="carousel-caption d-none d-md-block text-shadow">

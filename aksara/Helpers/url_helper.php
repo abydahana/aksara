@@ -51,37 +51,37 @@ if (! function_exists('base_url')) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (! $val || in_array($key, $params, true) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token($path, $query_params);
+            $token = generate_token($path, $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            $uri = $path . ($query_params ? '?' . http_build_query($query_params) : null);
+            $uri = $path . ($queryParams ? '?' . http_build_query($queryParams) : '');
         } else {
             $uri = $path;
         }
 
         $currentURI = service('request')->getUri();
 
-        assert($currentURI instanceof SiteURI);
+        // assert($currentURI instanceof SiteURI);
 
-        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || ($uri && file_exists(FCPATH . $uri))) {
+        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && ($modules = apache_get_modules()) && in_array('mod_rewrite', $modules, true)) || ($uri && file_exists(FCPATH . $uri))) {
             return $currentURI->baseUrl(($uri ? rtrim($uri, '/') : ''));
         }
 
-        return $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : null) . ($uri ? rtrim($uri, '/') : ''));
+        return $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : '') . ($uri ? rtrim($uri, '/') : ''));
     }
 }
 
@@ -113,26 +113,26 @@ if (! function_exists('current_page')) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (! $val || in_array($key, $params, true) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $query_params);
+            $token = generate_token(uri_string() . ($method ? '/' . $method : ''), $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
+            return base_url(uri_string()) . ($method ? '/' . $method : '') . ($queryParams ? '?' . http_build_query($queryParams) : '');
         } else {
-            return base_url(uri_string()) . ($method ? '/' . $method : null);
+            return base_url(uri_string()) . ($method ? '/' . $method : '');
         }
     }
 }
@@ -165,18 +165,18 @@ if (! function_exists('go_to')) {
 
         $destructure = explode('/', $slug ?? '');
 
-        $final_slug = [];
-        $previous_segment = null;
+        $finalSlug = [];
+        $previousSegment = null;
 
         foreach ($destructure as $key => $val) {
-            if ($val != $previous_segment) {
-                $final_slug[] = $val;
+            if ($val != $previousSegment) {
+                $finalSlug[] = $val;
             }
 
-            $previous_segment = $val;
+            $previousSegment = $val;
         }
 
-        $final_slug = implode('/', $final_slug);
+        $finalSlug = implode('/', $finalSlug);
 
         $params = array_merge(service('request')->getGet(), $params);
 
@@ -184,26 +184,26 @@ if (! function_exists('go_to')) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (! $val || in_array($key, $params, true) && ! $params[$key]) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token($final_slug . ($method ? '/' . $method : null), $query_params);
+            $token = generate_token($finalSlug . ($method ? '/' . $method : ''), $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            $uri = $final_slug . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
+            $uri = $finalSlug . ($method ? '/' . $method : '') . ($queryParams ? '?' . http_build_query($queryParams) : '');
         } else {
-            $uri = $final_slug . ($method ? '/' . $method : null);
+            $uri = $finalSlug . ($method ? '/' . $method : '');
         }
 
         return base_url($uri);

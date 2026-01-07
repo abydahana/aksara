@@ -34,20 +34,20 @@ class Forgot extends Core
             return throw_exception(301, phrase('You were signed in.'), base_url('dashboard'), true);
         }
 
-        if ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
+        if ($this->validToken($this->request->getPost('_token')) || ($this->apiClient && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             return $this->_validate_form();
         }
 
-        $this->set_title(phrase('Reset Password'))
-        ->set_description(phrase('Reset your password and request new one.'))
-        ->set_icon('mdi mdi-account-key-outline')
+        $this->setTitle(phrase('Reset Password'))
+        ->setDescription(phrase('Reset your password and request new one.'))
+        ->setIcon('mdi mdi-account-key-outline')
 
         ->render();
     }
 
     public function reset()
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__users_hashes',
             [
                 'hash' => $this->request->getGet('hash')
@@ -60,11 +60,11 @@ class Forgot extends Core
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
         }
 
-        $this->set_title(phrase('Reset Password'))
-        ->set_description(phrase('Change your password with a new one.'))
-        ->set_icon('mdi mdi-account-key-outline')
+        $this->setTitle(phrase('Reset Password'))
+        ->setDescription(phrase('Change your password with a new one.'))
+        ->setIcon('mdi mdi-account-key-outline')
 
-        ->form_callback('_reset_password')
+        ->formCallback('_reset_password')
 
         ->render(null, 'reset');
     }
@@ -72,12 +72,12 @@ class Forgot extends Core
     private function _validate_form()
     {
         // Set validation rules
-        $this->form_validation->setRule('username', phrase('Username or email'), 'required');
+        $this->formValidation->setRule('username', phrase('Username or email'), 'required');
 
         // Validate form
-        if ($this->form_validation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             // Validation error
-            return throw_exception(400, $this->form_validation->getErrors());
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $query = $this->model->select('
@@ -88,8 +88,8 @@ class Forgot extends Core
             status
         ')
         ->where('username', $this->request->getPost('username'))
-        ->or_where('email', $this->request->getPost('username'))
-        ->get_where(
+        ->orWhere('email', $this->request->getPost('username'))
+        ->getWhere(
             'app__users',
             [
             ],
@@ -103,7 +103,7 @@ class Forgot extends Core
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__users',
             [
                 'user_id' => $query->user_id
@@ -172,11 +172,11 @@ class Forgot extends Core
 
     public function _reset_password()
     {
-        $this->form_validation->setRule('password', phrase('New Password'), 'required');
-        $this->form_validation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
+        $this->formValidation->setRule('password', phrase('New Password'), 'required');
+        $this->formValidation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->form_validation->getErrors());
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $query = $this->model->select('
@@ -190,7 +190,7 @@ class Forgot extends Core
             'app__users',
             'app__users.user_id = app__users_hashes.user_id'
         )
-        ->get_where(
+        ->getWhere(
             'app__users_hashes',
             [
                 'app__users_hashes.hash' => $this->request->getGet('hash')

@@ -4,16 +4,16 @@
             <div class="col-4">
                 <div class="d-grid">
                     <button type="button" data-href="<?= current_page('repute'); ?>" class="btn btn-light btn-sm btn-block rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>" data-post-id="<?= service('request')->getGet('post_id'); ?>">
-                        <i class="mdi mdi-heart<?= ($likes_count ? ' me-2' : null); ?>"></i>
-                        <b class="likes-count fw-bold"><?= ($likes_count ? $likes_count : ''); ?></b>
+                        <i class="mdi mdi-heart<?= ($likesCount ? ' me-2' : null); ?>"></i>
+                        <b class="likes-count fw-bold"><?= ($likesCount ? $likesCount : ''); ?></b>
                     </button>
                 </div>
             </div>
             <div class="col-4">
                 <div class="d-grid">
                     <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-truncate" data-bs-toggle="tooltip" title="<?= phrase('Comment'); ?>" onclick="jExec($('textarea[name=comments]').first().trigger('focus'))">
-                        <i class="mdi mdi-comment<?= ($comments_count ? ' me-2' : null); ?>"></i>
-                        <b class="replies-count"><?= ($comments_count ? $comments_count : ''); ?></b>
+                        <i class="mdi mdi-comment<?= ($commentsCount ? ' me-2' : null); ?>"></i>
+                        <b class="replies-count"><?= ($commentsCount ? $commentsCount : ''); ?></b>
                     </button>
                 </div>
             </div>
@@ -67,7 +67,7 @@
     </form>
     <div id="comment-container">
         <!-- COMMENTS LIST -->
-        <?php if ($comments_count): ?>
+        <?php if ($commentsCount): ?>
             <div class="load-more-container">
                 <p class="text-center">
                     <a href="javascript:void(0)" data-href="<?= current_page(); ?>" class="load-more --fetch-comments">

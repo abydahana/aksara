@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Videos;
+namespace Aksara\Modules\CMS\Controllers\Videos;
 
 use Aksara\Laboratory\Core;
 
@@ -27,34 +27,34 @@ class Videos extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Videos'))
-        ->set_icon('mdi mdi-youtube')
-        ->unset_column('id, slug, video_url, author, timestamp')
-        ->unset_field('id, author, timestamp')
-        ->unset_view('id, author, timestamp')
+        $this->setTitle(phrase('Videos'))
+        ->setIcon('mdi mdi-youtube')
+        ->unsetColumn('id, slug, video_url, author, timestamp')
+        ->unsetField('id, author, timestamp')
+        ->unsetView('id, author, timestamp')
 
-        ->set_field([
+        ->setField([
             'cover' => 'image',
             'description' => 'textarea',
             'featured' => 'boolean',
             'timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field('slug', 'slug', 'title')
+        ->setField('slug', 'slug', 'title')
 
-        ->set_default([
+        ->setDefault([
             'author' => get_userdata('user_id')
         ])
 
-        ->set_validation([
+        ->setValidation([
             'title' => 'required|unique[' . $this->_table . '.title.id.' . $this->request->getGet('id') . ']',
             'description' => 'required',
             'video_url' => 'required|valid_url',
@@ -62,7 +62,7 @@ class Videos extends Core
             'status' => 'boolean'
         ])
 
-        ->set_alias([
+        ->setAlias([
             'title' => phrase('Title'),
             'description' => phrase('Description'),
             'video_url' => phrase('Video URL'),
@@ -70,12 +70,12 @@ class Videos extends Core
             'status' => phrase('Status')
         ])
 
-        ->set_placeholder([
+        ->setPlaceholder([
             'description' => phrase('Video description'),
             'video_url' => 'e.g: https://www.youtube.com/watch?v=ZyTjlNkFfd4'
         ])
 
-        ->set_tooltip([
+        ->setTooltip([
             'video_url' => phrase('You can use YouTube, Facebook, Vimeo, DailyMotion and Twitch video')
         ])
 

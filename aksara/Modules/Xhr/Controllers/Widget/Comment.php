@@ -31,7 +31,7 @@ class Comment extends Core
         $this->permission->must_ajax();
         $this->limit(null);
 
-        if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
+        if (in_array($this->request->getPost('fetch'), ['comments', 'replies'], true)) {
             return $this->_fetch_comments();
         } elseif ('token' === $this->request->getPost('fetch')) {
             $token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
@@ -46,24 +46,24 @@ class Comment extends Core
 
     public function index()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             return $this->_validate_form();
         }
 
-        $this->set_title(phrase('Comments'))
-        ->set_icon('mdi mdi-comment-multiple')
+        $this->setTitle(phrase('Comments'))
+        ->setIcon('mdi mdi-comment-multiple')
 
-        ->set_output([
-            'likes_count' => $this->model->get_where(
+        ->setOutput([
+            'likesCount' => $this->model->getWhere(
                 'post__likes',
                 [
                     'post_id' => $this->request->getGet('post_id'),
                     'post_path' => $this->request->getGet('path')
                 ]
             )
-            ->num_rows(),
+            ->numRows(),
 
-            'comments_count' => $this->model->get_where(
+            'commentsCount' => $this->model->getWhere(
                 'post__comments',
                 [
                     'post_id' => $this->request->getGet('post_id'),
@@ -71,7 +71,7 @@ class Comment extends Core
                     'status' => 1
                 ]
             )
-            ->num_rows()
+            ->numRows()
         ])
 
         ->render();
@@ -83,7 +83,7 @@ class Comment extends Core
             return throw_exception(403, phrase('Please sign in to repute the post.'));
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'post__likes',
             [
                 'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
@@ -138,14 +138,14 @@ class Comment extends Core
             );
         }
 
-        $upvotes = $this->model->get_where(
+        $upvotes = $this->model->getWhere(
             'post__likes',
             [
                 'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
                 'post_path' => $this->request->getGet('path')
             ]
         )
-        ->num_rows();
+        ->numRows();
 
         if ($upvotes > 999) {
             if ($upvotes < 1000000) {
@@ -172,7 +172,7 @@ class Comment extends Core
         }
 
         // Get interaction
-        $interaction = $this->model->get_where(
+        $interaction = $this->model->getWhere(
             'post__comments',
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
@@ -186,7 +186,7 @@ class Comment extends Core
             return throw_exception(404, phrase('The interaction does not exists.'));
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'post__comments_likes',
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
@@ -238,13 +238,13 @@ class Comment extends Core
             );
         }
 
-        $upvotes = $this->model->get_where(
+        $upvotes = $this->model->getWhere(
             'post__comments_likes',
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
             ]
         )
-        ->num_rows();
+        ->numRows();
 
         if ($upvotes > 999) {
             if ($upvotes < 1000000) {
@@ -268,7 +268,7 @@ class Comment extends Core
             return throw_exception(403, phrase('Please sign in to update the comment.'));
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
@@ -282,20 +282,20 @@ class Comment extends Core
         }
 
         if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
-            $this->form_validation->setRule('comments', phrase('Comments'), 'required');
-            $this->form_validation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
+            $this->formValidation->setRule('comments', phrase('Comments'), 'required');
+            $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-            if ($this->form_validation->run($this->request->getPost()) === false) {
-                return throw_exception(400, $this->form_validation->getErrors());
+            if ($this->formValidation->run($this->request->getPost()) === false) {
+                return throw_exception(400, $this->formValidation->getErrors());
             }
 
             $attachment = '';
-            $uploaded_files = get_userdata('_uploaded_files');
+            $uploadedFiles = get_userdata('_uploaded_files');
 
             // Check if the uploaded file is valid
-            if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
+            if (isset($uploadedFiles['attachment']) && is_array($uploadedFiles['attachment'])) {
                 // Loop to get source from unknown array key
-                foreach ($uploaded_files['attachment'] as $key => $src) {
+                foreach ($uploadedFiles['attachment'] as $key => $src) {
                     // Set new source
                     $attachment = $src;
                 }
@@ -396,7 +396,7 @@ class Comment extends Core
             return throw_exception(403, phrase('Please sign in to report the comment.'));
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
@@ -410,7 +410,7 @@ class Comment extends Core
         }
 
         if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
-            $checker = $this->model->get_where(
+            $checker = $this->model->getWhere(
                 'post__comments_reports',
                 [
                     'comment_id' => $query->comment_id,
@@ -493,7 +493,7 @@ class Comment extends Core
 
     public function hide()
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
@@ -566,16 +566,16 @@ class Comment extends Core
         $limit = 10;
         $order = 'DESC';
         $page = (is_numeric($this->request->getGet('page')) ? $this->request->getGet('page') : 0);
-        $parent_id = $this->request->getGet('parent_id');
+        $parentId = $this->request->getGet('parent_id');
 
         if ($page) {
             $this->model->offset($limit * $page);
         }
 
-        if ($parent_id) {
+        if ($parentId) {
             $order = 'ASC';
 
-            $this->model->where('post__comments.reply_id', $parent_id);
+            $this->model->where('post__comments.reply_id', $parentId);
         } else {
             $this->model->where([
                 'post__comments.post_id' => $this->request->getGet('post_id'),
@@ -617,9 +617,9 @@ class Comment extends Core
             'upvotes_table.comment_id = post__comments.comment_id',
             'LEFT'
         )
-        ->group_by('post__comments.comment_id')
-        ->order_by('post__comments.comment_id', $order)
-        ->get_where(
+        ->groupBy('post__comments.comment_id')
+        ->orderBy('post__comments.comment_id', $order)
+        ->getWhere(
             'post__comments',
             [],
             $limit
@@ -668,7 +668,7 @@ class Comment extends Core
                         'app__users',
                         'app__users.user_id = post__comments.user_id'
                     )
-                    ->get_where(
+                    ->getWhere(
                         'post__comments',
                         [
                             'post__comments.comment_id' => $val->mention_id
@@ -722,9 +722,9 @@ class Comment extends Core
         $later = new DateTime(date('Y-m-d'));
         $difference = $earlier->diff($later);
         $interval = $difference->days;
-        $day_minimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
+        $dayMinimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
 
-        if (get_userdata('group_id') > 2 && $day_minimum && $interval <= $day_minimum) {
+        if (get_userdata('group_id') > 2 && $dayMinimum && $interval <= $dayMinimum) {
             // Minimize spam
             return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{interval}} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
         }
@@ -734,27 +734,27 @@ class Comment extends Core
             return throw_exception(400, ['comments' => phrase('Please wait for previous comments to be processed.')]);
         }
 
-        $this->form_validation->setRule('comments', phrase('Comments'), 'required');
-        $this->form_validation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
+        $this->formValidation->setRule('comments', phrase('Comments'), 'required');
+        $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->form_validation->getErrors());
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $attachment = '';
-        $uploaded_files = get_userdata('_uploaded_files');
+        $uploadedFiles = get_userdata('_uploaded_files');
 
         // Check if the uploaded file is valid
-        if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
+        if (isset($uploadedFiles['attachment']) && is_array($uploadedFiles['attachment'])) {
             // Loop to get source from unknown array key
-            foreach ($uploaded_files['attachment'] as $key => $src) {
+            foreach ($uploadedFiles['attachment'] as $key => $src) {
                 // Set new source
                 $attachment = $src;
             }
         }
 
-        $reply_id = ($this->request->getGet('reply') ? $this->request->getGet('reply') : 0);
-        $mention_id = ($this->request->getGet('mention') ? $this->request->getGet('mention') : 0);
+        $replyId = ($this->request->getGet('reply') ? $this->request->getGet('reply') : 0);
+        $mentionId = ($this->request->getGet('mention') ? $this->request->getGet('mention') : 0);
 
         $this->model->insert(
             $this->_table,
@@ -762,8 +762,8 @@ class Comment extends Core
                 'user_id' => get_userdata('user_id'),
                 'post_id' => $this->request->getGet('post_id'),
                 'post_path' => $this->request->getGet('path'),
-                'reply_id' => $reply_id,
-                'mention_id' => $mention_id,
+                'reply_id' => $replyId,
+                'mention_id' => $mentionId,
                 'comments' => htmlspecialchars($this->request->getPost('comments')),
                 'attachment' => $attachment,
                 'timestamp' => date('Y-m-d H:i:s'),
@@ -771,14 +771,14 @@ class Comment extends Core
             ]
         );
 
-        $comment_id = $this->model->insert_id();
+        $commentId = $this->model->insertId();
 
-        if ($reply_id) {
+        if ($replyId) {
             // Get interaction
-            $interaction = $this->model->get_where(
+            $interaction = $this->model->getWhere(
                 'post__comments',
                 [
-                    'comment_id' => $reply_id
+                    'comment_id' => $replyId
                 ],
                 1
             )
@@ -792,7 +792,7 @@ class Comment extends Core
                         'from_user' => get_userdata('user_id'),
                         'to_user' => $interaction->user_id,
                         'type' => 'reply',
-                        'interaction_id' => $comment_id,
+                        'interaction_id' => $commentId,
                         'path' => $this->request->getGet('path'),
                         'timestamp' => date('Y-m-d H:i:s'),
                     ]
@@ -821,10 +821,10 @@ class Comment extends Core
             'app__users',
             'app__users.user_id = post__comments.user_id'
         )
-        ->get_where(
+        ->getWhere(
             'post__comments',
             [
-                'post__comments.comment_id' => $mention_id,
+                'post__comments.comment_id' => $mentionId,
                 'post__comments.status' => 1
             ],
             1
@@ -832,7 +832,7 @@ class Comment extends Core
         ->row();
 
         $html = '
-            <div class="row g-0 mb-2 ' . (! $reply_id ? 'comment-item' : null) . '">
+            <div class="row g-0 mb-2 ' . (! $replyId ? 'comment-item' : null) . '">
                 <div class="col-1 pt-1">
                     <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" />
                 </div>
@@ -844,7 +844,7 @@ class Comment extends Core
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                                 <li>
-                                    <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
+                                    <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $commentId, 'path' => null]) . '">
                                         ' . phrase('Update') . '
                                     </a>
                                 </li>
@@ -858,7 +858,7 @@ class Comment extends Core
                             </b>
                         </a>
                         <br />
-                        <div id="comment-text-' . $comment_id . '">
+                        <div id="comment-text-' . $commentId . '">
                             ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
 
                             ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
@@ -866,15 +866,15 @@ class Comment extends Core
                         </div>
                     </div>
                     <div class="py-1 ps-3">
-                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
-                            <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
+                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $commentId, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
+                            <b class="text-secondary" id="comment-upvote-' . $commentId . '"></b>
                             &nbsp;
                             <b>
                                 ' . phrase('Upvote') . '
                             </b>
                         </a>
                          &middot;
-                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($replyId ? $replyId : $commentId), 'mention' => ($replyId ? $commentId : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>
@@ -885,22 +885,22 @@ class Comment extends Core
                         </span>
                     </div>
 
-                    ' . (! $reply_id ? '<div id="comment-reply"></div>' : null) . '
+                    ' . (! $replyId ? '<div id="comment-reply"></div>' : null) . '
                 </div>
             </div>
         ';
 
-        if ($reply_id) {
-            $insert_method = 'insert_before';
+        if ($replyId) {
+            $insertMethod = 'insert_before';
         } else {
-            $insert_method = 'prepend_to';
+            $insertMethod = 'prepend_to';
         }
 
         return make_json([
             'content' => $html,
-            $insert_method => ($reply_id ? '#comment-container #comment-reply form' : '#comment-container'),
+            $insertMethod => ($replyId ? '#comment-container #comment-reply form' : '#comment-container'),
             'remove_element' => '.empty-comment-message',
-            'in_context' => ($reply_id ? true : false)
+            'in_context' => ($replyId ? true : false)
         ]);
     }
 
@@ -919,13 +919,13 @@ class Comment extends Core
         $agent = $this->request->getUserAgent();
 
         if ($agent->isBrowser()) {
-            $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
+            $userAgent = $agent->getBrowser() . ' ' . $agent->getVersion();
         } elseif ($agent->isRobot()) {
-            $user_agent = $agent->getRobot();
+            $userAgent = $agent->getRobot();
         } elseif ($agent->isMobile()) {
-            $user_agent = $agent->getMobile();
+            $userAgent = $agent->getMobile();
         } else {
-            $user_agent = phrase('Unknown');
+            $userAgent = phrase('Unknown');
         }
 
         $prepare = [
@@ -935,7 +935,7 @@ class Comment extends Core
             'method' => $method,
             'query' => json_encode($query),
             'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
-            'browser' => $user_agent,
+            'browser' => $userAgent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];

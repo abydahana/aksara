@@ -1,4 +1,10 @@
-<?php if ($user): ?>
+<?php
+/**
+ * @var object|null $user User object from controller
+ * @var array $results Array of like results
+ * @var array $pagination Pagination data
+ */
+if ($user): ?>
     <div class="py-3 py-md-5 bg-light">
         <div class="container">
             <div class="row align-items-center">

@@ -47,7 +47,7 @@ class Blogs extends Migration
                 'null' => false
             ],
             'post_content' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'post_category' => [

@@ -35,7 +35,7 @@ class AppShortlinks extends Migration
                 'null' => false
             ],
             'data' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ]
         ]);

@@ -27,44 +27,44 @@ class Edit extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->parent_module('administrative/account');
+        $this->parentModule('administrative/account');
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         $this->searchable(false);
 
-        $this->set_method('update');
+        $this->setMethod('update');
     }
 
     public function index()
     {
         if (get_setting('username_changes') || ! get_userdata('username')) {
-            $username_required = 'required|';
+            $usernameRequired = 'required|';
 
-            $this->field_order('photo, first_name, last_name, email, username, password, phone, address, postal_code, country_id, language_id');
-            $this->merge_field('email, username');
+            $this->fieldOrder('photo, first_name, last_name, email, username, password, phone, address, postal_code, country_id, language_id');
+            $this->mergeField('email, username');
         } else {
-            $username_required = null;
+            $usernameRequired = null;
 
-            $this->unset_field('username');
-            $this->field_order('photo, first_name, last_name, email, phone, password, address, postal_code, country_id, language_id');
-            $this->merge_field('email, phone');
+            $this->unsetField('username');
+            $this->fieldOrder('photo, first_name, last_name, email, phone, password, address, postal_code, country_id, language_id');
+            $this->mergeField('email, phone');
         }
 
-        $this->set_title(phrase('Account Settings'))
-        ->set_icon('mdi mdi-account-edit')
-        ->set_upload_path('users')
-        ->unset_field('user_id, group_id, registered_date, last_login, status')
-        ->set_field([
+        $this->setTitle(phrase('Account Settings'))
+        ->setIcon('mdi mdi-account-edit')
+        ->setUploadPath('users')
+        ->unsetField('user_id, group_id, registered_date, last_login, status')
+        ->setField([
             'bio' => 'textarea',
             'address' => 'textarea',
             'photo' => 'image',
             'password' => 'password'
         ])
-        ->set_field(
+        ->setField(
             'gender',
             'radio',
             [
@@ -72,7 +72,7 @@ class Edit extends Core
                 1 => phrase('Female')
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'language_id',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -80,7 +80,7 @@ class Edit extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'country_id',
             'app__countries.id',
             '{{ app__countries.country AS country_name }}',
@@ -88,19 +88,19 @@ class Edit extends Core
                 'app__countries.status' => 1
             ]
         )
-        ->merge_field('first_name, last_name')
-        ->merge_field('country_id, language_id')
-        ->set_validation([
+        ->mergeField('first_name, last_name')
+        ->mergeField('country_id, language_id')
+        ->setValidation([
             'first_name' => 'required|max_length[32]',
             'last_name' => 'max_length[32]',
             'email' => 'required|valid_email|unique[app__users.email.user_id.' . get_userdata('user_id') . ']',
-            'username' => $username_required . 'alpha_dash|unique[app__users.username.user_id.' . get_userdata('user_id') . ']',
+            'username' => $usernameRequired . 'alpha_dash|unique[app__users.username.user_id.' . get_userdata('user_id') . ']',
             'bio' => 'string',
             'address' => 'string',
             'language_id' => 'required'
         ])
         ->where('user_id', get_userdata('user_id'))
-        ->set_alias([
+        ->setAlias([
             'photo' => phrase('Photo'),
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),
@@ -117,9 +117,9 @@ class Edit extends Core
         ->render($this->_table);
     }
 
-    public function after_update()
+    public function afterUpdate()
     {
-        $language = $this->model->select('code')->get_where(
+        $language = $this->model->select('code')->getWhere(
             'app__languages',
             [
                 'id' => $this->request->getPost('language')

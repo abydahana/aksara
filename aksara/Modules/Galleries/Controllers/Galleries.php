@@ -37,11 +37,11 @@ class Galleries extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Galleries'))
-        ->set_description(phrase('Our gallery activities'))
-        ->set_icon('mdi mdi-folder-multiple-image')
-        ->set_primary('gallery_slug')
-        ->order_by('gallery_id', 'DESC')
+        $this->setTitle(phrase('Galleries'))
+        ->setDescription(phrase('Our gallery activities'))
+        ->setIcon('mdi mdi-folder-multiple-image')
+        ->setPrimary('gallery_slug')
+        ->orderBy('gallery_id', 'DESC')
         ->where('status', 1)
 
         ->render($this->_table);

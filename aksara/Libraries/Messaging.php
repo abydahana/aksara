@@ -22,8 +22,8 @@ use Throwable;
 
 class Messaging
 {
-    private $_recipient_email;
-    private $_recipient_phone;
+    private $_recipientEmail;
+    private $_recipientPhone;
     private $_subject;
     private $_message;
 
@@ -38,7 +38,7 @@ class Messaging
      */
     public function set_email($email = null)
     {
-        $this->_recipient_email = $email;
+        $this->_recipientEmail = $email;
 
         return $this;
     }
@@ -49,7 +49,7 @@ class Messaging
      */
     public function set_phone($phone = null)
     {
-        $this->_recipient_phone = $phone;
+        $this->_recipientPhone = $phone;
 
         return $this;
     }
@@ -81,7 +81,7 @@ class Messaging
      */
     public function send(bool $instant = false)
     {
-        if (! $this->_recipient_email && ! $this->_recipient_phone) {
+        if (! $this->_recipientEmail && ! $this->_recipientPhone) {
             return false;
         }
 
@@ -93,8 +93,8 @@ class Messaging
             $host = get_setting('smtp_host');
             $username = get_setting('smtp_username');
             $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : $request->getServer('SERVER_ADMIN'));
-            $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+            $senderEmail = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : $request->getServer('SERVER_ADMIN'));
+            $senderName = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
 
             $email = \Config\Services::email();
 
@@ -119,8 +119,8 @@ class Messaging
 
             $email->initialize($config);
 
-            $email->setFrom($sender_email, $sender_name);
-            $email->setTo($this->_recipient_email);
+            $email->setFrom($senderEmail, $senderName);
+            $email->setTo($this->_recipientEmail);
 
             $email->setSubject($this->_subject);
             $email->setMessage('
@@ -153,8 +153,8 @@ class Messaging
             $query = $model->insert(
                 'notifier',
                 [
-                    'phone' => $this->_recipient_phone ?? '',
-                    'email' => $this->_recipient_email ?? '',
+                    'phone' => $this->_recipientPhone ?? '',
+                    'email' => $this->_recipientEmail ?? '',
                     'title' => $this->_subject ?? '',
                     'message' => $this->_message ?? '',
                     'timestamp' => date('Y-m-d H:i:s'),

@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Laboratory;
+namespace Aksara\Laboratory\Services;
 
 use Config\Services;
 use Aksara\Laboratory\Model;
@@ -64,7 +64,7 @@ class Permission
             status
         ')
         ->where('username', $username)
-        ->or_where('email', $username)
+        ->orWhere('email', $username)
         ->get(
             'app__users',
             1
@@ -77,7 +77,7 @@ class Permission
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
             // Security: Check for brute force blocking (based on IP)
-            $blocking_check = $this->_model->get_where(
+            $blockingCheck = $this->_model->getWhere(
                 'app__users_blocked',
                 [
                     'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
@@ -86,9 +86,9 @@ class Permission
             )
             ->row();
 
-            if ($blocking_check) {
+            if ($blockingCheck) {
                 // Check if blocking time is still active
-                if (strtotime($blocking_check->blocked_until) >= time()) {
+                if (strtotime($blockingCheck->blocked_until) >= time()) {
                     return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
                 } else {
                     // Release the block if time passed
@@ -120,8 +120,8 @@ class Permission
                     session_id,
                     timestamp
                 ')
-                ->group_by('session_id')
-                ->get_where(
+                ->groupBy('session_id')
+                ->getWhere(
                     'app__log_activities',
                     [
                         'user_id' => $query->user_id
@@ -153,7 +153,7 @@ class Permission
                 'user_id' => $query->user_id,
                 'username' => $query->username,
                 'group_id' => $query->group_id,
-                'language_id' => $query->language_id,
+                'language_id' => $query->languageId,
                 'session_generated' => time(),
                 'access_token' => session_id()
             ]);
@@ -164,7 +164,7 @@ class Permission
             }
 
             // Manage Session Table (Prevent duplication)
-            $session_exists = $this->_model->get_where(
+            $sessionExists = $this->_model->getWhere(
                 'app__sessions',
                 [
                     'id' => get_userdata('access_token')
@@ -172,7 +172,7 @@ class Permission
             )
             ->row();
 
-            if ($session_exists) {
+            if ($sessionExists) {
                 $this->_model->delete(
                     'app__sessions',
                     [
@@ -203,16 +203,16 @@ class Permission
      *
      * @param   string|null $path
      * @param   string|null $method
-     * @param   int         $user_id
+     * @param   int         $userId
      * @param   string|null $redirect
      * @return  bool
      */
-    public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
+    public function allow($path = null, $method = null, $userId = 0, $redirect = null)
     {
         $router = Services::router();
 
         // Normalize method name
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf'], true) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
@@ -223,10 +223,10 @@ class Permission
             user_id,
             group_id
         ')
-        ->get_where(
+        ->getWhere(
             'app__users',
             [
-                'user_id' => ($user_id ? $user_id : get_userdata('user_id')),
+                'user_id' => ($userId ? $userId : get_userdata('user_id')),
                 'status' => 1
             ],
             1
@@ -246,7 +246,7 @@ class Permission
         $privileges = $this->_model->select('
             group_privileges
         ')
-        ->get_where(
+        ->getWhere(
             'app__groups',
             [
                 'group_id' => $user->group_id
@@ -258,12 +258,12 @@ class Permission
         $privileges = json_decode($privileges, true);
 
         // Check access rights
-        if (! isset($path, $privileges[$path]) || ! in_array($method, $privileges[$path])) {
+        if (! isset($path, $privileges[$path]) || ! in_array($method, $privileges[$path], true)) {
             // Access Denied
 
             // Auto-Discovery: If method exists but privilege not registered, register it
-            if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
-                $this->_push_privileges($path, $method);
+            if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'], true)) {
+                $this->_pushPrivileges($path, $method);
             }
 
             return false;
@@ -273,7 +273,7 @@ class Permission
 
             // Log activity (exclude modal requests)
             if ('modal' != $request->getPost('prefer')) {
-                $this->_push_logs($path, $method);
+                $this->_pushLogs($path, $method);
             }
 
             return true;
@@ -296,7 +296,7 @@ class Permission
         $router = Services::router();
 
         // Normalize method
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
+        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf'], true) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
@@ -306,7 +306,7 @@ class Permission
         $privileges = $this->_model->select('
             group_privileges
         ')
-        ->get_where(
+        ->getWhere(
             'app__groups',
             [
                 'group_id' => get_userdata('group_id')
@@ -319,7 +319,7 @@ class Permission
 
         // Verify access
         // Check if privilege is NOT set or method is NOT in the allowed list
-        if (! isset($privileges[$path]) || ! in_array($method, $privileges[$path])) {
+        if (! isset($privileges[$path]) || ! in_array($method, $privileges[$path], true)) {
             // Access DENIED
             return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         }
@@ -349,13 +349,13 @@ class Permission
      * @param   string|null $path
      * @param   string      $method
      */
-    private function _push_privileges($path = null, $method = '')
+    private function _pushPrivileges($path = null, $method = '')
     {
         // Get existing privileges for the path
         $privileges = $this->_model->select('
             privileges
         ')
-        ->get_where(
+        ->getWhere(
             'app__groups_privileges',
             [
                 'path' => $path
@@ -368,7 +368,7 @@ class Permission
 
         if ($privileges) {
             // Path exists, append method if missing
-            if (! in_array($method, $privileges)) {
+            if (! in_array($method, $privileges, true)) {
                 $privileges[] = $method;
 
                 $prepare = [
@@ -387,7 +387,7 @@ class Permission
             }
         } else {
             // Path does not exist, check existence before insert
-            $checker = $this->_model->get_where(
+            $checker = $this->_model->getWhere(
                 'app__groups_privileges',
                 [
                     'path' => $path
@@ -417,7 +417,7 @@ class Permission
      * @param   string|null $path
      * @param   string      $method
      */
-    private function _push_logs($path = null, $method = '')
+    private function _pushLogs($path = null, $method = '')
     {
         $request = Services::request();
 
@@ -429,13 +429,13 @@ class Permission
         $agent = $request->getUserAgent();
 
         if ($agent->isBrowser()) {
-            $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
+            $userAgent = $agent->getBrowser() . ' ' . $agent->getVersion();
         } elseif ($agent->isRobot()) {
-            $user_agent = $agent->getRobot();
+            $userAgent = $agent->getRobot();
         } elseif ($agent->isMobile()) {
-            $user_agent = $agent->getMobile();
+            $userAgent = $agent->getMobile();
         } else {
-            $user_agent = phrase('Unknown');
+            $userAgent = phrase('Unknown');
         }
 
         // Prepare Log Data
@@ -446,7 +446,7 @@ class Permission
             'method' => $method,
             'query' => json_encode($query),
             'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
-            'browser' => $user_agent,
+            'browser' => $userAgent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];

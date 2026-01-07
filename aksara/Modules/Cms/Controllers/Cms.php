@@ -15,26 +15,26 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers;
+namespace Aksara\Modules\CMS\Controllers;
 
 use Aksara\Laboratory\Core;
 
-class Cms extends Core
+class CMS extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Content Management System'))
-        ->set_icon('mdi mdi-briefcase-outline')
+        $this->setTitle(phrase('Content Management System'))
+        ->setIcon('mdi mdi-briefcase-outline')
 
         ->render();
     }

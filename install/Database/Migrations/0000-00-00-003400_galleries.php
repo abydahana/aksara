@@ -33,7 +33,7 @@ class Galleries extends Migration
                 'null' => false
             ],
             'gallery_images' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'gallery_title' => [
@@ -47,11 +47,11 @@ class Galleries extends Migration
                 'null' => false
             ],
             'gallery_description' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'gallery_attributes' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'gallery_tags' => [

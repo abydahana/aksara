@@ -21,7 +21,7 @@ if (! function_exists('generate_token')) {
     /**
      * Generate security token to validate the query string values
      */
-    function generate_token(?string $path = null, array $query_params = []): string|RuntimeException
+    function generate_token(?string $path = null, array $queryParams = []): string|RuntimeException
     {
         // Validate encryption key
         if (! defined('ENCRYPTION_KEY') || empty(ENCRYPTION_KEY)) {
@@ -29,39 +29,39 @@ if (! function_exists('generate_token')) {
         }
 
         // Get ignored query string from userdata
-        $user_ignored = get_userdata('__ignored_query_string');
+        $userIgnored = get_userdata('__ignored_query_string');
 
         // Default ignored params
-        $default_ignored = ['aksara', 'q', 'per_page', 'limit', 'order', 'column', 'sort'];
+        $defaultIgnored = ['aksara', 'q', 'per_page', 'limit', 'order', 'column', 'sort'];
 
         // Merge: split user ignored (if exists) with defaults
-        $ignored_query_string = array_merge(
-            $user_ignored ? array_map('trim', explode(',', $user_ignored)) : [],
-            $default_ignored
+        $ignoredQueryString = array_merge(
+            $userIgnored ? array_map('trim', explode(',', $userIgnored)) : [],
+            $defaultIgnored
         );
 
         // Trim whitespace and filter empty values
-        $ignored_query_string = array_filter(array_map('trim', $ignored_query_string));
+        $ignoredQueryString = array_filter(array_map('trim', $ignoredQueryString));
 
         // Remove duplicates
-        $ignored_query_string = array_unique($ignored_query_string);
+        $ignoredQueryString = array_unique($ignoredQueryString);
 
         // Exclude ignored params from query params
-        $query_params = array_diff_key($query_params, array_flip($ignored_query_string));
+        $queryParams = array_diff_key($queryParams, array_flip($ignoredQueryString));
 
         // No query params, empty return
-        if (! $query_params) {
+        if (! $queryParams) {
             return '';
         }
 
         // Normalize query param order
-        ksort($query_params);
+        ksort($queryParams);
 
         // Normalize data to query string format
         $queryString = '';
 
-        if (! empty($query_params)) {
-            $queryString = http_build_query(array_filter($query_params, function ($value) {
+        if (! empty($queryParams)) {
+            $queryString = http_build_query(array_filter($queryParams, function ($value) {
                 return null !== $value && '' !== $value;
             }));
         }
@@ -221,9 +221,9 @@ if (! function_exists('throw_exception')) {
         // Logic for Non-AJAX Request: Set Flashdata and Redirect
         if (! $request->isAJAX()) {
             if (! is_array($data)) {
-                if (in_array($code, [200, 301])) {
+                if (in_array($code, [200, 301], true)) {
                     $session->setFlashdata('success', $data);
-                } elseif (in_array($code, [403, 404])) {
+                } elseif (in_array($code, [403, 404], true)) {
                     $session->setFlashdata('warning', $data);
                 } else {
                     $session->setFlashdata('error', $data);
@@ -373,10 +373,10 @@ if (! function_exists('array_sort')) {
                 }
 
                 // Get values based on whether the element is an object or an array
-                $val_a = (is_object($a) ? $a->$column : $a[$column]);
-                $val_b = (is_object($b) ? $b->$column : $b[$column]);
+                $valA = (is_object($a) ? $a->$column : $a[$column]);
+                $valB = (is_object($b) ? $b->$column : $b[$column]);
 
-                $diff = strcmp((string) $val_a, (string) $val_b);
+                $diff = strcmp((string) $valA, (string) $valB);
 
                 if (0 !== $diff) {
                     return (strtolower($sort) === 'asc') ? $diff : ($diff * -1);
@@ -389,24 +389,24 @@ if (! function_exists('array_sort')) {
     /**
      * Sort an array of objects or arrays by one or more columns.
      *
-     * Supports multi-column sorting by passing an associative array to $order_by.
+     * Supports multi-column sorting by passing an associative array to $orderBy.
      *
      * @param array|null $data      The collection to be sorted.
-     * @param array|string $order_by The column name or an array of [column => direction].
-     * @param string $sort          Default sort direction if $order_by is a string.
+     * @param array|string $orderBy The column name or an array of [column => direction].
+     * @param string $sort          Default sort direction if $orderBy is a string.
      * @return array                The sorted array.
      */
-    function array_sort(?array $data = [], array|string $order_by = [], string $sort = 'asc'): array
+    function array_sort(?array $data = [], array|string $orderBy = [], string $sort = 'asc'): array
     {
         if (! is_array($data)) {
             return [];
         }
 
-        if (! is_array($order_by) && is_string($order_by)) {
-            $order_by = [$order_by => $sort];
+        if (! is_array($orderBy) && is_string($orderBy)) {
+            $orderBy = [$orderBy => $sort];
         }
 
-        usort($data, make_cmp($order_by));
+        usort($data, make_cmp($orderBy));
 
         return $data;
     }
@@ -424,7 +424,7 @@ if (! function_exists('reset_sort')) {
      */
     function reset_sort(array $resource = []): array
     {
-        $is_numeric = false;
+        $isNumeric = false;
 
         foreach ($resource as $key => $val) {
             // Recursively process nested arrays
@@ -434,12 +434,12 @@ if (! function_exists('reset_sort')) {
 
             // Detect if the current level has at least one numeric key
             if (is_numeric($key)) {
-                $is_numeric = true;
+                $isNumeric = true;
             }
         }
 
         // Re-index only if numeric keys are found, otherwise preserve associative keys
-        return $is_numeric ? array_values($resource) : $resource;
+        return $isNumeric ? array_values($resource) : $resource;
     }
 }
 

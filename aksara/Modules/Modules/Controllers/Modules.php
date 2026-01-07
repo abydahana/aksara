@@ -34,7 +34,7 @@ class Modules extends Core
         // Security Check: Block sensitive files and direct code execution
         $blockedExtensions = ['php', 'twig', 'env', 'json', 'lock', 'sql', 'log'];
 
-        if (in_array($extension, $blockedExtensions) || empty($extension)) {
+        if (in_array($extension, $blockedExtensions, true) || empty($extension)) {
             return $this->_error404();
         }
 

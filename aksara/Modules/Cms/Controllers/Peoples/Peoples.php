@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Peoples;
+namespace Aksara\Modules\CMS\Controllers\Peoples;
 
 use Aksara\Laboratory\Core;
 
@@ -27,51 +27,51 @@ class Peoples extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Peoples'))
-        ->set_icon('mdi mdi-account-group-outline')
-        ->unset_column('people_id, people_slug, biography, instagram, facebook, twitter')
-        ->unset_field('people_id')
-        ->unset_view('people_id')
-        ->set_field([
+        $this->setTitle(phrase('Peoples'))
+        ->setIcon('mdi mdi-account-group-outline')
+        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter')
+        ->unsetField('people_id')
+        ->unsetView('people_id')
+        ->setField([
             'biography' => 'textarea',
             'email' => 'email',
             'photo' => 'image',
             'status' => 'boolean'
         ])
-        ->set_field('people_slug', 'slug', 'full_name')
-        ->set_field('full_name', 'hyperlink', 'peoples', ['people_slug' => 'people_slug'], true)
+        ->setField('people_slug', 'slug', 'full_name')
+        ->setField('full_name', 'hyperlink', 'peoples', ['people_slug' => 'people_slug'], true)
 
-        ->add_button('../../peoples/user', phrase('View People'), 'btn-success', 'mdi mdi-eye', ['people_slug' => 'people_slug'], true)
+        ->addButton('../../peoples/user', phrase('View People'), 'btn-success', 'mdi mdi-eye', ['people_slug' => 'people_slug'], true)
 
-        ->column_order('photo, full_name')
-        ->field_order('photo')
-        ->set_validation([
+        ->columnOrder('photo, full_name')
+        ->fieldOrder('photo')
+        ->setValidation([
             'first_name' => 'required|string',
             'last_name' => 'string',
             'people_slug' => 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . $this->request->getGet('people_id') . ']',
             'status' => 'boolean'
         ])
-        ->merge_field('first_name, last_name')
-        ->merge_field('mobile, instagram')
-        ->merge_field('facebook, twitter')
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
-        ->field_size([
+        ->mergeField('first_name, last_name')
+        ->mergeField('mobile, instagram')
+        ->mergeField('facebook, twitter')
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->fieldSize([
             'mobile' => 'col-md-6',
             'instagram' => 'col-md-6',
             'facebook' => 'col-md-6',
             'twitter' => 'col-md-6'
         ])
-        ->set_alias([
+        ->setAlias([
             'photo' => phrase('Photo'),
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),

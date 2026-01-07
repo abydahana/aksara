@@ -1,5 +1,5 @@
 <?php
-    $field_data = $results[0];
+    $fieldData = $results[0];
 ?>
 <div class="container-fluid py-3">
     <div class="row">
@@ -12,7 +12,7 @@
                 </div>
                 <div class="col">
                     <label>
-                        <?= (isset($field_data->language) ? $field_data->language : null); ?>
+                        <?= (isset($fieldData->language) ? $fieldData->language : null); ?>
                     </label>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="col">
                     <label>
-                        <?= (isset($field_data->description) ? $field_data->description : null); ?>
+                        <?= (isset($fieldData->description) ? $fieldData->description : null); ?>
                     </label>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="col">
                     <label>
-                        <?= (isset($field_data->code) ? $field_data->code : null); ?>
+                        <?= (isset($fieldData->code) ? $fieldData->code : null); ?>
                     </label>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col">
                     <label>
-                        <?= (isset($field_data->locale) ? $field_data->locale : null); ?>
+                        <?= (isset($fieldData->locale) ? $fieldData->locale : null); ?>
                     </label>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col">
                     <label>
-                        <?= number_format($total_phrases); ?>
+                        <?= number_format($totalPhrases); ?>
                     </label>
                 </div>
             </div>

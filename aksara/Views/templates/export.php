@@ -1,7 +1,7 @@
 <?php
     $thead = null;
     $tbody = null;
-    $single_print = false;
+    $singlePrint = false;
 
     if (isset($results->table_data)) {
         foreach($results->table_data as $key => $row) {
@@ -30,7 +30,7 @@
             ';
         }
     } else if(isset($results->field_data)) {
-        $single_print = true;
+        $singlePrint = true;
 
         foreach($results->field_data as $field => $params) {
             // Backup label
@@ -72,7 +72,7 @@
                 }
             }
             @page {
-                sheet-size: <?= ($single_print ? '8.5in 13.5in' : '13.5in 8.5in'); ?>;;
+                sheet-size: <?= ($singlePrint ? '8.5in 13.5in' : '13.5in 8.5in'); ?>;;
                 footer: html_footer
             }
             * {

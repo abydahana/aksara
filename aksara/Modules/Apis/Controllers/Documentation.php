@@ -33,9 +33,9 @@ class Documentation extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
-        $this->set_method('index');
+        $this->setPermission();
+        $this->setTheme('backend');
+        $this->setMethod('index');
 
         $this->_primary = $this->request->getGet('slug');
 
@@ -46,10 +46,10 @@ class Documentation extends Core
 
     public function index()
     {
-        $this->set_title(phrase('API Documentations'))
-        ->set_icon('mdi mdi-book-open-page-variant')
+        $this->setTitle(phrase('API Documentations'))
+        ->setIcon('mdi mdi-book-open-page-variant')
 
-        ->set_output([
+        ->setOutput([
             'modules' => $this->_scan_module(),
             'permission' => $this->_permission($this->_primary),
             'active' => $this->_primary
@@ -78,10 +78,10 @@ class Documentation extends Core
             $query = $this->model->like([
                 'group_privileges' => '"' . $slug . '"'
             ])
-            ->or_like([
+            ->orLike([
                 'group_privileges' => '"' . str_replace('/', '\/', $slug) . '"'
             ])
-            ->get_where(
+            ->getWhere(
                 'app__groups',
                 [
                     'status' => 1
@@ -93,7 +93,7 @@ class Documentation extends Core
                 $groups = $query;
             }
 
-            $query = $this->model->get_where(
+            $query = $this->model->getWhere(
                 'app__groups_privileges',
                 [
                     'path' => $slug
@@ -113,24 +113,24 @@ class Documentation extends Core
         ];
     }
 
-    private function _fetch_properties($slug = null, $group_id = 0)
+    private function _fetch_properties($slug = null, $groupId = 0)
     {
-        if (in_array($slug, $this->_restricted_resource())) {
+        if (in_array($slug, $this->_restricted_resource(), true)) {
             return false;
         }
 
         $method = $this->request->getPost('method');
         $title = $slug;
         $output = [];
-        $session_id = session_id();
+        $sessionId = session_id();
         $session = get_userdata();
 
         if (! $slug || ! $method) {
             return false;
         }
 
-        if (get_userdata('group_id') != $group_id) {
-            set_userdata('group_id', $group_id);
+        if (get_userdata('group_id') != $groupId) {
+            set_userdata('group_id', $groupId);
         }
 
         $exception = [
@@ -140,15 +140,15 @@ class Documentation extends Core
         ];
 
         // Check the temporary session
-        $tmp_session = $this->model->get_where(
+        $tmpSession = $this->model->getWhere(
             'app__sessions',
             [
-                'id' => $session_id
+                'id' => $sessionId
             ]
         )
-        ->num_rows();
+        ->numRows();
 
-        if ($tmp_session) {
+        if ($tmpSession) {
             // Temporary session exists, update it
             $this->model->update(
                 'app__sessions',
@@ -158,7 +158,7 @@ class Documentation extends Core
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ],
                 [
-                    'id' => $session_id
+                    'id' => $sessionId
                 ]
             );
         } else {
@@ -166,7 +166,7 @@ class Documentation extends Core
             $this->model->insert(
                 'app__sessions',
                 [
-                    'id' => $session_id,
+                    'id' => $sessionId,
                     'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
@@ -184,7 +184,7 @@ class Documentation extends Core
                 ],
                 'headers' => [
                     'X-API-KEY' => ENCRYPTION_KEY,
-                    'X-ACCESS-TOKEN' => $session_id
+                    'X-ACCESS-TOKEN' => $sessionId
                 ]
             ]);
 
@@ -194,7 +194,7 @@ class Documentation extends Core
                     'error' => $exception
                 ];
 
-                if (in_array($val, ['create', 'update'])) {
+                if (in_array($val, ['create', 'update'], true)) {
                     // Get field data
                     $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
                     $response = json_decode($request->getBody()) ?? [];
@@ -206,7 +206,7 @@ class Documentation extends Core
                             continue;
                         }
 
-                        if (in_array('required', $params->validation)) {
+                        if (in_array('required', $params->validation, true)) {
                             $response->$field->required = true;
                         }
 
@@ -214,7 +214,7 @@ class Documentation extends Core
                     }
 
                     $output[$val]['field_data'] = $response;
-                } elseif (in_array($val, ['read'])) {
+                } elseif (in_array($val, ['read'], true)) {
                     // Get field data
                     $request = $curl->get(base_url($slug, ['limit' => 1]));
                     $response = json_decode($request->getBody());
@@ -222,7 +222,7 @@ class Documentation extends Core
                     if (isset($response[0])) {
                         $output[$val]['response']['success'] = $response[0];
                     }
-                } elseif (! in_array($val, ['delete'])) {
+                } elseif (! in_array($val, ['delete'], true)) {
                     // Get field data
                     $request = $curl->get(base_url($slug, ['limit' => 1]));
                     $response = json_decode($request->getBody());
@@ -230,7 +230,7 @@ class Documentation extends Core
                     $output[$val]['response']['success'] = $response ?? [];
                 }
 
-                if (in_array($val, ['read', 'update', 'delete', 'export', 'print', 'pdf'])) {
+                if (in_array($val, ['read', 'update', 'delete', 'export', 'print', 'pdf'], true)) {
                     $request = $curl->get(base_url($slug, ['format_result' => 'full', 'limit' => 1]));
                     $response = json_decode($request->getBody());
 
@@ -244,27 +244,27 @@ class Documentation extends Core
 
                 /*
                 // Call API request
-                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete']) ? '/' . $val : null), ['format_result' => 'full', 'limit' => 1]));
+                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete'], true) ? '/' . $val : null), ['format_result' => 'full', 'limit' => 1]));
 
                 // Decode response
                 $response = json_decode($request->getBody());
 
                 if (isset($response->method)) {
-                    if (in_array($response->method, ['index'])) {
+                    if (in_array($response->method, ['index'], true)) {
                         // Push response
                         $output[$val]['response']['success'] = trim($request->getHeaderLine('Content-Type'));
                         $output[$val]['response']['error'] = $exception;
 
                         if (isset($response->results->table_data[0])) {
-                            $field_data = [];
+                            $fieldData = [];
 
                             foreach($response->results->table_data[0]->field_data as $_key => $_val) {
-                                $field_data[$_key] = $_val->content;
+                                $fieldData[$_key] = $_val->content;
                             }
 
-                            $output[$val]['response']['success'] = $field_data;
+                            $output[$val]['response']['success'] = $fieldData;
                         }
-                    } elseif (in_array($response->method, ['create', 'update'])) {
+                    } elseif (in_array($response->method, ['create', 'update'], true)) {
                         $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
 
                         // Decode the response
@@ -272,33 +272,33 @@ class Documentation extends Core
 
                         if (isset($response[0])) {
                             // Set field data
-                            $field_data = [];
-                            $validation_error = [];
+                            $fieldData = [];
+                            $validationError = [];
 
                             foreach ($response[0] as $_key => $_val) {
                                 if ($_val->hidden) continue;
 
-                                $field_data[$_key] = [
+                                $fieldData[$_key] = [
                                     'type' => array_keys((array)$_val->type),
                                     'maxlength' => $_val->maxlength,
                                     'label' => $_key,
-                                    'required' => in_array('required', (array)$_val->validation)
+                                    'required' => in_array('required', (array)$_val->validation, true)
                                 ];
 
-                                if (in_array('required', $_val->validation)) {
+                                if (in_array('required', $_val->validation, true)) {
                                     // Set field validation
-                                    $validation_error[$_key] = phrase('Validation messages');
+                                    $validationError[$_key] = phrase('Validation messages');
                                 }
                             }
 
-                            $output[$val]['field_data'] = $field_data;
+                            $output[$val]['field_data'] = $fieldData;
                             $output[$val]['response']['success'] = $exception;
                             $output[$val]['response']['error'] = [
                                 'status' => 400,
-                                'message' => $validation_error
+                                'message' => $validationError
                             ];
                         }
-                    } elseif (in_array($response->method, ['read'])) {
+                    } elseif (in_array($response->method, ['read'], true)) {
                         $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
 
                         // Decode the response
@@ -307,13 +307,13 @@ class Documentation extends Core
                         if (isset($response[0])) {
                         }
                         if (isset($response->results->table_data[0])) {
-                            $field_data = [];
+                            $fieldData = [];
 
                             foreach($response->results->table_data[0]->field_data as $_key => $_val) {
-                                $field_data[$_key] = $_val->content;
+                                $fieldData[$_key] = $_val->content;
                             }
 
-                            $output[$val]['response']['success'] = $field_data;
+                            $output[$val]['response']['success'] = $fieldData;
 
                             // Set query params
                             $output[$val]['query_params'] = $response->results->table_data[0]->primary;
@@ -321,7 +321,7 @@ class Documentation extends Core
                     }
                 }
 
-                if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete'])) {
+                if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete'], true)) {
                     // Set exception message
                     $output[$val]['response']['success'] = [
                         'code' => phrase('HTTP status code'),
@@ -341,7 +341,7 @@ class Documentation extends Core
         $this->model->delete(
             'app__sessions',
             [
-                'id' => $session_id
+                'id' => $sessionId
             ]
         );
 
@@ -389,26 +389,26 @@ class Documentation extends Core
         return $this->_collection;
     }
 
-    private function _scandir($parent_dir = null, $scandir = [], $namespace = null)
+    private function _scandir($parentDir = null, $scandir = [], $namespace = null)
     {
         foreach ($scandir as $key => $val) {
             if (is_array($val)) {
-                $this->_scandir($parent_dir . (! is_numeric($key) ? $key : null), $val, $key);
+                $this->_scandir($parentDir . (! is_numeric($key) ? $key : null), $val, $key);
             } else {
                 $namespace = $namespace . $val;
-                $val = '/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parent_dir . (! is_numeric($key) ? $key : null) . $val));
+                $val = '/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parentDir . (! is_numeric($key) ? $key : null) . $val));
 
-                $find_duplicate = array_reverse(explode('/', $val));
+                $findDuplicate = array_reverse(explode('/', $val));
 
-                $is_duplicate = (isset($find_duplicate[0]) && isset($find_duplicate[1]) && $find_duplicate[0] == $find_duplicate[1] ? true : false);
+                $isDuplicate = (isset($findDuplicate[0]) && isset($findDuplicate[1]) && $findDuplicate[0] == $findDuplicate[1] ? true : false);
 
-                if (! $is_duplicate) {
+                if (! $isDuplicate) {
                     $slug = ltrim(rtrim($val, '/'), '/');
                 } else {
-                    $slug = ltrim(rtrim('/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parent_dir . (! is_numeric($key) ? $key : null))), '/'), '/');
+                    $slug = ltrim(rtrim('/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parentDir . (! is_numeric($key) ? $key : null))), '/'), '/');
                 }
 
-                if (! in_array($slug, $this->_restricted_resource())) {
+                if (! in_array($slug, $this->_restricted_resource(), true)) {
                     $this->_collection[] = $slug;
                     $this->_namespace[$slug] = $namespace;
                 }

@@ -686,7 +686,7 @@ class Parsedown
         if (preg_match('/^<(\w[\w-]*)(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*(\/)?>/', $Line['text'], $matches)) {
             $element = strtolower($matches[1]);
 
-            if (in_array($element, $this->textLevelElements)) {
+            if (in_array($element, $this->textLevelElements, true)) {
                 return;
             }
 
@@ -701,13 +701,13 @@ class Parsedown
             $remainder = substr($Line['text'], $length);
 
             if (trim($remainder) === '') {
-                if (isset($matches[2]) or in_array($matches[1], $this->voidElements)) {
+                if (isset($matches[2]) or in_array($matches[1], $this->voidElements, true)) {
                     $Block['closed'] = true;
 
                     $Block['void'] = true;
                 }
             } else {
-                if (isset($matches[2]) or in_array($matches[1], $this->voidElements)) {
+                if (isset($matches[2]) or in_array($matches[1], $this->voidElements, true)) {
                     return;
                 }
 
@@ -987,7 +987,7 @@ class Parsedown
             foreach ($this->InlineTypes[$marker] as $inlineType) {
                 # check to see if the current inline type is nestable in the current context
 
-                if (! empty($nonNestables) and in_array($inlineType, $nonNestables)) {
+                if (! empty($nonNestables) and in_array($inlineType, $nonNestables, true)) {
                     continue;
                 }
 
@@ -1011,8 +1011,8 @@ class Parsedown
 
                 # cause the new element to 'inherit' our non nestables
 
-                foreach ($nonNestables as $non_nestable) {
-                    $Inline['element']['nonNestables'][] = $non_nestable;
+                foreach ($nonNestables as $nonNestable) {
+                    $Inline['element']['nonNestables'][] = $nonNestable;
                 }
 
                 # the text that comes before the inline
@@ -1116,7 +1116,7 @@ class Parsedown
 
     protected function inlineEscapeSequence($Excerpt)
     {
-        if (isset($Excerpt['text'][1]) and in_array($Excerpt['text'][1], $this->specialCharacters)) {
+        if (isset($Excerpt['text'][1]) and in_array($Excerpt['text'][1], $this->specialCharacters, true)) {
             return [
                 'markup' => $Excerpt['text'][1],
                 'extent' => 2,
@@ -1425,7 +1425,7 @@ class Parsedown
 
         $trimmedMarkup = trim($markup);
 
-        if (! in_array('', $lines) and substr($trimmedMarkup, 0, 3) === '<p>') {
+        if (! in_array('', $lines, true) and substr($trimmedMarkup, 0, 3) === '<p>') {
             $markup = $trimmedMarkup;
             $markup = substr($markup, 3);
 

@@ -30,9 +30,9 @@ class Videos extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Videos'))
-        ->set_description(phrase('Watch our latest videos'))
-        ->set_icon('mdi mdi-youtube')
+        $this->setTitle(phrase('Videos'))
+        ->setDescription(phrase('Watch our latest videos'))
+        ->setIcon('mdi mdi-youtube')
         ->select('
             videos.id,
             videos.title,
@@ -53,10 +53,10 @@ class Videos extends Core
 
     public function watch($slug = '')
     {
-        $this->set_method('read')
-        ->set_title('{{ title }}')
-        ->set_description('{{ description }}')
-        ->set_icon('mdi mdi-youtube')
+        $this->setMethod('read')
+        ->setTitle('{{ title }}')
+        ->setDescription('{{ description }}')
+        ->setIcon('mdi mdi-youtube')
         ->select('
             videos.id,
             videos.title,

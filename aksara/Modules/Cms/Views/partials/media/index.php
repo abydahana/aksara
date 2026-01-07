@@ -1,4 +1,4 @@
-<?php $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; ?>
+<?php $viewMode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; ?>
 
 <div class="container-fluid">
     <div class="row">
@@ -35,12 +35,12 @@
                 </div>
             </div>
 
-            <?php if ($view_mode === 'grid'): ?>
+            <?php if ($viewMode === 'grid'): ?>
                 <!-- Grid View -->
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
                         <div class="col-4 col-sm-3 col-xl-2 text-center">
-                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $view_mode]); ?>" class="--xhr">
+                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
                                 <div class="p-3">
                                     <i class="mdi mdi-arrow-left mdi-4x"></i>
                                 </div>
@@ -55,7 +55,7 @@
                         <?php foreach ($results->data as $key => $val): ?>
                             <?php if ($val->type == 'directory'): ?>
                                 <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $view_mode]); ?>" class="--xhr">
+                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
                                         <div class="p-3">
                                             <i class="mdi mdi-folder-image mdi-4x text-info"></i>
                                         </div>
@@ -66,7 +66,7 @@
                                 </div>
                             <?php else: ?>
                                 <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $view_mode]); ?>" class="--xhr">
+                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="--xhr">
                                         <div class="p-3">
                                             <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="..." />
                                         </div>
@@ -87,7 +87,7 @@
                         <div class="list-group">
                             <?php foreach ($results->data as $key => $val): ?>
                                 <?php if ($val->type == 'directory'): ?>
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $view_mode]); ?>" class="list-group-item list-group-item-action py-0 --xhr">
+                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action py-0 --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
                                                 <i class="mdi mdi-folder-image mdi-3x text-info" style="width: 48px; height: 48px"></i>
@@ -102,7 +102,7 @@
                                         </div>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $view_mode]); ?>" class="list-group-item list-group-item-action --xhr">
+                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
                                                 <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light" style="width: 48px; height: 48px; object-fit: contain;" alt="<?= $val->label; ?>" />
@@ -126,7 +126,7 @@
         <div class="col-lg-4 pt-3 pb-3 full-height bg-white border-start" style="margin-left:-1px">
             <div class="sticky-top">
                 <?php if ($results->description): ?>
-                    <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
+                    <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'], true)): ?>
                         <div class="text-center mb-3">
                             <a href="<?= base_url($results->description->server_path); ?>" target="_blank">
                                 <img src="<?= base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="" style="max-width: 256px; max-height: 256px" />
@@ -181,7 +181,7 @@
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $view_mode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --xhr">
+                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $viewMode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --xhr">
                                 <i class="mdi mdi-window-close"></i>
                                 <?= phrase('Remove'); ?>
                             </a>

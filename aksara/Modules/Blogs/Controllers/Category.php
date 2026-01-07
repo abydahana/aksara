@@ -31,13 +31,13 @@ class Category extends Core
 
     public function index($slug = null)
     {
-        $this->set_title('{{ category_title }}', phrase('No category were found!'))
-        ->set_description('{{ category_description }}')
-        ->set_icon('mdi mdi-sitemap')
+        $this->setTitle('{{ category_title }}', phrase('No category were found!'))
+        ->setDescription('{{ category_description }}')
+        ->setIcon('mdi mdi-sitemap')
 
-        ->set_output([
+        ->setOutput([
             /* category detail */
-            'category' => $this->model->get_where(
+            'category' => $this->model->getWhere(
                 'blogs__categories',
                 [
                     'category_slug' => $slug
@@ -76,8 +76,8 @@ class Category extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('blogs.updated_timestamp', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('blogs.updated_timestamp', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->where([
             'blogs__categories.category_slug' => $slug,
             'blogs.status' => 1
@@ -104,9 +104,9 @@ class Category extends Core
             'blogs__categories.status' => 1,
             'blogs.status' => 1
         ])
-        ->order_by('category_title', 'RANDOM')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('category_title', 'RANDOM')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->get('blogs__categories')
         ->result();
 
@@ -137,8 +137,8 @@ class Category extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1,

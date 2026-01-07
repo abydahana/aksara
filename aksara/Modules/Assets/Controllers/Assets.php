@@ -68,29 +68,29 @@ class Assets extends Core
         $output = '';
 
         // Define local CSS files to load
-        $local_css = [
+        $localCss = [
             'assets/local/css/override.min.css',
             'assets/local/css/ie.fix.min.css'
         ];
 
         if (is_rtl()) {
-            $local_css[] = 'assets/local/css/override.rtl.min.css';
+            $localCss[] = 'assets/local/css/override.rtl.min.css';
         }
 
         // Load local CSS content with safety checks
-        foreach ($local_css as $file) {
+        foreach ($localCss as $file) {
             if (is_file(FCPATH . $file)) {
                 $output .= file_get_contents(FCPATH . $file) . "\n";
             }
         }
 
         try {
-            $theme_config_path = ROOTPATH . 'themes/' . $theme . '/theme.json';
+            $themeConfigPath = ROOTPATH . 'themes/' . $theme . '/theme.json';
 
-            if (is_file($theme_config_path)) {
-                $theme_package = json_decode(file_get_contents($theme_config_path));
-                $configs = $theme_package->configs ?? null;
-                $colors = $theme_package->colorscheme ?? null;
+            if (is_file($themeConfigPath)) {
+                $themePackage = json_decode(file_get_contents($themeConfigPath));
+                $configs = $themePackage->configs ?? null;
+                $colors = $themePackage->colorscheme ?? null;
 
                 if (isset($configs->wrapper) && $colors) {
                     // Map JSON keys to CSS selectors to eliminate redundant if-else blocks
@@ -248,11 +248,11 @@ class Assets extends Core
 
         if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {
             try {
-                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
-                $theme_package = json_decode($theme_package, true);
-                if (isset($theme_package['configs'])) {
+                $themePackage = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
+                $themePackage = json_decode($themePackage, true);
+                if (isset($themePackage['configs'])) {
                     // Merge main configs and theme package
-                    $configs = array_merge($configs, $theme_package['configs']);
+                    $configs = array_merge($configs, $themePackage['configs']);
                 }
             } catch (Throwable $e) {
                 log_message('error', '[Aksara] JavaScript Config: ' . $e->getMessage());
@@ -282,24 +282,24 @@ class Assets extends Core
     {
         $results = [];
         $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');
-        $base_path = ROOTPATH . 'themes/' . $theme . '/components' . DIRECTORY_SEPARATOR;
+        $basePath = ROOTPATH . 'themes/' . $theme . '/components' . DIRECTORY_SEPARATOR;
 
         // Allowed component types/directories
-        $allowed_types = ['core', 'table', 'form', 'view'];
+        $allowedTypes = ['core', 'table', 'form', 'view'];
 
         try {
-            if (is_dir($base_path)) {
+            if (is_dir($basePath)) {
                 helper('filesystem');
 
                 // Map the directory with a depth of 2
-                $map = directory_map($base_path, 2);
+                $map = directory_map($basePath, 2);
 
                 if (is_array($map)) {
                     foreach ($map as $folder => $files) {
                         // Clean folder name from Directory Separator (e.g., "core/" -> "core")
                         $type = strtolower(rtrim($folder, DIRECTORY_SEPARATOR));
 
-                        if (! is_array($files) || ! in_array($type, $allowed_types)) {
+                        if (! is_array($files) || ! in_array($type, $allowedTypes, true)) {
                             continue;
                         }
 
@@ -309,10 +309,10 @@ class Assets extends Core
                                 continue;
                             }
 
-                            $full_path = $base_path . $type . DIRECTORY_SEPARATOR . $file;
+                            $fullPath = $basePath . $type . DIRECTORY_SEPARATOR . $file;
 
-                            if (is_file($full_path)) {
-                                $content = file_get_contents($full_path);
+                            if (is_file($fullPath)) {
+                                $content = file_get_contents($fullPath);
 
                                 // Minify the Twig template string (remove extra whitespace/newlines)
                                 // and store it with the key "type/filename.twig"

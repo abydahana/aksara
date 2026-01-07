@@ -6,8 +6,12 @@
 *.twig linguist-vendored=false
 
 # Ignore export
-.git* export-ignore
-.php-cs-fixer.php export-ignore
 contributing export-ignore
 documentation export-ignore
+tests export-ignore
+phpstan-bootstrap.php export-ignore
+phpstan.neon export-ignore
+phpunit.xml export-ignore
 README.md export-ignore
+.git* export-ignore
+.php* export-ignore

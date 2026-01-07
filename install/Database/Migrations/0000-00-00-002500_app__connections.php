@@ -33,7 +33,7 @@ class AppConnections extends Migration
                 'null' => false
             ],
             'year' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'int' : 'year'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'int' : 'year'),
                 'constraint' => 4,
                 'null' => false
             ],

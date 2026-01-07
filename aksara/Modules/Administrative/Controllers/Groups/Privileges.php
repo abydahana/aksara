@@ -27,38 +27,38 @@ class Privileges extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->set_primary('path');
+        $this->setPrimary('path');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Adjust Group Privileges'))
-        ->set_icon('mdi mdi-account-check-outline')
-        ->set_description('
+        $this->setTitle(phrase('Adjust Group Privileges'))
+        ->setIcon('mdi mdi-account-check-outline')
+        ->setDescription('
             <div class="row">
                 <div class="col-12">
                     ' . phrase('You may review {{group_privileges}} after modifying this adjustment to sets new roles.', ['group_privileges' => '<a href="' . go_to('../', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr"><i class="mdi mdi-arrow-right"></i> ' . phrase('Group Privileges') . '</a>']) . '
                 </div>
             </div>
         ')
-        ->unset_column('id, privileges')
-        ->unset_view('id')
-        ->unset_field('id, last_generated')
-        ->set_field('privileges', 'custom_format', 'format_privileges')
-        ->set_field('last_generated', 'current_timestamp')
-        ->order_by('path')
-        ->set_validation([
+        ->unsetColumn('id, privileges')
+        ->unsetView('id')
+        ->unsetField('id, last_generated')
+        ->setField('privileges', 'custom_format', 'formatPrivileges')
+        ->setField('last_generated', 'current_timestamp')
+        ->orderBy('path')
+        ->setValidation([
             'path' => 'required|unique[' . $this->_table . '.path.path.' . $this->request->getGet('path') . ']',
             'privileges' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'path' => phrase('Path'),
             'privileges' => phrase('Privileges'),
             'last_generated' => phrase('Last Generated')
@@ -66,18 +66,18 @@ class Privileges extends Core
         ->render($this->_table);
     }
 
-    protected function format_privileges(array $data)
+    protected function formatPrivileges(array $data)
     {
         $output = null;
         $privileges = [];
 
         $privileges = ($data['privileges'] ? json_decode($data['privileges'], true) : []);
 
-        if (is_array($privileges) && sizeof($privileges) > 0 && $this->get_method() != 'create') {
+        if (is_array($privileges) && sizeof($privileges) > 0 && $this->getMethod() != 'create') {
             foreach ($privileges as $key => $val) {
                 $output .= '
                     <div class="col-md-6 privilege mt-1">
-                        ' . (in_array($this->get_method(), ['create', 'update']) ? '
+                        ' . (in_array($this->getMethod(), ['create', 'update'], true) ? '
                             <div class="input-group">
                                 <input type="text" name="privileges[]" class="form-control form-control-sm bordered" placeholder="' . phrase('Example') . ': create" value="' . $val . '" />
                                 <a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="jExec(this.closest(\'.privilege\').remove())">
@@ -119,7 +119,7 @@ class Privileges extends Core
 
                     ' . $output . '
 
-                    ' . (in_array($this->get_method(), ['index', 'create', 'update']) ? '
+                    ' . (in_array($this->getMethod(), ['index', 'create', 'update'], true) ? '
                     <div class="col-md-6 mt-1">
                         <a href="javascript:void(0)" class="btn btn-secondary btn-sm d-block" onclick="jExec($(this).closest(\'.row\').find(\'.privilege\').first().clone().insertBefore($(this).closest(\'.col-md-6\')).css(\'display\', \'block\').find(\'input[type=text]\').attr(\'name\', \'privileges[]\').val(\'\'))">
                             <i class="mdi mdi-plus"></i>

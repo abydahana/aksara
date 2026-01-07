@@ -30,10 +30,10 @@ class Blogs extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Our News Updates'))
-        ->set_description(phrase('Follow an update from us'))
-        ->set_icon('mdi mdi-newspaper')
-        ->set_output([
+        $this->setTitle(phrase('Our News Updates'))
+        ->setDescription(phrase('Follow an update from us'))
+        ->setIcon('mdi mdi-newspaper')
+        ->setOutput([
             /* get highlighed articles */
             'spotlight' => $this->_get_spotlight(),
 
@@ -71,9 +71,9 @@ class Blogs extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('updated_timestamp', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        ->orderBy('updated_timestamp', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1,
@@ -88,7 +88,7 @@ class Blogs extends Core
 
     private function _get_articles()
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'blogs__categories',
             [
                 'status' => 1
@@ -116,9 +116,9 @@ class Blogs extends Core
                     'app__users',
                     'app__users.user_id = blogs.author'
                 )
-                ->order_by('updated_timestamp', 'DESC')
-                ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-                ->get_where(
+                ->orderBy('updated_timestamp', 'DESC')
+                ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+                ->getWhere(
                     'blogs',
                     [
                         'blogs.post_category' => $val->category_id,
@@ -174,8 +174,8 @@ class Blogs extends Core
             'app__users',
             'app__users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1

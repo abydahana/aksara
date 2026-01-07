@@ -29,31 +29,31 @@ class Activities extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone');
+        $this->unsetMethod('create, update, clone');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Log Activities'))
-        ->set_icon('mdi mdi-information-outline')
-        ->set_primary('id')
-        ->unset_column('id, user_id, browser, session_id, query')
-        ->unset_view('id, user_id, session_id, query')
-        ->add_toolbar('truncate', phrase('Clear Logs'), 'btn-primary --open-delete-confirm', 'mdi mdi-delete-empty')
-        ->set_field('timestamp', 'current_timestamp')
-        ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_field('path', 'hyperlink', '{{ path }}/{{ method }}', '{{ query }}')
-        ->column_order('first_name')
-        ->view_order('first_name')
+        $this->setTitle(phrase('Log Activities'))
+        ->setIcon('mdi mdi-information-outline')
+        ->setPrimary('id')
+        ->unsetColumn('id, user_id, browser, session_id, query')
+        ->unsetView('id, user_id, session_id, query')
+        ->addToolbar('truncate', phrase('Clear Logs'), 'btn-primary --open-delete-confirm', 'mdi mdi-delete-empty')
+        ->setField('timestamp', 'current_timestamp')
+        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setField('path', 'hyperlink', '{{ path }}/{{ method }}', '{{ query }}')
+        ->columnOrder('first_name')
+        ->viewOrder('first_name')
         ->select('app__users.first_name')
         ->join('app__users', 'app__users.user_id = ' . $this->_table . '.user_id')
-        ->order_by('id', 'desc')
-        ->set_alias([
+        ->orderBy('id', 'desc')
+        ->setAlias([
             'path' => phrase('Path'),
             'method' => phrase('Method'),
             'browser' => phrase('Browser'),
@@ -61,7 +61,7 @@ class Activities extends Core
             'ip_address' => phrase('IP Address'),
             'timestamp' => phrase('Access Time')
         ])
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->render($this->_table);
     }
 

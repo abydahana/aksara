@@ -28,9 +28,9 @@ class About extends Core
 
     public function index()
     {
-        $this->set_title(phrase('About the project'))
-        ->set_icon('mdi mdi-information-outline')
-        ->set_description(phrase('Including the credit of external resources.'))
+        $this->setTitle(phrase('About the project'))
+        ->setIcon('mdi mdi-information-outline')
+        ->setDescription(phrase('Including the credit of external resources.'))
 
         ->render();
     }

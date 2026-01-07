@@ -32,15 +32,15 @@ class Pages extends Core
 
     public function index($slug = null)
     {
-        $this->set_title('{{ page_title }}', phrase('Page not found!'))
-        ->set_description('{{ page_description }}')
-        ->set_icon('mdi mdi-file-document-outline')
-        ->set_output([
+        $this->setTitle('{{ page_title }}', phrase('Page not found!'))
+        ->setDescription('{{ page_description }}')
+        ->setIcon('mdi mdi-file-document-outline')
+        ->setOutput([
             'suggestions' => $this->model->select('
                 page_slug,
                 page_title
             ')
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'status' => 1,
@@ -50,7 +50,7 @@ class Pages extends Core
             )
             ->result()
         ])
-        ->set_relation(
+        ->setRelation(
             'faq_id',
             'pages__faqs.faq_id',
             '{{ pages__faqs.faq_content }}',
@@ -58,7 +58,7 @@ class Pages extends Core
                 'pages__faqs.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'carousel_id',
             'pages__carousels.carousel_id',
             '{{ pages__carousels.carousel_content }}',
@@ -66,27 +66,27 @@ class Pages extends Core
                 'pages__carousels.status' => 1
             ]
         )
-        ->group_start()
+        ->groupStart()
         ->where('pages.page_slug', $slug)
-        ->or_where('pages.page_id', $this->request->getGet('page_id') ?? 0)
-        ->group_end()
+        ->orWhere('pages.page_id', $this->request->getGet('page_id') ?? 0)
+        ->groupEnd()
         ->where('status', 1)
-        ->order_by('(CASE WHEN pages.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN pages.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(1)
 
         ->render($this->_table);
     }
 
-    public function not_found()
+    public function notFound()
     {
-        $this->set_title(phrase('Page not found!'))
-        ->set_description(phrase('The page you requested does not exist or already been archived.'))
-        ->set_output([
+        $this->setTitle(phrase('Page not found!'))
+        ->setDescription(phrase('The page you requested does not exist or already been archived.'))
+        ->setOutput([
             'suggestions' => $this->model->select('
                 page_slug,
                 page_title
             ')
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'status' => 1
@@ -95,7 +95,7 @@ class Pages extends Core
             )
             ->result()
         ])
-        ->set_template('index', '404')
+        ->setTemplate('index', '404')
         ->render();
     }
 }

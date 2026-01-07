@@ -27,56 +27,56 @@ class Settings extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         $this->searchable(false);
 
-        $this->set_method('update');
-        $this->set_upload_path('settings');
+        $this->setMethod('update');
+        $this->setUploadPath('settings');
     }
 
     public function index()
     {
-        $default_map_tile = null;
-        $required_api_key = null;
-        $required_analytic_key = null;
-        $required_facebook_app_id = null;
-        $required_facebook_app_secret = null;
-        $required_google_client_id = null;
-        $required_google_client_secret = null;
+        $defaultMapTile = null;
+        $requiredApiKey = null;
+        $requiredAnalyticKey = null;
+        $requiredFacebookAppId = null;
+        $requiredFacebookAppSecret = null;
+        $requiredGoogleClientId = null;
+        $requiredGoogleClientSecret = null;
 
-        if ($this->request->getPost('openlayers_search_provider') && in_array($this->request->getPost('openlayers_search_provider'), ['google', 'osm'])) {
-            $required_api_key = 'required|';
+        if ($this->request->getPost('openlayers_search_provider') && in_array($this->request->getPost('openlayers_search_provider'), ['google', 'osm'], true)) {
+            $requiredApiKey = 'required|';
         }
 
         if ($this->request->getPost('default_map_tile')) {
-            $default_map_tile = 'valid_url';
+            $defaultMapTile = 'valid_url';
         }
 
         if ($this->request->getPost('google_analytics_key')) {
-            $required_analytic_key = 'required|';
+            $requiredAnalyticKey = 'required|';
         }
 
         if ($this->request->getPost('facebook_app_id')) {
-            $required_facebook_app_secret = 'required';
+            $requiredFacebookAppSecret = 'required';
         } elseif ($this->request->getPost('facebook_app_secret')) {
-            $required_facebook_app_id = 'required';
+            $requiredFacebookAppId = 'required';
         }
 
         if ($this->request->getPost('google_client_id')) {
-            $required_google_client_secret = 'required';
+            $requiredGoogleClientSecret = 'required';
         } elseif ($this->request->getPost('google_client_secret')) {
-            $required_google_client_id = 'required';
+            $requiredGoogleClientId = 'required';
         }
 
-        $this->set_title(phrase('Application Settings'))
-        ->set_icon('mdi mdi-wrench-outline')
-        ->set_primary('id')
-        ->unset_field('id')
-        ->set_field([
+        $this->setTitle(phrase('Application Settings'))
+        ->setIcon('mdi mdi-wrench-outline')
+        ->setPrimary('id')
+        ->unsetField('id')
+        ->setField([
             'app_description' => 'textarea',
             'app_logo' => 'image',
             'app_icon' => 'image',
@@ -98,7 +98,7 @@ class Settings extends Core
             'smtp_port' => 'integer',
             'smtp_password' => 'encryption'
         ])
-        ->set_field(
+        ->setField(
             'openlayers_search_provider',
             'radio',
             [
@@ -107,20 +107,20 @@ class Settings extends Core
                 'osm' => 'OpenStreetMap'
             ]
         )
-        ->field_append([
+        ->fieldAppend([
             'login_attempt' => phrase('times'),
             'blocking_time' => phrase('minutes'),
             'account_age_restriction' => phrase('days'),
             'spam_timer' => phrase('seconds')
         ])
-        ->set_attribute([
+        ->setAttribute([
             'office_map' => 'data-drawing-type="coordinate" data-draggable="1"'
         ])
-        ->set_placeholder([
+        ->setPlaceholder([
             'openlayers_search_key' => phrase('Enter your API Key'),
             'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
         ])
-        ->set_tooltip([
+        ->setTooltip([
             'login_attempt' => phrase('Maximum number of login attempts.'),
             'blocking_time' => phrase('Blocking time when reaching maximum login attempts.'),
             'account_age_restriction' => phrase('How many days before user can post interaction after registration.'),
@@ -128,10 +128,10 @@ class Settings extends Core
             'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider.'),
             'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.')
         ])
-        ->field_append([
+        ->fieldAppend([
             'default_map_tile' => '<a href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers" target="_blank">Reference<i class="mdi mdi-launch"></i></a>'
         ])
-        ->set_relation(
+        ->setRelation(
             'app_language',
             'app__languages.id',
             '{{ app__languages.language }}',
@@ -139,7 +139,7 @@ class Settings extends Core
                 'app__languages.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'default_membership_group',
             'app__groups.group_id',
             '{{ app__groups.group_name }}',
@@ -147,7 +147,7 @@ class Settings extends Core
                 'app__groups.group_id > ' => 2
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'app_name' => 'required|string|max_length[60]',
             'app_description' => 'string',
             'app_language' => 'required',
@@ -168,23 +168,23 @@ class Settings extends Core
 
             /* APIS */
             'openlayers_search_provider' => 'in_list[openlayers,google,osm]',
-            'openlayers_search_key' => ($required_api_key ? $required_api_key . 'alpha_dash|max_length[128]' : null),
+            'openlayers_search_key' => ($requiredApiKey ? $requiredApiKey . 'alpha_dash|max_length[128]' : null),
             'maps_provider' => 'in_list[disabled,google,openlayers]',
-            'default_map_tile' => $default_map_tile,
-            'google_analytics_key' => ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
+            'default_map_tile' => $defaultMapTile,
+            'google_analytics_key' => ($requiredAnalyticKey ? $requiredAnalyticKey . 'alpha_dash|max_length[32]' : null),
 
             /* OAUTH */
-            'facebook_app_id' => $required_facebook_app_id,
-            'facebook_app_secret' => $required_facebook_app_secret,
-            'google_client_id' => $required_google_client_id,
-            'google_client_secret' => $required_google_client_secret,
+            'facebook_app_id' => $requiredFacebookAppId,
+            'facebook_app_secret' => $requiredFacebookAppSecret,
+            'google_client_id' => $requiredGoogleClientId,
+            'google_client_secret' => $requiredGoogleClientSecret,
 
             /* NOTIFIER */
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
             'smtp_port' => 'integer'
         ])
-        ->set_alias([
+        ->setAlias([
             'app_name' => phrase('Application Name'),
             'app_description' => phrase('Application Description'),
             'office_name' => phrase('Office Name'),

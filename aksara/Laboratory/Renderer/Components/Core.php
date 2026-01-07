@@ -30,7 +30,7 @@ use Aksara\Laboratory\Builder\Builder;
 class Core
 {
     /**
-     * Load traits to access dynamic properties (e.g., $_set_theme, $_set_title).
+     * Load traits to access dynamic properties (e.g., $_setTheme, $_setTitle).
      */
     use Traits;
 
@@ -52,7 +52,7 @@ class Core
     /**
      * API Client Status/Instance.
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Constructor
@@ -89,8 +89,8 @@ class Core
     public function render(array $serialized = [], int $length = 0): mixed
     {
         // Retrieve the 'core' component template from the Builder
-        // Uses $_set_theme (from Traits) to locate the correct theme folder
-        $component = $this->builder->get_component($this->_set_theme, 'core');
+        // Uses $_setTheme (from Traits) to locate the correct theme folder
+        $component = $this->builder->getComponent($this->_setTheme, 'core');
 
         // Logic continues here...
         // (Assuming you will return or output the component later)

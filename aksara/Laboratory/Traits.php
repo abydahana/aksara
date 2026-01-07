@@ -27,67 +27,67 @@ trait Traits
      * Container for additional CSS classes.
      * @var array
      */
-    private $_add_class = [];
+    private $_addClass = [];
 
     /**
      * Container for custom buttons.
      * @var array
      */
-    private $_add_button = [];
+    private $_addButton = [];
 
     /**
      * Container for custom dropdown menus.
      * @var array
      */
-    private $_add_dropdown = [];
+    private $_addDropdown = [];
 
     /**
      * Container for custom filters.
      * @var array
      */
-    private $_add_filter = [];
+    private $_addFilter = [];
 
     /**
      * Container for custom toolbar items.
      * @var array
      */
-    private $_add_toolbar = [];
+    private $_addToolbar = [];
 
     /**
      * Callback to execute after a delete operation.
      * @var callable|null
      */
-    private $_after_delete;
+    private $_afterDelete;
 
     /**
      * Callback to execute after an insert operation.
      * @var callable|null
      */
-    private $_after_insert;
+    private $_afterInsert;
 
     /**
      * Callback to execute after an update operation.
      * @var callable|null
      */
-    private $_after_update;
+    private $_afterUpdate;
 
     /**
      * Callback to execute before a delete operation.
      * @var callable|null
      */
-    private $_before_delete;
+    private $_beforeDelete;
 
     /**
      * Callback to execute before an insert operation.
      * @var callable|null
      */
-    private $_before_insert;
+    private $_beforeInsert;
 
     /**
      * Callback to execute before an update operation.
      * @var callable|null
      */
-    private $_before_update;
+    private $_beforeUpdate;
 
     /**
      * Cloning mode status.
@@ -99,25 +99,25 @@ trait Traits
      * Column ordering configuration for tables.
      * @var array
      */
-    private $_column_order = [];
+    private $_columnOrder = [];
 
     /**
      * Column size configuration.
      * @var array
      */
-    private $_column_size = [];
+    private $_columnSize = [];
 
     /**
      * Store the compiled SELECT statement.
      * @var array
      */
-    private $_compiled_select = [];
+    private $_compiledSelect = [];
 
     /**
      * Store the compiled table name.
      * @var array
      */
-    private $_compiled_table = [];
+    private $_compiledTable = [];
 
     /**
      * Container for retrieved data.
@@ -129,7 +129,7 @@ trait Traits
      * Database driver name.
      * @var string
      */
-    private $_db_driver;
+    private $_dbDriver;
 
     /**
      * Debugging mode status.
@@ -141,7 +141,7 @@ trait Traits
      * Default value configuration for form fields.
      * @var array
      */
-    private $_default_value = [];
+    private $_defaultValue = [];
 
     /**
      * Distinct query status.
@@ -153,92 +153,92 @@ trait Traits
      * Container for extra dropdown options.
      * @var array
      */
-    private $_extra_dropdown = [];
+    private $_extraDropdown = [];
 
     /**
      * Container for extra options.
      * @var array
      */
-    private $_extra_option = [];
+    private $_extraOption = [];
 
     /**
      * Container for extra submit buttons.
      * @var array
      */
-    private $_extra_submit = [];
+    private $_extraSubmit = [];
 
     /**
      * Container for extra toolbar items.
      * @var array
      */
-    private $_extra_toolbar = [];
+    private $_extraToolbar = [];
 
     /**
      * Field suffix configuration (append).
      * @var array
      */
-    private $_field_append = [];
+    private $_fieldAppend = [];
 
     /**
      * Field ordering configuration for forms.
      * @var array
      */
-    private $_field_order = [];
+    private $_fieldOrder = [];
 
     /**
      * Field positioning configuration.
      * @var array
      */
-    private $_field_position = [];
+    private $_fieldPosition = [];
 
     /**
      * Field prefix configuration (prepend).
      * @var array
      */
-    private $_field_prepend = [];
+    private $_fieldPrepend = [];
 
     /**
      * Input field size configuration.
      * @var array
      */
-    private $_field_size = [];
+    private $_fieldSize = [];
 
     /**
      * Callback for form processing.
      * @var callable|null
      */
-    private $_form_callback;
+    private $_formCallback;
 
     /**
      * Grid view mode status.
      * @var bool
      */
-    private $_grid_view;
+    private $_gridView;
 
     /**
      * Field grouping configuration.
      * @var array
      */
-    private $_group_field = [];
+    private $_groupField = [];
 
     /**
      * Flag to skip URL signature validation (HMAC).
      * Use this for public search pages or reports with dynamic GET parameters.
      * @var array
      */
-    private $_ignore_query_string = [];
+    private $_ignoreQueryString = [];
 
     /**
      * Last inserted ID.
      * @var int|string
      */
-    private $_insert_id;
+    private $_insertId;
 
     /**
      * Container for referenced items.
      * @var array
      */
-    private $_item_reference = [];
+    private $_itemReference = [];
 
     /**
      * Join clause configuration.
@@ -268,25 +268,25 @@ trait Traits
      * Backup of query limit configuration.
      * @var int
      */
-    private $_limit_backup = 25;
+    private $_limitBackup = 25;
 
     /**
      * Content merge configuration.
      * @var array
      */
-    private $_merge_content = [];
+    private $_mergeContent = [];
 
     /**
      * Field merge configuration.
      * @var array
      */
-    private $_merge_field = [];
+    private $_mergeField = [];
 
     /**
      * Label merge configuration.
      * @var array
      */
-    private $_merge_label = [];
+    private $_mergeLabel = [];
 
     /**
      * Request method (GET, POST, etc.) or Controller method.
@@ -298,7 +298,7 @@ trait Traits
      * Modal dialog size configuration.
      * @var string
      */
-    private $_modal_size;
+    private $_modalSize;
 
     /**
      * Current module name.
@@ -316,12 +316,12 @@ trait Traits
      * Flag to check if offset has been called.
      * @var bool
      */
-    private $_offset_called = false;
+    private $_offsetCalled = false;
 
     /**
      * Container for old files (used during update).
      */
-    private $_old_files;
+    private $_oldFiles;
 
     /**
      * Output buffer container.
@@ -339,7 +339,7 @@ trait Traits
      * Upsert (Insert on Duplicate Update) permission status.
      * @var bool
      */
-    private $_permit_upsert;
+    private $_permitUpsert;
 
     /**
      * Prepared statement data.
@@ -356,13 +356,13 @@ trait Traits
     /**
      * Redirect back status/url.
      */
-    private $_redirect_back;
+    private $_redirectBack;
 
     /**
      * Demo mode restriction status.
      * @var bool
      */
-    private $_restrict_on_demo;
+    private $_restrictOnDemo;
 
     /**
      * Query results container.
@@ -386,169 +386,163 @@ trait Traits
      * Column alias configuration.
      * @var array
      */
-    private $_set_alias = [];
+    private $_setAlias = [];
 
     /**
      * HTML attribute configuration.
      * @var array
      */
-    private $_set_attribute = [];
+    private $_setAttribute = [];
 
     /**
      * Autocomplete configuration.
      * @var array
      */
-    private $_set_autocomplete = [];
+    private $_setAutocomplete = [];
 
     /**
      * Breadcrumb configuration.
      * @var array
      */
-    private $_set_breadcrumb = [];
+    private $_setBreadcrumb = [];
 
     /**
-     * Breadcrumb configuration.
+     * Button configuration.
      * @var array
      */
-    private $_set_button = [];
+    private $_setButton = [];
 
     /**
      * Default value configuration.
      * @var array
      */
-    private $_set_default = [];
+    private $_setDefault = [];
 
     /**
      * Description configuration.
-     * @var array
-     */
-    private $_set_description = [];
-
-    /**
-     * Fallback description configuration.
      * @var string
      */
-    private $_set_description_fallback;
+    private $_setDescription;
+
+    /**
+     * Description fallback configuration.
+     * @var array
+     */
+    private $_setDescriptionFallback = [];
 
     /**
      * Field configuration.
      * @var array
      */
-    private $_set_field = [];
+    private $_setField = [];
 
     /**
      * Page heading configuration.
      * @var array
      */
-    private $_set_heading = [];
+    private $_setHeading = [];
 
     /**
      * Icon configuration.
-     * @var array
-     */
-    private $_set_icon = [];
-
-    /**
-     * Fallback icon configuration.
      * @var string
      */
-    private $_set_icon_fallback;
+    private $_setIcon;
+
+    /**
+     * Icon fallback configuration.
+     * @var array
+     */
+    private $_setIconFallback = [];
 
     /**
      * Flash message configuration.
      * @var array
      */
-    private $_set_messages = [];
+    private $_setMessages = [];
 
     /**
      * Method overriding configuration.
      * @var array
      */
-    private $_set_method = [];
+    private $_setMethod = [];
 
     /**
      * Option label configuration.
      * @var array
      */
-    private $_set_option_label = [];
+    private $_setOptionLabel = [];
 
     /**
      * Output format configuration.
      * @var array
      */
-    private $_set_output = [];
+    private $_setOutput = [];
 
     /**
      * Permission configuration.
      * @var bool
      */
-    private $_set_permission;
+    private $_setPermission;
 
     /**
      * Input placeholder configuration.
      * @var array
      */
-    private $_set_placeholder = [];
+    private $_setPlaceholder = [];
 
     /**
      * Primary key configuration used for token generation and validation.
      * @var array
      */
-    private $_set_primary = [];
+    private $_setPrimary = [];
 
     /**
      * Table relation configuration.
      * @var array
      */
-    private $_set_relation = [];
+    private $_setRelation = [];
 
     /**
      * View template configuration.
-     * @var array
-     */
-    private $_set_template = [];
-
-    /**
-     * Frontend/Backend theme configuration.
      * @var string
      */
-    private $_set_theme = 'default';
+    private $_setTemplate;
+
+    /**
+     * Theme configuration.
+     * @var string
+     */
+    private $_setTheme;
 
     /**
      * Page title configuration.
-     * @var array
-     */
-    private $_set_title = [];
-
-    /**
-     * Fallback page title configuration.
      * @var string
      */
-    private $_set_title_fallback;
-
-    /**
-     * Tooltip configuration.
-     * @var array
-     */
-    private $_set_tooltip = [];
+    private $_setTitle;
 
     /**
      * Upload path configuration.
      * @var string
      */
-    private $_set_upload_path;
+    private $_setUploadPath;
 
     /**
      * Form validation rules configuration.
      * @var array
      */
-    private $_set_validation = [];
+    private $_setValidation = [];
 
     /**
      * Sortable column status.
      * @var bool
      */
     private $_sortable;
+
+    /**
+     * Tooltip configuration.
+     * @var array
+     */
+    private $_setTooltip = [];
 
     /**
      * Primary table name.
@@ -566,73 +560,73 @@ trait Traits
      * Field translation configuration.
      * @var array
      */
-    private $_translate_field = [];
+    private $_translateField = [];
 
     /**
      * Container for uploaded files.
      * @var array
      */
-    private $_uploaded_files = [];
+    private $_uploadedFiles = [];
 
     /**
      * Configuration to disable cloning.
      * @var array
      */
-    private $_unset_clone = [];
+    private $_unsetClone = [];
 
     /**
      * Configuration to hide columns from view.
      * @var array
      */
-    private $_unset_column = [];
+    private $_unsetColumn = [];
 
     /**
      * Configuration to disable delete operation.
      * @var array
      */
-    private $_unset_delete = [];
+    private $_unsetDelete = [];
 
     /**
      * Configuration to remove fields from form/view.
      * @var array
      */
-    private $_unset_field = [];
+    private $_unsetField = [];
 
     /**
      * Configuration to disable specific methods.
      * @var array
      */
-    private $_unset_method = [];
+    private $_unsetMethod = [];
 
     /**
      * Configuration to disable read operation.
      * @var array
      */
-    private $_unset_read = [];
+    private $_unsetRead = [];
 
     /**
      * Configuration to exclude columns from selection.
      * @var array
      */
-    private $_unset_select = [];
+    private $_unsetSelect = [];
 
     /**
      * Configuration to disable truncate operation.
      * @var array
      */
-    private $_unset_truncate = [];
+    private $_unsetTruncate = [];
 
     /**
      * Configuration to disable update operation.
      * @var array
      */
-    private $_unset_update = [];
+    private $_unsetUpdate = [];
 
     /**
      * Configuration to disable view operation.
      * @var array
      */
-    private $_unset_view = [];
+    private $_unsetView = [];
 
     /**
      * Current view file name.
@@ -644,7 +638,7 @@ trait Traits
      * View ordering configuration.
      * @var array
      */
-    private $_view_order = [];
+    private $_viewOrder = [];
 
     /**
      * Where clause configuration.

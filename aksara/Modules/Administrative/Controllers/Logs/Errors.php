@@ -27,18 +27,18 @@ class Errors extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Error Logs'))
-        ->set_icon('mdi mdi-bug')
+        $this->setTitle(phrase('Error Logs'))
+        ->setIcon('mdi mdi-bug')
 
-        ->set_output([
+        ->setOutput([
             'logs' => $this->_logs(),
             'report' => $this->_report()
         ])

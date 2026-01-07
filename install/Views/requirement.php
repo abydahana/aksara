@@ -1,7 +1,7 @@
 <?php
     $error = false;
 
-    if (phpversion() < 7.4 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
+    if (phpversion() < 7.4 || ! in_array('mbstring', $extension, true) || ! in_array('intl', $extension, true) || ! in_array('gd', $extension, true) || ! in_array('json', $extension, true) || ! in_array('xml', $extension, true))
     {
         $error = true;
     }
@@ -41,7 +41,7 @@
                     <?= phrase('Rewrite Module'); ?>
                 </label>
                 <p>
-                    <?= (! $mod_rewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! $modRewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -53,7 +53,7 @@
                     <?= phrase('Internationalization'); ?> (intl)
                 </label>
                 <p>
-                    <?= (! in_array('intl', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! in_array('intl', $extension, true) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -75,7 +75,7 @@
                     <?= phrase('Multibyte String'); ?> (mbstring)
                 </label>
                 <p>
-                    <?= (! in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! in_array('mbstring', $extension, true) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -85,7 +85,7 @@
                     <?= phrase('PHP GD'); ?>
                 </label>
                 <p>
-                    <?= (! in_array('gd', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! in_array('gd', $extension, true) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     <?= phrase('JSON'); ?>
                 </label>
                 <p>
-                    <?= (! in_array('json', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! in_array('json', $extension, true) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -107,12 +107,12 @@
                     <?= phrase('XML'); ?>
                 </label>
                 <p>
-                    <?= (! in_array('xml', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! in_array('xml', $extension, true) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
     </div>
-    <?= ($error ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>' : (! $mod_rewrite ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>' : null)); ?>
+    <?= ($error ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>' : (! $modRewrite ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>' : null)); ?>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>

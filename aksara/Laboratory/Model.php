@@ -56,7 +56,7 @@ class Model
     /**
      * @var bool Flag to check if a raw `query()` method was called.
      */
-    private bool $_is_query = false;
+    private bool $_isQuery = false;
 
     /**
      * @var int|null Stores the limit value for the query.
@@ -126,7 +126,7 @@ class Model
      * @return $this|false Returns the current object instance on success, or false on reset failure.
      * @throws Throwable
      */
-    public function database_config(string|int|array|null $driver = null, ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null): self|false
+    public function databaseConfig(string|int|array|null $driver = null, ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null): self|false
     {
         if (! $driver) {
             // No config provided, use default connection instead
@@ -248,7 +248,7 @@ class Model
     /**
      * Get the database driver.
      */
-    public function db_driver(): string
+    public function dbDriver(): string
     {
         return $this->db->DBDriver;
     }
@@ -264,7 +264,7 @@ class Model
     /**
      * Disable foreign key check for truncating the table.
      */
-    public function disable_foreign_key(): void
+    public function disableForeignKey(): void
     {
         $this->db->disableForeignKeyChecks();
     }
@@ -272,7 +272,7 @@ class Model
     /**
      * Enable foreign key check for truncating the table.
      */
-    public function enable_foreign_key(): void
+    public function enableForeignKey(): void
     {
         $this->db->enableForeignKeyChecks();
     }
@@ -282,7 +282,7 @@ class Model
      *
      * @return array<int, string>
      */
-    public function list_tables(): array
+    public function listTables(): array
     {
         return $this->db->listTables();
     }
@@ -292,7 +292,7 @@ class Model
      *
      * @param string $table The table name.
      */
-    public function table_exists(string $table): bool
+    public function tableExists(string $table): bool
     {
         if ($table && $this->db->tableExists($table)) {
             return true;
@@ -307,20 +307,20 @@ class Model
      * @param string $field The field name.
      * @param string $table The table name (can include an alias).
      */
-    public function field_exists(string $field, string $table): bool
+    public function fieldExists(string $field, string $table): bool
     {
         if (strpos(trim($table), '(') !== false || strpos(strtolower(trim($table)), 'select ') !== false) {
             return false;
         }
 
-        // Store alias for later use (though $_table_alias is not defined in properties, following original logic)
-        $temp_table_alias = [];
+        // Store alias for later use (though $_tableAlias is not defined in properties, following original logic)
+        $tempTableAlias = [];
         if (strpos(trim($table), ' ') !== false) {
             $table = str_ireplace(' AS ', ' ', $table);
             $destructure = explode(' ', $table);
             $table = $destructure[0];
 
-            $temp_table_alias[$destructure[1]] = $table; // This variable is local now
+            $tempTableAlias[$destructure[1]] = $table; // This variable is local now
         }
 
         if ($table && $field && $this->db->tableExists($table) && $this->db->fieldExists($field, $table)) {
@@ -336,7 +336,7 @@ class Model
      * @param string $table The table name.
      * @return array<int, string>|false Array of field names on success, false otherwise.
      */
-    public function list_fields(string $table): array|false
+    public function listFields(string $table): array|false
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getFieldNames($table);
@@ -351,7 +351,7 @@ class Model
      * @param string $table The table name.
      * @return array<int, \CodeIgniter\Database\FieldData>|false Array of field data objects on success, false otherwise.
      */
-    public function field_data(string $table): array|false
+    public function fieldData(string $table): array|false
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getFieldData($table);
@@ -366,7 +366,7 @@ class Model
      * @param string $table The table name.
      * @return array<string, \CodeIgniter\Database\IndexData>|false Array of index data objects on success, false otherwise.
      */
-    public function index_data(string $table): array|false
+    public function indexData(string $table): array|false
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getIndexData($table);
@@ -381,7 +381,7 @@ class Model
      * @param string $table The table name.
      * @return array<string, \CodeIgniter\Database\ForeignKeyData>|false Array of foreign key data objects on success, false otherwise.
      */
-    public function foreign_data(string $table): array|false
+    public function foreignData(string $table): array|false
     {
         if ($table && $this->db->tableExists($table)) {
             return $this->db->getForeignKeyData($table);
@@ -393,7 +393,7 @@ class Model
     /**
      * Get the number of affected rows by the last query.
      */
-    public function affected_rows(): int
+    public function affectedRows(): int
     {
         return $this->db->affectedRows();
     }
@@ -401,7 +401,7 @@ class Model
     /**
      * Get the ID generated by the last insert statement.
      */
-    public function insert_id(): int|string
+    public function insertId(): int|string
     {
         return $this->db->insertID();
     }
@@ -409,7 +409,7 @@ class Model
     /**
      * Getting the last executed query.
      */
-    public function last_query(): Query|string
+    public function lastQuery(): Query|string
     {
         return $this->db->getLastQuery();
     }
@@ -428,10 +428,10 @@ class Model
         $query = trim(preg_replace('/\s+/S', ' ', $query));
 
         // Remove string inside bracket to extract the primary table
-        $extract_table = preg_replace('/\(([^()]*+|(?R))*\)/', '', $query);
+        $extractTable = preg_replace('/\(([^()]*+|(?R))*\)/', '', $query);
 
         // Get primary table
-        preg_match('/FROM[\s]+(.*?)[\s]+/i', $extract_table, $matches);
+        preg_match('/FROM[\s]+(.*?)[\s]+/i', $extractTable, $matches);
 
         if (isset($matches[1])) {
             // Primary table found
@@ -448,7 +448,7 @@ class Model
             'arguments' => [$query, $params],
         ];
 
-        $this->_is_query = true;
+        $this->_isQuery = true;
 
         return $this;
     }
@@ -525,7 +525,7 @@ class Model
      * @param string|null $alias Optional alias for the counted column.
      * @return $this
      */
-    public function select_count(string $column, ?string $alias = null): self
+    public function selectCount(string $column, ?string $alias = null): self
     {
         $this->_selection = true;
 
@@ -544,7 +544,7 @@ class Model
      * @param string|null $alias Optional alias for the summed column.
      * @return $this
      */
-    public function select_sum(string $column, ?string $alias = null): self
+    public function selectSum(string $column, ?string $alias = null): self
     {
         $this->_selection = true;
 
@@ -563,7 +563,7 @@ class Model
      * @param string|null $alias Optional alias for the resulting column.
      * @return $this
      */
-    public function select_min(string $column, ?string $alias = null): self
+    public function selectMin(string $column, ?string $alias = null): self
     {
         $this->_selection = true;
 
@@ -582,7 +582,7 @@ class Model
      * @param string|null $alias Optional alias for the resulting column.
      * @return $this
      */
-    public function select_max(string $column, ?string $alias = null): self
+    public function selectMax(string $column, ?string $alias = null): self
     {
         $this->_selection = true;
 
@@ -601,7 +601,7 @@ class Model
      * @param string|null $alias Optional alias for the resulting column.
      * @return $this
      */
-    public function select_avg(string $column, ?string $alias = null): self
+    public function selectAvg(string $column, ?string $alias = null): self
     {
         $this->_selection = true;
 
@@ -620,7 +620,7 @@ class Model
      * @param string $alias The alias for the subquery result.
      * @return $this
      */
-    public function select_subquery(self $subquery, string $alias): self
+    public function selectSubquery(self $subquery, string $alias): self
     {
         $this->_selection = true;
 
@@ -654,7 +654,7 @@ class Model
      * @param string $alias The alias for the subquery table.
      * @return $this
      */
-    public function from_subquery(self $subquery, string $alias): self
+    public function fromSubquery(self $subquery, string $alias): self
     {
         $this->_prepare[] = [
             'function' => 'fromSubquery',
@@ -669,7 +669,7 @@ class Model
      *
      * @return $this
      */
-    public function new_query(): self
+    public function newQuery(): self
     {
         $this->_prepare[] = [
             'function' => 'newQuery',
@@ -726,7 +726,7 @@ class Model
             // Run where command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val, $escape);
+                $cast = $this->_castColumn($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'where',
@@ -735,7 +735,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value, $escape);
+            $cast = $this->_castColumn($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'where',
@@ -754,13 +754,13 @@ class Model
      * @param bool $escape Whether to escape the field and value.
      * @return $this
      */
-    public function or_where(string|array $field = '', mixed $value = '', bool $escape = true): self
+    public function orWhere(string|array $field = '', mixed $value = '', bool $escape = true): self
     {
         if (is_array($field)) {
             // Run or where command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val, $escape);
+                $cast = $this->_castColumn($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'orWhere',
@@ -769,7 +769,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value, $escape);
+            $cast = $this->_castColumn($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'orWhere',
@@ -788,7 +788,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function where_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function whereIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -815,7 +815,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function or_where_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function orWhereIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -842,7 +842,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function where_not_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function whereNotIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -869,7 +869,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function or_where_not_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function orWhereNotIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -895,10 +895,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -911,7 +911,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -920,14 +920,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'like',
@@ -945,10 +945,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function or_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function orLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -961,7 +961,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -970,14 +970,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orLike',
@@ -995,10 +995,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function not_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function notLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1011,7 +1011,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1020,14 +1020,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'notLike',
@@ -1045,10 +1045,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function or_not_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function orNotLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1061,7 +1061,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1070,14 +1070,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orNotLike',
@@ -1102,7 +1102,7 @@ class Model
             // Run having command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val, $escape);
+                $cast = $this->_castColumn($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'having',
@@ -1111,7 +1111,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value, $escape);
+            $cast = $this->_castColumn($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'having',
@@ -1130,13 +1130,13 @@ class Model
      * @param bool $escape Whether to escape the field and value.
      * @return $this
      */
-    public function or_having(string|array $field = '', mixed $value = '', bool $escape = true): self
+    public function orHaving(string|array $field = '', mixed $value = '', bool $escape = true): self
     {
         if (is_array($field)) {
             // Run or having command
             foreach ($field as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val, $escape);
+                $cast = $this->_castColumn($key, $val, $escape);
 
                 $this->_prepare[] = [
                     'function' => 'orHaving',
@@ -1145,7 +1145,7 @@ class Model
             }
         } else {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($field, $value, $escape);
+            $cast = $this->_castColumn($field, $value, $escape);
 
             $this->_prepare[] = [
                 'function' => 'orHaving',
@@ -1164,7 +1164,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function having_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function havingIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -1191,7 +1191,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function or_having_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function orHavingIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -1218,7 +1218,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function having_not_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function havingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -1245,7 +1245,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function or_having_not_in(string|array $field = '', ?array $value = null, bool $escape = true): self
+    public function orHavingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): self
     {
         if (is_array($field)) {
             foreach ($field as $key => $val) {
@@ -1271,10 +1271,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function having_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function havingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1287,7 +1287,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1296,14 +1296,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'havingLike',
@@ -1321,10 +1321,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function or_having_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function orHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1337,7 +1337,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1346,14 +1346,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orHavingLike',
@@ -1371,10 +1371,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function not_having_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function notHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1387,7 +1387,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1396,14 +1396,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'notHavingLike',
@@ -1421,10 +1421,10 @@ class Model
      * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
      * @param string $side The placement of the wildcards ('before', 'after', 'both').
      * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $case_insensitive Whether the search is case-insensitive.
+     * @param bool $caseInsensitive Whether the search is case-insensitive.
      * @return $this
      */
-    public function or_not_having_like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $case_insensitive = false): self
+    public function orNotHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): self
     {
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
@@ -1437,7 +1437,7 @@ class Model
                     'match' => (is_string($match) && $match ? $match : ''),
                     'side' => $side,
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         } else {
@@ -1446,14 +1446,14 @@ class Model
                     'match' => ($val ? $val : ''),
                     'side' => 'both',
                     'escape' => $escape,
-                    'case_insensitive' => $case_insensitive,
+                    'case_insensitive' => $caseInsensitive,
                 ];
             }
         }
 
         foreach ($column as $key => $val) {
             /** @var array<string, mixed> $cast */
-            $cast = $this->_cast_column($key, $val['match'], $escape);
+            $cast = $this->_castColumn($key, $val['match'], $escape);
 
             $this->_prepare[] = [
                 'function' => 'orNotHavingLike',
@@ -1470,24 +1470,24 @@ class Model
      * @param string|array<int, string>|null $column The column(s) to group by. Can be a string of comma-separated column names or an array.
      * @return $this
      */
-    public function group_by(string|array|null $column = null): self
+    public function groupBy(string|array|null $column = null): self
     {
-        if (in_array($this->db->DBDriver, ['SQLSRV'])) {
-            $columns_array = is_string($column) ? array_map('trim', explode(',', $column)) : ($column ?? []);
+        if (in_array($this->db->DBDriver, ['SQLSRV'], true)) {
+            $columnsArray = is_string($column) ? array_map('trim', explode(',', $column)) : ($column ?? []);
 
             // Loops the group list
-            foreach ($columns_array as $val) {
+            foreach ($columnsArray as $val) {
                 if (stripos($val, '(') !== false && stripos($val, ')') !== false) {
                     $this->_prepare[] = [
                         'function' => 'groupBy',
                         'arguments' => [$val],
                     ];
                 } else {
-                    $column_name = (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val);
+                    $columnName = (stripos($val, ' AS ') !== false ? substr($val, 0, stripos($val, ' AS ')) : $val);
                     $this->_prepare[] = [
                         'function' => 'groupBy',
                         // CodeIgniter 4 may handle this differently, adapting to original's intention for SQLSRV
-                        'arguments' => ['CONVERT(VARCHAR(MAX), ' . $column_name . ')'],
+                        'arguments' => ['CONVERT(VARCHAR(MAX), ' . $columnName . ')'],
                     ];
                 }
             }
@@ -1509,7 +1509,7 @@ class Model
      * @param bool $escape Whether to escape identifiers.
      * @return $this
      */
-    public function order_by(string|array|null $column = null, string $direction = '', bool $escape = true): self
+    public function orderBy(string|array|null $column = null, string $direction = '', bool $escape = true): self
     {
         $this->_ordered = true;
 
@@ -1526,9 +1526,9 @@ class Model
                 'arguments' => [$column, $direction, $escape],
             ];
         } elseif (is_string($column)) {
-            $columns_array = ($column ? array_map('trim', preg_split('/,(?![^(]+\))/', trim($column))) : []);
+            $columnsArray = ($column ? array_map('trim', preg_split('/,(?![^(]+\))/', trim($column))) : []);
 
-            foreach ($columns_array as $val) {
+            foreach ($columnsArray as $val) {
                 $dir = '';
                 $col = $val;
 
@@ -1557,7 +1557,7 @@ class Model
      * @param int|null $offset The offset from where to start fetching rows.
      * @return $this
      */
-    public function limit(int $limit = 0, ?int $offset = null): self
+    public function limit(?int $limit = null, ?int $offset = null): self
     {
         $this->_prepare[] = [
             'function' => 'limit',
@@ -1588,7 +1588,7 @@ class Model
      *
      * @return $this
      */
-    public function group_start(): self
+    public function groupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'groupStart',
@@ -1603,7 +1603,7 @@ class Model
      *
      * @return $this
      */
-    public function or_group_start(): self
+    public function orGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'orGroupStart',
@@ -1618,7 +1618,7 @@ class Model
      *
      * @return $this
      */
-    public function not_group_start(): self
+    public function notGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'notGroupStart',
@@ -1633,7 +1633,7 @@ class Model
      *
      * @return $this
      */
-    public function or_not_group_start(): self
+    public function orNotGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'orNotGroupStart',
@@ -1648,7 +1648,7 @@ class Model
      *
      * @return $this
      */
-    public function group_end(): self
+    public function groupEnd(): self
     {
         $this->_prepare[] = [
             'function' => 'groupEnd',
@@ -1663,7 +1663,7 @@ class Model
      *
      * @return $this
      */
-    public function having_group_start(): self
+    public function havingGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'havingGroupStart',
@@ -1678,7 +1678,7 @@ class Model
      *
      * @return $this
      */
-    public function or_having_group_start(): self
+    public function orHavingGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'orHavingGroupStart',
@@ -1693,7 +1693,7 @@ class Model
      *
      * @return $this
      */
-    public function not_having_group_start(): self
+    public function notHavingGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'notHavingGroupStart',
@@ -1708,7 +1708,7 @@ class Model
      *
      * @return $this
      */
-    public function or_not_having_group_start(): self
+    public function orNotHavingGroupStart(): self
     {
         $this->_prepare[] = [
             'function' => 'orNotHavingGroupStart',
@@ -1723,7 +1723,7 @@ class Model
      *
      * @return $this
      */
-    public function having_group_end(): self
+    public function havingGroupEnd(): self
     {
         $this->_prepare[] = [
             'function' => 'havingGroupEnd',
@@ -1748,9 +1748,9 @@ class Model
         }
 
         // Apply limit/offset for non-SQLSRV/Postgre or SQLSRV version >= 10
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($limit && $is_db_limit_compatible) {
+        if ($limit && $isDbLimitCompatible) {
             $this->_limit = $limit;
             $this->_offset = $offset;
         }
@@ -1774,16 +1774,16 @@ class Model
      * @param bool $reset Whether to reset the query parameters after execution.
      * @return $this
      */
-    public function get_where(string $table = '', array $where = [], ?int $limit = null, ?int $offset = null, bool $reset = true): self
+    public function getWhere(string $table = '', array $where = [], ?int $limit = null, ?int $offset = null, bool $reset = true): self
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
         }
 
         // Apply limit/offset for non-SQLSRV/Postgre or SQLSRV version >= 10
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($limit && $is_db_limit_compatible) {
+        if ($limit && $isDbLimitCompatible) {
             $this->_limit = $limit;
             $this->_offset = $offset;
         }
@@ -1791,7 +1791,7 @@ class Model
         if ($where && 'Postgre' == $this->db->DBDriver) {
             foreach ($where as $key => $val) {
                 /** @var array<string, mixed> $cast */
-                $cast = $this->_cast_column($key, $val);
+                $cast = $this->_castColumn($key, $val);
 
                 $where[$cast['column']] = $cast['value'];
 
@@ -1815,9 +1815,9 @@ class Model
      *
      * @return $this
      */
-    public function reset_query(): self
+    public function resetQuery(): self
     {
-        $this->_run_query();
+        $this->_runQuery();
 
         // The _run_query will reset properties internally if it was marked as finished
         // or just return $this if it was not. We return $this either way to maintain chainability.
@@ -1837,7 +1837,7 @@ class Model
         ];
 
         /** @var array<int, object>|ResultInterface $result */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1845,7 +1845,7 @@ class Model
      *
      * @return array<int, array<string, mixed>>|ResultInterface
      */
-    public function result_array()
+    public function resultArray()
     {
         $this->_prepare[] = [
             'function' => 'getResultArray',
@@ -1853,7 +1853,7 @@ class Model
         ];
 
         /** @var array<int, array<string, mixed>>|ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1864,9 +1864,9 @@ class Model
     public function row(int|string $field = 0)
     {
         // Apply limit for non-SQLSRV/Postgre or SQLSRV version >= 10 when retrieving a single row object.
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($is_db_limit_compatible) {
+        if ($isDbLimitCompatible) {
             $this->_limit = 1;
         }
 
@@ -1876,7 +1876,7 @@ class Model
         ];
 
         /** @var object|string|int|float|bool|null */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1885,12 +1885,12 @@ class Model
      * @param int|string $field The row number to retrieve, or the field name to return directly.
      * @return array<string, mixed>|string|int|float|bool|null
      */
-    public function row_array(int|string $field = 1)
+    public function rowArray(int|string $field = 1)
     {
         // Apply limit for non-SQLSRV/Postgre or SQLSRV version >= 10 when retrieving a single row array.
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($is_db_limit_compatible) {
+        if ($isDbLimitCompatible) {
             $this->_limit = 1;
         }
 
@@ -1899,7 +1899,7 @@ class Model
             'arguments' => [$field],
         ];
 
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1908,7 +1908,7 @@ class Model
      * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
      * @param bool $reset Whether to reset the query parameters after execution.
      */
-    public function num_rows(string $table = '', bool $reset = true)
+    public function numRows(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1920,7 +1920,7 @@ class Model
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1929,7 +1929,7 @@ class Model
      * @param string $table The table name.
      * @param bool $reset Whether to reset the query parameters after execution.
      */
-    public function count_all(string $table = '', bool $reset = true)
+    public function countAll(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1941,7 +1941,7 @@ class Model
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -1950,7 +1950,7 @@ class Model
      * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
      * @param bool $reset Whether to reset the query parameters after execution.
      */
-    public function count_all_results(string $table = '', bool $reset = true)
+    public function countAllResults(string $table = '', bool $reset = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -1962,7 +1962,7 @@ class Model
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2007,20 +2007,20 @@ class Model
 
         // SQLite3 Auto-Increment handling (original logic adapted)
         if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
-            /** @var array<string, \CodeIgniter\Database\IndexData>|false $index_data */
-            $index_data = $this->db->getIndexData($table);
+            /** @var array<string, \CodeIgniter\Database\IndexData>|false $indexData */
+            $indexData = $this->db->getIndexData($table);
 
             // Set the default primary if the table have any primary column
-            if ($index_data) {
+            if ($indexData) {
                 // Loops to get the primary key
-                foreach ($index_data as $key => $val) {
+                foreach ($indexData as $key => $val) {
                     // Check if the field has primary key
                     // Assuming $val is an object with 'type' and 'fields' properties
                     if (isset($val->type) && 'PRIMARY' == $val->type && isset($val->fields[0])) {
-                        $primary_field = $val->fields[0];
+                        $primaryField = $val->fields[0];
                         // Get max ID and increment
-                        $max_id = $this->db->table($table)->selectMax($primary_field)->get()->getRow($primary_field) ?? 0;
-                        $set[$primary_field] = (null !== $max_id ? $max_id + 1 : 1);
+                        $maxId = $this->db->table($table)->selectMax($primaryField)->get()->getRow($primaryField) ?? 0;
+                        $set[$primaryField] = (null !== $maxId ? $maxId + 1 : 1);
 
                         break;
                     }
@@ -2034,7 +2034,7 @@ class Model
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2042,11 +2042,11 @@ class Model
      *
      * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to insert.
-     * @param int $batch_size The number of rows to insert per batch. 0 for all at once.
+     * @param int $batchSize The number of rows to insert per batch. 0 for all at once.
      * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
-    public function insert_batch(string $table = '', array $set = [], int $batch_size = 0, bool $escape = true)
+    public function insertBatch(string $table = '', array $set = [], int $batchSize = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -2054,28 +2054,28 @@ class Model
 
         // SQLite3 Auto-Increment batch handling (original logic adapted)
         if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
-            /** @var array<string, \CodeIgniter\Database\IndexData>|false $index_data */
-            $index_data = $this->db->getIndexData($table);
+            /** @var array<string, \CodeIgniter\Database\IndexData>|false $indexData */
+            $indexData = $this->db->getIndexData($table);
             $primary = null;
-            $auto_increment = null;
+            $autoIncrement = null;
 
             // Set the default primary if the table has any primary column
-            if ($index_data) {
+            if ($indexData) {
                 // Loops to get the primary key
-                foreach ($index_data as $key => $val) {
+                foreach ($indexData as $key => $val) {
                     // Check if the field has primary key
                     if (isset($val->type) && 'PRIMARY' == $val->type && isset($val->fields[0])) {
                         $primary = $val->fields[0];
-                        $max_id = $this->db->table($table)->selectMax($primary)->get()->getRow($primary) ?? 0;
-                        $auto_increment = (null !== $max_id ? $max_id + 1 : 1);
+                        $maxId = $this->db->table($table)->selectMax($primary)->get()->getRow($primary) ?? 0;
+                        $autoIncrement = (null !== $maxId ? $maxId + 1 : 1);
 
                         break;
                     }
                 }
             }
 
-            if (null !== $primary && null !== $auto_increment) {
-                $new_set = [];
+            if (null !== $primary && null !== $autoIncrement) {
+                $newSet = [];
 
                 foreach ($set as $val) {
                     // Ensure $val is treated as a row (assoc array)
@@ -2086,27 +2086,27 @@ class Model
                     // If it's a multi-dimensional array (e.g., from original's complex logic for inner loops, but simplified here)
                     // Assuming $set is array<int, array<string, mixed>> (array of rows)
                     if (! isset($val[$primary])) {
-                        $val[$primary] = $auto_increment;
-                        $auto_increment++;
+                        $val[$primary] = $autoIncrement;
+                        $autoIncrement++;
                     }
 
-                    $new_set[] = $val;
+                    $newSet[] = $val;
                 }
-                $set = $new_set;
+                $set = $newSet;
             }
         }
 
-        if (! $batch_size) {
-            $batch_size = sizeof($set);
+        if (! $batchSize) {
+            $batchSize = sizeof($set);
         }
 
         $this->_prepare[] = [
             'function' => 'insertBatch',
-            'arguments' => [$set, $escape, $batch_size],
+            'arguments' => [$set, $escape, $batchSize],
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2124,9 +2124,9 @@ class Model
         }
 
         // Apply limit for non-Postgre/SQLite3 or SQLSRV version >= 10
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre', 'SQLite3']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre', 'SQLite3'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($limit && $is_db_limit_compatible) {
+        if ($limit && $isDbLimitCompatible) {
             $this->_limit = $limit;
         }
 
@@ -2142,11 +2142,11 @@ class Model
         $this->_prepare[] = [
             'function' => 'update',
             // Pass $this->_limit only if the database driver is not Postgre or SQLite3 (or if CI handles it for SQLSRV)
-            'arguments' => [$set, $where, (! in_array($this->db->DBDriver, ['Postgre', 'SQLite3']) ? $this->_limit : null)],
+            'arguments' => [$set, $where, (! in_array($this->db->DBDriver, ['Postgre', 'SQLite3'], true) ? $this->_limit : null)],
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2155,27 +2155,27 @@ class Model
      * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to update.
      * @param array<int, string>|string $constraint The column(s) to use for the WHERE clause (e.g., primary key).
-     * @param int $batch_size The number of rows to update per batch. 0 for all at once.
+     * @param int $batchSize The number of rows to update per batch. 0 for all at once.
      * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
-    public function update_batch(string $table = '', array $set = [], array|string $constraint = [], int $batch_size = 0, bool $escape = true)
+    public function updateBatch(string $table = '', array $set = [], array|string $constraint = [], int $batchSize = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
         }
 
-        if (! $batch_size) {
-            $batch_size = sizeof($set);
+        if (! $batchSize) {
+            $batchSize = sizeof($set);
         }
 
         $this->_prepare[] = [
             'function' => 'updateBatch',
-            'arguments' => [$set, $constraint, $batch_size],
+            'arguments' => [$set, $constraint, $batchSize],
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2193,20 +2193,20 @@ class Model
 
         // SQLite3 Auto-Increment handling for UPSERT (original logic adapted)
         if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
-            /** @var array<string, \CodeIgniter\Database\IndexData>|false $index_data */
-            $index_data = $this->db->getIndexData($table);
+            /** @var array<string, \CodeIgniter\Database\IndexData>|false $indexData */
+            $indexData = $this->db->getIndexData($table);
 
             // Set the default primary if the table have any primary column
-            if ($index_data) {
+            if ($indexData) {
                 // Loops to get the primary key
-                foreach ($index_data as $key => $val) {
+                foreach ($indexData as $key => $val) {
                     // Check if the field has primary key
                     if (isset($val->type) && 'PRIMARY' == $val->type && isset($val->fields[0])) {
-                        $primary_field = $val->fields[0];
+                        $primaryField = $val->fields[0];
                         // Only set if not already present in $set (which it shouldn't be for an INSERT part of upsert)
-                        if (! isset($set[$primary_field])) {
-                            $max_id = $this->db->table($table)->selectMax($primary_field)->get()->getRow($primary_field) ?? 0;
-                            $set[$primary_field] = (null !== $max_id ? $max_id + 1 : 1);
+                        if (! isset($set[$primaryField])) {
+                            $maxId = $this->db->table($table)->selectMax($primaryField)->get()->getRow($primaryField) ?? 0;
+                            $set[$primaryField] = (null !== $maxId ? $maxId + 1 : 1);
                         }
 
                         break;
@@ -2221,7 +2221,7 @@ class Model
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2229,11 +2229,11 @@ class Model
      *
      * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to insert/update.
-     * @param int $batch_size The number of rows to process per batch. 0 for all at once.
+     * @param int $batchSize The number of rows to process per batch. 0 for all at once.
      * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
-    public function upsert_batch(string $table = '', array $set = [], int $batch_size = 0, bool $escape = true)
+    public function upsertBatch(string $table = '', array $set = [], int $batchSize = 0, bool $escape = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -2241,28 +2241,28 @@ class Model
 
         // SQLite3 Auto-Increment batch handling for UPSERT (original logic adapted)
         if ('SQLite3' == $this->db->DBDriver && $table && $this->db->tableExists($table)) {
-            /** @var array<string, \CodeIgniter\Database\IndexData>|false $index_data */
-            $index_data = $this->db->getIndexData($table);
+            /** @var array<string, \CodeIgniter\Database\IndexData>|false $indexData */
+            $indexData = $this->db->getIndexData($table);
             $primary = null;
-            $auto_increment = null;
+            $autoIncrement = null;
 
             // Set the default primary if the table has any primary column
-            if ($index_data) {
+            if ($indexData) {
                 // Loops to get the primary key
-                foreach ($index_data as $key => $val) {
+                foreach ($indexData as $key => $val) {
                     // Check if the field has primary key
                     if (isset($val->type) && 'PRIMARY' == $val->type && isset($val->fields[0])) {
                         $primary = $val->fields[0];
-                        $max_id = $this->db->table($table)->selectMax($primary)->get()->getRow($primary) ?? 0;
-                        $auto_increment = (null !== $max_id ? $max_id + 1 : 1);
+                        $maxId = $this->db->table($table)->selectMax($primary)->get()->getRow($primary) ?? 0;
+                        $autoIncrement = (null !== $maxId ? $maxId + 1 : 1);
 
                         break;
                     }
                 }
             }
 
-            if (null !== $primary && null !== $auto_increment) {
-                $new_set = [];
+            if (null !== $primary && null !== $autoIncrement) {
+                $newSet = [];
 
                 foreach ($set as $val) {
                     // Ensure $val is treated as a row (assoc array)
@@ -2272,27 +2272,27 @@ class Model
 
                     // Apply auto-increment logic only if primary key is not set in the row (assuming insert part)
                     if (! isset($val[$primary])) {
-                        $val[$primary] = $auto_increment;
-                        $auto_increment++;
+                        $val[$primary] = $autoIncrement;
+                        $autoIncrement++;
                     }
 
-                    $new_set[] = $val;
+                    $newSet[] = $val;
                 }
-                $set = $new_set;
+                $set = $newSet;
             }
         }
 
-        if (! $batch_size) {
-            $batch_size = sizeof($set);
+        if (! $batchSize) {
+            $batchSize = sizeof($set);
         }
 
         $this->_prepare[] = [
             'function' => 'upsertBatch',
-            'arguments' => [$set, $escape, $batch_size],
+            'arguments' => [$set, $escape, $batchSize],
         ];
 
         /** @var int */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2313,7 +2313,7 @@ class Model
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2322,29 +2322,29 @@ class Model
      * @param string $table The table name.
      * @param array<string, mixed> $where An associative array of WHERE conditions.
      * @param int|null $limit The maximum number of rows to delete.
-     * @param bool $reset_data Whether to reset the query data after deletion (defaults to true).
+     * @param bool $resetData Whether to reset the query data after deletion (defaults to true).
      */
-    public function delete(string $table = '', array $where = [], ?int $limit = null, bool $reset_data = true)
+    public function delete(string $table = '', array $where = [], ?int $limit = null, bool $resetData = true)
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
         }
 
         // Apply limit for non-Postgre or SQLSRV version >= 10
-        $is_db_limit_compatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
+        $isDbLimitCompatible = ! in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) || ('SQLSRV' === $this->db->DBDriver && (method_exists($this->db, 'getVersion') && $this->db->getVersion() >= 10));
 
-        if ($limit && $is_db_limit_compatible) {
+        if ($limit && $isDbLimitCompatible) {
             $this->_limit = $limit;
         }
 
         $this->_prepare[] = [
             'function' => 'delete',
             // Pass $this->_limit only if the database driver is not Postgre
-            'arguments' => [$where, (! in_array($this->db->DBDriver, ['Postgre']) ? $this->_limit : null)],
+            'arguments' => [$where, (! in_array($this->db->DBDriver, ['Postgre'], true) ? $this->_limit : null)],
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2364,7 +2364,7 @@ class Model
         ];
 
         /** @var ResultInterface */
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2372,7 +2372,7 @@ class Model
      *
      * @param string $table The table name.
      */
-    public function empty_table(string $table = '')
+    public function emptyTable(string $table = '')
     {
         if (! $this->_table && $table) {
             $this->_table = $table;
@@ -2384,6 +2384,70 @@ class Model
         ];
 
         /** @var ResultInterface */
+        return $this->_runQuery();
+    }
+
+    /**
+     * Compiles a SELECT query string and returns the SQL.
+     *
+     * @param   bool $reset Whether to reset the query builder values.
+     * @return  string
+     */
+    public function getCompiledSelect($reset = true)
+    {
+        $this->_prepare[] = [
+            'function' => 'getCompiledSelect',
+            'arguments' => [$reset]
+        ];
+
+        return $this->_run_query();
+    }
+
+    /**
+     * Compiles an INSERT query string and returns the SQL.
+     *
+     * @param   bool $reset Whether to reset the query builder values.
+     * @return  string
+     */
+    public function getCompiledInsert($reset = true)
+    {
+        $this->_prepare[] = [
+            'function' => 'getCompiledInsert',
+            'arguments' => [$reset]
+        ];
+
+        return $this->_run_query();
+    }
+
+    /**
+     * Compiles an UPDATE query string and returns the SQL.
+     *
+     * @param   bool $reset Whether to reset the query builder values.
+     * @return  string
+     */
+    public function getCompiledUpdate($reset = true)
+    {
+        $this->_prepare[] = [
+            'function' => 'getCompiledUpdate',
+            'arguments' => [$reset]
+        ];
+
+        return $this->_run_query();
+    }
+
+    /**
+     * Compiles a DELETE query string and returns the SQL.
+     *
+     * @param   bool $reset Whether to reset the query builder values.
+     * @return  string
+     */
+    public function getCompiledDelete($reset = true)
+    {
+        $this->_prepare[] = [
+            'function' => 'getCompiledDelete',
+            'arguments' => [$reset]
+        ];
+
         return $this->_run_query();
     }
 
@@ -2392,7 +2456,7 @@ class Model
      *
      * @return $this
      */
-    public function trans_begin(): self
+    public function transBegin(): self
     {
         $this->db->transBegin();
 
@@ -2404,7 +2468,7 @@ class Model
      *
      * @return $this
      */
-    public function trans_start(): self
+    public function transStart(): self
     {
         $this->db->transStart();
 
@@ -2414,7 +2478,7 @@ class Model
     /**
      * Completes an auto-managed transaction (started with trans_start()).
      */
-    public function trans_complete(): bool
+    public function transComplete(): bool
     {
         return $this->db->transComplete();
     }
@@ -2422,7 +2486,7 @@ class Model
     /**
      * Get the current transaction status.
      */
-    public function trans_status(): bool
+    public function transStatus(): bool
     {
         return $this->db->transStatus();
     }
@@ -2431,7 +2495,7 @@ class Model
      * Transaction Commit
      * Your contribution is needed to write complete hint about this method
      */
-    public function trans_commit(): bool
+    public function transCommit(): bool
     {
         return $this->db->transCommit();
     }
@@ -2440,7 +2504,7 @@ class Model
      * Transaction Rolling Back
      * Your contribution is needed to write complete hint about this method
      */
-    public function trans_rollback(): bool
+    public function transRollback(): bool
     {
         return $this->db->transRollback();
     }
@@ -2459,20 +2523,20 @@ class Model
      * Run the query of collected property.
      * Executes the prepared query chain on the builder and resets the state.
      */
-    private function _run_query()
+    private function _runQuery()
     {
         $executed = false;
 
         // 1. Initialize Builder if not set
         if (! $this->_builder) {
-            if ($this->_is_query) {
+            if ($this->_isQuery) {
                 // For raw queries, use the connection itself
                 $this->_builder = $this->db;
             } elseif ($this->_table) {
                 // Use Query Builder for table-based operations
-                /** @var BaseBuilder $builder_instance */
-                $builder_instance = $this->db->table($this->_table);
-                $this->_builder = $builder_instance;
+                /** @var BaseBuilder $builderInstance */
+                $builderInstance = $this->db->table($this->_table);
+                $this->_builder = $builderInstance;
 
                 if ($this->_limit) {
                     // Apply limit/offset for query builder if set
@@ -2485,14 +2549,14 @@ class Model
                 }
             } else {
                 // Builder initialization failed (e.g., table() was never called)
-                $this->_reset_properties();
+                $this->_resetProperties();
             }
         }
 
         $query = $this->_builder;
 
         // Builder methods that execute the query and return a Result or success/failure bool
-        $execution_filters = [
+        $executionFilters = [
             'get', 'getWhere', 'countAll', 'countAllResults',
             'insert', 'insertBatch', 'update', 'updateBatch',
             'upsert', 'upsertBatch', 'replace',
@@ -2500,36 +2564,36 @@ class Model
         ];
 
         // Methods that operate on the already executed Query Result (getResultObject, getRow, etc.)
-        $result_methods_filter = [
+        $resultMethodsFilter = [
             'getNumRows',
             'getResultObject', 'getResultArray',
             'getRow', 'getRowArray', 'getRowObject',
         ];
 
         // Track if we need to execute get() before result methods
-        $has_result_method = false;
-        $result_method_data = null;
+        $hasResultMethod = false;
+        $resultMethodData = null;
 
         foreach ($this->_prepare as $val) {
             $function = $val['function'];
             $arguments = $val['arguments'];
 
             // Check if this is a result method
-            if (in_array($function, $result_methods_filter)) {
-                $has_result_method = true;
-                $result_method_data = $val;
+            if (in_array($function, $resultMethodsFilter, true)) {
+                $hasResultMethod = true;
+                $resultMethodData = $val;
                 continue; // Skip processing now, handle after
             }
 
             // Handle special functions (Subquery logic)
             if ('selectSubquery' === $function || 'fromSubquery' === $function) {
                 if (isset($arguments[0]) && $arguments[0] instanceof self && $query instanceof BaseBuilder) {
-                    $subquery_object = $arguments[0];
-                    $subquery_builder = $this->_extract_builder($subquery_object);
+                    $subqueryObject = $arguments[0];
+                    $subqueryBuilder = $this->_extractBuilder($subqueryObject);
                     $alias = (isset($arguments[1]) ? $arguments[1] : ('fromSubquery' == $function ? 'subquery' : ''));
 
-                    if ($subquery_builder) {
-                        $query->$function($subquery_builder, $alias);
+                    if ($subqueryBuilder) {
+                        $query->$function($subqueryBuilder, $alias);
                     }
                 }
                 $executed = true;
@@ -2545,7 +2609,7 @@ class Model
             $query = call_user_func_array([$query, $function], $arguments);
 
             // Set flags for execution/result processing
-            if (in_array($function, $execution_filters)) {
+            if (in_array($function, $executionFilters, true)) {
                 $executed = true;
                 if ('get' === $function || 'getWhere' === $function) {
                     $this->_get = true;
@@ -2557,9 +2621,9 @@ class Model
         }
 
         // Now handle result method if one was queued
-        if ($has_result_method && $result_method_data) {
-            $function = $result_method_data['function'];
-            $arguments = $result_method_data['arguments'];
+        if ($hasResultMethod && $resultMethodData) {
+            $function = $resultMethodData['function'];
+            $arguments = $resultMethodData['arguments'];
 
             // If we haven't executed get() yet, do it now
             if (! $this->_get && $query instanceof BaseBuilder) {
@@ -2578,7 +2642,7 @@ class Model
 
         // Final result handling
         if ($executed) {
-            $this->_reset_properties();
+            $this->_resetProperties();
 
             // Return the result
             return $query;
@@ -2590,7 +2654,7 @@ class Model
     /**
      * Resets internal properties after query execution.
      */
-    private function _reset_properties(): void
+    private function _resetProperties(): void
     {
         $this->_builder = null;
         $this->_prepare = [];
@@ -2601,7 +2665,7 @@ class Model
         $this->_limit = null;
         $this->_offset = null;
         $this->_get = false;
-        $this->_is_query = false;
+        $this->_isQuery = false;
         $this->_selection = false;
     }
 
@@ -2612,7 +2676,7 @@ class Model
      * @param mixed $value The value for comparison.
      * @return array{column: string, value: mixed, escape: bool}
      */
-    private function _cast_column(?string $column = null, mixed $value = '', bool $escape = true): array
+    private function _castColumn(?string $column = null, mixed $value = '', bool $escape = true): array
     {
         $column = trim((string) $column);
         $operand = null;
@@ -2620,56 +2684,56 @@ class Model
         if (strpos($column, ' ') !== false) {
             // Get operand if any
             $parts = explode(' ', $column, 2);
-            $base_column = $parts[0];
-            $get_operand = strtoupper(trim($parts[1]));
+            $baseColumn = $parts[0];
+            $getOperand = strtoupper(trim($parts[1]));
 
-            if (in_array($get_operand, ['!=', '>=', '<=', '>', '<', '='])) { // Added '=' for completeness
+            if (in_array($getOperand, ['!=', '>=', '<=', '>', '<', '='], true)) { // Added '=' for completeness
                 // Remove operand from column
-                    $column = $base_column;
+                    $column = $baseColumn;
 
                 // Set operand
-                $operand = $get_operand;
-            } elseif (in_array($get_operand, ['IS NULL', 'IS NOT NULL'])) {
+                $operand = $getOperand;
+            } elseif (in_array(strtoupper($getOperand), ['IS NULL', 'IS NOT NULL'], true)) {
                 // Remove operand from column
-                $column = $base_column;
+                $column = $baseColumn;
 
                 // Set operand
-                $operand = $get_operand;
+                $operand = $getOperand;
 
                 // Set escape
                 $escape = false;
             }
         }
 
-        if (in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) && ! stripos($column, '(') && ! stripos($column, ')')) {
-            $cast_type = 'VARCHAR'; // Default cast type
+        if (in_array($this->db->DBDriver, ['SQLSRV', 'Postgre'], true) && ! stripos($column, '(') && ! stripos($column, ')')) {
+            $castType = 'VARCHAR'; // Default cast type
 
             // Determine data type and cast type based on value
             if (is_int($value)) {
-                $cast_type = 'INTEGER';
+                $castType = 'INTEGER';
                 $value = (int) $value;
             } elseif (is_float($value)) {
                 // CodeIgniter treats 'double' as float, matching CI's type mapping
-                $cast_type = 'DOUBLE'; // Or 'FLOAT'
+                $castType = 'DOUBLE'; // Or 'FLOAT'
                 $value = (float) $value;
             } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false)) {
-                $cast_type = ('SQLSRV' == $this->db->DBDriver ? 'DATETIME' : 'TIMESTAMP');
+                $castType = ('SQLSRV' == $this->db->DBDriver ? 'DATETIME' : 'TIMESTAMP');
             } elseif (is_string($value) && (DateTime::createFromFormat('Y-m-d', $value) !== false)) {
-                $cast_type = 'DATE';
+                $castType = 'DATE';
             } elseif (! is_array($value) && null !== $value) {
-                $cast_type = 'VARCHAR' . ('SQLSRV' == $this->db->DBDriver ? '(MAX)' : '');
+                $castType = 'VARCHAR' . ('SQLSRV' == $this->db->DBDriver ? '(MAX)' : '');
                 $value = (string) $value;
             }
 
-            $column_name_only = (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
+            $columnNameOnly = (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
 
             if ('SQLSRV' == $this->db->DBDriver) {
-                $column = 'CONVERT(' . $cast_type . ', ' . $column_name_only . ')';
+                $column = 'CONVERT(' . $castType . ', ' . $columnNameOnly . ')';
             } else {
-                $column = 'CAST(' . $column_name_only . ' AS ' . $cast_type . ')';
+                $column = 'CAST(' . $columnNameOnly . ' AS ' . $castType . ')';
             }
 
-            if (strpos($cast_type, 'VARCHAR') !== false) {
+            if (strpos($castType, 'VARCHAR') !== false) {
                 $column = 'LOWER(' . $column . ')';
                 if (is_string($value)) {
                     $value = strtolower($value);
@@ -2688,47 +2752,47 @@ class Model
      * Extract builder from subquery object.
      * Extracts CodeIgniter Query Builder from the custom Model subquery object.
      *
-     * @param self $subquery_object The subquery object instance.
+     * @param self $subqueryObject The subquery object instance.
      */
-    private function _extract_builder(self $subquery_object): ?BaseBuilder
+    private function _extractBuilder(self $subqueryObject): ?BaseBuilder
     {
-        if (! ($subquery_object instanceof self)) {
+        if (! ($subqueryObject instanceof self)) {
             return null;
         }
 
-        if ($subquery_object->_table) {
+        if ($subqueryObject->_table) {
             // FORCE REBUILD builder for subquery
-            /** @var BaseBuilder $builder_instance */
-            $builder_instance = $this->db->table($subquery_object->_table);
-            $subquery_object->_builder = $builder_instance;
+            /** @var BaseBuilder $builderInstance */
+            $builderInstance = $this->db->table($subqueryObject->_table);
+            $subqueryObject->_builder = $builderInstance;
 
             // Process all prepare statements for the subquery
-            foreach ($subquery_object->_prepare as $prepare) {
+            foreach ($subqueryObject->_prepare as $prepare) {
                 $function = $prepare['function'];
                 $arguments = $prepare['arguments'];
 
-                if (! method_exists($subquery_object->_builder, $function)) {
+                if (! method_exists($subqueryObject->_builder, $function)) {
                     continue;
                 }
 
                 // Recursively call _extract_builder for nested subqueries
                 if (('selectSubquery' === $function || 'fromSubquery' === $function) && isset($arguments[0]) && $arguments[0] instanceof self) {
-                    $nested_builder = $this->_extract_builder($arguments[0]);
+                    $nestedBuilder = $this->_extractBuilder($arguments[0]);
                     $alias = $arguments[1] ?? '';
-                    if ($nested_builder) {
-                        call_user_func_array([$subquery_object->_builder, $function], [$nested_builder, $alias]);
+                    if ($nestedBuilder) {
+                        call_user_func_array([$subqueryObject->_builder, $function], [$nestedBuilder, $alias]);
                     }
                 } else {
-                    call_user_func_array([$subquery_object->_builder, $function], $arguments);
+                    call_user_func_array([$subqueryObject->_builder, $function], $arguments);
                 }
             }
 
-            if (! $subquery_object->_selection) {
-                $subquery_object->_builder->select('*');
+            if (! $subqueryObject->_selection) {
+                $subqueryObject->_builder->select('*');
             }
         }
 
         /** @var BaseBuilder|null */
-        return $subquery_object->_builder;
+        return $subqueryObject->_builder;
     }
 }

@@ -15,7 +15,7 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Comments;
+namespace Aksara\Modules\CMS\Controllers\Comments;
 
 use Aksara\Laboratory\Core;
 
@@ -29,17 +29,17 @@ class Feedback extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone, delete');
+        $this->unsetMethod('create, update, clone, delete');
 
         $this->_primary = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
     }
 
     public function index()
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'post__comments',
             [
                 'comment_id' => $this->_primary
@@ -79,7 +79,7 @@ class Feedback extends Core
             'app__users',
             'app__users.user_id = post__comments.user_id'
         )
-        ->get_where(
+        ->getWhere(
             'post__comments',
             [
                 'post__comments.comment_id' => $this->_primary
@@ -89,7 +89,7 @@ class Feedback extends Core
         ->row();
 
         if ($query) {
-            $this->set_description('
+            $this->setDescription('
                 <div class="row border-bottom">
                     <div class="col-sm-4 col-md-2">
                         ' . phrase('User') . '
@@ -119,35 +119,35 @@ class Feedback extends Core
             ');
         }
 
-        $this->set_title(phrase('Feedback'))
-        ->set_icon('mdi mdi-file-alert-outline')
-        ->unset_column('comment_id, post_id, reply_id, edited')
-        ->unset_view('comment_id, post_id, reply_id, edited')
+        $this->setTitle(phrase('Feedback'))
+        ->setIcon('mdi mdi-file-alert-outline')
+        ->unsetColumn('comment_id, post_id, reply_id, edited')
+        ->unsetView('comment_id, post_id, reply_id, edited')
 
-        ->column_order('first_name, message, timestamp')
+        ->columnOrder('first_name, message, timestamp')
 
-        ->set_primary('comment_id, user_id')
+        ->setPrimary('comment_id, user_id')
 
-        ->add_toolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
+        ->addToolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
 
-        ->set_field([
+        ->setField([
             'comments' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_relation(
+        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setRelation(
             'user_id',
             'app__users.user_id',
             '{{ app__users.first_name }} {{ app__users.last_name }}'
         )
 
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
         ->where([
             'comment_id' => $this->_primary
         ])
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
@@ -156,7 +156,7 @@ class Feedback extends Core
     {
         $this->permission->must_ajax(current_page('../'));
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'post__comments',
             [
                 'comment_id' => $this->_primary

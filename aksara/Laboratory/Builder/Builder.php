@@ -52,7 +52,7 @@ class Builder
      * @param   string|null $type  The specific component method name (e.g., 'text', 'index')
      * @return  string|bool Returns the file content string or false on failure
      */
-    public function get_component(string $theme, string $path, ?string $type = null): string|bool
+    public function getComponent(string $theme, string $path, ?string $type = null): string|bool
     {
         $component = null;
 
@@ -84,7 +84,7 @@ class Builder
 
             // 4. Validate requested type
             // If requested type is invalid or missing, fallback to a default.
-            if ($type && ! in_array($type, $templates)) {
+            if ($type && ! in_array($type, $templates, true)) {
                 // Fallback logic: 'index' for Core, 'text' for others
                 $type = ('core' === $path ? 'index' : 'text');
             }
@@ -98,30 +98,30 @@ class Builder
                 }
 
                 // Generate component data
-                $component_data = $builder->$template();
+                $componentData = $builder->$template();
 
                 // Define target file path
-                $target_dir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
-                $target_file = $target_dir . DIRECTORY_SEPARATOR . $component_data['type'] . '.twig';
+                $targetDir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
+                $targetFile = $targetDir . DIRECTORY_SEPARATOR . $componentData['type'] . '.twig';
 
                 // Check if file exists
-                if (! file_exists($target_file)) {
+                if (! file_exists($targetFile)) {
                     // Create directory if it doesn't exist
-                    if (! is_dir($target_dir)) {
-                        mkdir($target_dir, 0755, true);
+                    if (! is_dir($targetDir)) {
+                        mkdir($targetDir, 0755, true);
                     }
 
                     // Write the raw component content to the Twig file
-                    file_put_contents($target_file, $component_data['component']);
+                    file_put_contents($targetFile, $componentData['component']);
                 }
             }
 
             // 6. Return the requested component content
             if ($type) {
-                $requested_file = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '') . DIRECTORY_SEPARATOR . $type . '.twig';
+                $requestedFile = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '') . DIRECTORY_SEPARATOR . $type . '.twig';
 
-                if (file_exists($requested_file)) {
-                    $component = file_get_contents($requested_file);
+                if (file_exists($requestedFile)) {
+                    $component = file_get_contents($requestedFile);
                 }
             }
         } catch (Throwable $e) {

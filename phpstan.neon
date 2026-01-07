@@ -1,0 +1,25 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    phpVersion: 80100
+    tmpDir: build/phpstan
+    level: 5
+
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+
+    paths:
+        - aksara
+        - modules
+        - install
+
+    excludePaths:
+        analyseAndScan:
+            - */Views/*
+            - */views/*
+            - */ThirdParty/*
+            - */vendor/*
+
+    checkMissingCallableSignature: true
+    treatPhpDocTypesAsCertain: false

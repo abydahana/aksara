@@ -32,8 +32,8 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
@@ -41,9 +41,9 @@ class Synchronize extends Core
         helper('filesystem');
 
         // Generate phrases from source code
-        $generated_phrases = $this->_generate_phrases_from_source();
+        $generatedPhrases = $this->_generate_phrases_from_source();
         $languages = get_filenames(WRITEPATH . 'translations');
-        $populated_phrases = [];
+        $populatedPhrases = [];
         $error = 0;
 
         if ($languages) {
@@ -59,7 +59,7 @@ class Synchronize extends Core
                     $translation = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
 
                     // Merge phrases
-                    $populated_phrases = array_merge($populated_phrases, json_decode($translation, true));
+                    $populatedPhrases = array_merge($populatedPhrases, json_decode($translation, true));
                 } catch (Throwable $e) {
                     // Failed to read file
                     $error++;
@@ -67,13 +67,13 @@ class Synchronize extends Core
             }
 
             // Filter: Keep only phrases that are also found in generated phrases
-            // $populated_phrases = array_intersect_key($populated_phrases, $generated_phrases);
+            // $populatedPhrases = array_intersect_key($populatedPhrases, $generatedPhrases);
 
             // Merge with generated phrases from source code
-            $populated_phrases = array_merge($populated_phrases, $generated_phrases);
+            $populatedPhrases = array_merge($populatedPhrases, $generatedPhrases);
 
             // Combine array value using its key
-            $populated_phrases = array_combine(array_keys($populated_phrases), array_keys($populated_phrases));
+            $populatedPhrases = array_combine(array_keys($populatedPhrases), array_keys($populatedPhrases));
 
             // Second looping, to assign populated phrases into translation
             foreach ($languages as $key => $val) {
@@ -88,10 +88,10 @@ class Synchronize extends Core
                     $phrases = json_decode($translation, true);
 
                     // Keep only phrases that are populated
-                    $phrases = array_intersect_key($phrases, $populated_phrases);
+                    $phrases = array_intersect_key($phrases, $populatedPhrases);
 
                     // Merge missing phrases
-                    $phrases = array_merge($populated_phrases, $phrases);
+                    $phrases = array_merge($populatedPhrases, $phrases);
 
                     // Sort phrases by key
                     ksort($phrases);
@@ -108,7 +108,7 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']), current_page('../'));
         }
 
-        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages) - 1) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($populated_phrases)) . '</b>']), current_page('../'));
+        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages) - 1) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($populatedPhrases)) . '</b>']), current_page('../'));
     }
 
     /**
@@ -141,7 +141,7 @@ class Synchronize extends Core
         );
 
         foreach ($iterator as $file) {
-            if ($file->isFile() && in_array($file->getExtension(), $fileExtensions)) {
+            if ($file->isFile() && in_array($file->getExtension(), $fileExtensions, true)) {
                 $this->_scan_file($file->getPathname(), $translations);
             }
         }
@@ -178,7 +178,7 @@ class Synchronize extends Core
      */
     private function _add_translation($key, &$translations, $filePath = '')
     {
-        $original_key = $key;
+        $originalKey = $key;
 
         // Manual unescape - only for escaped quotes
         $key = str_replace("\\'", "'", $key);

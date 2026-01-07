@@ -37,10 +37,10 @@ class Language extends Core
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
         }
 
-        $this->set_title(phrase('Change Language'))
-        ->set_icon('mdi mdi-translate')
+        $this->setTitle(phrase('Change Language'))
+        ->setIcon('mdi mdi-translate')
 
-        ->set_output([
+        ->setOutput([
             'languages' => $this->_languages()
         ])
 
@@ -49,7 +49,7 @@ class Language extends Core
 
     private function _languages($json = false)
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'app__languages',
             [
                 'status' => 1

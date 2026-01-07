@@ -97,12 +97,12 @@ class Miscellaneous
         $hash = substr(sha1(uniqid('', true)), -6);
 
         // Check if hash already present
-        if ($model->get_where('app__shortlinks', ['hash' => $hash], 1)->row()) {
+        if ($model->getWhere('app__shortlinks', ['hash' => $hash], 1)->row()) {
             // Hash already present, repeat generator
             $this->shortlink_generator($params);
         }
 
-        $checker = $model->get_where('app__shortlinks', ['url' => $params], 1)->row();
+        $checker = $model->getWhere('app__shortlinks', ['url' => $params], 1)->row();
 
         // Check if parameter already present
         if ($checker) {

@@ -31,7 +31,7 @@ class AppGroupsPrivileges extends Migration
                 'null' => false
             ],
             'privileges' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV'], true) ? 'text' : 'longtext'),
                 'null' => false
             ],
             'last_generated' => [

@@ -263,7 +263,7 @@
                             </div>
                             <div class="card-body p-3">
                                 <?php
-                                    foreach ($recent_signed as $key => $val) {
+                                    foreach ($recentSigned as $key => $val) {
                                         echo '
                                             ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
                                             <div class="row no-gutters align-items-center">
@@ -361,7 +361,7 @@
                                         <?= phrase('System Language'); ?>
                                     </label>
                                     <p>
-                                        <?= (isset($system_language) ? $system_language : null); ?>
+                                        <?= (isset($systemLanguage) ? $systemLanguage : null); ?>
                                     </p>
                                 </div>
                             </div>
