@@ -644,7 +644,7 @@ class Comment extends Core
                     'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
                     'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
                     'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
+                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2], true) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {

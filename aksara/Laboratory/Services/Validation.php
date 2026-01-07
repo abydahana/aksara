@@ -312,17 +312,17 @@ class Validation
 
         if (! in_array($source->getMimeType(), $validMime, true)) {
             // Mime is invalid
-            $this->_upload_error = phrase('The selected file format is not allowed to upload');
+            $this->_uploadError = phrase('The selected file format is not allowed to upload');
 
             return false;
         } elseif ((float) $source->getSizeByBinaryUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
-            $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
+            $this->_uploadError = phrase('The selected file size exceeds the maximum allocation');
 
             return false;
         } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             // Upload directory is unwritable
-            $this->_upload_error = phrase('The upload folder is not writable');
+            $this->_uploadError = phrase('The upload folder is not writable');
 
             return false;
         }
@@ -333,7 +333,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $uploadPath, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $uploadPath . '/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -345,7 +345,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $uploadPath . '/thumbs/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -357,7 +357,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $uploadPath . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $uploadPath . '/icons/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -371,7 +371,7 @@ class Validation
         // Check for PHP tags
         if (preg_match('/<\?php/i', $fileContent)) {
             // Ensure the file is not contain exploit command
-            $this->_upload_error = phrase('The file is not allowed to upload');
+            $this->_uploadError = phrase('The file is not allowed to upload');
 
             return false;
         }

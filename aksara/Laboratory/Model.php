@@ -1756,7 +1756,7 @@ class Model
         }
 
         $this->_prepare[] = [
-            // Only pass $limit and $offset if we rely on CI's get() to handle it, otherwise internal _run_query will handle limit/offset for pre-CI versions
+            // Only pass $limit and $offset if we rely on CI's get() to handle it, otherwise internal _runQuery will handle limit/offset for pre-CI versions
             'function' => 'get',
             'arguments' => [$limit, $offset],
         ];
@@ -1819,7 +1819,7 @@ class Model
     {
         $this->_runQuery();
 
-        // The _run_query will reset properties internally if it was marked as finished
+        // The _runQuery will reset properties internally if it was marked as finished
         // or just return $this if it was not. We return $this either way to maintain chainability.
         return $this;
     }
@@ -2400,7 +2400,7 @@ class Model
             'arguments' => [$reset]
         ];
 
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2416,7 +2416,7 @@ class Model
             'arguments' => [$reset]
         ];
 
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2432,7 +2432,7 @@ class Model
             'arguments' => [$reset]
         ];
 
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**
@@ -2448,7 +2448,7 @@ class Model
             'arguments' => [$reset]
         ];
 
-        return $this->_run_query();
+        return $this->_runQuery();
     }
 
     /**

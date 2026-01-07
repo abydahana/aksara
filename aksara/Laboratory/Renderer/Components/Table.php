@@ -311,7 +311,7 @@ class Table
             // Determine Deletion Permission for this row
             $deleting = ! in_array('delete', $this->_unsetMethod, true);
             foreach ($primaryKey as $field => $value) {
-                if (isset($this->_unsetDelete[$field]) && in_array($value, $this->_unsetDelete[$field])) {
+                if (isset($this->_unsetDelete[$field]) && in_array($value, $this->_unsetDelete[$field], true)) {
                     $deleting = false;
                 }
             }
@@ -562,11 +562,11 @@ class Table
         foreach ($queryParams as $keyword => $value) {
             if (in_array($path, $this->_unsetMethod, true)) {
                 return null;
-            } elseif ('read' == $path && isset($this->_unsetRead[$keyword]) && in_array($value, $this->_unsetRead[$keyword])) {
+            } elseif ('read' == $path && isset($this->_unsetRead[$keyword]) && in_array($value, $this->_unsetRead[$keyword], true)) {
                 return null;
-            } elseif ('update' == $path && isset($this->_unsetUpdate[$keyword]) && in_array($value, $this->_unsetUpdate[$keyword])) {
+            } elseif ('update' == $path && isset($this->_unsetUpdate[$keyword]) && in_array($value, $this->_unsetUpdate[$keyword], true)) {
                 return null;
-            } elseif ('delete' == $path && isset($this->_unsetDelete[$keyword]) && in_array($value, $this->_unsetDelete[$keyword])) {
+            } elseif ('delete' == $path && isset($this->_unsetDelete[$keyword]) && in_array($value, $this->_unsetDelete[$keyword], true)) {
                 return null;
             }
         }
