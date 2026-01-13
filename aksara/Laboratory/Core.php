@@ -3281,7 +3281,8 @@ abstract class Core extends Controller
 
             // Send to client
             if ('print' == $this->_method) {
-                return $this->response->setBody($output)->sendBody();
+                $this->response->setBody($output);
+                return $this->response->send();
             } else {
                 return $document->generate($output, $title, ('export' == $this->_method ? ($this->request->getGet('method') ?? 'export') : 'embed'));
             }
