@@ -3338,7 +3338,7 @@ abstract class Core extends Controller
 
             // Define essential properties needed by the table renderer (whitelisting for abstraction/safety).
             $whitelistedProperties = [
-                '_addButton', '_addDropdown', '_addToolbar', '_addFilter', '_columnOrder', '_gridView',
+                '_addButton', '_addClass', '_addDropdown', '_addToolbar', '_addFilter', '_columnOrder', '_gridView',
                 '_itemReference', '_mergeContent', '_mergeLabel', '_method', '_parameter', '_select',
                 '_setAlias', '_setAutocomplete', '_setButton', '_setField', '_setRelation',
                 '_setUploadPath', '_sortable', '_table', '_unsetColumn', '_unsetClone', '_unsetDelete',
@@ -3442,7 +3442,7 @@ abstract class Core extends Controller
             // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
 
             $whitelistedProperties = [
-                '_columnOrder', '_columnSize', '_fieldAppend', '_fieldPrepend', '_fieldOrder',
+                '_addClass', '_columnOrder', '_columnSize', '_fieldAppend', '_fieldPrepend', '_fieldOrder',
                 '_viewOrder', '_fieldPosition', '_fieldSize', '_groupField', '_mergeContent',
                 '_mergeField', '_mergeLabel', '_method', '_modalSize', '_setAlias',
                 '_setAttribute', '_setField', '_setHeading', '_setRelation', '_setUploadPath',

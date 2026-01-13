@@ -300,6 +300,11 @@ class Table
                 if (! $request->isAJAX() && ! $this->apiClient && $finalType) {
                     $this->builder->getComponent($this->_setTheme, 'table', $finalType);
                 }
+
+                // Add Class
+                if ('hyperlink' === $finalType && isset($this->_addClass[$field])) {
+                    $fieldData[$field]['class'] = $this->_addClass[$field];
+                }
             }
 
             $searchColumnsRendered = true;

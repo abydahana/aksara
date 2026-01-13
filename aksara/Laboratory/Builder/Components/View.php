@@ -594,7 +594,7 @@ class View
         // Template for Custom Link
         $component = <<<EOF
         <div>
-            <a href="{{ content }}" class="--xhr" target="{{ target }}">
+            <a href="{{ content }}" class="{{ class ?? '--xhr' }}" target="{{ target }}">
                 <b> {{ value }}<i class="mdi mdi-launch"></i> </b>
             </a>
         </div>

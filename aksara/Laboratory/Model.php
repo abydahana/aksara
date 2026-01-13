@@ -531,7 +531,7 @@ class Model
 
         $this->_prepare[] = [
             'function' => 'selectCount',
-            'arguments' => [$column, $alias],
+            'arguments' => [$column, $alias ?? $column],
         ];
 
         return $this;
@@ -550,7 +550,7 @@ class Model
 
         $this->_prepare[] = [
             'function' => 'selectSum',
-            'arguments' => [$column, $alias],
+            'arguments' => [$column, $alias ?? $column],
         ];
 
         return $this;
@@ -569,7 +569,7 @@ class Model
 
         $this->_prepare[] = [
             'function' => 'selectMin',
-            'arguments' => [$column, $alias],
+            'arguments' => [$column, $alias ?? $column],
         ];
 
         return $this;
@@ -588,7 +588,7 @@ class Model
 
         $this->_prepare[] = [
             'function' => 'selectMax',
-            'arguments' => [$column, $alias],
+            'arguments' => [$column, $alias ?? $column],
         ];
 
         return $this;
@@ -607,7 +607,7 @@ class Model
 
         $this->_prepare[] = [
             'function' => 'selectAvg',
-            'arguments' => [$column, $alias],
+            'arguments' => [$column, $alias ?? $column],
         ];
 
         return $this;

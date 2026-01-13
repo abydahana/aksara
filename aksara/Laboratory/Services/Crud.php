@@ -645,7 +645,7 @@ class Crud
         }
 
         if ($table && $this->model->tableExists($table)) {
-            if (method_exists($this->controller, 'before_insert')) {
+            if (method_exists($this->controller, 'beforeInsert')) {
                 $this->controller->beforeInsert();
             }
 
@@ -674,7 +674,7 @@ class Crud
                 unset_userdata('_uploaded_files');
                 unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
 
-                if (method_exists($this->controller, 'after_insert')) {
+                if (method_exists($this->controller, 'afterInsert')) {
                     $this->controller->afterInsert();
                 }
 
@@ -732,7 +732,7 @@ class Crud
             $query = $this->model->getWhere($table, $where, 1)->row();
 
             if ($query) {
-                if (method_exists($this->controller, 'before_update')) {
+                if (method_exists($this->controller, 'beforeUpdate')) {
                     $this->controller->beforeUpdate();
                 }
 
@@ -748,7 +748,7 @@ class Crud
                     unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
                     $this->unlinkFiles($oldFiles);
 
-                    if (method_exists($this->controller, 'after_update')) {
+                    if (method_exists($this->controller, 'afterUpdate')) {
                         $this->controller->afterUpdate();
                     }
 
@@ -813,7 +813,7 @@ class Crud
             $query = $this->model->getWhere($table, $where, 1)->row();
 
             if ($query) {
-                if (method_exists($this->controller, 'before_delete')) {
+                if (method_exists($this->controller, 'beforeDelete')) {
                     $this->controller->beforeDelete();
                 }
 
@@ -826,7 +826,7 @@ class Crud
 
                 if ($this->model->delete($table, $where, $limit)) {
                     $this->unlinkFiles($oldFiles);
-                    if (method_exists($this->controller, 'after_delete')) {
+                    if (method_exists($this->controller, 'afterDelete')) {
                         $this->controller->afterDelete();
                     }
                     set_userdata('token_timestamp', time());

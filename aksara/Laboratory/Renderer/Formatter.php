@@ -72,7 +72,7 @@ class Formatter
             }
             // 2. Select (Options)
             elseif ('select' === $key && ! empty($val['parameter'])) {
-                $value = $this->_formatSelect($value, $val['parameter']);
+                $value = $this->_formatSelect($field, $value, $val['parameter']);
             }
             // 3. Files & Images (Multiple)
             elseif (in_array($key, ['files', 'images'], true)) {
@@ -177,16 +177,21 @@ class Formatter
      * Format Select inputs.
      * Handles logic for 'create'/'update' modes (preparing options array) vs 'read' mode (translating value).
      */
-    private function _formatSelect(mixed $value, array $options): mixed
+    private function _formatSelect(string $field, mixed $value, array $options): mixed
     {
         // Edit Mode
         if (in_array($this->_method, ['create', 'update'], true)) {
             $formattedOptions = [];
             foreach ($options as $optKey => $optLabel) {
+                $isChecked = ((string) $optKey === (string) $value);
+                if ('create' === $this->_method && isset($this->_defaultValue[$field]) && $this->_defaultValue[$field] == $optKey) {
+                    $isChecked = true;
+                }
+
                 $formattedOptions[] = [
                     'value' => $optKey,
                     'label' => $optLabel,
-                    'selected' => ((string)$optKey === (string)$value)
+                    'selected' => $isChecked
                 ];
             }
             return $formattedOptions;

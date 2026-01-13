@@ -579,7 +579,7 @@ class Table
         // Template for Custom Link
         $component = <<<EOF
         <span>
-            <a href="{{ content }}" class="--xhr" target="{{ target }}">
+            <a href="{{ content }}" class="{{ class ?? '--xhr' }}" target="{{ target }}">
                 <b> {{ truncate(value, 32) }}<i class="mdi mdi-launch"></i> </b>
             </a>
         </span>

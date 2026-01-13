@@ -216,6 +216,11 @@ class View
             if (! $request->isAJAX() && ! $this->apiClient && $finalType) {
                 $component = $this->builder->getComponent($this->_setTheme, 'view');
             }
+
+            // Add Class
+            if ('hyperlink' === $finalType && isset($this->_addClass[$field])) {
+                $fieldData[$field]['class'] = $this->_addClass[$field];
+            }
         }
 
         // 4. Final Output Preparation
