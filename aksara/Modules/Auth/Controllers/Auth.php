@@ -169,7 +169,7 @@ class Auth extends Core
                         'user_id' => $execute->user_id,
                         'username' => $execute->username,
                         'group_id' => $execute->group_id,
-                        'language_id' => $execute->languageId,
+                        'language_id' => $execute->language_id,
                         'year' => ($this->_get_active_years() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
