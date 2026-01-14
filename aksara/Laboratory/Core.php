@@ -3024,7 +3024,7 @@ abstract class Core extends Controller
                 $this->_view = (is_array($this->_set_template) && isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 
                 // Get formatted results
-                $results = $this->render_form($results);
+                $results = $this->render_form($results ?? []);
 
                 // Set icon property
                 $this->_set_icon = ($this->_set_method || (isset($this->_set_icon[$this->_method])) && $icon ? $icon : 'mdi mdi-plus');
@@ -3064,7 +3064,7 @@ abstract class Core extends Controller
                 $this->_view = (is_array($this->_set_template) && isset($this->_set_template['form']) ? $this->_set_template['form'] : ($view && 'index' != $view ? $view : 'form'));
 
                 // Get formatted results
-                $results = $this->render_form($results);
+                $results = $this->render_form($results ?? []);
 
                 // Set icon property
                 $this->_set_icon = ($this->_set_method || (isset($this->_set_icon[$this->_method])) && $icon ? $icon : 'mdi mdi-square-edit-outline');
