@@ -197,7 +197,7 @@
         <h2 class="fw-bold mb-3">Создайте свое приложение уже сегодня</h2>
         <p class="text-secondary mb-4">Получите полный исходный код <strong>Aksara CMS</strong> и начните создавать собственную платформу без ограничений.</p>
         <div class="d-flex justify-content-center">
-            <a href="//wa.me/6281381614558" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-whatsapp"></i> ЧАТ В WHATSAPP</a>
+            <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> ПОЛУЧИТЬ ИСХОДНыЙ КОД</a>
         </div>
     </div>
 </section>

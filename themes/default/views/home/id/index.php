@@ -164,7 +164,7 @@
         <h2 class="fw-bold mb-3">Bangun Aplikasi Anda Hari Ini</h2>
         <p class="text-secondary mb-4">Dapatkan kode sumber lengkap <strong>Aksara CMS</strong> dan mulai bangun platform Anda sendiri tanpa batasan.</p>
         <div class="d-flex justify-content-center">
-            <a href="//wa.me/6281381614558" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-whatsapp"></i> HUBUNGI VIA WHATSAPP</a>
+            <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> DAPATKAN KODE SUMBER</a>
         </div>
     </div>
 </section>

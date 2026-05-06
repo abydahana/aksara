@@ -19,7 +19,7 @@
                 <?= get_setting('app_description'); ?>
             </p>
             <div class="d-flex justify-content-center gap-3 mb-5">
-                <a href="<?= base_url('auth'); ?>" class="btn btn-primary rounded-pill px-4 --modal">GET STARTED</a>
+                <a href="<?= base_url('auth'); ?>" class="btn btn-primary rounded-pill px-4 --modal">EMPEZAR</a>
             </div>
             
             <div class="row mt-5">
@@ -53,22 +53,22 @@
         <div class="row justify-content-center">
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->daily); ?></h2>
-                <h5 class="fw-bold mb-2">Daily Visits</h5>
+                <h5 class="fw-bold mb-2">Visitas diarias</h5>
                 <p class="text-muted small mb-0">Unique visitors today.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->weekly); ?></h2>
-                <h5 class="fw-bold mb-2">Weekly Visits</h5>
+                <h5 class="fw-bold mb-2">Visitas semanales</h5>
                 <p class="text-muted small mb-0">Total visits this week.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->monthly); ?></h2>
-                <h5 class="fw-bold mb-2">Monthly Visits</h5>
+                <h5 class="fw-bold mb-2">Visitas mensuales</h5>
                 <p class="text-muted small mb-0">Total visits this month.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->yearly); ?></h2>
-                <h5 class="fw-bold mb-2">Yearly Visits</h5>
+                <h5 class="fw-bold mb-2">Visitas anuales</h5>
                 <p class="text-muted small mb-0">Total visits this year.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
@@ -78,7 +78,7 @@
             </div>
             <div class="col-6 col-md-4 mb-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->comments); ?></h2>
-                <h5 class="fw-bold mb-2">Interactions</h5>
+                <h5 class="fw-bold mb-2">Interacciones</h5>
                 <p class="text-muted small mb-0">User comments & feedback.</p>
             </div>
         </div>
@@ -116,13 +116,13 @@
             <?php endforeach; ?>
         </div>
         <div class="mt-5 text-center">
-            <a href="<?= base_url('galleries'); ?>" class="text-decoration-none fw-semibold --xhr">See all galleries <i class="mdi mdi-arrow-right"></i></a>
+            <a href="<?= base_url('galleries'); ?>" class="text-decoration-none fw-semibold --xhr">Ver todas las galerías <i class="mdi mdi-arrow-right"></i></a>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
-<!-- Latest News -->
+<!-- Últimas noticias -->
 <?php if ($articles): ?>
 <section class="section-padding fade-in">
     <div class="container">
@@ -152,7 +152,7 @@
             <?php endforeach; ?>
         </div>
         <div class="mt-5 text-center">
-            <a href="<?= base_url('blogs'); ?>" class="text-decoration-none fw-semibold --xhr">See all news <i class="mdi mdi-arrow-right"></i></a>
+            <a href="<?= base_url('blogs'); ?>" class="text-decoration-none fw-semibold --xhr">Ver todas las noticias <i class="mdi mdi-arrow-right"></i></a>
         </div>
     </div>
 </section>
@@ -161,10 +161,10 @@
 <!-- Start Building CTA -->
 <section class="section-padding pb-0 border-fade-top text-center fade-in">
     <div class="container">
-        <h2 class="fw-bold mb-3">Build Your Application Today</h2>
+        <h2 class="fw-bold mb-3">Construya su aplicación hoy</h2>
         <p class="text-secondary mb-4">Get the complete source code of <strong>Aksara CMS</strong> and start building your own platform without limitations.</p>
         <div class="d-flex justify-content-center">
-            <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> GET SOURCE CODE</a>
+            <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> OBTENER CÓDIGO FUENTE</a>
         </div>
     </div>
 </section>
