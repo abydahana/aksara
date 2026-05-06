@@ -34,7 +34,7 @@
 <!-- Trusted By Section -->
 <section class="section-padding fade-in">
     <div class="container text-center">
-        <p class="text-muted fw-semibold mb-4">Trusted by Organizations and Enterprises</p>
+        <p class="text-muted fw-semibold mb-4">Kuruluşlar ve İşletmeler Tarafından Güvenilen</p>
         <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 opacity-75">
             <h4 class="fw-bold m-0 text-secondary">GeekTech</h4>
             <h4 class="fw-bold m-0 text-secondary">CV. HSD</h4>
@@ -54,27 +54,27 @@
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->daily); ?></h2>
                 <h5 class="fw-bold mb-2">Günlük Ziyaretler</h5>
-                <p class="text-muted small mb-0">Unique visitors today.</p>
+                <p class="text-muted small mb-0">Bugün benzersiz ziyaretçiler.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->weekly); ?></h2>
                 <h5 class="fw-bold mb-2">Haftalık Ziyaretler</h5>
-                <p class="text-muted small mb-0">Total visits this week.</p>
+                <p class="text-muted small mb-0">Bu haftaki toplam ziyaretler.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->monthly); ?></h2>
                 <h5 class="fw-bold mb-2">Aylık Ziyaretler</h5>
-                <p class="text-muted small mb-0">Total visits this month.</p>
+                <p class="text-muted small mb-0">Bu ayki toplam ziyaretler.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->yearly); ?></h2>
                 <h5 class="fw-bold mb-2">Yıllık Ziyaretler</h5>
-                <p class="text-muted small mb-0">Total visits this year.</p>
+                <p class="text-muted small mb-0">Bu yılki toplam ziyaretler.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->posts); ?></h2>
-                <h5 class="fw-bold mb-2">Published Articles</h5>
-                <p class="text-muted small mb-0">Total content available.</p>
+                <h5 class="fw-bold mb-2">Yayınlanan Makaleler</h5>
+                <p class="text-muted small mb-0">Toplam mevcut içerik.</p>
             </div>
             <div class="col-6 col-md-4 mb-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->comments); ?></h2>
@@ -90,7 +90,7 @@
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Featured Galleries</h3>
+            <h3 class="fw-bold m-0 display-6">Öne Çıkan Galeriler</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($galleries, 0, 4) as $key => $val): ?>
@@ -122,12 +122,12 @@
 </section>
 <?php endif; ?>
 
-<!-- Son Haberler -->
+<!-- Latest News -->
 <?php if ($articles): ?>
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Latest news</h3>
+            <h3 class="fw-bold m-0 display-6">Son Haberler</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($articles, 0, 4) as $key => $val): ?>
@@ -162,7 +162,7 @@
 <section class="section-padding pb-0 border-fade-top text-center fade-in">
     <div class="container">
         <h2 class="fw-bold mb-3">Uygulamanızı Bugün Oluşturun</h2>
-        <p class="text-secondary mb-4">Get the complete source code of <strong>Aksara CMS</strong> and start building your own platform without limitations.</p>
+        <p class="text-secondary mb-4"><strong>Aksara CMS</strong>'nin tam kaynak kodunu alın ve kendi platformunuzu sınır olmaksızın oluşturmaya başlayın.</p>
         <div class="d-flex justify-content-center">
             <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> KAYNAK KODU AL</a>
         </div>

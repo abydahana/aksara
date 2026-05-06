@@ -34,7 +34,7 @@
 <!-- Trusted By Section -->
 <section class="section-padding fade-in">
     <div class="container text-center">
-        <p class="text-muted fw-semibold mb-4">Trusted by Organizations and Enterprises</p>
+        <p class="text-muted fw-semibold mb-4">Con la confianza de organizaciones y empresas</p>
         <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 opacity-75">
             <h4 class="fw-bold m-0 text-secondary">GeekTech</h4>
             <h4 class="fw-bold m-0 text-secondary">CV. HSD</h4>
@@ -53,28 +53,28 @@
         <div class="row justify-content-center">
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->daily); ?></h2>
-                <h5 class="fw-bold mb-2">Visitas diarias</h5>
-                <p class="text-muted small mb-0">Unique visitors today.</p>
+                <h5 class="fw-bold mb-2">Visitas Diarias</h5>
+                <p class="text-muted small mb-0">Visitantes únicos hoy.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->weekly); ?></h2>
-                <h5 class="fw-bold mb-2">Visitas semanales</h5>
-                <p class="text-muted small mb-0">Total visits this week.</p>
+                <h5 class="fw-bold mb-2">Visitas Semanales</h5>
+                <p class="text-muted small mb-0">Total de visitas esta semana.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->monthly); ?></h2>
-                <h5 class="fw-bold mb-2">Visitas mensuales</h5>
-                <p class="text-muted small mb-0">Total visits this month.</p>
+                <h5 class="fw-bold mb-2">Visitas Mensuales</h5>
+                <p class="text-muted small mb-0">Total de visitas este mes.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->yearly); ?></h2>
-                <h5 class="fw-bold mb-2">Visitas anuales</h5>
-                <p class="text-muted small mb-0">Total visits this year.</p>
+                <h5 class="fw-bold mb-2">Visitas Anuales</h5>
+                <p class="text-muted small mb-0">Total de visitas este año.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->posts); ?></h2>
-                <h5 class="fw-bold mb-2">Published Articles</h5>
-                <p class="text-muted small mb-0">Total content available.</p>
+                <h5 class="fw-bold mb-2">Artículos Publicados</h5>
+                <p class="text-muted small mb-0">Contenido total disponible.</p>
             </div>
             <div class="col-6 col-md-4 mb-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->comments); ?></h2>
@@ -90,7 +90,7 @@
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Featured Galleries</h3>
+            <h3 class="fw-bold m-0 display-6">Galerías Destacadas</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($galleries, 0, 4) as $key => $val): ?>
@@ -122,12 +122,12 @@
 </section>
 <?php endif; ?>
 
-<!-- Últimas noticias -->
+<!-- Latest News -->
 <?php if ($articles): ?>
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Latest news</h3>
+            <h3 class="fw-bold m-0 display-6">Últimas Noticias</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($articles, 0, 4) as $key => $val): ?>
@@ -161,8 +161,8 @@
 <!-- Start Building CTA -->
 <section class="section-padding pb-0 border-fade-top text-center fade-in">
     <div class="container">
-        <h2 class="fw-bold mb-3">Construya su aplicación hoy</h2>
-        <p class="text-secondary mb-4">Get the complete source code of <strong>Aksara CMS</strong> and start building your own platform without limitations.</p>
+        <h2 class="fw-bold mb-3">Construye tu Aplicación Hoy</h2>
+        <p class="text-secondary mb-4">Obtén el código fuente completo de <strong>Aksara CMS</strong> y comienza a construir tu propia plataforma sin limitaciones.</p>
         <div class="d-flex justify-content-center">
             <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> OBTENER CÓDIGO FUENTE</a>
         </div>

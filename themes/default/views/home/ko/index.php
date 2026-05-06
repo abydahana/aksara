@@ -34,7 +34,7 @@
 <!-- Trusted By Section -->
 <section class="section-padding fade-in">
     <div class="container text-center">
-        <p class="text-muted fw-semibold mb-4">Trusted by Organizations and Enterprises</p>
+        <p class="text-muted fw-semibold mb-4">조직 및 기업의 신뢰</p>
         <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 opacity-75">
             <h4 class="fw-bold m-0 text-secondary">GeekTech</h4>
             <h4 class="fw-bold m-0 text-secondary">CV. HSD</h4>
@@ -54,27 +54,27 @@
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->daily); ?></h2>
                 <h5 class="fw-bold mb-2">일일 방문</h5>
-                <p class="text-muted small mb-0">Unique visitors today.</p>
+                <p class="text-muted small mb-0">오늘 고유 방문자.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->weekly); ?></h2>
                 <h5 class="fw-bold mb-2">주간 방문</h5>
-                <p class="text-muted small mb-0">Total visits this week.</p>
+                <p class="text-muted small mb-0">이번 주 총 방문 수.</p>
             </div>
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->monthly); ?></h2>
                 <h5 class="fw-bold mb-2">월간 방문</h5>
-                <p class="text-muted small mb-0">Total visits this month.</p>
+                <p class="text-muted small mb-0">이번 달 총 방문 수.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->yearly); ?></h2>
                 <h5 class="fw-bold mb-2">연간 방문</h5>
-                <p class="text-muted small mb-0">Total visits this year.</p>
+                <p class="text-muted small mb-0">올해 총 방문 수.</p>
             </div>
             <div class="col-6 col-md-4 mb-4 mb-md-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->posts); ?></h2>
-                <h5 class="fw-bold mb-2">Published Articles</h5>
-                <p class="text-muted small mb-0">Total content available.</p>
+                <h5 class="fw-bold mb-2">게시된 기사</h5>
+                <p class="text-muted small mb-0">사용 가능한 총 콘텐츠.</p>
             </div>
             <div class="col-6 col-md-4 mb-0">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->comments); ?></h2>
@@ -90,7 +90,7 @@
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Featured Galleries</h3>
+            <h3 class="fw-bold m-0 display-6">주요 갤러리</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($galleries, 0, 4) as $key => $val): ?>
@@ -122,12 +122,12 @@
 </section>
 <?php endif; ?>
 
-<!-- 최신 뉴스 -->
+<!-- Latest News -->
 <?php if ($articles): ?>
 <section class="section-padding fade-in">
     <div class="container">
         <div class="text-center mb-5">
-            <h3 class="fw-bold m-0 display-6">Latest news</h3>
+            <h3 class="fw-bold m-0 display-6">최신 뉴스</h3>
         </div>
         <div class="row">
             <?php foreach (array_slice($articles, 0, 4) as $key => $val): ?>
@@ -162,7 +162,7 @@
 <section class="section-padding pb-0 border-fade-top text-center fade-in">
     <div class="container">
         <h2 class="fw-bold mb-3">지금 바로 애플리케이션을 구축하세요</h2>
-        <p class="text-secondary mb-4">Get the complete source code of <strong>Aksara CMS</strong> and start building your own platform without limitations.</p>
+        <p class="text-secondary mb-4"><strong>Aksara CMS</strong>의 전체 소스 코드를 받아 제한 없이 나만의 플랫폼을 구축하세요.</p>
         <div class="d-flex justify-content-center">
             <a href="https://github.com/abydahana/aksara" target="_blank" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-github"></i> 소스 코드 받기</a>
         </div>
