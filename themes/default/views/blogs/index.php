@@ -97,7 +97,7 @@
     <div class="container">
         <?php if ($articles): ?>
             <?php foreach ($articles as $key => $val): ?>
-                <div class="py-3">
+                <div class="section-padding">
                     <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="--xhr">
                         <h3 class="text-center text-sm-start mt-3">
                             <?= $val->category_title; ?>

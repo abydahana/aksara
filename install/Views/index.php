@@ -63,7 +63,7 @@
                             <div class="row">
                                 <div class="col-md-4 border-end pt-3 d-none d-md-block position-relative">
                                     <div class="sticky-top mb-3 pb-5" style="top:15px">
-                                        <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
+                                        <a href="//www.aksaracms.com" class="text-decoration-none" target="_blank">
                                             <h4 class="fw-bold mb-3">
                                                 <b>
                                                     Aksara

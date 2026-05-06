@@ -129,16 +129,16 @@ if (! function_exists('encoding_fixer')) {
      */
     function encoding_fixer(mixed $data = [])
     {
-        if (! is_string($data) || ! is_array($data)) {
-            return $data;
-        }
-
         if (is_string($data)) {
-            $encoding = mb_detect_encoding($data);
-            $data = mb_convert_encoding($data, 'UTF-8', $encoding);
+            // Fix malformed UTF-8 characters
+            $data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
         } elseif (is_array($data)) {
             foreach ($data as $key => $val) {
                 $data[$key] = encoding_fixer($val);
+            }
+        } elseif (is_object($data)) {
+            foreach ($data as $key => $val) {
+                $data->$key = encoding_fixer($val);
             }
         }
 
