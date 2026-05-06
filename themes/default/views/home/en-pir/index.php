@@ -49,7 +49,7 @@
 <!-- Statistics Section -->
 <section class="section-padding fade-in bg-light">
     <div class="container text-center">
-        <h2 class="fw-bold mb-5 display-6">Community & Engagement</h2>
+        <h2 class="fw-bold mb-5 display-6">Crews & Parleys</h2>
         <div class="row justify-content-center">
             <div class="col-6 col-md-4 mb-5">
                 <h2 class="display-4 fw-bold text-primary mb-2"><?= number_format($statistics->daily); ?></h2>
