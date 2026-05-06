@@ -17,47 +17,47 @@
 
 namespace Aksara\Modules\Cms\Controllers\Partials;
 
+use Throwable;
 use CodeIgniter\Files\File;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Media extends Core
 {
-    private $_folders = [];
-    private $_files = [];
+    private array $_folders = [];
+    private array $_files = [];
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
     }
 
     public function index()
     {
         if ($this->request->getGet('action') == 'delete') {
-            return $this->_delete_file($this->request->getGet('file'));
+            return $this->_deleteFile($this->request->getGet('file'));
         }
 
         $directory = $this->request->getGet('directory');
 
         // Validasi dan normalisasi path
-        $directory = $this->_sanitize_path($directory);
+        $directory = $this->_sanitizePath($directory);
 
-        $this->set_title(phrase('Media'))
-        ->set_icon('mdi mdi-folder-image')
-        ->set_output([
-            'results' => $this->_directory_list($directory)
+        $this->setTitle(phrase('Media'))
+        ->setIcon('mdi mdi-folder-image')
+        ->setOutput([
+            'results' => $this->_directoryList($directory)
         ])
         ->render();
     }
 
-    private function _sanitize_path($path = null)
+    private function _sanitizePath($path = null)
     {
         if (empty($path)) {
             return null;
@@ -106,7 +106,7 @@ class Media extends Core
         return implode(DIRECTORY_SEPARATOR, $result);
     }
 
-    private function _delete_file($filename = '')
+    private function _deleteFile($filename = '')
     {
         if (DEMO_MODE) {
             // Demo mode
@@ -115,13 +115,13 @@ class Media extends Core
 
         try {
             // Sanitize filename before deletion
-            $filename = $this->_sanitize_path($filename);
+            $filename = $this->_sanitizePath($filename);
 
             // Ensure we're deleting within UPLOAD_PATH
             $full_path = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
 
             // Additional security check
-            if (! $this->_is_within_upload_path($full_path)) {
+            if (! $this->_isWithinUploadPath($full_path)) {
                 return throw_exception(403, phrase('Access denied'));
             }
 
@@ -133,7 +133,7 @@ class Media extends Core
         return throw_exception(301, phrase('The file was successfully removed.'), current_page(null, ['file' => null, 'action' => null]));
     }
 
-    private function _is_within_upload_path($path)
+    private function _isWithinUploadPath(string $path): bool
     {
         $real_upload_path = realpath(UPLOAD_PATH);
         $real_path = realpath($path);
@@ -146,10 +146,10 @@ class Media extends Core
         return strpos($real_path, $real_upload_path) === 0;
     }
 
-    private function _directory_list($directory = null)
+    private function _directoryList($directory = null)
     {
         // Validate that directory is within allowed path
-        if ($directory && ! $this->_is_valid_directory($directory)) {
+        if ($directory && ! $this->_isValidDirectory($directory)) {
             return throw_exception(403, phrase('Access denied'));
         }
 
@@ -162,7 +162,7 @@ class Media extends Core
         }
 
         // Additional security check
-        if (! $this->_is_within_upload_path($full_path)) {
+        if (! $this->_isWithinUploadPath($full_path)) {
             return throw_exception(403, phrase('Access denied'));
         }
 
@@ -186,24 +186,24 @@ class Media extends Core
             $data = array_values($data);
         }
 
-        $filename = ($this->request->getGet('file') ? $this->_sanitize_path($this->request->getGet('file')) : null);
-        $parent_directory = ($directory ? $this->_get_parent_directory($directory) : null);
+        $filename = ($this->request->getGet('file') ? $this->_sanitizePath($this->request->getGet('file')) : null);
+        $parent_directory = ($directory ? $this->_getParentDirectory($directory) : null);
 
         if ($data) {
-            $this->_parse_files($data, $directory);
+            $this->_parseFiles($data, $directory);
         }
 
         $description = null;
 
         if ($filename && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
             // Security check for file access
-            if (! $this->_is_within_upload_path(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
+            if (! $this->_isWithinUploadPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename)) {
                 return throw_exception(403, phrase('Access denied'));
             }
 
             $file = new File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description = get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
-            $description['icon'] = $this->_get_icon($directory, $filename);
+            $description['icon'] = $this->_getIcon($directory, $filename);
             $description['mime_type'] = $file->getMimeType();
             $description['server_path'] = str_replace('\\', '/', $description['server_path']);
         }
@@ -228,7 +228,7 @@ class Media extends Core
         ];
     }
 
-    private function _is_valid_directory($directory)
+    private function _isValidDirectory(?string $directory = null): bool
     {
         // Check for directory traversal attempts
         if (strpos($directory, '..') !== false) {
@@ -256,7 +256,7 @@ class Media extends Core
         return true;
     }
 
-    private function _get_parent_directory($directory)
+    private function _getParentDirectory(?string $directory = null)
     {
         $parts = explode(DIRECTORY_SEPARATOR, $directory);
 
@@ -268,7 +268,7 @@ class Media extends Core
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
 
-    private function _parse_files($data = [], $directory = null)
+    private function _parseFiles($data = [], $directory = null)
     {
         if ($data) {
             foreach ($data as $key => $val) {
@@ -288,7 +288,7 @@ class Media extends Core
                     ];
                 } else {
                     if (is_array($val)) {
-                        $this->_parse_files($val, $directory);
+                        $this->_parseFiles($val, $directory);
                     } else {
                         if (stripos($val, 'placeholder') !== false) {
                             continue;
@@ -307,7 +307,7 @@ class Media extends Core
                             'source' => rtrim($val, DIRECTORY_SEPARATOR),
                             'label' => rtrim($val, DIRECTORY_SEPARATOR),
                             'type' => $mime,
-                            'icon' => $this->_get_icon($directory, $val)
+                            'icon' => $this->_getIcon($directory, $val)
                         ];
                     }
                 }
@@ -315,7 +315,7 @@ class Media extends Core
         }
     }
 
-    private function _get_icon($directory = null, $filename = null)
+    private function _getIcon($directory = null, $filename = null)
     {
         $filename = (strpos($filename, DIRECTORY_SEPARATOR) !== false ? substr($filename, strrpos($filename, DIRECTORY_SEPARATOR) + 1) : $filename);
         $extension = pathinfo($filename, PATHINFO_EXTENSION);

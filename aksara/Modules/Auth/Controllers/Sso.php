@@ -17,11 +17,12 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
+use Exception;
+use Throwable;
 use Config\Services;
 use Hybridauth\Hybridauth;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Sso extends Core
 {
@@ -57,7 +58,7 @@ class Sso extends Core
 
         try {
             // Instantiate Hybridauth
-            $hybridauth = new \Hybridauth\Hybridauth($config);
+            $hybridauth = new Hybridauth($config);
 
             // Instantiate adapter directly
             $adapter = $hybridauth->authenticate($provider);
@@ -70,7 +71,7 @@ class Sso extends Core
                 return $this->_validate($provider, $profile);
             } else {
                 // Throw exception
-                throw new \Throwable(phrase('Unable to signing you in using th selected platform.'));
+                throw new Exception(phrase('Unable to signing you in using the selected platform.'));
             }
         } catch (Throwable $e) {
             return throw_exception(403, $e->getMessage(), base_url('auth'));
@@ -90,20 +91,20 @@ class Sso extends Core
         }
 
         $query = $this->model->select('
-            app__users.user_id,
-            app__users.username,
-            app__users.group_id,
-            app__users.language_id
+            app_users.user_id,
+            app_users.username,
+            app_users.group_id,
+            app_users.language_id
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = app__users_oauth.user_id'
+            'app_users',
+            'app_users.user_id = app_users_oauth.user_id'
         )
-        ->get_where(
-            'app__users_oauth',
+        ->getWhere(
+            'app_users_oauth',
             [
-                'app__users_oauth.service_provider' => $provider,
-                'app__users_oauth.access_token' => $params->identifier
+                'app_users_oauth.service_provider' => $provider,
+                'app_users_oauth.access_token' => $params->identifier
             ]
         )
         ->row();
@@ -117,7 +118,7 @@ class Sso extends Core
                 'username' => $query->username,
                 'group_id' => $query->group_id,
                 'language_id' => $query->language_id,
-                'year' => ($this->_get_active_years() ? date('Y') : null),
+                'year' => ($this->_getActiveYears() ? date('Y') : null),
                 'session_generated' => time()
             ]);
 
@@ -126,8 +127,8 @@ class Sso extends Core
             $query = $this->model->select('
                 user_id
             ')
-            ->get_where(
-                'app__users',
+            ->getWhere(
+                'app_users',
                 [
                     'email' => $params->email
                 ]
@@ -137,7 +138,7 @@ class Sso extends Core
             if ($query) {
                 // User found, set the oauth platform integration
                 $this->model->insert(
-                    'app__users_oauth',
+                    'app_users_oauth',
                     [
                         'user_id' => $query->user_id,
                         'service_provider' => $provider,
@@ -159,8 +160,8 @@ class Sso extends Core
                     $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
                     $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
-                    $this->_resize_image('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-                    $this->_resize_image('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
+                    $this->_resizeImage('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
+                    $this->_resizeImage('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
                 } else {
                     $photo = 'placeholder.png';
                 }
@@ -169,7 +170,7 @@ class Sso extends Core
                 $default_membership = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
 
                 $this->model->insert(
-                    'app__users',
+                    'app_users',
                     [
                         'email' => $params->email ?? 'abydahana@gmail.com',
                         'password' => '',
@@ -187,11 +188,11 @@ class Sso extends Core
                     ]
                 );
 
-                if ($this->model->affected_rows() > 0) {
-                    $insert_id = $this->model->insert_id();
+                if ($this->model->affectedRows() > 0) {
+                    $insert_id = $this->model->insertId();
 
                     $this->model->insert(
-                        'app__users_oauth',
+                        'app_users_oauth',
                         [
                             'user_id' => $insert_id,
                             'service_provider' => $provider,
@@ -200,7 +201,7 @@ class Sso extends Core
                         ]
                     );
 
-                    $this->_send_welcome_email($params, $provider);
+                    $this->_sendWelcomeEmail($params, $provider);
                 }
 
                 return $this->_validate($params);
@@ -208,13 +209,13 @@ class Sso extends Core
         }
     }
 
-    private function _send_welcome_email(?object $params = null, ?string $provider = null)
+    private function _sendWelcomeEmail(?object $params = null, ?string $provider = null)
     {
         $messaging = new Messaging();
 
-        $messaging->set_email($params->email)
-        ->set_subject(phrase('Welcome to') . ' ' . get_setting('app_name'))
-        ->set_message('
+        $messaging->setEmail($params->email)
+        ->setSubject(phrase('Welcome to') . ' ' . get_setting('app_name'))
+        ->setMessage('
             <p>
                 ' . phrase('Hi') . ', <b>' . $params->first_name . ' ' . $params->last_name . '</b>
             </p>
@@ -242,10 +243,10 @@ class Sso extends Core
     /**
      * Get active year
      */
-    private function _get_active_years()
+    private function _getActiveYears()
     {
-        $query = $this->model->get_where(
-            'app__years',
+        $query = $this->model->getWhere(
+            'app_years',
             [
                 'status' => 1
             ]
@@ -263,7 +264,7 @@ class Sso extends Core
      * @param mixed|null $filename
      * @param mixed|null $type
      */
-    private function _resize_image($path = null, $filename = null, $type = null, $width = 0, $height = 0)
+    private function _resizeImage($path = null, $filename = null, $type = null, $width = 0, $height = 0)
     {
         $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;

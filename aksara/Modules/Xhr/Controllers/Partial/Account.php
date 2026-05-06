@@ -34,10 +34,10 @@ class Account extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Option'))
-        ->set_icon('mdi mdi-cogs')
+        $this->setTitle(phrase('Option'))
+        ->setIcon('mdi mdi-cogs')
 
-        ->set_output([
+        ->setOutput([
             'user' => $this->_user()
         ])
 
@@ -46,8 +46,8 @@ class Account extends Core
 
     private function _user()
     {
-        $query = $this->model->get_where(
-            'app__users',
+        $query = $this->model->getWhere(
+            'app_users',
             [
                 'user_id' => get_userdata('user_id')
             ]

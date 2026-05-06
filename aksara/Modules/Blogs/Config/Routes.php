@@ -15,6 +15,13 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+/**
+ * @var \CodeIgniter\Router\RouteCollection $routes
+ */
+if (! isset($routes)) {
+    $routes = \Config\Services::routes(true);
+}
+
 $routes->add('blogs/search', '\Aksara\Modules\Blogs\Controllers\Search::index');
 $routes->add('blogs/tags', '\Aksara\Modules\Blogs\Controllers\Tags::index');
 $routes->add('blogs/read', '\Aksara\Modules\Blogs\Controllers\Read::index');

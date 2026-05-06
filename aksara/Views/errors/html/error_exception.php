@@ -1,4 +1,14 @@
 <?php
+/**
+ * @var string          $title
+ * @var string          $type
+ * @var int|string      $code
+ * @var string          $message
+ * @var string          $file
+ * @var int             $line
+ * @var array           $trace
+ * @var \Throwable      $exception
+ */
 $errorId = uniqid('error', true);
 ?>
 <!doctype html>
@@ -9,7 +19,7 @@ $errorId = uniqid('error', true);
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 
-    <title><?= esc($title) ?></title>
+    <title><?= esc((string) $title) ?></title>
     <style>
         <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
     </style>
@@ -23,11 +33,11 @@ $errorId = uniqid('error', true);
     <!-- Header -->
     <div class="header">
         <div class="container">
-            <h1><?= esc($title), esc($exception->getCode() ? ' #' . $exception->getCode() : '') ?></h1>
+            <h1><?= esc((string) $title), esc($exception->getCode() ? ' #' . $exception->getCode() : '') ?></h1>
             <p>
                 <?php /** @var \Throwable $exception */ ?>
-                <?= nl2br(esc($exception->getMessage())) ?>
-                <a href="//www.google.com/search?q=<?= urlencode($title . ' ' . preg_replace('#\'.*\'|".*"#Us', '', $exception->getMessage())) ?>"
+                <?= nl2br(esc((string) $exception->getMessage())) ?>
+                <a href="//www.google.com/search?q=<?= urlencode((string) $title . ' ' . preg_replace('#\'.*\'|".*"#Us', '', $exception->getMessage())) ?>"
                    rel="noreferrer" target="_blank">search &rarr;</a>
             </p>
         </div>
@@ -35,7 +45,7 @@ $errorId = uniqid('error', true);
 
     <!-- Source -->
     <div class="container">
-        <p><b><?= esc(clean_path($file)) ?></b> at line <b><?= esc($line) ?></b></p>
+        <p><b><?= esc(clean_path((string) $file)) ?></b> at line <b><?= esc((string) $line) ?></b></p>
 
         <?php if (is_file($file)) : ?>
             <div class="source">
@@ -54,12 +64,12 @@ $errorId = uniqid('error', true);
             <div>
                 <p>
                     <!-- Trace info -->
-                    <?php if (isset($row['file']) && is_file($row['file'])) :?>
+                    <?php if (isset($row['file']) && is_file((string) $row['file'])) :?>
                         <?php
                         if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true)) {
-                            echo esc($row['function'] . ' ' . clean_path($row['file']));
+                            echo esc((string) $row['function'] . ' ' . clean_path((string) $row['file']));
                         } else {
-                            echo esc(clean_path($row['file']) . ' : ' . $row['line']);
+                            echo esc(clean_path((string) $row['file']) . ' : ' . (string) $row['line']);
                         }
                         ?>
                     <?php else: ?>
@@ -68,7 +78,7 @@ $errorId = uniqid('error', true);
 
                     <!-- Class/Method -->
                     <?php if (isset($row['class'])) : ?>
-                        &nbsp;&nbsp;&mdash;&nbsp;&nbsp;<?= esc($row['class'] . $row['type'] . $row['function']) ?>
+                        &nbsp;&nbsp;&mdash;&nbsp;&nbsp;<?= esc((string) $row['class'] . (string) $row['type'] . (string) $row['function']) ?>
                         <?php if (! empty($row['args'])) : ?>
                             <?php $argsId = $errorId . 'args' . $index ?>
                             ( <a href="#" onclick="return toggle('<?= esc($argsId, 'attr') ?>');">arguments</a> )
@@ -98,14 +108,14 @@ $errorId = uniqid('error', true);
                     <?php endif; ?>
 
                     <?php if (! isset($row['class']) && isset($row['function'])) : ?>
-                        &nbsp;&nbsp;&mdash;&nbsp;&nbsp;    <?= esc($row['function']) ?>()
+                        &nbsp;&nbsp;&mdash;&nbsp;&nbsp;    <?= esc((string) $row['function']) ?>()
                     <?php endif; ?>
                 </p>
 
                 <!-- Source? -->
-                <?php if (isset($row['file']) && is_file($row['file']) && isset($row['class'])) : ?>
+                <?php if (isset($row['file']) && is_file((string) $row['file']) && isset($row['class'])) : ?>
                     <div class="source">
-                        <?= static::highlightFile($row['file'], $row['line']) ?>
+                        <?= static::highlightFile((string) $row['file'], (int) $row['line']) ?>
                     </div>
                 <?php endif; ?>
             </div>

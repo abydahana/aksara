@@ -1,5 +1,8 @@
 <?php
-    $people = (isset($results[0]) ? $results[0] : []);
+/**
+ * @var mixed $results
+ */
+$people = (isset($results[0]) ? $results[0] : []);
 ?>
 <?php if ($people): ?>
     <div class="bg-light">

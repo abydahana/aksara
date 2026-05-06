@@ -15,9 +15,6 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
-
 if (! function_exists('geojson2png')) {
     /**
      * Convert GeoJSON data to a Google Static Maps URL
@@ -48,7 +45,7 @@ if (! function_exists('geojson2png')) {
 
                     $points = [];
                     // Flatten coordinates regardless of nesting depth
-                    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
+                    $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($coords));
                     $temp_coords = [];
                     foreach ($iterator as $v) {
                         $temp_coords[] = $v;
@@ -63,7 +60,7 @@ if (! function_exists('geojson2png')) {
                         $paths[] = $prefix . '|' . implode('|', $points);
                     }
                 } elseif (in_array($type, ['Point', 'MultiPoint'])) {
-                    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($coords));
+                    $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($coords));
                     $temp_coords = [];
                     foreach ($iterator as $v) {
                         $temp_coords[] = $v;

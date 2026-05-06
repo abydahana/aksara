@@ -1,4 +1,10 @@
-<?php if (isset($results[0])): ?>
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $suggestions
+ */
+if (isset($results[0])): ?>
     <?php
         $page = $results[0];
         $carousel = ($page->carousel_content ? json_decode($page->carousel_content) : null);

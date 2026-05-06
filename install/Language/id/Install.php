@@ -204,6 +204,5 @@ return [
     'Import sample data' => 'Sertakan data contoh',
 
     // Additional phrases
-    'Sectoral' => 'Pemetaan Sektoral',
-    'Regional' => 'Pemetaan Regional'
+    'WebGIS' => 'WebGIS'
 ];

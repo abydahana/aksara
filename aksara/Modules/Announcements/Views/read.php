@@ -1,4 +1,9 @@
-<?php if ($results): ?>
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ */
+if ($results): ?>
     <div class="bg-light">
         <div class="py-3 py-md-5">
             <div class="container">

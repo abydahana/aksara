@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Notifications extends Core
 {
-    private $_table = 'notifications';
+    private string $_table = 'notifications';
 
     public function __construct()
     {
@@ -34,28 +34,28 @@ class Notifications extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Notifications'))
-        ->set_icon('mdi mdi-bell-ring')
+        $this->setTitle(phrase('Notifications'))
+        ->setIcon('mdi mdi-bell-ring')
         ->render($this->_table);
     }
 
     public function partials()
     {
         $query = $this->model->select('
-            app__users.first_name,
-            app__users.last_name,
-            app__users.photo AS avatar,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.photo AS avatar,
             notifications.type,
             notifications.interaction_id,
             notifications.path AS url,
             notifications.timestamp
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = notifications.from_user'
+            'app_users',
+            'app_users.user_id = notifications.from_user'
         )
-        ->order_by('notifications.timestamp', 'DESC')
-        ->get_where(
+        ->orderBy('notifications.timestamp', 'DESC')
+        ->getWhere(
             $this->_table,
             [
                 'from_user != ' => get_userdata('user_id'),
@@ -97,7 +97,7 @@ class Notifications extends Core
 
     public function polling()
     {
-        $query = $this->model->select_count('*', 'total')->get_where(
+        $query = $this->model->selectCount('*', 'total')->getWhere(
             $this->_table,
             [
                 'from_user != ' => get_userdata('user_id'),

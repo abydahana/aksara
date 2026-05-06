@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @var mixed $exception
+ * @var mixed $message
+ * @var mixed $value
+ */
 use CodeIgniter\CLI\CLI;
 
 // The main Exception

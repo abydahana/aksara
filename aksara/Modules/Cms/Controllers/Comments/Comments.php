@@ -21,57 +21,57 @@ use Aksara\Laboratory\Core;
 
 class Comments extends Core
 {
-    private $_table = 'post__comments';
+    private string $_table = 'post_comments';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone,  delete');
+        $this->unsetMethod('create, update, clone,  delete');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Comments'))
-        ->set_icon('mdi mdi-comment-multiple-outline')
-        ->unset_column('post_id, post_type, reply_id, mention_id, edited, attachment')
-        ->unset_view('post_id, post_type, reply_id, mention_id, edited, attachment')
+        $this->setTitle(phrase('Comments'))
+        ->setIcon('mdi mdi-comment-multiple-outline')
+        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment')
+        ->unsetView('post_id, post_type, reply_id, mention_id, edited, attachment')
 
-        ->column_order('first_name, post_id, post_path, comments, timestamp, status')
+        ->columnOrder('first_name, post_id, post_path, comments, timestamp, status')
 
-        ->add_button('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
+        ->addButton('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
 
-        ->set_field([
+        ->setField([
             'comments' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_field('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
+        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setField('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
 
-        ->set_relation(
+        ->setRelation(
             'user_id',
-            'app__users.user_id',
-            '{{ app__users.first_name }} {{ app__users.last_name }}'
+            'app_users.user_id',
+            '{{ app_users.first_name }} {{ app_users.last_name }}'
         )
 
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
-        ->merge_content('{{ comment_id }}', phrase('Feedback'), 'callback_get_feedback')
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeContent('{{ comment_id }}', phrase('Feedback'), 'callback_getFeedback')
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
 
     public function hide()
     {
-        $this->permission->must_ajax(current_page('../'));
+        $this->permission->mustAjax(current_page('../'));
 
         $comment_id = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'comment_id' => $comment_id
@@ -81,7 +81,7 @@ class Comments extends Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you want to hide is not found', current_page('../')));
+            return throw_exception(404, phrase('The comment you want to hide is not found'), current_page('../'));
         }
 
         if ($this->request->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
@@ -140,19 +140,19 @@ class Comments extends Core
         ]);
     }
 
-    public function get_feedback($params = [])
+    public function getFeedback($params = [])
     {
         if (! isset($params['comment_id'])) {
             return false;
         }
 
-        $query = $this->model->get_where(
-            'post__comments_reports',
+        $query = $this->model->getWhere(
+            'post_comments_reports',
             [
                 'comment_id' => $params['comment_id']
             ]
         )
-        ->num_rows();
+        ->numRows();
 
         if ($query) {
             return '<a href="' . current_page('feedback', ['id' => $params['comment_id'], 'column' => null, 'q' => null, 'per_page' => null, 'order' => null, 'sort' => null]) . '" class="badge bg-danger --xhr">' . number_format($query) . ' ' . ($query > 1 ? phrase('reports') : phrase('report')) . '</a>';

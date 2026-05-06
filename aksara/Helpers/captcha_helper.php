@@ -15,9 +15,6 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-use GdImage;
-use Throwable;
-
 if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
@@ -82,7 +79,7 @@ if (! function_exists('create_captcha')) {
             for ($i = 0; $i < $config['word_length']; $i++) {
                 try {
                     $word .= $config['pool'][random_int(0, $pool_length - 1)];
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $word .= $config['pool'][mt_rand(0, $pool_length - 1)];
                 }
             }
@@ -95,7 +92,7 @@ if (! function_exists('create_captcha')) {
             $im = imagecreatetruecolor($config['img_width'], $config['img_height']);
 
             // Validate that $im is actually a GdImage object (solves Intelephense P1007)
-            if (! $im instanceof GdImage) {
+            if (! $im instanceof \GdImage) {
                 return false;
             }
 
@@ -167,7 +164,7 @@ if (! function_exists('create_captcha')) {
                 'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $config['img_width'] . 'px; height: ' . $config['img_height'] . 'px; border: 0;" alt="CAPTCHA" />',
                 'filename' => $img_filename
             ];
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Gracefully fail if something goes wrong during image processing
             return false;
         }

@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class User extends Core
 {
-    private $_table = 'app__users';
+    private string $_table = 'app_users';
 
     public function __construct()
     {
@@ -34,7 +34,7 @@ class User extends Core
             $query = $this->model->select('
                 username
             ')
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'user_id' => $this->request->getGet('user_id')
@@ -59,18 +59,18 @@ class User extends Core
             $this->where('user_id', get_userdata('user_id'));
         }
 
-        $this->set_title('{{ first_name }} {{ last_name }}', phrase('User not found'))
-        ->set_icon('mdi mdi-account')
+        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('User not found'))
+        ->setIcon('mdi mdi-account')
 
-        ->set_output([
+        ->setOutput([
             'suggestions' => $this->model->select('
                 user_id,
                 username,
                 first_name,
                 last_name
             ')
-            ->order_by('username', 'RANDOM')
-            ->get_where(
+            ->orderBy('username', 'RANDOM')
+            ->getWhere(
                 $this->_table,
                 [
                     'status' => 1,
@@ -81,7 +81,7 @@ class User extends Core
             ->result()
         ])
         ->select('
-            (SELECT MAX(timestamp) FROM app__log_activities WHERE user_id = app__users.user_id) AS last_activity
+            (SELECT MAX(timestamp) FROM app_log_activities WHERE user_id = app_users.user_id) AS last_activity
         ')
         ->limit(1)
         ->render($this->_table);
@@ -96,7 +96,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -111,23 +111,23 @@ class User extends Core
             $title = phrase('Activities');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-account-clock-outline')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-account-clock-outline')
+        ->setOutput([
             'user' => $user
         ])
         ->join(
-            'app__users',
-            'app__users.user_id = post__comments.user_id'
+            'app_users',
+            'app_users.user_id = post_comments.user_id'
         )
         ->where([
-            'app__users.username' => $username,
-            'post__comments.status' => 1
+            'app_users.username' => $username,
+            'post_comments.status' => 1
         ])
-        ->order_by([
-            'post__comments.timestamp' => 'DESC'
+        ->orderBy([
+            'post_comments.timestamp' => 'DESC'
         ])
-        ->render('post__comments', 'activities');
+        ->render('post_comments', 'activities');
     }
 
     public function likes($username = '')
@@ -139,7 +139,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -154,22 +154,22 @@ class User extends Core
             $title = phrase('Likes');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-heart')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-heart')
+        ->setOutput([
             'user' => $user
         ])
         ->join(
-            'app__users',
-            'app__users.user_id = post__likes.user_id'
+            'app_users',
+            'app_users.user_id = post_likes.user_id'
         )
         ->where([
-            'app__users.username' => $username
+            'app_users.username' => $username
         ])
-        ->order_by([
-            'post__likes.timestamp' => 'DESC'
+        ->orderBy([
+            'post_likes.timestamp' => 'DESC'
         ])
-        ->render('post__likes', 'likes');
+        ->render('post_likes', 'likes');
     }
 
     public function guestbook($username = '')
@@ -181,7 +181,7 @@ class User extends Core
             last_name,
             photo
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'username' => $username
@@ -196,9 +196,9 @@ class User extends Core
             $title = phrase('Guest Book');
         }
 
-        $this->set_title($title)
-        ->set_icon('mdi mdi-book')
-        ->set_output([
+        $this->setTitle($title)
+        ->setIcon('mdi mdi-book')
+        ->setOutput([
             'user' => $user
         ])
         ->render();

@@ -17,27 +17,23 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-use Config\Services;
-use Aksara\Laboratory\Core;
 use Throwable;
 use ZipArchive;
+use Config\Services;
+use Aksara\Laboratory\Core;
 
 class Addons extends Core
 {
-    private $_primary;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         helper('filesystem');
-
-        $this->_primary = $this->request->getGet('item');
 
         if ('market' == $this->request->getPost('source')) {
             return $this->_listing();
@@ -46,8 +42,8 @@ class Addons extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Add-Ons Market'))
-        ->set_icon('mdi mdi-cart')
+        $this->setTitle(phrase('Add-Ons Market'))
+        ->setIcon('mdi mdi-cart')
 
         ->render();
     }
@@ -103,12 +99,12 @@ class Addons extends Core
             }
         }
 
-        $this->set_title((isset($package->name) ? $package->name : phrase('No item found!')))
-        ->set_icon('mdi ' . ($this->request->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
-        ->set_output([
+        $this->setTitle((isset($package->name) ? $package->name : phrase('No item found!')))
+        ->setIcon('mdi ' . ($this->request->getGet('type') == 'theme' ? 'mdi-palette' : 'mdi-puzzle'))
+        ->setOutput([
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render(null, 'detail');
     }
@@ -189,8 +185,8 @@ class Addons extends Core
                             // Unable to copy file, use FTP instead
                             $site_id = get_setting('id');
 
-                            $query = $this->model->get_where(
-                                'app__ftp',
+                            $query = $this->model->getWhere(
+                                'app_ftp',
                                 [
                                     'site_id' => $site_id
                                 ],
@@ -400,8 +396,8 @@ class Addons extends Core
                                 // Loops the given group
                                 foreach ($val->group as $_key => $_val) {
                                     // Get the existing menu from the database
-                                    $existing = $this->model->get_where(
-                                        'app__menus',
+                                    $existing = $this->model->getWhere(
+                                        'app_menus',
                                         [
                                             'menu_placement' => $val->placement,
                                             'group_id' => $_val
@@ -417,7 +413,7 @@ class Addons extends Core
                                     // Check if obtained links is populated
                                     if ($serialized) {
                                         // Make links unique
-                                        $serialized = $this->_array_unique($serialized, 'slug', $package_path);
+                                        $serialized = $this->_arrayUnique($serialized, 'slug', $package_path);
 
                                         // Merge the old link with new one
                                         $links = array_merge($serialized, $links);
@@ -426,7 +422,7 @@ class Addons extends Core
                                     if ($existing) {
                                         // Update the menu to the database
                                         $this->model->update(
-                                            'app__menus',
+                                            'app_menus',
                                             [
                                                 'serialized_data' => json_encode($links)
                                             ],
@@ -437,7 +433,7 @@ class Addons extends Core
                                     } else {
                                         // Insert the menu to the database
                                         $this->model->insert(
-                                            'app__menus',
+                                            'app_menus',
                                             [
                                                 'menu_placement' => $val->placement,
                                                 'menu_label' => phrase('Generated Menu'),
@@ -462,8 +458,8 @@ class Addons extends Core
                                 // Loops the given permission
                                 foreach ($val as $_key => $_val) {
                                     // Get the privileges from the database
-                                    $privileges = $this->model->get_where(
-                                        'app__groups_privileges',
+                                    $privileges = $this->model->getWhere(
+                                        'app_groups_privileges',
                                         [
                                             'path' => $_key
                                         ],
@@ -475,7 +471,7 @@ class Addons extends Core
                                     if ($privileges) {
                                         // Update the existing privileges
                                         $this->model->update(
-                                            'app__groups_privileges',
+                                            'app_groups_privileges',
                                             [
                                                 'privileges' => json_encode(array_unique(array_merge(json_decode($privileges, true), json_decode(json_encode($_val), true)))),
                                                 'last_generated' => date('Y-m-d H:i:s')
@@ -487,7 +483,7 @@ class Addons extends Core
                                     } else {
                                         // Otherwise, insert a new one
                                         $this->model->insert(
-                                            'app__groups_privileges',
+                                            'app_groups_privileges',
                                             [
                                                 'path' => $_key,
                                                 'privileges' => json_encode(array_unique($_val)),
@@ -498,8 +494,8 @@ class Addons extends Core
                                 }
 
                                 // Get the existing group privileges
-                                $group_privileges = $this->model->get_where(
-                                    'app__groups',
+                                $group_privileges = $this->model->getWhere(
+                                    'app_groups',
                                     [
                                         'group_id' => $key
                                     ],
@@ -511,7 +507,7 @@ class Addons extends Core
                                 if ($group_privileges) {
                                     // Update the group privileges obtained
                                     $this->model->update(
-                                        'app__groups',
+                                        'app_groups',
                                         [
                                             'group_privileges' => json_encode(array_merge(json_decode($group_privileges, true), json_decode(json_encode($val), true)))
                                         ],
@@ -661,7 +657,7 @@ class Addons extends Core
      * @param mixed|null $key
      * @param mixed|null $value
      */
-    private function _array_unique($array = [], $key = null, $value = null)
+    private function _arrayUnique($array = [], $key = null, $value = null)
     {
         $value = strtolower($value);
 

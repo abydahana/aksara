@@ -17,9 +17,9 @@
 
 namespace Aksara\Laboratory;
 
+use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Model;
-use Throwable;
 
 /**
  * Permission Class
@@ -64,9 +64,9 @@ class Permission
             status
         ')
         ->where('username', $username)
-        ->or_where('email', $username)
+        ->orWhere('email', $username)
         ->get(
-            'app__users',
+            'app_users',
             1
         )
         ->row();
@@ -77,8 +77,8 @@ class Permission
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
             // Security: Check for brute force blocking (based on IP)
-            $blocking_check = $this->_model->get_where(
-                'app__users_blocked',
+            $blocking_check = $this->_model->getWhere(
+                'app_users_blocked',
                 [
                     'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
                 ],
@@ -93,7 +93,7 @@ class Permission
                 } else {
                     // Release the block if time passed
                     $this->_model->delete(
-                        'app__users_blocked',
+                        'app_users_blocked',
                         [
                             'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
                         ]
@@ -103,7 +103,7 @@ class Permission
 
             // Update last login timestamp
             $this->_model->update(
-                'app__users',
+                'app_users',
                 [
                     'last_login' => date('Y-m-d H:i:s')
                 ],
@@ -120,9 +120,9 @@ class Permission
                     session_id,
                     timestamp
                 ')
-                ->group_by('session_id')
-                ->get_where(
-                    'app__log_activities',
+                ->groupBy('session_id')
+                ->getWhere(
+                    'app_log_activities',
                     [
                         'user_id' => $query->user_id
                     ]
@@ -137,7 +137,7 @@ class Permission
                                 // Force logout other device
                                 if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
                                     // Remove session reference from logs
-                                    $this->_model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
+                                    $this->_model->update('app_log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                 }
                             } catch (Throwable $e) {
                                 // Ignore filesystem errors
@@ -164,8 +164,8 @@ class Permission
             }
 
             // Manage Session Table (Prevent duplication)
-            $session_exists = $this->_model->get_where(
-                'app__sessions',
+            $session_exists = $this->_model->getWhere(
+                'app_sessions',
                 [
                     'id' => get_userdata('access_token')
                 ]
@@ -174,7 +174,7 @@ class Permission
 
             if ($session_exists) {
                 $this->_model->delete(
-                    'app__sessions',
+                    'app_sessions',
                     [
                         'id' => get_userdata('access_token')
                     ]
@@ -183,7 +183,7 @@ class Permission
 
             // Store new session to database
             return $this->_model->insert(
-                'app__sessions',
+                'app_sessions',
                 [
                     'id' => get_userdata('access_token'),
                     'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
@@ -223,8 +223,8 @@ class Permission
             user_id,
             group_id
         ')
-        ->get_where(
-            'app__users',
+        ->getWhere(
+            'app_users',
             [
                 'user_id' => ($user_id ? $user_id : get_userdata('user_id')),
                 'status' => 1
@@ -246,8 +246,8 @@ class Permission
         $privileges = $this->_model->select('
             group_privileges
         ')
-        ->get_where(
-            'app__groups',
+        ->getWhere(
+            'app_groups',
             [
                 'group_id' => $user->group_id
             ],
@@ -258,12 +258,11 @@ class Permission
         $privileges = json_decode($privileges, true);
 
         // Check access rights
-        if (! isset($path, $privileges[$path]) || ! in_array($method, $privileges[$path])) {
+        if (! isset($path, $privileges[$path]) || ! $this->_matchMethod($method, $privileges[$path])) {
             // Access Denied
-
             // Auto-Discovery: If method exists but privilege not registered, register it
             if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
-                $this->_push_privileges($path, $method);
+                $this->_pushPrivileges($path, $method);
             }
 
             return false;
@@ -273,7 +272,7 @@ class Permission
 
             // Log activity (exclude modal requests)
             if ('modal' != $request->getPost('prefer')) {
-                $this->_push_logs($path, $method);
+                $this->_pushLogs($path, $method);
             }
 
             return true;
@@ -306,8 +305,8 @@ class Permission
         $privileges = $this->_model->select('
             group_privileges
         ')
-        ->get_where(
-            'app__groups',
+        ->getWhere(
+            'app_groups',
             [
                 'group_id' => get_userdata('group_id')
             ],
@@ -319,7 +318,7 @@ class Permission
 
         // Verify access
         // Check if privilege is NOT set or method is NOT in the allowed list
-        if (! isset($privileges[$path]) || ! in_array($method, $privileges[$path])) {
+        if (! isset($privileges[$path]) || ! $this->_matchMethod($method, $privileges[$path])) {
             // Access DENIED
             return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         }
@@ -332,7 +331,7 @@ class Permission
      * @param   string|null $redirect
      * @return  void|mixed
      */
-    public function must_ajax($redirect = null)
+    public function mustAjax($redirect = null)
     {
         $request = Services::request();
 
@@ -349,14 +348,14 @@ class Permission
      * @param   string|null $path
      * @param   string      $method
      */
-    private function _push_privileges($path = null, $method = '')
+    private function _pushPrivileges($path = null, $method = '')
     {
         // Get existing privileges for the path
         $privileges = $this->_model->select('
             privileges
         ')
-        ->get_where(
-            'app__groups_privileges',
+        ->getWhere(
+            'app_groups_privileges',
             [
                 'path' => $path
             ],
@@ -368,7 +367,7 @@ class Permission
 
         if ($privileges) {
             // Path exists, append method if missing
-            if (! in_array($method, $privileges)) {
+            if (! $this->_matchMethod($method, $privileges)) {
                 $privileges[] = $method;
 
                 $prepare = [
@@ -377,7 +376,7 @@ class Permission
                 ];
 
                 $this->_model->update(
-                    'app__groups_privileges',
+                    'app_groups_privileges',
                     $prepare,
                     [
                         'path' => $path
@@ -387,8 +386,8 @@ class Permission
             }
         } else {
             // Path does not exist, check existence before insert
-            $checker = $this->_model->get_where(
-                'app__groups_privileges',
+            $checker = $this->_model->getWhere(
+                'app_groups_privileges',
                 [
                     'path' => $path
                 ],
@@ -406,7 +405,7 @@ class Permission
                     'last_generated' => date('Y-m-d H:i:s')
                 ];
 
-                $this->_model->insert('app__groups_privileges', $prepare);
+                $this->_model->insert('app_groups_privileges', $prepare);
             }
         }
     }
@@ -417,7 +416,7 @@ class Permission
      * @param   string|null $path
      * @param   string      $method
      */
-    private function _push_logs($path = null, $method = '')
+    private function _pushLogs($path = null, $method = '')
     {
         $request = Services::request();
 
@@ -452,6 +451,24 @@ class Permission
         ];
 
         // Save to Database
-        $this->_model->insert('app__log_activities', $prepare);
+        $this->_model->insert('app_log_activities', $prepare);
+    }
+
+    /**
+     * Smart discovery to match methods that might be camelCase while the database privilege uses snake_case or dash-case
+     */
+    private function _matchMethod($method, $privileges = [])
+    {
+        if (! is_array($privileges)) {
+            return false;
+        }
+
+        foreach ($privileges as $privilege) {
+            if (strtolower(str_replace(['_', '-'], '', $method)) == strtolower(str_replace(['_', '-'], '', $privilege))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

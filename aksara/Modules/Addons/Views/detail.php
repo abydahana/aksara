@@ -1,5 +1,8 @@
 <?php
-    $carousel = null;
+/**
+ * @var mixed $detail
+ */
+$carousel = null;
     $attribution = null;
 
     if ($detail->screenshot) {

@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $category
+ * @var mixed $pagination
+ */
+?>
 
 <?php if ($results): ?>
 <div class="bg-white">

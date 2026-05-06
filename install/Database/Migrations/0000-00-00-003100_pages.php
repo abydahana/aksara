@@ -43,11 +43,11 @@ class Pages extends Migration
                 'null' => false
             ],
             'page_description' => [
-                'type' => 'text',
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
             'page_content' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'mediumtext' : 'text'),
                 'null' => false
             ],
             'carousel_id' => [
@@ -94,8 +94,8 @@ class Pages extends Migration
         $this->forge->addKey('page_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'RESTRICT');
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('author', 'app_users', 'user_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('language_id', 'app_languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Add index for status column
         $this->forge->addKey('status', false, false);

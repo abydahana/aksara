@@ -21,7 +21,7 @@ if (! function_exists('recommendation_generator')) {
      *
      * @param   string $content
      */
-    function recommendation_generator($content = null, $recommendations = [], int $per_paragraph = 5)
+    function recommendation_generator($content = null, array|object $recommendations = [], int $per_paragraph = 5)
     {
         // Reformat recommendation object into array
         $recommendations = json_decode(json_encode($recommendations), true);
@@ -46,9 +46,9 @@ if (! function_exists('recommendation_generator')) {
             $updatedContent .= $paragraph;
 
             // Add additional content after every 5th paragraph
-            if (0 == ($index + 1) % $per_paragraph && ! empty(trim($paragraph)) && isset($recommendations[($index / $per_paragraph)])) {
+            if (0 == ($index + 1) % $per_paragraph && ! empty(trim($paragraph)) && isset($recommendations[(int) ($index / $per_paragraph)])) {
                 $applied = true;
-                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[($index / $per_paragraph)]['link'] . '" class="--xhr">' . $recommendations[($index / $per_paragraph)]['title'] . '</a></div>';
+                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[(int) ($index / $per_paragraph)]['link'] . '" class="--xhr">' . $recommendations[(int) ($index / $per_paragraph)]['title'] . '</a></div>';
             }
         }
 

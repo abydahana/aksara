@@ -21,9 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Category extends Core
 {
-    private $_table = 'galleries';
-
-    private $_primary;
+    private string $_table = 'galleries';
 
     public function __construct()
     {
@@ -31,8 +29,6 @@ class Category extends Core
 
         $this->searchable(false);
         $this->limit(10);
-
-        $this->_primary = $this->request->getGet('gallery_id');
     }
 
     public function index($slug = null)
@@ -41,9 +37,9 @@ class Category extends Core
             $slug = $this->request->getGet('gallery_slug');
         }
 
-        $this->set_title('{{ gallery_title }}', phrase('Album not found!'))
-        ->set_description('{{ gallery_description }}')
-        ->set_icon('mdi mdi-image')
+        $this->setTitle('{{ gallery_title }}', phrase('Album not found!'))
+        ->setDescription('{{ gallery_description }}')
+        ->setIcon('mdi mdi-image')
         ->where('gallery_slug', $slug)
         ->limit(1)
 

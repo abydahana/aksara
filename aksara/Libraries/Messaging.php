@@ -17,15 +17,15 @@
 
 namespace Aksara\Libraries;
 
-use Config\Services;
 use Throwable;
+use Config\Services;
 
 class Messaging
 {
-    private $_recipient_email;
-    private $_recipient_phone;
-    private $_subject;
-    private $_message;
+    private ?string $_recipientEmail;
+    private ?string $_recipientPhone;
+    private ?string $_subject;
+    private ?string $_message;
 
     public function __construct()
     {
@@ -36,9 +36,9 @@ class Messaging
      * Set recipient email
      * @param   null|mixed $email
      */
-    public function set_email($email = null)
+    public function setEmail($email = null)
     {
-        $this->_recipient_email = $email;
+        $this->_recipientEmail = $email;
 
         return $this;
     }
@@ -47,9 +47,9 @@ class Messaging
      * Set recipient phone
      * @param   null|mixed $phone
      */
-    public function set_phone($phone = null)
+    public function setPhone($phone = null)
     {
-        $this->_recipient_phone = $phone;
+        $this->_recipientPhone = $phone;
 
         return $this;
     }
@@ -58,7 +58,7 @@ class Messaging
      * Set subject
      * @param   null|mixed $subject
      */
-    public function set_subject($subject = null)
+    public function setSubject($subject = null)
     {
         $this->_subject = $subject;
 
@@ -69,7 +69,7 @@ class Messaging
      * Set message
      * @param   null|mixed $message
      */
-    public function set_message($message = null)
+    public function setMessage($message = null)
     {
         $this->_message = $message;
 
@@ -81,7 +81,7 @@ class Messaging
      */
     public function send(bool $instant = false)
     {
-        if (! $this->_recipient_email && ! $this->_recipient_phone) {
+        if (! $this->_recipientEmail && ! $this->_recipientPhone) {
             return false;
         }
 
@@ -120,7 +120,7 @@ class Messaging
             $email->initialize($config);
 
             $email->setFrom($sender_email, $sender_name);
-            $email->setTo($this->_recipient_email);
+            $email->setTo($this->_recipientEmail);
 
             $email->setSubject($this->_subject);
             $email->setMessage('
@@ -153,8 +153,8 @@ class Messaging
             $query = $model->insert(
                 'notifier',
                 [
-                    'phone' => $this->_recipient_phone ?? '',
-                    'email' => $this->_recipient_email ?? '',
+                    'phone' => $this->_recipientPhone ?? '',
+                    'email' => $this->_recipientEmail ?? '',
                     'title' => $this->_subject ?? '',
                     'message' => $this->_message ?? '',
                     'timestamp' => date('Y-m-d H:i:s'),

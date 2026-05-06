@@ -1,5 +1,10 @@
 <?php
-    $selected = service('request')->getGet('group');
+/**
+ * @var mixed $permission
+ * @var mixed $active
+ * @var mixed $modules
+ */
+$selected = service('request')->getGet('group');
     $group_collector = [];
     $access_token = false;
     $method = [];

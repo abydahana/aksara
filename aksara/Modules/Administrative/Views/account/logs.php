@@ -1,12 +1,17 @@
+<?php
+/**
+ * @var mixed $logs
+ */
+?>
 <div class="container-fluid py-3">
-    <div class="alert alert-info callout">
+    <div class="alert alert-info callout rounded-4">
         <h3><?= phrase('Information'); ?></h3>
         <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or have been recently in.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
     </div>
     <div class="row">
         <div class="col-md-7 col-xxl-6">
             <?php foreach($logs as $platform => $log): ?>
-                <div class="card mb-3">
+                <div class="card rounded-4 mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-5">

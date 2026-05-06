@@ -1,5 +1,8 @@
 <?php
-    $video_type = null;
+/**
+ * @var mixed $results
+ */
+$video_type = null;
 
     if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
         $video_type = 'video/x-youtube';

@@ -21,38 +21,37 @@ use Aksara\Laboratory\Core;
 
 class Countries extends Core
 {
-    private $_table = 'app__countries';
-
-    private $_primary;
+    private string $_table = 'app_countries';
+    private ?int $_primary;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
         $this->_primary = $this->request->getGet('id');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Manage Countries'))
-        ->set_icon('mdi mdi-map-legend')
-        ->unset_column('id')
-        ->unset_field('id')
-        ->unset_view('id')
-        ->set_field('status', 'boolean')
-        ->set_validation([
+        $this->setTitle(phrase('Manage Countries'))
+        ->setIcon('mdi mdi-map-legend')
+        ->unsetColumn('id')
+        ->unsetField('id')
+        ->unsetView('id')
+        ->setField('status', 'boolean')
+        ->setValidation([
             'code' => 'required|alpha_dash|max_length[5]|unique[' . $this->_table . '.code.id.' . $this->_primary . ']',
             'country' => 'required|alpha|max_length[32]',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'code' => phrase('Code'),
             'country' => phrase('Country'),
             'status' => phrase('Status')

@@ -1,4 +1,8 @@
-<?php $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; ?>
+<?php
+/**
+ * @var mixed $results
+ */
+$view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; ?>
 
 <div class="container-fluid">
     <div class="row">

@@ -1,4 +1,10 @@
-<?php if ($user): ?>
+<?php
+/**
+ * @var mixed $user
+ * @var mixed $results
+ * @var mixed $pagination
+ */
+if ($user): ?>
     <div class="py-3 py-md-5 bg-light">
         <div class="container">
             <div class="row align-items-center">

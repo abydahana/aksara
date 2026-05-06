@@ -17,9 +17,9 @@
 
 namespace Aksara\Modules\Assets\Controllers;
 
+use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Assets extends Core
 {
@@ -51,7 +51,10 @@ class Assets extends Core
         }
 
         if (is_file($realPath)) {
-            return $this->response->download($realPath, null)->inline()->send();
+            return $this->response
+                ->download($realPath, null)
+                ->setFileName(basename($realPath))
+                ->send();
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
@@ -196,9 +199,9 @@ class Assets extends Core
         $output = preg_replace('/\n(\s+)?\/\/[^\n]*/', '', $output);
 
         // Define JS configuration variables
-        $config = 'const config = ' . ($this->_get_configs($theme) ?: '{}') . ';';
-        $phrases = 'const phrases = ' . ($this->_get_phrases() ?: '{}') . ';';
-        $components = 'const components = ' . ($this->_get_components($theme) ?: '{}') . ';';
+        $config = 'const config = ' . ($this->_getConfigs($theme) ?: '{}') . ';';
+        $phrases = 'const phrases = ' . ($this->_getPhrases() ?: '{}') . ';';
+        $components = 'const components = ' . ($this->_getComponents($theme) ?: '{}') . ';';
 
         $credits = <<<EOF
         /**
@@ -225,7 +228,7 @@ class Assets extends Core
             ->send();
     }
 
-    private function _get_configs($theme = null)
+    private function _getConfigs($theme = null)
     {
         $uri = Services::uri();
 
@@ -262,7 +265,7 @@ class Assets extends Core
         return json_encode($configs, JSON_UNESCAPED_SLASHES);
     }
 
-    private function _get_phrases()
+    private function _getPhrases()
     {
         $phrases = '[]';
 
@@ -278,7 +281,7 @@ class Assets extends Core
         return json_encode($phrases, JSON_UNESCAPED_SLASHES);
     }
 
-    private function _get_components(?string $theme = null): string
+    private function _getComponents(?string $theme = null): string
     {
         $results = [];
         $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');

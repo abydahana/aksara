@@ -560,7 +560,7 @@ class Form
         // Template for Map/Geospatial Input
         $component = <<<EOF
         <div class="drawing-placeholder preloader position-relative w-100 overflow-hidden">
-            <div role="map" id="map_{{ name }}" class="{{ class }}" data-coordinate="{{ value | escape }}" data-geojson="{{ content | escape }}" data-apply-coordinate-to="#{{ name }}_input" data-apply-address-to=".map-address-listener" data-geocoder="1" data-mousewheel="0" title="{{ placeholder }}" {{ attribution | raw }} style="height:360px"></div>
+            <div role="map" id="map_{{ name }}" class="{{ class }}" data-coordinate="{{ value | escape }}" data-geojson="{{ content | escape }}" data-apply-coordinate-to="#{{ name }}_input" data-apply-address-to=".map-address-listener" data-geocoder="1" control-mousewheel="0" title="{{ placeholder }}" {{ attribution | raw }} style="height:360px"></div>
             <input type="hidden" name="{{ name }}" id="{{ name }}_input" value="{{ content | escape }}" {{ readonly }} />
         </div>
         EOF;
@@ -758,7 +758,7 @@ class Form
      *
      * @return  array Returns component configuration array
      */
-    public function custom_format(): array
+    public function customFormat(): array
     {
         // Passthrough for Raw Content
         $component = <<<EOF

@@ -29,27 +29,27 @@ class Contact extends Core
 
     public function index()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
-            return $this->_send_message();
+        if ($this->validToken($this->request->getPost('_token'))) {
+            return $this->_sendMessage();
         }
 
-        $this->set_title(phrase('Contact Us'))
-        ->set_icon('mdi mdi-phone-classic')
-        ->set_description(phrase('Submit your inquiries or questions to us.'))
+        $this->setTitle(phrase('Contact Us'))
+        ->setIcon('mdi mdi-phone-classic')
+        ->setDescription(phrase('Submit your inquiries or questions to us.'))
 
         ->render();
     }
 
-    public function _send_message()
+    public function _sendMessage()
     {
-        $this->form_validation->setRule('full_name', phrase('Full Name'), 'required');
-        $this->form_validation->setRule('email', phrase('Email'), 'required|valid_email');
-        $this->form_validation->setRule('subject', phrase('Subject'), 'required');
-        $this->form_validation->setRule('messages', phrase('Messages'), 'required');
-        $this->form_validation->setRule('copy', phrase('Send copy'), 'boolean');
+        $this->formValidation->setRule('full_name', phrase('Full Name'), 'required');
+        $this->formValidation->setRule('email', phrase('Email'), 'required|valid_email');
+        $this->formValidation->setRule('subject', phrase('Subject'), 'required');
+        $this->formValidation->setRule('messages', phrase('Messages'), 'required');
+        $this->formValidation->setRule('copy', phrase('Send copy'), 'boolean');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->form_validation->getErrors());
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $this->model->insert(

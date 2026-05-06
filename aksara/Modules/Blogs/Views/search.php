@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var mixed $meta
+ * @var mixed $keywords
+ * @var mixed $total
+ * @var mixed $results
+ * @var mixed $pagination
+ */
+?>
 <div class="bg-light">
     <div class="py-3 py-md-5">
         <div class="container">

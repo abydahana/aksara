@@ -1,5 +1,11 @@
 <?php
-    $field_data = $results[0];
+/**
+ * @var mixed $results
+ * @var mixed $total_phrases
+ * @var mixed $pagination
+ * @var mixed $phrases
+ */
+$field_data = $results[0];
 ?>
 <div class="container-fluid py-3">
     <div class="row">

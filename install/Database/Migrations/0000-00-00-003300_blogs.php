@@ -43,11 +43,11 @@ class Blogs extends Migration
                 'null' => false
             ],
             'post_excerpt' => [
-                'type' => 'text',
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
             'post_content' => [
-                'type' => (in_array($this->db->DBDriver, ['Postgre', 'SQLSRV']) ? 'text' : 'longtext'),
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'mediumtext' : 'text'),
                 'null' => false
             ],
             'post_category' => [
@@ -57,7 +57,7 @@ class Blogs extends Migration
                 'null' => false
             ],
             'post_tags' => [
-                'type' => 'text',
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
             'created_timestamp' => [
@@ -103,9 +103,9 @@ class Blogs extends Migration
         $this->forge->addKey('post_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'RESTRICT');
-        $this->forge->addForeignKey('post_category', 'blogs__categories', 'category_id', 'CASCADE', 'RESTRICT');
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('author', 'app_users', 'user_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('post_category', 'blogs_categories', 'category_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('language_id', 'app_languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Add index for status column
         $this->forge->addKey('status', false, false);

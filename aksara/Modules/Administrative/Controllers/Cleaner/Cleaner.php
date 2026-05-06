@@ -17,8 +17,8 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Cleaner;
 
-use Aksara\Laboratory\Core;
 use Throwable;
+use Aksara\Laboratory\Core;
 
 class Cleaner extends Core
 {
@@ -26,19 +26,19 @@ class Cleaner extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
+        $this->setPermission();
 
-        $this->set_theme('backend');
+        $this->setTheme('backend');
 
         $this->searchable(false);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Session Garbage Cleaner'))
-        ->set_icon('mdi mdi-trash-can')
+        $this->setTitle(phrase('Session Garbage Cleaner'))
+        ->setIcon('mdi mdi-trash-can')
 
         ->render();
     }
@@ -48,7 +48,7 @@ class Cleaner extends Core
      */
     public function clean()
     {
-        $this->permission->must_ajax();
+        $this->permission->mustAjax();
 
         if (DEMO_MODE) {
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
@@ -103,7 +103,7 @@ class Cleaner extends Core
 
             $this->model->delete($session_path);
 
-            $session_cleaned = $this->model->affected_rows();
+            $session_cleaned = $this->model->affectedRows();
         }
 
         if ($error) {

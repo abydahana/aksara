@@ -15,6 +15,13 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+/**
+ * @var \CodeIgniter\Router\RouteCollection $routes
+ */
+if (! isset($routes)) {
+    $routes = \Config\Services::routes(true);
+}
+
 $routes->group('assets', ['namespace' => '\Aksara\Modules\Assets\Controllers'], function ($routes) {
     $routes->get('css/(:any)/styles.min.css', 'Assets::styles/$1');
     $routes->get('js/(:any)/scripts.min.js', 'Assets::scripts/$1');

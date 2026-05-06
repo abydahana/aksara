@@ -3,47 +3,6 @@
     --bs-body-font-size: 1.1rem!important;
     --bs-nav-link-font-size: 1.25rem!important;
   }
-  .offcanvas.text-bg-dark {
-    background: linear-gradient(to bottom left, rgb(76, 76, 79), rgb(33,37,41))!important;
-  }
-  .offcanvas .nav-link i {
-    width: 3rem!important;
-    margin-top: 3px
-  }
-  .offcanvas .dropdown-menu .nav-link i {
-    margin-top: -3px
-  }
-  .offcanvas .dropdown-menu .nav-link span {
-    padding-left: 3rem
-  }
-  .navbar-nav .dropdown .dropdown-toggle::after {
-    top: 1.75rem
-  }
-  .navbar-nav .dropdown.user-account .dropdown-toggle::after {
-    top: 2.5rem
-  }
-  .navbar-toggler:focus {
-    box-shadow: none
-  }
-  .user-account {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    background: var(--bs-dark);
-    padding-top: 1rem;
-    padding-bottom: 1rem
-  }
-  .user-login {
-    position: absolute;
-    bottom: 0;
-    left: 1rem;
-    right: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem
-  }
-  footer#footer-wrapper {
-    display: none!important
-  }
   .vh-100 {
     height: calc(100vh - 56px) !important;
   }
@@ -55,5 +14,448 @@
   }
   .vh-25 {
     height: calc(25vh - 56px) !important;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Bottom Sheet – Adaptive Light / Dark
+   ────────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+
+  /* ── colour tokens (light) ── */
+  :root {
+    --bs-sheet-bg: rgba(255, 255, 255, 0.88);
+    --bs-sheet-bg-solid: #ffffff;
+    --bs-sheet-text: #1a1a2e;
+    --bs-sheet-text-muted: #64748b;
+    --bs-sheet-border: rgba(0, 0, 0, 0.06);
+    --bs-sheet-handle: rgba(0, 0, 0, 0.18);
+    --bs-sheet-hover: rgba(0, 0, 0, 0.04);
+    --bs-sheet-active: rgba(59, 130, 246, 0.08);
+    --bs-sheet-accent: #2563eb;
+    --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+    --bs-sheet-divider: rgba(0, 0, 0, 0.06);
+    --bs-sheet-card-bg: rgba(0, 0, 0, 0.03);
+    --bs-sheet-close-bg: rgba(0, 0, 0, 0.06);
+    --bs-sheet-close-color: #64748b;
+    --bs-sheet-chevron: #94a3b8;
+    --bs-sheet-badge-bg: rgba(59, 130, 246, 0.1);
+    --bs-sheet-badge-text: #2563eb;
+  }
+
+  /* ── colour tokens (dark) ── */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bs-sheet-bg: rgba(22, 22, 30, 0.92);
+      --bs-sheet-bg-solid: #16161e;
+      --bs-sheet-text: #e8e8ed;
+      --bs-sheet-text-muted: #8b8b9e;
+      --bs-sheet-border: rgba(255, 255, 255, 0.06);
+      --bs-sheet-handle: rgba(255, 255, 255, 0.22);
+      --bs-sheet-hover: rgba(255, 255, 255, 0.05);
+      --bs-sheet-active: rgba(96, 165, 250, 0.12);
+      --bs-sheet-accent: #60a5fa;
+      --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+      --bs-sheet-divider: rgba(255, 255, 255, 0.06);
+      --bs-sheet-card-bg: rgba(255, 255, 255, 0.04);
+      --bs-sheet-close-bg: rgba(255, 255, 255, 0.08);
+      --bs-sheet-close-color: #8b8b9e;
+      --bs-sheet-chevron: #5a5a72;
+      --bs-sheet-badge-bg: rgba(96, 165, 250, 0.15);
+      --bs-sheet-badge-text: #60a5fa;
+    }
+  }
+
+  /* Also support Bootstrap dark-mode class */
+  html[data-bs-theme="dark"],
+  html.dark-mode {
+    --bs-sheet-bg: rgba(22, 22, 30, 0.92);
+    --bs-sheet-bg-solid: #16161e;
+    --bs-sheet-text: #e8e8ed;
+    --bs-sheet-text-muted: #8b8b9e;
+    --bs-sheet-border: rgba(255, 255, 255, 0.06);
+    --bs-sheet-handle: rgba(255, 255, 255, 0.22);
+    --bs-sheet-hover: rgba(255, 255, 255, 0.05);
+    --bs-sheet-active: rgba(96, 165, 250, 0.12);
+    --bs-sheet-accent: #60a5fa;
+    --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+    --bs-sheet-divider: rgba(255, 255, 255, 0.06);
+    --bs-sheet-card-bg: rgba(255, 255, 255, 0.04);
+    --bs-sheet-close-bg: rgba(255, 255, 255, 0.08);
+    --bs-sheet-close-color: #8b8b9e;
+    --bs-sheet-chevron: #5a5a72;
+    --bs-sheet-badge-bg: rgba(96, 165, 250, 0.15);
+    --bs-sheet-badge-text: #60a5fa;
+  }
+
+  /* ── Bottom Sheet Container ── */
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    z-index: 1045 !important;
+    height: auto !important;
+    max-height: 85vh !important;
+    min-height: 240px;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    border: none !important;
+    background-color: var(--bs-sheet-bg) !important;
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: var(--bs-sheet-shadow);
+    color: var(--bs-sheet-text) !important;
+    transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1) !important;
+    overflow: hidden;
+  }
+
+  /* Override Bootstrap text-bg-dark to use our sheet colours */
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.text-bg-dark {
+    --bs-dark-rgb: none;
+    background-color: var(--bs-sheet-bg) !important;
+    color: var(--bs-sheet-text) !important;
+  }
+
+  /* Force correct transform states for bottom sheet */
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom {
+    transform: translateY(100%) !important;
+  }
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.show:not(.hiding),
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.showing {
+    transform: translateY(0) !important;
+  }
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.hiding {
+    transform: translateY(100%) !important;
+  }
+
+  /* ── Backdrop ── */
+  .offcanvas-backdrop.show {
+    opacity: 0.4 !important;
+    backdrop-filter: blur(2px);
+  }
+
+  /* ── Drag Handle ── */
+  #offcanvasNavbarDark .drag-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bs-sheet-handle);
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
+
+  /* ── Header ── */
+  #offcanvasNavbarDark .offcanvas-header {
+    padding: 12px 20px 10px !important;
+    border-bottom: 1px solid var(--bs-sheet-divider) !important;
+    position: relative;
+  }
+  #offcanvasNavbarDark .offcanvas-title {
+    font-size: 0.8rem !important;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bs-sheet-text-muted) !important;
+    margin-top: 4px;
+  }
+  #offcanvasNavbarDark .btn-close,
+  #offcanvasNavbarDark .btn-close-white {
+    filter: none !important;
+    background: var(--bs-sheet-close-bg) !important;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0 !important;
+    opacity: 1;
+    background-image: none !important;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #offcanvasNavbarDark .btn-close::before {
+    content: "\00d7";
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--bs-sheet-close-color);
+    font-weight: 300;
+  }
+
+  /* ── Body ── */
+  #offcanvasNavbarDark .offcanvas-body {
+    padding: 8px 0 !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* ── Navigation List Reset ── */
+  #offcanvasNavbarDark .navbar-nav {
+    flex-direction: column !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    gap: 0 !important;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-item {
+    margin: 0;
+    list-style: none;
+  }
+
+  /* ── Navigation Links ── */
+  #offcanvasNavbarDark .navbar-nav .nav-link {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px !important;
+    color: var(--bs-sheet-text) !important;
+    font-size: 0.95rem !important;
+    font-weight: 450;
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.15s ease;
+    text-decoration: none;
+    position: relative;
+    margin: 1px 0;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-link:hover,
+  #offcanvasNavbarDark .navbar-nav .nav-link:focus {
+    background: var(--bs-sheet-hover);
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-link:active {
+    background: var(--bs-sheet-active);
+    transform: scale(0.98);
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-link i.mdi {
+    font-size: 1.25rem;
+    width: 1.5rem;
+    text-align: center;
+    color: var(--bs-sheet-text-muted);
+    flex-shrink: 0;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-link span {
+    flex: 1;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-item.active > .nav-link {
+    background: var(--bs-sheet-active);
+    color: var(--bs-sheet-accent) !important;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-item.active > .nav-link i.mdi {
+    color: var(--bs-sheet-accent);
+  }
+
+  /* ── Dropdown toggle chevron (replace caret) ── */
+  #offcanvasNavbarDark .navbar-nav .nav-link.dropdown-toggle::after {
+    display: none !important;
+  }
+  #offcanvasNavbarDark .navbar-nav .nav-link[data-bs-submenu]::after {
+    content: "\203A";
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--bs-sheet-chevron);
+    margin-left: auto;
+    font-weight: 300;
+  }
+
+  /* ── Hide original dropdown-menus (replaced by JS sub-sheets) ── */
+  #offcanvasNavbarDark .dropdown-menu {
+    display: none !important;
+  }
+
+  /* ── Divider ── */
+  #offcanvasNavbarDark .navbar-nav + .navbar-nav {
+    border-top: 1px solid var(--bs-sheet-divider);
+    margin-top: 4px !important;
+    padding-top: 4px !important;
+  }
+
+  /* ── User Account Card ── */
+  #offcanvasNavbarDark .nav-item.user-account > .nav-link {
+    background: var(--bs-sheet-card-bg);
+  }
+
+  /* ── Sign-in Button ── */
+  #offcanvasNavbarDark .user-login .btn {
+    width: 100%;
+    padding: 0.75rem !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  #offcanvasNavbarDark .user-login.ms-2 {
+    margin-left: 0 !important;
+  }
+
+  /* ── hr dividers in bottom sheet ── */
+  #offcanvasNavbarDark hr.dropdown-divider {
+    border-color: var(--bs-sheet-divider);
+    margin: 4px 16px;
+  }
+
+  /* ── Badge ── */
+  #offcanvasNavbarDark .badge.bg-danger {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+    border-radius: 8px;
+  }
+
+  /* ── Sub-sheet Panel ── */
+  .bottom-sub-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1070;
+    max-height: 85vh;
+    min-height: 200px;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    background: var(--bs-sheet-bg);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: var(--bs-sheet-shadow);
+    color: var(--bs-sheet-text);
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .bottom-sub-sheet.show {
+    transform: translateY(0);
+  }
+
+  /* Sub-sheet header */
+  .bottom-sub-sheet .sub-sheet-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--bs-sheet-divider);
+    flex-shrink: 0;
+  }
+  .bottom-sub-sheet .sub-sheet-header .drag-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bs-sheet-handle);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 6px;
+  }
+  .bottom-sub-sheet .sub-sheet-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bs-sheet-close-bg);
+    color: var(--bs-sheet-text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+    padding: 0;
+    line-height: 1;
+  }
+  .bottom-sub-sheet .sub-sheet-back:hover {
+    background: var(--bs-sheet-hover);
+  }
+  .bottom-sub-sheet .sub-sheet-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bs-sheet-text-muted);
+    flex: 1;
+    text-align: center;
+    padding-right: 40px;
+  }
+
+  /* Sub-sheet body */
+  .bottom-sub-sheet .sub-sheet-body {
+    padding: 8px 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 8px;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list li {
+    margin: 1px 0;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--bs-sheet-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 450;
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a:hover {
+    background: var(--bs-sheet-hover);
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a:active {
+    background: var(--bs-sheet-active);
+    transform: scale(0.98);
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a i.mdi {
+    font-size: 1.25rem;
+    width: 1.5rem;
+    text-align: center;
+    color: var(--bs-sheet-text-muted);
+    flex-shrink: 0;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a span {
+    flex: 1;
+  }
+  .bottom-sub-sheet .sub-sheet-body .sub-sheet-list a[data-bs-submenu]::after {
+    content: "\203A";
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--bs-sheet-chevron);
+    font-weight: 300;
+  }
+
+  /* Backdrop for sub-sheets */
+  .sub-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1069;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .sub-sheet-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Prevent body scroll when bottom sheet is open ── */
+  body.bottom-sheet-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+
+
+  /* Override Bootstrap offcanvas for smaller width devices */
+  .offcanvas-start,
+  .offcanvas-end {
+    max-width: 100% !important;
   }
 }

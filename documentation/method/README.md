@@ -1,1 +1,0 @@
-This documentation will be used and published to https://www.aksaracms.com/pages/documentation/method

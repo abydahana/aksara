@@ -91,7 +91,7 @@ class Announcements extends Migration
         $this->forge->addKey('announcement_id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('language_id', 'app__languages', 'id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('language_id', 'app_languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Add index for status column
         $this->forge->addKey('status', false, false);

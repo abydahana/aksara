@@ -21,27 +21,27 @@ use Aksara\Laboratory\Core;
 
 class Groups extends Core
 {
-    private $_table = 'app__groups';
+    private string $_table = 'app_groups';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
-        $this->unset_delete('group_id', [1, 2, 3]);
+        $this->unsetDelete('group_id', [1, 2, 3]);
     }
 
     public function index()
     {
-        $this->set_title(phrase('Manage Groups'))
-        ->set_icon('mdi mdi-key')
-        ->set_description('
+        $this->setTitle(phrase('Manage Groups'))
+        ->setIcon('mdi mdi-key')
+        ->setDescription('
             <div class="row">
                 <div class="col-12">
                     ' . phrase('The listed privileges below is created automatically from') . '
@@ -53,40 +53,40 @@ class Groups extends Core
                 </div>
             </div>
         ')
-        ->unset_column('group_id, group_privileges')
-        ->unset_view('group_id')
-        ->unset_field('group_id')
-        ->set_field([
+        ->unsetColumn('group_id, group_privileges')
+        ->unsetView('group_id')
+        ->unsetField('group_id')
+        ->setField([
             'group_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('group_privileges', 'custom_format', 'format_privileges')
-        ->set_validation([
+        ->setField('group_privileges', 'custom_format', 'formatPrivileges')
+        ->setValidation([
             'group_name' => 'required',
             'group_description' => 'required'
         ])
-        ->set_alias([
+        ->setAlias([
             'group_name' => phrase('Group Name'),
             'group_description' => phrase('Description'),
             'group_privileges' => phrase('Privileges'),
             'status' => phrase('Status')
         ])
 
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
 
-        ->order_by('group_id')
+        ->orderBy('group_id')
 
         ->render($this->_table);
     }
 
-    protected function format_privileges(array $data)
+    protected function formatPrivileges(array $data)
     {
         $modules_collection = $this->model->select('
             path,
             privileges
         ')
-        ->order_by('path')
-        ->get('app__groups_privileges')
+        ->orderBy('path')
+        ->get('app_groups_privileges')
         ->result();
 
         $current = ($data['group_privileges'] ? json_decode($data['group_privileges'], true) : []);
@@ -104,7 +104,7 @@ class Groups extends Core
                     continue;
                 }
 
-                foreach ($privileges as $key => $privilege) {
+                foreach ($privileges as $_key => $privilege) {
                     if ('index' == $privilege) {
                         $label = phrase(ucfirst($privilege));
                     } elseif ('create' == $privilege) {
@@ -125,7 +125,7 @@ class Groups extends Core
                         $label = phrase(ucwords(str_replace('_', ' ', $privilege)));
                     }
 
-                    if ('read' === $this->get_method()) {
+                    if ('read' === $this->getMethod()) {
                         $privilege_output .= '
                             <div class="col-6 col-md-3">
                                 <label class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
@@ -167,8 +167,8 @@ class Groups extends Core
                     </a>
                     ' : '') . '
                     <div class="check-group w-100">
-                        <div class="' . (in_array($this->get_method(), ['create', 'update']) ? 'form-check form-switch' : null) . '">
-                            ' . (in_array($this->get_method(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
+                        <div class="' . (in_array($this->getMethod(), ['create', 'update']) ? 'form-check form-switch' : null) . '">
+                            ' . (in_array($this->getMethod(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
                             <label class="fw-bold" for="' . $path . '">
                                 ' . $module_path . '
                             </label>

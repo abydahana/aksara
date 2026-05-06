@@ -1,4 +1,9 @@
-<header role="header" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="header-wrapper">
+<?php
+/**
+ * @var object $meta
+ */
+?>
+<header role="header" class="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top" id="header-wrapper">
     <div class="container-fluid">
         <a class="navbar-brand pt-0 pb-0 d-none d-lg-block" href="<?= base_url(); ?>" target="_blank">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
@@ -20,6 +25,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" data-toggle="theme">
+                        <i class="mdi mdi-weather-night"></i>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link" data-toggle="fullscreen">
                         <i class="mdi mdi-fullscreen"></i>

@@ -17,18 +17,18 @@
 
 namespace Aksara\Laboratory;
 
+use DateTime;
+use Throwable;
 use Config\Mimes;
 use Config\Services;
 use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Model;
-use DateTime;
-use Throwable;
 
 class Validation
 {
-    private $_uploaded_files = [];
+    private array $_uploadedFiles = [];
 
-    private $_upload_error;
+    private string $_uploadError = '';
 
     public function __construct()
     {
@@ -56,7 +56,7 @@ class Validation
             if (isset($_ENV['DBDriver'])) {
                 // Check if cross-database connection is configured via environment variables.
                 // If set, apply the configuration to the model instance.
-                $model->database_config($_ENV);
+                $model->databaseConfig($_ENV);
             }
 
             // Slice parameters starting from index 2 to get the WHERE conditions (key-value pairs).
@@ -102,7 +102,7 @@ class Validation
             // Final check: Select the field and execute the query with the main validation condition
             // (table.field = $value) AND the custom WHERE conditions applied above.
             // Returns TRUE if the number of resulting rows is 0 (meaning the value is unique), FALSE otherwise.
-            return $model->select($params[1])->get_where($params[0], [$params[1] => $value])->num_rows() === 0;
+            return $model->select($params[1])->getWhere($params[0], [$params[1] => $value])->numRows() === 0;
         }
 
         // Returns FALSE if $params is empty (e.g., validator parameter was not properly formatted or missing).
@@ -133,6 +133,64 @@ class Validation
     public function currency($value = null): bool
     {
         if (! preg_match('/^\s*[$]?\s*((\d+)|(\d{1,3}(\,\d{3})+))(\.\d{2})?\s*$/', $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid date.
+     *
+     * @param mixed|null $value The value to check
+     * @return bool True if valid date, false otherwise
+     */
+    public function valid_date($value = null): bool
+    {
+        // Convert value to standardzitation
+        $value = date('Y-m-d', strtotime($value));
+
+        $valid_date = DateTime::createFromFormat('Y-m-d', $value);
+
+        if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid time (HH:MM format).
+     *
+     * @param mixed|null $value The value to check
+     * @return bool True if valid time, false otherwise
+     */
+    public function valid_time($value = null): bool
+    {
+        //Assume $value SHOULD be entered as HH:MM
+        list($hh, $mm) = array_pad(explode(':', $value), 2, '00');
+
+        if (! is_numeric($hh) || ! is_numeric($mm) || (int) $hh > 24 || (int) $mm > 59 || mktime((int) $hh, (int) $mm) === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if field is valid date and time.
+     *
+     * @param mixed|null $value The value to check
+     * @return bool True if valid datetime, false otherwise
+     */
+    public function valid_datetime($value = null): bool
+    {
+        // Convert value to standardzitation
+        $value = date('Y-m-d H:i:s', strtotime($value));
+
+        $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
+
+        if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
             return false;
         }
 
@@ -184,7 +242,7 @@ class Validation
 
         if (isset($_ENV['DBDriver'])) {
             // Cross database connection
-            $model->database_config($_ENV);
+            $model->databaseConfig($_ENV);
         }
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
@@ -193,7 +251,7 @@ class Validation
             $table = substr($table, 0, strrpos($table, ' '));
         }
 
-        if (! $model->table_exists($table) || ! $model->field_exists($field, $table) || ! $model->select($field)->get_where($table, [$field => $value])->row($field)) {
+        if (! $model->tableExists($table) || ! $model->fieldExists($field, $table) || ! $model->select($field)->getWhere($table, [$field => $value])->row($field)) {
             return false;
         }
 
@@ -229,21 +287,21 @@ class Validation
                 if (is_array($val)) {
                     foreach ($val as $_key => $_val) {
                         // Typically using nested input like field[foo][bar]
-                        $this->_do_upload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
+                        $this->_doUpload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
                     }
                 } else {
                     // Typically using nested input like field[foo]
-                    $this->_do_upload($field . $suffix . '.' . $key, $field, $type, $key);
+                    $this->_doUpload($field . $suffix . '.' . $key, $field, $type, $key);
                 }
             }
         } else {
-            $this->_do_upload($field . $suffix, $field, $type);
+            $this->_doUpload($field . $suffix, $field, $type);
         }
 
-        if ($this->_upload_error) {
+        if ($this->_uploadError) {
             // Validation error
-            $validation->setError($field, $this->_upload_error);
-        } elseif (! $this->_uploaded_files) {
+            $validation->setError($field, $this->_uploadError);
+        } elseif (! $this->_uploadedFiles) {
             // Find required
             $rules = $validation->getRules();
 
@@ -257,7 +315,7 @@ class Validation
          * Because the property isn't accessible from its parent, put
          * the upload data collection to temporary session instead
          */
-        set_userdata('_uploaded_files', $this->_uploaded_files);
+        set_userdata('_uploaded_files', $this->_uploadedFiles);
 
         return true;
     }
@@ -272,7 +330,7 @@ class Validation
      * @param int|string|null $_index Nested array index
      * @return bool True if upload successful, false otherwise
      */
-    private function _do_upload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
+    private function _doUpload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
     {
         $request = Services::request();
         $router = Services::router();
@@ -311,17 +369,17 @@ class Validation
 
         if (! in_array($source->getMimeType(), $valid_mime)) {
             // Mime is invalid
-            $this->_upload_error = phrase('The selected file format is not allowed to upload');
+            $this->_uploadError = phrase('The selected file format is not allowed to upload');
 
             return false;
-        } elseif ((float) $source->getSizeByBinaryUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
+        } elseif ((float) $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
-            $this->_upload_error = phrase('The selected file size exceeds the maximum allocation');
+            $this->_uploadError = phrase('The selected file size exceeds the maximum allocation');
 
             return false;
         } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             // Upload directory is unwritable
-            $this->_upload_error = phrase('The upload folder is not writable');
+            $this->_uploadError = phrase('The upload folder is not writable');
 
             return false;
         }
@@ -332,7 +390,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -344,7 +402,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -356,7 +414,7 @@ class Validation
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
             } catch (Throwable $e) {
-                $this->_upload_error = $e->getMessage();
+                $this->_uploadError = $e->getMessage();
 
                 return false;
             }
@@ -370,7 +428,7 @@ class Validation
         // Check for PHP tags
         if (preg_match('/<\?php/i', $fileContent)) {
             // Ensure the file is not contain exploit command
-            $this->_upload_error = phrase('The file is not allowed to upload');
+            $this->_uploadError = phrase('The file is not allowed to upload');
 
             return false;
         }
@@ -399,8 +457,8 @@ class Validation
             }
 
             // Create thumbnail and icon of image
-            $this->_resize_image($upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-            $this->_resize_image($upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
+            $this->_resizeImage($upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
+            $this->_resizeImage($upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
         } else {
             // Non-image format, move directly to upload directory
             $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
@@ -408,10 +466,10 @@ class Validation
 
         if (null !== $_index) {
             // Collect uploaded data (has sub-name)
-            $this->_uploaded_files[$field][$index][$_index] = $filename;
+            $this->_uploadedFiles[$field][$index][$_index] = $filename;
         } else {
             // Collect uploaded data (single name)
-            $this->_uploaded_files[$field][$index] = $filename;
+            $this->_uploadedFiles[$field][$index] = $filename;
         }
 
         return true;
@@ -427,7 +485,7 @@ class Validation
      * @param int $height The target height
      * @return bool True if resize successful, false otherwise
      */
-    private function _resize_image(string $path, string $filename, string $type, int $width, int $height): bool
+    private function _resizeImage(string $path, string $filename, string $type, int $width, int $height): bool
     {
         $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;

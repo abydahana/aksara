@@ -21,7 +21,6 @@ use Config\Database;
 use Config\Services;
 use DateTimeZone;
 use Throwable;
-use ZipArchive;
 
 class Install extends BaseController
 {
@@ -38,7 +37,7 @@ class Install extends BaseController
 
                 service('language')->setLocale(service('request')->getGet('language'));
             }
-        } elseif (in_array(session()->get('language'), ['ar', 'de', 'en', 'en-pi', 'id', 'es', 'fr', 'id', 'ja', 'ko', 'nl', 'pt', 'ru', 'th', 'vi', 'zh'])) {
+        } elseif (in_array(session()->get('language'), ['en', 'id'])) {
             service('language')->setLocale(session()->get('language'));
         } else {
             session()->set('language', 'en');
@@ -135,10 +134,18 @@ class Install extends BaseController
         if (service('request')->getPost('_token')) {
             // Set validation rules
             service('validation')->setRule('database_driver', phrase('Database Driver'), 'required|in_list[MySQLi,SQLSRV,Postgre,SQLite3,OCI8]');
-            service('validation')->setRule('database_hostname', phrase('Hostname'), 'required');
-            service('validation')->setRule('database_port', phrase('Port'), 'required|integer');
-            service('validation')->setRule('database_username', phrase('Username'), 'required');
-            service('validation')->setRule('database_initial', phrase('Database Initial'), 'required');
+            service('validation')->setRule('database_initial', phrase('Database Initial'), (service('request')->getPost('database_driver') != 'SQLite3' ? 'required' : 'required|alpha_dash'));
+
+            if (service('request')->getPost('database_driver') != 'SQLite3') {
+                // For SQLite3, hostname is not required
+                service('validation')->setRule('database_hostname', phrase('Hostname'), 'required');
+
+                // For SQLite3, port is not required
+                service('validation')->setRule('database_port', phrase('Port'), 'required|integer');
+
+                // For SQLite3, username is not required
+                service('validation')->setRule('database_username', phrase('Username'), 'required');
+            }
 
             // Validate submitted data
             if (service('validation')->run(service('request')->getPost()) === false) {
@@ -161,7 +168,7 @@ class Install extends BaseController
             $_ENV['database.default.DBDebug'] = true;
 
             // Create database when not available
-            if (service('request')->getPost('database_forge')) {
+            if (service('request')->getPost('database_forge') && service('request')->getPost('database_driver') != 'SQLite3') {
                 // Only if user allow to create database
                 try {
                     // Load database forge class
@@ -180,7 +187,25 @@ class Install extends BaseController
 
             try {
                 // Set database name
-                $_ENV['database.default.database'] = service('request')->getPost('database_initial');
+                if (service('request')->getPost('database_driver') == 'SQLite3') {
+                    $filename = sha1(service('request')->getPost('database_initial'));
+                    $fullpath = WRITEPATH . 'database' . DIRECTORY_SEPARATOR . $filename . '.db';
+
+                    if (! file_exists($fullpath)) {
+                        if (! is_dir(WRITEPATH . 'database')) {
+                            // Create database directory
+                            mkdir(WRITEPATH . 'database', 0755, true);
+                        }
+
+                        // Create database file
+                        touch($fullpath);
+                        chmod($fullpath, 0666);
+                    }
+
+                    $_ENV['database.default.database'] = $fullpath;
+                } else {
+                    $_ENV['database.default.database'] = service('request')->getPost('database_initial');
+                }
 
                 // Connect to database
                 $db = Database::connect();
@@ -203,7 +228,7 @@ class Install extends BaseController
                 'database_port' => service('request')->getPost('database_port'),
                 'database_username' => service('request')->getPost('database_username'),
                 'database_password' => service('request')->getPost('database_password'),
-                'database_initial' => service('request')->getPost('database_initial')
+                'database_initial' => (service('request')->getPost('database_driver') == 'SQLite3' ? WRITEPATH . 'database' . DIRECTORY_SEPARATOR . sha1(service('request')->getPost('database_initial')) . '.db' : service('request')->getPost('database_initial'))
             ]);
         }
 
@@ -267,7 +292,8 @@ class Install extends BaseController
                     'id' => 0,
                     'label' => phrase('Developer (without sample)'),
                     'selected' => false
-                ], [
+                ],
+                [
                     'id' => 1,
                     'label' => phrase('Basic (with sample)'),
                     'selected' => true
@@ -302,9 +328,9 @@ class Install extends BaseController
         service('validation')->setRule('file_extension', phrase('File Extension'), 'required');
         service('validation')->setRule('image_extension', phrase('Image Extension'), 'required');
         service('validation')->setRule('max_upload_size', phrase('Max Upload Size'), 'required|integer|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ('g' == $max_filesize_unit ? 1024 : ('t' == $max_filesize_unit ? 131072 : 1)) . ']');
-        service('validation')->setRule('image_dimension', phrase('Image Dimension'), 'required|integer|greater_than_equal_to[600]|less_than_equal_to[2048]');
-        service('validation')->setRule('thumbnail_dimension', phrase('Thumbnail Dimension'), 'required|integer|greater_than_equal_to[250]|less_than_equal_to[600]');
-        service('validation')->setRule('icon_dimension', phrase('Icon Dimension'), 'required|integer|greater_than_equal_to[80]|less_than_equal_to[250]');
+        service('validation')->setRule('image_dimension', phrase('Image Dimension'), 'required|integer|greater_than_equal_to[1024]|less_than_equal_to[2560]');
+        service('validation')->setRule('thumbnail_dimension', phrase('Thumbnail Dimension'), 'required|integer|greater_than_equal_to[256]|less_than_equal_to[640]');
+        service('validation')->setRule('icon_dimension', phrase('Icon Dimension'), 'required|integer|greater_than_equal_to[80]|less_than_equal_to[128]');
 
         // Validate submitted data
         if (service('validation')->run(service('request')->getPost()) === false) {
@@ -406,10 +432,27 @@ class Install extends BaseController
             $_ENV['database.default.port'] = session()->get('database_port');
             $_ENV['database.default.username'] = session()->get('database_username');
             $_ENV['database.default.password'] = session()->get('database_password');
-            $_ENV['database.default.database'] = session()->get('database_initial');
             $_ENV['database.default.charset'] = 'utf8';
             $_ENV['database.default.DBCollat'] = 'utf8_general_ci';
             $_ENV['database.default.DBDebug'] = true;
+
+            if (session()->get('database_driver') == 'SQLite3') {
+                $fullpath = session()->get('database_initial');
+
+                if (! file_exists($fullpath)) {
+                    if (! is_dir(WRITEPATH . 'database')) {
+                        // Create database directory
+                        mkdir(WRITEPATH . 'database', 0755, true);
+                    }
+
+                    touch($fullpath);
+                    chmod($fullpath, 0666);
+                }
+
+                $_ENV['database.default.database'] = $fullpath;
+            } else {
+                $_ENV['database.default.database'] = session()->get('database_initial');
+            }
 
             try {
                 // Initialize parameter to new connection
@@ -426,25 +469,29 @@ class Install extends BaseController
             }
 
             // Check if basic installation is selected
-            if (session()->get('installation_mode') > 0) {
+            if (session()->get('installation_mode') <= 0) {
                 try {
-                    // Try unzip the sample modules
-                    $zip = new ZipArchive();
+                    // Remove /modules/* except README
+                    $targetDir = ROOTPATH . 'modules' . DIRECTORY_SEPARATOR;
 
-                    // Read compressed sample module
-                    if ($zip->open(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'sample-module.zip') === true) {
-                        // Extract sample modules to modules path
-                        $zip->extractTo(ROOTPATH);
+                    // Get files except README.md
+                    foreach (glob($targetDir . "*") as $file) {
+                        // Get filename
+                        $fileName = basename($file);
+
+                        // Skip current and parent directory
+                        if ('.' === $fileName || '..' === $fileName) {
+                            continue;
+                        }
+
+                        // Check if filename contains 'README'
+                        if (stripos($fileName, 'README') === false) {
+                            $this->_delete_dir($file);
+                        }
                     }
-
-                    // Close current opened zip file
-                    $zip->close();
                 } catch (Throwable $e) {
-                    // Unable to extract the sample module
-                    return $this->response->setJSON([
-                        'status' => 403,
-                        'message' => phrase('Unable to extract the sample module.') . ' ' . phrase('Make sure the following directory is writable') . ': <code>' . preg_replace('/\/public/', '', ROOTPATH, 1) . 'modules</code><hr /><label class="text-danger"><input type="checkbox" name="skip_module" value="1" /> ' . phrase('Skip installing the sample module') . '</label>'
-                    ]);
+                    // Unable to remove the sample module
+                    log_message('error', $e->getMessage());
                 }
             }
 
@@ -543,5 +590,32 @@ class Install extends BaseController
         }
 
         return $output;
+    }
+
+    /**
+     * Delete directory recursively
+     */
+    private function _delete_dir(string $dir)
+    {
+        if (! is_dir($dir)) {
+            return false;
+        }
+
+        $files = array_diff(scandir($dir), [
+            '.',
+            '..'
+        ]);
+
+        foreach ($files as $file) {
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+
+            if (is_dir($path)) {
+                $this->_delete_dir($path);
+            } else {
+                unlink($path);
+            }
+        }
+
+        return rmdir($dir);
     }
 }

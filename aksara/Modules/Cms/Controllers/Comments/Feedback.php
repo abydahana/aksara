@@ -21,26 +21,25 @@ use Aksara\Laboratory\Core;
 
 class Feedback extends Core
 {
-    private $_table = 'post__comments_reports';
-
-    private $_primary;
+    private string $_table = 'post_comments_reports';
+    private ?int $_primary;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('create, update, clone, delete');
+        $this->unsetMethod('create, update, clone, delete');
 
         $this->_primary = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
     }
 
     public function index()
     {
-        $query = $this->model->get_where(
-            'post__comments',
+        $query = $this->model->getWhere(
+            'post_comments',
             [
                 'comment_id' => $this->_primary
             ],
@@ -55,41 +54,41 @@ class Feedback extends Core
                     blogs.post_slug,
                     blogs.post_title,
 
-                    blogs__categories.category_slug
+                    blogs_categories.category_slug
                 ')
                 ->join(
                     'blogs',
-                    'blogs.post_id = post__comments.post_id'
+                    'blogs.post_id = post_comments.post_id'
                 )
                 ->join(
-                    'blogs__categories',
-                    'blogs__categories.category_id = blogs.post_category'
+                    'blogs_categories',
+                    'blogs_categories.category_id = blogs.post_category'
                 );
             }
         }
 
         $query = $this->model->select('
-            post__comments.comment_id,
+            post_comments.comment_id,
 
-            app__users.user_id,
-            app__users.first_name,
-            app__users.last_name
+            app_users.user_id,
+            app_users.first_name,
+            app_users.last_name
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = post__comments.user_id'
+            'app_users',
+            'app_users.user_id = post_comments.user_id'
         )
-        ->get_where(
-            'post__comments',
+        ->getWhere(
+            'post_comments',
             [
-                'post__comments.comment_id' => $this->_primary
+                'post_comments.comment_id' => $this->_primary
             ],
             1
         )
         ->row();
 
         if ($query) {
-            $this->set_description('
+            $this->setDescription('
                 <div class="row border-bottom">
                     <div class="col-sm-4 col-md-2">
                         ' . phrase('User') . '
@@ -119,45 +118,45 @@ class Feedback extends Core
             ');
         }
 
-        $this->set_title(phrase('Feedback'))
-        ->set_icon('mdi mdi-file-alert-outline')
-        ->unset_column('comment_id, post_id, reply_id, edited')
-        ->unset_view('comment_id, post_id, reply_id, edited')
+        $this->setTitle(phrase('Feedback'))
+        ->setIcon('mdi mdi-file-alert-outline')
+        ->unsetColumn('comment_id, post_id, reply_id, edited')
+        ->unsetView('comment_id, post_id, reply_id, edited')
 
-        ->column_order('first_name, message, timestamp')
+        ->columnOrder('first_name, message, timestamp')
 
-        ->set_primary('comment_id, user_id')
+        ->setPrimary('comment_id, user_id')
 
-        ->add_toolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
+        ->addToolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
 
-        ->set_field([
+        ->setField([
             'comments' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->set_relation(
+        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setRelation(
             'user_id',
-            'app__users.user_id',
-            '{{ app__users.first_name }} {{ app__users.last_name }}'
+            'app_users.user_id',
+            '{{ app_users.first_name }} {{ app_users.last_name }}'
         )
 
-        ->merge_content('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
         ->where([
             'comment_id' => $this->_primary
         ])
 
-        ->order_by('timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
 
     public function hide()
     {
-        $this->permission->must_ajax(current_page('../'));
+        $this->permission->mustAjax(current_page('../'));
 
-        $query = $this->model->get_where(
-            'post__comments',
+        $query = $this->model->getWhere(
+            'post_comments',
             [
                 'comment_id' => $this->_primary
             ],
@@ -166,7 +165,7 @@ class Feedback extends Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you want to hide is not found', current_page('../')));
+            return throw_exception(404, phrase('The comment you want to hide is not found'), current_page('../'));
         }
 
         if ($this->request->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated'))) {

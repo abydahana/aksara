@@ -10,7 +10,7 @@ body.content-expanded [role="breadcrumb"] {
   display: none;
 }
 body.content-expanded #page-wrapper {
-  background: #fff;
+  
   z-index: 1081;
 }
 body.content-expanded [role="content"] {
@@ -41,34 +41,6 @@ th[align="right"] {
     rgba(255, 255, 255, 0.5)
   );
 }
-.gradient-top {
-  background: linear-gradient(
-    to top,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-.gradient-right {
-  background: linear-gradient(
-    to right,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-.gradient-bottom {
-  background: linear-gradient(
-    to bottom,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-.gradient-left {
-  background: linear-gradient(
-    to left,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
 .tooltip {
   position: absolute !important;
   top: 0;
@@ -82,6 +54,9 @@ th[align="right"] {
 .callout {
   border-width: 0 !important;
   border-left-width: 0.25rem !important;
+}
+.offcanvas {
+  z-index: 1080 !important;
 }
 .offcanvas-header {
   padding: 0.75rem 1rem !important;
@@ -143,15 +118,12 @@ th[align="right"] {
 .text-sm {
   font-size: 0.75rem !important;
 }
-.text-muted {
-  color: #a8a8a8 !important;
-}
 .btn.btn-file {
   position: relative;
   overflow: hidden;
   padding: 0;
-  border: 2px dashed #ced4da;
-  background: #f9fcff;
+  
+  
   min-height: 38px;
 }
 .btn.btn-file > input[type="file"] {
@@ -187,6 +159,9 @@ th[align="right"] {
 .fileuploader-item.row .col-2 {
   padding-right: 1rem;
 }
+.accordion {
+  width: 100%
+}
 button:focus,
 .btn:focus,
 button:active,
@@ -209,7 +184,7 @@ textarea {
 }
 .form-control[readonly],
 .form-control:focus[readonly] {
-  background: #e9ecef;
+  
   opacity: 1;
 }
 .form-control:focus {
@@ -219,8 +194,8 @@ textarea {
   margin-left: 0 !important;
 }
 .custom-file-label {
-  border: 2px dashed #ced4da !important;
-  background: #f9fcff;
+  
+  
   white-space: nowrap;
   overflow: hidden;
 }
@@ -233,8 +208,8 @@ textarea {
 .CodeMirror {
   border-radius: 0.375rem !important;
   padding: 0.375rem 0.75rem !important;
-  border: 1px solid #ced4da !important;
-  background-color: #fff !important;
+  
+  
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
 }
 .CodeMirror-lines,
@@ -290,8 +265,8 @@ blink {
   }
 }
 .autocomplete-suggestions {
-  background: #fff;
-  border: 1px solid #ced4da;
+  
+  
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -301,25 +276,25 @@ blink {
   transition: all 0.3s ease-out;
 }
 .autocomplete-suggestion strong {
-  color: #007bff;
+  
   -webkit-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 }
 .autocomplete-suggestion:hover {
-  color: #fff;
-  background: #007bff;
+  
+  
   -webkit-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
   cursor: pointer;
 }
 .autocomplete-suggestion:hover strong {
-  color: #ff0;
+  
   -webkit-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 }
 .autocomplete-no-suggestion {
   padding: 0.375rem 0.75rem;
-  color: #999;
+  
   font-size: small;
 }
 .navbar-collapse.show .navbar-nav .nav-link i.mdi,
@@ -358,10 +333,27 @@ blink {
   border-radius: 50%;
   transform: scale(0.7);
   -webkit-transform: scale(0.7);
-  background: rgba(255, 255, 255, 1);
+  
   opacity: 0.45;
   animation: ripple 1s forwards;
   -webkit-animation: ripple 1s forwards;
+}
+.backdrop-blur {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+}
+.text-outline-dark {
+  text-shadow: 
+    0 0 4px rgba(0,0,0,1),
+    0 0 8px rgba(0,0,0,0.8),
+    0 0 16px rgba(0,0,0,0.6) !important;
+}
+.text-outline-light {
+  text-shadow: 
+    0 0 4px rgba(255,255,255,1),
+    0 0 8px rgba(255,255,255,0.8),
+    0 0 16px rgba(255,255,255,0.6) !important;
 }
 @keyframes ripple-shadow {
   0% {
@@ -450,16 +442,4 @@ blink {
     width: 100%;
     max-width: 575.98px !important;
   }
-}
-
-@media (max-width: 767.98px) {
-}
-
-@media (max-width: 991.98px) {
-}
-
-@media (max-width: 1199.98px) {
-}
-
-@media (max-width: 1399.98px) {
 }

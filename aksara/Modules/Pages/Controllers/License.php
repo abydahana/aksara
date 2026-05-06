@@ -28,9 +28,9 @@ class License extends Core
 
     public function index()
     {
-        $this->set_title(phrase('End User License Agreement'))
-        ->set_icon('mdi mdi-certificate')
-        ->set_description(phrase('Including the terms of services.'))
+        $this->setTitle(phrase('End User License Agreement'))
+        ->setIcon('mdi mdi-certificate')
+        ->setDescription(phrase('Including the terms of services.'))
 
         ->render();
     }

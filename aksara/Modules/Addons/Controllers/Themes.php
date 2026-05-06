@@ -17,23 +17,23 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
-use Config\Services;
-use Aksara\Laboratory\Core;
 use Throwable;
 use ZipArchive;
+use Config\Services;
+use Aksara\Laboratory\Core;
 
 class Themes extends Core
 {
-    private $_primary;
+    private string $_primary;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         helper('filesystem');
 
@@ -42,9 +42,9 @@ class Themes extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Theme Manager'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Manager'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'installed' => $this->_installed()
         ])
 
@@ -69,12 +69,12 @@ class Themes extends Core
             $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
         }
 
-        $this->set_title(phrase('Theme Detail'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Detail'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render();
     }
@@ -122,15 +122,19 @@ class Themes extends Core
                     ]
                 ]
             );
+
+            $upstream = json_decode($response->getBody());
+
+            if ($response->getStatusCode() !== 200) {
+                return throw_exception(403, $response->getReasonPhrase(), current_page('../', ['item' => null]));
+            }
         } catch (Throwable $e) {
             log_message('error', $e->getMessage());
+
+            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../', ['item' => null]));
         }
 
-        $upstream = json_decode($response->getBody());
-
-        if ($response->getStatusCode() !== 200) {
-            return throw_exception(403, $response->getReasonPhrase(), current_page('../', ['item' => null]));
-        } elseif (isset($upstream->version) && $upstream->version > $package->version) {
+        if (isset($upstream->version) && $upstream->version > $package->version) {
             $html = '
                 <form action="' . current_page('../../../addons/install', ['item' => $upstream->path, 'type' => 'theme']) . '" method="POST" class="--validate-form">
                     <div class="text-center">
@@ -189,7 +193,7 @@ class Themes extends Core
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
         }
 
-        $this->permission->must_ajax(current_page('../', ['item' => null]));
+        $this->permission->mustAjax(current_page('../', ['item' => null]));
 
         if (! $this->request->getPost('theme')) {
             $html = '
@@ -252,7 +256,7 @@ class Themes extends Core
         $site_id = get_setting('id');
 
         $query = $this->model->update(
-            'app__settings',
+            'app_settings',
             [
                 $target => $this->request->getPost('theme')
             ],
@@ -286,7 +290,7 @@ class Themes extends Core
         $package->folder = $this->_primary;
         $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
 
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
             } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json')) {
@@ -305,13 +309,13 @@ class Themes extends Core
             return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
         }
 
-        $this->set_title(phrase('Theme Customization'))
-        ->set_icon('mdi mdi-palette')
-        ->set_output([
+        $this->setTitle(phrase('Theme Customization'))
+        ->setIcon('mdi mdi-palette')
+        ->setOutput([
             'writable' => (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json') ? true : false),
             'detail' => $package
         ])
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render();
     }
@@ -321,15 +325,15 @@ class Themes extends Core
      */
     public function import()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
             }
 
-            $this->form_validation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+            $this->formValidation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->form_validation->run($this->request->getPost()) === false) {
-                return throw_exception(400, $this->form_validation->getErrors());
+            if ($this->formValidation->run($this->request->getPost()) === false) {
+                return throw_exception(400, $this->formValidation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No theme package were chosen.')]);
             } elseif (! class_exists('ZipArchive')) {
@@ -443,8 +447,8 @@ class Themes extends Core
             return throw_exception(400, ['file' => phrase('Unable to extract the theme package.')]);
         }
 
-        $this->set_title(phrase('Theme Importer'))
-        ->set_icon('mdi mdi-import')
+        $this->setTitle(phrase('Theme Importer'))
+        ->setIcon('mdi mdi-import')
         ->render();
     }
 
@@ -457,7 +461,7 @@ class Themes extends Core
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
         }
 
-        $this->permission->must_ajax(current_page('../', ['item' => null]));
+        $this->permission->mustAjax(current_page('../', ['item' => null]));
 
         // Delete confirmation
         if (! $this->request->getPost('theme')) {
@@ -500,10 +504,10 @@ class Themes extends Core
             ]);
         }
 
-        $this->form_validation->setRule('theme', phrase('Theme'), 'required');
+        $this->formValidation->setRule('theme', phrase('Theme'), 'required');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, ['theme' => $this->form_validation->getErrors()]);
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, ['theme' => $this->formValidation->getErrors()]);
         }
 
         //C heck if requested theme to delete is match
@@ -523,8 +527,8 @@ class Themes extends Core
                 // Get the site id
                 $site_id = get_setting('id');
 
-                $active_theme = $this->model->get_where(
-                    'app__settings',
+                $active_theme = $this->model->getWhere(
+                    'app_settings',
                     [
                         'id' => $site_id
                     ],

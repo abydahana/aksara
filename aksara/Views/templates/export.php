@@ -2,6 +2,8 @@
     $thead = null;
     $tbody = null;
     $single_print = false;
+    $method = (isset($method) ? $method : null);
+    $pagination = (isset($pagination) ? $pagination : new stdClass());
 
     if (isset($results->table_data)) {
         foreach($results->table_data as $key => $row) {
@@ -57,7 +59,7 @@
 ?>
 <html>
     <head>
-        <title><?= $meta->title; ?></title>
+        <title><?= (isset($meta->title) ? $meta->title : get_setting('app_name')); ?></title>
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
         <style type="text/css">
             .print {

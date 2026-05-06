@@ -52,7 +52,7 @@ class Core
     /**
      * API Client Status/Instance.
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Constructor
@@ -90,7 +90,7 @@ class Core
     {
         // Retrieve the 'core' component template from the Builder
         // Uses $_set_theme (from Traits) to locate the correct theme folder
-        $component = $this->builder->get_component($this->_set_theme, 'core');
+        $component = $this->builder->getComponent($this->_setTheme, 'core');
 
         // Logic continues here...
         // (Assuming you will return or output the component later)

@@ -204,6 +204,5 @@ return [
     'Import sample data' => 'Install with sample data',
 
     // Additional phrases
-    'Sectoral' => 'Sectoral Mapping',
-    'Regional' => 'Regional Mapping'
+    'WebGIS' => 'WebGIS'
 ];

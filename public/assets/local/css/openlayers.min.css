@@ -28,6 +28,32 @@
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   z-index: 1;
 }
+.ol-control {
+  background: rgba(0,0,0,.55) !important;
+  border: 1px solid rgba(0,0,0,.1) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  border-radius: .5rem !important;
+  padding: 3px !important;
+}
+.ol-control button {
+  background: transparent !important;
+  font-weight: 600 !important;
+  border-radius: .5rem !important;
+  border: none !important;
+  margin: 1px !important;
+  width: 1.9em !important;
+  height: 1.9em !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.15s, color 0.15s;
+}
+.ol-control button:hover {
+  background: var(--bs-primary-bg-subtle, #e9f3fb) !important;
+  color: var(--bs-primary, #0d6efd) !important;
+}
 .ol-rotate {
   top: 1rem !important;
   right: 1rem !important;
@@ -39,31 +65,68 @@
   right: auto !important;
 }
 .ol-track {
-  top: 6rem !important;
+  top: 5.5rem !important;
   left: 1rem !important;
   right: auto !important;
 }
 .ol-zoom-extent {
-  top: 8.5rem !important;
+  top: 8rem !important;
   left: 1rem !important;
   right: auto !important;
 }
 .ol-full-screen {
-  top: 11rem !important;
+  top: 10.5rem !important;
   left: 1rem !important;
   right: auto !important;
 }
 .ol-mouse-position {
   top: auto !important;
-  bottom: 2rem !important;
+  right: auto !important;
+  bottom: 2.5rem !important;
   left: 1rem !important;
+  background: rgba(0,0,0,.55) !important;
   font-size: 12px;
-  font-weight: bold;
-  color: #000;
-  text-shadow: 1px 1px 1px #fff;
+  color: #fff !important;
+  border-radius: 6px !important;
 }
 .ol-scale-line {
   left: 1rem !important;
+  bottom: 1rem !important;
+  background: rgba(0,0,0,.55) !important;
+}
+.ol-attribution {
+  border-radius: .5rem 0 0 0 !important;
+  background: rgba(255,255,255,.75) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.ol-attribution button {
+  display: none !important;
+}
+.ol-attribution.ol-collapsed ul {
+  display: block !important;
+}
+.ol-attribution ul {
+  padding: 0 !important
+}
+.ol-street-view--activated .ol-street-view--size-toggler {
+  left: 1rem !important;
+  bottom: 1rem !important;
+}
+.ol-control.ol-street-view--size-toggler button {
+  box-shadow: none !important;
+  padding-left: 0 !important
+}
+.ol-control.ol-street-view--size-toggler button:hover {
+  background: transparent !important;
+}
+.ol-street-view--compact .ol-street-view--size-toggler .ol-street-view--size-toggler-img {
+  filter: invert(100%);
+  background-position: 2.5px 1px!important
+}
+.ol-street-view--size-toggler .ol-street-view--size-toggler-img {
+  filter: invert(100%);
+  background-position: 2.5px -16px !important
 }
 .ol-popup {
   border-radius: 1rem !important;
@@ -171,8 +234,8 @@ ol.entry-content li {
 ol.entry-content li:before {
   content: counter(li);
   counter-increment: li;
-  color: #333;
-  background: #aaa;
+  color: var(--bs-body-bg, #fff);
+  background: var(--bs-secondary, #aaa);
   border-radius: 50%;
   font-size: 18px;
   font-weight: bold;

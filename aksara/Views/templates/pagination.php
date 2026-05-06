@@ -1,13 +1,16 @@
 <?php
-    $pager->setSurroundCount(0);
+/**
+ * @var \CodeIgniter\Pager\PagerRenderer $pager
+ */
+$pager->setSurroundCount(0);
 
-    $current_page = 1;
-    $last_page = parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
-    $last_page = (isset($output['page']) ? $output['page'] : 0);
+$current_page = 1;
+parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
+$last_page = (isset($output['page']) ? $output['page'] : 0);
 
-    if (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page')) {
-        $current_page = service('request')->getGet('per_page');
-    }
+if (is_numeric(service('request')->getGet('per_page')) && service('request')->getGet('per_page')) {
+    $current_page = service('request')->getGet('per_page');
+}
 ?>
 
 <ul class="pagination pagination-sm mb-0">

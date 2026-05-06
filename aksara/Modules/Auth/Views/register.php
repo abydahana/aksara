@@ -1,8 +1,14 @@
+<?php
+/**
+ * @var mixed $meta
+ * @var mixed $captcha
+ */
+?>
 <div class="py-3 py-md-5 bg-light">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-3 col-sm-2 col-md-1">
-                <i class="<?= $meta->icon; ?> mdi-4x"></i>
+                <i class="<?= $meta->icon; ?> mdi-5x"></i>
             </div>
             <div class="col-9 col-sm-10 col-md-11">
                 <h3 class="mb-0<?= (! $meta->description ? ' mt-3' : null); ?>">
@@ -98,7 +104,7 @@
                     </div>
                     <div class="mt-4 mb-4">
                         <label class="text-muted d-block">
-                            <?= phrase('By submitting this form, you are agree about all future action related to your account related to the {{term_of_service}}', ['terms_and_conditions' => '<a href="' . base_url('pages/guidelines/terms-and-conditions') . '" target="_blank"><b>' . phrase('Terms and Conditions') . '</b></a>']); ?>
+                            <?= phrase('By submitting this form, you are agree about all future action related to your account related to the {{terms_and_conditions}}', ['terms_and_conditions' => '<a href="' . base_url('pages/guidelines/terms-and-conditions') . '" target="_blank"><b>' . phrase('Terms and Conditions') . '</b></a>']); ?>
                         </label>
                     </div>
                     <div class="mb-3">

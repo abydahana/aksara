@@ -1,5 +1,9 @@
 <?php
-    $user = (isset($results[0]) ? $results[0] : []);
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ */
+$user = (isset($results[0]) ? $results[0] : []);
 ?>
 <?php if ($user): ?>
     <div class="py-3 py-md-5 bg-light">

@@ -17,11 +17,11 @@
 
 namespace Aksara\Laboratory\Renderer;
 
+use Throwable;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 use Twig\TwigFunction;
-use Throwable;
 
 class Parser
 {
@@ -93,7 +93,7 @@ class Parser
                 file_put_contents(ROOTPATH . 'themes/' . $this->_theme . '/views/README', $notes);
             }
 
-            if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig') || ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.php')) {
+            if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig') && ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.php')) {
                 // Copy master views
                 copy(APPPATH . 'Views/components/core/404.twig', ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig');
             }
@@ -121,6 +121,10 @@ class Parser
 
         // Debug extension
         $twig->addExtension(new DebugExtension());
+
+        $twig->addFunction(new TwigFunction('base_url', function ($slug, $query = []) {
+            return base_url($slug, $query);
+        }));
 
         $twig->addFunction(new TwigFunction('phrase', function ($words) {
             return phrase($words);

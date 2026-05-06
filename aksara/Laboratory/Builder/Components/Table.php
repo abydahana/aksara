@@ -602,7 +602,7 @@ class Table
         // Template for GeoJSON Placeholder
         $component = <<<EOF
         <span>
-            [GEOJSON]
+            [VECTOR TILE]
         </span>
         EOF;
 
@@ -681,7 +681,7 @@ class Table
      *
      * @return  array Returns component configuration array
      */
-    public function custom_format(): array
+    public function customFormat(): array
     {
         // Template for Raw Content
         $component = <<<EOF

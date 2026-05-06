@@ -42,6 +42,10 @@ body.sidebar-collapsed .navbar-brand img.img-icon {
   display: inline-block;
 }
 
+#breadcrumb-wrapper.bg-light {
+  background-color: var(--bs-sidebar-bg)!important;
+}
+
 #breadcrumb-wrapper .breadcrumb-item+.breadcrumb-item::before,
 body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
   float: none;
@@ -74,6 +78,7 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 #sidebar-wrapper {
   position: fixed;
   top: 81px;
+  background: var(--bs-sidebar-bg);
   border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
   z-index: 1;
 }
@@ -85,7 +90,6 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 #sidebar-wrapper .nav-link {
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
-  color: rgba(51, 51, 51, 0.95);
   word-wrap: break-word;
 }
 
@@ -105,10 +109,6 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 #sidebar-wrapper .nav-link.dropdown-toggle.is-expanded:after {
   transform: rotate(-180deg);
   transition: 0.3s ease-in-out;
-}
-
-#sidebar-wrapper .nav-item a.nav-link:hover {
-  color: var(--bs-primary) !important;
 }
 
 #sidebar-wrapper .nav-item.active:not(.is-parent)>a.nav-link {
@@ -150,6 +150,17 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 
 .modal-header {
   padding: 0.25rem 1rem;
+}
+
+.modal-body>.alert {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-radius: 0;
+  border: 0;
+}
+
+.modal-open .select2-dropdown {
+  z-index: 1055;
 }
 
 .navbar-nav .dropdown-menu:after,
@@ -203,13 +214,6 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
   display: inline-block;
 }
 
-.modal-body>.alert {
-  margin-left: -1rem;
-  margin-right: -1rem;
-  border-radius: 0;
-  border: 0;
-}
-
 .text-muted {
   color: #aaa !important;
 }
@@ -236,12 +240,8 @@ a {
   --bs-table-accent-bg: transparent;
 }
 
-.modal-open .select2-dropdown {
-  z-index: 1055;
-}
-
 .user-bg-masking {
-  background: rgb(221, 238, 255, 0.5);
+  border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)
 }
 
 .input-group .form-check {
@@ -259,6 +259,10 @@ a {
 .nav-pills.nav-pills-dark .nav-link {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
+}
+
+.be-hidden {
+  display: none
 }
 
 @media (min-width: 576px) {

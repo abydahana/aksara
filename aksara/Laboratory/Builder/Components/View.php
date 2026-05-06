@@ -617,7 +617,7 @@ class View
         // Template for Map Visualization
         $component = <<<EOF
         <div class="drawing-placeholder preloader position-relative w-100 overflow-hidden">
-            <div role="map" id="map_{{ name }}" class="{{ class }}" data-geojson="{{ content | escape }}" data-mousewheel="0" title="{{ placeholder }}" style="height:360px"></div>
+            <div role="map" id="map_{{ name }}" class="{{ class }}" data-source-url="{{ content | escape }}" control-mousewheel="0" title="{{ placeholder }}" style="height:360px"></div>
         </div>
         EOF;
 
@@ -742,7 +742,7 @@ class View
      *
      * @return  array Returns component configuration array
      */
-    public function custom_format(): array
+    public function customFormat(): array
     {
         // Template for Raw Content
         $component = <<<EOF

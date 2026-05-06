@@ -50,7 +50,7 @@ class Renderer
     /**
      * API Client Status/Instance (injected).
      */
-    private mixed $api_client = null;
+    private mixed $apiClient = null;
 
     /**
      * Constructor

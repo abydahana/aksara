@@ -1,3 +1,13 @@
+<?php
+/**
+ * @var mixed $userdata
+ * @var mixed $year
+ * @var mixed $field_data
+ * @var mixed $visible_menu
+ * @var mixed $sub_level_1
+ * @var mixed $links
+ */
+?>
 <div class="container-fluid py-3">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">

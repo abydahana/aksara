@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Read extends Core
 {
-    private $_table = 'blogs';
+    private string $_table = 'blogs';
 
     public function __construct()
     {
@@ -34,13 +34,13 @@ class Read extends Core
 
     public function index($category = null, $slug = null)
     {
-        $this->set_title('{{ post_title }}', phrase('No post were found!'))
-        ->set_description('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
-        ->set_icon('mdi mdi-newspaper')
-        ->set_output([
+        $this->setTitle('{{ post_title }}', phrase('No post were found!'))
+        ->setDescription('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
+        ->setIcon('mdi mdi-newspaper')
+        ->setOutput([
             // Category detail
-            'category' => $this->model->get_where(
-                'blogs__categories',
+            'category' => $this->model->getWhere(
+                'blogs_categories',
                 [
                     'category_slug' => $category
                 ],
@@ -49,13 +49,13 @@ class Read extends Core
             ->row(),
 
             // Get similar categories
-            'categories' => $this->_get_categories(),
+            'categories' => $this->_getCategories(),
 
             // Get similar articles
-            'related' => $this->_get_related($category, $slug),
+            'related' => $this->_getRelated($category, $slug),
 
             // Read other articles
-            'recommendations' => $this->_get_recommendations($category, $slug)
+            'recommendations' => $this->_getRecommendations($category, $slug)
         ])
         ->select('
             blogs.post_slug,
@@ -65,52 +65,52 @@ class Read extends Core
             blogs.featured_image,
             blogs.created_timestamp,
             blogs.updated_timestamp,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.username,
-            app__users.photo
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.username,
+            app_users.photo
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
         ->join(
-            'app__users',
-            'app__users.user_id = blogs.author'
+            'app_users',
+            'app_users.user_id = blogs.author'
         )
-        ->group_start()
+        ->groupStart()
         ->where('blogs.post_slug', $slug)
-        ->or_where('blogs.post_id', $this->request->getGet('post_id') ?? 0)
-        ->group_end()
+        ->orWhere('blogs.post_id', $this->request->getGet('post_id') ?? 0)
+        ->groupEnd()
         ->where('status', 1)
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(1)
 
         ->render($this->_table);
     }
 
-    private function _get_categories()
+    private function _getCategories()
     {
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image
         ')
         ->join(
             'blogs',
-            'blogs.post_category = blogs__categories.category_id'
+            'blogs.post_category = blogs_categories.category_id'
         )
-        ->order_by('total_data', 'DESC')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
-            'blogs__categories',
+        ->orderBy('total_data', 'DESC')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
+            'blogs_categories',
             [
                 'blogs.status' => 1
             ]
@@ -120,7 +120,7 @@ class Read extends Core
         return $query;
     }
 
-    private function _get_related($category = 0, $slug = '')
+    private function _getRelated($category = 0, $slug = '')
     {
         $query = $this->model->select('
             blogs.post_slug,
@@ -128,18 +128,18 @@ class Read extends Core
             blogs.post_excerpt,
             blogs.featured_image,
             blogs.updated_timestamp,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_image
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_image
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
-        ->order_by('blogs.updated_timestamp', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('blogs.updated_timestamp', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(10)
-        ->get_where(
+        ->getWhere(
             'blogs',
             [
                 'category_slug' => ($category ? $category : ''),
@@ -152,17 +152,17 @@ class Read extends Core
         return $query;
     }
 
-    private function _get_recommendations($category = 0, $slug = '')
+    private function _getRecommendations($category = 0, $slug = '')
     {
         $post_tags = $this->model->select('
             blogs.post_tags
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'blogs',
             [
                 'category_slug' => ($category ? $category : ''),
@@ -176,32 +176,32 @@ class Read extends Core
         $post_tags = array_map('trim', explode(',', $post_tags));
 
         if ($post_tags) {
-            $this->model->group_start();
+            $this->model->groupStart();
 
             foreach ($post_tags as $key => $tag) {
                 if ($key) {
-                    $this->model->or_like('post_tags', $tag);
+                    $this->model->orLike('post_tags', $tag);
                 } else {
                     $this->model->like('post_tags', $tag);
                 }
             }
 
-            $this->model->group_end();
+            $this->model->groupEnd();
         }
 
         $query = $this->model->select('
             blogs.post_title,
             blogs.post_slug,
-            blogs__categories.category_slug
+            blogs_categories.category_slug
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
-        ->order_by('blogs.post_title', 'RANDOM')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('blogs.post_title', 'RANDOM')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(5)
-        ->get_where(
+        ->getWhere(
             'blogs',
             [
                 'blogs.post_slug != ' => ($slug ? $slug : ''),

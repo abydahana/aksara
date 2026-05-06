@@ -31,14 +31,14 @@ class Category extends Core
 
     public function index($slug = null)
     {
-        $this->set_title('{{ category_title }}', phrase('No category were found!'))
-        ->set_description('{{ category_description }}')
-        ->set_icon('mdi mdi-sitemap')
+        $this->setTitle('{{ category_title }}', phrase('No category were found!'))
+        ->setDescription('{{ category_description }}')
+        ->setIcon('mdi mdi-sitemap')
 
-        ->set_output([
+        ->setOutput([
             /* category detail */
-            'category' => $this->model->get_where(
-                'blogs__categories',
+            'category' => $this->model->getWhere(
+                'blogs_categories',
                 [
                     'category_slug' => $slug
                 ],
@@ -47,10 +47,10 @@ class Category extends Core
             ->row(),
 
             // List of category
-            'categories' => $this->_get_categories($slug),
+            'categories' => $this->_getCategories($slug),
 
             // Latest post
-            'latest' => $this->_get_latest($slug)
+            'latest' => $this->_getLatest($slug)
         ])
         ->select('
             blogs.post_slug,
@@ -59,61 +59,61 @@ class Category extends Core
             blogs.post_tags,
             blogs.featured_image,
             blogs.updated_timestamp,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.username,
-            app__users.photo
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.username,
+            app_users.photo
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
         ->join(
-            'app__users',
-            'app__users.user_id = blogs.author'
+            'app_users',
+            'app_users.user_id = blogs.author'
         )
-        ->order_by('blogs.updated_timestamp', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('blogs.updated_timestamp', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->where([
-            'blogs__categories.category_slug' => $slug,
+            'blogs_categories.category_slug' => $slug,
             'blogs.status' => 1
         ])
 
         ->render('blogs');
     }
 
-    private function _get_categories($slug = null)
+    private function _getCategories($slug = null)
     {
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image
         ')
         ->join(
             'blogs',
-            'blogs.post_category = blogs__categories.category_id'
+            'blogs.post_category = blogs_categories.category_id'
         )
         ->where([
-            'blogs__categories.category_slug !=' => $slug,
-            'blogs__categories.status' => 1,
+            'blogs_categories.category_slug !=' => $slug,
+            'blogs_categories.status' => 1,
             'blogs.status' => 1
         ])
-        ->order_by('category_title', 'RANDOM')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get('blogs__categories')
+        ->orderBy('category_title', 'RANDOM')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->get('blogs_categories')
         ->result();
 
         return $query;
     }
 
-    private function _get_latest($slug = null)
+    private function _getLatest($slug = null)
     {
         $query = $this->model->select('
             blogs.post_id,
@@ -122,27 +122,27 @@ class Category extends Core
             blogs.post_excerpt,
             blogs.featured_image,
             blogs.updated_timestamp,
-            blogs__categories.category_title,
-            blogs__categories.category_slug,
-            app__users.username,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.photo
+            blogs_categories.category_title,
+            blogs_categories.category_slug,
+            app_users.username,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.photo
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
         ->join(
-            'app__users',
-            'app__users.user_id = blogs.author'
+            'app_users',
+            'app_users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1,
-                'blogs__categories.category_slug' => $slug
+                'blogs_categories.category_slug' => $slug
             ],
             5
         )

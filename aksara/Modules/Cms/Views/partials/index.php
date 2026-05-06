@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('announcements'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('announcements'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('carousels'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('carousels'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -41,7 +41,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('faqs'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('faqs'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -60,7 +60,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('media'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('media'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">

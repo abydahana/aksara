@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-4">
-            <a href="<?= go_to('edit'); ?>" class="card text-white bg-secondary mb-3 rounded-4 --xhr">
+            <a href="<?= go_to('edit'); ?>" class="card mb-3 rounded-4 --xhr">
                 <div class="card-body pt-2 pe-3 pb-2 ps-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-4">
-            <a href="<?= go_to('logs'); ?>" class="card text-white bg-secondary mb-3 rounded-4 --xhr">
+            <a href="<?= go_to('logs'); ?>" class="card mb-3 rounded-4 --xhr">
                 <div class="card-body pt-2 pe-3 pb-2 ps-3">
                     <div class="row align-items-center">
                         <div class="col-3">

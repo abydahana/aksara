@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $recommendations
+ * @var mixed $related
+ * @var mixed $categories
+ */
+?>
 
 <?php
     $toc = null;

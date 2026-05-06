@@ -1,5 +1,9 @@
 <?php
-    $error = false;
+/**
+ * @var mixed $extension
+ * @var mixed $mod_rewrite
+ */
+$error = false;
 
     if (phpversion() < 7.4 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
     {

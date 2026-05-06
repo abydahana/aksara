@@ -1,28 +1,32 @@
 <?php
-    $output = null;
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ */
+$output = null;
 
-    if ($results) {
-        foreach ($results as $key => $val) {
-            $images = json_decode($val->gallery_images, true);
-            $labels = explode(',', $val->gallery_tags);
+if ($results) {
+    foreach ($results as $key => $val) {
+        $images = json_decode($val->gallery_images, true);
+        $labels = explode(',', $val->gallery_tags);
 
-            if (is_array($images) && sizeof($images) > 0) {
-                foreach ($images as $src => $alt) {
-                    if (! $src) {
-                        continue;
-                    }
-
-                    $output .= '
-                        <div class="col-sm-6 col-md-3">
-                            <a href="' . current_page($src) . '" class="--xhr">
-                                <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-4 w-100 mb-4" alt="' . $alt . '" />
-                            </a>
-                        </div>
-                    ';
+        if (is_array($images) && sizeof($images) > 0) {
+            foreach ($images as $src => $alt) {
+                if (! $src) {
+                    continue;
                 }
+
+                $output .= '
+                    <div class="col-sm-6 col-md-3">
+                        <a href="' . current_page($src) . '" class="--xhr">
+                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-4 w-100 mb-4" alt="' . $alt . '" />
+                        </a>
+                    </div>
+                ';
             }
         }
     }
+}
 ?>
 
 <?php if ($output): ?>

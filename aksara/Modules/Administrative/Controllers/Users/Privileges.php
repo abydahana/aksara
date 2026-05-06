@@ -21,48 +21,46 @@ use Aksara\Laboratory\Core;
 
 class Privileges extends Core
 {
-    private $_table = 'app__users_privileges';
-
-    private $_primary;
-
-    private $_user;
+    private string $_table = 'app_users_privileges';
+    private ?int $_primary;
+    private ?object $_user;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('update');
-        $this->permit_upsert();
+        $this->setMethod('update');
+        $this->permitUpsert();
 
         $this->_primary = $this->request->getGet('user_id');
 
         $this->_user = $this->model->select('
-            app__users.user_id,
-            app__users.username,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.photo,
-            app__users.group_id,
-            app__groups.group_name,
+            app_users.user_id,
+            app_users.username,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.photo,
+            app_users.group_id,
+            app_groups.group_name,
             ' . $this->_table . '.sub_level_1,
             ' . $this->_table . '.access_year
         ')
         ->join(
-            'app__groups',
-            'app__groups.group_id = app__users.group_id'
+            'app_groups',
+            'app_groups.group_id = app_users.group_id'
         )
         ->join(
             $this->_table,
-            $this->_table . '.user_id = app__users.user_id',
+            $this->_table . '.user_id = app_users.user_id',
             'left'
         )
-        ->get_where(
-            'app__users',
+        ->getWhere(
+            'app_users',
             [
-                'app__users.user_id' => $this->_primary
+                'app_users.user_id' => $this->_primary
             ],
             1
         )
@@ -77,15 +75,15 @@ class Privileges extends Core
 
     public function index()
     {
-        $this->set_title(phrase('Custom User Privileges'))
-        ->set_icon('mdi mdi-account-check-outline')
-        ->set_output([
+        $this->setTitle(phrase('Custom User Privileges'))
+        ->setIcon('mdi mdi-account-check-outline')
+        ->setOutput([
             'userdata' => $this->_user,
             'year' => $this->_year(),
-            'sub_level_1' => $this->_sub_level_1(),
-            'visible_menu' => $this->_visible_menu()
+            'sub_level_1' => $this->_subLevel1(),
+            'visible_menu' => $this->_visibleMenu()
         ])
-        ->set_default([
+        ->setDefault([
             'user_id' => $this->_primary,
             'access_year' => $this->request->getPost('year')
         ])
@@ -100,8 +98,8 @@ class Privileges extends Core
      */
     private function _year()
     {
-        $query = $this->model->get_where(
-            'app__years',
+        $query = $this->model->getWhere(
+            'app_years',
             [
                 'status' => 1
             ]
@@ -118,7 +116,7 @@ class Privileges extends Core
      * for the sub level relation to your own table that will be used to
      * separate users based on their level
      */
-    private function _sub_level_1()
+    private function _subLevel1()
     {
         /**
          * Replace below line with query builder.
@@ -131,29 +129,29 @@ class Privileges extends Core
     /**
      * List the visible menu
      */
-    private function _visible_menu()
+    private function _visibleMenu()
     {
         /* get existing user menu if any */
-        $existing_menu = $this->model->select('visible_menu')->get_where($this->_table, ['user_id' => $this->_primary], 1)->row('visible_menu');
+        $existing_menu = $this->model->select('visible_menu')->getWhere($this->_table, ['user_id' => $this->_primary], 1)->row('visible_menu');
         $existing_menu = json_decode($existing_menu);
 
         /* get sidebar menu by user group from the database */
         $visible_menu = $this->model->select('
-            app__menus.serialized_data
+            app_menus.serialized_data
         ')
         ->join(
-            'app__groups',
-            'app__groups.group_id = app__users.group_id'
+            'app_groups',
+            'app_groups.group_id = app_users.group_id'
         )
         ->join(
-            'app__menus',
-            'app__menus.group_id = app__groups.group_id'
+            'app_menus',
+            'app_menus.group_id = app_groups.group_id'
         )
-        ->get_where(
-            'app__users',
+        ->getWhere(
+            'app_users',
             [
-                'app__users.user_id' => $this->_primary,
-                'app__menus.menu_placement' => 'sidebar'
+                'app_users.user_id' => $this->_primary,
+                'app_menus.menu_placement' => 'sidebar'
             ],
             1
         )
@@ -177,7 +175,7 @@ class Privileges extends Core
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '
                         </label>
-                        ' . (isset($item->children) ? $this->_children_menu($item->children, $existing_menu) : null) . '
+                        ' . (isset($item->children) ? $this->_childrenMenu($item->children, $existing_menu) : null) . '
                     </li>
                 ';
             }
@@ -194,7 +192,7 @@ class Privileges extends Core
     /**
      * Re-loop the available menu to find the children
      */
-    private function _children_menu($children = [], $existing_menu = [])
+    private function _childrenMenu($children = [], $existing_menu = [])
     {
         $items = null;
         if ($children) {
@@ -210,7 +208,7 @@ class Privileges extends Core
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '
                         </label>
-                        ' . (isset($item->children) ? $this->_children_menu($item->children) : null) . '
+                        ' . (isset($item->children) ? $this->_childrenMenu($item->children) : null) . '
                     </li>
                 ';
             }

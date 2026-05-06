@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('blogs'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('blogs'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('pages'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('pages'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('galleries'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('galleries'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -60,7 +60,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('peoples'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('peoples'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -79,7 +79,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('partials/announcements'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('partials/announcements'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -98,7 +98,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('partials/carousels'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('partials/carousels'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -119,7 +119,7 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <a href="<?= go_to('partials/faqs'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('partials/faqs'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -138,7 +138,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('partials/media'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('partials/media'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">

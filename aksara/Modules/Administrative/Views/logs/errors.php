@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var mixed $logs
+ * @var mixed $report
+ */
+?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3 order-2 order-md-1">
@@ -37,7 +43,7 @@
             </div>
         </div>
         <div class="col-md-9 order-1 order-md-2 stretch-height">
-            <div class="sticky-top">
+            <div class="sticky-top font-monospace">
                 <?php
                     if ($report) {
                         $errors = [];
@@ -92,7 +98,7 @@
         if (UA !== 'mobile') {
             $('.stretch-height').css({
                 minHeight: $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
-                borderLeft: '1px solid rgba(0,0,0,.2)'
+                borderLeft: '1px solid rgba(120,120,120,.1)'
             });
 
             if (typeof mCustomScrollbar === 'function') {

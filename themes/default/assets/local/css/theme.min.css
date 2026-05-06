@@ -1,0 +1,277 @@
+/**
+ * WebGIS Theme Concept CSS
+ */
+:root {
+  --wg-primary: #2B66FF;
+  --wg-primary-hover: #1e4bd8;
+  --wg-text: #1a1a1a;
+  --wg-text-light: #64748b;
+  --wg-bg-light: #f8fafc;
+  --wg-border: #e2e8f0
+}
+body {
+  color: var(--wg-text);
+  line-height: 1.6;
+}
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  font-weight: 500 !important;
+}
+a {
+  color: var(--bs-primary-bg);
+  transition: .2s all ease-in-out
+}
+a:hover {
+  color: var(--bs-primary);
+  transition: .2s all ease-in-out
+}
+.container {
+  max-width: 1200px !important;
+}
+
+/* Navbar */
+.navbar {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.navbar-brand img {
+  height: 32px;
+}
+.navbar-nav .nav-link {
+  color: var(--wg-text) !important;
+  padding: 0.5rem 0.65rem !important;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--wg-primary) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-dark);
+  font-weight: 600;
+}
+.btn-outline-light {
+  color: var(--wg-text);
+  background-color: #fff;
+  border-color: var(--wg-border);
+}
+.btn-outline-light:hover {
+  background-color: var(--wg-bg-light);
+  color: var(--wg-text);
+}
+
+.modal {
+  --bs-modal-border-radius: 1rem!important
+}
+
+.card {
+  --bs-card-border-radius: 1rem!important
+}
+
+/* Typography */
+h1, h2, h3, h4, .display-4 {
+  letter-spacing: -0.02em;
+}
+.fw-semibold {
+  font-weight: 600 !important;
+}
+
+/* Icons */
+.nav-link i {
+  margin-right: 4px;
+}
+
+/* Sections */
+.hero-section {
+  padding: 6rem 0 4rem;
+}
+.section-padding {
+  padding: 5rem 0;
+}
+.bg-light {
+  background-color: #f0f4ff !important;
+}
+
+/* Cards */
+.card-hover {
+  transition: transform 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Hero Image */
+.hero-image {
+  border-radius: 12px;
+}
+.hero-blob {
+  right: -10rem;
+  z-index: 0;
+  width: auto;
+  height: 100%;
+  max-height: 300px;
+  color: #708090;
+}
+
+/* Fading Border */
+.border-fade-top {
+  border-top: 0 !important;
+  background-image: linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size: 100% 1px;
+  background-position: top;
+  background-repeat: no-repeat;
+}
+.border-fade-bottom {
+  border-bottom: 0 !important;
+  background-image: linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size: 100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+}
+.border-fade-y, .border-fade {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  background-image: 
+    linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%),
+    linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size: 100% 1px, 100% 1px;
+  background-position: top, bottom;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* Select2 Primary Styling */
+.select2-results__option--highlighted,
+.select2-results__option--highlighted[aria-selected] {
+  background-color: #f0f4ff !important;
+  color: var(--wg-primary) !important;
+}
+.select2-results__option--selected,
+.select2-results__option[aria-selected="true"] {
+  background-color: var(--wg-border) !important;
+  color: var(--wg-text) !important;
+}
+.select2-results__option--selected.select2-results__option--highlighted {
+  background-color: #d8e4ff !important;
+  color: var(--wg-primary-hover) !important;
+}
+
+/* ──────────────────────────────────────────────
+   Desktop Dropdown – Fade-in-top + Arrow
+   Only ≥ 992px, does NOT affect mobile bottom sheet
+   ────────────────────────────────────────────── */
+@media (min-width: 992px) {
+
+  /* ── Animation keyframes ── */
+  @keyframes dropdownFadeInTop {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Base dropdown style ── */
+  .navbar .dropdown-menu {
+    margin-top: 24px !important;
+    border: 1px solid var(--wg-border);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* Hidden by default, animated on show */
+    opacity: 0;
+    transform: translateY(8px);
+    transition: none;
+    display: block;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  /* ── Show state ── */
+  .navbar .dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+    animation: dropdownFadeInTop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* ── Arrow (pointing up to parent) ── */
+  .navbar .dropdown-menu::before,
+  .navbar .dropdown-menu::after {
+    content: "";
+    position: absolute;
+    display: block;
+  }
+  /* Outer border arrow */
+  .navbar .dropdown-menu::before {
+    top: -8px;
+    left: 24px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--wg-border);
+  }
+  /* Inner fill arrow */
+  .navbar .dropdown-menu::after {
+    top: -7px;
+    left: 25px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid rgba(255, 255, 255, 0.98);
+  }
+
+  /* ── Arrow position for right-aligned menus ── */
+  .navbar .dropdown-menu.dropdown-menu-end::before {
+    left: auto;
+    right: 24px;
+  }
+  .navbar .dropdown-menu.dropdown-menu-end::after {
+    left: auto;
+    right: 25px;
+  }
+
+  /* ── Nested dropdown (sub-menu on hover) ── */
+  .navbar .dropdown-menu .dropdown-menu {
+    margin-top: 0 !important;
+    margin-left: 4px;
+    top: -8px;
+    border-radius: 10px;
+  }
+  .navbar .dropdown-menu .dropdown-menu::before,
+  .navbar .dropdown-menu .dropdown-menu::after {
+    display: none;
+  }
+
+  /* ── Dropdown items styling ── */
+  .navbar .dropdown-menu .nav-link,
+  .navbar .dropdown-menu .dropdown-item {
+    border-radius: 8px;
+    padding: 8px 12px !important;
+    font-size: 0.9rem;
+    color: var(--wg-text);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .navbar .dropdown-menu .nav-link:hover,
+  .navbar .dropdown-menu .dropdown-item:hover {
+    background: var(--wg-bg-light);
+    color: var(--wg-primary) !important;
+  }
+  .navbar .dropdown-menu .nav-link:active,
+  .navbar .dropdown-menu .dropdown-item:active {
+    background: #e8eeff;
+  }
+
+  /* ── Dividers ── */
+  .navbar .dropdown-menu .dropdown-divider {
+    margin: 4px 8px;
+    border-color: var(--wg-border);
+  }
+}

@@ -67,8 +67,17 @@ class Rollback extends Migration
                 continue;
             }
 
-            // Drop table
-            $this->forge->dropTable($val);
+            // Skip PostGIS system views that are incorrectly returned as tables
+            if (in_array($val, ['geography_columns', 'geometry_columns', 'spatial_ref_sys'])) {
+                continue;
+            }
+
+            try {
+                // Drop table
+                $this->forge->dropTable($val);
+            } catch (Throwable $e) {
+                // Safe abstraction
+            }
         }
     }
 

@@ -42,9 +42,11 @@ if (! function_exists('custom_nl2br')) {
     /**
      * Limit new line into break
      */
-    function custom_nl2br(string $string = ''): string
+    function custom_nl2br(string $string = '', int $limit = 1): string
     {
-        return preg_replace('/(<br(?: \\/)?>\\r?\\n?\\r?)(?=\\1\\1)/is', '', nl2br($string));
+        $string = preg_replace('/(\r?\n){' . ($limit + 1) . ',}/', str_repeat("$1", $limit), $string);
+
+        return nl2br($string);
     }
 }
 
@@ -108,6 +110,12 @@ if (! function_exists('make_json')) {
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
 
+        // Compress output if client accepts gzip
+        if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
+            header('Content-Encoding: gzip');
+            $output = gzencode($output, 6); // Level 6 provides a good balance between compression ratio and speed
+        }
+
         exit($output);
     }
 }
@@ -151,7 +159,7 @@ if (! function_exists('time_ago')) {
      * @param bool $full            Whether to return a full detailed string (for complex diffs).
      * @return string               The human-readable time difference or a default message.
      */
-    function time_ago(string $datetime = '', bool $short = false, bool $full = true): string
+    function time_ago(?string $datetime = '', bool $short = false, bool $full = true): string
     {
         // Handle null or empty string input
         if (! $datetime || empty(trim($datetime))) {

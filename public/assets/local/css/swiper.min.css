@@ -12,11 +12,11 @@
   height: 40px !important;
   border-top-right-radius: 50% !important;
   border-bottom-right-radius: 50% !important;
-  color: #333 !important;
-  background: #fff !important;
+  
+  
   font-size: 20px !important;
   font-weight: bold;
-  border: 1px solid #ddd !important;
+  
 }
 .swiper-button-next {
   position: absolute !important;
@@ -26,11 +26,11 @@
   height: 40px !important;
   border-top-left-radius: 50% !important;
   border-bottom-left-radius: 50% !important;
-  color: #333 !important;
-  background: #fff !important;
+  
+  
   font-size: 20px !important;
   font-weight: bold;
-  border: 1px solid #ddd !important;
+  
 }
 .swiper-button-prev::after,
 .swiper-button-next::after {
@@ -45,10 +45,4 @@
 .swiper-pagination-custom,
 .swiper-pagination-fraction {
   bottom: 60px !important;
-}
-.swiper-pagination-bullet {
-  background: #fff !important;
-}
-.swiper-pagination-bullet.swiper-pagination-bullet-active {
-  background: #09f !important;
 }

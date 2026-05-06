@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var mixed $articles
+ * @var mixed $meta
+ * @var mixed $spotlight
+ */
+?>
 
 <?php if ($articles): ?>
 <div class="bg-white">

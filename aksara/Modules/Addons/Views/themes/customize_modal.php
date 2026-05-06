@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var mixed $writable
+ * @var mixed $detail
+ */
+?>
 <div>
     <?php if (! $writable): ?>
         <div class="alert alert-danger">

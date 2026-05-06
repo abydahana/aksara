@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Read extends Core
 {
-    private $_table = 'galleries';
+    private string $_table = 'galleries';
 
     public function __construct()
     {
@@ -32,7 +32,7 @@ class Read extends Core
 
     public function index($category = null, $slug = null)
     {
-        $check = $this->model->get_where(
+        $check = $this->model->getWhere(
             $this->_table,
             [
                 'galleries.gallery_slug' => $category
@@ -45,14 +45,14 @@ class Read extends Core
             return throw_exception(404, phrase('Album not found!'), current_page('../'));
         }
 
-        $this->set_title('{{ gallery_title }}', phrase('Album not found!'))
-        ->set_description('{{ gallery_description }}')
-        ->set_icon('mdi mdi-image')
-        ->set_output(
+        $this->setTitle('{{ gallery_title }}', phrase('Album not found!'))
+        ->setDescription('{{ gallery_description }}')
+        ->setIcon('mdi mdi-image')
+        ->setOutput(
             'similar',
             $this->model
             ->select('gallery_images')
-            ->get_where(
+            ->getWhere(
                 $this->_table,
                 [
                     'gallery_slug' => $category
@@ -63,14 +63,14 @@ class Read extends Core
         )
         ->select('
             galleries.*,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.username,
-            app__users.photo
+            app_users.first_name,
+            app_users.last_name,
+            app_users.username,
+            app_users.photo
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = galleries.author'
+            'app_users',
+            'app_users.user_id = galleries.author'
         )
         ->where([
             'galleries.gallery_slug' => $category

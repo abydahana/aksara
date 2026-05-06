@@ -68,20 +68,22 @@ if (! function_exists('base_url')) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            $uri = $path . ($query_params ? '?' . http_build_query($query_params) : null);
+            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
         } else {
-            $uri = $path;
+            $query_string = '';
         }
 
         $currentURI = service('request')->getUri();
 
         assert($currentURI instanceof SiteURI);
 
-        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || ($uri && file_exists(FCPATH . $uri))) {
-            return $currentURI->baseUrl(($uri ? rtrim($uri, '/') : ''));
+        if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || ($path && file_exists(FCPATH . $path))) {
+            $final_url = $currentURI->baseUrl(($path ? rtrim($path, '/') : '')) . $query_string;
+        } else {
+            $final_url = $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : null) . ($path ? rtrim($path, '/') : '')) . $query_string;
         }
 
-        return $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : null) . ($uri ? rtrim($uri, '/') : ''));
+        return str_replace(['%7B', '%7D'], ['{', '}'], $final_url);
     }
 }
 
@@ -130,10 +132,13 @@ if (! function_exists('current_page')) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            return base_url(uri_string()) . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
+            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
+            $final_url = base_url(uri_string()) . ($method ? '/' . $method : null) . $query_string;
         } else {
-            return base_url(uri_string()) . ($method ? '/' . $method : null);
+            $final_url = base_url(uri_string()) . ($method ? '/' . $method : null);
         }
+
+        return str_replace(['%7B', '%7D'], ['{', '}'], $final_url);
     }
 }
 
@@ -201,12 +206,14 @@ if (! function_exists('go_to')) {
                 $query_params = array_merge(['aksara' => $token], $query_params);
             }
 
-            $uri = $final_slug . ($method ? '/' . $method : null) . ($query_params ? '?' . http_build_query($query_params) : null);
+            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
+            $uri = $final_slug . ($method ? '/' . $method : null);
         } else {
+            $query_string = '';
             $uri = $final_slug . ($method ? '/' . $method : null);
         }
 
-        return base_url($uri);
+        return str_replace(['%7B', '%7D'], ['{', '}'], base_url($uri) . $query_string);
     }
 }
 
