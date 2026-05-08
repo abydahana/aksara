@@ -17,7 +17,7 @@ if ($user): ?>
                         <h2 class="mb-0">
                             <?= $meta->title; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
@@ -93,7 +93,7 @@ if ($user): ?>
                         <h2 class="text-center">
                             <?= phrase('User not found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

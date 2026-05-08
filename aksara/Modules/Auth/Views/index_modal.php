@@ -89,7 +89,7 @@
     <div class="card border-top-0 border-end-0 border-bottom-0">
         <div class="card-body d-flex align-items-center justify-content-center">
             <div>
-                <p class="lead text-center text-black-50">
+                <p class="fs-5 text-center text-black-50">
                     <?= phrase('Do not have an account?'); ?>
                 </p>
                 <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>

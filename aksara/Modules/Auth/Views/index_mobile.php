@@ -36,7 +36,7 @@
                             </p>
                         </div>
                         <div class="mb-3">
-                            <p class="lead text-center text-muted">
+                            <p class="fs-5 text-center text-muted">
                                 <?= phrase('Please enter your account information to sign in.'); ?>
                             </p>
                         </div>

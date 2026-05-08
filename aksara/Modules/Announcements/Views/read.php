@@ -24,7 +24,7 @@ if ($results): ?>
                         <?php if ($val->cover && 'placeholder.png' != $val->cover): ?>
                             <img src="<?= get_image('announcements', $val->cover); ?>" class="img-fluid rounded-4 mb-3" alt="..." />
                         <?php endif; ?>
-                        <div class="lead">
+                        <div class="fs-5">
                             <?= $val->content; ?>
                         </div>
                         <p class="text-muted">
@@ -45,7 +45,7 @@ if ($results): ?>
                         <h2 class="text-center">
                             <?= phrase('No announcement is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The announcement you requested was not found or its already been removed.'); ?>
                         </p>
                         <p class="text-center">

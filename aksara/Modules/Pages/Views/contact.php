@@ -7,18 +7,18 @@
     <div role="map" class="bg-light" data-coordinate="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
 
-<div class="py-3 py-md-5">
-    <div class="container">
-        <h3 class="mb-0">
+<section class="section-padding fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
-        </h3>
-        <p class="lead">
+        </h1>
+        <p class="fs-5 text-muted mb-0">
             <?= truncate($meta->description, 256); ?>
         </p>
     </div>
-</div>
+</section>
 
-<div class="py-3 py-md-5">
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
@@ -29,7 +29,7 @@
                     <label class="text-muted d-block mb-0">
                         <?= phrase('Address'); ?>
                     </label>
-                    <p class="lead">
+                    <p class="fs-5">
                         <?= get_setting('office_address'); ?>
                     </p>
                 </div>
@@ -37,7 +37,7 @@
                     <label class="text-muted d-block mb-0">
                         <?= phrase('Email'); ?>
                     </label>
-                    <p class="lead">
+                    <p class="fs-5">
                         <a href="mailto:<?= get_setting('office_email'); ?>" target="_blank">
                             <?= get_setting('office_email'); ?>
                         </a>
@@ -49,7 +49,7 @@
                             <label class="text-muted d-block mb-0">
                                 <?= phrase('Phone'); ?>
                             </label>
-                            <p class="lead">
+                            <p class="fs-5">
                                 <a href="tel:<?= get_setting('office_phone'); ?>" target="_blank">
                                     <?= get_setting('office_phone'); ?>
                                 </a>
@@ -61,7 +61,7 @@
                             <label class="text-muted d-block mb-0">
                                 <?= phrase('WhatsApp'); ?>
                             </label>
-                            <p class="lead">
+                            <p class="fs-5">
                                 <a href="https://api.whatsapp.com/send?phone=<?= str_replace(['+', '-', ' '], '', get_setting('whatsapp_number')); ?>&text=<?= phrase('Hello') . '%20' . get_setting('app_name'); ?>..." target="_blank">
                                     <?= get_setting('whatsapp_number'); ?>
                                 </a>
@@ -75,7 +75,7 @@
                             <label class="text-muted d-block mb-0">
                                 <?= phrase('Twitter'); ?>
                             </label>
-                            <p class="lead">
+                            <p class="fs-5">
                                 <a href="//twitter.com/<?= get_setting('twitter_username'); ?>" target="_blank">
                                     <?= get_setting('twitter_username'); ?>
                                 </a>
@@ -87,7 +87,7 @@
                             <label class="text-muted d-block mb-0">
                                 <?= phrase('Instagram'); ?>
                             </label>
-                            <p class="lead">
+                            <p class="fs-5">
                                 <a href="//instagram.com/<?= get_setting('instagram_username'); ?>" target="_blank">
                                     <?= get_setting('instagram_username'); ?>
                                 </a>
@@ -142,4 +142,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

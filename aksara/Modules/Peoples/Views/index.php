@@ -58,7 +58,7 @@ if ($results): ?>
                         <h2 class="text-center">
                             <?= phrase('No people is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No people is available at the moment.'); ?>
                         </p>
                         <p class="text-center">

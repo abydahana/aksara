@@ -38,7 +38,7 @@ if ($results): ?>
                                         <h2>
                                             <?= $val->testimonial_title; ?>
                                         </h2>
-                                        <div class="lead mb-4">
+                                        <div class="fs-5 mb-4">
                                             <?= $val->testimonial_content; ?>
                                         </div>
                                         <footer class="blockquote-footer">
@@ -59,7 +59,7 @@ if ($results): ?>
                         <h2 class="text-center">
                             <?= phrase('No testimonial is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No testimonial is available at the moment.'); ?>
                         </p>
                         <p class="text-center">

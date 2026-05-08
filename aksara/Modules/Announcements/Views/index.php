@@ -31,7 +31,7 @@ if ($results): ?>
                                             <?= $val->title; ?>
                                         </a>
                                     </h2>
-                                    <div class="lead mb-4 d-none d-md-block">
+                                    <div class="fs-5 mb-4 d-none d-md-block">
                                         <?= truncate($val->content, 160); ?>
                                     </div>
                                     <footer class="blockquote-footer">
@@ -56,7 +56,7 @@ if ($results): ?>
                         <h2 class="text-center">
                             <?= phrase('No announcement is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No announcement is available at the moment.'); ?>
                         </p>
                         <p class="text-center">

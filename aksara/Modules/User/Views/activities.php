@@ -16,7 +16,7 @@ if ($user): ?>
                         <h2 class="mb-0">
                             <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
@@ -64,7 +64,7 @@ if ($user): ?>
                         <div class="alert alert-warning callout">
                             <h3 class="mb-0"><?= phrase('No Activities'); ?></h3>
                             <hr />
-                            <p class="lead mb-0">
+                            <p class="fs-5 mb-0">
                                 <i class="mdi mdi-information-outline"></i> <?= phrase('User activity will be shown here if they have made some interaction.'); ?>
                             </p>
                         </div>
@@ -86,7 +86,7 @@ if ($user): ?>
                                             </p>
                                         </div>
                                     </div>
-                                    <p class="lead mb-0"><?= truncate($val->comments, 160); ?></p>
+                                    <p class="fs-5 mb-0"><?= truncate($val->comments, 160); ?></p>
                                     <?php if ($val->attachment): ?>
                                         <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
                                             <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="..." />
@@ -121,7 +121,7 @@ if ($user): ?>
                         <h2 class="text-center">
                             <?= phrase('User not found'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

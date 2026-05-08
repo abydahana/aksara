@@ -8,12 +8,8 @@
 ?>
 
 <?php if ($results): ?>
-<section class="section-padding">
-    <!-- Background Wavy Shape -->
-    <svg class="position-absolute top-0 d-none d-md-block hero-blob" viewBox="0 0 948 458" fill="none">
-        <path fill="currentColor" d="M179.493 278.507C88.0136 187.027 42.2737 141.287 21.1376 90.2621C-7.04587 22.2238 -7.04587 -54.2238 21.1376 -122.262C42.2737 -173.287 88.0136 -219.027 179.493 -310.507C270.973 -401.986 316.713 -447.726 367.738 -468.862C435.776 -497.046 512.224 -497.046 580.262 -468.862C631.287 -447.726 677.027 -401.986 768.507 -310.507C859.986 -219.027 905.726 -173.287 926.862 -122.262C955.046 -54.2238 955.046 22.2238 926.862 90.2621C905.726 141.287 859.986 187.027 768.507 278.507C677.027 369.986 631.287 415.726 580.262 436.862C512.224 465.046 435.776 465.046 367.738 436.862C316.713 415.726 270.973 369.986 179.493 278.507Z"/>
-    </svg>
-    <div class="container fade-in">
+<section class="section-padding fade-in">
+    <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 text-center text-md-start">
                 <h1 class="display-5 fw-bold">
@@ -76,7 +72,7 @@
                     ?>
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column">
-                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-4">
+                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
                                 <div class="row g-0 align-items-center mb-3">
                                     <div class="col-1">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
@@ -94,20 +90,17 @@
                                         </a>
                                     </div>
                                 </div>
-                                <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                <h5 class="mb-3">
                                     <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
-                                        <?= truncate($val->post_title, 64); ?>
+                                        <?= truncate($val->post_title, 120); ?>
                                     </a>
                                 </h5>
-                                <p class="text-muted small">
-                                    <?= truncate($val->post_excerpt, 80); ?>
-                                </p>
                                 <div style="z-index:1">
                                     <?= $tags; ?>
                                 </div>
                             </div>
                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.75rem">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-white rounded-bottom-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover">
                             </a>
                         </div>
                     </div>
@@ -125,7 +118,7 @@
                         <h2 class="text-center">
                             <?= phrase('No category is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The category of post you requested was not found or it\'s been archived.'); ?>
                         </p>
                         <p class="text-center">

@@ -16,7 +16,7 @@ if ($user): ?>
                         <h2 class="mb-0">
                             <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
@@ -64,7 +64,7 @@ if ($user): ?>
                         <div class="alert alert-warning callout">
                             <h3 class="mb-0"><?= phrase('No Favorites'); ?></h3>
                             <hr />
-                            <p class="lead mb-0">
+                            <p class="fs-5 mb-0">
                                 <i class="mdi mdi-information-outline"></i> <?= phrase('User favorites will be shown here if they have made some upvote.'); ?>
                             </p>
                         </div>
@@ -93,7 +93,7 @@ if ($user): ?>
                                         <a href="<?= base_url($val->post_path); ?>" class="text-dark" target="_blank">
                                             <?= $metadata->title; ?>
                                         </a>
-                                        <p class="lead text-muted"><?= truncate($metadata->description, 160); ?></p>
+                                        <p class="fs-5 text-muted"><?= truncate($metadata->description, 160); ?></p>
                                     </h4>
                                 </div>
                         </div>
@@ -116,7 +116,7 @@ if ($user): ?>
                         <h2 class="text-center">
                             <?= phrase('User not found'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

@@ -45,25 +45,17 @@
         }
     }
 ?>
-<section class="section-padding">
-    <div class="container">
-        <div class="rounded-5 p-3 p-lg-5" style="background:url(<?= get_image('blogs', $featured_image); ?>) center center no-repeat; background-size:cover">
-            <div class="py-3 py-md-5 text-center text-md-start">
-                <h1 class="text-center text-md-start text-light d-inline-block text-outline-dark">
-                    <?= $meta->title; ?>
-                </h1>
-                <?php if (! $toc): ?>
-                <div class="lead">
-                    <p class="text-lg-justify article text-break text-light d-inline-block text-outline-dark">
-                        <?= $meta->description; ?>
-                    </p>
-                </div>
-            </div>
-            <?php endif; ?>
-        </div>
+<section class="section-padding pb-0 fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
+            <?= $meta->title; ?>
+        </h1>
+        <p class="fs-5 text-muted mb-0">
+            <?= truncate($meta->description, 256); ?>
+        </p>
     </div>
 </section>
-<section class="section-padding">
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
@@ -111,7 +103,7 @@
                         <?php endif; ?>
 
                         <?php if ($toc): ?>
-                            <div class="lead">
+                            <div class="fs-5">
                                 <p class="text-lg-justify article text-break">
                                     <?= $meta->description; ?>
                                 </p>
@@ -124,7 +116,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <div class="lead">
+                        <div class="fs-5">
                             <?= recommendation_generator(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $article), $recommendations); ?>
                         </div>
 
@@ -143,7 +135,7 @@
                         <div class="alert alert-warning callout mb-5">
                             <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
                             <hr />
-                            <p class="lead mb-0">
+                            <p class="fs-5 mb-0">
                                 <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived.'); ?>
                             </p>
                         </div>

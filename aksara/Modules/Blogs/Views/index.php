@@ -14,7 +14,7 @@
                 <h1 class="display-5 fw-bold">
                     <?= $meta->title; ?>
                 </h1>
-                <p class="lead">
+                <p class="fs-5">
                     <?= $meta->description; ?>
                 </p>
                 <div class="row mb-5">
@@ -46,7 +46,7 @@
                                                 <h3 class="text-light text-outline-dark">
                                                     <?= truncate($val->post_title, 80); ?>
                                                 </h3>
-                                                <p class="lead text-light d-none d-md-inline text-outline-dark">
+                                                <p class="fs-5 text-light d-none d-md-inline text-outline-dark">
                                                     <?= truncate($val->post_excerpt, 90); ?>
                                                 </p>
                                                 <p class="text-muted">
@@ -129,14 +129,11 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                            <h5 class="mb-3">
                                                 <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
                                                     <?= truncate($_val->post_title, 64); ?>
                                                 </a>
                                             </h5>
-                                            <p class="text-muted small">
-                                                <?= truncate($_val->post_excerpt, 80); ?>
-                                            </p>
                                         </div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr">
                                             <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.5rem">
@@ -158,7 +155,7 @@
                         <h2 class="text-center">
                             <?= phrase('No post is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No post is available at the moment.'); ?>
                         </p>
                         <p class="text-center">

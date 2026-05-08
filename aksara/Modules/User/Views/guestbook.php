@@ -14,7 +14,7 @@ if ($user): ?>
                         <h2 class="mb-0">
                             <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
@@ -59,7 +59,7 @@ if ($user): ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <div class="alert alert-info callout mb-0">
-                        <p class="lead mb-0">
+                        <p class="fs-5 mb-0">
                             <i class="mdi mdi-information-outline"></i> <?= phrase('Please be respectful to each other and be sure to follow our community standard.'); ?>
                         </p>
                     </div>
@@ -80,7 +80,7 @@ if ($user): ?>
                         <h2 class="text-center">
                             <?= phrase('User not found'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

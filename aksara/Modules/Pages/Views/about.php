@@ -3,17 +3,17 @@
  * @var mixed $meta
  */
 ?>
-<div class="py-3 py-md-5 be-hidden">
-    <div class="container">
-        <h3 class="mb-0">
+<section class="section-padding fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
-        </h3>
-        <p class="lead">
+        </h1>
+        <p class="fs-5 text-muted mb-0">
             <?= truncate($meta->description, 256); ?>
         </p>
     </div>
-</div>
-<div class="py-3">
+</section>
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-md-4">
@@ -232,7 +232,7 @@
         <br />
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <p class="lead text-center">
+                <p class="fs-5 text-center">
                     Thank you for those developers that brings their works for free. Without them, <a href="//aksaracms.com" class="text-primary" target="_blank"><b>Aksara</b></a> cannot be implemented.
                     <br />
                     We are awesome!
@@ -248,4 +248,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

@@ -118,7 +118,7 @@ class Errors extends Core
                         <h5>
                             ' . phrase('Are you sure want to clear the logs?') . '
                         </h5>
-                        <p class="lead">
+                        <p class="fs-5">
                             ' . phrase('This action will remove everything related to the error logs.') . '
                         </p>
                     </div>

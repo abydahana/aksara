@@ -12,7 +12,7 @@
     <div class="container">
         <div class="section-padding fade-in">
             <h1 class="display-4 fw-bold mb-3"><?= get_setting('app_name'); ?></h1>
-            <p class="lead text-muted mb-4 mx-auto" style="max-width: 600px;">
+            <p class="fs-5 text-muted mb-4 mx-auto" style="max-width: 600px;">
                 <?= get_setting('app_description'); ?>
             </p>
             <div class="d-flex justify-content-center gap-3 mb-5">
@@ -48,7 +48,7 @@
                                     <?= $val->category_title; ?>
                                 </a>
                             </h4>
-                            <p class="lead mb-0 mb-md-3">
+                            <p class="fs-5 mb-0 mb-md-3">
                                 <?= number_format($val->post_total) . ' ' . phrase('Articles'); ?>
                             </p>
                             <div class="d-none d-md-block">
@@ -186,7 +186,7 @@
                                     <?= $val->first_name . ' ' . $val->last_name; ?>
                                 </a>
                             </h4>
-                            <p class="lead mb-0 mb-md-3">
+                            <p class="fs-5 mb-0 mb-md-3">
                                 <?= $val->position; ?>
                             </p>
                             <div class="d-none d-md-block">

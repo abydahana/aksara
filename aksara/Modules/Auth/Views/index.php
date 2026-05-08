@@ -99,7 +99,7 @@ if ($activation): ?>
                     <div class="card border-0 rounded-4 rounded-start-0 bg-light">
                         <div class="card-body p-4 p-md-5 d-flex align-items-center justify-content-center">
                             <div>
-                                <p class="lead text-center text-black-50">
+                                <p class="fs-5 text-center text-black-50">
                                     <?= phrase('Do not have an account?'); ?>
                                 </p>
                                 <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>

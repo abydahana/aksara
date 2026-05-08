@@ -12,7 +12,7 @@
                 <h1 class="display-5 fw-bold">
                     <?= $meta->title; ?>
                 </h1>
-                <p class="lead">
+                <p class="fs-5">
                     <?= $meta->description; ?>
                 </p>
             </div>
@@ -35,43 +35,60 @@
         <div class="container">
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
-                    <div class="col-sm-6 col-lg-4 mb-5">
+                    <?php
+                        $item_tags = array_map('trim', explode(',', $val->post_tags));
+                        $tags = null;
+
+                        if (sizeof($item_tags) > 0) {
+                            foreach ($item_tags as $label => $badge) {
+                                if ($label == 2) {
+                                    break;
+                                }
+
+                                if ($badge) {
+                                    $tags .= '
+                                        <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
+                                            <span class="badge bg-secondary me-2">
+                                                #' . trim($badge) . '
+                                            </span>
+                                        </a>
+                                    ';
+                                }
+                            }
+                        }
+                    ?>
+                    <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column">
-                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;">
-                            </a>
-                            <div class="px-0 pt-3 d-flex flex-column flex-grow-1">
-                                <p class="text-muted small fw-semibold mb-2">
-                                    <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
-                                </p>
-                                <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
-                                        <?= truncate($val->post_title, 64); ?>
-                                    </a>
-                                </h5>
-                                <p class="text-muted small mb-3 lh-lg">
-                                    <?= truncate($val->post_excerpt, 80); ?>
-                                </p>
-                                <div class="row g-0 align-items-center mt-auto">
-                                    <div class="col-2 col-sm-2 col-md-1">
+                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
+                                <div class="row g-0 align-items-center mb-3">
+                                    <div class="col-1">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
                                             <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                         </a>
                                     </div>
-                                    <div class="col-7 col-sm-7 col-md-8 overflow-hidden">
+                                    <div class="col-11 overflow-hidden">
+                                        <span class="text-muted text-sm float-end">
+                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
+                                        </span>
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
                                             <b>
                                                 <?= $val->first_name . ' ' . $val->last_name; ?>
                                             </b>
                                         </a>
                                     </div>
-                                    <div class="col-3 col-sm-3 col-md-3 text-end">
-                                        <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
-                                            <i class="mdi mdi-heart"></i>
-                                        </button>
-                                    </div>
+                                </div>
+                                <h5 class="mb-3">
+                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                        <?= truncate($val->post_title, 120); ?>
+                                    </a>
+                                </h5>
+                                <div style="z-index:1">
+                                    <?= $tags; ?>
                                 </div>
                             </div>
+                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-white rounded-bottom-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover">
+                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -92,7 +109,7 @@
                         <h2 class="text-center">
                             <?= phrase('No post is found!'); ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             <?= phrase('Your tag search does not match any result.'); ?>
                         </p>
                         <div class="text-center mt-5">

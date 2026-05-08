@@ -33,7 +33,7 @@ if (! $permission->uploads || ! $permission->writable): ?>
                 <h1 class="text-center">
                     <?= $meta->title; ?>
                 </h1>
-                <p class="lead text-center">
+                <p class="fs-5 text-center">
                     <?= truncate($meta->description, 256); ?>
                 </p>
                 <h3 class="mb-3 text-center">

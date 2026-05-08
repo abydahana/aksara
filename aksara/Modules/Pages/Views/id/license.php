@@ -3,17 +3,17 @@
  * @var mixed $meta
  */
 ?>
-<div class="py-3 py-md-5 be-hidden">
-    <div class="container">
-        <h3 class="mb-0">
+<section class="section-padding fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
-        </h3>
-        <p class="lead">
+        </h1>
+        <p class="fs-5 text-muted mb-0">
             <?= truncate($meta->description, 256); ?>
         </p>
     </div>
-</div>
-<div class="py-3">
+</section>
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
@@ -54,4 +54,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

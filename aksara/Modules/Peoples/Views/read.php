@@ -107,7 +107,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <h2 class="text-center">
                             <?= phrase('People was not found!'); ?>
                         </h2>
-                        <p class="lead text-center mb-5">
+                        <p class="fs-5 text-center mb-5">
                             <?= phrase('The people you are looking for was not found.'); ?>
                         </p>
                         <p class="text-center">
