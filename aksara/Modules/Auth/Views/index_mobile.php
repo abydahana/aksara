@@ -130,13 +130,13 @@
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
-                        <div class="text-center text-muted">
-                            <?= phrase('Do not have an account?'); ?> &nbsp; 
-                            <a href="<?= base_url('auth/register'); ?>" class="--xhr">
-                                <b>
-                                    <?= phrase('Register an Account'); ?>
-                                </b>
-                            </a>
+                        <div class="text-center">
+                            <p class="text-muted mb-0"><?= phrase('Do not have an account?'); ?></p>
+                            <p>
+                                <a href="<?= base_url('auth/register'); ?>" class="--xhr">
+                                    <b><?= phrase('Register an Account'); ?></b>
+                                </a>
+                            </p>
                         </div>
                     <?php endif; ?>
                 </div>

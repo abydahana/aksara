@@ -47,46 +47,24 @@ if (! $permission->uploads || ! $permission->writable): ?>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <?php if ($error): ?>
-                    <div class="mb-5">
-                        <p>
-                            Unfortunatelly, your request to install the sample data cannot be processed due to folder permission issue.
-                        </p>
-                        <p>
-                            You could install the sample data manually by using this method:
-                        </p>
-                        <ol>
-                            <li>
-                                <a href="<?= base_url('install/assets/sample-module.zip'); ?>" target="_blank" class="text-primary"><b>Click here</b></a> to download the sample module;
-                            </li>
-                            <li>
-                                Extract to <code><?= ROOTPATH; ?>modules</code> folder;
-                            </li>
-                            <li>
-                                Reload this page.
-                            </li>
-                        </ol>
-                    </div>
-                <?php else: ?>
-                    <div class="mb-5">
-                        <p>
-                            You are viewing this page because you installing <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> as "<b>DEVELOPER MODE</b>". There's no example content that been created. Just like popular PHP framework, you must build your own modules by referencing the function served by <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. You can still login and add your content to the built-in module (<b>CMS</b> a.k.a <b>Content Management System</b>) such a <b>Blogs</b>, <b>Pages</b>, <b>Galleries</b> and many more.
-                        </p>
-                        <p>
-                            This module is located in
-                            <br />
-                            <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
-                        </p>
-                        <p>
-                            You can <b>override</b> this module into
-                            <br />
-                            <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code> without removing the original one.
-                        </p>
-                        <p>
-                            <b>How could that be done?</b> Because you are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                        </p>
-                    </div>
-                <?php endif; ?>
+                <div class="mb-5">
+                    <p>
+                        You are viewing this page because you installing <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> as "<b>DEVELOPER MODE</b>". There's no example content that been created. Just like popular PHP framework, you must build your own modules by referencing the function served by <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. You can still login and add your content to the built-in module (<b>CMS</b> a.k.a <b>Content Management System</b>) such a <b>Blogs</b>, <b>Pages</b>, <b>Galleries</b> and many more.
+                    </p>
+                    <p>
+                        This module is located in
+                        <br />
+                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
+                    </p>
+                    <p>
+                        You can <b>override</b> this module into
+                        <br />
+                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code> without removing the original one.
+                    </p>
+                    <p>
+                        <b>How could that be done?</b> Because you are using <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
+                    </p>
+                </div>
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Go Further

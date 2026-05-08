@@ -45,27 +45,25 @@
         }
     }
 ?>
-<div class="section-padding">
+<section class="section-padding">
     <div class="container">
-        <div class="rounded-5" style="background:url(<?= get_image('blogs', $featured_image); ?>) center center no-repeat; background-size:cover">
-            <div class="py-3 py-md-5 px-md-5">
-                <div class="container py-lg-5">
-                    <h1 class="text-center text-md-start text-light d-inline-block text-outline-dark">
-                        <?= $meta->title; ?>
-                    </h1>
-                    <?php if (! $toc): ?>
-                    <div class="lead">
-                        <p class="text-lg-justify article text-break text-light d-inline-block text-outline-dark">
-                            <?= $meta->description; ?>
-                        </p>
-                    </div>
-                    <?php endif; ?>
+        <div class="rounded-5 p-3 p-lg-5" style="background:url(<?= get_image('blogs', $featured_image); ?>) center center no-repeat; background-size:cover">
+            <div class="py-3 py-md-5 text-center text-md-start">
+                <h1 class="text-center text-md-start text-light d-inline-block text-outline-dark">
+                    <?= $meta->title; ?>
+                </h1>
+                <?php if (! $toc): ?>
+                <div class="lead">
+                    <p class="text-lg-justify article text-break text-light d-inline-block text-outline-dark">
+                        <?= $meta->description; ?>
+                    </p>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
-</div>
-<div class="py-3">
+</section>
+<section class="section-padding">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
@@ -220,4 +218,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

@@ -47,46 +47,24 @@ if (! $permission->uploads || ! $permission->writable): ?>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <?php if ($error): ?>
-                    <div class="mb-5">
-                        <p>
-                            Sayangnya permintaan Anda untuk menginstal sampel data tidak dapat diproses karena ada masalah pada izin penulisan folder.
-                        </p>
-                        <p>
-                            Anda tetap dapat menginstal sampel data secara manual menggunakan cara berikut:
-                        </p>
-                        <ol>
-                            <li>
-                                <a href="<?= base_url('install/assets/sample-module.zip'); ?>" target="_blank" class="text-primary"><b>Klik di sini</b></a> untuk mendapatkan paket sampel data;
-                            </li>
-                            <li>
-                                Ekstrak ke dalam folder <code><?= ROOTPATH; ?>modules</code>;
-                            </li>
-                            <li>
-                                Muat ulang halaman ini.
-                            </li>
-                        </ol>
-                    </div>
-                <?php else: ?>
-                    <div class="mb-5">
-                        <p>
-                            Anda mendapatkan halaman ini karena memilih instalasi <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> pada "<b>MODE PENGEMBANG</b>". Untuk itu kami tidak menyertakan contoh konten pada instalasi saat ini. Seperti framework PHP populer lainnya, Anda mungkin perlu membuat modul Anda sendiri dengan menggunakan referensi metode yang ada dalam <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. Anda tetap dapat masuk dan menambahkan konten pada modul bawaan (<b>CMS</b> a.k.a <b>Content Management System</b>) seperti <b>Blog</b>, <b>Halaman</b>, <b>Galeri</b> dan lebih banyak lagi.
-                        </p>
-                        <p>
-                            Modul halaman ini terdapat pada folder
-                            <br />
-                            <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
-                        </p>
-                        <p>
-                            Anda dapat <b>menimpa</b> modul ini pada folder
-                            <br />
-                            <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code> tanpa menghapus modul yang asli.
-                        </p>
-                        <p>
-                            <b>Bagaimana hal itu bisa dilakukan?</b> Karena Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                        </p>
-                    </div>
-                <?php endif; ?>
+                <div class="mb-5">
+                    <p>
+                        Anda mendapatkan halaman ini karena memilih instalasi <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> pada "<b>MODE PENGEMBANG</b>". Untuk itu kami tidak menyertakan contoh konten pada instalasi saat ini. Seperti framework PHP populer lainnya, Anda mungkin perlu membuat modul Anda sendiri dengan menggunakan referensi metode yang ada dalam <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>. Anda tetap dapat masuk dan menambahkan konten pada modul bawaan (<b>CMS</b> a.k.a <b>Content Management System</b>) seperti <b>Blog</b>, <b>Halaman</b>, <b>Galeri</b> dan lebih banyak lagi.
+                    </p>
+                    <p>
+                        Modul halaman ini terdapat pada folder
+                        <br />
+                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
+                    </p>
+                    <p>
+                        Anda dapat <b>menimpa</b> modul ini pada folder
+                        <br />
+                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code> tanpa menghapus modul yang asli.
+                    </p>
+                    <p>
+                        <b>Bagaimana hal itu bisa dilakukan?</b> Karena Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
+                    </p>
+                </div>
                 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">

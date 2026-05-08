@@ -3,7 +3,7 @@ html.dark-mode img {
     filter: invert(100%);
 }
 #content-wrapper {
-    margin-top: 60px;
+    margin-top: 58px;
     word-wrap: break-word;
 }
 .navbar-brand {

@@ -1,15 +1,15 @@
-<footer id="footer-wrapper" class="pt-5 pb-5 bg-white mt-5 position-relative overflow-hidden">
+<footer id="footer-wrapper" class="bg-white position-relative overflow-hidden">
     <div class="border-fade">
-        <div class="container">
-            <div class="pt-5">
+        <section class="section-padding">
+            <div class="container">
                 <div class="row">
-                    <div class="col-lg-3 mb-4">
+                    <div class="col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
                             <a href="<?= base_url(); ?>">
-                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" />
+                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" />
                             </a>
-                            <p class="text-muted mb-4">
-                                <?= get_setting('app_description') ?: 'Maps for developers. Build amazing map applications with our powerful tools and APIs.'; ?>
+                            <p class="text-muted">
+                                <?= get_setting('app_description'); ?>
                             </p>
                             <div class="d-flex gap-3">
                                 <?php if (get_setting('twitter_username')): ?>
@@ -21,8 +21,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="col-6 col-sm-4 col-lg-3 mb-4">
+                    <div class="col-6 col-sm-4 col-lg-3 mb-lg-0">
                         <div class="text-center text-md-start">
                             <h6 class="fw-bold mb-3 text-dark"><?= phrase('Featured'); ?></h6>
                             <ul class="list-unstyled">
@@ -35,8 +34,7 @@
                             </ul>
                         </div>
                     </div>
-                    
-                    <div class="col-6 col-sm-4 col-lg-3 mb-4">
+                    <div class="col-6 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
                             <h6 class="fw-bold mb-3 text-dark"><?= phrase('Knowledge Center'); ?></h6>
                             <ul class="list-unstyled">
@@ -48,32 +46,31 @@
                             </ul>
                         </div>
                     </div>
-                    
-                    <div class="col-12 col-sm-4 col-lg-3 mb-4" style="background:url(<?= get_theme_asset('images/map_bg.png'); ?>) center center no-repeat; background-size:cover">
+                    <div class="col-12 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
                             <h6 class="fw-bold mb-3 text-dark"><?= phrase('Contact Us'); ?></h6>
                             <div class="mb-4">
                                 <?php if (get_setting('office_email')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-muted">
-                                        <i class="mdi mdi-at me-2 fs-5"></i>
+                                        <i class="mdi mdi-at me-2 d-none d-md-block"></i>
                                         <a href="mailto:<?= get_setting('office_email'); ?>" class="text-muted text-decoration-none"><?= get_setting('office_email'); ?></a>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (get_setting('office_phone')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-muted">
-                                        <i class="mdi mdi-phone text-success me-2 fs-5"></i>
+                                        <i class="mdi mdi-phone text-success me-2 d-none d-md-block"></i>
                                         <a href="tel:<?= get_setting('office_phone'); ?>" class="text-muted text-decoration-none"><?= get_setting('office_phone'); ?></a>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (get_setting('whatsapp_number')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-muted">
-                                        <i class="mdi mdi-whatsapp text-success me-2 fs-5"></i>
+                                        <i class="mdi mdi-whatsapp text-success me-2 d-none d-md-block"></i>
                                         <a href="https://api.whatsapp.com/send?phone=<?= str_replace(['+', '-', ' '], [null, null, null], get_setting('whatsapp_number')); ?>&text=<?= phrase('Hello') . '%20' . get_setting('app_name'); ?>..." target="_blank" class="text-muted text-decoration-none"><?= get_setting('whatsapp_number'); ?></a>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (get_setting('office_address')): ?>
-                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start text-muted mt-3">
-                                        <i class="mdi mdi-google-maps text-danger me-2 fs-5 mt-1"></i>
+                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start text-muted">
+                                        <i class="mdi mdi-google-maps text-danger me-2 d-none d-md-block"></i>
                                         <span class="lh-sm"><?= nl2br(get_setting('office_address')); ?></span>
                                     </div>
                                 <?php endif; ?>
@@ -82,21 +79,19 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
-    <div class="container">
-        <div class="pt-4 mt-2">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <span class="text-muted">
-                        &copy; <?= date('Y'); ?> <?= get_setting('office_name') ?: 'WebGIS'; ?>. All rights reserved.
-                    </span>
-                </div>
-                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-                    <span class="text-muted">
-                        <i class="mdi mdi-earth"></i> <?= get_user_language(); ?>
-                    </span>
-                </div>
+    <div class="container py-3">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="text-muted">
+                    &copy; <?= date('Y'); ?> <?= get_setting('office_name'); ?>
+                </span>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                <span class="text-muted">
+                    <i class="mdi mdi-earth"></i> <?= get_user_language(); ?>
+                </span>
             </div>
         </div>
     </div>

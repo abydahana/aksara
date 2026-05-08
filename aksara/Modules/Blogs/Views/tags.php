@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 ?>
-<div class="section-padding fade-in">
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-md-start">
@@ -28,10 +28,10 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <?php if ($results): ?>
-    <div class="section-padding fade-in">
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
@@ -79,9 +79,9 @@
 
             <?= pagination($pagination); ?>
         </div>
-    </div>
+    </section>
 <?php else: ?>
-    <div class="section-padding fade-in">
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3 text-center">
@@ -105,5 +105,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 <?php endif; ?>

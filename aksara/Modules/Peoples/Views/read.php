@@ -29,7 +29,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                     <h4 class="text-muted mb-0">
                         <?= phrase('Full Name'); ?>
                     </h4>
-                    <p class="lead">
+                    <p class="fs-5">
                         <?= $people->first_name . ' ' . $people->last_name; ?>
                     </p>
                 </div>
@@ -37,7 +37,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                     <h4 class="text-muted mb-0">
                         <?= phrase('Position'); ?>
                     </h4>
-                    <p class="lead">
+                    <p class="fs-5">
                         <?= $people->position; ?>
                     </p>
                 </div>
@@ -46,7 +46,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <h4 class="text-muted mb-0">
                             <?= phrase('Email'); ?>
                         </h4>
-                        <p class="lead">
+                        <p class="fs-5">
                             <?= $people->email; ?>
                         </p>
                     </div>
@@ -54,15 +54,15 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <h4 class="text-muted mb-0">
                             <?= phrase('Mobile'); ?>
                         </h4>
-                        <p class="lead">
+                        <p class="fs-5">
                             <?= $people->mobile; ?>
                         </p>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <blockquote class="blockquote text-secondary">
+                    <p class="fs-5 text-muted">
                         <?= $people->biography; ?>
-                    </blockquote>
+                    </p>
                 </div>
                 <div class="mb-3">
                     <div class="row">

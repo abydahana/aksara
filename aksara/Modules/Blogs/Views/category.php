@@ -8,18 +8,18 @@
 ?>
 
 <?php if ($results): ?>
-<div class="section-padding">
+<section class="section-padding">
     <!-- Background Wavy Shape -->
     <svg class="position-absolute top-0 d-none d-md-block hero-blob" viewBox="0 0 948 458" fill="none">
         <path fill="currentColor" d="M179.493 278.507C88.0136 187.027 42.2737 141.287 21.1376 90.2621C-7.04587 22.2238 -7.04587 -54.2238 21.1376 -122.262C42.2737 -173.287 88.0136 -219.027 179.493 -310.507C270.973 -401.986 316.713 -447.726 367.738 -468.862C435.776 -497.046 512.224 -497.046 580.262 -468.862C631.287 -447.726 677.027 -401.986 768.507 -310.507C859.986 -219.027 905.726 -173.287 926.862 -122.262C955.046 -54.2238 955.046 22.2238 926.862 90.2621C905.726 141.287 859.986 187.027 768.507 278.507C677.027 369.986 631.287 415.726 580.262 436.862C512.224 465.046 435.776 465.046 367.738 436.862C316.713 415.726 270.973 369.986 179.493 278.507Z"/>
     </svg>
     <div class="container fade-in">
         <div class="row align-items-center">
-            <div class="col-lg-6 text-center text-md-start">
+            <div class="col-lg-8 text-center text-md-start">
                 <h1 class="display-5 fw-bold">
                     <?= $meta->title; ?>
                 </h1>
-                <p class="lead">
+                <p class="fs-5">
                     <?= $meta->description; ?>
                 </p>
                 <div class="row">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 offset-lg-2">
+            <div class="col-lg-4">
                 <div class="d-none d-lg-block">
                     <?php if($category): ?>
                         <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-5" alt="..." />
@@ -44,10 +44,10 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 <?php endif; ?>
 
-<div class="section-padding fade-in">
+<section class="section-padding fade-in">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">
@@ -74,43 +74,41 @@
                             }
                         }
                     ?>
-                    <div class="col-sm-6 col-lg-4 mb-5">
+                    <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column">
-                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;">
-                            </a>
-                            <div class="px-0 pt-3 d-flex flex-column flex-grow-1">
-                                <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
-                                        <?= truncate($val->post_title, 64); ?>
-                                    </a>
-                                </h5>
-                                <p class="text-muted small mb-3 lh-lg">
-                                    <?= truncate($val->post_excerpt, 80); ?>
-                                </p>
-                                <p class="text-muted small fw-semibold mb-2">
-                                    <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
-                                </p>
-                                <div class="row g-0 align-items-center mt-auto">
-                                    <div class="col-2 col-sm-2 col-md-1">
+                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-4">
+                                <div class="row g-0 align-items-center mb-3">
+                                    <div class="col-1">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
                                             <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
                                         </a>
                                     </div>
-                                    <div class="col-7 col-sm-7 col-md-8 overflow-hidden">
+                                    <div class="col-11 overflow-hidden">
+                                        <span class="text-muted text-sm float-end">
+                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
+                                        </span>
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
                                             <b>
                                                 <?= $val->first_name . ' ' . $val->last_name; ?>
                                             </b>
                                         </a>
                                     </div>
-                                    <div class="col-3 col-sm-3 col-md-3 text-end">
-                                        <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
-                                            <i class="mdi mdi-heart"></i>
-                                        </button>
-                                    </div>
+                                </div>
+                                <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                        <?= truncate($val->post_title, 64); ?>
+                                    </a>
+                                </h5>
+                                <p class="text-muted small">
+                                    <?= truncate($val->post_excerpt, 80); ?>
+                                </p>
+                                <div style="z-index:1">
+                                    <?= $tags; ?>
                                 </div>
                             </div>
+                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.75rem">
+                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -140,4 +138,4 @@
             </div>
         <?php endif; ?>
     </div>
-</div>
+</section>

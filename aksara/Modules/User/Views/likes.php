@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 if ($user): ?>
-    <div class="section-padding fade-in">
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -23,8 +23,8 @@ if ($user): ?>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border-bottom bg-white py-2">
+    </section>
+    <div class="border-fade bg-white py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -56,7 +56,7 @@ if ($user): ?>
             </div>
         </div>
     </div>
-    <div class="section-padding fade-in">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -105,7 +105,7 @@ if ($user): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="section-padding fade-in">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

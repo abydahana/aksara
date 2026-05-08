@@ -9,10 +9,6 @@
 ?>
 <!-- Hero Section -->
 <section class="hero-section pb-0 text-center">
-    <!-- Background Wavy Shape -->
-    <svg class="position-absolute top-0 d-none d-md-block hero-blob text-light" viewBox="0 0 948 458" fill="none">
-        <path fill="currentColor" d="M179.493 278.507C88.0136 187.027 42.2737 141.287 21.1376 90.2621C-7.04587 22.2238 -7.04587 -54.2238 21.1376 -122.262C42.2737 -173.287 88.0136 -219.027 179.493 -310.507C270.973 -401.986 316.713 -447.726 367.738 -468.862C435.776 -497.046 512.224 -497.046 580.262 -468.862C631.287 -447.726 677.027 -401.986 768.507 -310.507C859.986 -219.027 905.726 -173.287 926.862 -122.262C955.046 -54.2238 955.046 22.2238 926.862 90.2621C905.726 141.287 859.986 187.027 768.507 278.507C677.027 369.986 631.287 415.726 580.262 436.862C512.224 465.046 435.776 465.046 367.738 436.862C316.713 415.726 270.973 369.986 179.493 278.507Z"/>
-    </svg>
     <div class="container">
         <div class="section-padding fade-in">
             <h1 class="display-4 fw-bold mb-3"><?= get_setting('app_name'); ?></h1>
@@ -34,7 +30,7 @@
 <?php if ($categories): ?>
 <section class="section-padding fade-in">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center">
             <h3 class="fw-bold m-0 display-6"><?= phrase('Post Categories'); ?></h3>
             <p class="text-muted mb-5 fs-5"><?= phrase('Browse the articles by category'); ?></p>
         </div>
@@ -73,30 +69,45 @@
 <?php if ($articles): ?>
 <section class="section-padding fade-in">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center">
             <h3 class="fw-bold m-0 display-6"><?= phrase('Recent Articles'); ?></h3>
-            <p class="text-muted mb-5 fs-5"><?= phrase('Read our newest articles'); ?></p>
+            <p class="text-muted fs-5"><?= phrase('Read our newest articles'); ?></p>
         </div>
         <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
             <div class="swiper-wrapper py-3">
                 <?php foreach ($articles as $key => $val): ?>
-                    <div class="swiper-slide">
-                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                            <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5 w-100" alt="Blog" style="aspect-ratio: 3/2; object-fit: cover;">
-                        </a>
-                        <div class="px-0 pt-3">
-                            <p class="text-muted small mb-2">
-                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark fw-semibold --xhr"><?= $val->first_name . ' ' . $val->last_name; ?></a>
-                                <span class="text-sm float-end"><?= time_ago($val->updated_timestamp); ?></span>
-                            </p>
-                            <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
-                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
-                                    <?= truncate($val->post_title, 50); ?>
-                                </a>
-                            </h5>
-                            <p class="text-muted small lh-lg">
-                                <?= truncate($val->post_excerpt, 80); ?>
-                            </p>
+                    <div class="swiper-slide h-auto">
+                        <div class="h-100 d-flex flex-column">
+                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-4">
+                                <div class="row g-0 align-items-center mb-3">
+                                    <div class="col-1">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                        </a>
+                                    </div>
+                                    <div class="col-11 overflow-hidden">
+                                        <span class="text-muted text-sm float-end">
+                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
+                                        </span>
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
+                                            <b>
+                                                <?= $val->first_name . ' ' . $val->last_name; ?>
+                                            </b>
+                                        </a>
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                        <?= truncate($val->post_title, 64); ?>
+                                    </a>
+                                </h5>
+                                <p class="text-muted small">
+                                    <?= truncate($val->post_excerpt, 80); ?>
+                                </p>
+                            </div>
+                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.5rem">
+                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -113,9 +124,9 @@
 <?php if ($galleries): ?>
 <section class="section-padding fade-in">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center">
             <h3 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries'); ?></h3>
-            <p class="text-muted mb-5 fs-5"><?= phrase('See our latest gallery activities'); ?></p>
+            <p class="text-muted fs-5"><?= phrase('See our latest gallery activities'); ?></p>
         </div>
         <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
             <div class="swiper-wrapper py-3">
@@ -156,9 +167,9 @@
 <?php if ($peoples): ?>
 <section class="section-padding fade-in">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center">
             <h3 class="fw-bold m-0 display-6"><?= phrase('Meet Us'); ?></h3>
-            <p class="text-muted mb-5 fs-5"><?= phrase('Talk to us, straight to our team'); ?></p>
+            <p class="text-muted fs-5"><?= phrase('Talk to us, straight to our team'); ?></p>
         </div>
         <div class="row align-items-center">
             <?php foreach ($peoples as $key => $val): ?>
@@ -196,16 +207,16 @@
     <div class="container py-lg-5">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <div class="text-center text-md-start mb-5">
+                <div class="text-center text-md-start">
                     <h3 class="fw-bold m-0 display-6"><?= phrase('Today Statistics'); ?></h3>
-                    <p class="text-muted mb-5 fs-5"><?= phrase('and will continue to grow'); ?></p>
+                    <p class="text-muted fs-5"><?= phrase('and will continue to grow'); ?></p>
                 </div>
                 <div class="row">
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
                         <div class="counter color fw-semibold display-5">
                             <span data-from="1" data-to="<?= $statistics->daily; ?>" data-refresh-interval="100" data-speed="1500"> <?= number_format($statistics->daily); ?> </span>
                         </div>
-                        <h4 class="mt-0">
+                        <h4 class="mt-0 text-secondary">
                             <?= phrase('Daily Visits'); ?>
                         </h4>
                     </div>
@@ -213,7 +224,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->weekly; ?>" data-refresh-interval="2" data-speed="600"> <?= number_format($statistics->weekly); ?> </span>
                         </div>
-                        <h4 class="mt-0">
+                        <h4 class="mt-0 text-secondary">
                             <?= phrase('Weekly Visits'); ?>
                         </h4>
                     </div>
@@ -221,7 +232,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->monthly; ?>" data-refresh-interval="11" data-speed="900"> <?= number_format($statistics->monthly); ?> </span>
                         </div>
-                        <h4 class="mt-0">
+                        <h4 class="mt-0 text-secondary">
                             <?= phrase('Monthly Visits'); ?>
                         </h4>
                     </div>
@@ -229,7 +240,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="100" data-to="<?= $statistics->yearly; ?>" data-refresh-interval="3" data-speed="1000"> <?= number_format($statistics->yearly); ?> </span>
                         </div>
-                        <h4 class="mt-0">
+                        <h4 class="mt-0 text-secondary">
                             <?= phrase('Yearly Visits'); ?>
                         </h4>
                     </div>
@@ -242,14 +253,14 @@
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-6 offset-3 text-center">
-                                        <img src="<?= get_module_asset('images/blog.png'); ?>" class="img-fluid">
+                                        <i class="mdi mdi-post-outline mdi-5x text-secondary"></i>
                                     </div>
                                 </div>
                                 <div class="text-center">
                                     <h4 class="card-title fw-semibold color">
                                         <?= number_format($statistics->posts) . ' ' . phrase('Posts'); ?>
                                     </h4>
-                                    <p class="card-text d-none d-sm-block">
+                                    <p class="card-text d-none d-sm-block text-muted">
                                         <?= phrase('Collected from all categories under blog'); ?>
                                     </p>
                                 </div>
@@ -261,14 +272,14 @@
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-6 offset-3 text-center">
-                                        <img src="<?= get_module_asset('images/album.png'); ?>" class="img-fluid">
+                                        <i class="mdi mdi-image-multiple mdi-5x text-secondary"></i>
                                     </div>
                                 </div>
                                 <div class="text-center">
                                     <h4 class="card-title fw-semibold color">
                                         <?= number_format($statistics->galleries) . ' ' . phrase('Albums'); ?>
                                     </h4>
-                                    <p class="card-text d-none d-sm-block">
+                                    <p class="card-text d-none d-sm-block text-muted">
                                         <?= phrase('Collected from all galleries'); ?>
                                     </p>
                                 </div>
@@ -282,14 +293,14 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-6 offset-3 text-center">
-                                <img src="<?= get_module_asset('images/interaction.png'); ?>" class="img-fluid">
+                                <i class="mdi mdi-comment-processing mdi-5x text-secondary"></i>
                             </div>
                         </div>
                         <div class="text-center">
                             <h4 class="card-title fw-semibold color">
                                 <?= number_format($statistics->comments) . ' ' . phrase('Interactions'); ?>
                             </h4>
-                            <p class="card-text">
+                            <p class="card-text text-muted">
                                 <?= phrase('Collected from submitted comments'); ?>
                             </p>
                         </div>

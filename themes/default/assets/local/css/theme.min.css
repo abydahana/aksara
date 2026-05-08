@@ -49,7 +49,10 @@ a:hover {
 .btn-primary {
   background-color: var(--bs-dark);
   border-color: var(--bs-dark);
-  font-weight: 600;
+}
+.btn-outline-primary {
+  border-color: var(--bs-dark);
+  color: var(--bs-dark);
 }
 .btn-outline-light {
   color: var(--wg-text);
@@ -87,7 +90,7 @@ h1, h2, h3, h4, .display-4 {
   padding: 6rem 0 4rem;
 }
 .section-padding {
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 .bg-light {
   background-color: #f0f4ff !important;
@@ -284,6 +287,6 @@ h1, h2, h3, h4, .display-4 {
 
 @media(max-width:768px) {
   .section-padding {
-    padding: 3rem 0!important;
+    padding: 2rem 0!important;
   }
 }

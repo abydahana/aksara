@@ -10,13 +10,10 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
 ?>
 <header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper">
     <div class="container">
-        <a class="navbar-brand pt-0 pb-0 d-none d-lg-block --xhr" href="<?= base_url(); ?>">
+        <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url(); ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
             <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
             <?= (get_userdata('year') ? '<span class="badge bg-warning">' . get_userdata('year') . '</span>' : ''); ?>
-        </a>
-        <a href="<?= current_page(); ?>" class="navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate --xhr" role="title">
-            <?= $meta->title; ?>
         </a>
         <button class="navbar-toggler mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="<?= phrase('Toggle navigation'); ?>">
             <span class="mobile-menu-toggle-lines" aria-hidden="true">
@@ -80,9 +77,6 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
                     </ul>
                 </li>
                 <?php else: ?>
-                <li class="nav-item">
-                    <span class="nav-link">&nbsp;</span>
-                </li>
                 <li class="nav-item user-login ms-2">
                     <a href="<?= base_url('auth'); ?>" class="btn btn-sm btn-primary rounded-pill px-4 text-nowrap --modal" data-format="html">
                         <span><?= phrase('Sign In'); ?></span>
@@ -156,11 +150,8 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
                 </ul>
             </li>
             <?php else: ?>
-            <li class="nav-item">
-                <span class="nav-link">&nbsp;</span>
-            </li>
-            <li class="nav-item user-login ms-2">
-                <a href="<?= base_url('auth'); ?>" class="btn btn-sm btn-primary rounded-pill px-4 text-nowrap --modal" data-format="html">
+            <li class="nav-item user-login m-3">
+                <a href="<?= base_url('auth'); ?>" class="btn btn-sm btn-primary rounded-pill px-4 py-2 text-nowrap --modal" data-format="html">
                     <span><?= phrase('Sign In'); ?></span>
                 </a>
             </li>

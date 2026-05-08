@@ -14,15 +14,15 @@ if ($activation): ?>
         </div>
     </div>
 <?php endif; ?>
-<div class="py-3 <?= ($activation ? 'py-md-3' : 'py-md-5'); ?>">
-    <div class="container-fluid">
+<section class="section-padding">
+    <div class="container">
         <div class="row">
-            <div class="<?= (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
+            <div class="<?= (get_setting('frontend_registration') ? 'col-md-10 offset-md-1' : 'col-md-4 offset-md-4'); ?>">
                 <div class="card-group py-5">
-                    <div class="card border-light rounded-4 rounded-end-0">
+                    <div class="card border rounded-4 rounded-end-0">
                         <div class="card-body p-4 p-md-5">
                             <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-                                <div class="mb-5">
+                                <div class="mb-3">
                                     <p class="text-center text-muted">
                                         <i class="mdi mdi-account-circle-outline mdi-5x text-muted"></i>
                                     </p>
@@ -133,4 +133,4 @@ if ($activation): ?>
             </div>
         </div>
     </div>
-</div>
+</section>

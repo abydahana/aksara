@@ -109,7 +109,7 @@
                 </div>
                 <?php endif; ?>
                 <div class="d-grid">
-                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success rounded-pill">
+                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-primary rounded-pill">
                         <i class="mdi mdi-account-plus"></i>
                         <?= phrase('Register an Account'); ?>
                     </a>

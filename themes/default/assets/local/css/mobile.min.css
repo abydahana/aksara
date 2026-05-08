@@ -15,18 +15,14 @@
   .vh-25 {
     height: calc(25vh - 56px) !important;
   }
-  footer#footer-wrapper {
-    display: none
-  }
 }
 
 @media (max-width: 991.98px) {
   #header-wrapper .mobile-menu-toggle {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     padding: 0;
-    border: 0;
-    border-radius: 14px;
+    border-radius: 50%;
     background: transparent;
     display: inline-flex;
     align-items: center;
@@ -386,12 +382,11 @@
   #offcanvasNavbarDark .navbar-nav .nav-link {
     display: flex !important;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px !important;
+    gap: 0.5rem;
     color: var(--bs-sheet-text) !important;
     font-size: 0.95rem !important;
     font-weight: 450;
-    border-radius: 12px;
+    border-radius: 1rem;
     transition: background 0.2s ease, transform 0.15s ease;
     text-decoration: none;
     position: relative;
@@ -456,9 +451,6 @@
   /* ── Sign-in Button ── */
   #offcanvasNavbarDark .user-login .btn {
     width: 100%;
-    padding: 0.75rem !important;
-    font-size: 0.95rem;
-    font-weight: 600;
   }
   
   #offcanvasNavbarDark .user-login.ms-2 {
