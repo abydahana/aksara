@@ -18,8 +18,12 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
         <a href="<?= current_page(); ?>" class="navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate --xhr" role="title">
             <?= $meta->title; ?>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="<?= phrase('Toggle navigation'); ?>">
+            <span class="mobile-menu-toggle-lines" aria-hidden="true">
+                <span class="mobile-menu-toggle-line"></span>
+                <span class="mobile-menu-toggle-line"></span>
+                <span class="mobile-menu-toggle-line"></span>
+            </span>
         </button>
         <!-- Desktop inline menu (lg+) -->
         <div class="collapse navbar-collapse d-none d-lg-flex">
@@ -93,11 +97,10 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
 <!-- Bottom Sheet offcanvas (outside header to avoid backdrop-filter containing block) -->
 <div class="offcanvas offcanvas-bottom text-bg-dark" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
     <div class="offcanvas-header flex-column align-items-center pb-0 position-relative">
-        <div class="drag-handle mb-3"></div>
+        <div class="drag-handle mb-1"></div>
         <h5 class="offcanvas-title w-100 text-center" id="offcanvasNavbarDarkLabel">
             <?= phrase('Main Navigation'); ?>
         </h5>
-        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <?= $_menu_html; ?>

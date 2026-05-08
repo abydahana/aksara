@@ -44,7 +44,7 @@ class Menus extends Core
         ->columnOrder('menu_label, menu_placement, menu_description, group_name')
         ->unsetField('menu_id')
         ->setPrimary('menu_id')
-        ->setField('serialized_data', 'custom_format', 'formatMenus')
+        ->setField('serialized_data', 'custom', 'formatMenus')
         ->setField(
             'menu_placement',
             'select',

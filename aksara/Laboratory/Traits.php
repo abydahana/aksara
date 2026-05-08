@@ -211,7 +211,7 @@ trait Traits
 
     /**
      * Grid view mode status.
-     * @var bool
+     * @var array
      */
     private $_gridView;
 

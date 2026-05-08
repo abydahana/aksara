@@ -60,7 +60,7 @@ class Groups extends Core
             'group_description' => 'textarea',
             'status' => 'boolean'
         ])
-        ->setField('group_privileges', 'custom_format', 'formatPrivileges')
+        ->setField('group_privileges', 'custom', 'formatPrivileges')
         ->setValidation([
             'group_name' => 'required',
             'group_description' => 'required'

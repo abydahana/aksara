@@ -51,7 +51,7 @@ class Privileges extends Core
         ->unsetColumn('id, privileges')
         ->unsetView('id')
         ->unsetField('id, last_generated')
-        ->setField('privileges', 'custom_format', 'formatPrivileges')
+        ->setField('privileges', 'custom', 'formatPrivileges')
         ->setField('last_generated', 'current_timestamp')
         ->orderBy('path')
         ->setValidation([

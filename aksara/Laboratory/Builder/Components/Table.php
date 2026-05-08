@@ -681,7 +681,7 @@ class Table
      *
      * @return  array Returns component configuration array
      */
-    public function customFormat(): array
+    public function custom(): array
     {
         // Template for Raw Content
         $component = <<<EOF

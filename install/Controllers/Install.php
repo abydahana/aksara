@@ -495,49 +495,43 @@ class Install extends BaseController
                 }
             }
 
-            // Check if the migration not yet executed
-            if (! session()->get('migrated')) {
-                // Database migrations and seeder
-                try {
-                    // Check if migration has been run previously
-                    if ($db->tableExists(config('Migrations')->table)) {
-                        // Truncate the migrations table
-                        $db->table(config('Migrations')->table)->truncate();
-                    }
+            // Database migrations and seeder
+            try {
+                // Check if migration has been run previously
+                if ($db->tableExists(config('Migrations')->table)) {
+                    // Truncate the migrations table
+                    $db->table(config('Migrations')->table)->truncate();
+                }
 
-                    // Load migration library
-                    $migration = Services::migrations();
+                // Load migration library
+                $migration = Services::migrations();
 
-                    // Migrate the database schema (ASC order)
-                    if ($migration->latest()) {
-                        // Load seeder library
-                        $seeder = Database::seeder();
+                // Migrate the database schema (ASC order)
+                if ($migration->latest()) {
+                    // Load seeder library
+                    $seeder = Database::seeder();
 
-                        // Run main seeder
-                        $seeder->call('MainSeeder');
+                    // Run main seeder
+                    $seeder->call('MainSeeder');
 
-                        // Check if basic installation is selected
-                        if (session()->get('installation_mode') > 0) {
-                            // Run seeder to insert sample data
-                            $seeder->call('DummySeeder');
+                    // Check if basic installation is selected
+                    if (session()->get('installation_mode') > 0) {
+                        // Run seeder to insert sample data
+                        $seeder->call('DummySeeder');
 
-                            // Run ecosystem seeder
-                            if (session()->get('installation_mode') > 1) {
-                                // Required by current ecosystem, suffixed with installation id
-                                $seeder->call('EcosystemSeeder_' . session()->get('installation_mode'));
-                            }
+                        // Run ecosystem seeder
+                        if (session()->get('installation_mode') > 1) {
+                            // Required by current ecosystem, suffixed with installation id
+                            $seeder->call('EcosystemSeeder_' . session()->get('installation_mode'));
                         }
                     }
-
-                    // Mark the migration has been migrated
-                    session()->set('migrated', true);
-                } catch (Throwable $e) {
-                    // Migration couldn't be executed, throw error
-                    return $this->response->setJSON([
-                        'status' => 403,
-                        'message' => $e->getMessage()
-                    ]);
                 }
+            } catch (Throwable $e) {
+                // Migration couldn't be executed, throw error
+                return $this->response->setJSON([
+                    'status' => 403,
+                    'message' => $e->getMessage()
+                ]);
             }
 
             // Check if configuration file is exists

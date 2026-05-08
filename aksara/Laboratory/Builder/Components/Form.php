@@ -758,7 +758,7 @@ class Form
      *
      * @return  array Returns component configuration array
      */
-    public function customFormat(): array
+    public function custom(): array
     {
         // Passthrough for Raw Content
         $component = <<<EOF

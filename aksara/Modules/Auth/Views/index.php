@@ -19,8 +19,8 @@ if ($activation): ?>
         <div class="row">
             <div class="<?= (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
                 <div class="card-group py-5">
-                    <div class="card shadow rounded-4 rounded-end-0">
-                        <div class="card-body p-4">
+                    <div class="card border-light rounded-4 rounded-end-0">
+                        <div class="card-body p-4 p-md-5">
                             <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                                 <div class="mb-5">
                                     <p class="text-center text-muted">
@@ -96,8 +96,8 @@ if ($activation): ?>
                         </div>
                     </div>
                     <?php if (get_setting('frontend_registration')): ?>
-                    <div class="card shadow rounded-4 rounded-start-0">
-                        <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="card border-0 rounded-4 rounded-start-0 bg-light">
+                        <div class="card-body p-4 p-md-5 d-flex align-items-center justify-content-center">
                             <div>
                                 <p class="lead text-center text-black-50">
                                     <?= phrase('Do not have an account?'); ?>
@@ -119,7 +119,7 @@ if ($activation): ?>
                                 </div>
                                 <?php endif; ?>
                                 <div class="d-grid">
-                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success --xhr rounded-pill">
+                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-primary --xhr rounded-pill">
                                         <i class="mdi mdi-account-plus"></i>
                                         <?= phrase('Register an Account'); ?>
                                     </a>

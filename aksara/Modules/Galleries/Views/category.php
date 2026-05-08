@@ -19,7 +19,7 @@ if ($results) {
                 $output .= '
                     <div class="col-sm-6 col-md-3">
                         <a href="' . current_page($src) . '" class="--xhr">
-                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-4 w-100 mb-4" alt="' . $alt . '" />
+                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4" alt="' . $alt . '" />
                         </a>
                     </div>
                 ';
@@ -27,33 +27,36 @@ if ($results) {
         }
     }
 }
-?>
 
-<?php if ($output): ?>
-    <div class="bg-light">
-        <div class="py-3 py-md-5">
-            <div class="container">
-                <h1 class="text-center text-md-start">
+if ($output): ?>
+<div class="section-padding">
+    <!-- Background Wavy Shape -->
+    <svg class="position-absolute top-0 d-none d-md-block hero-blob" viewBox="0 0 948 458" fill="none">
+        <path fill="currentColor" d="M179.493 278.507C88.0136 187.027 42.2737 141.287 21.1376 90.2621C-7.04587 22.2238 -7.04587 -54.2238 21.1376 -122.262C42.2737 -173.287 88.0136 -219.027 179.493 -310.507C270.973 -401.986 316.713 -447.726 367.738 -468.862C435.776 -497.046 512.224 -497.046 580.262 -468.862C631.287 -447.726 677.027 -401.986 768.507 -310.507C859.986 -219.027 905.726 -173.287 926.862 -122.262C955.046 -54.2238 955.046 22.2238 926.862 90.2621C905.726 141.287 859.986 187.027 768.507 278.507C677.027 369.986 631.287 415.726 580.262 436.862C512.224 465.046 435.776 465.046 367.738 436.862C316.713 415.726 270.973 369.986 179.493 278.507Z"/>
+    </svg>
+
+    <div class="container position-relative" style="z-index: 1;">
+        <div class="row align-items-center">
+            <div class="col-md-8 py-3">
+                <h1 class="display-4 fw-bold text-dark mb-3">
                     <?= $meta->title; ?>
                 </h1>
-                <p class="lead text-center text-md-start">
+                <p class="lead text-muted mb-0">
                     <?= truncate($meta->description, 256); ?>
                 </p>
             </div>
         </div>
-        <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-            <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-        </svg>
     </div>
-    <div class="py-3 py-md-5">
-        <div class="container">
-            <div class="row">
-                <?= $output; ?>
-            </div>
+</div>
+<div class="py-3 py-md-5">
+    <div class="container">
+        <div class="row">
+            <?= $output; ?>
         </div>
     </div>
+</div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

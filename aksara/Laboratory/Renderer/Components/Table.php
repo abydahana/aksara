@@ -53,16 +53,6 @@ class Table
     private Parser $parser;
 
     /**
-     * Current Module Path
-     */
-    private ?string $path = null;
-
-    /**
-     * Database Model
-     */
-    private mixed $model = null;
-
-    /**
      * API Client Instance
      */
     private mixed $apiClient = null;
@@ -85,7 +75,7 @@ class Table
         'file', 'files', 'image', 'images',
         'hyperlink',
         'accordion', 'attribution', 'carousel', 'geospatial',
-        'custom_format'
+        'custom'
     ];
 
     /**

@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 if ($user): ?>
-    <div class="py-3 py-md-5 bg-light">
+    <div class="section-padding fade-in">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -24,7 +24,7 @@ if ($user): ?>
             </div>
         </div>
     </div>
-    <div class="border-top border-bottom border-light-subtle bg-white py-2">
+    <div class="border-bottom bg-white py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -56,7 +56,7 @@ if ($user): ?>
             </div>
         </div>
     </div>
-    <div class="py-3">
+    <div class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -76,8 +76,7 @@ if ($user): ?>
                             if (! $metadata) continue;
                         ?>
                         <div class="activity-item mb-3">
-                            <div class="card rounded-4 border-light-subtle mb-3">
-                                <div class="card-body">
+                            <div class="bg-light rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
                                             <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
@@ -97,7 +96,6 @@ if ($user): ?>
                                         <p class="lead text-muted"><?= truncate($metadata->description, 160); ?></p>
                                     </h4>
                                 </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
 
@@ -107,7 +105,7 @@ if ($user): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

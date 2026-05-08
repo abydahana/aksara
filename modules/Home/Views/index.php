@@ -7,200 +7,37 @@
  * @var mixed $statistics
  */
 ?>
-<style type="text/css">
-    @media (min-width:960px) {
-        .navbar.fixed-top {
-            background-color: rgba(var(--bs-dark-rgb),.75)!important;
-            transition: all ease-in-out .3s
-        }
-        .navbar.fixed-top.scrolled {
-            background-color: rgba(var(--bs-dark-rgb),1)!important
-        }
-    }
-	#fullscreen-video {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		min-width: 100%;
-		min-height: 100%
-	}
-	.video-overlay {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		min-width: 100%;
-		min-height: 100%;
-        background-color: rgba(33, 33, 33, .75)
-	}
-    .circles {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-    .circles li {
-        position: absolute;
-        display: block;
-        list-style: none;
-        width: 20px;
-        height: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        animation: animate 25s linear infinite;
-        bottom: -150px;
-
-    }
-    .circles li:nth-child(1) {
-        left: 25%;
-        width: 80px;
-        height: 80px;
-        animation-delay: 0s;
-    }
-    .circles li:nth-child(2) {
-        left: 10%;
-        width: 20px;
-        height: 20px;
-        animation-delay: 2s;
-        animation-duration: 12s;
-    }
-    .circles li:nth-child(3) {
-        left: 70%;
-        width: 20px;
-        height: 20px;
-        animation-delay: 4s;
-    }
-    .circles li:nth-child(4) {
-        left: 40%;
-        width: 60px;
-        height: 60px;
-        animation-delay: 0s;
-        animation-duration: 18s;
-    }
-    .circles li:nth-child(5) {
-        left: 65%;
-        width: 20px;
-        height: 20px;
-        animation-delay: 0s;
-    }
-    .circles li:nth-child(6) {
-        left: 75%;
-        width: 110px;
-        height: 110px;
-        animation-delay: 3s;
-    }
-    .circles li:nth-child(7) {
-        left: 35%;
-        width: 150px;
-        height: 150px;
-        animation-delay: 7s;
-    }
-    .circles li:nth-child(8) {
-        left: 50%;
-        width: 25px;
-        height: 25px;
-        animation-delay: 15s;
-        animation-duration: 45s;
-    }
-    .circles li:nth-child(9) {
-        left: 20%;
-        width: 15px;
-        height: 15px;
-        animation-delay: 2s;
-        animation-duration: 35s;
-    }
-    .circles li:nth-child(10) {
-        left: 85%;
-        width: 150px;
-        height: 150px;
-        animation-delay: 0s;
-        animation-duration: 11s;
-    }
-    @keyframes animate {
-        0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-            border-radius: 0;
-        }
-        100% {
-            transform: translateY(-1000px) rotate(720deg);
-            opacity: 0;
-            border-radius: 100%
-        }
-    }
-</style>
-<script type="text/javascript">
-    window.addEventListener('scroll', function() {
-        const header = document.querySelector('.navbar.fixed-top');
-
-        if (window.scrollY > $('.hero').outerHeight()) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-</script>
-<div class="py-3 bg-light position-relative hero">
-	<video autoplay muted loop id="fullscreen-video">
-		<source src="<?= get_module_asset('videos/liquid.mp4'); ?>" type="video/mp4" />
-	</video>
-	<div class="video-overlay"></div>
-    <div class="area">
-        <ul class="circles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
-    <div class="container position-relative">
-        <div class="row full-height align-items-center">
-            <div class="col-md-6 text-center text-md-start">
-                <div class="w-100 mb-3">
-                    <h1 class="fw-bold mb-3 text-light text-glow">
-                        <?= get_setting('app_name'); ?>
-                    </h1>
-                    <p class="lead mb-3 text-light text-glow mb-5">
-                        <?= nl2br(get_setting('app_description')); ?>
-                    </p>
-                    <div class="row">
-                        <div class="col-sm-6 offset-sm-3 col-md-6 offset-md-0">
-                            <a href="<?= base_url('blogs'); ?>" class="btn btn-dark btn-lg px-5 rounded-pill --xhr">
-                                <?= phrase('Explore our articles'); ?> <i class="mdi mdi-arrow-right text-light"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+<!-- Hero Section -->
+<section class="hero-section pb-0 text-center">
+    <!-- Background Wavy Shape -->
+    <svg class="position-absolute top-0 d-none d-md-block hero-blob text-light" viewBox="0 0 948 458" fill="none">
+        <path fill="currentColor" d="M179.493 278.507C88.0136 187.027 42.2737 141.287 21.1376 90.2621C-7.04587 22.2238 -7.04587 -54.2238 21.1376 -122.262C42.2737 -173.287 88.0136 -219.027 179.493 -310.507C270.973 -401.986 316.713 -447.726 367.738 -468.862C435.776 -497.046 512.224 -497.046 580.262 -468.862C631.287 -447.726 677.027 -401.986 768.507 -310.507C859.986 -219.027 905.726 -173.287 926.862 -122.262C955.046 -54.2238 955.046 22.2238 926.862 90.2621C905.726 141.287 859.986 187.027 768.507 278.507C677.027 369.986 631.287 415.726 580.262 436.862C512.224 465.046 435.776 465.046 367.738 436.862C316.713 415.726 270.973 369.986 179.493 278.507Z"/>
+    </svg>
+    <div class="container">
+        <div class="section-padding fade-in">
+            <h1 class="display-4 fw-bold mb-3"><?= get_setting('app_name'); ?></h1>
+            <p class="lead text-muted mb-4 mx-auto" style="max-width: 600px;">
+                <?= get_setting('app_description'); ?>
+            </p>
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                <a href="<?= base_url('auth'); ?>" class="btn btn-primary rounded-pill px-4 --modal">GET STARTED <i class="mdi mdi-arrow-right"></i></a>
             </div>
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <div class="col-lg-10 offset-lg-1">
-                        <img src="<?= get_module_asset('images/hero.png'); ?>" class="img-fluid rounded-5" alt="...">
-                    </div>
+            
+            <div class="row mt-5">
+                <div class="col-12 col-lg-10 offset-lg-1">
+                    <img src="<?= get_module_asset('images/hero.png'); ?>" class="img-fluid rounded-5" alt="Map Interface">
                 </div>
             </div>
         </div>
     </div>
-    <svg class="wave text-white position-absolute" style="bottom:0" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
-
+</section>
 <?php if ($categories): ?>
-<div class="py-3 bg-light">
+<section class="section-padding fade-in">
     <div class="container">
-        <h1 class="text-center text-lg-start fw-bold lh-1">
-            <?= phrase('Post Categories'); ?>
-        </h1>
-        <p class="text-center text-md-start lead">
-            <?= phrase('Browse the articles by category'); ?>
-        </p>
+        <div class="text-center mb-5">
+            <h3 class="fw-bold m-0 display-6"><?= phrase('Post Categories'); ?></h3>
+            <p class="text-muted mb-5 fs-5"><?= phrase('Browse the articles by category'); ?></p>
+        </div>
         <div class="row align-items-center">
             <?php foreach ($categories as $key => $val): ?>
                 <div class="col-6 col-md-4 col-lg-3">
@@ -229,82 +66,57 @@
             <?php endforeach; ?>
         </div>
     </div>
-</div>
+</section>
 <?php endif; ?>
 
+<!-- Latest News -->
 <?php if ($articles): ?>
-<div class="py-3 pb-0 bg-light">
+<section class="section-padding fade-in">
     <div class="container">
-        <h1 class="text-center text-lg-start fw-bold lh-1">
-            <?= phrase('Recent Articles'); ?>
-        </h1>
-        <p class="text-center text-md-start lead">
-            <?= phrase('Read our newest articles'); ?>
-        </p>
+        <div class="text-center mb-5">
+            <h3 class="fw-bold m-0 display-6"><?= phrase('Recent Articles'); ?></h3>
+            <p class="text-muted mb-5 fs-5"><?= phrase('Read our newest articles'); ?></p>
+        </div>
         <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
             <div class="swiper-wrapper py-3">
                 <?php foreach ($articles as $key => $val): ?>
                     <div class="swiper-slide">
-                        <div class="card border-0 rounded-4 overflow-hidden">
-                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                <div class="position-relative" style="background:url(<?= get_image('blogs', $val->featured_image, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
-                                    <div class="clip gradient-top"></div>
-                                    <div class="position-absolute bottom-0 p-3">
-                                        <h4 class="text-light" data-toggle="tooltip" title="<?= $val->post_title; ?>">
-                                            <?= truncate($val->post_title, 64); ?>
-                                        </h4>
-                                        <p class="text-white">
-                                            <i class="mdi mdi-clock-outline"></i>
-                                            <?= time_ago($val->updated_timestamp); ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="card-body">
-                                <p class="lead card-text text-secondary">
-                                    <?= truncate($val->post_excerpt, 64); ?>
-                                </p>
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-1">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary">
-                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
-                                        </a>
-                                    </div>
-                                    <div class="col-8 overflow-hidden">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2">
-                                            <b>
-                                                <?= $val->first_name . ' ' . $val->last_name; ?>
-                                            </b>
-                                        </a>
-                                    </div>
-                                    <div class="col-3 text-end">
-                                        <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-secondary' : 'btn-outline-secondary'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-secondary" data-class-remove="btn-outline-secondary">
-                                            <i class="mdi mdi-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
+                            <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5 w-100" alt="Blog" style="aspect-ratio: 3/2; object-fit: cover;">
+                        </a>
+                        <div class="px-0 pt-3">
+                            <p class="text-muted small mb-2">
+                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark fw-semibold --xhr"><?= $val->first_name . ' ' . $val->last_name; ?></a>
+                                <span class="text-sm float-end"><?= time_ago($val->updated_timestamp); ?></span>
+                            </p>
+                            <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                    <?= truncate($val->post_title, 50); ?>
+                                </a>
+                            </h5>
+                            <p class="text-muted small lh-lg">
+                                <?= truncate($val->post_excerpt, 80); ?>
+                            </p>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
+        <div class="text-center">
+            <a href="<?= base_url('blogs'); ?>" class="text-decoration-none fw-semibold --xhr"><?= phrase('See all news'); ?> <i class="mdi mdi-arrow-right"></i></a>
+        </div>
     </div>
-    <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
+</section>
 <?php endif; ?>
 
+<!-- Latest Galleries -->
 <?php if ($galleries): ?>
-<div class="py-3">
-	<div class="container">
-        <h1 class="text-center text-lg-start fw-bold lh-1">
-            <?= phrase('Galleries'); ?>
-        </h1>
-        <p class="text-center text-md-start lead">
-            <?= phrase('See our latest gallery activities'); ?>
-        </p>
+<section class="section-padding fade-in">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries'); ?></h3>
+            <p class="text-muted mb-5 fs-5"><?= phrase('See our latest gallery activities'); ?></p>
+        </div>
         <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
             <div class="swiper-wrapper py-3">
                 <?php foreach ($galleries as $key => $val): ?>
@@ -334,28 +146,30 @@
                 <?php endforeach; ?>
             </div>
         </div>
-	</div>
-</div>
+        <div class="text-center">
+            <a href="<?= base_url('galleries'); ?>" class="text-decoration-none fw-semibold --xhr"><?= phrase('See all galleries'); ?> <i class="mdi mdi-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
 <?php endif; ?>
 
 <?php if ($peoples): ?>
-<div class="py-3 pb-0 bg-light">
+<section class="section-padding fade-in">
     <div class="container">
-        <h1 class="text-center text-lg-start fw-bold lh-1">
-            <?= phrase('Meet Us'); ?>
-        </h1>
-        <p class="text-center text-md-start lead">
-            <?= phrase('Talk to us, straight to our team'); ?>
-        </p>
+        <div class="text-center mb-5">
+            <h3 class="fw-bold m-0 display-6"><?= phrase('Meet Us'); ?></h3>
+            <p class="text-muted mb-5 fs-5"><?= phrase('Talk to us, straight to our team'); ?></p>
+        </div>
         <div class="row align-items-center">
             <?php foreach ($peoples as $key => $val): ?>
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card rounded-4 mb-3 border-0">
                         <div class="card-body text-center py-lg-5">
-                            <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
-                                <img src="<?= get_image('peoples', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle mb-3" />
-                            </a>
-                            <br />
+                            <p>
+                                <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
+                                    <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" />
+                                </a>
+                            </p>
                             <h4 class="text-truncate">
                                 <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
                                     <?= $val->first_name . ' ' . $val->last_name; ?>
@@ -375,22 +189,17 @@
             <?php endforeach; ?>
         </div>
     </div>
-    <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
+</section>
 <?php endif; ?>
 
-<div class="py-3">
+<section class="section-padding fade-in">
     <div class="container py-lg-5">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1 class="text-center text-lg-start fw-bold lh-1">
-                    <?= phrase('Today Statistics'); ?>
-                </h1>
-                <p class="text-center text-md-start lead mb-5">
-                    <?= phrase('and will continue to grow'); ?>
-                </p>
+                <div class="text-center text-md-start mb-5">
+                    <h3 class="fw-bold m-0 display-6"><?= phrase('Today Statistics'); ?></h3>
+                    <p class="text-muted mb-5 fs-5"><?= phrase('and will continue to grow'); ?></p>
+                </div>
                 <div class="row">
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
                         <div class="counter color fw-semibold display-5">
@@ -489,4 +298,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

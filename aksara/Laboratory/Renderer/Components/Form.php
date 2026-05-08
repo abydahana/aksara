@@ -47,11 +47,6 @@ class Form
     private Formatter $formatter;
 
     /**
-     * Current module path.
-     */
-    private ?string $path = null;
-
-    /**
      * Database Model Instance.
      */
     private mixed $model = null;
@@ -73,7 +68,7 @@ class Form
         'hidden', 'email', 'password', 'encryption',
         'file', 'files', 'image', 'images',
         'accordion', 'attribution', 'carousel', 'geospatial',
-        'custom_format'
+        'custom'
     ];
 
     /**
@@ -105,7 +100,7 @@ class Form
      * @param   int   $length     Length of data (unused in this context but kept for interface consistency)
      * @return  array Returns the processed form configuration
      */
-    public function render(array $serialized = [], int $length = 0): array
+    public function render(array $serialized = []): array
     {
         if (empty($serialized)) {
             return [];

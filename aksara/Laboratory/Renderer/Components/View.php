@@ -53,16 +53,6 @@ class View
     private Parser $parser;
 
     /**
-     * Current Module Path
-     */
-    private ?string $path = null;
-
-    /**
-     * Database Model
-     */
-    private mixed $model = null;
-
-    /**
      * API Client Instance
      */
     private mixed $apiClient = null;
@@ -80,7 +70,7 @@ class View
         'file', 'files', 'image', 'images',
         'hyperlink',
         'accordion', 'attribution', 'carousel', 'geospatial',
-        'custom_format'
+        'custom'
     ];
 
     /**
@@ -110,7 +100,7 @@ class View
      * @param   int   $length     Length of data
      * @return  array Returns the processed view configuration
      */
-    public function render(array $serialized = [], int $length = 0): array
+    public function render(array $serialized = []): array
     {
         if (empty($serialized)) {
             return [];

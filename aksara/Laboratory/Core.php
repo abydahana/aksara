@@ -961,10 +961,10 @@ abstract class Core extends Controller
                 continue;
             }
 
-            // Loop through each field type (e.g., 'image', 'editable', 'custom_format')
+            // Loop through each field type (e.g., 'image', 'editable', 'custom')
             foreach ($types as $currentType) {
                 // Define the structure for the current type, prioritizing dedicated array parameters
-                // if the input structure was ['field_name' => ['custom_format' => ['parameter' => '...']]]
+                // if the input structure was ['field_name' => ['custom' => ['parameter' => '...']]]
                 // over the common parameters ($parameter, $alpha, etc.).
                 $paramSource = $fieldsToProcess[$currentType] ?? [];
 
@@ -2153,8 +2153,8 @@ abstract class Core extends Controller
             // Call assigned method of custom format
             if (
                 isset($this->_setField[$field])
-                && in_array('custom_format', array_keys($this->_setField[$field]))
-                && method_exists($this, $this->_setField[$field]['custom_format']['parameter'])
+                && in_array('custom', array_keys($this->_setField[$field]))
+                && method_exists($this, $this->_setField[$field]['custom']['parameter'])
             ) {
                 if (
                     (in_array($this->_method, ['index']) && ! in_array($field, $this->_unsetColumn))
@@ -2162,7 +2162,7 @@ abstract class Core extends Controller
                     || (in_array($this->_method, ['read']) && ! in_array($field, $this->_unsetRead))
                 ) {
                     // Get callback method
-                    $method = $this->_setField[$field]['custom_format']['parameter'];
+                    $method = $this->_setField[$field]['custom']['parameter'];
                     $content = $this->$method((array) $data);
 
                     // We use reflection to get method visibility
@@ -2297,13 +2297,13 @@ abstract class Core extends Controller
         $renderer = new Renderer();
 
         // Send necessary properties
-        $renderer->setProperty(['_set_theme' => $this->template->theme]);
+        $renderer->setProperty(['_setTheme' => $this->template->theme]);
 
         // Set core component path
         $renderer->setPath('core');
 
         // Create core component if not exists
-        $renderer->render([]);
+        $renderer->render();
 
         // Query string filters
         $queryParams = $this->request->getGet();
@@ -3330,7 +3330,7 @@ abstract class Core extends Controller
             $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
 
             // Add theme property
-            $properties['_set_theme'] = $this->template->theme;
+            $properties['_setTheme'] = $this->template->theme;
 
             // --- Load Renderer ---
             $renderer = new Renderer();
@@ -3383,7 +3383,7 @@ abstract class Core extends Controller
             $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
 
             // Add theme property
-            $properties['_set_theme'] = $this->template->theme;
+            $properties['_setTheme'] = $this->template->theme;
 
             // --- Load Renderer ---
             $renderer = new Renderer();
@@ -3434,7 +3434,7 @@ abstract class Core extends Controller
             $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
 
             // Add theme property
-            $properties['_set_theme'] = $this->template->theme;
+            $properties['_setTheme'] = $this->template->theme;
 
             // --- Load Renderer ---
             $renderer = new Renderer();

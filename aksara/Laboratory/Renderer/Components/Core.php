@@ -40,21 +40,6 @@ class Core
     private Builder $builder;
 
     /**
-     * Current request path/module path.
-     */
-    private ?string $path = null;
-
-    /**
-     * Database Model Instance.
-     */
-    private mixed $model = null;
-
-    /**
-     * API Client Status/Instance.
-     */
-    private mixed $apiClient = null;
-
-    /**
      * Constructor
      *
      * Hydrates the class properties dynamically based on the provided array.
@@ -82,11 +67,9 @@ class Core
      * Retrieves the appropriate core template (e.g., index table wrapper)
      * based on the active theme.
      *
-     * @param   array $serialized Data to be passed to the view (optional)
-     * @param   int   $length     Length/Count of data (optional)
      * @return  mixed Returns the rendered component string or void
      */
-    public function render(array $serialized = [], int $length = 0): mixed
+    public function render(): mixed
     {
         // Retrieve the 'core' component template from the Builder
         // Uses $_set_theme (from Traits) to locate the correct theme folder

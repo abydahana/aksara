@@ -5,7 +5,7 @@
 $people = (isset($results[0]) ? $results[0] : []);
 ?>
 <?php if ($people): ?>
-    <div class="bg-light">
+    <div class="border-fade-bottom">
         <div class="container">
             <br />
             <br />
@@ -68,7 +68,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                     <div class="row">
                         <?php if ($people->instagram): ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="<?= $people->instagram; ?>" class="btn btn-outline-danger d-block  rounded-pill mb-3" target="_blank">
+                                <a href="<?= $people->instagram; ?>" class="btn btn-outline-danger d-block rounded-pill mb-3" target="_blank">
                                     <i class="mdi mdi-instagram"></i>
                                     Instagram
                                 </a>
@@ -76,7 +76,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <?php endif; ?>
                         <?php if ($people->facebook): ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="<?= $people->facebook; ?>" class="btn btn-outline-primary d-block  rounded-pill mb-3" target="_blank">
+                                <a href="<?= $people->facebook; ?>" class="btn btn-outline-primary d-block rounded-pill mb-3" target="_blank">
                                     <i class="mdi mdi-facebook"></i>
                                     Facebook
                                 </a>
