@@ -32,21 +32,21 @@
             <?php foreach ($categories as $key => $val): ?>
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card rounded-4 border-0 overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-secondary' : 'bg-dark') : (($key + 1) % 2 == 0 ? 'bg-dark' : 'bg-secondary')); ?>" style="background:url(<?= get_image('blogs', $val->category_image, 'thumb'); ?>) center center no-repeat;background-size:cover">
-                        <div class="card-body clip gradient-top position-relative py-lg-5 text-center text-light">
+                        <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                             <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle mb-3" />
+                                <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" />
                             </a>
                             <br />
                             <h4 class="mb-3 text-truncate">
-                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="text-light --xhr">
+                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="text-light text-outline-dark --xhr">
                                     <?= $val->category_title; ?>
                                 </a>
                             </h4>
-                            <p class="fs-5 mb-0 mb-md-3">
+                            <p class="fs-5 mb-0 mb-md-3 text-light text-outline-dark">
                                 <?= number_format($val->post_total) . ' ' . phrase('Articles'); ?>
                             </p>
                             <div class="d-none d-md-block">
-                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="btn btn-light btn-sm rounded-pill pr-3 pl-3 --xhr">
+                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-3 --xhr">
                                     <?= phrase('Browse Articles'); ?> <i class="mdi mdi-arrow-right"></i>
                                 </a>
                             </div>
@@ -136,7 +136,7 @@
                                     <div class="card-body" style="background:url(<?= get_image('galleries', $src, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                         <div class="clip gradient-top"></div>
                                         <div class="position-absolute bottom-0 p-3">
-                                            <h4 class="text-light">
+                                            <h4 class="text-light text-outline-dark">
                                                 <?= $val->gallery_title; ?>
                                             </h4>
                                         </div>
