@@ -5828,9 +5828,41 @@ abstract class Core extends Controller
             ]);
         }
 
-        // --- 1. Retrieve Original Order Keys ---
         $primaryKeyField = $this->_sortable['primary_key'];
-        $orderKeyField = $this->_sortable['order_key'];
+        $orderKeyField   = $this->_sortable['order_key'];
+
+        // Find any records in the table that have an order_key of 0 (e.g. newly added data or broken previous sorts)
+        $zeroRecords = $this->model->select($primaryKeyField)
+            ->where($orderKeyField, 0)
+            ->orderBy($primaryKeyField, 'ASC')
+            ->getWhere($this->_table, [])
+            ->resultArray();
+
+        if (count($zeroRecords) > 0) {
+            // Get the current max order_key
+            $maxRecord = $this->model->selectMax($orderKeyField, 'max_order')
+                ->get($this->_table)
+                ->row();
+
+            $nextOrder = 1;
+            if ($maxRecord && isset($maxRecord->max_order)) {
+                $nextOrder = (int) $maxRecord->max_order + 1;
+            }
+
+            $batchData = [];
+            foreach ($zeroRecords as $record) {
+                $batchData[] = [
+                    $primaryKeyField => $record[$primaryKeyField],
+                    $orderKeyField   => $nextOrder
+                ];
+                $nextOrder++;
+            }
+
+            // Apply the new order keys sequentially to the end of the list
+            if ($batchData) {
+                $this->model->updateBatch($this->_table, $batchData, $primaryKeyField);
+            }
+        }
 
         // Get the existing order keys corresponding to the submitted IDs.
         $query = $this->model->select($primaryKeyField)
@@ -5841,7 +5873,6 @@ abstract class Core extends Controller
             ->getWhere($this->_table, [])
             ->resultArray();
 
-        // --- 2. Create New Order Key Sequence ---
         // Extract the original order keys into a simple, indexed array.
         // This array ($newOrder) now holds the old order values (e.g., 1, 2, 3, 4, ...)
         // which will be assigned to the new positions.
@@ -5850,7 +5881,6 @@ abstract class Core extends Controller
             $newOrder[] = $val[$orderKeyField];
         }
 
-        // --- 3. Apply New Order ---
         // $orderedId is the list of IDs in their NEW desired position.
         // $newOrder is the list of ORIGINAL order keys to be assigned.
         foreach ($orderedId as $key => $val) {
