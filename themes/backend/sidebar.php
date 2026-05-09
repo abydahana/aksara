@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var array $menus
+ */
+?>
 <aside role="sidebar" class="sidebar-menu" id="sidebar-wrapper">
     <div class="p-3 user-bg-masking hide-on-collapse mb-4">
         <div class="row g-0 align-items-center">

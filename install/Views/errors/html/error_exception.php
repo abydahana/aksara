@@ -1,4 +1,11 @@
 <?php
+/**
+ * @var mixed $title
+ * @var mixed $exception
+ * @var mixed $file
+ * @var mixed $line
+ * @var mixed $trace
+ */
 use Config\Services;
 use CodeIgniter\CodeIgniter;
 

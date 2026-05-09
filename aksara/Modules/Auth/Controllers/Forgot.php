@@ -34,21 +34,21 @@ class Forgot extends Core
             return throw_exception(301, phrase('You were signed in.'), base_url('dashboard'), true);
         }
 
-        if ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
-            return $this->_validate_form();
+        if ($this->validToken($this->request->getPost('_token')) || ($this->apiClient && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
+            return $this->_validateForm();
         }
 
-        $this->set_title(phrase('Reset Password'))
-        ->set_description(phrase('Reset your password and request new one.'))
-        ->set_icon('mdi mdi-account-key-outline')
+        $this->setTitle(phrase('Reset Password'))
+        ->setDescription(phrase('Reset your password and request new one.'))
+        ->setIcon('mdi mdi-account-key-outline')
 
         ->render();
     }
 
     public function reset()
     {
-        $query = $this->model->get_where(
-            'app__users_hashes',
+        $query = $this->model->getWhere(
+            'app_users_hashes',
             [
                 'hash' => $this->request->getGet('hash')
             ],
@@ -60,24 +60,24 @@ class Forgot extends Core
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
         }
 
-        $this->set_title(phrase('Reset Password'))
-        ->set_description(phrase('Change your password with a new one.'))
-        ->set_icon('mdi mdi-account-key-outline')
+        $this->setTitle(phrase('Reset Password'))
+        ->setDescription(phrase('Change your password with a new one.'))
+        ->setIcon('mdi mdi-account-key-outline')
 
-        ->form_callback('_reset_password')
+        ->formCallback('_resetPassword')
 
         ->render(null, 'reset');
     }
 
-    private function _validate_form()
+    private function _validateForm()
     {
         // Set validation rules
-        $this->form_validation->setRule('username', phrase('Username or email'), 'required');
+        $this->formValidation->setRule('username', phrase('Username or email'), 'required');
 
         // Validate form
-        if ($this->form_validation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             // Validation error
-            return throw_exception(400, $this->form_validation->getErrors());
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $query = $this->model->select('
@@ -88,9 +88,9 @@ class Forgot extends Core
             status
         ')
         ->where('username', $this->request->getPost('username'))
-        ->or_where('email', $this->request->getPost('username'))
-        ->get_where(
-            'app__users',
+        ->orWhere('email', $this->request->getPost('username'))
+        ->getWhere(
+            'app_users',
             [
             ],
             1
@@ -103,8 +103,8 @@ class Forgot extends Core
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         }
 
-        $query = $this->model->get_where(
-            'app__users',
+        $query = $this->model->getWhere(
+            'app_users',
             [
                 'user_id' => $query->user_id
             ],
@@ -117,10 +117,10 @@ class Forgot extends Core
 
             $messaging = new Messaging();
 
-            $messaging->set_email($query->email)
-            ->set_phone($query->phone)
-            ->set_subject(phrase('Request new password'))
-            ->set_message('
+            $messaging->setEmail($query->email)
+            ->setPhone($query->phone)
+            ->setSubject(phrase('Request new password'))
+            ->setMessage('
                 <p>
                     ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
                 </p>
@@ -151,7 +151,7 @@ class Forgot extends Core
 
             // Delete previous password request
             $this->model->delete(
-                'app__users_hashes',
+                'app_users_hashes',
                 [
                     'user_id' => $query->user_id
                 ]
@@ -159,7 +159,7 @@ class Forgot extends Core
 
             // Insert new request
             $this->model->insert(
-                'app__users_hashes',
+                'app_users_hashes',
                 [
                     'user_id' => $query->user_id,
                     'hash' => $token
@@ -170,30 +170,30 @@ class Forgot extends Core
         return throw_exception(301, phrase('The password reset link has been sent to') . ' ' . $query->email, base_url('auth'));
     }
 
-    public function _reset_password()
+    public function _resetPassword()
     {
-        $this->form_validation->setRule('password', phrase('New Password'), 'required');
-        $this->form_validation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
+        $this->formValidation->setRule('password', phrase('New Password'), 'required');
+        $this->formValidation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
 
-        if ($this->form_validation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->form_validation->getErrors());
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         $query = $this->model->select('
-            app__users.user_id,
-            app__users.email,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.status
+            app_users.user_id,
+            app_users.email,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.status
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = app__users_hashes.user_id'
+            'app_users',
+            'app_users.user_id = app_users_hashes.user_id'
         )
-        ->get_where(
-            'app__users_hashes',
+        ->getWhere(
+            'app_users_hashes',
             [
-                'app__users_hashes.hash' => $this->request->getGet('hash')
+                'app_users_hashes.hash' => $this->request->getGet('hash')
             ],
             1
         )
@@ -207,10 +207,10 @@ class Forgot extends Core
 
         $messaging = new Messaging();
 
-        $messaging->set_email($query->email)
-        ->set_phone($query->phone)
-        ->set_subject(phrase('Password Reset Successfully'))
-        ->set_message('
+        $messaging->setEmail($query->email)
+        ->setPhone($query->phone)
+        ->setSubject(phrase('Password Reset Successfully'))
+        ->setMessage('
             <p>
                 ' . phrase('Hi') . ', <b>' . $query->first_name . ' ' . $query->last_name . '</b>
             </p>
@@ -235,7 +235,7 @@ class Forgot extends Core
         ->send(true);
 
         $this->model->update(
-            'app__users',
+            'app_users',
             [
                 'password' => password_hash($this->request->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT)
             ],
@@ -245,7 +245,7 @@ class Forgot extends Core
         );
 
         $this->model->delete(
-            'app__users_hashes',
+            'app_users_hashes',
             [
                 'user_id' => $query->user_id
             ]

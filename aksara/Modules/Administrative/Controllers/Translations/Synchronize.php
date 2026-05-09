@@ -17,10 +17,10 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
-use Aksara\Laboratory\Core;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
+use Aksara\Laboratory\Core;
 
 class Synchronize extends Core
 {
@@ -32,8 +32,8 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
@@ -41,7 +41,7 @@ class Synchronize extends Core
         helper('filesystem');
 
         // Generate phrases from source code
-        $generated_phrases = $this->_generate_phrases_from_source();
+        $generated_phrases = $this->_generatePhrasesFromSource();
         $languages = get_filenames(WRITEPATH . 'translations');
         $populated_phrases = [];
         $error = 0;
@@ -114,7 +114,7 @@ class Synchronize extends Core
     /**
      * Generate phrases from source code by scanning phrase() functions
      */
-    private function _generate_phrases_from_source()
+    private function _generatePhrasesFromSource()
     {
         $translations = [];
         $directories = ['aksara', 'modules', 'themes'];
@@ -125,7 +125,7 @@ class Synchronize extends Core
                 continue;
             }
 
-            $this->_scan_directory(ROOTPATH . $directory, $fileExtensions, $translations);
+            $this->_scanDirectory(ROOTPATH . $directory, $fileExtensions, $translations);
         }
 
         return $translations;
@@ -134,7 +134,7 @@ class Synchronize extends Core
     /**
      * Recursively scan directory for PHP and Twig files
      */
-    private function _scan_directory($directory, $fileExtensions, &$translations)
+    private function _scanDirectory(string $directory, array $fileExtensions, array &$translations)
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
@@ -142,7 +142,7 @@ class Synchronize extends Core
 
         foreach ($iterator as $file) {
             if ($file->isFile() && in_array($file->getExtension(), $fileExtensions)) {
-                $this->_scan_file($file->getPathname(), $translations);
+                $this->_scanFile($file->getPathname(), $translations);
             }
         }
     }
@@ -150,7 +150,7 @@ class Synchronize extends Core
     /**
      * Scan individual file for phrase() calls
      */
-    private function _scan_file($filePath, &$translations)
+    private function _scanFile(string $filePath, array &$translations)
     {
         $content = file_get_contents($filePath);
 
@@ -161,14 +161,14 @@ class Synchronize extends Core
         // Pattern for single quotes: phrase('...')
         if (preg_match_all("/phrase\s*\(\s*'((?:[^'\\\\]|\\\\.)*)'/", $content, $matches)) {
             foreach ($matches[1] as $key) {
-                $this->_add_translation($key, $translations, $filePath);
+                $this->_addTranslation($key, $translations, $filePath);
             }
         }
 
         // Pattern for double quotes: phrase("...")
         if (preg_match_all('/phrase\s*\(\s*"((?:[^"\\\\]|\\\\.)*)"/s', $content, $matches)) {
             foreach ($matches[1] as $key) {
-                $this->_add_translation($key, $translations, $filePath);
+                $this->_addTranslation($key, $translations, $filePath);
             }
         }
     }
@@ -176,10 +176,8 @@ class Synchronize extends Core
     /**
      * Add translation key if valid
      */
-    private function _add_translation($key, &$translations, $filePath = '')
+    private function _addTranslation(string $key, array &$translations, string $filePath = '')
     {
-        $original_key = $key;
-
         // Manual unescape - only for escaped quotes
         $key = str_replace("\\'", "'", $key);
         $key = str_replace('\\"', '"', $key);

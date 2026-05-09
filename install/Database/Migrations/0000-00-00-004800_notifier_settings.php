@@ -36,10 +36,10 @@ class AppNotifierSettings extends Migration
                 'constraint' => 255
             ],
             'whatsapp_api_header' => [
-                'type' => 'text'
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text')
             ],
             'whatsapp_api_payload' => [
-                'type' => 'text'
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text')
             ]
         ]);
 
@@ -47,7 +47,7 @@ class AppNotifierSettings extends Migration
         $this->forge->addKey('site_id', true, true);
 
         // Create table
-        $this->forge->createTable('notifier__settings');
+        $this->forge->createTable('notifier_settings');
     }
 
     public function down()

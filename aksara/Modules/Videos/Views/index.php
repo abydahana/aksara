@@ -1,21 +1,23 @@
-<?php if ($results): ?>
-<div class="bg-light">
-    <div class="py-3 py-md-5">
-        <div class="container">
-            <h1 class="text-center text-md-start">
-                <?= $meta->title; ?>
-            </h1>
-            <p class="lead text-center text-md-start">
-                <?= truncate($meta->description, 256); ?>
-            </p>
-        </div>
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $pagination
+ */
+
+if ($results): ?>
+<section class="section-padding fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
+            <?= $meta->title; ?>
+        </h1>
+        <p class="fs-5 text-muted mb-0">
+            <?= truncate($meta->description, 256); ?>
+        </p>
     </div>
-    <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
+</section>
 <?php endif; ?>
-<div class="py-3 py-md-5">
+<section class="section-padding">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">
@@ -33,8 +35,8 @@
                                 </div>
                                 <div class="col-10 ps-2">
                                     <h5 class="mb-0">
-                                        <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr" data-bs-toggle="tooltip" title="<?= $val->title; ?>">
-                                            <?= truncate($val->title, 60); ?>
+                                        <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr">
+                                            <?= truncate($val->title, 80); ?>
                                         </a>
                                     </h5>
                                     <p class="mb-0">
@@ -65,7 +67,7 @@
                         <h2 class="text-center">
                             <?= phrase('No video is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No video is available at the moment.'); ?>
                         </p>
                         <p class="text-center">
@@ -78,4 +80,4 @@
             </div>
         <?php endif; ?>
     </div>
-</div>
+</section>

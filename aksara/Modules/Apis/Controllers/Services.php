@@ -15,43 +15,42 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Apis\Controllers;
+namespace Aksara\Modules\APIs\Controllers;
 
 use Aksara\Laboratory\Core;
 
 class Services extends Core
 {
-    private $_table = 'app__rest_clients';
-
-    private $_primary;
+    private string $_table = 'app_rest_clients';
+    private ?int $_primary;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
         $this->_primary = $this->request->getGet('id');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Manage Services'))
-        ->set_icon('mdi mdi-link-variant')
-        ->unset_column('id, method, ip_range')
-        ->unset_field('id')
-        ->unset_view('id')
-        ->set_field([
+        $this->setTitle(phrase('Manage Services'))
+        ->setIcon('mdi mdi-link-variant')
+        ->unsetColumn('id, method, ip_range')
+        ->unsetField('id')
+        ->unsetView('id')
+        ->setField([
             'description' => 'textarea',
             'ip_range' => 'textarea',
             'status' => 'boolean'
         ])
-        ->set_field(
+        ->setField(
             'method',
             'checkbox',
             [
@@ -60,18 +59,18 @@ class Services extends Core
                 'DELETE' => 'DELETE '
             ]
         )
-        ->default_value('api_key', $this->_api_key_generator())
-        ->merge_field('valid_until, status')
-        ->set_validation([
+        ->defaultValue('api_key', $this->_apiKeyGenerator())
+        ->mergeField('valid_until, status')
+        ->setValidation([
             'title' => 'required|string|max_length[64]|unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
             'description' => 'required|string',
             'api_key' => 'required|alpha_numeric|min_length[32]',
             'method' => 'required|in_list[GET,POST,DELETE]',
-            'valid_until' => 'required|valid_date[Y-m-d]',
+            'valid_until' => 'required|valid_date',
             'status' => 'boolean'
         ])
 
-        ->set_alias([
+        ->setAlias([
             'title' => phrase('Title'),
             'description' => phrase('Description'),
             'api_key' => phrase('API Key'),
@@ -84,7 +83,7 @@ class Services extends Core
         ->render($this->_table);
     }
 
-    private function _api_key_generator($length = 32)
+    private function _apiKeyGenerator($length = 32)
     {
         $characters = '0123456789ABCDEF';
 
@@ -98,7 +97,7 @@ class Services extends Core
         $exist = $this->model->select('
             api_key
         ')
-        ->get_where(
+        ->getWhere(
             $this->_table,
             [
                 'api_key' => $output
@@ -108,7 +107,7 @@ class Services extends Core
         ->row('api_key');
 
         if ($exist) {
-            $this->_api_key_generator();
+            $this->_apiKeyGenerator();
         }
 
         return $output;

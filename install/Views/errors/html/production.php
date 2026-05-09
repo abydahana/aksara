@@ -22,7 +22,7 @@
 
         <h1 class="headline">Relax!</h1>
 
-        <p class="lead">We are temporary down for maintenance. Please come back again later...</p>
+        <p class="fs-5">We are temporary down for maintenance. Please come back again later...</p>
 
     </div>
 

@@ -25,13 +25,13 @@ class Language extends Core
     {
         parent::__construct();
 
-        $this->permission->must_ajax(base_url());
+        $this->permission->mustAjax(base_url());
     }
 
     public function index($params = null)
     {
-        $query = $this->model->select('id')->get_where(
-            'app__languages',
+        $query = $this->model->select('id')->getWhere(
+            'app_languages',
             [
                 'code' => $params
             ],
@@ -44,7 +44,7 @@ class Language extends Core
             set_userdata('language_id', $query);
 
             if (get_userdata('is_logged') && ! DEMO_MODE) {
-                $this->model->update('app__users', ['language_id' => $query], ['user_id' => get_userdata('user_id')]);
+                $this->model->update('app_users', ['language_id' => $query], ['user_id' => get_userdata('user_id')]);
             }
         }
 

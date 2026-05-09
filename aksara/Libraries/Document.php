@@ -24,6 +24,7 @@ namespace Aksara\Libraries;
 ini_set('pcre.backtrack_limit', 99999999);
 ini_set('memory_limit', '-1');
 
+use Throwable;
 use Config\Services;
 use Mpdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -33,7 +34,6 @@ use PhpOffice\PhpWord\IOFactory as WordIOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Html as WordHtml;
 use PhpOffice\PhpWord\Style\Section;
-use Throwable;
 
 class Document
 {

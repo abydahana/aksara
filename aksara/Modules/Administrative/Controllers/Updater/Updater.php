@@ -17,14 +17,14 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Updater;
 
-use Config\Database;
-use Config\Services;
-use Aksara\Laboratory\Core;
 use AppendIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
 use ZipArchive;
+use Config\Database;
+use Config\Services;
+use Aksara\Laboratory\Core;
 
 class Updater extends Core
 {
@@ -32,15 +32,15 @@ class Updater extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->restrictOnDemo();
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     /**
      * Ping upstream
      */
-    public static function ping_upstream($changelog = false)
+    public static function pingUpstream($changelog = false)
     {
         try {
             $curl = Services::curlrequest([
@@ -75,7 +75,7 @@ class Updater extends Core
 
     public function index()
     {
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
                 return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
             }
@@ -106,7 +106,7 @@ class Updater extends Core
 
                 if ($response) {
                     // Run updater
-                    return $this->_run_updater($response);
+                    return $this->_runUpdater($response);
                 }
             } catch (Throwable $e) {
                 return throw_exception(500, $e->getMessage(), current_page());
@@ -115,11 +115,11 @@ class Updater extends Core
             return throw_exception(404, phrase('No update are available at the moment.'), current_page());
         }
 
-        $this->set_title(phrase('Core System Updater'))
-        ->set_icon('mdi mdi-update')
+        $this->setTitle(phrase('Core System Updater'))
+        ->setIcon('mdi mdi-update')
 
-        ->set_output([
-            'updater' => $this->ping_upstream(true)
+        ->setOutput([
+            'updater' => $this->pingUpstream(true)
         ])
 
         ->render();
@@ -128,13 +128,13 @@ class Updater extends Core
     /**
      * Run instant updater
      */
-    private function _run_updater(object $response)
+    private function _runUpdater(object $response)
     {
         $updater_path = sha1($response->version);
-        $updater_package = null;
         $updated = false;
         $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
         $old_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
+        $dependency_updated = [];
         $backup_name = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
         $zip = new ZipArchive();
 
@@ -181,8 +181,8 @@ class Updater extends Core
                 // Unable to copy file, use FTP instead
                 $site_id = get_setting('id');
 
-                $query = $this->model->get_where(
-                    'app__ftp',
+                $query = $this->model->getWhere(
+                    'app_ftp',
                     [
                         'site_id' => $site_id
                     ],

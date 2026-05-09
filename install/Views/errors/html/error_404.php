@@ -3,66 +3,139 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="msapplication-navbutton-color" content="#007bff" />
-        <meta name="theme-color" content="#007bff" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="#007bff" />
+        <meta name="msapplication-navbutton-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
-        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
+        <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png'); ?>">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
         <title>Aksara is not installed!</title>
         <style>
-            html,
-            body {
-                min-height: 100%;
+            html, body {
+                min-height: 100vh;
                 margin: 0;
-                padding: 0
+                padding: 0;
+                background-color: #ffffff;
+                font-family: 'Inter', "Helvetica Neue", Helvetica, Arial, sans-serif;
+                color: #0f172a;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-            body {
-                height: 100%;
-                background: #fafafa;
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                color: #777;
-                font-weight: 400;
+            .content-wrapper {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 3rem 2.5rem;
+                max-width: 480px;
+                width: 90%;
+                text-align: center;
+            }
+            .logo-container {
+                margin-bottom: 2rem;
+            }
+            .logo-container img {
+                width: 200px;
+                height: auto;
             }
             h1 {
-                font-weight: lighter;
-                letter-spacing: 0.8;
-                font-size: 3rem;
-                margin-top: 0;
-                margin-bottom: 0;
-                color: #222;
+                font-weight: 700;
+                font-size: 1.875rem;
+                margin: 0 0 1rem 0;
+                color: #0f172a;
+                line-height: 1.3;
             }
-            .centered {
-                position: fixed;
-                width: 100%;
-                top: 50%;
-                transform: translateY(-50%);
-                text-align: center
+            h1 b {
+                color: #0f172a;
             }
-            .content {
-                background: #fff;
-                border: 1rem solid #fafafa;
-                border-radius: 2rem;
-                max-width: 600px;
+            p {
+                font-size: 1rem;
+                line-height: 1.5;
+                margin-bottom: 2.5rem;
+                color: #64748b;
+            }
+            .btn-install {
+                background-color: #1e293b;
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 1rem;
+                padding: 0.5rem 2rem;
+                border-radius: 3rem;
+                transition: background-color 0.2s ease;
                 box-sizing: border-box;
-                margin: 0 auto;
-                padding: 3rem
             }
-            a:active,
-            a:link,
-            a:visited {
-                color: #007bff;
+            .btn-install:hover {
+                background-color: #334155;
+            }
+            .btn-install:active {
+                background-color: #0f172a;
+            }
+            .social-links {
+                margin-top: 2.5rem;
+                padding-top: 1.5rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .social-links a {
+                color: #94a3b8;
+                transition: color 0.2s ease, transform 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .social-links a:hover {
+                color: #0f172a;
+            }
+            .social-links svg {
+                width: 24px;
+                height: 24px;
+                fill: currentColor;
+            }
+            .icon-wa svg {
+                transform: scale(0.85); /* Slightly scale down WhatsApp icon to match visual weight */
+            }
+            @media (max-width: 640px) {
+                .content-wrapper {
+                    padding: 2.5rem 1.5rem;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="centered">
-            <div class="content">
-                <img src="data:image/png;base64,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" />
-                <h1><b style="font-weight:700">Aksara</b> is not installed!</h1>
-                <p>
-                    You need to run the installation to make <b>Aksara</b> work. <a href="<?= base_url(); ?>"><b>Click here</b></a> to start the installation wizard.
-                </p>
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="<?= base_url('uploads/settings/logo.png'); ?>" alt="Aksara Logo" />
+            </div>
+            <h1>Aksara is not installed!</h1>
+            <p>
+                The system requires an initial configuration to work properly. Let's get things set up.
+            </p>
+            <a href="<?= base_url(); ?>" class="btn-install">
+                Start Installation
+            </a>
+            
+            <div class="social-links">
+                <!-- YouTube -->
+                <a href="https://youtube.com/abydahana" target="_blank" title="YouTube">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
+                    </svg>
+                </a>
+                <!-- GitHub Sponsors -->
+                <a href="https://github.com/sponsors/abydahana" target="_blank" title="GitHub Sponsors">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </a>
+                <!-- WhatsApp -->
+                <a href="https://wa.me/6281381614558" class="icon-wa" target="_blank" title="WhatsApp">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                </a>
             </div>
         </div>
     </body>

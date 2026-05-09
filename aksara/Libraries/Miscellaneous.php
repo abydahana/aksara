@@ -36,7 +36,7 @@ class Miscellaneous
      *
      * @param   mixed|null $params
      */
-    public function qrcode_generator($params = null)
+    public function qrcodeGenerator($params = null)
     {
         $generator = new QRCode();
 
@@ -62,7 +62,7 @@ class Miscellaneous
      *
      * @param   mixed|null $params
      */
-    public function barcode_generator($params = null)
+    public function barcodeGenerator($params = null)
     {
         $generator = new BarcodeGeneratorPNG();
 
@@ -85,7 +85,7 @@ class Miscellaneous
      * @param   mixed|null $params
      * @param   mixed|null $slug
      */
-    public function shortlink_generator($params = null, $slug = null, $data = [])
+    public function shortlinkGenerator($params = null, $slug = null, $data = [])
     {
         if (! $params) {
             return false;
@@ -97,12 +97,12 @@ class Miscellaneous
         $hash = substr(sha1(uniqid('', true)), -6);
 
         // Check if hash already present
-        if ($model->get_where('app__shortlinks', ['hash' => $hash], 1)->row()) {
+        if ($model->getWhere('app_shortlinks', ['hash' => $hash], 1)->row()) {
             // Hash already present, repeat generator
-            $this->shortlink_generator($params);
+            $this->shortlinkGenerator($params);
         }
 
-        $checker = $model->get_where('app__shortlinks', ['url' => $params], 1)->row();
+        $checker = $model->getWhere('app_shortlinks', ['url' => $params], 1)->row();
 
         // Check if parameter already present
         if ($checker) {
@@ -110,7 +110,7 @@ class Miscellaneous
         } else {
             // No data present, insert one
             $model->insert(
-                'app__shortlinks',
+                'app_shortlinks',
                 [
                     'hash' => $hash,
                     'url' => $params,

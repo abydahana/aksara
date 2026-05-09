@@ -1,26 +1,24 @@
-<div class="py-3 py-md-5 bg-light">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-3 col-sm-2 col-md-1">
-                <i class="<?= $meta->icon; ?> mdi-4x"></i>
-            </div>
-            <div class="col-9 col-sm-10 col-md-11">
-                <h3 class="mb-0<?= (! $meta->description ? ' mt-3' : null); ?>">
-                    <?= $meta->title; ?>
-                </h3>
-                <p class="lead">
-                    <?= truncate($meta->description, 256); ?>
-                </p>
-            </div>
-        </div>
+<?php
+/**
+ * @var mixed $meta
+ */
+?>
+<section class="section-padding">
+    <div class="container position-relative text-center text-md-start fade-in">
+        <h1 class="display-4 fw-bold text-dark">
+            <?= $meta->title; ?>
+        </h1>
+        <p class="fs-5 text-muted mb-0">
+            <?= truncate($meta->description, 256); ?>
+        </p>
     </div>
-</div>
-<div class="py-5">
+</section>
+<section class="section-padding">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="col-md-8 offset-md-2 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
                 <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
-                    <div class="mb-3">
+                    <div class="text-center text-md-start mb-3">
                         <label class="d-block text-muted" for="password_input">
                             <?= phrase('New Password'); ?>
                         </label>
@@ -56,4 +54,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

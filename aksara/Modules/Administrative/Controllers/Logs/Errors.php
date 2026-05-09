@@ -17,9 +17,9 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Logs;
 
-use Aksara\Laboratory\Core;
 use DateTime;
 use Throwable;
+use Aksara\Laboratory\Core;
 
 class Errors extends Core
 {
@@ -27,18 +27,18 @@ class Errors extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Error Logs'))
-        ->set_icon('mdi mdi-bug')
+        $this->setTitle(phrase('Error Logs'))
+        ->setIcon('mdi mdi-bug')
 
-        ->set_output([
+        ->setOutput([
             'logs' => $this->_logs(),
             'report' => $this->_report()
         ])
@@ -48,7 +48,7 @@ class Errors extends Core
 
     public function remove()
     {
-        $this->permission->must_ajax();
+        $this->permission->mustAjax();
 
         if (! $this->request->getPost('log')) {
             $html = '
@@ -107,7 +107,7 @@ class Errors extends Core
 
     public function clear()
     {
-        $this->permission->must_ajax();
+        $this->permission->mustAjax();
 
         if (! $this->request->getPost('confirm')) {
             $html = '
@@ -118,7 +118,7 @@ class Errors extends Core
                         <h5>
                             ' . phrase('Are you sure want to clear the logs?') . '
                         </h5>
-                        <p class="lead">
+                        <p class="fs-5">
                             ' . phrase('This action will remove everything related to the error logs.') . '
                         </p>
                     </div>

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @var mixed $code
+ * @var mixed $message
+ */
 /**
  * This file is part of Aksara CMS, both framework and publishing
  * platform.

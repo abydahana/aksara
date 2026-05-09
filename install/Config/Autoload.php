@@ -32,8 +32,6 @@ use CodeIgniter\Config\AutoloadConfig;
  *
  * NOTE: This class is required prior to Autoloader instantiation,
  *       and does not extend BaseConfig.
- *
- * @immutable
  */
 class Autoload extends AutoloadConfig
 {

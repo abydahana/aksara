@@ -28,7 +28,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '5.2.5';
+        $version = '6.0.0';
 
         if ('version' == $parameter) {
             return $version;
@@ -47,7 +47,7 @@ if (! function_exists('aksara')) {
 if (! function_exists('get_setting')) {
     /**
      * Retrieve application setting value from database.
-     * Fetches a specific field from the 'app__settings' table.
+     * Fetches a specific field from the 'app_settings' table.
      *
      * @param   string $parameter The column name to retrieve
      * @return  mixed Returns the setting value or null if not found
@@ -56,15 +56,24 @@ if (! function_exists('get_setting')) {
     {
         $model = new Model();
 
-        if ($model->field_exists($parameter, 'app__settings')) {
-            return $model->select($parameter)->get_where(
-                'app__settings',
-                [
-                    'id' => 1
-                ],
-                1
-            )
-            ->row($parameter);
+        // Magic Interceptor for Vertical EAV Schema
+        if ($model->fieldExists('key', 'app_settings') && $model->fieldExists('value', 'app_settings') && ! $model->fieldExists('app_name', 'app_settings')) {
+            $query = $model->getWhere('app_settings', ['key' => $parameter], 1)->row();
+            if ($query) {
+                return $query->value;
+            }
+        } else {
+            // Legacy Horizontal Schema Fallback
+            if ($model->fieldExists($parameter, 'app_settings')) {
+                return $model->select($parameter)->getWhere(
+                    'app_settings',
+                    [
+                        'id' => 1
+                    ],
+                    1
+                )
+                ->row($parameter);
+            }
         }
 
         return '';
@@ -87,9 +96,9 @@ if (! function_exists('get_userdata')) {
             $user_id = service('session')->get('user_id');
 
             // Attempt to fetch from privileges table first
-            if ($model->field_exists($field, 'app__users_privileges')) {
-                return $model->select($field)->get_where(
-                    'app__users_privileges',
+            if ($model->fieldExists($field, 'app_users_privileges')) {
+                return $model->select($field)->getWhere(
+                    'app_users_privileges',
                     [
                         'user_id' => $user_id
                     ],
@@ -98,12 +107,12 @@ if (! function_exists('get_userdata')) {
                 ->row($field);
             }
             // Attempt to fetch from main users table
-            elseif ($model->field_exists($field, 'app__users')) {
+            elseif ($model->fieldExists($field, 'app_users')) {
                 return $model->select(
                     $field
                 )
-                ->get_where(
-                    'app__users',
+                ->getWhere(
+                    'app_users',
                     [
                         'user_id' => $user_id
                     ],
@@ -190,8 +199,8 @@ if (! function_exists('phrase')) {
             $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
 
             $language = $model->select('code')
-            ->get_where(
-                'app__languages',
+            ->getWhere(
+                'app_languages',
                 [
                     'id' => $language_id
                 ]
@@ -207,13 +216,13 @@ if (! function_exists('phrase')) {
                 try {
                     mkdir(WRITEPATH . 'translations', 0755, true);
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
             } elseif (is_writable(WRITEPATH . 'translations')) {
                 try {
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
             }
@@ -265,7 +274,7 @@ if (! function_exists('phrase')) {
             $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
 
             $phrase = $translated_phrase;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             log_message('error', '[TRANSLATION] ' . $e->getMessage());
         }
 
@@ -277,6 +286,25 @@ if (! function_exists('phrase')) {
         }
 
         return $phrase;
+    }
+}
+
+if (! function_exists('user_language')) {
+    // Get language from user session
+    function get_user_language()
+    {
+        $model = new Model();
+
+        $language = $model->getWhere(
+            'app_languages',
+            [
+                'code' => get_userdata('language')
+            ],
+            1
+        )
+        ->row('language');
+
+        return $language;
     }
 }
 
@@ -304,8 +332,8 @@ if (! function_exists('is_liked')) {
     {
         $model = new Model();
 
-        return $model->get_where(
-            'post__likes',
+        return $model->getWhere(
+            'post_likes',
             [
                 'user_id' => get_userdata('user_id'),
                 'post_id' => $post_id,
@@ -313,6 +341,6 @@ if (! function_exists('is_liked')) {
             ],
             1
         )
-        ->num_rows() > 0;
+        ->numRows() > 0;
     }
 }

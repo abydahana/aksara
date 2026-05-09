@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var mixed $updater
+ */
+?>
 
 <?php
     $changelog = null;
@@ -74,18 +79,21 @@
             </div>
         </form>
     <?php else: ?>
-        <div class="alert alert-success rounded-more">
-            <h5>
-                <?= phrase('Your core system is up to date'); ?>
-            </h5>
-            <p>
-                <?= phrase('No update available at the moment. The update will be inform to you if available.'); ?>
-            </p>
-            <hr />
-            <a href="<?= base_url('administrative/updater'); ?>" class="btn btn-sm btn-success rounded-pill --xhr show-progress">
-                <i class="mdi mdi-update"></i>
-                <?= phrase('Check Again'); ?>
-            </a>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="alert alert-secondary rounded-4">
+                    <h5>
+                        <?= phrase('Your core system is up to date'); ?>
+                    </h5>
+                    <p>
+                        <?= phrase('No update available at the moment. The update will be inform to you if available.'); ?>
+                    </p>
+                    <a href="<?= base_url('administrative/updater'); ?>" class="btn btn-sm btn-primary rounded-pill px-5 --xhr show-progress">
+                        <i class="mdi mdi-update"></i>
+                        <?= phrase('Check Again'); ?>
+                    </a>
+                </div>
+            </div>
         </div>
     <?php endif; ?>
 </div>

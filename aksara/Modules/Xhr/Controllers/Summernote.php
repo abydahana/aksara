@@ -19,7 +19,6 @@ namespace Aksara\Modules\Xhr\Controllers;
 
 use Config\Mimes;
 use Config\Services;
-use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Core;
 
 class Summernote extends Core
@@ -32,7 +31,7 @@ class Summernote extends Core
             return throw_exception(403, phrase('Access denied'), base_url());
         }
 
-        $this->permission->must_ajax(base_url());
+        $this->permission->mustAjax(base_url());
     }
 
     public function upload()
@@ -58,7 +57,7 @@ class Summernote extends Core
             $valid_mime[] = $mime_type->guessTypeFromExtension($val);
         }
 
-        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByBinaryUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByMetricUnit(\CodeIgniter\Files\FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('Upload Error!')

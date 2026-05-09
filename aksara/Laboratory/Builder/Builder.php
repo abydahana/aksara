@@ -17,11 +17,11 @@
 
 namespace Aksara\Laboratory\Builder;
 
+use Throwable;
 use Aksara\Laboratory\Builder\Components\Core;
 use Aksara\Laboratory\Builder\Components\Table;
 use Aksara\Laboratory\Builder\Components\Form;
 use Aksara\Laboratory\Builder\Components\View;
-use Throwable;
 
 /**
  * UI Component Builder Class
@@ -52,7 +52,7 @@ class Builder
      * @param   string|null $type  The specific component method name (e.g., 'text', 'index')
      * @return  string|bool Returns the file content string or false on failure
      */
-    public function get_component(string $theme, string $path, ?string $type = null): string|bool
+    public function getComponent(string $theme, string $path, ?string $type = null): string|bool
     {
         $component = null;
 
@@ -105,8 +105,8 @@ class Builder
                 $target_file = $target_dir . DIRECTORY_SEPARATOR . $component_data['type'] . '.twig';
 
                 // Check if file exists
-                if (! file_exists($target_file)) {
-                    // Create directory if it doesn't exist
+                if (! file_exists($target_file) && $theme) {
+                    // Create directory if it doesn't exist (only if theme is not null)
                     if (! is_dir($target_dir)) {
                         mkdir($target_dir, 0755, true);
                     }

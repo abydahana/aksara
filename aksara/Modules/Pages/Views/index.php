@@ -1,4 +1,10 @@
-<?php if (isset($results[0])): ?>
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $suggestions
+ */
+if (isset($results[0])): ?>
     <?php
         $page = $results[0];
         $carousel = ($page->carousel_content ? json_decode($page->carousel_content) : null);
@@ -85,40 +91,34 @@
             ';
         }
     ?>
-
-    <div class="bg-light">
-        <div class="py-3 py-md-5">
-            <div class="container">
-                <div class="text-center text-sm-start">
-                    <h3 class="mb-0">
-                        <?= $meta->title; ?>
-                    </h3>
-                    <p class="lead mb-0">
-                        <?= truncate($meta->description, 256); ?>
-                    </p>
-                </div>
+    <section class="section-padding fade-in">
+        <div class="container text-center text-md-start">
+            <h1 class="display-4 fw-bold text-dark">
+                <?= $meta->title; ?>
+            </h1>
+            <p class="fs-5 text-muted mb-0">
+                <?= truncate($meta->description, 256); ?>
+            </p>
+        </div>
+    </section>
+    <section class="section-padding fade-in">
+        <div class="container">
+            <div class="text-justify mb-3">
+                <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
             </div>
+            <div class="mb-3">
+                <?= $accordion; ?>
+            </div>
+            <p>
+                <i class="text-muted text-sm">
+                    <?= ($page->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($page->created_timestamp))) . ', ' . $page->created_timestamp); ?>
+                </i>
+            </p>
         </div>
-        <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-            <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-        </svg>
-    </div>
-    <div class="container py-3">
-        <div class="text-justify mb-3">
-            <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
-        </div>
-        <div class="mb-3">
-            <?= $accordion; ?>
-        </div>
-        <p>
-            <i class="text-muted text-sm">
-                <?= ($page->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($page->created_timestamp))) . ', ' . $page->created_timestamp); ?>
-            </i>
-        </p>
-    </div>
+    </section>
 <?php else: ?>
-    <div class="py-3 py-md-5 container">
-        <div class="text-center py-5">
+    <section class="section-padding fade-in">
+        <div class="container text-center py-5">
             <h1 class="text-muted">
                 404
             </h1>
@@ -129,7 +129,7 @@
                 <h2 class="text-center">
                     <?= phrase('Page not found!'); ?>
                 </h2>
-                <p class="lead text-center mb-5">
+                <p class="fs-5 text-center mb-5">
                     <?= phrase('The page you requested does not exist or already been archived.'); ?>
                 </p>
                 <div class="text-center mt-5">
@@ -156,5 +156,5 @@
                 </div>
             </div>
         <?php endif; ?>
-    </div>
+    </section>
 <?php endif; ?>

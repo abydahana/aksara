@@ -1,4 +1,9 @@
-<?php if ($activation): ?>
+<?php
+/**
+ * @var mixed $activation
+ * @var mixed $years
+ */
+if ($activation): ?>
     <div class="alert alert-info border-0 rounded-0">
         <div class="container text-center">
             <i class="mdi mdi-check-circle mdi-5x"></i>
@@ -9,15 +14,15 @@
         </div>
     </div>
 <?php endif; ?>
-<div class="py-3 <?= ($activation ? 'py-md-3' : 'py-md-5'); ?>">
-    <div class="container-fluid">
+<section class="section-padding">
+    <div class="container">
         <div class="row">
-            <div class="<?= (get_setting('frontend_registration') ? 'col-md-8 offset-md-2' : 'col-md-4 offset-md-4'); ?>">
+            <div class="<?= (get_setting('frontend_registration') ? 'col-md-10 offset-md-1' : 'col-md-4 offset-md-4'); ?>">
                 <div class="card-group py-5">
-                    <div class="card shadow rounded-4 rounded-end-0">
-                        <div class="card-body p-4">
+                    <div class="card border rounded-4 rounded-end-0">
+                        <div class="card-body p-4 p-md-5">
                             <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-                                <div class="mb-5">
+                                <div class="mb-3">
                                     <p class="text-center text-muted">
                                         <i class="mdi mdi-account-circle-outline mdi-5x text-muted"></i>
                                     </p>
@@ -91,10 +96,10 @@
                         </div>
                     </div>
                     <?php if (get_setting('frontend_registration')): ?>
-                    <div class="card shadow rounded-4 rounded-start-0">
-                        <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="card border-0 rounded-4 rounded-start-0 bg-light">
+                        <div class="card-body p-4 p-md-5 d-flex align-items-center justify-content-center">
                             <div>
-                                <p class="lead text-center text-black-50">
+                                <p class="fs-5 text-center text-black-50">
                                     <?= phrase('Do not have an account?'); ?>
                                 </p>
                                 <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>
@@ -114,7 +119,7 @@
                                 </div>
                                 <?php endif; ?>
                                 <div class="d-grid">
-                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-success --xhr rounded-pill">
+                                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-primary --xhr rounded-pill">
                                         <i class="mdi mdi-account-plus"></i>
                                         <?= phrase('Register an Account'); ?>
                                     </a>
@@ -128,4 +133,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

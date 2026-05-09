@@ -17,11 +17,11 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
+use Throwable;
 use Config\Services;
 use Hybridauth\Hybridauth;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Auth extends Core
 {
@@ -40,7 +40,7 @@ class Auth extends Core
         // Check if use is already signed in
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
-            if ($this->api_client) {
+            if ($this->apiClient) {
                 // Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
@@ -51,12 +51,12 @@ class Auth extends Core
                 // Requested through browser
                 return throw_exception(301, phrase('You were signed in'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
             }
-        } elseif ($this->valid_token($this->request->getPost('_token')) || ($this->api_client && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
+        } elseif ($this->validToken($this->request->getPost('_token')) || ($this->apiClient && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
             if (get_userdata('_login_attempt') >= get_setting('login_attempt') && get_userdata('_login_attempt_time') >= time()) {
                 // Blacklist the client IP
                 $this->model->upsert(
-                    'app__users_blocked',
+                    'app_users_blocked',
                     [
                         'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                         'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time')),
@@ -67,17 +67,17 @@ class Auth extends Core
                 return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
             }
 
-            $this->form_validation->setRule('username', phrase('Username'), 'required');
-            $this->form_validation->setRule('password', phrase('Password'), 'required');
+            $this->formValidation->setRule('username', phrase('Username'), 'required');
+            $this->formValidation->setRule('password', phrase('Password'), 'required');
 
             if ($this->request->getPost('year')) {
-                $this->form_validation->setRule('year', phrase('Year'), 'valid_year');
+                $this->formValidation->setRule('year', phrase('Year'), 'valid_year');
             }
 
             // Run form validation
-            if ($this->form_validation->run($this->request->getPost()) === false) {
+            if ($this->formValidation->run($this->request->getPost()) === false) {
                 // Throw validation message
-                return throw_exception(400, $this->form_validation->getErrors());
+                return throw_exception(400, $this->formValidation->getErrors());
             } else {
                 $username = $this->request->getPost('username');
                 $password = $this->request->getPost('password');
@@ -91,9 +91,9 @@ class Auth extends Core
                     status
                 ')
                 ->where('username', $username)
-                ->or_where('email', $username)
+                ->orWhere('email', $username)
                 ->get(
-                    'app__users',
+                    'app_users',
                     1
                 )
                 ->row();
@@ -103,8 +103,8 @@ class Auth extends Core
                     return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
                 } elseif ($execute && password_verify($password . ENCRYPTION_KEY, $execute->password)) {
                     // Check if login attempts failed from the previous session
-                    $blocking_check = $this->model->get_where(
-                        'app__users_blocked',
+                    $blocking_check = $this->model->getWhere(
+                        'app_users_blocked',
                         [
                             'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
                         ],
@@ -120,7 +120,7 @@ class Auth extends Core
                         } else {
                             // Remove the record from blocking table
                             $this->model->delete(
-                                'app__users_blocked',
+                                'app_users_blocked',
                                 [
                                     'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
                                 ]
@@ -135,9 +135,9 @@ class Auth extends Core
                             session_id,
                             timestamp
                         ')
-                        ->group_by('session_id')
-                        ->get_where(
-                            'app__log_activities',
+                        ->groupBy('session_id')
+                        ->getWhere(
+                            'app_log_activities',
                             [
                                 'user_id' => $execute->user_id
                             ]
@@ -153,7 +153,7 @@ class Auth extends Core
                                         // Unlink older session
                                         if (unlink(WRITEPATH . 'session/' . $val->session_id)) {
                                             // Update table to skip getting session_id on next execution
-                                            $this->model->update('app__log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
+                                            $this->model->update('app_log_activities', ['session_id' => ''], ['session_id' => $val->session_id]);
                                         }
                                     } catch (Throwable $e) {
                                         // Safe abstraction
@@ -170,13 +170,13 @@ class Auth extends Core
                         'username' => $execute->username,
                         'group_id' => $execute->group_id,
                         'language_id' => $execute->language_id,
-                        'year' => ($this->_get_active_years() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
+                        'year' => ($this->_getActiveYears() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
 
                     // Update the last login timestamp
                     $this->model->update(
-                        'app__users',
+                        'app_users',
                         [
                             'last_login' => date('Y-m-d H:i:s')
                         ],
@@ -187,12 +187,12 @@ class Auth extends Core
                     );
 
                     // Check if request is made through API or not
-                    if ($this->api_client) {
+                    if ($this->apiClient) {
                         // Set access token
                         set_userdata('access_token', session_id());
 
                         $this->model->insert(
-                            'app__sessions',
+                            'app_sessions',
                             [
                                 'id' => get_userdata('access_token'),
                                 'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
@@ -209,7 +209,7 @@ class Auth extends Core
                         ]);
                     } else {
                         // Send notification
-                        $this->_send_notification($execute->user_id);
+                        $this->_sendNotification($execute->user_id);
 
                         $referrer = $this->request->getUserAgent()->getReferrer();
                         $redirect = $this->request->getGet('redirect');
@@ -234,16 +234,16 @@ class Auth extends Core
             }
         }
 
-        $this->set_title(phrase('Dashboard Access'))
-        ->set_icon('mdi mdi-lock-open-outline')
-        ->set_description(phrase('Please enter your account information to signing in.'))
+        $this->setTitle(phrase('Dashboard Access'))
+        ->setIcon('mdi mdi-lock-open-outline')
+        ->setDescription(phrase('Please enter your account information to signing in.'))
 
-        ->set_output([
-            'years' => $this->_get_active_years(),
-            'activation' => $this->_get_activation()
+        ->setOutput([
+            'years' => $this->_getActiveYears(),
+            'activation' => $this->_getActivation()
         ])
 
-        ->modal_size((get_setting('frontend_registration') ? 'modal-lg' : 'modal-md'))
+        ->modalSize((get_setting('frontend_registration') ? 'modal-lg' : 'modal-md'))
 
         ->render();
     }
@@ -251,15 +251,15 @@ class Auth extends Core
     /**
      * Sign out
      */
-    public function sign_out()
+    public function signOut()
     {
         /**
          * Prepare to revoke provider token
          */
         if (get_userdata('oauth_uid')) {
             // Retrieve service provider from sso uid
-            $provider = $this->model->get_where(
-                'app__users_oauth',
+            $provider = $this->model->getWhere(
+                'app_users_oauth',
                 [
                     'access_token' => get_userdata('oauth_uid')
                 ],
@@ -308,7 +308,7 @@ class Auth extends Core
 
         // Remove session from database
         $this->model->delete(
-            'app__sessions',
+            'app_sessions',
             [
                 'id' => $this->request->getHeaderLine('X-ACCESS-TOKEN') ?? session_id()
             ]
@@ -336,12 +336,12 @@ class Auth extends Core
     /**
      * Get active years
      */
-    private function _get_active_years()
+    private function _getActiveYears()
     {
         $output = [];
 
-        $query = $this->model->get_where(
-            'app__years',
+        $query = $this->model->getWhere(
+            'app_years',
             [
                 'status' => 1
             ]
@@ -364,7 +364,7 @@ class Auth extends Core
     /**
      * Check activation
      */
-    private function _get_activation()
+    private function _getActivation()
     {
         if (! $this->request->getGet('activation')) {
             return false;
@@ -380,7 +380,7 @@ class Auth extends Core
             // Safe abstraction
         }
 
-        if ($this->model->get_where('app__users_hashes', ['user_id' => $user_id], 1)->row()) {
+        if ($this->model->getWhere('app_users_hashes', ['user_id' => $user_id], 1)->row()) {
             return true;
         }
 
@@ -390,10 +390,10 @@ class Auth extends Core
     /**
      * Send notification
      */
-    private function _send_notification($user_id = 0)
+    private function _sendNotification($user_id = 0)
     {
-        $query = $this->model->get_where(
-            'app__users',
+        $query = $this->model->getWhere(
+            'app_users',
             [
                 'user_id' => $user_id
             ],
@@ -404,10 +404,10 @@ class Auth extends Core
         if ($query) {
             $messaging = new Messaging();
 
-            $messaging->set_email($query->email)
-            ->set_phone($query->phone)
-            ->set_subject(phrase('Login Activity'))
-            ->set_message(
+            $messaging->setEmail($query->email)
+            ->setPhone($query->phone)
+            ->setSubject(phrase('Login Activity'))
+            ->setMessage(
                 phrase('Hello') . ', ' . get_userdata('first_name') . '.' .
                 "\n" .
                 phrase('There is a login activity recently made from your account.') . ' ' . phrase('You can restore your account if the login action was not carried out by you.') .

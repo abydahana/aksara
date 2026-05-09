@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Tags extends Core
 {
-    private $_keywords;
+    private ?string $_keywords;
 
     public function __construct()
     {
@@ -34,18 +34,18 @@ class Tags extends Core
 
     public function index()
     {
-        $this->set_title('#' . $this->_keywords)
-        ->set_description(phrase('Post tagged with') . ' #' . $this->_keywords)
-        ->set_icon('mdi mdi-pound')
+        $this->setTitle('#' . $this->_keywords)
+        ->setDescription(phrase('Post tagged with') . ' #' . $this->_keywords)
+        ->setIcon('mdi mdi-pound')
 
-        ->set_output([
+        ->setOutput([
             'keywords' => $this->_keywords,
 
             /* list of category */
-            'categories' => $this->_get_categories(),
+            'categories' => $this->_getCategories(),
 
             /* latest post */
-            'latest' => $this->_get_latest()
+            'latest' => $this->_getLatest()
         ])
 
         ->select('
@@ -55,22 +55,22 @@ class Tags extends Core
             blogs.post_tags,
             blogs.featured_image,
             blogs.updated_timestamp,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.username,
-            app__users.photo
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.username,
+            app_users.photo
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
         ->join(
-            'app__users',
-            'app__users.user_id = blogs.author'
+            'app_users',
+            'app_users.user_id = blogs.author'
         )
 
         ->like('blogs.post_tags', $this->_keywords)
@@ -79,38 +79,38 @@ class Tags extends Core
             'blogs.status' => 1
         ])
 
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render('blogs');
     }
 
-    private function _get_categories()
+    private function _getCategories()
     {
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
-            blogs__categories.category_slug,
-            blogs__categories.category_title,
-            blogs__categories.category_description,
-            blogs__categories.category_image
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image
         ')
         ->join(
             'blogs',
-            'blogs.post_category = blogs__categories.category_id'
+            'blogs.post_category = blogs_categories.category_id'
         )
         ->where([
-            'blogs__categories.status' => 1,
+            'blogs_categories.status' => 1,
             'blogs.status' => 1
         ])
-        ->order_by('category_title', 'RANDOM')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->group_by('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
-        ->get('blogs__categories')
+        ->orderBy('category_title', 'RANDOM')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->get('blogs_categories')
         ->result();
 
         return $query;
     }
 
-    private function _get_latest()
+    private function _getLatest()
     {
         $query = $this->model->select('
             blogs.post_id,
@@ -119,24 +119,24 @@ class Tags extends Core
             blogs.post_excerpt,
             blogs.featured_image,
             blogs.updated_timestamp,
-            blogs__categories.category_title,
-            blogs__categories.category_slug,
-            app__users.username,
-            app__users.first_name,
-            app__users.last_name,
-            app__users.photo
+            blogs_categories.category_title,
+            blogs_categories.category_slug,
+            app_users.username,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.photo
         ')
         ->join(
-            'blogs__categories',
-            'blogs__categories.category_id = blogs.post_category'
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
         )
         ->join(
-            'app__users',
-            'app__users.user_id = blogs.author'
+            'app_users',
+            'app_users.user_id = blogs.author'
         )
-        ->order_by('blogs.post_id', 'DESC')
-        ->order_by('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->get_where(
+        ->orderBy('blogs.post_id', 'DESC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere(
             'blogs',
             [
                 'blogs.status' => 1

@@ -19,39 +19,39 @@ namespace Aksara\Modules\Cms\Controllers\Partials;
 
 use Aksara\Laboratory\Core;
 
-class Faqs extends Core
+class FAQs extends Core
 {
-    private $_table = 'pages__faqs';
+    private string $_table = 'pages_faqs';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
 
-        $this->set_title(phrase('FAQs'))
-        ->set_icon('mdi mdi-file-question')
-        ->unset_column('faq_id, created_timestamp, updated_timestamp, language')
-        ->unset_field('faq_id')
-        ->unset_view('faq_id')
-        ->set_field([
+        $this->setTitle(phrase('FAQs'))
+        ->setIcon('mdi mdi-file-question')
+        ->unsetColumn('faq_id, created_timestamp, updated_timestamp, language')
+        ->unsetField('faq_id')
+        ->unsetView('faq_id')
+        ->setField([
             'faq_description' => 'textarea',
             'faq_content' => 'accordion',
             'language' => 'language_picker',
@@ -59,20 +59,20 @@ class Faqs extends Core
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
-        ->set_relation(
+        ->setRelation(
             'language_id',
-            'app__languages.id',
-            '{{ app__languages.language }}',
+            'app_languages.id',
+            '{{ app_languages.language }}',
             [
-                'app__languages.status' => 1
+                'app_languages.status' => 1
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'faq_title' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'faq_title' => phrase('Title'),
             'faq_description' => phrase('Description'),
             'faq_content' => phrase('Contents'),
@@ -83,7 +83,7 @@ class Faqs extends Core
             'status' => phrase('Status')
         ])
 
-        ->modal_size('modal-lg')
+        ->modalSize('modal-lg')
 
         ->render($this->_table);
     }
@@ -97,8 +97,8 @@ class Faqs extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
-            'app__languages',
+        $languages_query = $this->model->getWhere(
+            'app_languages',
             [
                 'status' => 1
             ]

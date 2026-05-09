@@ -15,26 +15,26 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Apis\Controllers;
+namespace Aksara\Modules\APIs\Controllers;
 
 use Aksara\Laboratory\Core;
 
-class Apis extends Core
+class APIs extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
     }
 
     public function index()
     {
-        $this->set_title(phrase('API Management'))
-        ->set_icon('mdi mdi-code-braces')
+        $this->setTitle(phrase('API Management'))
+        ->setIcon('mdi mdi-code-braces')
 
         ->render();
     }

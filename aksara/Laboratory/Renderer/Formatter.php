@@ -68,28 +68,28 @@ class Formatter
         foreach ($type as $key => $val) {
             // 1. Checkbox & Radio (Options)
             if (in_array($key, ['checkbox', 'radio']) && ! empty($val['parameter'])) {
-                $value = $this->_format_checkbox_radio($key, $field, $value, $val['parameter']);
+                $value = $this->_formatCheckboxRadio($key, $field, $value, $val['parameter']);
             }
             // 2. Select (Options)
             elseif ('select' === $key && ! empty($val['parameter'])) {
-                $value = $this->_format_select($value, $val['parameter']);
+                $value = $this->_formatSelect($value, $val['parameter']);
             }
             // 3. Files & Images (Multiple)
             elseif (in_array($key, ['files', 'images'])) {
-                $value = $this->_format_multiple_files($value);
+                $value = $this->_formatMultipleFiles($value);
             }
             // 4. Single File
             elseif ('file' === $key) {
-                $value = get_file($this->_set_upload_path, $value);
+                $value = get_file($this->_setUploadPath, $value);
             }
             // 5. Single Image
             elseif ('image' === $key) {
                 $thumb_mode = ! array_key_exists('original_thumbnail', $type) ? 'thumb' : null;
-                $value = get_image($this->_set_upload_path, $value, $thumb_mode);
+                $value = get_image($this->_setUploadPath, $value, $thumb_mode);
             }
             // 6. Hyperlink
             elseif ('hyperlink' === $key) {
-                $value = $this->_format_hyperlink($val, $replacement);
+                $value = $this->_formatHyperlink($val, $replacement);
             }
             // 7. JSON Based Components (Attribution, Accordion)
             elseif (in_array($key, ['attribution', 'accordion'])) {
@@ -99,12 +99,18 @@ class Formatter
             }
             // 8. Carousel
             elseif ('carousel' === $key) {
-                $value = $this->_format_carousel($value);
+                $value = $this->_formatCarousel($value);
             }
             // 9. Geospatial
             elseif ('geospatial' === $key) {
-                if (! $value || ! is_json($value)) {
-                    $value = '{}';
+                if (in_array($this->_method, ['create', 'update'])) {
+                    if (! $value || ! is_json($value)) {
+                        $value = '{}';
+                    }
+                } else {
+                    // Generates Vector Tile (MVT) endpoint URL for Read/View mode
+                    $id = (isset($replacement['id']) ? $replacement['id'] : '');
+                    $value = base_url('maps/geospatial/{z}/{x}/{y}', ['id' => $id, 'format' => (in_array(config('Database')->default['DBDriver'], ['Postgre']) ? 'mvt' : 'geojson')]);
                 }
             }
             // 10. Date
@@ -125,7 +131,7 @@ class Formatter
             }
             // 12. Sprintf Formatting
             elseif ('sprintf' === $key) {
-                $value = $this->_format_sprintf($value, $val);
+                $value = $this->_formatSprintf($value, $val);
             }
         }
 
@@ -136,7 +142,7 @@ class Formatter
      * Format Checkbox and Radio inputs.
      * Handles logic for 'create'/'update' modes (preparing options array) vs 'read' mode (translating value).
      */
-    private function _format_checkbox_radio(string $type, string $field, mixed $value, array $options): mixed
+    private function _formatCheckboxRadio(string $type, string $field, mixed $value, array $options): mixed
     {
         // Edit Mode (Create/Update): Return Array of Options with 'checked' state
         if (in_array($this->_method, ['create', 'update'])) {
@@ -156,7 +162,7 @@ class Formatter
                     $is_checked = true;
                 } elseif (! is_array($checked_values) && (string)$opt_key === (string)$checked_values) {
                     $is_checked = true;
-                } elseif ('create' === $this->_method && isset($this->_default_value[$field]) && $this->_default_value[$field] == $opt_key) {
+                } elseif ('create' === $this->_method && isset($this->_defaultValue[$field]) && $this->_defaultValue[$field] == $opt_key) {
                     $is_checked = true;
                 }
 
@@ -177,7 +183,7 @@ class Formatter
      * Format Select inputs.
      * Handles logic for 'create'/'update' modes (preparing options array) vs 'read' mode (translating value).
      */
-    private function _format_select(mixed $value, array $options): mixed
+    private function _formatSelect(mixed $value, array $options): mixed
     {
         // Edit Mode
         if (in_array($this->_method, ['create', 'update'])) {
@@ -199,7 +205,7 @@ class Formatter
     /**
      * Format Multiple Files/Images (JSON to Array of Objects).
      */
-    private function _format_multiple_files(mixed $value): mixed
+    private function _formatMultipleFiles(mixed $value): mixed
     {
         if (is_string($value) && is_json($value)) {
             $files_data = json_decode($value);
@@ -210,12 +216,12 @@ class Formatter
                     $ext = strtolower(pathinfo($src, PATHINFO_EXTENSION));
                     $is_image = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
-                    $icon = $is_image ? get_image($this->_set_upload_path, $src, 'icon') : null;
-                    $thumbnail = $is_image ? get_image($this->_set_upload_path, $src, 'thumb') : null;
-                    $url = get_file($this->_set_upload_path, $src);
+                    $icon = $is_image ? get_image($this->_setUploadPath, $src, 'icon') : null;
+                    $thumbnail = $is_image ? get_image($this->_setUploadPath, $src, 'thumb') : null;
+                    $url = get_file($this->_setUploadPath, $src);
 
                     // Format file size
-                    $filesize = get_filesize($this->_set_upload_path, $src);
+                    $filesize = get_filesize($this->_setUploadPath, $src);
                     $filesize = str_replace(['kb', 'mb', 'gb', 'b', '.'], '', strtolower((string)$filesize));
 
                     $files_list[] = [
@@ -236,7 +242,7 @@ class Formatter
     /**
      * Format Hyperlinks with dynamic replacements.
      */
-    private function _format_hyperlink(array $config, array $replacement): string
+    private function _formatHyperlink(array $config, array $replacement): string
     {
         $parameter = $config['parameter'] ?? '';
         $alpha = $config['alpha'] ?? [];
@@ -302,7 +308,7 @@ class Formatter
     /**
      * Format Carousel Data.
      */
-    private function _format_carousel(mixed $value): mixed
+    private function _formatCarousel(mixed $value): mixed
     {
         if (is_string($value) && is_json($value)) {
             $items = json_decode($value);
@@ -316,9 +322,9 @@ class Formatter
                     }
 
                     $item->src = [
-                        'background' => get_image($this->_set_upload_path, $item->background ?? ''),
-                        'thumbnail' => get_image($this->_set_upload_path, $item->background ?? '', 'thumb'),
-                        'placeholder' => get_image($this->_set_upload_path, 'placeholder.png', 'thumb')
+                        'background' => get_image($this->_setUploadPath, $item->background ?? ''),
+                        'thumbnail' => get_image($this->_setUploadPath, $item->background ?? '', 'thumb'),
+                        'placeholder' => get_image($this->_setUploadPath, 'placeholder.png', 'thumb')
                     ];
 
                     $carousels[] = $item;
@@ -332,7 +338,7 @@ class Formatter
     /**
      * Apply Sprintf Formatting.
      */
-    private function _format_sprintf(mixed $value, array $config): string
+    private function _formatSprintf(mixed $value, array $config): string
     {
         $parameter = $config['parameter'] ?? '';
         $format = $config['alpha'] ?? '%04d';

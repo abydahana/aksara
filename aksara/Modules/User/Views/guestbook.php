@@ -1,5 +1,9 @@
-<?php if ($user): ?>
-    <div class="py-3 py-md-5 bg-light">
+<?php
+/**
+ * @var mixed $user
+ */
+if ($user): ?>
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -10,15 +14,15 @@
                         <h2 class="mb-0">
                             <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border-top border-bottom border-light-subtle bg-white py-2">
+    </section>
+    <div class="border-fade bg-white py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -50,12 +54,12 @@
             </div>
         </div>
     </div>
-    <div class="py-3">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <div class="alert alert-info callout mb-0">
-                        <p class="lead mb-0">
+                        <p class="fs-5 mb-0">
                             <i class="mdi mdi-information-outline"></i> <?= phrase('Please be respectful to each other and be sure to follow our community standard.'); ?>
                         </p>
                     </div>
@@ -65,7 +69,7 @@
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -76,7 +80,7 @@
                         <h2 class="text-center">
                             <?= phrase('User not found'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

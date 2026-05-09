@@ -1,50 +1,76 @@
-# About Aksara
-Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based), just by writing single controller. Yet it's reusable, scalable and ready to use!
+# About Aksara WebGIS
+**Aksara WebGIS** is a powerful Geographic Information System application built on top of [Aksara CMS](https://aksaracms.com). It provides a comprehensive platform for rendering, managing, and editing spatial data (including MVT vector tiles) directly from your browser. 
+
+**Aksara WebGIS** supports multi-database connections including **MySQL/MariaDB**, **PostgreSQL (PostGIS)**, **SQLite3 (SpatiaLite)**, **SQL Server (MSSQL)**, and **Oracle (OCI8)**, allowing you to seamlessly integrate with your existing spatial infrastructure.
 
 # Server Requirements
 PHP version 8.1 or higher is required, with the following extensions installed:
 
 - [intl](http://php.net/manual/en/intl.requirements.php)
 - [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) to connect with **[Aksara Market](http://www.aksaracms.com/market)**
-
-> [!WARNING]
-> The end of life date for PHP 7.4 was November 28, 2022.
-> The end of life date for PHP 8.0 was November 26, 2023.
-> If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> The end of life date for PHP 8.1 will be November 25, 2024.
+- [libcurl](http://php.net/manual/en/curl.requirements.php)
 
 Additionally, make sure that the following extensions are enabled in your PHP:
 
-- json (enabled by default - don't turn it off)
-- xml (enabled by default - don't turn it off)
+- json
+- xml
 
-**[Aksara](http://www.aksaracms.com)** can be run under the **MySQLi**, **PostgreSQL**, **SQL Server**, **Oracle (OCI8)** and **SQLite3** or **BOTH OF IT** without changing any single code. The installer will guide you well when picking up the database type during the installation, so follow the step carefully and make sure you reads every highlighted notes.
+## Spatial Database Extensions
+To enable spatial and geometric capabilities in **Aksara WebGIS**, your database server **must** have spatial extensions installed. Below is the installation guide for the supported databases across various platforms:
+
+### 1. MySQL / MariaDB
+MySQL (version 5.7.6+) and MariaDB (version 10.1+) both feature native spatial data extensions built directly into their core engines. They support standard OpenGIS geometry types like `GEOMETRY`, `POINT`, `LINESTRING`, and `POLYGON` out-of-the-box. No additional library installation is required!
+
+### 2. PostgreSQL (PostGIS)
+PostGIS adds support for geographic objects to the PostgreSQL object-relational database.
+- **Ubuntu/Debian Linux:**
+  ```bash
+  sudo apt update
+  sudo apt install postgresql postgis
+  ```
+- **macOS (via Homebrew):**
+  ```bash
+  brew install postgresql postgis
+  ```
+- **Windows:**
+  Download the PostgreSQL installer from EnterpriseDB. During installation, launch the **Stack Builder** utility, select your PostgreSQL installation, and under the "Spatial Extensions" category, check and install **PostGIS**.
+
+*Note: Once installed, don't forget to enable it in your database by running the SQL query: `CREATE EXTENSION postgis;`*
+
+### 3. SQLite3 (SpatiaLite)
+SpatiaLite is an open source library intended to extend the SQLite core to support fully fledged Spatial SQL capabilities.
+- **Ubuntu/Debian Linux:**
+  ```bash
+  sudo apt update
+  sudo apt install sqlite3 libsqlite3-mod-spatialite
+  ```
+- **macOS (via Homebrew):**
+  ```bash
+  brew install sqlite3 libspatialite
+  ```
+  *(Note: Due to PHP's strict extension path resolution, you **must** configure `sqlite3.extension_dir` in your `php.ini` to point to `/opt/homebrew/lib` (or your Brew path). Furthermore, since Homebrew creates a symlink for the library, you must replace the symlink with the actual file by running `rm /opt/homebrew/lib/mod_spatialite.dylib && cp /opt/homebrew/Cellar/libspatialite/*/lib/mod_spatialite.dylib /opt/homebrew/lib/mod_spatialite.dylib`. Finally, restart your PHP/Apache service).*
+- **Windows:**
+  1. Download the `mod_spatialite` pre-compiled binaries from the [SpatiaLite website](https://www.gaia-gis.it/fossil/libspatialite/index).
+  2. Extract the `.dll` files into a directory included in your system's PATH, or directly into your PHP extension directory.
+  3. Ensure the extension can be loaded by SQLite.
+
+### 4. Microsoft SQL Server
+SQL Server comes with native support for Spatial Data Types (`geometry` and `geography`) starting from SQL Server 2008. No additional installation or extension is required!
+
+### 5. Oracle (OCI8)
+Oracle databases provide spatial features natively through **Oracle Locator** (available in all editions by default) and **Oracle Spatial and Graph** (for advanced routing and 3D features). You do not need to install external extensions; simply ensure your database is provisioned with Oracle Spatial components enabled.
 
 # Installation
 There are two installation methods you can choose:
 ### Composer Installation
-- Run "`composer create-project abydahana/aksara aksaracms`" anywhere inside your root directory of your web server. The command will create "`aksaracms`" folder. If you omit the "`aksaracms`" argument, the command will create an "`aksara`" folder instead, which can be renamed as appropriate;
-- Access your project from the browser and;
-- Follow the installation wizard.
+- Run `composer create-project abydahana/webgis` anywhere inside your root directory of your web server. 
+- Access your project from the browser.
+- Follow the installation wizard. Ensure you select a database type that supports spatial features.
 
 ### Manual Installation
-- Download the source code and extract its content to the directory of your webserver;
-- Run "`composer install`" from the root of Aksara project directory;
-- Access your project from the browser and;
-- Follow the installation wizard.
-
-**Yes, as simple as that!**
-
-# Some Screenshot
-| ![frame_generic_light](https://user-images.githubusercontent.com/10624446/110242393-729b6b00-7f88-11eb-9ecc-2cb1c27c5945.png) | ![frame_generic_light (1)](https://user-images.githubusercontent.com/10624446/110242375-67483f80-7f88-11eb-8126-fba2051ae95b.png) | ![frame_generic_light (2)](https://user-images.githubusercontent.com/10624446/110242377-69120300-7f88-11eb-95ff-9e8b002c51be.png) |
-| :---: | :---: | :---: |
-| ![frame_generic_light (3)](https://user-images.githubusercontent.com/10624446/110242379-6a433000-7f88-11eb-9510-31eb17ea1613.png) | ![frame_generic_light (4)](https://user-images.githubusercontent.com/10624446/110242381-6b745d00-7f88-11eb-9120-53a464c46b34.png) | ![frame_generic_light (5)](https://user-images.githubusercontent.com/10624446/110242382-6c0cf380-7f88-11eb-977d-1b89624a0efb.png) |
-| ![frame_generic_light (6)](https://user-images.githubusercontent.com/10624446/110242384-6ca58a00-7f88-11eb-9992-e90779dd2eeb.png) | ![frame_generic_light (7)](https://user-images.githubusercontent.com/10624446/110242386-6d3e2080-7f88-11eb-9e6e-de40f620feb8.png) | ![frame_generic_light (8)](https://user-images.githubusercontent.com/10624446/110242387-6e6f4d80-7f88-11eb-8c81-3e505eb2fd1d.png) |
-| ![frame_generic_light (9)](https://user-images.githubusercontent.com/10624446/110242389-6f07e400-7f88-11eb-9089-5cd5cc3f2ec2.png) | ![frame_generic_light (10)](https://user-images.githubusercontent.com/10624446/110242390-70391100-7f88-11eb-9734-a20b9e9005eb.png) | ![frame_generic_light (11)](https://user-images.githubusercontent.com/10624446/110242391-70d1a780-7f88-11eb-8d04-69128749b6e0.png) |
-| ![frame_generic_light (12)](https://user-images.githubusercontent.com/10624446/110242392-7202d480-7f88-11eb-8f23-6c1c3edf9ea2.png) | * | * |
+- Download the source code and extract its content to the directory of your webserver.
+- Run `composer install` from the root of the project directory.
+- Access your project from the browser and follow the installation wizard.
 
 # Contributing
-We **are** accepting contributions from the community! It doesn't matter whether you can code, write documentation, or help find bugs, all contributions are welcome.
-
-Please read the [*Contributing to Aksara*](contributing/README.md).
+We welcome contributions to the **Aksara WebGIS** project! Whether you can code, write documentation, or help find bugs, all contributions are welcome.

@@ -11,6 +11,9 @@ __MACOSX
 # OS X Thumbnails
 ._*
 
+# Agents
+.agent
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -50,18 +53,13 @@ Vagrantfile
 # Config Files
 #-------------------------
 config.php
+config-*.php
 
 #-------------------------
-# Components Files
+# Theme Files
 #-------------------------
-themes/*/components/*
-!themes/*/components/README
-
-#-------------------------
-# Modules Files
-#-------------------------
-modules/*
-!modules/README
+themes/backend/components
+themes/default/components
 
 #-------------------------
 # Temporary Files
@@ -78,15 +76,23 @@ writable/logs/*
 writable/session/*
 !writable/session/index.html
 
-writable/uploads/*
-!writable/uploads/index.html
+writable/**/*.db
+writable/**/*.sqlite
 
-writable/*/*.db
-writable/*/*.sqlite
-
+#-------------------------
+# Public Uploads
+#-------------------------
 public/uploads/*
 !public/uploads/_extension
-!public/uploads/settings
+!public/uploads/geospatial
+!public/uploads/maps
+!public/uploads/tiles
+!public/uploads/settings/logo.png
+!public/uploads/settings/thumbs/logo.png
+!public/uploads/settings/icons/logo.png
+!public/uploads/settings/placeholder.png
+!public/uploads/settings/thumbs/placeholder.png
+!public/uploads/settings/icons/placeholder.png
 !public/uploads/.htaccess
 !public/uploads/index.html
 !public/uploads/placeholder.png

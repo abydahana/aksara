@@ -17,20 +17,20 @@
 
 namespace Aksara\Modules\Notifier\Controllers;
 
+use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Send extends Core
 {
-    private $_table = 'notifier';
+    private string $_table = 'notifier';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_theme('backend');
-        $this->parent_module('notifier');
+        $this->setTheme('backend');
+        $this->parentModule('notifier');
     }
 
     public function index()
@@ -42,7 +42,7 @@ class Send extends Core
             $this->model->where('id', $id);
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'status' => 0
@@ -52,7 +52,7 @@ class Send extends Core
 
         foreach ($query as $key => $val) {
             // Send WhatsApp
-            $this->_send_email($val);
+            $this->_sendEmail($val);
         }
 
         // Get unsent WhatsApp notification
@@ -60,7 +60,7 @@ class Send extends Core
             $this->model->where('id', $id);
         }
 
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             $this->_table,
             [
                 'status != ' => 2
@@ -70,13 +70,13 @@ class Send extends Core
 
         foreach ($query as $key => $val) {
             // Send WhatsApp
-            $this->_send_whatsapp($val);
+            $this->_sendWhatsapp($val);
         }
 
         return throw_exception(301, phrase('The message was sent successfully.'), go_to('../', ['id' => null]));
     }
 
-    private function _send_email(?object $data)
+    private function _sendEmail(?object $data)
     {
         if (! isset($data->email) || ! filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
             // Not a valid email
@@ -139,7 +139,7 @@ class Send extends Core
         }
     }
 
-    private function _send_whatsapp(?object $data)
+    private function _sendWhatsapp(?object $data)
     {
         if (! isset($data->phone) || ! filter_var($data->phone, FILTER_SANITIZE_NUMBER_INT)) {
             // Not a valid phone
@@ -147,8 +147,8 @@ class Send extends Core
         }
 
         // Get notification config
-        $notifier_config = $this->model->get_where(
-            'notifier__settings',
+        $notifier_config = $this->model->getWhere(
+            'notifier_settings',
             [
                 'site_id' => get_setting('id')
             ],

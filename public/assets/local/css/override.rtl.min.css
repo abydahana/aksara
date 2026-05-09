@@ -146,22 +146,6 @@
   ) !important;
 }
 
-[dir="rtl"] .gradient-right {
-  background: linear-gradient(
-    to left,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  ) !important;
-}
-
-[dir="rtl"] .gradient-left {
-  background: linear-gradient(
-    to right,
-    rgba(50, 50, 50, 1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  ) !important;
-}
-
 /* Callout border flip */
 [dir="rtl"] .callout {
   border-left-width: 0 !important;

@@ -15,5 +15,12 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+/**
+ * @var \CodeIgniter\Router\RouteCollection $routes
+ */
+if (! isset($routes)) {
+    $routes = \Config\Services::routes(true);
+}
+
 $routes->add('galleries/(:any)/(:any)', '\Aksara\Modules\Galleries\Controllers\Read::index/$1/$2');
 $routes->add('galleries/(:any)', '\Aksara\Modules\Galleries\Controllers\Category::index/$1');

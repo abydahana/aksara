@@ -23,10 +23,10 @@ class Home extends Core
 {
     public function index()
     {
-        $this->set_title(phrase('Welcome to') . ' ' . get_setting('app_name'))
-        ->set_description(get_setting('app_description'))
+        $this->setTitle(phrase('Welcome to') . ' ' . get_setting('app_name'))
+        ->setDescription(get_setting('app_description'))
 
-        ->set_output([
+        ->setOutput([
             'error' => $this->_validate(),
             'permission' => [
                 'uploads' => (is_dir(FCPATH . UPLOAD_PATH) && is_writable(FCPATH . UPLOAD_PATH) ? true : false),
@@ -42,7 +42,7 @@ class Home extends Core
      */
     private function _validate()
     {
-        $query = $this->model->get_where(
+        $query = $this->model->getWhere(
             'blogs',
             [],
             1

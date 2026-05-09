@@ -21,7 +21,7 @@ use Aksara\Laboratory\Core;
 
 class Read extends Core
 {
-    private $_table = 'announcements';
+    private string $_table = 'announcements';
 
     public function __construct()
     {
@@ -36,10 +36,10 @@ class Read extends Core
             $slug = $this->request->getGet('announcement_slug');
         }
 
-        $this->set_title('{{ title }}', phrase('Announcements'))
-        ->set_icon('mdi mdi-bullhorn')
+        $this->setTitle('{{ title }}', phrase('Announcements'))
+        ->setIcon('mdi mdi-bullhorn')
         ->where('announcement_slug', $slug)
-        ->order_by('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(1)
 
         ->render($this->_table);

@@ -15,4 +15,11 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+/**
+ * @var \CodeIgniter\Router\RouteCollection $routes
+ */
+if (! isset($routes)) {
+    $routes = \Config\Services::routes(true);
+}
+
 $routes->add('peoples/(:any)', '\Aksara\Modules\Peoples\Controllers\Read::index/$1');

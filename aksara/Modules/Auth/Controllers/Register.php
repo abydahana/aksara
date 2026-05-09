@@ -17,10 +17,10 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
+use Throwable;
 use Config\Services;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Register extends Core
 {
@@ -28,7 +28,7 @@ class Register extends Core
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
         // Check if user is already signed in
         if (get_userdata('is_logged')) {
@@ -51,9 +51,9 @@ class Register extends Core
     public function index()
     {
         // Validate token
-        if ($this->valid_token($this->request->getPost('_token'))) {
+        if ($this->validToken($this->request->getPost('_token'))) {
             // Token valid, validate form
-            return $this->_validate_form();
+            return $this->_validateForm();
         }
 
         $string = '123456789ABCDEF';
@@ -81,10 +81,10 @@ class Register extends Core
                     'word_length' => $length,
                     'pool' => $string,
                     'colors' => [
-                        'background' => [52, 58, 64],
-                        'border' => [52, 58, 64],
-                        'grid' => [52, 58, 64],
-                        'text' => [255, 255, 255]
+                        'background' => [255,255,255],
+                        'border' => [255,255,255],
+                        'grid' => [0, 0, 0],
+                        'text' => [0,0,0]
                     ]
                 ]);
             }
@@ -103,16 +103,16 @@ class Register extends Core
             'captcha_file' => $captcha['filename']
         ]);
 
-        $this->set_output([
+        $this->setOutput([
             'captcha' => [
                 'image' => ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
                 'string' => (! $captcha['filename'] ? $captcha['word'] : null)
             ]
         ]);
 
-        $this->set_title(phrase('Register an Account'))
-        ->set_icon('mdi mdi-account-plus')
-        ->set_description(phrase('Fill all the required fields below to register your account.'))
+        $this->setTitle(phrase('Register an Account'))
+        ->setIcon('mdi mdi-account-plus')
+        ->setDescription(phrase('Fill all the required fields below to register your account.'))
 
         ->render();
     }
@@ -120,29 +120,29 @@ class Register extends Core
     /**
      * Form validation
      */
-    public function _validate_form()
+    public function _validateForm()
     {
         if (DEMO_MODE) {
             // Restrict on demo mode
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page());
-        } elseif (! $this->valid_token($this->request->getPost('_token'))) {
+        } elseif (! $this->validToken($this->request->getPost('_token'))) {
             // Invalid token
             return throw_exception(403, phrase('The token you submitted has been expired or you are trying to bypass it from the restricted source.'), current_page());
         }
 
         // Set validation rules
-        $this->form_validation->setRule('first_name', phrase('First Name'), 'required|max_length[32]');
-        $this->form_validation->setRule('last_name', phrase('Last Name'), 'max_length[32]');
-        $this->form_validation->setRule('username', phrase('Username'), 'required|alpha_numeric|unique[app__users.username]');
-        $this->form_validation->setRule('email', phrase('Email Address'), 'required|valid_email|unique[app__users.email]');
-        $this->form_validation->setRule('phone', phrase('Phone Number'), 'required|min_length[8]|max_length[16]');
-        $this->form_validation->setRule('password', phrase('Password'), 'required|min_length[6]');
-        $this->form_validation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
+        $this->formValidation->setRule('first_name', phrase('First Name'), 'required|max_length[32]');
+        $this->formValidation->setRule('last_name', phrase('Last Name'), 'max_length[32]');
+        $this->formValidation->setRule('username', phrase('Username'), 'required|alpha_numeric|unique[app_users.username]');
+        $this->formValidation->setRule('email', phrase('Email Address'), 'required|valid_email|unique[app_users.email]');
+        $this->formValidation->setRule('phone', phrase('Phone Number'), 'required|min_length[8]|max_length[16]');
+        $this->formValidation->setRule('password', phrase('Password'), 'required|min_length[6]');
+        $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Run validation
-        if ($this->form_validation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             // Validation error
-            return throw_exception(400, $this->form_validation->getErrors());
+            return throw_exception(400, $this->formValidation->getErrors());
         }
 
         // Prepare the insert data
@@ -161,8 +161,8 @@ class Register extends Core
         ];
 
         // Insert user with safe checkpoint
-        if ($this->model->insert('app__users', $prepare, 1)) {
-            $prepare['user_id'] = $this->model->insert_id();
+        if ($this->model->insert('app_users', $prepare, 1)) {
+            $prepare['user_id'] = $this->model->insertId();
 
             // Unset stored captcha
             unset_userdata(['captcha', 'captcha_file']);
@@ -179,13 +179,13 @@ class Register extends Core
                 ]);
 
                 // Send welcome email
-                $this->_send_welcome_email($prepare);
+                $this->_sendWelcomeEmail($prepare);
 
                 // Return to previous page
                 return throw_exception(301, phrase('Your account has been registered successfully.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard')), true);
             } else {
                 // Send activation email
-                $this->_send_activation_email($prepare);
+                $this->_sendActivationEmail($prepare);
 
                 $encrypter = Services::encrypter();
 
@@ -200,19 +200,19 @@ class Register extends Core
     public function activate()
     {
         $query = $this->model->select('
-            app__users.user_id,
-            app__users.username,
-            app__users.group_id,
-            app__users.language_id
+            app_users.user_id,
+            app_users.username,
+            app_users.group_id,
+            app_users.language_id
         ')
         ->join(
-            'app__users',
-            'app__users.user_id = app__users_hashes.user_id'
+            'app_users',
+            'app_users.user_id = app_users_hashes.user_id'
         )
-        ->get_where(
-            'app__users_hashes',
+        ->getWhere(
+            'app_users_hashes',
             [
-                'app__users_hashes.hash' => $this->request->getGet('hash')
+                'app_users_hashes.hash' => $this->request->getGet('hash')
             ],
             1
         )
@@ -220,7 +220,7 @@ class Register extends Core
 
         if ($query) {
             $this->model->update(
-                'app__users',
+                'app_users',
                 [
                     'status' => 1
                 ],
@@ -230,7 +230,7 @@ class Register extends Core
             );
 
             $this->model->delete(
-                'app__users_hashes',
+                'app_users_hashes',
                 [
                     'user_id' => $query->user_id
                 ]
@@ -252,14 +252,14 @@ class Register extends Core
         }
     }
 
-    private function _send_activation_email($params = [])
+    private function _sendActivationEmail($params = [])
     {
         // Create token
         $token = sha1($params['email'] . time());
 
         // Insert hashes
         $this->model->insert(
-            'app__users_hashes',
+            'app_users_hashes',
             [
                 'user_id' => $params['user_id'],
                 'hash' => $token
@@ -268,9 +268,9 @@ class Register extends Core
 
         $messaging = new Messaging();
 
-        $messaging->set_email($params['email'])
-        ->set_subject(phrase('Account Activation') . ' - ' . get_setting('app_name'))
-        ->set_message('
+        $messaging->setEmail($params['email'])
+        ->setSubject(phrase('Account Activation') . ' - ' . get_setting('app_name'))
+        ->setMessage('
             <p>
                 ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
             </p>
@@ -297,13 +297,13 @@ class Register extends Core
         ->send(true);
     }
 
-    private function _send_welcome_email($params = [])
+    private function _sendWelcomeEmail($params = [])
     {
         $messaging = new Messaging();
 
-        $messaging->set_email($params['email'])
-        ->set_subject(phrase('Account Activated') . ' - ' . get_setting('app_name'))
-        ->set_message('
+        $messaging->setEmail($params['email'])
+        ->setSubject(phrase('Account Activated') . ' - ' . get_setting('app_name'))
+        ->setMessage('
             <p>
                 ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
             </p>

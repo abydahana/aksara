@@ -21,32 +21,32 @@ use Aksara\Laboratory\Core;
 
 class Logs extends Core
 {
-    private $_table = 'app__log_activities';
+    private string $_table = 'app_log_activities';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->parent_module('administrative/account');
+        $this->parentModule('administrative/account');
 
-        $this->set_permission();
-        $this->set_theme('backend');
-        $this->set_method('index');
+        $this->setPermission();
+        $this->setTheme('backend');
+        $this->setMethod('index');
 
         if ($this->request->getPost('fetch') == 'ip-info') {
-            return $this->_get_ip_info($this->request->getPost('ip_address'), $this->request->getPost('key'));
+            return $this->_getIpInfo($this->request->getPost('ip_address'), $this->request->getPost('key'));
         }
     }
 
     public function index()
     {
-        $this->set_title(phrase('Login Activities'))
-        ->set_icon('mdi mdi-information-outline')
+        $this->setTitle(phrase('Login Activities'))
+        ->setIcon('mdi mdi-information-outline')
 
-        ->set_output([
-            'logs' => $this->_get_logs()
+        ->setOutput([
+            'logs' => $this->_getLogs()
         ])
 
         ->render();
@@ -68,7 +68,7 @@ class Logs extends Core
         return throw_exception(404, phrase('Unable to kick the selected device.'), current_page('../', ['session' => null]));
     }
 
-    public function _get_logs()
+    public function _getLogs()
     {
         $query = $this->model->select('
             session_id,
@@ -77,8 +77,8 @@ class Logs extends Core
             platform,
             timestamp
         ')
-        ->order_by('timestamp', 'DESC')
-        ->get_where(
+        ->orderBy('timestamp', 'DESC')
+        ->getWhere(
             $this->_table,
             [
                 'user_id' => get_userdata('user_id'),
@@ -105,7 +105,7 @@ class Logs extends Core
         return $output;
     }
 
-    private function _get_ip_info($ip_address = null, $key = null)
+    private function _getIpInfo($ip_address = null, $key = null)
     {
         if (! $ip_address || '::1' === $ip_address) {
             return false;

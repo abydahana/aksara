@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var mixed $likes_count
+ * @var mixed $comments_count
+ * @var mixed $_token
+ */
+?>
 <div class="py-3" id="comment-widget">
     <div class="pb-3">
         <div class="row">

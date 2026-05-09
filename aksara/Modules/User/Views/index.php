@@ -1,8 +1,12 @@
 <?php
-    $user = (isset($results[0]) ? $results[0] : []);
-?>
-<?php if ($user): ?>
-    <div class="py-3 py-md-5 bg-light">
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ */
+$user = (isset($results[0]) ? $results[0] : []);
+
+if ($user): ?>
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -13,15 +17,15 @@
                         <h2 class="mb-0">
                             <?= $meta->title; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border-top border-bottom border-light-subtle bg-white py-2">
+    </section>
+    <div class="border-fade bg-white py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -53,23 +57,15 @@
             </div>
         </div>
     </div>
-    <div class="py-3">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <div class="mb-3">
                         <h4 class="text-muted mb-0">
-                            <?= phrase('Email'); ?>
-                        </h4>
-                        <p class="lead">
-                            <?= $user->email; ?>
-                        </p>
-                    </div>
-                    <div class="mb-3">
-                        <h4 class="text-muted mb-0">
                             <?= phrase('Biography'); ?>
                         </h4>
-                        <p class="lead">
+                        <p class="fs-5">
                             <?= ($user->bio ? $user->bio : '-'); ?>
                         </p>
                     </div>
@@ -77,7 +73,7 @@
                         <h4 class="text-muted mb-0">
                             <?= phrase('Last Activity'); ?>
                         </h4>
-                        <p class="lead">
+                        <p class="fs-5">
                             <?= time_ago($user->last_activity); ?>
                         </p>
                     </div>
@@ -86,7 +82,7 @@
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -97,7 +93,7 @@
                         <h2 class="text-center">
                             <?= phrase('User not found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

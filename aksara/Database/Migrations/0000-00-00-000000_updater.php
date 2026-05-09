@@ -25,7 +25,7 @@ class Updater extends Migration
     {
         // Preserved for upgrade
         $this->forge->renameTable('notifications', 'notifier');
-        $this->forge->renameTable('notifications__settings', 'notifier__settings');
+        $this->forge->renameTable('notifications__settings', 'notifier_settings');
     }
 
     public function down()

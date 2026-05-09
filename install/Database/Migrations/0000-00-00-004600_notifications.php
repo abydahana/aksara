@@ -69,8 +69,8 @@ class AppNotifications extends Migration
         $this->forge->addKey('to_user', false, false);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('from_user', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('to_user', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('from_user', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('to_user', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('notifications');

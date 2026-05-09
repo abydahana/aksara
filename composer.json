@@ -18,14 +18,17 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "codeigniter4/framework": "^4.6",
+        "codeigniter4/framework": "~4.7.0",
         "twig/twig": "^3.7",
         "hybridauth/hybridauth": "^3.10",
         "mpdf/mpdf": "^8.0",
         "chillerlan/php-qrcode": "^3.3",
         "picqer/php-barcode-generator": "^2.1",
         "phpoffice/phpspreadsheet": "^2.2",
-        "phpoffice/phpword": "^1.4"
+        "halaxa/json-machine": "^1.1",
+        "gasparesganga/php-shapefile": "^3.4",
+        "phpoffice/phpword": "^1.4",
+        "brick/geo": "^0.13.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",

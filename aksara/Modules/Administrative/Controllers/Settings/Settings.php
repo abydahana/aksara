@@ -21,21 +21,21 @@ use Aksara\Laboratory\Core;
 
 class Settings extends Core
 {
-    private $_table = 'app__settings';
+    private string $_table = 'app_settings';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
         $this->searchable(false);
 
-        $this->set_method('update');
-        $this->set_upload_path('settings');
+        $this->setMethod('update');
+        $this->setUploadPath('settings');
     }
 
     public function index()
@@ -72,11 +72,11 @@ class Settings extends Core
             $required_google_client_id = 'required';
         }
 
-        $this->set_title(phrase('Application Settings'))
-        ->set_icon('mdi mdi-wrench-outline')
-        ->set_primary('id')
-        ->unset_field('id')
-        ->set_field([
+        $this->setTitle(phrase('Application Settings'))
+        ->setIcon('mdi mdi-wrench-outline')
+        ->setPrimary('id')
+        ->unsetField('id')
+        ->setField([
             'app_description' => 'textarea',
             'app_logo' => 'image',
             'app_icon' => 'image',
@@ -98,7 +98,7 @@ class Settings extends Core
             'smtp_port' => 'integer',
             'smtp_password' => 'encryption'
         ])
-        ->set_field(
+        ->setField(
             'openlayers_search_provider',
             'radio',
             [
@@ -107,20 +107,20 @@ class Settings extends Core
                 'osm' => 'OpenStreetMap'
             ]
         )
-        ->field_append([
+        ->fieldAppend([
             'login_attempt' => phrase('times'),
             'blocking_time' => phrase('minutes'),
             'account_age_restriction' => phrase('days'),
             'spam_timer' => phrase('seconds')
         ])
-        ->set_attribute([
+        ->setAttribute([
             'office_map' => 'data-drawing-type="coordinate" data-draggable="1"'
         ])
-        ->set_placeholder([
+        ->setPlaceholder([
             'openlayers_search_key' => phrase('Enter your API Key'),
             'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
         ])
-        ->set_tooltip([
+        ->setTooltip([
             'login_attempt' => phrase('Maximum number of login attempts.'),
             'blocking_time' => phrase('Blocking time when reaching maximum login attempts.'),
             'account_age_restriction' => phrase('How many days before user can post interaction after registration.'),
@@ -128,26 +128,26 @@ class Settings extends Core
             'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider.'),
             'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.')
         ])
-        ->field_append([
+        ->fieldAppend([
             'default_map_tile' => '<a href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers" target="_blank">Reference<i class="mdi mdi-launch"></i></a>'
         ])
-        ->set_relation(
+        ->setRelation(
             'app_language',
-            'app__languages.id',
-            '{{ app__languages.language }}',
+            'app_languages.id',
+            '{{ app_languages.language }}',
             [
-                'app__languages.status' => 1
+                'app_languages.status' => 1
             ]
         )
-        ->set_relation(
+        ->setRelation(
             'default_membership_group',
-            'app__groups.group_id',
-            '{{ app__groups.group_name }}',
+            'app_groups.group_id',
+            '{{ app_groups.group_name }}',
             [
-                'app__groups.group_id > ' => 2
+                'app_groups.group_id > ' => 2
             ]
         )
-        ->set_validation([
+        ->setValidation([
             'app_name' => 'required|string|max_length[60]',
             'app_description' => 'string',
             'app_language' => 'required',
@@ -184,7 +184,7 @@ class Settings extends Core
             'update_check' => 'boolean',
             'smtp_port' => 'integer'
         ])
-        ->set_alias([
+        ->setAlias([
             'app_name' => phrase('Application Name'),
             'app_description' => phrase('Application Description'),
             'office_name' => phrase('Office Name'),

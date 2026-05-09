@@ -67,7 +67,7 @@ if (! function_exists('generate_token')) {
         }
 
         // Resolve path using realpath logic
-        $parts = explode('/', $path);
+        $parts = explode('/', $path ?? '');
         $resolved = [];
 
         foreach ($parts as $part) {
@@ -264,7 +264,7 @@ if (! function_exists('throw_exception')) {
         // Set header response code
         http_response_code($code);
 
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
 
         exit($output);
     }
@@ -290,6 +290,9 @@ if (! function_exists('show_flashdata')) {
             $type = (service('session')->getFlashdata('success') ? 'success' : (service('session')->getFlashdata('warning') ? 'warning' : 'danger'));
             $icon = (service('session')->getFlashdata('success') ? 'check-circle-outline' : (service('session')->getFlashdata('warning') ? 'alert-octagram-outline' : 'emoticon-sad-outline'));
             $message = (service('session')->getFlashdata('success') ?: (service('session')->getFlashdata('warning') ?: service('session')->getFlashdata('error')));
+
+            // Clear flashdata
+            service('session')->remove(['success', 'warning', 'error']);
 
             return '
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -345,7 +348,7 @@ if (! function_exists('fetch_metadata')) {
 
             // Return decoded JSON response
             return json_decode($response->getBody());
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Log the exception object for further handling
             log_message('error', $e->getMessage());
         }
@@ -491,13 +494,13 @@ if (! function_exists('pagination')) {
      * It will return false if the total number of rows is less than or equal to
      * the items per page, unless a specific limit is requested via GET.
      *
-     * @param object $params    An object containing pagination data (total_rows, per_page, offset, etc.).
+     * @param object $params    An object containing pagination data (total, per_page, offset, etc.).
      * @return string|false     The rendered pagination HTML or false if pagination is not required.
      */
     function pagination(object $params)
     {
         // Check if pagination is necessary based on total rows and per page settings
-        if (! $params || ($params->total_rows <= $params->per_page && ! service('request')->getGet('limit'))) {
+        if (! $params || ($params->total <= $params->per_page && ! service('request')->getGet('limit'))) {
             return false;
         }
 

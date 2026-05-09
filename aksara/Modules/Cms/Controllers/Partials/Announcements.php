@@ -21,39 +21,39 @@ use Aksara\Laboratory\Core;
 
 class Announcements extends Core
 {
-    private $_table = 'announcements';
+    private string $_table = 'announcements';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->unset_method('clone');
+        $this->unsetMethod('clone');
 
         // Ignore query string signature
-        $this->ignore_query_string('language');
+        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->add_filter($this->_filter());
+        $this->addFilter($this->_filter());
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
 
-        $this->set_title(phrase('Announcements'))
-        ->set_icon('mdi mdi-bullhorn-outline')
-        ->set_primary('announcement_id')
-        ->unset_column('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
-        ->unset_field('announcement_id')
-        ->unset_view('announcement_id')
-        ->column_order('cover')
-        ->set_field([
+        $this->setTitle(phrase('Announcements'))
+        ->setIcon('mdi mdi-bullhorn-outline')
+        ->setPrimary('announcement_id')
+        ->unsetColumn('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
+        ->unsetField('announcement_id')
+        ->unsetView('announcement_id')
+        ->columnOrder('cover')
+        ->setField([
             'content' => 'wysiwyg',
             'cover' => 'image',
             'start_date' => 'date',
@@ -62,7 +62,7 @@ class Announcements extends Core
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
-        ->set_field(
+        ->setField(
             'placement',
             'radio',
             [
@@ -70,22 +70,22 @@ class Announcements extends Core
                 1 => phrase('Back End')
             ]
         )
-        ->set_field('announcement_slug', 'slug', 'title')
-        ->set_field('announcement_title', 'hyperlink', 'announcements', ['announcement_slug' => 'announcement_slug'], true)
+        ->setField('announcement_slug', 'slug', 'title')
+        ->setField('announcement_title', 'hyperlink', 'announcements', ['announcement_slug' => 'announcement_slug'], true)
 
-        ->add_button('../../../announcements/get', phrase('View Announcement'), 'btn-success', 'mdi mdi-eye', ['announcement_slug' => 'announcement_slug'], true)
+        ->addButton('../../../announcements/get', phrase('View Announcement'), 'btn-success', 'mdi mdi-eye', ['announcement_slug' => 'announcement_slug'], true)
 
-        ->add_class('content', 'minimal')
-        ->merge_field('start_date, end_date')
-        ->set_relation(
+        ->addClass('content', 'minimal')
+        ->mergeField('start_date, end_date')
+        ->setRelation(
             'language_id',
-            'app__languages.id',
-            '{{ app__languages.language }}',
+            'app_languages.id',
+            '{{ app_languages.language }}',
             [
-                'app__languages.status' => 1
+                'app_languages.status' => 1
             ]
         )
-        ->field_position([
+        ->fieldPosition([
             'placement' => 2,
             'start_date' => 2,
             'end_date' => 2,
@@ -93,19 +93,19 @@ class Announcements extends Core
             'language_id' => 2,
             'status' => 2
         ])
-        ->column_size([
+        ->columnSize([
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
-        ->set_validation([
+        ->setValidation([
             'title' => 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . $this->request->getGet('announcement_id') . ']',
             'content' => 'required',
             'language_id' => 'required',
             'start_date' => 'required',
-            'end_date' => 'required|callback_validate_end_date',
+            'end_date' => 'required|callback_validateEndDate',
             'status' => 'boolean'
         ])
-        ->set_alias([
+        ->setAlias([
             'title' => phrase('Title'),
             'announcement_slug' => phrase('Slug'),
             'content' => phrase('Content'),
@@ -118,19 +118,19 @@ class Announcements extends Core
             'status' => phrase('Status')
         ])
 
-        ->default_value('placement', 0)
+        ->defaultValue('placement', 0)
 
-        ->order_by('updated_timestamp', 'DESC')
+        ->orderBy('updated_timestamp', 'DESC')
 
-        ->modal_size('modal-xl')
+        ->modalSize('modal-xl')
 
         ->render($this->_table);
     }
 
-    public function validate_end_date($value = null)
+    public function validateEndDate($value = null)
     {
         if (strtotime($this->request->getPost('start_date')) >= strtotime($value)) {
-            $this->form_validation->setError('start_date', 'The end date must be greater than start date');
+            $this->formValidation->setError('start_date', 'The end date must be greater than start date');
         }
 
         return true;
@@ -145,8 +145,8 @@ class Announcements extends Core
             ]
         ];
 
-        $languages_query = $this->model->get_where(
-            'app__languages',
+        $languages_query = $this->model->getWhere(
+            'app_languages',
             [
                 'status' => 1
             ]

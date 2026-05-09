@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $recommendations
+ * @var mixed $related
+ * @var mixed $categories
+ */
+?>
 
 <?php
     $toc = null;
@@ -36,27 +45,17 @@
         }
     }
 ?>
-
-<div class="bg-light background-clip" style="background:url(<?= get_image('blogs', $featured_image); ?>) center center no-repeat; background-size:cover">
-    <div class="py-3 py-md-5">
-        <div class="container py-lg-5">
-            <h1 class="text-center text-md-start text-light">
-                <?= $meta->title; ?>
-            </h1>
-            <?php if (! $toc): ?>
-            <div class="lead">
-                <p class="text-lg-justify article text-break text-light">
-                    <?= $meta->description; ?>
-                </p>
-            </div>
-            <?php endif; ?>
-        </div>
+<section class="section-padding pb-0 fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
+            <?= $meta->title; ?>
+        </h1>
+        <p class="fs-5 text-muted mb-0">
+            <?= truncate($meta->description, 256); ?>
+        </p>
     </div>
-    <svg class="wave text-white position-absolute bottom-0" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
-<div class="py-3">
+</section>
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
@@ -104,7 +103,7 @@
                         <?php endif; ?>
 
                         <?php if ($toc): ?>
-                            <div class="lead">
+                            <div class="fs-5">
                                 <p class="text-lg-justify article text-break">
                                     <?= $meta->description; ?>
                                 </p>
@@ -117,7 +116,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <div class="lead">
+                        <div class="fs-5">
                             <?= recommendation_generator(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $article), $recommendations); ?>
                         </div>
 
@@ -136,7 +135,7 @@
                         <div class="alert alert-warning callout mb-5">
                             <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
                             <hr />
-                            <p class="lead mb-0">
+                            <p class="fs-5 mb-0">
                                 <i class="mdi mdi-alert-outline"></i> <?= phrase('The post you requested does not exist or already been archived.'); ?>
                             </p>
                         </div>
@@ -211,4 +210,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

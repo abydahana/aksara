@@ -15,6 +15,13 @@
  * have only two choices, commit suicide or become brutal.
  */
 
+/**
+ * @var \CodeIgniter\Router\RouteCollection $routes
+ */
+if (! isset($routes)) {
+    $routes = \Config\Services::routes(true);
+}
+
 $routes->add('user/(:any)/activities', '\Aksara\Modules\User\Controllers\User::activities/$1');
 $routes->add('user/(:any)/likes', '\Aksara\Modules\User\Controllers\User::likes/$1');
 $routes->add('user/(:any)/guestbook', '\Aksara\Modules\User\Controllers\User::guestbook/$1');

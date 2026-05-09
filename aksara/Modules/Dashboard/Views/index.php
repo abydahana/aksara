@@ -1,5 +1,15 @@
-<?php if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
-    <div class="alert alert-danger px-3 rounded-0 mb-0">
+<?php
+/**
+ * @var mixed $permission
+ * @var mixed $card
+ * @var mixed $visitors
+ * @var mixed $recent_signed
+ * @var mixed $announcements
+ * @var mixed $logs
+ * @var mixed $system_language
+ */
+if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
+    <div class="alert alert-danger rounded-0 border-0 mb-0">
         <h5>
             <?= phrase('Notice'); ?>
         </h5>
@@ -17,7 +27,7 @@
         <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here'); ?></b></a> <?= phrase('to get an advice to solve this problem.'); ?>
     </div>
 <?php elseif (in_array(get_userdata('group_id'), array(1)) && is_dir(ROOTPATH . 'install')): ?>
-    <div class="alert alert-warning px-3 rounded-0 mb-0">
+    <div class="alert alert-warning rounded-0 border-0 mb-0">
         <h5>
             <?= phrase('Notice'); ?>
         </h5>
@@ -31,8 +41,8 @@
     <?php if (! get_userdata('hideGreeting')): ?>
     <div class="row" id="greeting-card">
         <div class="col-12">
-            <div class="card rounded-4 mb-3">
-                <div class="card-body p-3">
+            <div class="card rounded-4 overflow-hidden mb-3">
+                <div class="card-body">
                     <h3>
                         <button type="button" class="btn btn-close btn-greeting float-end"></button>
                         <?= phrase('Welcome to'); ?> Aksara!
@@ -212,20 +222,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-8 bg-white">
-            <div class="sticky-top">
-                <div class="border rounded-4 mb-3">
-                    <div id="visitor-chart" class=" rounded-4" style="width:100%; height:300px"></div>
+        <div class="col-lg-8">
+            <div class="sticky-top" style="top:6rem">
+                <div class="card rounded-4 overflow-hidden mb-3">
+                    <div class="card-body">
+                        <div id="visitor-chart" class=" rounded-4" style="width:100%; height:300px"></div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card rounded-4 mb-3">
-                            <div class="card-header rounded-top-4 bg-white border-0">
+                        <div class="card rounded-4 overflow-hidden mb-3">
+                            <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Most used browsers'); ?>
                                 </h5>
                             </div>
-                            <div class="card-body p-3">
+                            <div class="card-body">
                                 <?php
                                     $num = 0;
 
@@ -255,13 +267,13 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card rounded-4 mb-3">
-                            <div class="card-header rounded-top-4 bg-white border-0">
+                        <div class="card rounded-4 overflow-hidden mb-3">
+                            <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Recent sign in'); ?>
                                 </h5>
                             </div>
-                            <div class="card-body p-3">
+                            <div class="card-body">
                                 <?php
                                     foreach ($recent_signed as $key => $val) {
                                         echo '
@@ -290,13 +302,60 @@
                         </div>
                     </div>
                 </div>
+                <div class="card overflow-hidden rounded-4 mb-3">
+                    <div class="card-header border-0 p-4">
+                        <h5 class="card-title mb-0">
+                            <?= phrase('Recent Activities'); ?>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if ($logs): ?>
+                                        <?php foreach ($logs as $log): ?>
+                                            <tr>
+                                                <td class="px-4 align-middle">
+                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <span class="badge bg-white text-dark rounded-pill border"><?= $log->platform; ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <span class="text-sm"><?= $log->browser; ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <code class="text-sm text-primary"><?= $log->ip_address; ?></code>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" class="text-center p-4 text-muted">
+                                                <?= phrase('No activity recorded yet.'); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-lg-4 bg-white">
-            <div class="sticky-top">
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top:6rem">
                 <?php if ($announcements): ?>
-                    <div class="card rounded-4 mb-3">
-                        <div class="card-header rounded-top-4 bg-white border-0">
+                    <div class="card overflow-hidden rounded-4 mb-3">
+                        <div class="card-header border-0 p-4">
                             <h5 class="card-title mb-0">
                                 <?= phrase('Announcements'); ?>
                             </h5>
@@ -317,13 +376,40 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="card rounded-4 mb-3">
-                    <div class="card-header rounded-top-4 bg-white border-0">
+                <div class="card overflow-hidden rounded-4 mb-3">
+                    <div class="card-header bg-transparent border-0 p-4">
+                        <h5 class="fw-bold mb-0">
+                            <?= phrase('Announcements'); ?>
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <?php if ($announcements): ?>
+                            <?php foreach ($announcements as $announcement): ?>
+                                <div class="mb-3 pb-3 border-bottom last-child-border-0">
+                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug); ?>" class="fw-bold text-decoration-none --xhr">
+                                        <?= $announcement->title; ?>
+                                    </a>
+                                    <div class="text-muted small mt-1">
+                                        <?= truncate($announcement->content, 100); ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="text-center py-4 text-muted">
+                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
+                                <?= phrase('No announcements available.'); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="card rounded-4 overflow-hidden mb-3">
+                    <div class="card-header border-0">
                         <h5 class="card-title mb-0">
                             <?= phrase('Application Information'); ?>
                         </h5>
                     </div>
-                    <div class="card-body p-3">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">

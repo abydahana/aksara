@@ -2,7 +2,7 @@
     <?php if (get_userdata('group_id') == 1): ?>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('users'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('users'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -21,7 +21,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('groups'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('groups'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -40,7 +40,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('groups/privileges'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('groups/privileges'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -61,7 +61,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('settings'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('settings'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -80,7 +80,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('menus'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('menus'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -99,7 +99,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('translations'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('translations'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -120,7 +120,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('countries'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('countries'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -139,7 +139,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('logs'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('logs'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -161,7 +161,7 @@
     <?php endif; ?>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('account'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('account'); ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">

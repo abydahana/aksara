@@ -17,13 +17,11 @@
 
 namespace Aksara\Laboratory;
 
-use Config\Services;
-use Aksara\Laboratory\Model;
-use Aksara\Libraries\Beautifier;
-use Aksara\Libraries\Html_dom;
-use Aksara\Laboratory\Renderer\Parser;
 use Throwable;
 use stdClass;
+use Config\Services;
+use Aksara\Laboratory\Model;
+use Aksara\Laboratory\Renderer\Parser;
 
 /**
  * Template handler class for managing themes, views, and output processing.
@@ -53,7 +51,7 @@ class Template
     /**
      * @var string|null Stores partial view data.
      */
-    private ?string $_partial_view = null;
+    private ?string $_partialView = null;
 
     /**
      * @var string The current controller method name.
@@ -77,8 +75,8 @@ class Template
             // Throwback the default theme from site configuration
             $site_id = get_setting('id');
 
-            $this->theme = (string) $this->_model->select('frontend_theme')->get_where(
-                'app__settings',
+            $this->theme = (string) $this->_model->select('frontend_theme')->getWhere(
+                'app_settings',
                 [
                     'id' => $site_id
                 ],
@@ -93,7 +91,7 @@ class Template
      *
      * @return string|false The active theme directory name or false if the theme type is invalid.
      */
-    public function get_theme(): string|false
+    public function getTheme(): string|false
     {
         if (! in_array($this->theme, ['frontend', 'backend'])) {
             return false;
@@ -101,8 +99,8 @@ class Template
 
         $site_id = get_setting('id');
 
-        $query = $this->_model->select($this->theme . '_theme')->get_where(
-            'app__settings',
+        $query = $this->_model->select($this->theme . '_theme')->getWhere(
+            'app_settings',
             [
                 'id' => $site_id
             ],
@@ -119,7 +117,7 @@ class Template
      * @param string|null $parameter The specific property key to retrieve (e.g., 'type').
      * @return mixed|false The property value or false if the theme.json or property doesn't exist.
      */
-    public function get_theme_property(?string $parameter = null): mixed
+    public function getThemeProperty(?string $parameter = null): mixed
     {
         if (file_exists(ROOTPATH . 'themes/' . $this->theme . '/theme.json')) {
             // Check if active theme has a property
@@ -147,7 +145,7 @@ class Template
      * @param string $view The base view file name, defaults to 'index'.
      * @return string The normalized path to the found view file (relative to ROOTPATH using '../../').
      */
-    public function get_view(string $view = 'index'): string
+    public function getView(string $view = 'index'): string
     {
         $request = Services::request();
         $router = Services::router();
@@ -399,11 +397,14 @@ class Template
         // Fix encoding
         $data = encoding_fixer($data);
 
-        // Convert array to object
-        $data = json_decode(json_encode($data), false); // Use false for $associative to ensure object
+        $data = json_decode(json_encode($data), false);
+
+        if (! is_object($data)) {
+            $data = (object) $data;
+        }
 
         // Get view
-        $view = $this->get_view($view);
+        $view = $this->getView($view);
 
         // Load active theme helper if any
         if (is_dir(ROOTPATH . 'themes/' . $this->theme . '/helpers')) {
@@ -475,7 +476,7 @@ class Template
             return make_json($data);
         } else {
             // Add core menus into data object
-            $data->menus = encoding_fixer($this->_core_menus());
+            $data->menus = encoding_fixer($this->_coreMenus());
 
             // Convert array to object
             $data = json_decode(json_encode($data), false); // Use false for $associative to ensure object
@@ -513,11 +514,11 @@ class Template
      * Generate breadcrumb array structure.
      *
      * @param array $data An associative array of slug => label for breadcrumb segments.
-     * @param array|string|null $title The title for the current page (last segment label).
+     * @param string|null $title The title for the current page (last segment label).
      * @param array $primary Array of primary key names to be preserved in query parameters.
      * @return array<int, array{url: string, label: string, icon: string}> The array of breadcrumb items.
      */
-    public function breadcrumb(array $data = [], array|string|null $title = null, array $primary = []): array
+    public function breadcrumb(array $data = [], ?string $title = null, array $primary = []): array
     {
         $request = Services::request();
         $router = Services::router();
@@ -536,7 +537,7 @@ class Template
             }
         }
 
-        if ($this->get_theme_property('type') == 'backend') {
+        if ($this->getThemeProperty('type') == 'backend') {
             $output = [
                 [
                     'url' => base_url('dashboard'),
@@ -600,7 +601,7 @@ class Template
 
         $output[] = [
             'url' => '',
-            'label' => (! is_array($title) && $title ? $title : $current_page),
+            'label' => $title ?? $current_page,
             'icon' => ''
         ];
 
@@ -610,7 +611,7 @@ class Template
     /**
      * Generate pagination data structure.
      *
-     * @param array $data Array containing pagination details (total_rows, per_page, offset).
+     * @param array $data Array containing pagination details (total, per_page, offset).
      * @return array<string, mixed> The array of pagination data.
      */
     public function pagination(array $data = []): array
@@ -623,9 +624,9 @@ class Template
             $data = json_decode(json_encode($data), false);
         }
 
-        if (! isset($data->total_rows)) {
+        if (! isset($data->total)) {
             // If there's no result, set to 0
-            $data->total_rows = 0;
+            $data->total = 0;
         }
 
         if (! isset($data->per_page)) {
@@ -639,22 +640,15 @@ class Template
         }
 
         $output = [];
-
+        $query_params = [];
+        $request = Services::request();
         $pager = Services::pager();
 
-        // Get last page
-        $last_page = ($data->total_rows > $data->per_page ? (int) ceil($data->total_rows / $data->per_page) : 1);
-
         // Make pagination links
-        $pagination = $pager->makeLinks(1, $data->per_page, $data->total_rows, 'pagination');
+        $pagination = $pager->makeLinks(1, $data->per_page, $data->total, 'pagination');
 
-        // Parse HTML
-        $parser = new Html_dom();
-        $buffer = $parser->str_get_html($pagination);
-
-        $request = Services::request();
-
-        $query_params = [];
+        // Get last page
+        $last_page = ($data->total > $data->per_page ? (int) ceil($data->total / $data->per_page) : 1);
 
         foreach ($request->getGet() as $key => $val) {
             if (is_array($val)) {
@@ -691,7 +685,7 @@ class Template
         }
 
         $output = [
-            'total_rows' => (int) $data->total_rows,
+            'total' => (int) $data->total,
             'per_page' => (int) $data->per_page,
             'action' => current_page(null, ['per_page' => null]),
             'filters' => [
@@ -738,9 +732,9 @@ class Template
                 ]
             ],
             'information' => phrase('Showing {{start}} - {{end}} of {{total}} entries found.', [
-                'start' => ($data->offset ? number_format($data->offset) : ($data->total_rows ? 1 : 0)),
-                'end' => ((($data->offset + $data->per_page) < $data->total_rows ? number_format(($data->offset + $data->per_page)) : number_format($data->total_rows))),
-                'total' => number_format($data->total_rows)
+                'start' => ($data->offset ? number_format($data->offset) : ($data->total ? 1 : 0)),
+                'end' => ((($data->offset + $data->per_page) < $data->total ? number_format(($data->offset + $data->per_page)) : number_format($data->total))),
+                'total' => number_format($data->total)
             ])
         ];
 
@@ -757,44 +751,31 @@ class Template
         }
 
         $output['links'] = [];
-        foreach ($buffer->find('ul li') as $val) {
-            /** @var \simple_html_dom_node $val */
-            $link = $val->find('a', 0);
-            if ($link) {
+
+        $dom = new \DOMDocument();
+        $internal_errors = libxml_use_internal_errors(true);
+
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $pagination, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($internal_errors);
+
+        foreach ($dom->getElementsByTagName('li') as $li) {
+            /** @var \DOMElement $li */
+            $anchor = $li->getElementsByTagName('a')->item(0);
+
+            if ($anchor) {
                 $output['links'][] = [
-                    'id' => (string) $link->id,
-                    'parent_class' => (string) $val->class,
-                    'class' => (string) $link->class,
-                    'href' => (string) $link->href,
-                    'label' => trim(str_replace('&amp;', '&', htmlspecialchars($link->innertext)))
+                    'id' => (string) $anchor->getAttribute('id'),
+                    'parent_class' => (string) $li->getAttribute('class'),
+                    'class' => (string) $anchor->getAttribute('class'),
+                    'href' => (string) $anchor->getAttribute('href'),
+                    'label' => trim(htmlspecialchars($anchor->textContent))
                 ];
             }
         }
 
         return $output;
-    }
-
-    /**
-     * Function to beautify HTML.
-     *
-     * @param string|null $buffer The HTML content to beautify.
-     * @return string|null The beautified HTML content.
-     */
-    private function _beautify(?string $buffer = null): ?string
-    {
-        $beautifier = new Beautifier([
-            'indent_inner_html' => true,
-            'indent_char' => ' ',
-            'indent_size' => 4,
-            'wrap_line_length' => 32786,
-            'unformatted' => ['textarea', 'pre', 'code', 'script'],
-            'preserve_newlines' => false,
-            'max_preserve_newlines' => 32786,
-            'indent_scripts' => 'normal' // keep|separate|normal
-        ]);
-
-        // Beautify output
-        return $beautifier->beautify($buffer);
     }
 
     /**
@@ -846,7 +827,7 @@ class Template
      * @param array $menus Base menu array (usually empty or pre-loaded).
      * @return array The complete menu structure for the current user group and theme.
      */
-    private function _core_menus(array $menus = []): array
+    private function _coreMenus(array $menus = []): array
     {
         if (! $menus) {
             $group_id = get_userdata('group_id');
@@ -854,14 +835,14 @@ class Template
             $menus_data = $this->_model->select('
                 serialized_data
             ')
-            ->group_start()
+            ->groupStart()
             ->where('group_id', $group_id)
-            ->or_where('group_id', 0)
-            ->group_end()
-            ->get_where(
-                'app__menus',
+            ->orWhere('group_id', 0)
+            ->groupEnd()
+            ->getWhere(
+                'app_menus',
                 [
-                    'menu_placement' => ('frontend' == $this->get_theme_property('type') ? 'header' : 'sidebar')
+                    'menu_placement' => ('frontend' == $this->getThemeProperty('type') ? 'header' : 'sidebar')
                 ],
                 1
             )
@@ -965,7 +946,7 @@ class Template
                 ]
             ];
 
-            if (get_userdata('group_id') == 1 && $this->get_theme_property('type') == 'backend') {
+            if (get_userdata('group_id') == 1 && $this->getThemeProperty('type') == 'backend') {
                 // Core menus for global administrator
                 $core_menus = [
                     [
@@ -1135,13 +1116,13 @@ class Template
                 ];
 
                 $menus = array_merge($menus, $core_menus);
-            } elseif (get_userdata('group_id') == 2 && $this->get_theme_property('type') == 'backend') {
+            } elseif (get_userdata('group_id') == 2 && $this->getThemeProperty('type') == 'backend') {
                 // CMS menus for technical
                 $menus = array_merge($menus, $cms_menus);
             }
         }
 
-        if ($this->get_theme_property('type') === 'backend') {
+        if ($this->getThemeProperty('type') === 'backend') {
             $dashboard = [
                 [
                     'id' => 0,

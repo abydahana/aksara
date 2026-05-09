@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var mixed $activation
+ * @var mixed $years
+ */
+?>
 <style type="text/css">
     #content-wrapper {
         margin-top: 0
@@ -30,7 +36,7 @@
                             </p>
                         </div>
                         <div class="mb-3">
-                            <p class="lead text-center text-muted">
+                            <p class="fs-5 text-center text-muted">
                                 <?= phrase('Please enter your account information to sign in.'); ?>
                             </p>
                         </div>
@@ -124,13 +130,13 @@
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
-                        <div class="text-center text-muted">
-                            <?= phrase('Do not have an account?'); ?> &nbsp; 
-                            <a href="<?= base_url('auth/register'); ?>" class="--xhr">
-                                <b>
-                                    <?= phrase('Register an Account'); ?>
-                                </b>
-                            </a>
+                        <div class="text-center">
+                            <p class="text-muted mb-0"><?= phrase('Do not have an account?'); ?></p>
+                            <p>
+                                <a href="<?= base_url('auth/register'); ?>" class="--xhr">
+                                    <b><?= phrase('Register an Account'); ?></b>
+                                </a>
+                            </p>
                         </div>
                     <?php endif; ?>
                 </div>

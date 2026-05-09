@@ -25,16 +25,16 @@ class Cms extends Core
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
 
-        $this->set_method('index');
+        $this->setMethod('index');
     }
 
     public function index()
     {
-        $this->set_title(phrase('Content Management System'))
-        ->set_icon('mdi mdi-briefcase-outline')
+        $this->setTitle(phrase('Content Management System'))
+        ->setIcon('mdi mdi-briefcase-outline')
 
         ->render();
     }

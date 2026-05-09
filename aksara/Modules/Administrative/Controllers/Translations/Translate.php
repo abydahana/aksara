@@ -17,29 +17,29 @@
 
 namespace Aksara\Modules\Administrative\Controllers\Translations;
 
+use Throwable;
 use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Core;
-use Throwable;
 
 class Translate extends Core
 {
-    private $_table = 'app__languages';
-    private $_primary;
-    private $_code;
-    private $_translation_file;
-    private $_total_phrases;
-    private $_limit;
-    private $_limit_backup;
-    private $_offset;
+    private string $_table = 'app_languages';
+    private int $_primary;
+    private string $_code;
+    private string $_translationFile;
+    private int $_totalPhrases = 0;
+    private int $_limit;
+    private int $_limitBackup = 99;
+    private int $_offset;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->restrict_on_demo();
+        $this->restrictOnDemo();
 
-        $this->set_permission();
-        $this->set_theme('backend');
+        $this->setPermission();
+        $this->setTheme('backend');
         $this->searchable(false);
 
         $this->_primary = $this->request->getGet('id');
@@ -49,10 +49,10 @@ class Translate extends Core
         }
 
         $this->_code = $this->request->getGet('code');
-        $this->_translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->_code . '.json';
-        $this->_total_phrases = 0;
-        $this->_limit_backup = 99;
-        $this->_limit = ($this->request->getGet('limit') ? $this->request->getGet('limit') : $this->_limit_backup);
+        $this->_translationFile = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->_code . '.json';
+        $this->_totalPhrases = 0;
+        $this->_limitBackup = 99;
+        $this->_limit = ($this->request->getGet('limit') ? $this->request->getGet('limit') : $this->_limitBackup);
         $this->_offset = ($this->request->getGet('per_page') > 1 ? ($this->request->getGet('per_page') * $this->_limit) - $this->_limit : 0);
     }
 
@@ -61,23 +61,20 @@ class Translate extends Core
         $template = new Template('backend');
         $phrases = $this->_phrases();
 
-        $this->set_title(phrase('Translate'))
-        ->set_icon('mdi mdi-translate')
-        ->set_output([
+        $this->setTitle(phrase('Translate'))
+        ->setIcon('mdi mdi-translate')
+        ->setOutput([
             'phrases' => $phrases,
-            'total_phrases' => $this->_total_phrases,
-            'pagination' => $template->pagination(
-                [
-                    'limit' => $this->_limit_backup,
-                    'offset' => $this->_offset,
-                    'per_page' => $this->_limit,
-                    'total_rows' => $this->_total_phrases,
-                    'url' => current_page(null, ['per_page' => null])
-                ],
-                ($this->api_client || $this->request->isAJAX())
-            )
+            'total_phrases' => $this->_totalPhrases,
+            'pagination' => $template->pagination([
+                'limit' => $this->_limitBackup,
+                'offset' => $this->_offset,
+                'per_page' => $this->_limit,
+                'total' => $this->_totalPhrases,
+                'url' => current_page(null, ['per_page' => null])
+            ])
         ])
-        ->form_callback('validate_translation')
+        ->formCallback('validateTranslation')
         ->where([
             'id' => $this->_primary
         ])
@@ -87,7 +84,7 @@ class Translate extends Core
         ->render($this->_table);
     }
 
-    public function delete_phrase()
+    public function deletePhrase()
     {
         if (DEMO_MODE) {
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
@@ -134,18 +131,18 @@ class Translate extends Core
         return throw_exception(301, phrase('The selected phrase was successfully removed.'), current_page('../', ['phrase' => null]));
     }
 
-    public function validate_translation()
+    public function validateTranslation()
     {
         if (DEMO_MODE) {
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page());
         }
 
-        if (file_exists($this->_translation_file)) {
+        if (file_exists($this->_translationFile)) {
             try {
                 // Set internal encoding to UTF-8
                 mb_internal_encoding('UTF-8');
 
-                $translation = file_get_contents($this->_translation_file);
+                $translation = file_get_contents($this->_translationFile);
                 $phrases = json_decode($translation, true);
                 $phrases_input = $this->request->getPost('phrases');
 
@@ -258,7 +255,7 @@ class Translate extends Core
                 );
 
                 // Write with file lock to prevent race condition
-                file_put_contents($this->_translation_file, $json_content, LOCK_EX);
+                file_put_contents($this->_translationFile, $json_content, LOCK_EX);
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
             } catch (Throwable $e) {
@@ -274,8 +271,8 @@ class Translate extends Core
         $phrases = [];
 
         // Check if translation file is exists
-        if (file_exists($this->_translation_file)) {
-            $translation = file_get_contents($this->_translation_file);
+        if (file_exists($this->_translationFile)) {
+            $translation = file_get_contents($this->_translationFile);
             $phrases = json_decode($translation, true);
 
             if ($phrases) {
@@ -306,7 +303,7 @@ class Translate extends Core
             }
 
             // Update phrase total
-            $this->_total_phrases = sizeof($phrases);
+            $this->_totalPhrases = sizeof($phrases);
 
             // Slice array
             $phrases = array_slice($phrases, $this->_offset, $this->_limit);

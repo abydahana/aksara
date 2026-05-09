@@ -124,7 +124,7 @@ return [
     'The rewrite module is disabled by your server.' => 'Модуль перезаписи отключен вашим сервером.',
     'You can continue the installation but we recommend to enable it.' => 'Вы можете продолжить установку, но мы рекомендуем включить его.',
 
-  // Безопасность
+    // Безопасность
     'Enter your secret formula to secure your application.' => 'Введите вашу секретную формулу для обеспечения безопасности вашего приложения.',
     'Encryption Key' => 'Encryption Key',
     'Your encryption key' => 'Ваш ключ шифрования',
@@ -141,7 +141,7 @@ return [
     'Password for superuser' => 'Пароль для суперпользователя',
     'Retype the password' => 'Повторите пароль',
 
-// Система
+    // Система
     'The encryption key cannot be empty!' => 'Ключ шифрования не может быть пустым!',
     'The encryption key contain unsupported character!' => 'Ключ шифрования содержит неподдерживаемый символ!',
     'The cookie name cannot be empty!' => 'Имя cookie не может быть пустым!',
@@ -197,13 +197,12 @@ return [
     'Make sure the following directory is writable' => 'Убедитесь, что следующий каталог доступен для записи',
     'Skip installing the sample module' => 'Пропустить установку образца модуля.',
 
-// Разное
+    // Разное
     'Subscribe to my channel' => 'Подписаться на мой канал',
     'Be my friend' => 'Будь моим другом',
     'Follow my GitHub' => 'Подписаться на мой GitHub',
     'Import sample data' => 'Установить с образцовыми данными',
 
-// Дополнительные фразы
-    'Sectoral' => 'Секторальное отображение',
-    'Regional' => 'Региональное отображение'
+    // Дополнительные фразы
+    'WebGIS' => 'WebGIS'
 ];

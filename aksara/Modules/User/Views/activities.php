@@ -1,5 +1,11 @@
-<?php if ($user): ?>
-    <div class="py-3 py-md-5 bg-light">
+<?php
+/**
+ * @var mixed $user
+ * @var mixed $results
+ * @var mixed $pagination
+ */
+if ($user): ?>
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -10,15 +16,15 @@
                         <h2 class="mb-0">
                             <?= $user->first_name; ?> <?= $user->last_name; ?>
                         </h2>
-                        <p class="lead">
+                        <p class="fs-5">
                             @<?= $user->username; ?>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border-top border-bottom border-light-subtle bg-white py-2">
+    </section>
+    <div class="border-fade bg-white py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -50,7 +56,7 @@
             </div>
         </div>
     </div>
-    <div class="py-3">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -58,7 +64,7 @@
                         <div class="alert alert-warning callout">
                             <h3 class="mb-0"><?= phrase('No Activities'); ?></h3>
                             <hr />
-                            <p class="lead mb-0">
+                            <p class="fs-5 mb-0">
                                 <i class="mdi mdi-information-outline"></i> <?= phrase('User activity will be shown here if they have made some interaction.'); ?>
                             </p>
                         </div>
@@ -68,8 +74,7 @@
                             $metadata = fetch_metadata($val->post_path);
                         ?>
                         <div class="activity-item mb-3">
-                            <div class="card rounded-4 border-light-subtle mb-3">
-                                <div class="card-body">
+                            <div class="bg-light rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
                                             <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
@@ -81,7 +86,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <p class="lead mb-0"><?= truncate($val->comments, 160); ?></p>
+                                    <p class="fs-5 mb-0"><?= truncate($val->comments, 160); ?></p>
                                     <?php if ($val->attachment): ?>
                                         <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
                                             <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="..." />
@@ -96,7 +101,6 @@
                                         </h4>
                                     <?php endif; ?>
                                 </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
 
@@ -106,7 +110,7 @@
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="py-3 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -117,7 +121,7 @@
                         <h2 class="text-center">
                             <?= phrase('User not found'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">

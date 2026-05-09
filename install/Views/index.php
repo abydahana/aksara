@@ -31,21 +31,18 @@
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+        <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+        <style type="text/css">
+            body, h1, h2, h3, h4, h5, h6, .display-4, .display-5, .btn, .lead, .nav-link {
+                font-family: 'Ubuntu', sans-serif !important;
+            }
+        </style>
         <style type="text/css">
             html,
             body {
                 height: 100%;
                 min-height: 100%
-            }
-            body {
-                font-family: 'Fira Sans', sans-serif
-            }
-            h1,h2,h3,h4,h5,h6,.display-5,.btn,.lead {
-                font-family: 'DM Sans', sans-serif!important
             }
             [dir="rtl"] .border-end {
                 border-right: 0 !important;
@@ -66,7 +63,7 @@
                             <div class="row">
                                 <div class="col-md-4 border-end pt-3 d-none d-md-block position-relative">
                                     <div class="sticky-top mb-3 pb-5" style="top:15px">
-                                        <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
+                                        <a href="//www.aksaracms.com" class="text-decoration-none" target="_blank">
                                             <h4 class="fw-bold mb-3">
                                                 <b>
                                                     Aksara

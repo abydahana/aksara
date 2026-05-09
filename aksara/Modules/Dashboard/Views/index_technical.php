@@ -1,10 +1,49 @@
+<?php
+    /**
+     * @var mixed $card
+     * @var mixed $visitors
+     * @var mixed $recent_signed
+     * @var mixed $announcements
+     * @var mixed $system_language
+     * @var mixed $group_name
+     * @var mixed $logs
+     */
+    $logs = (isset($logs) ? $logs : []);
+?>
 <div class="container-fluid py-3">
+    <div class="row mb-3">
+        <div class="col-lg-8">
+            <div class="card overflow-hidden rounded-4 mb-3">
+                <div class="card-body p-4">
+                    <h5 class="mb-1">
+                        <?= phrase('Welcome back'); ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>!
+                    </h5>
+                    <p class="text-muted mb-0">
+                        <?= phrase('You are signed in as {{ group_name }}.', ['group_name' => '<b>' . $group_name . '</b>']); ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card overflow-hidden rounded-4 mb-3">
+                <div class="card-body p-4 text-center">
+                    <div class="text-muted small text-uppercase fw-bold mb-1">
+                        <?= phrase('Today'); ?>
+                    </div>
+                    <div class="h5 mb-0 text-primary fw-bold">
+                        <?= phrase(date('l')) . ', ' . date('d') . ' ' . phrase(date('F')) . ' ' . date('Y'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
-                <div class="card border-0 bg-primary text-center text-sm-start" style="overflow:hidden">
+                <div class="card border-0 rounded-4 bg-primary text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
-                        <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+                        <div class="col-sm-4 col-xl-3">
                             <div class="p-3 text-center">
                                 <i class="mdi mdi-newspaper mdi-2x text-light"></i>
                             </div>
@@ -23,9 +62,9 @@
         </div>
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/pages'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages'); ?>">
-                <div class="card border-0 bg-info text-center text-sm-start" style="overflow:hidden">
+                <div class="card border-0 rounded-4 bg-info text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
-                        <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+                        <div class="col-sm-4 col-xl-3">
                             <div class="p-3 text-center">
                                 <i class="mdi mdi-file-multiple mdi-2x text-light"></i>
                             </div>
@@ -44,9 +83,9 @@
         </div>
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/galleries'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries'); ?>">
-                <div class="card border-0 bg-danger text-center text-sm-start" style="overflow:hidden">
+                <div class="card border-0 rounded-4 bg-success text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
-                        <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+                        <div class="col-sm-4 col-xl-3">
                             <div class="p-3 text-center">
                                 <i class="mdi mdi-folder-multiple-image mdi-2x text-light"></i>
                             </div>
@@ -64,20 +103,20 @@
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('administrative/users'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage users'); ?>">
-                <div class="card border-0 bg-dark text-center text-sm-start" style="overflow:hidden">
+            <a href="<?= base_url('cms/videos'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage videos'); ?>">
+                <div class="card border-0 rounded-4 bg-danger text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
-                        <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
+                        <div class="col-sm-4 col-xl-3">
                             <div class="p-3 text-center">
-                                <i class="mdi mdi-account-group-outline mdi-2x text-light"></i>
+                                <i class="mdi mdi-youtube mdi-2x text-light"></i>
                             </div>
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
-                                <?= phrase('Users'); ?>
+                                <?= phrase('Videos'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->users) . ' ' . ($card->users > 2 ? phrase('users') : phrase('user')); ?>
+                                <?= number_format($card->videos) . ' ' . ($card->videos > 2 ? phrase('videos') : phrase('video')); ?>
                             </p>
                         </div>
                     </div>
@@ -86,15 +125,15 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-8 bg-white">
-            <div class="sticky-top">
-                <div class="border rounded mb-3">
-                    <div id="visitor-chart" class="rounded" style="width:100%; height:300px"></div>
+        <div class="col-lg-8">
+            <div class="sticky-top" style="top:6rem">
+                <div class="border rounded-4 overflow-hidden mb-3">
+                    <div id="visitor-chart" class="rounded-4" style="width:100%; height:300px"></div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header bg-white border-0">
+                        <div class="card overflow-hidden rounded-4 mb-3">
+                            <div class="card-header border-0 p-4">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Most used browsers'); ?>
                                 </h5>
@@ -129,8 +168,8 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header bg-white border-0">
+                        <div class="card overflow-hidden rounded-4 mb-3">
+                            <div class="card-header border-0 p-4">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Recent sign in'); ?>
                                 </h5>
@@ -164,13 +203,60 @@
                         </div>
                     </div>
                 </div>
+                <div class="card overflow-hidden rounded-4 mb-3">
+                    <div class="card-header border-0 p-4">
+                        <h5 class="card-title mb-0">
+                            <?= phrase('Recent Activities'); ?>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if ($logs): ?>
+                                        <?php foreach ($logs as $log): ?>
+                                            <tr>
+                                                <td class="px-4 align-middle">
+                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <span class="badge bg-white text-dark rounded-pill border"><?= $log->platform; ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <span class="text-sm"><?= $log->browser; ?></span>
+                                                </td>
+                                                <td class="px-4 align-middle">
+                                                    <code class="text-sm text-primary"><?= $log->ip_address; ?></code>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" class="text-center p-4 text-muted">
+                                                <?= phrase('No activity recorded yet.'); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-lg-4 bg-white">
-            <div class="sticky-top">
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top:6rem">
                 <?php if ($announcements): ?>
-                    <div class="card mb-3">
-                        <div class="card-header bg-white border-0">
+                    <div class="card overflow-hidden rounded-4 mb-3">
+                        <div class="card-header border-0 p-4">
                             <h5 class="card-title mb-0">
                                 <?= phrase('Announcements'); ?>
                             </h5>
@@ -191,8 +277,35 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="card mb-3">
-                    <div class="card-header bg-white border-0">
+                <div class="card overflow-hidden rounded-4 mb-3">
+                    <div class="card-header bg-transparent border-0 p-4">
+                        <h5 class="fw-bold mb-0">
+                            <?= phrase('Announcements'); ?>
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <?php if ($announcements): ?>
+                            <?php foreach ($announcements as $announcement): ?>
+                                <div class="mb-3 pb-3 border-bottom last-child-border-0">
+                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug); ?>" class="fw-bold text-decoration-none --xhr">
+                                        <?= $announcement->title; ?>
+                                    </a>
+                                    <div class="text-muted small mt-1">
+                                        <?= truncate($announcement->content, 100); ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="text-center py-4 text-muted">
+                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
+                                <?= phrase('No announcements available.'); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden rounded-4 mb-3">
+                    <div class="card-header border-0 p-4">
                         <h5 class="card-title mb-0">
                             <?= phrase('Application Information'); ?>
                         </h5>

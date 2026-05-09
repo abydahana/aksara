@@ -1,27 +1,30 @@
 <?php
-    $count = 0;
-    $images = (isset($results[0]) ? json_decode($results[0]->gallery_images) : []);
-    $attributes = (isset($results[0]) ? json_decode($results[0]->gallery_attributes) : []);
-    $path = service('uri')->getRoutePath();
-    $current = service('uri')->getSegment(3);
-    $carousel = null;
+/**
+ * @var mixed $results
+ */
+$count = 0;
+$images = (isset($results[0]) ? json_decode($results[0]->gallery_images) : []);
+$attributes = (isset($results[0]) ? json_decode($results[0]->gallery_attributes) : []);
+$path = service('uri')->getRoutePath();
+$current = service('uri')->getSegment(3);
+$carousel = null;
 
-    if ($images) {
-        foreach ($images as $key => $val) {
-            $carousel .= '
-                <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null) . '">
-                    <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
-                        <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
-                        <div class="carousel-caption d-none d-md-block text-shadow">
-                            ' . $val . '
-                        </div>
+if ($images) {
+    foreach ($images as $key => $val) {
+        $carousel .= '
+            <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null) . '">
+                <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
+                    <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
+                    <div class="carousel-caption d-none d-md-block text-shadow">
+                        ' . $val . '
                     </div>
                 </div>
-            ';
+            </div>
+        ';
 
-            $count++;
-        }
+        $count++;
     }
+}
 ?>
 <div class="row g-0 bg-light">
     <div class="col-lg-8">
@@ -74,7 +77,7 @@
                 </div>
             </div>
             <div>
-                <?= custom_nl2br($results[0]->gallery_description); ?>
+                <?= custom_nl2br($results[0]->gallery_description, 1); ?>
             </div>
             <?php
                 if ($attributes) {

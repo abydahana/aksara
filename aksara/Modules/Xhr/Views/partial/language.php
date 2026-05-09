@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var mixed $languages
+ */
+?>
 <div>
     <?php foreach ($languages as $key => $val): ?>
         <?php if ($key): ?>

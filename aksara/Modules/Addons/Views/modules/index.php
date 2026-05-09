@@ -1,8 +1,13 @@
+<?php
+/**
+ * @var mixed $installed
+ */
+?>
 <div class="container-fluid">
     <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 mb-1 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to(); ?>" class="nav-link rounded-pill no-wrap --xhr">
+                <a href="<?= go_to('../'); ?>" class="nav-link rounded-pill no-wrap --xhr">
                     <i class="mdi mdi-cart"></i>
                     <?= phrase('Market'); ?>
                 </a>

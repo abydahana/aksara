@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var mixed $results
+ */
+?>
 <div class="container-fluid">
     <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">

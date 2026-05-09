@@ -43,7 +43,7 @@ class Videos extends Migration
                 'null' => false
             ],
             'description' => [
-                'type' => 'text',
+                'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
             'slug' => [
@@ -84,7 +84,7 @@ class Videos extends Migration
         $this->forge->addKey('id', true, true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('author', 'app__users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('author', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Add index for status column
         $this->forge->addKey('status', false, false);

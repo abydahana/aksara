@@ -1,5 +1,9 @@
 <?php
-    // Get installation mode options
+/**
+ * @var mixed $installation_mode
+ * @var mixed $timezone
+ */
+// Get installation mode options
     $options = null;
 
     foreach($installation_mode as $key => $val)
@@ -131,7 +135,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('image_dimension') ?? 1024); ?>" />
+                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('image_dimension') ?? 1920); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -145,7 +149,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ?? 256); ?>" />
+                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ?? 480); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -159,7 +163,7 @@
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ?? 80); ?>" />
+                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ?? 128); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>

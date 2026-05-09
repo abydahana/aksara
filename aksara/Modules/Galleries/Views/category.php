@@ -1,55 +1,53 @@
 <?php
-    $output = null;
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ */
+$output = null;
 
-    if ($results) {
-        foreach ($results as $key => $val) {
-            $images = json_decode($val->gallery_images, true);
-            $labels = explode(',', $val->gallery_tags);
+if ($results) {
+    foreach ($results as $key => $val) {
+        $images = json_decode($val->gallery_images, true);
+        $labels = explode(',', $val->gallery_tags);
 
-            if (is_array($images) && sizeof($images) > 0) {
-                foreach ($images as $src => $alt) {
-                    if (! $src) {
-                        continue;
-                    }
-
-                    $output .= '
-                        <div class="col-sm-6 col-md-3">
-                            <a href="' . current_page($src) . '" class="--xhr">
-                                <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-4 w-100 mb-4" alt="' . $alt . '" />
-                            </a>
-                        </div>
-                    ';
+        if (is_array($images) && sizeof($images) > 0) {
+            foreach ($images as $src => $alt) {
+                if (! $src) {
+                    continue;
                 }
+
+                $output .= '
+                    <div class="col-sm-6 col-md-3">
+                        <a href="' . current_page($src) . '" class="--xhr">
+                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4" alt="' . $alt . '" />
+                        </a>
+                    </div>
+                ';
             }
         }
     }
-?>
+}
 
-<?php if ($output): ?>
-    <div class="bg-light">
-        <div class="py-3 py-md-5">
-            <div class="container">
-                <h1 class="text-center text-md-start">
-                    <?= $meta->title; ?>
-                </h1>
-                <p class="lead text-center text-md-start">
-                    <?= truncate($meta->description, 256); ?>
-                </p>
-            </div>
-        </div>
-        <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-            <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-        </svg>
+if ($output): ?>
+<section class="section-padding fade-in">
+    <div class="container text-center text-md-start">
+        <h1 class="display-4 fw-bold text-dark">
+            <?= $meta->title; ?>
+        </h1>
+        <p class="fs-5 text-muted mb-0">
+            <?= truncate($meta->description, 256); ?>
+        </p>
     </div>
-    <div class="py-3 py-md-5">
-        <div class="container">
-            <div class="row">
-                <?= $output; ?>
-            </div>
+</section>
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <?= $output; ?>
         </div>
     </div>
+</section>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <section class="section-padding fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -60,7 +58,7 @@
                         <h2 class="text-center">
                             <?= phrase('No album is found!'); ?>
                         </h2>
-                        <p class="lead text-center">
+                        <p class="fs-5 text-center">
                             <?= phrase('No album is available at the moment.'); ?>
                         </p>
                         <p class="text-center">
@@ -72,5 +70,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 <?php endif; ?>

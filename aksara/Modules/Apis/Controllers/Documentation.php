@@ -15,42 +15,40 @@
  * have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Apis\Controllers;
+namespace Aksara\Modules\APIs\Controllers;
 
+use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
-use Throwable;
-use stdClass;
 
 class Documentation extends Core
 {
-    private $_primary;
-
-    private $_collection = [];
-    private $_namespace = [];
+    private ?int $_primary;
+    private array $_collection = [];
+    private array $_namespace = [];
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->set_permission();
-        $this->set_theme('backend');
-        $this->set_method('index');
+        $this->setPermission();
+        $this->setTheme('backend');
+        $this->setMethod('index');
 
         $this->_primary = $this->request->getGet('slug');
 
         if ($this->_primary && 'fetch' == $this->request->getPost('mode')) {
-            return $this->_fetch_properties($this->_primary, $this->request->getPost('group'));
+            return $this->_fetchProperties($this->_primary, $this->request->getPost('group'));
         }
     }
 
     public function index()
     {
-        $this->set_title(phrase('API Documentations'))
-        ->set_icon('mdi mdi-book-open-page-variant')
+        $this->setTitle(phrase('API Documentations'))
+        ->setIcon('mdi mdi-book-open-page-variant')
 
-        ->set_output([
-            'modules' => $this->_scan_module(),
+        ->setOutput([
+            'modules' => $this->_scanModule(),
             'permission' => $this->_permission($this->_primary),
             'active' => $this->_primary
         ])
@@ -78,11 +76,11 @@ class Documentation extends Core
             $query = $this->model->like([
                 'group_privileges' => '"' . $slug . '"'
             ])
-            ->or_like([
+            ->orLike([
                 'group_privileges' => '"' . str_replace('/', '\/', $slug) . '"'
             ])
-            ->get_where(
-                'app__groups',
+            ->getWhere(
+                'app_groups',
                 [
                     'status' => 1
                 ]
@@ -93,8 +91,8 @@ class Documentation extends Core
                 $groups = $query;
             }
 
-            $query = $this->model->get_where(
-                'app__groups_privileges',
+            $query = $this->model->getWhere(
+                'app_groups_privileges',
                 [
                     'path' => $slug
                 ],
@@ -113,9 +111,9 @@ class Documentation extends Core
         ];
     }
 
-    private function _fetch_properties($slug = null, $group_id = 0)
+    private function _fetchProperties($slug = null, $group_id = 0)
     {
-        if (in_array($slug, $this->_restricted_resource())) {
+        if (in_array($slug, $this->_restrictedResource())) {
             return false;
         }
 
@@ -140,18 +138,18 @@ class Documentation extends Core
         ];
 
         // Check the temporary session
-        $tmp_session = $this->model->get_where(
-            'app__sessions',
+        $tmp_session = $this->model->getWhere(
+            'app_sessions',
             [
                 'id' => $session_id
             ]
         )
-        ->num_rows();
+        ->numRows();
 
         if ($tmp_session) {
             // Temporary session exists, update it
             $this->model->update(
-                'app__sessions',
+                'app_sessions',
                 [
                     'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
                     'timestamp' => date('Y-m-d H:i:s'),
@@ -164,7 +162,7 @@ class Documentation extends Core
         } else {
             // Store temporary session
             $this->model->insert(
-                'app__sessions',
+                'app_sessions',
                 [
                     'id' => $session_id,
                     'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
@@ -339,7 +337,7 @@ class Documentation extends Core
 
         // Remove the temporary session
         $this->model->delete(
-            'app__sessions',
+            'app_sessions',
             [
                 'id' => $session_id
             ]
@@ -367,7 +365,7 @@ class Documentation extends Core
         ]);
     }
 
-    private function _scan_module()
+    private function _scanModule()
     {
         helper('filesystem');
 
@@ -408,7 +406,7 @@ class Documentation extends Core
                     $slug = ltrim(rtrim('/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parent_dir . (! is_numeric($key) ? $key : null))), '/'), '/');
                 }
 
-                if (! in_array($slug, $this->_restricted_resource())) {
+                if (! in_array($slug, $this->_restrictedResource())) {
                     $this->_collection[] = $slug;
                     $this->_namespace[$slug] = $namespace;
                 }
@@ -416,7 +414,7 @@ class Documentation extends Core
         }
     }
 
-    private function _restricted_resource()
+    private function _restrictedResource()
     {
         return ['administrative/updater', 'assets', 'assets/svg', 'pages/blank', 'shortlink', 'xhr', 'xhr/boot', 'xhr/language', 'xhr/partial', 'xhr/partial/account', 'xhr/partial/announcement', 'xhr/partial/language', 'xhr/summernote', 'xhr/widget/comment'];
     }

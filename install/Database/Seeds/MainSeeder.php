@@ -24,7 +24,7 @@ class MainSeeder extends Seeder
     public function run()
     {
         // Insert main language (default)
-        $this->db->table('app__languages')->insertBatch([
+        $this->db->table('app_languages')->insertBatch([
             [
                 'language' => 'Default (English)',
                 'code' => 'en',
@@ -117,42 +117,209 @@ class MainSeeder extends Seeder
             ],
         ]);
 
-        // Insert the main configuration to app__settings
-        $this->db->table('app__settings')->insert([
-            'app_name' => htmlspecialchars(trim(session()->get('site_title'))),
-            'app_description' => htmlspecialchars(trim(session()->get('site_description'))),
-            'app_logo' => 'logo.png',
-            'app_icon' => 'logo.png',
-            'frontend_theme' => 'default',
-            'backend_theme' => 'backend',
-            'app_language' => htmlspecialchars(trim(session()->get('language') == 'id' ? 2 : 1)),
-            'office_name' => 'Aksara Laboratory',
-            'office_phone' => '+6281381614558',
-            'office_email' => 'info@example.com',
-            'office_fax' => '',
-            'office_address' => '2nd Floor Example Tower Building, Some Road Name, Any Region',
-            'office_map' => '[]',
-            'one_device_login' => 0,
-            'username_change' => 1,
-            'frontend_registration' => 1,
-            'default_membership_group' => 3,
-            'auto_active_registration' => 1,
-            'google_analytics_key' => '',
-            'openlayers_search_provider' => 'openlayers',
-            'openlayers_search_key' => '',
-            'default_map_tile' => '',
-            'facebook_app_id' => '',
-            'facebook_app_secret' => '',
-            'google_client_id' => '',
-            'google_client_secret' => '',
-            'twitter_username' => '',
-            'instagram_username' => '',
-            'whatsapp_number' => '',
-            'action_sound' => 1
-        ]);
+        // Insert the main configuration to app_settings (Vertical Schema)
+        $settings_data = [
+            [
+                'key' => 'app_name',
+                'type' => 'varchar',
+                'value' => htmlspecialchars(trim(session()->get('site_title') ?? ''))
+            ],
+            [
+                'key' => 'app_description',
+                'type' => 'text',
+                'value' => htmlspecialchars(trim(session()->get('site_description') ?? ''))
+            ],
+            [
+                'key' => 'app_logo',
+                'type' => 'image',
+                'value' => 'logo.png'
+            ],
+            [
+                'key' => 'app_icon',
+                'type' => 'image',
+                'value' => 'logo.png'
+            ],
+            [
+                'key' => 'frontend_theme',
+                'type' => 'varchar',
+                'value' => 'default'
+            ],
+            [
+                'key' => 'backend_theme',
+                'type' => 'varchar',
+                'value' => 'backend'
+            ],
+            [
+                'key' => 'app_language',
+                'type' => 'select',
+                'value' => htmlspecialchars(trim(session()->get('language') == 'id' ? '2' : '1'))
+            ],
+            [
+                'key' => 'office_name',
+                'type' => 'varchar',
+                'value' => 'Aksara Laboratory'
+            ],
+            [
+                'key' => 'office_phone',
+                'type' => 'varchar',
+                'value' => '+6281381614558'
+            ],
+            [
+                'key' => 'office_email',
+                'type' => 'varchar',
+                'value' => 'info@example.com'
+            ],
+            [
+                'key' => 'office_fax',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'office_address',
+                'type' => 'text',
+                'value' => '2nd Floor Example Tower Building, Some Road Name, Any Region'
+            ],
+            [
+                'key' => 'office_map',
+                'type' => 'text',
+                'value' => ''
+            ],
+            [
+                'key' => 'one_device_login',
+                'type' => 'boolean',
+                'value' => '0'
+            ],
+            [
+                'key' => 'username_change',
+                'type' => 'boolean',
+                'value' => '1'
+            ],
+            [
+                'key' => 'frontend_registration',
+                'type' => 'boolean',
+                'value' => '1'
+            ],
+            [
+                'key' => 'default_membership_group',
+                'type' => 'select',
+                'value' => '3'
+            ],
+            [
+                'key' => 'auto_active_registration',
+                'type' => 'boolean',
+                'value' => '1'
+            ],
+            [
+                'key' => 'google_analytics_key',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'openlayers_search_provider',
+                'type' => 'varchar',
+                'value' => 'openlayers'
+            ],
+            [
+                'key' => 'openlayers_search_key',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'default_map_tile',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'facebook_app_id',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'facebook_app_secret',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'google_client_id',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'google_client_secret',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'twitter_username',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'instagram_username',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'whatsapp_number',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'action_sound',
+                'type' => 'boolean',
+                'value' => '1'
+            ],
+            [
+                'key' => 'login_attempt',
+                'type' => 'int',
+                'value' => '0'
+            ],
+            [
+                'key' => 'blocking_time',
+                'type' => 'int',
+                'value' => '0'
+            ],
+            [
+                'key' => 'account_age_restriction',
+                'type' => 'int',
+                'value' => '0'
+            ],
+            [
+                'key' => 'spam_timer',
+                'type' => 'int',
+                'value' => '0'
+            ],
+            [
+                'key' => 'update_check',
+                'type' => 'boolean',
+                'value' => '0'
+            ],
+            [
+                'key' => 'smtp_hostname',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'smtp_port',
+                'type' => 'int',
+                'value' => '0'
+            ],
+            [
+                'key' => 'smtp_username',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'smtp_password',
+                'type' => 'varchar',
+                'value' => ''
+            ]
+        ];
+
+        $this->db->table('app_settings')->insertBatch($settings_data);
 
         // Add core group privileges
-        $this->db->table('app__groups_privileges')->insertBatch([
+        $this->db->table('app_groups_privileges')->insertBatch([
             [
                 'path' => 'addons',
                 'privileges' => json_encode(['index', 'detail', 'install']),
@@ -391,7 +558,7 @@ class MainSeeder extends Seeder
         ]);
 
         // Add main user's group (superuser)
-        $this->db->table('app__groups')->insert([
+        $this->db->table('app_groups')->insert([
             'group_name' => 'Global Administrator',
             'group_description' => 'Super User',
             'group_privileges' => '{"addons":["index","detail","install"],"addons/ftp":["index"],"addons/modules":["index","detail","import","update","delete"],"addons/themes":["index","detail","import","update","delete","activate","customize"],"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"administrative/logs":["index"],"administrative/logs/activities":["index","read","truncate","delete","print","pdf"],"administrative/logs/errors":["index","remove","clear"],"administrative/cleaner":["index","clean"],"administrative/connections":["index","create","read","update","delete","export","print","pdf","connect"],"administrative/countries":["index","create","read","update","delete","export","print","pdf"],"administrative/groups":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/privileges":["index","create","update","read","delete","export","print","pdf"],"administrative/menus":["index","create","read","update","delete","export","print","pdf"],"administrative/settings":["index","update"],"administrative/translations":["index","create","read","update","delete","export","print","pdf"],"administrative/translations/synchronize":["index"],"administrative/translations/translate":["index","delete_phrase"],"administrative/updater":["index","update"],"administrative/users":["index","create","read","update","delete","export","print","pdf"],"administrative/users/privileges":["index","update"],"administrative/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf","translate"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf","translate"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifier":["index","read","export","print","pdf"],"notifier/setting":["index"]}',
@@ -399,7 +566,7 @@ class MainSeeder extends Seeder
         ]);
 
         // Add technical user's group
-        $this->db->table('app__groups')->insert([
+        $this->db->table('app_groups')->insert([
             'group_name' => 'Technical',
             'group_description' => 'Group user for technical support',
             'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf","translate"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf","translate"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/carousels":["index","create","read","update","delete","export","print","pdf"],"cms/partials/faqs":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifier":["index","read","export","print","pdf"]}',
@@ -407,7 +574,7 @@ class MainSeeder extends Seeder
         ]);
 
         // Add subscriber user's group
-        $this->db->table('app__groups')->insert([
+        $this->db->table('app_groups')->insert([
             'group_name' => 'Subscriber',
             'group_description' => 'Group user for subscriber',
             'group_privileges' => '{"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"dashboard":["index"]}',
@@ -415,7 +582,7 @@ class MainSeeder extends Seeder
         ]);
 
         // Insert superuser
-        $this->db->table('app__users')->insert([
+        $this->db->table('app_users')->insert([
             'email' => session()->get('email'),
             'password' => password_hash(session()->get('password') . session()->get('encryption'), PASSWORD_DEFAULT),
             'username' => session()->get('username'),

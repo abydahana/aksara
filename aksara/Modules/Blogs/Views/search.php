@@ -1,43 +1,47 @@
-<div class="bg-light">
-    <div class="py-3 py-md-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 offset-lg-2 text-center text-md-start">
-                    <h1 class="display-5 fw-bold">
-                        <?= $meta->title; ?>
-                    </h1>
-                    <p class="lead">
-                        <?= $meta->description; ?>
-                    </p>
-                    <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="form-horizontal position-relative">
-                        <div class="input-group input-group-lg">
-                            <input type="text" name="q" class="form-control rounded-pill rounded-end" placeholder="<?= phrase('Search post'); ?>" value="<?= $keywords; ?>" />
-                            <button type="submit" class="btn btn-dark  rounded-pill rounded-start">
-                                <i class="mdi mdi-magnify"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<?php
+/**
+ * @var mixed $meta
+ * @var mixed $keywords
+ * @var mixed $total
+ * @var mixed $results
+ * @var mixed $pagination
+ */
+?>
+<section class="section-padding fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center text-md-start">
+                <h1 class="display-5 fw-bold">
+                    <?= $meta->title; ?>
+                </h1>
+                <p class="fs-5">
+                    <?= $meta->description; ?>
+                </p>
+                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="form-horizontal position-relative">
+                    <div class="input-group input-group-lg border rounded-pill bg-white overflow-hidden">
+                        <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none" placeholder="<?= phrase('Search post'); ?>" />
+                        <button type="submit" class="btn btn-primary border-0 rounded-pill m-1 px-4">
+                            <i class="mdi mdi-magnify"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <svg class="wave text-white" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path class="wavePath" d="M826.337463,25.5396311 C670.970254,58.655965 603.696181,68.7870267 447.802481,35.1443383 C293.342778,1.81111414 137.33377,1.81111414 0,1.81111414 L0,150 L1920,150 L1920,1.81111414 C1739.53523,-16.6853983 1679.86404,73.1607868 1389.7826,37.4859505 C1099.70117,1.81111414 981.704672,-7.57670281 826.337463,25.5396311 Z" fill="currentColor"></path>
-    </svg>
-</div>
+</section>
 
-<div class="py-3 py-md-5">
+<section class="section-padding fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($keywords): ?>
-                    <p class="lead">
-                        <?php if ($total): ?>
-                            <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($total)]); ?>
+                    <div class="alert alert-info rounded-4 border-0 lead">
+                        <?php if ($pagination->total): ?>
+                            <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($pagination->total)]); ?>
                         <?php else: ?>
                             <?= phrase('Your search keyword {{keywords}} does not match any result.', ['keywords' => $keywords]); ?>
                         <?php endif; ?>
-                    </p>
+                    </div>
                 <?php endif; ?>
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
@@ -49,11 +53,11 @@
                                     </span>
                                 </a>
                                 <h3>
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-primary --xhr">
+                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_title, 160)) : truncate($val->post_title, 160)); ?>
                                     </a>
                                 </h3>
-                                <div class="lead">
+                                <div class="fs-5 text-muted">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_excerpt, 160)) : truncate($val->post_excerpt, 160)); ?>
                                 </div>
                             </div>
@@ -70,4 +74,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>
