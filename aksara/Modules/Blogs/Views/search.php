@@ -57,7 +57,7 @@
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_title, 160)) : truncate($val->post_title, 160)); ?>
                                     </a>
                                 </h3>
-                                <div class="fs-5">
+                                <div class="fs-5 text-muted">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_excerpt, 160)) : truncate($val->post_excerpt, 160)); ?>
                                 </div>
                             </div>

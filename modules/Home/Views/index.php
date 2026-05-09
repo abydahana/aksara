@@ -72,7 +72,7 @@
                 <?php foreach ($articles as $key => $val): ?>
                     <div class="swiper-slide h-auto">
                         <div class="h-100 d-flex flex-column">
-                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-4">
+                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
                                 <div class="row g-0 align-items-center mb-3">
                                     <div class="col-1">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
@@ -95,12 +95,9 @@
                                         <?= truncate($val->post_title, 64); ?>
                                     </a>
                                 </h5>
-                                <p class="text-muted small">
-                                    <?= truncate($val->post_excerpt, 80); ?>
-                                </p>
                             </div>
                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.5rem">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                             </a>
                         </div>
                     </div>

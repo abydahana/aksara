@@ -111,7 +111,7 @@
                             <?php foreach ($val->posts as $_key => $_val): ?>
                                 <div class="swiper-slide h-auto">
                                     <div class="h-100 d-flex flex-column">
-                                        <div class="d-flex flex-column flex-grow-1 border p-3 rounded-4">
+                                        <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
                                             <div class="row g-0 align-items-center mb-3">
                                                 <div class="col-1">
                                                     <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary --xhr">
@@ -136,7 +136,7 @@
                                             </h5>
                                         </div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr">
-                                            <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1.5rem">
+                                            <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                                         </a>
                                     </div>
                                 </div>

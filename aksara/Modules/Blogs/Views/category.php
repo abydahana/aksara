@@ -95,12 +95,15 @@
                                         <?= truncate($val->post_title, 120); ?>
                                     </a>
                                 </h5>
+                                <p class="text-muted small">
+                                    <?= truncate($val->post_excerpt, 120); ?>
+                                </p>
                                 <div style="z-index:1">
                                     <?= $tags; ?>
                                 </div>
                             </div>
                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-white rounded-bottom-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-white rounded-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                             </a>
                         </div>
                     </div>
