@@ -97,7 +97,6 @@ class View
      * Render the View Component.
      *
      * @param   array $serialized Data from the model
-     * @param   int   $length     Length of data
      * @return  array Returns the processed view configuration
      */
     public function render(array $serialized = []): array

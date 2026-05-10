@@ -5829,7 +5829,7 @@ abstract class Core extends Controller
         }
 
         $primaryKeyField = $this->_sortable['primary_key'];
-        $orderKeyField   = $this->_sortable['order_key'];
+        $orderKeyField = $this->_sortable['order_key'];
 
         // Find any records in the table that have an order_key of 0 (e.g. newly added data or broken previous sorts)
         $zeroRecords = $this->model->select($primaryKeyField)
@@ -5853,7 +5853,7 @@ abstract class Core extends Controller
             foreach ($zeroRecords as $record) {
                 $batchData[] = [
                     $primaryKeyField => $record[$primaryKeyField],
-                    $orderKeyField   => $nextOrder
+                    $orderKeyField => $nextOrder
                 ];
                 $nextOrder++;
             }

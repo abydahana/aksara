@@ -97,7 +97,6 @@ class Form
      * and prepares the structure for the view.
      *
      * @param   array $serialized Data from the model
-     * @param   int   $length     Length of data (unused in this context but kept for interface consistency)
      * @return  array Returns the processed form configuration
      */
     public function render(array $serialized = []): array

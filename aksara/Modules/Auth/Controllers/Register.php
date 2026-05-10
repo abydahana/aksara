@@ -81,10 +81,10 @@ class Register extends Core
                     'word_length' => $length,
                     'pool' => $string,
                     'colors' => [
-                        'background' => [255,255,255],
-                        'border' => [255,255,255],
+                        'background' => [255, 255, 255],
+                        'border' => [255, 255, 255],
                         'grid' => [0, 0, 0],
-                        'text' => [0,0,0]
+                        'text' => [0, 0, 0]
                     ]
                 ]);
             }

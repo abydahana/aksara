@@ -115,37 +115,21 @@ class Connections extends Core
     {
         $this->permission->mustAjax();
 
-        $query = $this->model->getWhere(
+        $connectionId = $this->model->getWhere(
             $this->_table,
             [
-                'id' => $this->request->getGet('id')
+                'id' => $this->request->getGet('id') ?? 0
             ],
             1
         )
-        ->row();
+        ->row('id');
 
-        if (! $query) {
+        if (! $connectionId) {
             return throw_exception(404, phrase('The database connection is not found!'));
         }
 
         try {
-            $encrypter = Services::encrypter();
-
-            // Try to decrypting the parameter
-            $connection = [
-                'DBDriver' => $query->database_driver,
-                'hostname' => $query->hostname,
-                'username' => $encrypter->decrypt(base64_decode($query->username)),
-                'password' => $encrypter->decrypt(base64_decode($query->password)),
-                'database' => $query->database_name,
-                'DBDebug' => (ENVIRONMENT !== 'production')
-            ];
-
-            if ($query->port) {
-                $connection['port'] = $query->port;
-            }
-
-            $connector = $this->model->databaseConfig($connection);
+            $connector = $this->model->databaseConfig($connectionId);
 
             if (is_array($connector) && isset($connector['code'])) {
                 return throw_exception(403, $connector['message']);

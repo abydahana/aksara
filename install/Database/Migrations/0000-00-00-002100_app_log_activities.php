@@ -55,7 +55,6 @@ class AppLogActivities extends Migration
             ],
             'query' => [
                 'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text'),
-                'default' => '{}',
                 'null' => false
             ],
             'browser' => [
