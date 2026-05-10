@@ -198,6 +198,7 @@ class Model
                     'password' => function_exists('service') ? $encrypter->decrypt(base64_decode($parameter->password)) : $parameter->password,
                     'database' => $parameter->database_name,
                     'DBDebug' => (defined('ENVIRONMENT') && ENVIRONMENT !== 'production'),
+                    'charset' => ('MySQLi' === $parameter->database_driver ? 'utf8mb4' : ('OCI8' === $parameter->database_driver ? 'AL32UTF8' : 'utf8'))
                 ];
 
                 // Initialize parameter to new connection
@@ -216,6 +217,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
+                $_ENV['charset'] = ('MySQLi' === $config['DBDriver'] ? 'utf8mb4' : ('OCI8' === $config['DBDriver'] ? 'AL32UTF8' : 'utf8'));
             } catch (Throwable $e) {
                 // Decrypt error
                 // Assuming throw_exception is a defined global function
@@ -240,6 +242,7 @@ class Model
                 'password' => $password,
                 'database' => $database,
                 'DBDebug' => (defined('ENVIRONMENT') && ENVIRONMENT !== 'production'),
+                'charset' => ('MySQLi' === $driver ? 'utf8mb4' : ('OCI8' === $driver ? 'AL32UTF8' : 'utf8'))
             ];
 
             try {
@@ -257,6 +260,7 @@ class Model
                 $_ENV['password'] = $config['password'];
                 $_ENV['database'] = $config['database'];
                 $_ENV['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
+                $_ENV['charset'] = ('MySQLi' === $config['DBDriver'] ? 'utf8mb4' : ('OCI8' === $config['DBDriver'] ? 'AL32UTF8' : 'utf8'));
             } catch (Throwable $e) {
                 return function_exists('throw_exception') ? throw_exception(403, $e->getMessage()) : false;
             }
@@ -2738,12 +2742,17 @@ class Model
             }
 
             // Check if the method exists on the current query object/builder before calling
-            if (! method_exists($query, $function)) {
+            if (! is_object($query) || ! method_exists($query, $function)) {
                 continue;
             }
 
-            // Call the method dynamically with all arguments
-            $query = call_user_func_array([$query, $function], $arguments);
+            // For Oracle (OCI8), intercept get/getWhere and use ROWNUM instead of FETCH NEXT
+            if (in_array($function, ['get', 'getWhere']) && 'OCI8' === $this->db->DBDriver) {
+                $query = $this->_ociExecute($query, $function, $arguments);
+            } else {
+                // Call the method dynamically with all arguments
+                $query = call_user_func_array([$query, $function], $arguments);
+            }
 
             // Set flags for execution/result processing
             if (in_array($function, $executionFilters)) {
@@ -2769,7 +2778,7 @@ class Model
             }
 
             // Now call the result method on the result object
-            if (method_exists($query, $function)) {
+            if (is_object($query) && method_exists($query, $function)) {
                 $query = call_user_func_array([$query, $function], $arguments);
             }
 
@@ -2804,6 +2813,47 @@ class Model
         $this->_get = false;
         $this->_isQuery = false;
         $this->_selection = false;
+    }
+
+    /**
+     * Execute get/getWhere for Oracle (OCI8) using ROWNUM to support versions below 12c
+     * that do not support FETCH NEXT n ROWS ONLY syntax.
+     */
+    private function _ociExecute(BaseBuilder $builder, string $function, array $arguments): mixed
+    {
+        // Apply WHERE conditions for getWhere
+        if ('getWhere' === $function) {
+            $where = $arguments[0] ?? [];
+            $limit = $arguments[1] ?? null;
+            $offset = $arguments[2] ?? null;
+
+            if ($where) {
+                $builder->where($where);
+            }
+        } else {
+            $limit = $arguments[0] ?? null;
+            $offset = $arguments[1] ?? null;
+        }
+
+        // Compile the SELECT without limit (CI will add FETCH NEXT which Oracle <12c rejects)
+        $sql = $builder->getCompiledSelect(false);
+
+        // Oracle: remove double quotes so identifiers are case-insensitive (uppercase)
+        $sql = str_replace('"', '', $sql);
+
+        // Strip any FETCH NEXT / OFFSET ROWS syntax CI may have injected
+        $sql = preg_replace('/\s+ORDER BY 1/i', '', $sql);
+        $sql = preg_replace('/\s+OFFSET\s+\d+\s+ROWS\s+FETCH\s+NEXT\s+\d+\s+ROWS\s+ONLY/i', '', $sql);
+        $sql = preg_replace('/\s+FETCH\s+NEXT\s+\d+\s+ROWS\s+ONLY/i', '', $sql);
+
+        // Apply limit/offset using ROWNUM or nested query
+        if ($limit && $offset) {
+            $sql = "SELECT * FROM ({$sql}) WHERE ROWNUM <= " . ((int)$offset + (int)$limit) . " AND ROWNUM > " . (int)$offset;
+        } elseif ($limit) {
+            $sql = "SELECT * FROM ({$sql}) WHERE ROWNUM <= " . (int)$limit;
+        }
+
+        return $this->db->query($sql);
     }
 
     /**
@@ -2922,7 +2972,7 @@ class Model
                 $function = $prepare['function'];
                 $arguments = $prepare['arguments'];
 
-                if (! method_exists($subqueryObject->_builder, $function)) {
+                if (! is_object($subqueryObject->_builder) || ! method_exists($subqueryObject->_builder, $function)) {
                     continue;
                 }
 

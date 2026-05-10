@@ -3,20 +3,20 @@
         <section class="section-padding">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-3 mb-3 mb-lg-0">
-                        <div class="text-center text-md-start">
+                    <div class="col-12 col-sm-12 col-lg-3 mb-3 mb-lg-0">
+                        <div class="text-center text-lg-start">
                             <a href="<?= base_url(); ?>">
                                 <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" />
                             </a>
                             <p class="text-muted">
                                 <?= get_setting('app_description'); ?>
                             </p>
-                            <div class="d-flex gap-3">
+                            <div class="d-flex justify-content-center justify-content-lg-start gap-3">
                                 <?php if (get_setting('twitter_username')): ?>
-                                    <a href="https://twitter.com/<?= get_setting('twitter_username'); ?>" class="text-secondary fs-5" target="_blank"><i class="mdi mdi-twitter"></i></a>
+                                    <a href="https://twitter.com/<?= get_setting('twitter_username'); ?>" class="text-secondary" target="_blank"><i class="mdi mdi-twitter mdi-2x"></i></a>
                                 <?php endif; ?>
                                 <?php if (get_setting('instagram_username')): ?>
-                                    <a href="https://instagram.com/<?= get_setting('instagram_username'); ?>" class="text-secondary fs-5" target="_blank"><i class="mdi mdi-instagram"></i></a>
+                                    <a href="https://instagram.com/<?= get_setting('instagram_username'); ?>" class="text-secondary" target="_blank"><i class="mdi mdi-instagram mdi-2x"></i></a>
                                 <?php endif; ?>
                             </div>
                         </div>

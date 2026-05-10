@@ -18,6 +18,13 @@
             <div class="d-flex justify-content-center gap-3 mb-5">
                 <a href="<?= base_url('auth'); ?>" class="btn btn-primary rounded-pill px-4 --modal">GET STARTED <i class="mdi mdi-arrow-right"></i></a>
             </div>
+            <div class="d-none d-lg-block">
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1">
+                        <img src="<?= get_module_asset('images/hero.png'); ?>" class="img-fluid rounded-5" alt="Hero" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
