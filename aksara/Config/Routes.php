@@ -34,10 +34,6 @@ $routes->set404Override('Aksara\Modules\Pages\Controllers\Pages::notFound');
 
 $routes->add('/', 'Home::index');
 
-if (file_exists(ROOTPATH . 'modules/APIS/Config/Routes.php')) {
-    require ROOTPATH . 'modules/APIS/Config/Routes.php';
-}
-
 /**
  * Register the directory based routes
  */
