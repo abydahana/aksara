@@ -66,7 +66,7 @@ class Forgot extends Core
 
         ->formCallback('_resetPassword')
 
-        ->render(null, 'reset');
+        ->render();
     }
 
     private function _validateForm()

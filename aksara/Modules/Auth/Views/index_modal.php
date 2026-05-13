@@ -65,10 +65,10 @@
                     }
                 ?>
                 
-                <div class="row g-0 mt-3">
+                <div class="row align-items-center g-0 mt-3">
                     <div class="col-7">
                         <div class="d-grid">
-                            <a href="<?= current_page('forgot'); ?>" class="btn btn-link px-0 text-start --xhr">
+                            <a href="<?= current_page('forgot'); ?>">
                                 <?= phrase('Forgot password?'); ?>
                             </a>
                         </div>

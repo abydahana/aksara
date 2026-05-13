@@ -16,16 +16,16 @@
 <section class="section-padding">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 offset-md-2 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="col-md-8 col-lg-6">
                 <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
                     <div class="text-center text-md-start mb-3">
-                        <label class="d-block text-muted" for="password_input">
+                        <label class="text-secondary" for="password_input">
                             <?= phrase('New Password'); ?>
                         </label>
                         <input type="password" name="password" class="form-control" id="password_input" placeholder="<?= phrase('Enter your new password'); ?>" />
                     </div>
                     <div class="mb-3">
-                        <label class="d-block text-muted" for="confirm_password_input">
+                        <label class="text-secondary" for="confirm_password_input">
                             <?= phrase('Confirm New Password'); ?>
                         </label>
                         <input type="password" name="confirm_password" class="form-control" id="confirm_password_input" placeholder="<?= phrase('Confirm your new password'); ?>" />
