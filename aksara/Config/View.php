@@ -90,5 +90,5 @@ class View extends BaseView
      *   'vendor'    -> app/Views/vendor/Example/Blog/post/card.php
      *   ''          -> app/Views/Example/Blog/post/card.php (direct mapping)
      */
-    public string $appOverridesFolder = 'overrides';
+    public string $appOverridesFolder = '';
 }
