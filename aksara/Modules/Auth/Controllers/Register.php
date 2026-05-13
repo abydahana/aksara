@@ -37,15 +37,6 @@ class Register extends Core
             // Frontend registration is disabled
             return throw_exception(403, phrase('The registration is temporary disabled.'), base_url('auth'));
         }
-
-        // Unlink old captcha if any
-        if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
-            try {
-                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
-            } catch (Throwable $e) {
-                // Safe abstraction
-            }
-        }
     }
 
     public function index()
@@ -56,61 +47,12 @@ class Register extends Core
             return $this->_validateForm();
         }
 
-        $string = '123456789ABCDEF';
-        $length = 6;
-        $captcha = [];
+        // Load captcha helper
+        helper('captcha');
 
-        if (is_writable(UPLOAD_PATH)) {
-            if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
-                try {
-                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 755, true);
-                } catch (Throwable $e) {
-                    // Safe abstraction
-                }
-            }
+        $this->setOutput('captcha', generate_captcha())
 
-            if (is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
-                helper('captcha');
-
-                $captcha = create_captcha([
-                    'img_path' => UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR,
-                    'img_url' => base_url(UPLOAD_PATH . '/captcha'),
-                    'img_width' => 120,
-                    'img_height' => 30,
-                    'expiration' => 3600,
-                    'word_length' => $length,
-                    'pool' => $string,
-                    'colors' => [
-                        'background' => [255, 255, 255],
-                        'border' => [255, 255, 255],
-                        'grid' => [0, 0, 0],
-                        'text' => [0, 0, 0]
-                    ]
-                ]);
-            }
-        }
-
-        if (! $captcha) {
-            $captcha = [
-                'word' => substr(str_shuffle(str_repeat($string, ceil($length / strlen($string)))), 1, $length),
-                'filename' => null
-            ];
-        }
-
-        // Set captcha word into session, used to next validation
-        set_userdata([
-            'captcha' => $captcha['word'],
-            'captcha_file' => $captcha['filename']
-        ]);
-
-        $this->setOutput([
-            'captcha' => [
-                'image' => ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
-                'string' => (! $captcha['filename'] ? $captcha['word'] : null)
-            ]
-        ]);
-
-        $this->setTitle(phrase('Register an Account'))
+        ->setTitle(phrase('Register an Account'))
         ->setIcon('mdi mdi-account-plus')
         ->setDescription(phrase('Fill all the required fields below to register your account.'))
 

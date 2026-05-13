@@ -84,9 +84,6 @@ writable/**/*.sqlite
 #-------------------------
 public/uploads/*
 !public/uploads/_extension
-!public/uploads/geospatial
-!public/uploads/maps
-!public/uploads/tiles
 !public/uploads/settings/logo.png
 !public/uploads/settings/thumbs/logo.png
 !public/uploads/settings/icons/logo.png

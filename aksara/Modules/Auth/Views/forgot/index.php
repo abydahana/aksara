@@ -1,6 +1,7 @@
 <?php
 /**
  * @var mixed $meta
+ * @var mixed $captcha
  */
 ?>
 <section class="section-padding">
@@ -23,6 +24,20 @@
                             <?= phrase('Enter your valid username or email to request a password reset link.'); ?>
                         </label>
                         <input type="text" name="username" class="form-control" id="username_input" placeholder="<?= phrase('Enter your username or email'); ?>" />
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
+                                <?php
+                                    if ($captcha->string) {
+                                        echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                    } else {
+                                        echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
+                                    }
+                                ?>
+                            </span>
+                            <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="<?= phrase('Enter captcha'); ?>" maxlength="32" />
+                        </div>
                     </div>
                     <div class="mb-3">
                         <div class="row">
