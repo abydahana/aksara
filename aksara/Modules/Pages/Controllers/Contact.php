@@ -17,6 +17,7 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
+use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
 
@@ -33,7 +34,12 @@ class Contact extends Core
             return $this->_sendMessage();
         }
 
-        $this->setTitle(phrase('Contact Us'))
+        // Load captcha helper
+        helper('captcha');
+
+        $this->setOutput('captcha', generate_captcha())
+
+        ->setTitle(phrase('Contact Us'))
         ->setIcon('mdi mdi-phone-classic')
         ->setDescription(phrase('Submit your inquiries or questions to us.'))
 
@@ -46,6 +52,7 @@ class Contact extends Core
         $this->formValidation->setRule('email', phrase('Email'), 'required|valid_email');
         $this->formValidation->setRule('subject', phrase('Subject'), 'required');
         $this->formValidation->setRule('messages', phrase('Messages'), 'required');
+        $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
         $this->formValidation->setRule('copy', phrase('Send copy'), 'boolean');
 
         if ($this->formValidation->run($this->request->getPost()) === false) {
@@ -112,6 +119,9 @@ class Contact extends Core
                 return throw_exception(400, ['message' => phrase('An unknown error occurred during email delivery.')]);
             }
         }
+
+        // Unset stored captcha
+        unset_userdata(['captcha', 'captcha_file']);
 
         return throw_exception(301, phrase('Your inquiry was successfully submitted.'), current_page());
     }
