@@ -5,7 +5,7 @@
  */
 $error = false;
 
-    if (phpversion() < 7.4 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
+    if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
     {
         $error = true;
     }
@@ -35,7 +35,7 @@ $error = false;
                     <?= phrase('PHP Version'); ?>
                 </label>
                 <p>
-                    <?= (phpversion() < 7.4 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>7.4</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
+                    <?= (phpversion() < 8.2 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
                 </p>
             </div>
         </div>
