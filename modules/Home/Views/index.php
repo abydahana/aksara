@@ -74,7 +74,7 @@
             <h3 class="fw-bold m-0 display-6"><?= phrase('Recent Articles'); ?></h3>
             <p class="text-muted fs-5"><?= phrase('Read our newest articles'); ?></p>
         </div>
-        <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
+        <div class="swiper mb-4" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
             <div class="swiper-wrapper py-3">
                 <?php foreach ($articles as $key => $val): ?>
                     <div class="swiper-slide h-auto">
@@ -126,7 +126,7 @@
             <h3 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries'); ?></h3>
             <p class="text-muted fs-5"><?= phrase('See our latest gallery activities'); ?></p>
         </div>
-        <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
+        <div class="swiper mb-4" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
             <div class="swiper-wrapper py-3">
                 <?php foreach ($galleries as $key => $val): ?>
                     <?php
@@ -138,7 +138,7 @@
                     ?>
                     <?php foreach ($images as $src => $alt): ?>
                         <div class="swiper-slide">
-                            <div class="card border-0 rounded-4 overflow-hidden mb-5">
+                            <div class="card border-0 rounded-4 overflow-hidden">
                                 <a href="<?= base_url(['galleries', $val->gallery_slug]); ?>" class="--xhr d-block">
                                     <div class="card-body" style="background:url(<?= get_image('galleries', $src, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                         <div class="clip gradient-top"></div>
