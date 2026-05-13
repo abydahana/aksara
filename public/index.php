@@ -31,16 +31,19 @@ if ($frameworkPath) {
 }
 
 // Check PHP version.
-$minPhpVersion = '8.1'; // If you update this, don't forget to update `spark`.
+$minPhpVersion = '8.2'; // If you update this, don't forget to update `spark`.
 
 if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
     $message = sprintf(
         'Your PHP version must be %s or higher to run CodeIgniter. Current version: %s',
         $minPhpVersion,
-        PHP_VERSION
+        PHP_VERSION,
     );
 
-    exit('<center>' . $message . '</center>');
+    header('HTTP/1.1 503 Service Unavailable.', true, 503);
+    echo '<center>' . $message . '</center>';
+
+    exit(1);
 } elseif (! in_array('intl', array_map('strtolower', get_loaded_extensions()))) {
     exit('<center>You need to enable the INTL module on your server. <a href="//www.google.com/search?q=install+intl+extension" target="_blank"><b>Click here</b></a> to install the INTL extension on your server.</center>');
 } elseif (! is_dir('../' . $frameworkPath . 'vendor')) {
