@@ -108,7 +108,7 @@ class View
         // Template for Number Display
         $component = <<<EOF
         <div>
-            {{ content | raw }}
+            {{ escape ? content : content | raw }}
         </div>
         EOF;
 
@@ -129,7 +129,7 @@ class View
         // Template for Currency Display
         $component = <<<EOF
         <div>
-            {{ content | raw }}
+            {{ escape ? content : content | raw }}
         </div>
         EOF;
 
@@ -150,7 +150,7 @@ class View
         // Template for Percentage Display
         $component = <<<EOF
         <div>
-            {{ content | format_percent_number }}
+            {{ escape ? content : content | raw }}%
         </div>
         EOF;
 

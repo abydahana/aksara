@@ -150,8 +150,8 @@ class Table
     {
         // Template for Percentage
         $component = <<<EOF
-        <span>
-            {{ content | format_percent_number }}
+        <span class="float-end">
+            {{ escape ? content : content | raw }}%
         </span>
         EOF;
 
