@@ -79,7 +79,7 @@
                                     <span class="input-group-text bg-white p-0">
                                         <?php
                                             if ($captcha->string) {
-                                                echo '<b class="text-light pe-3 ps-3">' . $captcha->string . '</b>';
+                                                echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
                                             } else {
                                                 echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
                                             }

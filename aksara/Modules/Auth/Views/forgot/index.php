@@ -16,7 +16,7 @@
 <section class="section-padding">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 offset-md-2 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="col-md-8 col-lg-6">
                 <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
                     <div class="text-center text-md-start mb-3">
                         <label class="d-block text-muted mb-3" for="username_input">
