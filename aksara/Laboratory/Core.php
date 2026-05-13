@@ -174,6 +174,15 @@ abstract class Core extends Controller
 
         // Set user language.
         $this->_setLanguage(get_userdata('language_id'));
+
+        // Unlink old captcha if any
+        if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
+            try {
+                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'));
+            } catch (Throwable $e) {
+                // Safe abstraction
+            }
+        }
     }
 
     /**

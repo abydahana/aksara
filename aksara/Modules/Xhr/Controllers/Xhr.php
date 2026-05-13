@@ -43,4 +43,12 @@ class Xhr extends Core
 
         return make_json($output);
     }
+
+    public function captcha()
+    {
+        // Load captcha helper
+        helper('captcha');
+
+        return make_json(generate_captcha());
+    }
 }

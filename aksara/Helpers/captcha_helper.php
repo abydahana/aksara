@@ -30,12 +30,12 @@ if (! function_exists('create_captcha')) {
             'word' => '',
             'img_path' => $img_path,
             'img_url' => $img_url,
+            'font_path' => $font_path,
             'img_width' => 150,
             'img_height' => 35,
-            'font_path' => $font_path,
+            'font_size' => 16,
             'expiration' => 7200,
             'word_length' => 6,
-            'font_size' => 16,
             'img_id' => 'captcha-' . uniqid(),
             'pool' => '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ',
             'colors' => [
@@ -55,22 +55,7 @@ if (! function_exists('create_captcha')) {
         }
 
         // -----------------------------------
-        // 1. Remove old images (Cleanup)
-        // -----------------------------------
-        $now = microtime(true);
-        if ($handle = @opendir($config['img_path'])) {
-            while (false !== ($filename = readdir($handle))) {
-                if (preg_match('/^(\d+\.\d+)\.png$/', $filename, $matches)) {
-                    if (($matches[1] + $config['expiration']) < $now) {
-                        @unlink($config['img_path'] . $filename);
-                    }
-                }
-            }
-            closedir($handle);
-        }
-
-        // -----------------------------------
-        // 2. Generate Word
+        // 1. Generate Word
         // -----------------------------------
         $word = $config['word'];
         if (empty($word)) {
@@ -86,62 +71,97 @@ if (! function_exists('create_captcha')) {
         }
 
         // -----------------------------------
-        // 3. Image Creation (With Error Trapping)
+        // 2. Image Creation (With Distortion)
         // -----------------------------------
         try {
-            $im = imagecreatetruecolor($config['img_width'], $config['img_height']);
+            $now = microtime(true);
+            $width = (int) $config['img_width'];
+            $height = (int) $config['img_height'];
 
-            // Validate that $im is actually a GdImage object (solves Intelephense P1007)
-            if (! $im instanceof \GdImage) {
+            // Temporary image for text before distortion
+            $im_tmp = imagecreatetruecolor($width, $height);
+            $im = imagecreatetruecolor($width, $height);
+
+            if (! $im_tmp instanceof \GdImage || ! $im instanceof \GdImage) {
                 return false;
             }
 
             // Assign colors
             $colors = [];
+            $colors_tmp = [];
             foreach ($config['colors'] as $key => $rgb) {
                 $colors[$key] = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+                $colors_tmp[$key] = imagecolorallocate($im_tmp, $rgb[0], $rgb[1], $rgb[2]);
             }
 
-            // Create background
-            imagefilledrectangle($im, 0, 0, $config['img_width'], $config['img_height'], $colors['background']);
-
-            // -----------------------------------
-            // 4. Distortions (Grid & Noise)
-            // -----------------------------------
-            // Draw subtle grid
-            for ($i = 0; $i < $config['img_width']; $i += 15) {
-                imageline($im, $i, 0, $i, $config['img_height'], $colors['grid']);
-            }
-            for ($i = 0; $i < $config['img_height']; $i += 15) {
-                imageline($im, 0, $i, $config['img_width'], $i, $colors['grid']);
-            }
-
-            // Add random noise pixels
-            for ($i = 0; $i < 60; $i++) {
-                imagesetpixel($im, mt_rand(0, $config['img_width']), mt_rand(0, $config['img_height']), $colors['text']);
-            }
+            // Background for both
+            imagefilledrectangle($im_tmp, 0, 0, $width, $height, $colors_tmp['background']);
+            imagefilledrectangle($im, 0, 0, $width, $height, $colors['background']);
 
             // -----------------------------------
-            // 5. Write Text
+            // 3. Write Text to Temp Image
             // -----------------------------------
             $use_font = (! empty($config['font_path']) && file_exists($config['font_path']));
-            $x = 12;
+            $x = 10;
             $length = strlen($word);
 
             for ($i = 0; $i < $length; $i++) {
+                // Random color for each character
+                $char_color = imagecolorallocate($im_tmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
+
                 if ($use_font) {
                     $angle = mt_rand(-15, 15);
-                    $y = mt_rand((int) ($config['img_height'] / 1.5), $config['img_height'] - 5);
-                    imagettftext($im, $config['font_size'], $angle, (int) $x, (int) $y, $colors['text'], $config['font_path'], $word[$i]);
+                    $y = mt_rand((int) ($height / 1.4), $height - 5);
+                    imagettftext($im_tmp, (int) $config['font_size'], $angle, (int) $x, (int) $y, $char_color, $config['font_path'], $word[$i]);
                 } else {
-                    $y = mt_rand(2, (int) ($config['img_height'] / 4));
-                    imagestring($im, 5, (int) $x, (int) $y, $word[$i], $colors['text']);
+                    $y = mt_rand(2, (int) ($height / 4));
+                    imagestring($im_tmp, 5, (int) $x, (int) $y, $word[$i], $char_color);
                 }
-                $x += ($config['img_width'] - 20) / $length;
+                $x += ($width - 20) / $length;
+            }
+
+            // -----------------------------------
+            // 4. Apply Sinusoidal Distortion
+            // -----------------------------------
+            $freq = mt_rand(5, 8) / 100; // Frequency
+            $amp = mt_rand(3, 5);         // Amplitude
+            $phase = mt_rand(0, 10);      // Phase shift
+
+            for ($i = 0; $i < $width; $i++) {
+                $offset = (int) (sin($i * $freq + $phase) * $amp);
+                imagecopy($im, $im_tmp, $i, $offset, $i, 0, 1, $height);
+            }
+
+            // -----------------------------------
+            // 5. Draw Noise (Foreground - Balanced)
+            // -----------------------------------
+            // Draw grid OVER the text (less dense)
+            for ($i = 0; $i < $width; $i += 20) {
+                imageline($im, $i, 0, $i, $height, $colors['grid']);
+            }
+            for ($i = 0; $i < $height; $i += 20) {
+                imageline($im, 0, $i, $width, $i, $colors['grid']);
+            }
+
+            // Lighter crossing lines (only 2)
+            for ($i = 0; $i < 2; $i++) {
+                $line_color = imagecolorallocate($im, mt_rand(180, 220), mt_rand(180, 220), mt_rand(180, 220));
+                imageline($im, 0, mt_rand(0, $height), $width, mt_rand(0, $height), $line_color);
+            }
+
+            // Random arcs (only 2, lighter)
+            for ($i = 0; $i < 2; $i++) {
+                $arc_color = imagecolorallocate($im, mt_rand(180, 220), mt_rand(180, 220), mt_rand(180, 220));
+                imagearc($im, mt_rand(0, $width), mt_rand(0, $height), mt_rand(50, 150), mt_rand(30, 100), mt_rand(0, 360), mt_rand(0, 360), $arc_color);
+            }
+
+            // Random noise pixels (back to 50)
+            for ($i = 0; $i < 50; $i++) {
+                imagesetpixel($im, mt_rand(0, $width), mt_rand(0, $height), $colors['text']);
             }
 
             // Add Border
-            imagerectangle($im, 0, 0, $config['img_width'] - 1, $config['img_height'] - 1, $colors['border']);
+            imagerectangle($im, 0, 0, $width - 1, $height - 1, $colors['border']);
 
             // -----------------------------------
             // 6. Output & Cleanup
@@ -149,24 +169,86 @@ if (! function_exists('create_captcha')) {
             $img_filename = $now . '.png';
             $img_url = rtrim($config['img_url'], '/') . '/';
 
-            // Generate PNG file
             if (! imagepng($im, $config['img_path'] . $img_filename)) {
                 return false;
             }
 
-            // PHP 8+ Garbage Collection takes care of the GdImage object.
-            // Setting to null is the modern way to explicitly free it.
-            $im = null;
+            imagedestroy($im);
+            imagedestroy($im_tmp);
 
             return [
                 'word' => $word,
                 'time' => $now,
-                'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $config['img_width'] . 'px; height: ' . $config['img_height'] . 'px; border: 0;" alt="CAPTCHA" />',
+                'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $width . 'px; height: ' . $height . 'px; border: 0;" alt="CAPTCHA" />',
                 'filename' => $img_filename
             ];
         } catch (\Throwable $e) {
-            // Gracefully fail if something goes wrong during image processing
             return false;
         }
+    }
+}
+
+if (! function_exists('generate_captcha')) {
+    /**
+     * Generate CAPTCHA wrapper
+     *
+     * @return array
+     */
+    function generate_captcha(): array
+    {
+        $string = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+        $length = 6;
+        $captcha = [];
+
+        if (is_writable(UPLOAD_PATH)) {
+            if (! is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
+                try {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 0755, true);
+                } catch (\Throwable $e) {
+                    // Safe abstraction
+                }
+            }
+
+            if (is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
+                // Try to use a smoother TTF font from vendor if available
+                $font_path = ROOTPATH . 'vendor' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'ttfonts' . DIRECTORY_SEPARATOR . 'DejaVuSans.ttf';
+
+                $captcha = create_captcha([
+                    'img_path' => UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR,
+                    'img_url' => base_url(UPLOAD_PATH . '/captcha'),
+                    'img_width' => 120,
+                    'img_height' => 35,
+                    'font_path' => (file_exists($font_path) ? $font_path : ''),
+                    'font_size' => 14,
+                    'expiration' => 3600,
+                    'word_length' => $length,
+                    'pool' => $string,
+                    'colors' => [
+                        'background' => [255, 255, 255],
+                        'border' => [255, 255, 255],
+                        'grid' => [0, 0, 0],
+                        'text' => [0, 0, 0]
+                    ]
+                ]);
+            }
+        }
+
+        if (! $captcha) {
+            $captcha = [
+                'word' => substr(str_shuffle(str_repeat($string, ceil($length / strlen($string)))), 1, $length),
+                'filename' => null
+            ];
+        }
+
+        // Set captcha word into session, used to next validation
+        set_userdata([
+            'captcha' => $captcha['word'],
+            'captcha_file' => $captcha['filename']
+        ]);
+
+        return [
+            'image' => ($captcha['filename'] ? base_url(UPLOAD_PATH . '/captcha/' . $captcha['filename']) : null),
+            'string' => (! $captcha['filename'] ? $captcha['word'] : null)
+        ];
     }
 }
