@@ -191,8 +191,6 @@ if (! function_exists('create_captcha')) {
 if (! function_exists('generate_captcha')) {
     /**
      * Generate CAPTCHA wrapper
-     *
-     * @return array
      */
     function generate_captcha(): array
     {
