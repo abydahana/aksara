@@ -3153,6 +3153,23 @@ abstract class Core extends Controller
              * No database table are included to renderer
              * -------------------------------------------------------------
              */
+            // Check if request is submitting POST
+            if ($this->request->getPost('_token')) {
+                // Request is sent from browser
+                $tokenSent = $this->request->getPost('_token');
+
+                // Validate the token
+                if ($this->validToken($tokenSent)) {
+                    // Token approved, check if validation use the custom callback
+                    if ($this->_formCallback && method_exists($this, $this->_formCallback)) {
+                        // Use callback as form validation
+                        $_callback = $this->_formCallback;
+
+                        return $this->$_callback();
+                    }
+                }
+            }
+
             // Set template view property
             $this->_view = (is_array($this->_setTemplate) && isset($this->_setTemplate['index']) ? $this->_setTemplate['index'] : $this->_method);
 
