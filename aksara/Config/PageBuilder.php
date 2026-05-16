@@ -355,6 +355,15 @@ class PageBuilder extends BaseConfig
                 'alignment'   => 'center',
                 'overlay'     => true,
             ],
+            'options' => [
+                'alignment'  => [
+                    'left' => 'Left',
+                    'center' => 'Center',
+                    'right' => 'Right'
+                ],
+                'overlay' => 'boolean'
+            ],
+            'grouping' => []
         ],
         'card' => [
             'label'    => 'Card',

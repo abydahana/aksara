@@ -269,7 +269,7 @@ class Pages extends Core
             mkdir($path, 0755, true);
         }
 
-        $files = array_diff(scandir($path), ['.', '..', 'index.html', '.htaccess']);
+        $files = array_diff(scandir($path), ['.', '..', 'index.html', '.htaccess', 'thumbs', 'icons', 'placeholder.png']);
         $images = [];
 
         foreach ($files as $file) {
@@ -282,7 +282,8 @@ class Pages extends Core
 
                 $images[] = [
                     'name' => $file,
-                    'url'  => base_url('uploads/pages/' . $file),
+                    'url'  => get_image('pages', $file),
+                    'thumb' => get_image('pages', $file, 'thumb'),
                     'size' => filesize($filePath),
                     'time' => filemtime($filePath),
                     'formatted_size' => number_format(filesize($filePath) / 1024, 2) . ' KB',
@@ -332,7 +333,7 @@ class Pages extends Core
             return make_json(['error' => phrase('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.')]);
         }
 
-        $path = FCPATH . 'uploads' . DIRECTORY_SEPARATOR . 'pages';
+        $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages';
 
         if (! is_dir($path)) {
             mkdir($path, 0755, true);
@@ -341,14 +342,60 @@ class Pages extends Core
         $name = $file->getRandomName();
 
         if ($file->move($path, $name)) {
+            // Generate thumbnails and icons
+            resize_image($path . DIRECTORY_SEPARATOR . $name);
+
             return make_json([
                 'success' => true,
                 'name'    => $name,
-                'url'     => base_url('uploads/pages/' . $name)
+                'url'     => get_image('pages', $name)
             ]);
         }
 
         return make_json(['error' => phrase('Failed to move uploaded file.')]);
+    }
+
+    /**
+     * Delete image from builder.
+     */
+    public function builderDelete()
+    {
+        $file = $this->request->getPost('file');
+
+        if (! $file) {
+            return make_json(['error' => phrase('No file specified.')]);
+        }
+
+        // Security: strictly validate filename to prevent directory traversal
+        $filename = basename($file);
+
+        if ($filename === 'placeholder.png') {
+            return make_json(['error' => phrase('You cannot delete the placeholder image.')]);
+        }
+
+        $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR;
+
+        $files_to_delete = [
+            $path . $filename,
+            $path . 'thumbs' . DIRECTORY_SEPARATOR . $filename,
+            $path . 'icons' . DIRECTORY_SEPARATOR . $filename
+        ];
+
+        $deleted = false;
+
+        foreach ($files_to_delete as $file_path) {
+            if (is_file($file_path)) {
+                if (unlink($file_path)) {
+                    $deleted = true;
+                }
+            }
+        }
+
+        if ($deleted) {
+            return make_json(['success' => true]);
+        }
+
+        return make_json(['error' => phrase('Failed to delete file or file not found.')]);
     }
 
     public function afterUpdate()

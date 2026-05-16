@@ -355,7 +355,7 @@ class Renderer
                    . "    </div>\n"
                    . "    <div id=\"collapse_{$itemId}\" class=\"{$this->classes['accordion_collapse']}{$show}\" data-bs-parent=\"#{$accordionId}\">\n"
                    . "      <div class=\"{$this->classes['accordion_body']}\">\n"
-                   . '        ' . ($item['body'] ?? '') . "\n"
+                   . '        ' . $this->sanitizeHtml($item['body'] ?? '') . "\n"
                    . "      </div>\n"
                    . "    </div>\n"
                    . "  </div>\n";
@@ -428,7 +428,7 @@ class Renderer
         $alignClass = "text-{$alignment}";
         $textColorClass = $background ? 'text-white' : '';
 
-        $html = "<section class=\"section-padding {$alignClass}\"{$sectionStyle}>\n";
+        $html = "<section class=\"section-padding position-relative {$alignClass}\"{$sectionStyle}>\n";
 
         if ($background && $overlay) {
             $html .= "  <div style=\"position:absolute;inset:0;background:rgba(0,0,0,0.5);\"></div>\n";
@@ -438,7 +438,8 @@ class Renderer
                . "    <h1 class=\"{$this->classes['display_4']} {$this->classes['fw_bold']} {$this->classes['mb_3']} {$textColorClass}\">{$title}</h1>\n";
 
         if ($subtitle) {
-            $html .= "    <p class=\"{$this->classes['lead']} {$this->classes['text_muted']} {$this->classes['mb_4']} {$textColorClass}\">{$subtitle}</p>\n";
+            $subtitleClass = "{$this->classes['lead']} {$this->classes['mb_4']} " . ($background ? $textColorClass : ($this->classes['text_muted'] ?? 'text-muted'));
+            $html .= "    <div class=\"{$subtitleClass}\">{$subtitle}</div>\n";
         }
 
         if ($btnText) {
@@ -554,9 +555,10 @@ class Renderer
             $active = $index === 0 ? ' active' : '';
             $itemId = "{$tabsId}_item_{$index}";
             $title = htmlspecialchars($item['title'] ?? "Tab " . ($index + 1), ENT_QUOTES);
+            $alignmentClass = ($alignment === 'vertical' ? ' w-100 text-start' : '');
 
             $html .= "    <li class=\"nav-item\" role=\"presentation\">\n"
-                   . "      <button class=\"nav-link{$active}\" id=\"tab-{$itemId}\" data-bs-toggle=\"pill\" data-bs-target=\"#content-{$itemId}\" type=\"button\" role=\"tab\">{$title}</button>\n"
+                   . "      <button class=\"nav-link{$active}{$alignmentClass}\" id=\"tab-{$itemId}\" data-bs-toggle=\"pill\" data-bs-target=\"#content-{$itemId}\" type=\"button\" role=\"tab\">{$title}</button>\n"
                    . "    </li>\n";
         }
 
@@ -566,7 +568,7 @@ class Renderer
         foreach ($items as $index => $item) {
             $active = $index === 0 ? ' show active' : '';
             $itemId = "{$tabsId}_item_{$index}";
-            $content = $item['content'] ?? '';
+            $content = $this->sanitizeHtml($item['content'] ?? '');
 
             $html .= "    <div class=\"tab-pane fade{$active}\" id=\"content-{$itemId}\" role=\"tabpanel\" aria-labelledby=\"tab-{$itemId}\">\n"
                    . "      {$content}\n"
@@ -623,7 +625,7 @@ class Renderer
         $html = "<div class=\"card border-0 bg-light rounded-4 " . ($props['class'] ?? '') . "\">\n"
                . "  <div class=\"card-body p-4\">\n"
                . "    <div class=\"mb-3 text-primary\"><i class=\"mdi mdi-format-quote-open mdi-3x\"></i></div>\n"
-               . "    <p class=\"lead font-italic mb-4\">\"{$quote}\"</p>\n"
+               . "    <div class=\"lead font-italic mb-4\">\"{$quote}\"</div>\n"
                . "    <div class=\"d-flex align-items-center\">\n";
 
         if ($image) {
@@ -705,6 +707,60 @@ class Renderer
     }
 
     /**
+     * Convert Markdown content to HTML.
+     * Mirrors the JavaScript implementation in pagebuilder.min.js.
+     */
+    private function markdownToHtml(?string $md): string
+    {
+        if (! $md) {
+            return '';
+        }
+
+        $html = $md;
+
+        // Bold, Italic, Strikethrough
+        $html = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $html);
+        $html = preg_replace('/_(.*?)_/', '<em>$1</em>', $html);
+        $html = preg_replace('/~~(.*?)~~/', '<del>$1</del>', $html);
+
+        // Links (with protocol filtering for security)
+        $html = preg_replace_callback('/\[(.*?)\]\((.*?)\)/', function ($matches) {
+            $url = trim($matches[2]);
+            // Block dangerous protocols
+            if (preg_match('/^(javascript|data|vbscript|file):/i', $url)) {
+                $url = '#';
+            }
+
+            return '<a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank">' . $matches[1] . '</a>';
+        }, $html);
+
+        // Unordered Lists
+        $html = preg_replace_callback('/(?:^\s?\*\s*(.*?)$\n?)+/m', function ($matches) {
+            $items = preg_replace('/^\s?\*\s*(.*?)$/m', '<li>$1</li>', $matches[0]);
+
+            return '<ul>' . str_replace("\n", '', $items) . '</ul>';
+        }, $html);
+
+        // Ordered Lists
+        $html = preg_replace_callback('/(?:^\s?(\d+)\.\s*(.*?)$\n?)+/m', function ($matches) {
+            $items = preg_replace('/^\s?(\d+)\.\s*(.*?)$/m', '<li>$2</li>', $matches[0]);
+
+            return '<ol>' . str_replace("\n", '', $items) . '</ol>';
+        }, $html);
+
+        // Paragraphs and Newlines
+        $html = str_replace("\n\n", '</p><p>', $html);
+        $html = str_replace("\n", '<br>', $html);
+
+        // Final wrap in <p> if no blocks exist
+        if (strpos($html, '<p>') === false && strlen($html) > 0) {
+            $html = '<p>' . $html . '</p>';
+        }
+
+        return $html;
+    }
+
+    /**
      * Sanitize HTML content — allow safe inline tags, strip dangerous ones.
      */
     private function sanitizeHtml($html): string
@@ -713,6 +769,9 @@ class Renderer
             return '';
         }
 
-        return strip_tags($html, '<b><i><u><em><strong><s><a><br><ul><ol><li><span><sub><sup><mark><small>');
+        // Convert Markdown to HTML first
+        $html = $this->markdownToHtml($html);
+
+        return strip_tags($html, '<b><i><u><em><strong><s><a><br><ul><ol><li><span><sub><sup><mark><small><p><del>');
     }
 }
