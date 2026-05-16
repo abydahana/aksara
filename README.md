@@ -12,7 +12,7 @@ With its modular architecture, developers can easily extend the core functionali
 - **Modern UI/UX:** Sleek, responsive, and customizable default themes for both frontend and backend.
 
 # Server Requirements
-PHP version 8.1 or higher is required, with the following extensions installed:
+PHP version 8.2 or higher is required, with the following extensions installed:
 
 - [intl](http://php.net/manual/en/intl.requirements.php)
 - [mbstring](http://php.net/manual/en/mbstring.installation.php)

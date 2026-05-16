@@ -47,19 +47,7 @@ class Pages extends Migration
                 'null' => false
             ],
             'page_content' => [
-                'type' => ('MySQLi' === $this->db->DBDriver ? 'mediumtext' : 'text'),
-                'null' => false
-            ],
-            'carousel_id' => [
-                'type' => 'int',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => false
-            ],
-            'faq_id' => [
-                'type' => 'int',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text'),
                 'null' => false
             ],
             'created_timestamp' => [

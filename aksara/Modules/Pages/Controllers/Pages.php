@@ -50,22 +50,6 @@ class Pages extends Core
             )
             ->result()
         ])
-        ->setRelation(
-            'faq_id',
-            'pages_faqs.faq_id',
-            '{{ pages_faqs.faq_content }}',
-            [
-                'pages_faqs.status' => 1
-            ]
-        )
-        ->setRelation(
-            'carousel_id',
-            'pages_carousels.carousel_id',
-            '{{ pages_carousels.carousel_content }}',
-            [
-                'pages_carousels.status' => 1
-            ]
-        )
         ->groupStart()
         ->where('pages.page_slug', $slug)
         ->orWhere('pages.page_id', $this->request->getGet('page_id') ?? 0)
