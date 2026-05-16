@@ -312,11 +312,14 @@ class Renderer
         $size = $props['size'] ?? '';
         $target = $props['target'] ?? '_self';
         $rounded = $props['rounded'] ?? true;
+        $icon = $props['icon'] ?? '';
+        $icon_placement = $props['icon_placement'] ?? 'prefix';
 
         $classes = [$this->classes['btn']];
 
         // Map style to framework class
         $styleKey = "btn_{$style}";
+
         if (isset($this->classes[$styleKey])) {
             $classes = [$this->classes[$styleKey]];
         } else {
@@ -338,7 +341,16 @@ class Renderer
         $class = implode(' ', array_filter($classes));
         $targetAttr = $target !== '_self' ? " target=\"{$target}\"" : '';
 
-        return "<a href=\"{$url}\" class=\"{$class}\"{$targetAttr}>{$text}</a>\n";
+        $iconHtml = '';
+
+        if ($icon) {
+            $marginClass = ($text ? ($icon_placement === 'suffix' ? ' ms-2' : ' me-2') : '');
+            $iconHtml = "<i class=\"{$icon}{$marginClass}\"></i>";
+        }
+
+        $content = ($icon_placement === 'suffix' ? $text . $iconHtml : $iconHtml . $text);
+
+        return "<a href=\"{$url}\" class=\"{$class}\"{$targetAttr}>{$content}</a>\n";
     }
 
     private function renderAccordion(array $props, string $id): string
