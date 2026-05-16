@@ -11,8 +11,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
  *
- * When the signs come, those who do not believe at that time
- * will have only two choices: commit suicide or become brutal.
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
  */
 
 namespace Config;
@@ -44,44 +44,44 @@ class PageBuilder extends BaseConfig
      */
     public array $frameworks = [
         'bootstrap5' => [
-            'section'       => '',
-            'container'     => 'container',
+            'section' => '',
+            'container' => 'container',
             'container_fluid' => 'container-fluid',
-            'row'           => 'row',
-            'col_prefix'    => 'col',
-            'breakpoints'   => ['', 'sm', 'md', 'lg', 'xl', 'xxl'],
-            'grid_columns'  => 12,
-            'card'          => 'card',
-            'card_body'     => 'card-body',
-            'card_title'    => 'card-title',
-            'card_text'     => 'card-text',
-            'btn'           => 'btn',
-            'btn_primary'   => 'btn btn-primary',
+            'row' => 'row',
+            'col_prefix' => 'col',
+            'breakpoints' => ['', 'sm', 'md', 'lg', 'xl', 'xxl'],
+            'grid_columns' => 12,
+            'card' => 'card',
+            'card_body' => 'card-body',
+            'card_title' => 'card-title',
+            'card_text' => 'card-text',
+            'btn' => 'btn',
+            'btn_primary' => 'btn btn-primary',
             'btn_secondary' => 'btn btn-secondary',
             'btn_outline_primary' => 'btn btn-outline-primary',
-            'btn_lg'        => 'btn-lg',
-            'btn_sm'        => 'btn-sm',
-            'alert'         => 'alert',
-            'accordion'     => 'accordion',
+            'btn_lg' => 'btn-lg',
+            'btn_sm' => 'btn-sm',
+            'alert' => 'alert',
+            'accordion' => 'accordion',
             'accordion_item' => 'accordion-item',
             'accordion_header' => 'accordion-header',
             'accordion_button' => 'accordion-button',
             'accordion_collapse' => 'accordion-collapse collapse',
             'accordion_body' => 'accordion-body',
-            'img_fluid'     => 'img-fluid',
-            'rounded'       => 'rounded-4',
-            'text_center'   => 'text-center',
-            'text_start'    => 'text-start',
-            'text_end'      => 'text-end',
-            'fw_bold'       => 'fw-bold',
-            'mb_3'          => 'mb-3',
-            'mb_4'          => 'mb-4',
-            'mb_5'          => 'mb-5',
-            'py_3'          => 'py-3',
-            'py_5'          => 'py-5',
-            'display_4'     => 'display-4',
-            'lead'          => 'lead',
-            'text_muted'    => 'text-muted',
+            'img_fluid' => 'img-fluid',
+            'rounded' => 'rounded-4',
+            'text_center' => 'text-center',
+            'text_start' => 'text-start',
+            'text_end' => 'text-end',
+            'fw_bold' => 'fw-bold',
+            'mb_3' => 'mb-3',
+            'mb_4' => 'mb-4',
+            'mb_5' => 'mb-5',
+            'py_3' => 'py-3',
+            'py_5' => 'py-5',
+            'display_4' => 'display-4',
+            'lead' => 'lead',
+            'text_muted' => 'text-muted',
         ],
     ];
 
@@ -91,11 +91,11 @@ class PageBuilder extends BaseConfig
      * @var array<string, string>
      */
     public array $componentCategories = [
-        'layout'      => 'Layout',
-        'typography'  => 'Typography',
-        'media'       => 'Media',
+        'layout' => 'Layout',
+        'typography' => 'Typography',
+        'media' => 'Media',
         'interactive' => 'Interactive',
-        'content'     => 'Content',
+        'content' => 'Content',
     ];
 
     /**
@@ -110,19 +110,19 @@ class PageBuilder extends BaseConfig
     public array $components = [
         // --- Layout ---
         'section' => [
-            'label'    => 'Section',
-            'icon'     => 'mdi mdi-page-layout-body',
+            'label' => 'Section',
+            'icon' => 'mdi mdi-page-layout-body',
             'category' => 'layout',
             'children' => true,
             'defaults' => [
-                'class'       => 'section-padding',
-                'id'          => '',
-                'background'  => '',
+                'class' => 'section-padding',
+                'id' => '',
+                'background' => '',
             ],
         ],
         'container' => [
-            'label'    => 'Container',
-            'icon'     => 'mdi mdi-border-all-variant',
+            'label' => 'Container',
+            'icon' => 'mdi mdi-border-all-variant',
             'category' => 'layout',
             'children' => true,
             'defaults' => [
@@ -130,17 +130,17 @@ class PageBuilder extends BaseConfig
             ],
         ],
         'row' => [
-            'label'    => 'Row',
-            'icon'     => 'mdi mdi-view-headline',
+            'label' => 'Row',
+            'icon' => 'mdi mdi-view-headline',
             'category' => 'layout',
             'children' => true,
             'defaults' => [
-                'class'          => '',
-                'align_items'    => '',
+                'class' => '',
+                'align_items' => '',
                 'justify_content' => '',
             ],
-            'options'  => [
-                'align_items'    => [
+            'options' => [
+                'align_items' => [
                     '' => 'Default',
                     'align-items-start' => 'Top',
                     'align-items-center' => 'Middle',
@@ -157,13 +157,13 @@ class PageBuilder extends BaseConfig
             ]
         ],
         'column' => [
-            'label'    => 'Column',
-            'icon'     => 'mdi mdi-view-column',
+            'label' => 'Column',
+            'icon' => 'mdi mdi-view-column',
             'category' => 'layout',
             'children' => true,
             'defaults' => [
-                'size'   => ['md' => 12],
-                'class'  => '',
+                'size' => ['md' => 12],
+                'class' => '',
                 'align_self' => '',
             ],
             'options' => [
@@ -179,38 +179,38 @@ class PageBuilder extends BaseConfig
 
         // --- Typography ---
         'heading' => [
-            'label'    => 'Heading',
-            'icon'     => 'mdi mdi-format-header-1',
+            'label' => 'Heading',
+            'icon' => 'mdi mdi-format-header-1',
             'category' => 'typography',
             'children' => false,
             'defaults' => [
-                'level'     => 2,
-                'text'      => 'Heading text',
+                'level' => 2,
+                'text' => 'Heading text',
                 'alignment' => 'left',
-                'class'     => '',
+                'class' => '',
             ],
-            'options'  => [
-                'level'     => [1=>'H1', 2=>'H2', 3=>'H3', 4=>'H4', 5=>'H5', 6=>'H6'],
+            'options' => [
+                'level' => [1 => 'H1', 2 => 'H2', 3 => 'H3', 4 => 'H4', 5 => 'H5', 6 => 'H6'],
                 'alignment' => ['left' => 'Left', 'center' => 'Center', 'right' => 'Right']
             ]
         ],
         'paragraph' => [
-            'label'    => 'Paragraph',
-            'icon'     => 'mdi mdi-format-paragraph',
+            'label' => 'Paragraph',
+            'icon' => 'mdi mdi-format-paragraph',
             'category' => 'typography',
             'children' => false,
             'defaults' => [
-                'text'      => 'Paragraph text goes here.',
+                'text' => 'Paragraph text goes here.',
                 'alignment' => 'left',
-                'class'     => '',
+                'class' => '',
             ],
-            'options'  => [
+            'options' => [
                 'alignment' => ['left' => 'Left', 'center' => 'Center', 'right' => 'Right']
             ]
         ],
         'divider' => [
-            'label'    => 'Divider',
-            'icon'     => 'mdi mdi-minus',
+            'label' => 'Divider',
+            'icon' => 'mdi mdi-minus',
             'category' => 'typography',
             'children' => false,
             'defaults' => [
@@ -220,36 +220,36 @@ class PageBuilder extends BaseConfig
 
         // --- Media ---
         'image' => [
-            'label'    => 'Image',
-            'icon'     => 'mdi mdi-image',
+            'label' => 'Image',
+            'icon' => 'mdi mdi-image',
             'category' => 'media',
             'children' => false,
             'defaults' => [
-                'src'   => '',
-                'alt'   => '',
+                'src' => '',
+                'alt' => '',
                 'class' => 'img-fluid',
                 'width' => '',
             ],
         ],
         'video' => [
-            'label'    => 'Video Embed',
-            'icon'     => 'mdi mdi-video',
+            'label' => 'Video Embed',
+            'icon' => 'mdi mdi-video',
             'category' => 'media',
             'children' => false,
             'defaults' => [
-                'url'    => '',
-                'ratio'  => '16x9',
-                'class'  => '',
+                'url' => '',
+                'ratio' => '16x9',
+                'class' => '',
             ],
-            'options'  => [
-                'ratio' => ['21x9'=>'21:9','16x9'=>'16:9','4x3'=>'4:3','1x1'=>'1:1']
+            'options' => [
+                'ratio' => ['21x9' => '21:9', '16x9' => '16:9', '4x3' => '4:3', '1x1' => '1:1']
             ]
         ],
 
         // --- Interactive ---
         'carousel' => [
-            'label'    => 'Carousel',
-            'icon'     => 'mdi mdi-view-carousel',
+            'label' => 'Carousel',
+            'icon' => 'mdi mdi-view-carousel',
             'category' => 'interactive',
             'children' => false,
             'defaults' => [
@@ -258,14 +258,14 @@ class PageBuilder extends BaseConfig
                     ['src' => '', 'title' => 'Slide 2', 'subtitle' => 'Description for slide 2'],
                 ],
                 'indicators' => true,
-                'controls'   => true,
-                'interval'   => 5000,
-                'class'      => '',
+                'controls' => true,
+                'interval' => 5000,
+                'class' => '',
             ],
         ],
         'accordion' => [
-            'label'    => 'Accordion',
-            'icon'     => 'mdi mdi-view-sequential',
+            'label' => 'Accordion',
+            'icon' => 'mdi mdi-view-sequential',
             'category' => 'interactive',
             'children' => false,
             'defaults' => [
@@ -277,8 +277,8 @@ class PageBuilder extends BaseConfig
             ],
         ],
         'tabs' => [
-            'label'    => 'Nav Tabs',
-            'icon'     => 'mdi mdi-tab',
+            'label' => 'Nav Tabs',
+            'icon' => 'mdi mdi-tab',
             'category' => 'interactive',
             'children' => false,
             'defaults' => [
@@ -286,26 +286,26 @@ class PageBuilder extends BaseConfig
                     ['title' => 'Tab 1', 'content' => 'Content for tab 1'],
                     ['title' => 'Tab 2', 'content' => 'Content for tab 2'],
                 ],
-                'style'     => 'tabs',
+                'style' => 'tabs',
                 'alignment' => 'horizontal',
-                'class'     => '',
+                'class' => '',
             ],
             'options' => [
-                'style'     => ['tabs' => 'Tabs', 'pills' => 'Pills'],
+                'style' => ['tabs' => 'Tabs', 'pills' => 'Pills'],
                 'alignment' => ['horizontal' => 'Horizontal', 'vertical' => 'Vertical']
             ]
         ],
         'alert' => [
-            'label'    => 'Alert',
-            'icon'     => 'mdi mdi-alert-circle-outline',
+            'label' => 'Alert',
+            'icon' => 'mdi mdi-alert-circle-outline',
             'category' => 'interactive',
             'children' => false,
             'defaults' => [
-                'text'  => 'This is an alert.',
+                'text' => 'This is an alert.',
                 'style' => 'info',
                 'class' => '',
             ],
-            'options'  => [
+            'options' => [
                 'style' => [
                     'primary' => 'Primary',
                     'secondary' => 'Secondary',
@@ -319,23 +319,23 @@ class PageBuilder extends BaseConfig
             ]
         ],
         'button' => [
-            'label'    => 'Button',
-            'icon'     => 'mdi mdi-gesture-tap-button',
+            'label' => 'Button',
+            'icon' => 'mdi mdi-gesture-tap-button',
             'category' => 'interactive',
             'children' => false,
             'defaults' => [
-                'text'    => 'Click me',
-                'url'     => '#',
-                'icon'    => '',
+                'text' => 'Click me',
+                'url' => '#',
+                'icon' => '',
                 'icon_placement' => 'prefix',
-                'style'   => 'primary',
-                'size'    => '',
-                'class'   => '',
-                'target'  => '_self',
+                'style' => 'primary',
+                'size' => '',
+                'class' => '',
+                'target' => '_self',
                 'rounded' => true,
             ],
-            'options'  => [
-                'icon'  => 'iconpicker',
+            'options' => [
+                'icon' => 'iconpicker',
                 'icon_placement' => ['prefix' => 'Before Text', 'suffix' => 'After Text'],
                 'style' => [
                     'primary' => 'Primary',
@@ -364,21 +364,21 @@ class PageBuilder extends BaseConfig
 
         // --- Content ---
         'hero' => [
-            'label'    => 'Hero Section',
-            'icon'     => 'mdi mdi-presentation',
+            'label' => 'Hero Section',
+            'icon' => 'mdi mdi-presentation',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'title'       => 'Hero Title',
-                'subtitle'    => 'Subtitle text goes here.',
+                'title' => 'Hero Title',
+                'subtitle' => 'Subtitle text goes here.',
                 'button_text' => 'Get Started',
-                'button_url'  => '#',
-                'background'  => '',
-                'alignment'   => 'center',
-                'overlay'     => true,
+                'button_url' => '#',
+                'background' => '',
+                'alignment' => 'center',
+                'overlay' => true,
             ],
             'options' => [
-                'alignment'  => [
+                'alignment' => [
                     'left' => 'Left',
                     'center' => 'Center',
                     'right' => 'Right'
@@ -388,26 +388,26 @@ class PageBuilder extends BaseConfig
             'grouping' => []
         ],
         'card' => [
-            'label'    => 'Card',
-            'icon'     => 'mdi mdi-card-outline',
+            'label' => 'Card',
+            'icon' => 'mdi mdi-card-outline',
             'category' => 'content',
             'children' => true,
             'defaults' => [
                 'title' => 'Card Title',
-                'text'  => 'Card content goes here.',
+                'text' => 'Card content goes here.',
                 'image' => '',
                 'class' => '',
             ],
         ],
         'feature_box' => [
-            'label'    => 'Feature Box',
-            'icon'     => 'mdi mdi-star-box-outline',
+            'label' => 'Feature Box',
+            'icon' => 'mdi mdi-star-box-outline',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'icon'  => 'mdi mdi-star',
+                'icon' => 'mdi mdi-star',
                 'title' => 'Feature Title',
-                'text'  => 'Feature description goes here.',
+                'text' => 'Feature description goes here.',
                 'class' => '',
             ],
             'options' => [
@@ -415,19 +415,19 @@ class PageBuilder extends BaseConfig
             ]
         ],
         'pricing' => [
-            'label'    => 'Pricing Table',
-            'icon'     => 'mdi mdi-currency-usd',
+            'label' => 'Pricing Table',
+            'icon' => 'mdi mdi-currency-usd',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'title'     => 'Pro Plan',
-                'price'     => '$29',
-                'period'    => '/month',
-                'features'  => "Feature 1\nFeature 2\nFeature 3",
-                'btn_text'  => 'Get Started',
-                'btn_url'   => '#',
-                'featured'  => false,
-                'class'     => '',
+                'title' => 'Pro Plan',
+                'price' => '$29',
+                'period' => '/month',
+                'features' => "Feature 1\nFeature 2\nFeature 3",
+                'btn_text' => 'Get Started',
+                'btn_url' => '#',
+                'featured' => false,
+                'class' => '',
             ],
             'options' => [
                 'features' => 'textarea',
@@ -435,51 +435,51 @@ class PageBuilder extends BaseConfig
             ]
         ],
         'testimonial' => [
-            'label'    => 'Testimonial',
-            'icon'     => 'mdi mdi-comment-quote-outline',
+            'label' => 'Testimonial',
+            'icon' => 'mdi mdi-comment-quote-outline',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'quote'  => 'The best CMS I have ever used!',
+                'quote' => 'The best CMS I have ever used!',
                 'author' => 'John Doe',
-                'role'   => 'CEO at Tech Corp',
-                'image'  => '',
-                'class'  => '',
+                'role' => 'CEO at Tech Corp',
+                'image' => '',
+                'class' => '',
             ],
         ],
         'team_member' => [
-            'label'    => 'Team Member',
-            'icon'     => 'mdi mdi-account-box-outline',
+            'label' => 'Team Member',
+            'icon' => 'mdi mdi-account-box-outline',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'name'  => 'Jane Smith',
-                'role'  => 'Designer',
+                'name' => 'Jane Smith',
+                'role' => 'Designer',
                 'image' => '',
-                'bio'   => 'Creative mind behind our beautiful interfaces.',
+                'bio' => 'Creative mind behind our beautiful interfaces.',
                 'class' => '',
             ],
         ],
         'cta' => [
-            'label'    => 'CTA Section',
-            'icon'     => 'mdi mdi-bullhorn-outline',
+            'label' => 'CTA Section',
+            'icon' => 'mdi mdi-bullhorn-outline',
             'category' => 'content',
             'children' => false,
             'defaults' => [
-                'title'       => 'Ready to get started?',
-                'text'        => 'Join thousands of satisfied customers today.',
+                'title' => 'Ready to get started?',
+                'text' => 'Join thousands of satisfied customers today.',
                 'button_text' => 'Join Now',
-                'button_url'  => '#',
-                'background'  => 'primary',
-                'class'       => '',
+                'button_url' => '#',
+                'background' => 'primary',
+                'class' => '',
             ],
             'options' => [
                 'background' => ['primary' => 'Primary', 'dark' => 'Dark', 'light' => 'Light']
             ]
         ],
         'spacer' => [
-            'label'    => 'Spacer',
-            'icon'     => 'mdi mdi-arrow-expand-vertical',
+            'label' => 'Spacer',
+            'icon' => 'mdi mdi-arrow-expand-vertical',
             'category' => 'layout',
             'children' => false,
             'defaults' => [
@@ -495,40 +495,40 @@ class PageBuilder extends BaseConfig
      */
     public array $templates = [
         'blank' => [
-            'label'       => 'Blank Page',
+            'label' => 'Blank Page',
             'description' => 'Start from scratch with an empty canvas.',
-            'icon'        => 'mdi mdi-file-outline',
-            'layout'      => [],
+            'icon' => 'mdi mdi-file-outline',
+            'layout' => [],
         ],
         'landing' => [
-            'label'       => 'Landing Page',
+            'label' => 'Landing Page',
             'description' => 'Hero section with features and call to action.',
-            'icon'        => 'mdi mdi-rocket-launch',
-            'layout'      => [],
+            'icon' => 'mdi mdi-rocket-launch',
+            'layout' => [],
         ],
         'services' => [
-            'label'       => 'Service Page',
+            'label' => 'Service Page',
             'description' => 'Display your services with tabs and features.',
-            'icon'        => 'mdi mdi-cog-outline',
-            'layout'      => [],
+            'icon' => 'mdi mdi-cog-outline',
+            'layout' => [],
         ],
         'pricing' => [
-            'label'       => 'Pricing Page',
+            'label' => 'Pricing Page',
             'description' => 'Clear pricing tables for your products.',
-            'icon'        => 'mdi mdi-currency-usd',
-            'layout'      => [],
+            'icon' => 'mdi mdi-currency-usd',
+            'layout' => [],
         ],
         'about' => [
-            'label'       => 'About Us',
+            'label' => 'About Us',
             'description' => 'Introduce your organization with team and info.',
-            'icon'        => 'mdi mdi-account-group',
-            'layout'      => [],
+            'icon' => 'mdi mdi-account-group',
+            'layout' => [],
         ],
         'contact' => [
-            'label'       => 'Contact Page',
+            'label' => 'Contact Page',
             'description' => 'Simple contact information layout.',
-            'icon'        => 'mdi mdi-email-outline',
-            'layout'      => [],
+            'icon' => 'mdi mdi-email-outline',
+            'layout' => [],
         ],
     ];
 
@@ -542,14 +542,14 @@ class PageBuilder extends BaseConfig
     public function getTemplate(string $key): array
     {
         return match ($key) {
-            'landing'  => $this->_landingTemplate(),
+            'landing' => $this->_landingTemplate(),
             'services' => $this->_servicesTemplate(),
-            'pricing'  => $this->_pricingTemplate(),
-            'about'    => $this->_aboutTemplate(),
-            'contact'  => $this->_contactTemplate(),
-            default   => [
-                'version'    => '1.0',
-                'framework'  => $this->framework,
+            'pricing' => $this->_pricingTemplate(),
+            'about' => $this->_aboutTemplate(),
+            'contact' => $this->_contactTemplate(),
+            default => [
+                'version' => '1.0',
+                'framework' => $this->framework,
                 'components' => [],
             ],
         };
@@ -561,83 +561,83 @@ class PageBuilder extends BaseConfig
     private function _landingTemplate(): array
     {
         return [
-            'version'    => '1.0',
-            'framework'  => $this->framework,
+            'version' => '1.0',
+            'framework' => $this->framework,
             'components' => [
                 [
-                    'type'     => 'hero',
-                    'id'       => 'hero_1',
-                    'props'    => [
-                        'title'       => 'Build Something Amazing',
-                        'subtitle'    => 'Create beautiful, responsive pages with our drag and drop page builder.',
+                    'type' => 'hero',
+                    'id' => 'hero_1',
+                    'props' => [
+                        'title' => 'Build Something Amazing',
+                        'subtitle' => 'Create beautiful, responsive pages with our drag and drop page builder.',
                         'button_text' => 'Get Started',
-                        'button_url'  => '#features',
-                        'alignment'   => 'center',
-                        'overlay'     => true,
+                        'button_url' => '#features',
+                        'alignment' => 'center',
+                        'overlay' => true,
                     ],
                 ],
                 [
-                    'type'     => 'section',
-                    'id'       => 'features',
-                    'props'    => ['class' => 'section-padding', 'id' => 'features'],
+                    'type' => 'section',
+                    'id' => 'features',
+                    'props' => ['class' => 'section-padding', 'id' => 'features'],
                     'children' => [
                         [
                             'type' => 'container',
-                            'id'   => 'features_container',
+                            'id' => 'features_container',
                             'children' => [
                                 [
-                                    'type'  => 'heading',
-                                    'id'    => 'features_heading',
+                                    'type' => 'heading',
+                                    'id' => 'features_heading',
                                     'props' => ['level' => 2, 'text' => 'Our Features', 'class' => 'text-center mb-5'],
                                 ],
                                 [
                                     'type' => 'row',
-                                    'id'   => 'features_row',
+                                    'id' => 'features_row',
                                     'children' => [
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'feat_col_1',
+                                            'type' => 'column',
+                                            'id' => 'feat_col_1',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'feat_1',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'feat_1',
                                                     'props' => [
-                                                        'icon'  => 'mdi mdi-lightning-bolt',
+                                                        'icon' => 'mdi mdi-lightning-bolt',
                                                         'title' => 'Fast Performance',
-                                                        'text'  => 'Optimized for speed and reliability.',
+                                                        'text' => 'Optimized for speed and reliability.',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'feat_col_2',
+                                            'type' => 'column',
+                                            'id' => 'feat_col_2',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'feat_2',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'feat_2',
                                                     'props' => [
-                                                        'icon'  => 'mdi mdi-shield-check',
+                                                        'icon' => 'mdi mdi-shield-check',
                                                         'title' => 'Secure by Default',
-                                                        'text'  => 'Built with security best practices.',
+                                                        'text' => 'Built with security best practices.',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'feat_col_3',
+                                            'type' => 'column',
+                                            'id' => 'feat_col_3',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'feat_3',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'feat_3',
                                                     'props' => [
-                                                        'icon'  => 'mdi mdi-cellphone-link',
+                                                        'icon' => 'mdi mdi-cellphone-link',
                                                         'title' => 'Fully Responsive',
-                                                        'text'  => 'Looks great on any device.',
+                                                        'text' => 'Looks great on any device.',
                                                     ],
                                                 ],
                                             ],
@@ -658,26 +658,26 @@ class PageBuilder extends BaseConfig
     private function _servicesTemplate(): array
     {
         return [
-            'version'    => '1.0',
-            'framework'  => $this->framework,
+            'version' => '1.0',
+            'framework' => $this->framework,
             'components' => [
                 [
-                    'type'     => 'section',
-                    'id'       => 'sec_serv_1',
-                    'props'    => ['class' => 'section-padding'],
+                    'type' => 'section',
+                    'id' => 'sec_serv_1',
+                    'props' => ['class' => 'section-padding'],
                     'children' => [
                         [
                             'type' => 'container',
-                            'id'   => 'con_serv_1',
+                            'id' => 'con_serv_1',
                             'children' => [
                                 [
-                                    'type'  => 'heading',
-                                    'id'    => 'h_serv_1',
+                                    'type' => 'heading',
+                                    'id' => 'h_serv_1',
                                     'props' => ['level' => 1, 'text' => 'Our Expertise', 'class' => 'text-center mb-5'],
                                 ],
                                 [
-                                    'type'  => 'tabs',
-                                    'id'    => 'tab_serv_1',
+                                    'type' => 'tabs',
+                                    'id' => 'tab_serv_1',
                                     'props' => [
                                         'items' => [
                                             ['title' => 'Web Design', 'content' => 'Crafting beautiful and functional websites.'],
@@ -700,30 +700,30 @@ class PageBuilder extends BaseConfig
     private function _pricingTemplate(): array
     {
         return [
-            'version'    => '1.0',
-            'framework'  => $this->framework,
+            'version' => '1.0',
+            'framework' => $this->framework,
             'components' => [
                 [
-                    'type'     => 'section',
-                    'id'       => 'sec_price_1',
-                    'props'    => ['class' => 'section-padding'],
+                    'type' => 'section',
+                    'id' => 'sec_price_1',
+                    'props' => ['class' => 'section-padding'],
                     'children' => [
                         [
                             'type' => 'container',
-                            'id'   => 'con_price_1',
+                            'id' => 'con_price_1',
                             'children' => [
                                 [
-                                    'type'  => 'heading',
-                                    'id'    => 'h_price_1',
+                                    'type' => 'heading',
+                                    'id' => 'h_price_1',
                                     'props' => ['level' => 1, 'text' => 'Choose Your Plan', 'class' => 'text-center mb-5'],
                                 ],
                                 [
                                     'type' => 'row',
-                                    'id'   => 'row_price_1',
+                                    'id' => 'row_price_1',
                                     'children' => [
                                         [
                                             'type' => 'column',
-                                            'id'   => 'col_price_1',
+                                            'id' => 'col_price_1',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 ['type' => 'pricing', 'id' => 'p_1', 'props' => ['title' => 'Basic', 'price' => '$0', 'period' => '/forever', 'features' => "1 Project\nBasic Support"]]
@@ -731,7 +731,7 @@ class PageBuilder extends BaseConfig
                                         ],
                                         [
                                             'type' => 'column',
-                                            'id'   => 'col_price_2',
+                                            'id' => 'col_price_2',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 ['type' => 'pricing', 'id' => 'p_2', 'props' => ['title' => 'Pro', 'price' => '$29', 'featured' => true, 'features' => "10 Projects\nPriority Support\nAPI Access"]]
@@ -739,7 +739,7 @@ class PageBuilder extends BaseConfig
                                         ],
                                         [
                                             'type' => 'column',
-                                            'id'   => 'col_price_3',
+                                            'id' => 'col_price_3',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 ['type' => 'pricing', 'id' => 'p_3', 'props' => ['title' => 'Enterprise', 'price' => '$99', 'features' => "Unlimited Projects\n24/7 Support\nCustom Solutions"]]
@@ -761,35 +761,35 @@ class PageBuilder extends BaseConfig
     private function _aboutTemplate(): array
     {
         return [
-            'version'    => '1.0',
-            'framework'  => $this->framework,
+            'version' => '1.0',
+            'framework' => $this->framework,
             'components' => [
                 [
-                    'type'     => 'section',
-                    'id'       => 'about_hero',
-                    'props'    => ['class' => 'section-padding'],
+                    'type' => 'section',
+                    'id' => 'about_hero',
+                    'props' => ['class' => 'section-padding'],
                     'children' => [
                         [
                             'type' => 'container',
-                            'id'   => 'about_container',
+                            'id' => 'about_container',
                             'children' => [
                                 [
-                                    'type'  => 'heading',
-                                    'id'    => 'about_heading',
+                                    'type' => 'heading',
+                                    'id' => 'about_heading',
                                     'props' => ['level' => 1, 'text' => 'About Us', 'class' => 'display-4 fw-bold text-center'],
                                 ],
                                 [
-                                    'type'  => 'paragraph',
-                                    'id'    => 'about_text',
+                                    'type' => 'paragraph',
+                                    'id' => 'about_text',
                                     'props' => ['text' => 'We are a team of passionate individuals building amazing products.', 'class' => 'lead text-muted text-center mb-5'],
                                 ],
                                 [
                                     'type' => 'row',
-                                    'id'   => 'about_row',
+                                    'id' => 'about_row',
                                     'children' => [
                                         [
                                             'type' => 'column',
-                                            'id'   => 'about_col_1',
+                                            'id' => 'about_col_1',
                                             'props' => ['size' => ['md' => 6]],
                                             'children' => [
                                                 ['type' => 'image', 'id' => 'about_img', 'props' => ['src' => 'https://via.placeholder.com/600x400']]
@@ -797,7 +797,7 @@ class PageBuilder extends BaseConfig
                                         ],
                                         [
                                             'type' => 'column',
-                                            'id'   => 'about_col_2',
+                                            'id' => 'about_col_2',
                                             'props' => ['size' => ['md' => 6]],
                                             'children' => [
                                                 ['type' => 'heading', 'id' => 'about_h2', 'props' => ['level' => 2, 'text' => 'Our Mission']],
@@ -843,64 +843,64 @@ class PageBuilder extends BaseConfig
     private function _contactTemplate(): array
     {
         return [
-            'version'    => '1.0',
-            'framework'  => $this->framework,
+            'version' => '1.0',
+            'framework' => $this->framework,
             'components' => [
                 [
-                    'type'     => 'section',
-                    'id'       => 'contact_section',
-                    'props'    => ['class' => 'section-padding'],
+                    'type' => 'section',
+                    'id' => 'contact_section',
+                    'props' => ['class' => 'section-padding'],
                     'children' => [
                         [
                             'type' => 'container',
-                            'id'   => 'contact_container',
+                            'id' => 'contact_container',
                             'children' => [
                                 [
-                                    'type'  => 'heading',
-                                    'id'    => 'contact_heading',
+                                    'type' => 'heading',
+                                    'id' => 'contact_heading',
                                     'props' => ['level' => 1, 'text' => 'Contact Us', 'class' => 'display-4 fw-bold text-center mb-4'],
                                 ],
                                 [
-                                    'type'  => 'paragraph',
-                                    'id'    => 'contact_text',
+                                    'type' => 'paragraph',
+                                    'id' => 'contact_text',
                                     'props' => ['text' => 'Have questions? We would love to hear from you.', 'class' => 'lead text-muted text-center mb-5'],
                                 ],
                                 [
                                     'type' => 'row',
-                                    'id'   => 'contact_row',
+                                    'id' => 'contact_row',
                                     'children' => [
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'contact_col_1',
+                                            'type' => 'column',
+                                            'id' => 'contact_col_1',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'contact_email',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'contact_email',
                                                     'props' => ['icon' => 'mdi mdi-email', 'title' => 'Email', 'text' => 'info@example.com'],
                                                 ],
                                             ],
                                         ],
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'contact_col_2',
+                                            'type' => 'column',
+                                            'id' => 'contact_col_2',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'contact_phone',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'contact_phone',
                                                     'props' => ['icon' => 'mdi mdi-phone', 'title' => 'Phone', 'text' => '+62 812 3456 7890'],
                                                 ],
                                             ],
                                         ],
                                         [
-                                            'type'  => 'column',
-                                            'id'    => 'contact_col_3',
+                                            'type' => 'column',
+                                            'id' => 'contact_col_3',
                                             'props' => ['size' => ['md' => 4]],
                                             'children' => [
                                                 [
-                                                    'type'  => 'feature_box',
-                                                    'id'    => 'contact_address',
+                                                    'type' => 'feature_box',
+                                                    'id' => 'contact_address',
                                                     'props' => ['icon' => 'mdi mdi-map-marker', 'title' => 'Address', 'text' => 'Jakarta, Indonesia'],
                                                 ],
                                             ],
