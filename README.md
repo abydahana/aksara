@@ -1,3 +1,5 @@
+<img width="2982" height="1978" alt="frame_generic_dark" src="https://github.com/user-attachments/assets/e449a43f-2f42-4bd1-96fb-619e98c5779e" />
+
 # About Aksara CMS
 **Aksara CMS** is a powerful, lightweight, and versatile Content Management System built on top of [CodeIgniter 4](https://codeigniter.com). It provides a robust and comprehensive platform for building everything from simple company profiles to complex web applications and REST APIs seamlessly.
 
