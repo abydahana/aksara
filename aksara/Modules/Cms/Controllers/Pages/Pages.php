@@ -19,6 +19,7 @@ namespace Aksara\Modules\Cms\Controllers\Pages;
 
 use Throwable;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\PageBuilder\PageBuilder;
 
 class Pages extends Core
 {
@@ -47,17 +48,20 @@ class Pages extends Core
             $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
+        // Load page builder library
+        $pageBuilder = new PageBuilder();
+
         $this->setTitle(phrase('Pages'))
         ->setIcon('mdi mdi-file-document-outline')
-        ->setPrimary('page_id')
-        ->unsetColumn('page_id, author, page_slug, page_content, carousel_title, faq_title, created_timestamp, updated_timestamp, language')
-        ->unsetField('page_id, author')
-        ->unsetView('page_id, author')
-        ->columnOrder('page_title, page_description, carousel_title, faq_title, updated, status')
-        ->fieldOrder('page_title, page_description, carousel_id, faq_id, language_id, created_timestamp, updated_timestamp, status')
+        ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
+        ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
+        ->unsetColumn('page_id, author, page_slug, page_content, carousel_title, faq_title, carousel_id, faq_id, created_timestamp, updated_timestamp, language')
+        ->unsetField('page_id, author, carousel_id, faq_id')
+        ->unsetView('page_id, author, page_content, carousel_id, faq_id')
+        ->columnOrder('page_title, page_description, updated, status')
+        ->fieldOrder('page_title, page_description, language_id, created_timestamp, updated_timestamp, status')
         ->setField([
             'page_description' => 'textarea',
-            'page_content' => 'wysiwyg',
             'created_timestamp' => 'created_timestamp',
             'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
@@ -68,31 +72,6 @@ class Pages extends Core
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
         ->addButton('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
 
-        ->fieldAppend(
-            'carousel_id',
-            '<a href="' . go_to('../../cms/partials/carousels/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
-        )
-        ->fieldAppend(
-            'faq_id',
-            '<a href="' . go_to('../../cms/partials/faqs/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
-        )
-
-        ->setRelation(
-            'carousel_id',
-            'pages_carousels.carousel_id',
-            '{{ pages_carousels.carousel_title }}',
-            [
-                'pages_carousels.status' => 1
-            ]
-        )
-        ->setRelation(
-            'faq_id',
-            'pages_faqs.faq_id',
-            '{{ pages_faqs.faq_title }}',
-            [
-                'pages_faqs.status' => 1
-            ]
-        )
         ->setRelation(
             'language_id',
             'app_languages.id',
@@ -104,7 +83,6 @@ class Pages extends Core
         ->setValidation([
             'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
             'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . $this->request->getGet('page_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
-            'page_content' => 'required',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
@@ -115,11 +93,6 @@ class Pages extends Core
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_slug' => phrase('Slug'),
-            'page_content' => phrase('Content'),
-            'carousel_id' => phrase('Carousel'),
-            'carousel_title' => phrase('Carousel'),
-            'faq_id' => phrase('Faq'),
-            'faq_title' => phrase('Faq'),
             'created_timestamp' => phrase('Created'),
             'updated_timestamp' => phrase('Updated'),
             'language' => phrase('Language'),
@@ -129,10 +102,6 @@ class Pages extends Core
             'page_description' => phrase('Page summary to improve SEO')
         ])
         ->fieldPosition([
-            'carousel_id' => 2,
-            'carousel_title' => 2,
-            'faq_id' => 2,
-            'faq_title' => 2,
             'created_timestamp' => 2,
             'updated_timestamp' => 2,
             'status' => 2,
@@ -143,8 +112,10 @@ class Pages extends Core
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
-        ->modalSize('modal-xl')
-
+        ->setOutput([
+            'builder_components' => $pageBuilder->getComponentsFlat(),
+            'builder_categories' => $pageBuilder->getCategories()
+        ])
         ->render($this->_table);
     }
 
@@ -259,6 +230,130 @@ class Pages extends Core
         ])
         ->modalSize('modal-lg')
         ->render($this->_table);
+    }
+
+    /**
+     * Preview page builder layout.
+     */
+    public function builderPreview()
+    {
+        $layout = $this->request->getPost('layout');
+
+        if (! $layout) {
+            return throw_exception(400, phrase('No layout data.'));
+        }
+
+        $decoded = json_decode($layout, true);
+        $pb = new PageBuilder();
+        $html = $pb->render($decoded);
+
+        echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preview</title>';
+        echo '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
+        echo '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
+        echo '<style>body{background:#f8f9fa}.section-padding{padding:80px 0}</style>';
+        echo '</head><body>' . $html;
+        echo '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
+        echo '</body></html>';
+        exit;
+    }
+
+    public function builderImages()
+    {
+        $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages';
+        $query = $this->request->getGet('q');
+        $sort = $this->request->getGet('sort') ?? 'newest';
+        $page = (int) ($this->request->getGet('page') ?? 1);
+        $per_page = 12;
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        $files = array_diff(scandir($path), ['.', '..', 'index.html', '.htaccess']);
+        $images = [];
+
+        foreach ($files as $file) {
+            $filePath = $path . DIRECTORY_SEPARATOR . $file;
+            if (is_file($filePath) && @is_array(getimagesize($filePath))) {
+                // Search filter
+                if ($query && stripos($file, $query) === false) {
+                    continue;
+                }
+
+                $images[] = [
+                    'name' => $file,
+                    'url'  => base_url('uploads/pages/' . $file),
+                    'size' => filesize($filePath),
+                    'time' => filemtime($filePath),
+                    'formatted_size' => number_format(filesize($filePath) / 1024, 2) . ' KB',
+                    'formatted_time' => date('Y-m-d H:i', filemtime($filePath))
+                ];
+            }
+        }
+
+        // Sorting
+        usort($images, function($a, $b) use ($sort) {
+            if ($sort === 'newest') return $b['time'] <=> $a['time'];
+            if ($sort === 'oldest') return $a['time'] <=> $b['time'];
+            if ($sort === 'name_asc') return strcasecmp($a['name'], $b['name']);
+            if ($sort === 'name_desc') return strcasecmp($b['name'], $a['name']);
+            return 0;
+        });
+
+        $total = count($images);
+        $images = array_slice($images, ($page - 1) * $per_page, $per_page);
+
+        return make_json([
+            'images' => $images,
+            'total'  => $total,
+            'page'   => $page,
+            'per_page' => $per_page,
+            'total_pages' => ceil($total / $per_page)
+        ]);
+    }
+
+    /**
+     * Handle image upload for builder.
+     */
+    public function builderUpload()
+    {
+        if (! $this->request->getFile('file')) {
+            return make_json(['error' => phrase('No file uploaded.')]);
+        }
+
+        $file = $this->request->getFile('file');
+
+        if (! $file->isValid()) {
+            return make_json(['error' => $file->getErrorString()]);
+        }
+
+        // Security: strictly validate image
+        if (! in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])) {
+            return make_json(['error' => phrase('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.')]);
+        }
+
+        $path = FCPATH . 'uploads' . DIRECTORY_SEPARATOR . 'pages';
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        $name = $file->getRandomName();
+
+        if ($file->move($path, $name)) {
+            return make_json([
+                'success' => true,
+                'name'    => $name,
+                'url'     => base_url('uploads/pages/' . $name)
+            ]);
+        }
+
+        return make_json(['error' => phrase('Failed to move uploaded file.')]);
+    }
+
+    public function afterUpdate()
+    {
+        return throw_exception(301, phrase('The page was successfully updated.'), current_page());
     }
 
     private function _filter()
