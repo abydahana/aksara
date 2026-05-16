@@ -7,115 +7,28 @@
 if (isset($results[0])): ?>
     <?php
         $page = $results[0];
-        $carousel = ($page->carousel_content ? json_decode($page->carousel_content) : null);
-        $accordion = ($page->faq_content ? json_decode($page->faq_content) : null);
+        $builder = new \Aksara\Libraries\PageBuilder\PageBuilder();
+        $decoded = json_decode($page->page_content, true);
 
-        if ($carousel) {
-            $navigation = null;
-            $carousel_items = null;
-
-            foreach ($carousel as $key => $val) {
-                $navigation .= '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $key . '"' . ($key == 0 ? ' class="active"' : '') . '></button>';
-                $carousel_items .= '
-                    <div class="carousel-item' . ($key == 0 || sizeof((array) $carousel) == 1 ? ' active' : '') . '" >
-                        <img src="' . get_image('carousels', (isset($val->background) ? $val->background : 'placeholder.png')) . '" alt="..." class="d-block w-100" style="max-height:640px;object-fit: cover" />
-                        <div class="clip gradient-top"></div>
-                        <div class="carousel-caption">
-                            <h2 class="fw-bold mb-3 text-light">
-                                ' . (isset($val->title) ? $val->title : phrase('Untitled')) . '
-                            </h2>
-                            <p class="text-light mb-5">
-                                ' . (isset($val->description) ? truncate($val->description, 260) : phrase('Description was not set')) . '
-                            </p>
-                            ' . (isset($val->link) && $val->link ? '
-                            <a href="' . $val->link . '" class="btn btn-sm btn-outline-light btn-lg rounded-pill px-5">
-                                ' . (isset($val->label) && $val->label ? $val->label : phrase('Read More')) . '
-                                <i class="mdi mdi-chevron-right"></i>
-                            </a>
-                            ' : null) . '
-                        </div>
-                    </div>
-                ';
-            }
-
-            echo '
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                    ' . (sizeof((array) $carousel) > 1 ? '
-                    <div class="carousel-indicators">
-                        ' . $navigation . '
-                    </div>
-                    ' : '') . '
-                    <div class="carousel-inner">
-                        ' . $carousel_items . '
-                    </div>
-                    ' . (sizeof((array) $carousel) > 1 ? '
-                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    </a>
-                    ' : '') . '
-                </div>
-            ';
-        }
-
-        if ($accordion) {
-            $output = null;
-
-            foreach ($accordion as $key => $val) {
-                if (! isset($val->title) || ! $val->body) {
-                    continue;
-                }
-
-                $output .= '
-                    <div class="accordion-item">
-                        <div class="accordion-header" id="heading_' . $key . '">
-                            <button type="button" class="accordion-button' . ($key ? ' collapsed' : null) . '" data-bs-toggle="collapse" data-bs-target="#collapse_' . $key . '" aria-expanded="' . (! $key ? 'true' : 'false') . '" aria-controls="collapse_' . $key . '">
-                                ' . $val->title . '
-                            </a>
-                        </div>
-                        <div id="collapse_' . $key . '" class="collapse' . (! $key ? ' show' : null) . '" aria-labelledby="heading_' . $key . '" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                ' . $val->body . '
-                            </div>
-                        </div>
-                    </div>
-                ';
-            }
-
-            $accordion = '
-                <div class="accordion" id="accordionExample">
-                    ' . $output . '
-                </div>
-            ';
-        }
+        if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): 
     ?>
-    <section class="section-padding fade-in">
-        <div class="container text-center text-md-start">
-            <h1 class="display-4 fw-bold text-dark">
-                <?= $meta->title; ?>
-            </h1>
-            <p class="fs-5 text-muted mb-0">
-                <?= truncate($meta->description, 256); ?>
-            </p>
+        <div class="fade-in">
+            <?= $builder->render($decoded); ?>
         </div>
-    </section>
-    <section class="section-padding fade-in">
-        <div class="container">
-            <div class="text-justify mb-3">
-                <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
+    <?php else: ?>
+        <section class="section-padding fade-in">
+            <div class="container">
+                <div class="text-justify mb-3">
+                    <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
+                </div>
+                <p>
+                    <i class="text-muted text-sm">
+                        <?= ($page->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($page->created_timestamp))) . ', ' . $page->created_timestamp); ?>
+                    </i>
+                </p>
             </div>
-            <div class="mb-3">
-                <?= $accordion; ?>
-            </div>
-            <p>
-                <i class="text-muted text-sm">
-                    <?= ($page->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($page->created_timestamp))) . ', ' . $page->created_timestamp); ?>
-                </i>
-            </p>
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
 <?php else: ?>
     <section class="section-padding fade-in">
         <div class="container text-center py-5">

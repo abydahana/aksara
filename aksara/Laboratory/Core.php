@@ -618,7 +618,7 @@ abstract class Core extends Controller
         ?string $class = null,
         ?string $icon = null,
         array $parameter = [],
-        ?bool $newTab = null
+        ?bool $newTab = false
     ): static {
         $this->_setButton[$button] = [
             'url' => $value,
@@ -2288,13 +2288,13 @@ abstract class Core extends Controller
         }
 
         // Check before action
-        if ('create' == $this->_method && method_exists($this, 'before_insert')) {
+        if ('create' == $this->_method && method_exists($this, 'beforeInsert')) {
             // Before insert
             $this->beforeInsert();
-        } elseif ('update' == $this->_method && method_exists($this, 'before_update')) {
+        } elseif ('update' == $this->_method && method_exists($this, 'beforeUpdate')) {
             // Before update
             $this->beforeUpdate();
-        } elseif ('delete' == $this->_method && method_exists($this, 'before_delete')) {
+        } elseif ('delete' == $this->_method && method_exists($this, 'beforeDelete')) {
             // Before delete
             $this->beforeDelete();
         }
@@ -4016,7 +4016,7 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook before_insert
+     * @hook beforeInsert
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or data manipulation
      * immediately before a new record is inserted (CREATE operation).
@@ -4027,8 +4027,8 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook after_insert
-     * * An optional method that can be overridden by a derived Controller/Model
+     * @hook afterInsert
+     * An optional method that can be overridden by a derived Controller/Model
      * to execute subsequent logic after data has been successfully inserted (CREATE operation).
      *
      * @return void
@@ -4039,7 +4039,7 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook before_update
+     * @hook beforeUpdate
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or data manipulation
      * immediately before an existing record is updated (UPDATE operation).
@@ -4050,8 +4050,8 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook after_update
-     * * An optional method that can be overridden by a derived Controller/Model
+     * @hook afterUpdate
+     * An optional method that can be overridden by a derived Controller/Model
      * to execute subsequent logic after data has been successfully updated (UPDATE operation).
      *
      * @return void
@@ -4062,7 +4062,7 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook before_delete
+     * @hook beforeDelete
      * Optional method that can be overridden by a derived Controller or Model
      * to execute custom logic, validation, or related tasks
      * immediately before a record is permanently deleted (DELETE operation).
@@ -4073,8 +4073,8 @@ abstract class Core extends Controller
     }
 
     /**
-     * @hook after_delete
-     * * An optional method that can be overridden by a derived Controller/Model
+     * @hook afterDelete
+     * An optional method that can be overridden by a derived Controller/Model
      * to execute subsequent logic after data has been successfully deleted (DELETE operation).
      *
      * @return void
@@ -4105,7 +4105,7 @@ abstract class Core extends Controller
         // --- 2. Table Existence Check and Execution ---
         if ($table && $this->model->tableExists($table)) {
             // --- 3. Before Insert Hook ---
-            if (method_exists($this, 'before_insert')) {
+            if (method_exists($this, 'beforeInsert')) {
                 $this->beforeInsert();
             }
 
@@ -4143,7 +4143,7 @@ abstract class Core extends Controller
                 unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
 
                 // --- 5. After Insert Hook ---
-                if (method_exists($this, 'after_insert')) {
+                if (method_exists($this, 'afterInsert')) {
                     $this->afterInsert();
                 }
 
@@ -4210,7 +4210,7 @@ abstract class Core extends Controller
 
         // --- 2. MAGIC INTERCEPTOR FOR VERTICAL EAV TABLES ---
         if ($table && $this->model->fieldExists('key', $table) && $this->model->fieldExists('value', $table) && ! $this->model->fieldExists('app_name', $table)) {
-            if (method_exists($this, 'before_update')) {
+            if (method_exists($this, 'beforeUpdate')) {
                 $this->beforeUpdate();
             }
 
@@ -4230,7 +4230,7 @@ abstract class Core extends Controller
                 }
             }
 
-            if (method_exists($this, 'after_update')) {
+            if (method_exists($this, 'afterUpdate')) {
                 $this->afterUpdate();
             }
 
@@ -4270,7 +4270,7 @@ abstract class Core extends Controller
             if ($query) {
                 // --- 4. Data Exists: Execute Update ---
 
-                if (method_exists($this, 'before_update')) {
+                if (method_exists($this, 'beforeUpdate')) {
                     $this->beforeUpdate();
                 }
 
@@ -4289,7 +4289,7 @@ abstract class Core extends Controller
                     unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
                     $this->_unlinkFiles($oldFiles);
 
-                    if (method_exists($this, 'after_update')) {
+                    if (method_exists($this, 'afterUpdate')) {
                         $this->afterUpdate();
                     }
 
@@ -4383,7 +4383,7 @@ abstract class Core extends Controller
 
             if ($query) {
                 // --- 3. Data Exists: Execute Delete ---
-                if (method_exists($this, 'before_delete')) {
+                if (method_exists($this, 'beforeDelete')) {
                     $this->beforeDelete();
                 }
 
@@ -4400,7 +4400,7 @@ abstract class Core extends Controller
                     // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
 
-                    if (method_exists($this, 'after_delete')) {
+                    if (method_exists($this, 'afterDelete')) {
                         $this->afterDelete();
                     }
 
@@ -4458,7 +4458,7 @@ abstract class Core extends Controller
 
         if ($totalItems > 0) {
             // Before delete hook (runs once before the batch loop)
-            if (method_exists($this, 'before_delete')) {
+            if (method_exists($this, 'beforeDelete')) {
                 $this->beforeDelete();
             }
 
@@ -4517,7 +4517,7 @@ abstract class Core extends Controller
             }
 
             // After delete hook (runs once after the batch loop)
-            if (method_exists($this, 'after_delete')) {
+            if (method_exists($this, 'afterDelete')) {
                 $this->afterDelete();
             }
         }
