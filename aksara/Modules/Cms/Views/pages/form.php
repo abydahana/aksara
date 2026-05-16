@@ -12,27 +12,30 @@
         <!-- Manually Placed Page Builder Toolbar -->
         <div class="pb-toolbar px-3 py-2 sticky-top bg-white border-bottom">
             <div class="pb-toolbar-group bg-light rounded-pill px-1 border">
-                <button type="button" class="btn btn-sm btn-link text-dark pb-undo" title="Undo">
+                <button type="button" class="btn btn-sm btn-link text-dark pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
                     <i class="mdi mdi-undo"></i>
                 </button>
                 <div class="vr my-1"></div>
-                <button type="button" class="btn btn-sm btn-link text-dark pb-redo" title="Redo">
+                <button type="button" class="btn btn-sm btn-link text-dark pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
                     <i class="mdi mdi-redo"></i>
                 </button>
             </div>
             <div class="pb-toolbar-group bg-light rounded-pill px-1 border mx-auto">
-                <button type="button" class="btn btn-sm pb-device-btn active rounded-pill" data-device="desktop" title="Desktop">
+                <button type="button" class="btn btn-sm pb-device-btn active rounded-pill" data-device="desktop" data-bs-toggle="tooltip" title="<?= phrase('Desktop'); ?>">
                     <i class="mdi mdi-monitor"></i>
                 </button>
-                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="tablet" title="Tablet">
+                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="tablet" data-bs-toggle="tooltip" title="<?= phrase('Tablet'); ?>">
                     <i class="mdi mdi-tablet"></i>
                 </button>
-                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="mobile" title="Mobile">
+                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="mobile" data-bs-toggle="tooltip" title="<?= phrase('Mobile'); ?>">
                     <i class="mdi mdi-cellphone"></i>
                 </button>
             </div>
             <div class="pb-toolbar-group gap-2">
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill pb-preview-btn px-4">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
+                    <i class="mdi mdi-cogs me-1"></i><?= phrase('Settings'); ?>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill pb-preview-btn px-3">
                     <i class="mdi mdi-eye me-1"></i><?= phrase('Preview'); ?>
                 </button>
                 <button type="button" class="btn btn-sm btn-success rounded-pill pb-save-btn px-4">
@@ -42,37 +45,24 @@
         </div>
 
         <div class="row g-0">
-            <!-- Sidebar: Page Metadata -->
-            <div class="col-md-3 col-xxl-2 bg-white border-end pb-metadata-sidebar">
-                <div class="p-3 sticky-top" style="top: 60px;">
-                    <h6 class="fw-bold mb-3 text-uppercase small text-muted letter-spacing-1"><?= phrase('Page Metadata'); ?></h6>
-                    <div class="form-group mb-3">
-                        <?= (isset($results->field_data->page_title) ? form_input($results->field_data->page_title) : null); ?>
-                    </div>
-                    <div class="form-group mb-3">
-                        <?= (isset($results->field_data->page_slug) ? form_input($results->field_data->page_slug) : null); ?>
-                    </div>
-                    <div class="form-group mb-3">
-                        <?= (isset($results->field_data->page_description) ? form_input($results->field_data->page_description) : null); ?>
-                    </div>
-                    <div class="form-group mb-3">
-                        <?= (isset($results->field_data->language_id) ? form_input($results->field_data->language_id) : null); ?>
-                    </div>
-                    <div class="form-group mb-3">
-                        <?= (isset($results->field_data->status) ? form_input($results->field_data->status) : null); ?>
-                    </div>
-                    <div role="validation-callback"></div>
-                </div>
-            </div>
-
             <!-- Main: Page Builder Canvas -->
-            <div class="col-md-9 col-xxl-10 bg-light">
+            <div class="col-12 bg-light">
                 <div id="page-builder"></div>
                 <?php
                     $page_content = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
                 ?>
                 <input type="hidden" name="page_content" id="page_content" value="<?= htmlspecialchars($page_content, ENT_QUOTES); ?>" />
             </div>
+        </div>
+
+        <!-- Container: Page Metadata Settings (Hidden, will be moved to modal) -->
+        <div id="pb-settings-container" style="display:none">
+            <?= (isset($results->field_data->page_title) ? form_input($results->field_data->page_title) : null); ?>
+            <?= (isset($results->field_data->page_slug) ? form_input($results->field_data->page_slug) : null); ?>
+            <?= (isset($results->field_data->page_description) ? form_input($results->field_data->page_description) : null); ?>
+            <?= (isset($results->field_data->language_id) ? form_input($results->field_data->language_id) : null); ?>
+            <?= (isset($results->field_data->status) ? form_input($results->field_data->status) : null); ?>
+            <div role="validation-callback"></div>
         </div>
     </form>
 </div>
