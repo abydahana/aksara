@@ -11,8 +11,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
  *
- * When the signs come, those who do not believe at that time
- * will have only two choices: commit suicide or become brutal.
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
  */
 
 namespace Aksara\Libraries\PageBuilder;
@@ -87,29 +87,29 @@ class Renderer
         $id = $component['id'] ?? '';
 
         return match ($type) {
-            'section'     => $this->renderSection($props, $children, $id),
-            'container'   => $this->renderContainer($props, $children, $id),
-            'row'         => $this->renderRow($props, $children, $id),
-            'column'      => $this->renderColumn($props, $children, $id),
-            'heading'     => $this->renderHeading($props, $id),
-            'paragraph'   => $this->renderParagraph($props, $id),
-            'divider'     => $this->renderDivider($props, $id),
-            'image'       => $this->renderImage($props, $id),
-            'video'       => $this->renderVideo($props, $id),
-            'button'      => $this->renderButton($props, $id),
-            'accordion'   => $this->renderAccordion($props, $id),
-            'alert'       => $this->renderAlert($props, $id),
-            'carousel'    => $this->renderCarousel($props, $id),
-            'tabs'        => $this->renderTabs($props, $id),
-            'card'        => $this->renderCard($props, $children, $id),
-            'hero'        => $this->renderHero($props, $id),
+            'section' => $this->renderSection($props, $children, $id),
+            'container' => $this->renderContainer($props, $children, $id),
+            'row' => $this->renderRow($props, $children, $id),
+            'column' => $this->renderColumn($props, $children, $id),
+            'heading' => $this->renderHeading($props, $id),
+            'paragraph' => $this->renderParagraph($props, $id),
+            'divider' => $this->renderDivider($props, $id),
+            'image' => $this->renderImage($props, $id),
+            'video' => $this->renderVideo($props, $id),
+            'button' => $this->renderButton($props, $id),
+            'accordion' => $this->renderAccordion($props, $id),
+            'alert' => $this->renderAlert($props, $id),
+            'carousel' => $this->renderCarousel($props, $id),
+            'tabs' => $this->renderTabs($props, $id),
+            'card' => $this->renderCard($props, $children, $id),
+            'hero' => $this->renderHero($props, $id),
             'feature_box' => $this->renderFeatureBox($props, $id),
-            'pricing'     => $this->renderPricing($props, $id),
+            'pricing' => $this->renderPricing($props, $id),
             'testimonial' => $this->renderTestimonial($props, $id),
             'team_member' => $this->renderTeamMember($props, $id),
-            'cta'         => $this->renderCta($props, $id),
-            'spacer'      => $this->renderSpacer($props, $id),
-            default       => "<!-- Unknown component: {$type} -->",
+            'cta' => $this->renderCta($props, $id),
+            'spacer' => $this->renderSpacer($props, $id),
+            default => "<!-- Unknown component: {$type} -->",
         };
     }
 
@@ -135,7 +135,7 @@ class Renderer
         $parts = [];
 
         foreach ($attributes as $key => $value) {
-            if ($value === '' || $value === null) {
+            if ('' === $value || null === $value) {
                 continue;
             }
 
@@ -160,7 +160,7 @@ class Renderer
 
         $attrStr = $this->attrs(array_filter([
             'class' => $class,
-            'id'    => $props['id'] ?? $id,
+            'id' => $props['id'] ?? $id,
             'style' => $style,
         ]));
 
@@ -207,7 +207,7 @@ class Renderer
             $classes[] = $prefix;
         } else {
             foreach ($size as $bp => $cols) {
-                if ($bp === '' || $bp === 'xs') {
+                if ('' === $bp || 'xs' === $bp) {
                     $classes[] = "{$prefix}-{$cols}";
                 } else {
                     $classes[] = "{$prefix}-{$bp}-{$cols}";
@@ -219,7 +219,7 @@ class Renderer
         $offset = $props['offset'] ?? [];
 
         foreach ($offset as $bp => $cols) {
-            if ($bp === '' || $bp === 'xs') {
+            if ('' === $bp || 'xs' === $bp) {
                 $classes[] = "offset-{$cols}";
             } else {
                 $classes[] = "offset-{$bp}-{$cols}";
@@ -298,8 +298,10 @@ class Renderer
         // Convert YouTube/Vimeo URLs to embed URLs
         $embedUrl = $this->convertToEmbedUrl($url);
         $ratioClass = "ratio ratio-{$ratio}";
+        $class = trim("{$ratioClass} " . ($this->classes['mb_3'] ?? 'mb-3') . ' ' . ($props['class'] ?? ''));
+        $style = (strpos($class, 'rounded') !== false) ? ' style="overflow:hidden"' : '';
 
-        return "<div class=\"{$ratioClass} {$this->classes['mb_3']}\">\n"
+        return "<div class=\"{$class}\"{$style}>\n"
              . "  <iframe src=\"{$embedUrl}\" allowfullscreen></iframe>\n"
              . "</div>\n";
     }
@@ -339,16 +341,16 @@ class Renderer
         }
 
         $class = implode(' ', array_filter($classes));
-        $targetAttr = $target !== '_self' ? " target=\"{$target}\"" : '';
+        $targetAttr = '_self' !== $target ? " target=\"{$target}\"" : '';
 
         $iconHtml = '';
 
         if ($icon) {
-            $marginClass = ($text ? ($icon_placement === 'suffix' ? ' ms-2' : ' me-2') : '');
+            $marginClass = ($text ? ('suffix' === $icon_placement ? ' ms-2' : ' me-2') : '');
             $iconHtml = "<i class=\"{$icon}{$marginClass}\"></i>";
         }
 
-        $content = ($icon_placement === 'suffix' ? $text . $iconHtml : $iconHtml . $text);
+        $content = ('suffix' === $icon_placement ? $text . $iconHtml : $iconHtml . $text);
 
         return "<a href=\"{$url}\" class=\"{$class}\"{$targetAttr}>{$content}</a>\n";
     }
@@ -361,9 +363,9 @@ class Renderer
 
         foreach ($items as $index => $item) {
             $itemId = "{$accordionId}_item_{$index}";
-            $expanded = $index === 0 ? 'true' : 'false';
-            $collapsed = $index === 0 ? '' : ' collapsed';
-            $show = $index === 0 ? ' show' : '';
+            $expanded = 0 === $index ? 'true' : 'false';
+            $collapsed = 0 === $index ? '' : ' collapsed';
+            $show = 0 === $index ? ' show' : '';
 
             $html .= "  <div class=\"{$this->classes['accordion_item']}\">\n"
                    . "    <div class=\"{$this->classes['accordion_header']}\" id=\"heading_{$itemId}\">\n"
@@ -390,7 +392,7 @@ class Renderer
         $style = $props['style'] ?? 'info';
         $class = trim("{$this->classes['alert']} alert-{$style} " . ($props['class'] ?? ''));
 
-        return "<div class=\"{$class}\" role=\"alert\">{$text}</div>\n";
+        return "<div class=\"{$class}\" role=\"alert\">" . $this->removeLastMargin($text) . "</div>\n";
     }
 
     private function renderCard(array $props, array $children, string $id): string
@@ -402,7 +404,7 @@ class Renderer
         }
 
         $class = implode(' ', array_filter($classes));
-        $html = "<div class=\"{$class}\">\n";
+        $html = "<div class=\"{$class}\" style=\"overflow:hidden;position:relative\">\n";
 
         if (! empty($props['image'])) {
             $html .= "  <img src=\"" . htmlspecialchars($props['image'], ENT_QUOTES) . "\" class=\"card-img-top\" alt=\"\" />\n";
@@ -415,7 +417,8 @@ class Renderer
         }
 
         if (! empty($props['text'])) {
-            $html .= "    <p class=\"{$this->classes['card_text']}\">" . htmlspecialchars($props['text'], ENT_QUOTES) . "</p>\n";
+            $marginClass = empty($children) ? ' mb-0' : ' mb-3';
+            $html .= "    <div class=\"{$this->classes['card_text']}{$marginClass}\">" . $this->removeLastMargin($this->sanitizeHtml($props['text'])) . "</div>\n";
         }
 
         if ($children) {
@@ -505,7 +508,7 @@ class Renderer
         if ($indicators) {
             $html .= "  <div class=\"carousel-indicators\">\n";
             foreach ($items as $index => $item) {
-                $active = $index === 0 ? ' class="active" aria-current="true"' : '';
+                $active = 0 === $index ? ' class="active" aria-current="true"' : '';
                 $html .= "    <button type=\"button\" data-bs-target=\"#{$carouselId}\" data-bs-slide-to=\"{$index}\"{$active} aria-label=\"Slide " . ($index + 1) . "\"></button>\n";
             }
             $html .= "  </div>\n";
@@ -513,7 +516,7 @@ class Renderer
 
         $html .= "  <div class=\"carousel-inner rounded-4 shadow-sm\">\n";
         foreach ($items as $index => $item) {
-            $active = $index === 0 ? ' active' : '';
+            $active = 0 === $index ? ' active' : '';
             $src = htmlspecialchars($item['src'] ?? '', ENT_QUOTES);
             $title = $this->sanitizeHtml($item['title'] ?? '');
             $subtitle = $this->sanitizeHtml($item['subtitle'] ?? '');
@@ -524,8 +527,12 @@ class Renderer
             }
             if ($title || $subtitle) {
                 $html .= "      <div class=\"carousel-caption d-none d-md-block\" style=\"background:rgba(0,0,0,0.5); border-radius:1rem; padding:1.5rem\">\n";
-                if ($title) $html .= "        <h3 class=\"fw-bold text-white\">{$title}</h3>\n";
-                if ($subtitle) $html .= "        <p class=\"mb-0 text-white-50\">{$subtitle}</p>\n";
+                if ($title) {
+                    $html .= "        <h3 class=\"fw-bold text-white\">{$title}</h3>\n";
+                }
+                if ($subtitle) {
+                    $html .= "        <p class=\"mb-0 text-white-50\">{$subtitle}</p>\n";
+                }
                 $html .= "      </div>\n";
             }
             $html .= "    </div>\n";
@@ -560,7 +567,7 @@ class Renderer
         $wrapperClass = "";
         $contentClass = "tab-content mt-3";
 
-        if ($alignment === 'vertical') {
+        if ('vertical' === $alignment) {
             $wrapperClass = "d-flex align-items-start";
             $navClass .= " flex-column nav-pills me-3";
             $contentClass = "tab-content flex-grow-1";
@@ -570,10 +577,10 @@ class Renderer
         $html .= "  <ul class=\"{$navClass}\" id=\"{$tabsId}\" role=\"tablist\">\n";
 
         foreach ($items as $index => $item) {
-            $active = $index === 0 ? ' active' : '';
+            $active = 0 === $index ? ' active' : '';
             $itemId = "{$tabsId}_item_{$index}";
             $title = htmlspecialchars($item['title'] ?? "Tab " . ($index + 1), ENT_QUOTES);
-            $alignmentClass = ($alignment === 'vertical' ? ' w-100 text-start' : '');
+            $alignmentClass = ('vertical' === $alignment ? ' w-100 text-start' : '');
 
             $html .= "    <li class=\"nav-item\" role=\"presentation\">\n"
                    . "      <button class=\"nav-link{$active}{$alignmentClass}\" id=\"tab-{$itemId}\" data-bs-toggle=\"pill\" data-bs-target=\"#content-{$itemId}\" type=\"button\" role=\"tab\">{$title}</button>\n"
@@ -584,7 +591,7 @@ class Renderer
         $html .= "  <div class=\"{$contentClass}\" id=\"{$tabsId}Content\">\n";
 
         foreach ($items as $index => $item) {
-            $active = $index === 0 ? ' show active' : '';
+            $active = 0 === $index ? ' show active' : '';
             $itemId = "{$tabsId}_item_{$index}";
             $content = $this->sanitizeHtml($item['content'] ?? '');
 
@@ -622,7 +629,9 @@ class Renderer
                . "    <ul class=\"list-unstyled mb-4 text-start\">\n";
 
         foreach ($features as $feature) {
-            if (! trim($feature)) continue;
+            if (! trim($feature)) {
+                continue;
+            }
             $html .= "      <li class=\"mb-2\"><i class=\"mdi mdi-check text-primary me-2\"></i>" . htmlspecialchars(trim($feature), ENT_QUOTES) . "</li>\n";
         }
 
@@ -684,8 +693,8 @@ class Renderer
     private function renderCta(array $props, string $id): string
     {
         $bg = $props['background'] ?? 'primary';
-        $bgClass = $bg === 'primary' ? 'bg-primary text-white' : ($bg === 'dark' ? 'bg-dark text-white' : 'bg-light');
-        $btnClass = $bg === 'primary' ? 'btn-light' : 'btn-primary';
+        $bgClass = 'primary' === $bg ? 'bg-primary text-white' : ('dark' === $bg ? 'bg-dark text-white' : 'bg-light');
+        $btnClass = 'primary' === $bg ? 'btn-light' : 'btn-primary';
         $title = $this->sanitizeHtml($props['title'] ?? '');
         $text = $this->sanitizeHtml($props['text'] ?? '');
         $btnText = htmlspecialchars($props['button_text'] ?? 'Get Started', ENT_QUOTES);
@@ -793,5 +802,27 @@ class Renderer
         $html = $this->markdownToHtml($html);
 
         return strip_tags($html, '<b><i><u><em><strong><s><a><br><ul><ol><li><span><sub><sup><mark><small><p><del>');
+    }
+
+    /**
+     * Remove margin-bottom from the last paragraph of HTML content.
+     */
+    private function removeLastMargin(string $html): string
+    {
+        // Add mb-0 class to the last <p> tag
+        if (preg_match('/<p([^>]*)>(.*?)<\/p>\s*$/is', $html, $matches)) {
+            $attr = $matches[1];
+            $content = $matches[2];
+
+            if (strpos($attr, 'class=') !== false) {
+                $attr = preg_replace('/class="([^"]*)"/i', 'class="$1 mb-0"', $attr);
+            } else {
+                $attr .= ' class="mb-0"';
+            }
+
+            return preg_replace('/<p([^>]*)>(.*?)<\/p>\s*$/is', '<p' . $attr . '>' . $content . '</p>', $html);
+        }
+
+        return $html;
     }
 }

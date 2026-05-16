@@ -11,11 +11,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
  *
- * When the signs is coming, those who don't believe at "that time"
- * have only two choices, commit suicide or become brutal.
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Cms\Controllers\Pages;
+namespace Aksara\Modules\CMS\Controllers\Pages;
 
 use Throwable;
 use Aksara\Laboratory\Core;
@@ -282,7 +282,7 @@ class Pages extends Core
 
                 $images[] = [
                     'name' => $file,
-                    'url'  => get_image('pages', $file),
+                    'url' => get_image('pages', $file),
                     'thumb' => get_image('pages', $file, 'thumb'),
                     'size' => filesize($filePath),
                     'time' => filemtime($filePath),
@@ -293,11 +293,19 @@ class Pages extends Core
         }
 
         // Sorting
-        usort($images, function($a, $b) use ($sort) {
-            if ($sort === 'newest') return $b['time'] <=> $a['time'];
-            if ($sort === 'oldest') return $a['time'] <=> $b['time'];
-            if ($sort === 'name_asc') return strcasecmp($a['name'], $b['name']);
-            if ($sort === 'name_desc') return strcasecmp($b['name'], $a['name']);
+        usort($images, function ($a, $b) use ($sort) {
+            if ('newest' === $sort) {
+                return $b['time'] <=> $a['time'];
+            }
+            if ('oldest' === $sort) {
+                return $a['time'] <=> $b['time'];
+            }
+            if ('name_asc' === $sort) {
+                return strcasecmp($a['name'], $b['name']);
+            }
+            if ('name_desc' === $sort) {
+                return strcasecmp($b['name'], $a['name']);
+            }
             return 0;
         });
 
@@ -306,8 +314,8 @@ class Pages extends Core
 
         return make_json([
             'images' => $images,
-            'total'  => $total,
-            'page'   => $page,
+            'total' => $total,
+            'page' => $page,
             'per_page' => $per_page,
             'total_pages' => ceil($total / $per_page)
         ]);
@@ -347,8 +355,8 @@ class Pages extends Core
 
             return make_json([
                 'success' => true,
-                'name'    => $name,
-                'url'     => get_image('pages', $name)
+                'name' => $name,
+                'url' => get_image('pages', $name)
             ]);
         }
 
@@ -369,7 +377,7 @@ class Pages extends Core
         // Security: strictly validate filename to prevent directory traversal
         $filename = basename($file);
 
-        if ($filename === 'placeholder.png') {
+        if ('placeholder.png' === $filename) {
             return make_json(['error' => phrase('You cannot delete the placeholder image.')]);
         }
 

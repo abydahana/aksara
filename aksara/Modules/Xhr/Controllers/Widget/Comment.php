@@ -11,11 +11,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
  *
- * When the signs is coming, those who don't believe at "that time"
- * have only two choices, commit suicide or become brutal.
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
  */
 
-namespace Aksara\Modules\Xhr\Controllers\Widget;
+namespace Aksara\Modules\XHR\Controllers\Widget;
 
 use Aksara\Laboratory\Core;
 use DateTime;

@@ -11,8 +11,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the LICENSE.txt file.
  *
- * When the signs come, those who do not believe at that time
- * will have only two choices: commit suicide or become brutal.
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
  */
 
 namespace Aksara\Libraries\PageBuilder;
@@ -149,7 +149,7 @@ class PageBuilder
         }
 
         return [
-            'valid'  => empty($errors),
+            'valid' => empty($errors),
             'errors' => $errors,
         ];
     }
