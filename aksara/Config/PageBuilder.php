@@ -326,6 +326,8 @@ class PageBuilder extends BaseConfig
             'defaults' => [
                 'text'    => 'Click me',
                 'url'     => '#',
+                'icon'    => '',
+                'icon_placement' => 'prefix',
                 'style'   => 'primary',
                 'size'    => '',
                 'class'   => '',
@@ -333,6 +335,8 @@ class PageBuilder extends BaseConfig
                 'rounded' => true,
             ],
             'options'  => [
+                'icon'  => 'iconpicker',
+                'icon_placement' => ['prefix' => 'Before Text', 'suffix' => 'After Text'],
                 'style' => [
                     'primary' => 'Primary',
                     'secondary' => 'Secondary',
@@ -406,6 +410,9 @@ class PageBuilder extends BaseConfig
                 'text'  => 'Feature description goes here.',
                 'class' => '',
             ],
+            'options' => [
+                'icon' => 'iconpicker'
+            ]
         ],
         'pricing' => [
             'label'    => 'Pricing Table',
