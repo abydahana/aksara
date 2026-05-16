@@ -145,7 +145,7 @@
                                                 <div class="col-5">
                                                     <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>">
                                                         <option value="en"<?= ($language == 'en' ? ' selected' : null); ?>>English</option>
-                                                        <option value="en-pi"<?= ($language == 'en-pi' ? ' selected' : null); ?>>English (Pirate)</option>
+                                                        <option value="en-pir"<?= ($language == 'en-pir' ? ' selected' : null); ?>>English (Pirate)</option>
                                                         <option value="id"<?= ($language == 'id' ? ' selected' : null); ?>>Indonesia</option>
                                                         <option value="es"<?= ($language == 'es' ? ' selected' : null); ?>>Español</option>
                                                         <option value="pt"<?= ($language == 'pt' ? ' selected' : null); ?>>Português</option>
