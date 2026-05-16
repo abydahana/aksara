@@ -95,9 +95,57 @@ body{overscroll-behavior:none}
 .pb-block-actions::after{content:"";position:absolute;top:100%;left:0;right:0;height:5px}
 
 /* Drop zones */
-.pb-dropzone{min-height:50px;border:none;border-radius:6px;padding:8px;transition:background .2s}
-.pb-dropzone.sortable-ghost-parent,.pb-dropzone:empty{background:var(--pb-bg-main);opacity:0.5}
-.pb-dropzone .sortable-ghost{opacity:.35;flex-grow:1!important;min-width:30px}
+.pb-dropzone{min-height:50px;border:none;border-radius:6px;padding:8px;transition:background .2s;position:relative}
+.pb-dropzone.sortable-ghost-parent,.pb-dropzone:empty{background:var(--pb-bg-main);opacity:0.8;border: 1px dashed var(--pb-border)}
+
+/* Dropzone empty state helper */
+.pb-dropzone:empty::before{display:block;text-align:center;color:var(--pb-text-dim);font-size:11px;opacity:0.5;padding:20px 0;pointer-events:none}
+.pb-dropzone[data-type="section"]:empty::before{content:"Drop containers here"}
+.pb-dropzone[data-type="container"]:empty::before{content:"Drop rows or components here"}
+.pb-dropzone[data-type="row"]:empty::before{content:"Drop columns here"}
+.pb-dropzone[data-type="column"]:empty::before{content:"Drop content here"}
+.pb-dropzone.pb-drop-root:empty::before{content:"Drag sections or components here to start";padding:60px 0;font-size:14px}
+
+/* Precision Targeting: Prioritize Column over Row for hit-testing */
+.pb-drop-col {
+    z-index: 10 !important;
+}
+.pb-drop-row {
+    z-index: 1 !important;
+}
+
+/* Mechanical Gatekeeper: Physically block Row interaction during content drag */
+.pb-dragging-content .pb-drop-row {
+    pointer-events: none !important;
+}
+.pb-dragging-content .pb-drop-col {
+    pointer-events: auto !important; /* Keep columns interactive */
+}
+
+/* Conversely, prevent Row-in-Row nesting by blocking Rows during Row drag */
+.pb-dragging-row .pb-drop-row {
+    pointer-events: none !important;
+}
+
+/* Stable placeholders */
+.pb-dropzone .sortable-ghost {
+    opacity: .35;
+    flex-grow: 1!important;
+    min-width: 30px;
+    min-height: 40px;
+    background: rgba(13, 110, 253, 0.05);
+    border-radius: 4px;
+    z-index: 11;
+}
+
+/* Layout components visual hints */
+.pb-block[data-type="section"]{background:rgba(13,110,253,.01);border-style:dashed;padding:0.5rem}
+.pb-block[data-type="section"]>.pb-dropzone{display:flex;flex-direction:column;gap:0.5rem;min-height:80px}
+.pb-block[data-type="container"]{background:rgba(25,135,84,.01);padding:0.5rem}
+.pb-block[data-type="row"]{background:rgba(255,193,7,.01);border-style:dotted}
+.pb-block[data-type="row"]>.pb-dropzone{display:flex;flex-direction:row;flex-wrap:wrap;gap:0;padding:4px;min-height:60px}
+.pb-block[data-type="column"]{border-style:solid;border-width:1px;border-color:rgba(0,0,0,.05);background:#fff}
+.pb-block[data-type="column"]>.pb-dropzone{min-height:100px;background:rgba(0,0,0,.01)}
 
 /* Layout components visual hints */
 .pb-block[data-type="section"]{background:rgba(13,110,253,.01);border-style:dashed;padding:8px}

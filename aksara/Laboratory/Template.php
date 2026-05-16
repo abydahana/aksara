@@ -902,18 +902,6 @@ class Template
                     'children' => [
                         [
                             'id' => 0,
-                            'label' => 'Carousels',
-                            'slug' => 'cms/partials/carousels',
-                            'icon' => 'mdi mdi-image-multiple'
-                        ],
-                        [
-                            'id' => 0,
-                            'label' => 'FAQs',
-                            'slug' => 'cms/partials/faqs',
-                            'icon' => 'mdi mdi-file-question'
-                        ],
-                        [
-                            'id' => 0,
                             'label' => 'Announcements',
                             'slug' => 'cms/partials/announcements',
                             'icon' => 'mdi mdi-bullhorn-outline'
