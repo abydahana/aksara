@@ -255,7 +255,13 @@ class Renderer
     private function renderParagraph(array $props, string $id): string
     {
         $text = $this->sanitizeHtml($props['text'] ?? '');
-        $class = $props['class'] ?? '';
+        $classes = [$props['class'] ?? ''];
+
+        if (! empty($props['alignment'])) {
+            $classes[] = 'text-' . $props['alignment'];
+        }
+
+        $class = trim(implode(' ', array_filter($classes)));
         $attrStr = $class ? " class=\"{$class}\"" : '';
 
         return "<p{$attrStr}>{$text}</p>\n";
@@ -624,12 +630,14 @@ class Renderer
 
         $html = "<div class=\"card border-0 bg-light rounded-4 " . ($props['class'] ?? '') . "\">\n"
                . "  <div class=\"card-body p-4\">\n"
-               . "    <div class=\"mb-3 text-primary\"><i class=\"mdi mdi-format-quote-open mdi-3x\"></i></div>\n"
-               . "    <div class=\"lead font-italic mb-4\">\"{$quote}\"</div>\n"
+               . "    <div class=\"mb-3 text-primary\"><i class=\"mdi mdi-format-quote-open mdi-3x opacity-25\"></i></div>\n"
+               . "    <div class=\"fs-5 mb-4\">{$quote}</div>\n"
                . "    <div class=\"d-flex align-items-center\">\n";
 
         if ($image) {
             $html .= "      <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle me-3\" style=\"width:50px;height:50px;object-fit:cover\" alt=\"\">\n";
+        } else {
+            $html .= "      <div class=\"rounded-circle bg-secondary me-3\" style=\"width:50px;height:50px\"></div>\n";
         }
 
         $html .= "      <div>\n"

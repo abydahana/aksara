@@ -184,12 +184,14 @@ class PageBuilder extends BaseConfig
             'category' => 'typography',
             'children' => false,
             'defaults' => [
-                'level' => 2,
-                'text'  => 'Heading text',
-                'class' => '',
+                'level'     => 2,
+                'text'      => 'Heading text',
+                'alignment' => 'left',
+                'class'     => '',
             ],
             'options'  => [
-                'level' => [1=>'H1',2=>'H2',3=>'H3',4=>'H4',5=>'H5',6=>'H6']
+                'level'     => [1=>'H1', 2=>'H2', 3=>'H3', 4=>'H4', 5=>'H5', 6=>'H6'],
+                'alignment' => ['left' => 'Left', 'center' => 'Center', 'right' => 'Right']
             ]
         ],
         'paragraph' => [
@@ -198,9 +200,13 @@ class PageBuilder extends BaseConfig
             'category' => 'typography',
             'children' => false,
             'defaults' => [
-                'text'  => 'Paragraph text goes here.',
-                'class' => '',
+                'text'      => 'Paragraph text goes here.',
+                'alignment' => 'left',
+                'class'     => '',
             ],
+            'options'  => [
+                'alignment' => ['left' => 'Left', 'center' => 'Center', 'right' => 'Right']
+            ]
         ],
         'divider' => [
             'label'    => 'Divider',
@@ -299,6 +305,18 @@ class PageBuilder extends BaseConfig
                 'style' => 'info',
                 'class' => '',
             ],
+            'options'  => [
+                'style' => [
+                    'primary' => 'Primary',
+                    'secondary' => 'Secondary',
+                    'success' => 'Success',
+                    'danger' => 'Danger',
+                    'warning' => 'Warning',
+                    'info' => 'Info',
+                    'light' => 'Light',
+                    'dark' => 'Dark'
+                ]
+            ]
         ],
         'button' => [
             'label'    => 'Button',
@@ -404,6 +422,10 @@ class PageBuilder extends BaseConfig
                 'featured'  => false,
                 'class'     => '',
             ],
+            'options' => [
+                'features' => 'textarea',
+                'featured' => 'boolean'
+            ]
         ],
         'testimonial' => [
             'label'    => 'Testimonial',
