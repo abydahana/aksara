@@ -79,12 +79,12 @@ class Translations extends Core
         /* try to add language file */
         try {
             /* check if language directory is exists */
+            $languageCode = $this->request->getPost('code');
+
             if (! is_dir(WRITEPATH . 'translations') && mkdir(WRITEPATH . 'translations', 0755, true)) {
-                /* put content into file */
-                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json', json_encode([]));
+                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $languageCode . '.json', json_encode([]));
             } else {
-                /* put content into file */
-                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json', json_encode([]));
+                file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $languageCode . '.json', json_encode([]));
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
@@ -96,9 +96,11 @@ class Translations extends Core
         /* try to update language file */
         try {
             /* check if language directory is exists */
-            if (file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getGet('code') . '.json')) {
-                /* rename old file */
-                rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getGet('code') . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $this->request->getPost('code') . '.json');
+            $oldCode = $this->request->getGet('code');
+            $newCode = $this->request->getPost('code');
+
+            if ($oldCode && $newCode && file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $oldCode . '.json')) {
+                rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $oldCode . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $newCode . '.json');
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());

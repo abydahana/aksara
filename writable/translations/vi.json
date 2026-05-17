@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "Đã xóa thành công {{deleted}} trong tổng số {{total}}.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "Đã đồng bộ hóa thành công {{total_languages}} ngôn ngữ và {{total_phrases}} cụm từ.",
     "{{user}}'s Activities": "Hoạt động của {{user}}",
-    "{{user}}'s Likes": "Lượt thích của {{user}}"
+    "{{user}}'s Likes": "Lượt thích của {{user}}",
+    "The file was only partially uploaded": "Tệp chỉ được tải lên một phần",
+    "Missing a temporary folder for upload": "Thiếu thư mục tạm cho tải lên",
+    "Failed to write file to disk": "Không thể ghi tệp vào đĩa",
+    "File upload stopped by extension": "Tải lên tệp bị dừng bởi tiện ích mở rộng",
+    "The selected image file is not valid": "Tệp hình ảnh được chọn không hợp lệ",
+    "Unable to process the uploaded image": "Không thể xử lý hình ảnh đã tải lên"
 }

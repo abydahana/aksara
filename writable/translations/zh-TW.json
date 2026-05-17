@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "已成功移除 {{total}} 條中的 {{deleted}} 條。",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}} 種語言和 {{total_phrases}} 個短語已成功同步。",
     "{{user}}'s Activities": "{{user}} 的活動",
-    "{{user}}'s Likes": "{{user}} 的點贊"
+    "{{user}}'s Likes": "{{user}} 的點贊",
+    "The file was only partially uploaded": "檔案僅部分上傳",
+    "Missing a temporary folder for upload": "缺少上傳臨時資料夾",
+    "Failed to write file to disk": "無法將檔案寫入磁碟",
+    "File upload stopped by extension": "檔案上傳被擴充功能停止",
+    "The selected image file is not valid": "所選影像檔無效",
+    "Unable to process the uploaded image": "無法處理上傳的影像"
 }

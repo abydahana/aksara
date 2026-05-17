@@ -234,11 +234,23 @@ class Document
 
             // Import attachment
             foreach ($attachment[1] as $key => $val) {
-                $filename = basename($val);
+                $filename = basename(parse_url($val, PHP_URL_PATH));
+                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+                // Only allow local PDF attachments to avoid remote file inclusion
+                if ('pdf' !== $extension) {
+                    continue;
+                }
 
                 try {
-                    // Copy attachment source
-                    copy(str_replace(base_url(), '', $val), UPLOAD_PATH . '/tmp' . '/' . $filename);
+                    $sourcePath = $this->_resolveLocalAttachment($val);
+
+                    if (! $sourcePath || ! file_exists($sourcePath)) {
+                        continue;
+                    }
+
+                    // Copy attachment source to tmp directory
+                    copy($sourcePath, UPLOAD_PATH . '/tmp' . '/' . $filename);
 
                     // Read attachment
                     $pagecount = $pdf->SetSourceFile(UPLOAD_PATH . '/tmp' . '/' . $filename);
@@ -272,6 +284,36 @@ class Document
             // Display to browser
             return $pdf->Output($filename . '.pdf', 'I');
         }
+    }
+
+    /**
+     * Resolve local attachment path for PDF import attachments.
+     */
+    private function _resolveLocalAttachment(string $source): ?string
+    {
+        $source = trim($source);
+
+        if (preg_match('#^https?://#i', $source)) {
+            return null;
+        }
+
+        $baseUrl = rtrim(base_url(), '/');
+        if ($baseUrl && str_starts_with($source, $baseUrl)) {
+            $source = substr($source, strlen($baseUrl));
+        }
+
+        $source = urldecode($source);
+        $source = preg_replace('#[\\/]+#', '/', $source);
+        $source = ltrim($source, '/');
+
+        $resolvedPath = realpath(FCPATH . $source);
+        $documentRoot = realpath(FCPATH);
+
+        if (! $resolvedPath || ! $documentRoot || strpos($resolvedPath, $documentRoot) !== 0) {
+            return null;
+        }
+
+        return $resolvedPath;
     }
 
     private function _excel($html = null, $filename = null, $method = 'embed', $params = [])

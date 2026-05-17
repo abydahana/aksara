@@ -43,7 +43,21 @@ if (! function_exists('base_url')) {
             $params = [];
         }
 
-        if ($params || ('preview-theme' == $request->getGet('aksara_mode') && hash_equals(hash_hmac('sha256', $request->getGet('aksara_theme') . get_userdata('session_generated'), ENCRYPTION_KEY), (string) $request->getGet('integrity_check')) && is_dir(ROOTPATH . 'themes/' . $request->getGet('aksara_theme')))) {
+        $previewTheme = false;
+
+        if ('preview-theme' == $request->getGet('aksara_mode')) {
+            $themeName = $request->getGet('aksara_theme');
+
+            if (
+                hash_equals(hash_hmac('sha256', $themeName . get_userdata('session_generated'), ENCRYPTION_KEY), (string) $request->getGet('integrity_check')) &&
+                preg_match('/^[a-zA-Z0-9_-]+$/', $themeName) &&
+                is_dir(ROOTPATH . 'themes/' . $themeName)
+            ) {
+                $previewTheme = true;
+            }
+        }
+
+        if ($params || $previewTheme) {
             $params = array_merge($request->getGet(), $params);
         }
 
@@ -54,7 +68,7 @@ if (! function_exists('base_url')) {
             $query_params = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (null === $val || '' === $val) {
                     continue;
                 }
 
@@ -118,7 +132,7 @@ if (! function_exists('current_page')) {
             $query_params = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (null === $val || '' === $val) {
                     continue;
                 }
 
@@ -192,7 +206,7 @@ if (! function_exists('go_to')) {
             $query_params = [];
 
             foreach ($params as $key => $val) {
-                if (! $val || in_array($key, $params) && ! $params[$key]) {
+                if (null === $val || '' === $val) {
                     continue;
                 }
 

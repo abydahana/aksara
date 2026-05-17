@@ -108,6 +108,20 @@ if (! function_exists('generate_token')) {
     }
 }
 
+if (! function_exists('generate_csrf_token')) {
+    /**
+     * Generate the CSRF token used by forms and AJAX responses.
+     */
+    function generate_csrf_token(): string
+    {
+        if (! defined('ENCRYPTION_KEY') || empty(ENCRYPTION_KEY)) {
+            throw new RuntimeException('ENCRYPTION_KEY must be defined for CSRF token generation');
+        }
+
+        return hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
+    }
+}
+
 if (! function_exists('get_theme')) {
     /**
      * Get the active theme without using debug_backtrace
@@ -152,8 +166,8 @@ if (! function_exists('aksara_header')) {
         // Reserved for dynamic inline styles if needed
         $stylesheet = null;
 
-        // Generate security token meta tag (Upgraded to HMAC-SHA256)
-        $output = '<meta name="_token" content="' . hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />' . "\n";
+        // Generate security token meta tag using the same CSRF token helper as Core
+        $output = '<meta name="_token" content="' . generate_csrf_token() . '" />' . "\n";
 
         // Load theme-specific minified styles
         $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/' . $theme . '/styles.min.css') . '" />' . "\n";

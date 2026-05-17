@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "ลบ {{deleted}} จาก {{total}} รายการสำเร็จแล้ว",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "ซิงโครไนซ์ภาษา {{total_languages}} ภาษาและวลี {{total_phrases}} วลีสำเร็จแล้ว",
     "{{user}}'s Activities": "กิจกรรมของ {{user}}",
-    "{{user}}'s Likes": "การถูกใจของ {{user}}"
+    "{{user}}'s Likes": "การถูกใจของ {{user}}",
+    "The file was only partially uploaded": "ไฟล์อัปโหลดได้เพียงบางส่วนเท่านั้น",
+    "Missing a temporary folder for upload": "ไม่พบโฟลเดอร์ชั่วคราวสำหรับการอัปโหลด",
+    "Failed to write file to disk": "ไม่สามารถเขียนไฟล์ลงในดิสก์ได้",
+    "File upload stopped by extension": "การอัปโหลดไฟล์ถูกหยุดโดยส่วนขยาย",
+    "The selected image file is not valid": "ไฟล์รูปภาพที่เลือกไม่ถูกต้อง",
+    "Unable to process the uploaded image": "ไม่สามารถประมวลผลรูปภาพที่อัปโหลดได้"
 }

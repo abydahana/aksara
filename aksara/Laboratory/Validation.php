@@ -266,7 +266,7 @@ class Validation
      * @param string|null $params Field name and file type (format: field.type)
      * @return bool Always returns true, sets validation errors if needed
      */
-    public function validate_upload($value = null, ?string $params = null): bool
+    public function validate_upload($value = null, ?string $params = null, ?array $data = null, ?string &$error = null, ?string $field = null): bool
     {
         $request = Services::request();
         $validation = Services::validation();
@@ -300,14 +300,18 @@ class Validation
 
         if ($this->_uploadError) {
             // Validation error
-            $validation->setError($field, $this->_uploadError);
+            $error = $this->_uploadError;
+
+            return false;
         } elseif (! $this->_uploadedFiles) {
             // Find required
             $rules = $validation->getRules();
 
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
-                $validation->setError($field, phrase('Please choose the file to upload'));
+                $error = phrase('Please choose the file to upload');
+
+                return false;
             }
         }
 
@@ -346,8 +350,11 @@ class Validation
         $mime_type = new Mimes();
         $valid_mime = [];
 
-        if (! $source || ! $source->isValid() || ! $source->getName()) {
-            // No file are selected
+        if (! $source || ! $source->getName() || ! $source->isValid()) {
+            if (is_object($source) && method_exists($source, 'getError') && $source->getError() && $source->getError() !== UPLOAD_ERR_NO_FILE) {
+                $this->_uploadError = $this->_getUploadErrorMessage($source->getError());
+            }
+
             return false;
         }
 
@@ -431,7 +438,7 @@ class Validation
         $fileContent = file_get_contents($source->getPathName());
 
         // Check for PHP tags
-        if (preg_match('/<\?php/i', $fileContent)) {
+        if (preg_match('/<\?(php|=)|<script\b/i', $fileContent)) {
             // Ensure the file is not contain exploit command
             $this->_uploadError = phrase('The file is not allowed to upload');
 
@@ -441,6 +448,13 @@ class Validation
         if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'])) {
             // Uploaded file is image format, prepare image manipulation
             $imageinfo = getimagesize($source);
+
+            if (! $imageinfo) {
+                $this->_uploadError = phrase('The selected image file is not valid');
+
+                return false;
+            }
+
             $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
             $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
             $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
@@ -454,8 +468,14 @@ class Validation
                 // Load image manipulation library
                 $image = Services::image('gd');
 
-                // Resize image and move to upload directory
-                $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
+                try {
+                    // Resize image and move to upload directory
+                    $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
+                } catch (Throwable $e) {
+                    $this->_uploadError = phrase('Unable to process the uploaded image');
+
+                    return false;
+                }
             } else {
                 // Move file to upload directory
                 $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
@@ -478,6 +498,31 @@ class Validation
         }
 
         return true;
+    }
+
+    /**
+     * Convert PHP upload error code into localized message.
+     *
+     * @param int $error Upload error constant from PHP
+     * @return string Localized error message
+     */
+    private function _getUploadErrorMessage(int $error): string
+    {
+        switch ($error) {
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                return phrase('The selected file size exceeds the maximum allocation');
+            case UPLOAD_ERR_PARTIAL:
+                return phrase('The file was only partially uploaded');
+            case UPLOAD_ERR_NO_TMP_DIR:
+                return phrase('Missing a temporary folder for upload');
+            case UPLOAD_ERR_CANT_WRITE:
+                return phrase('Failed to write file to disk');
+            case UPLOAD_ERR_EXTENSION:
+                return phrase('File upload stopped by extension');
+            default:
+                return phrase('The file is not allowed to upload');
+        }
     }
 
     /**

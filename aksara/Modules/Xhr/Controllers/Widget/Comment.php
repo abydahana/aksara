@@ -34,7 +34,7 @@ class Comment extends Core
         if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
             return $this->_fetchComments();
         } elseif ('token' === $this->request->getPost('fetch')) {
-            $token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
+            $token = generate_csrf_token();
 
             set_userdata(sha1(uri_string()), $token);
 
