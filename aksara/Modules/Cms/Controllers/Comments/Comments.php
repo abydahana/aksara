@@ -84,7 +84,7 @@ class Comments extends Core
             return throw_exception(404, phrase('The comment you want to hide is not found'), current_page('../'));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $comment_id . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             if (DEMO_MODE) {
                 // Demo mode
                 return throw_exception(403, phrase('This feature is disabled in demo mode.'), go_to(null, ['id' => null]));
@@ -105,7 +105,7 @@ class Comments extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1($comment_id . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $comment_id . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>

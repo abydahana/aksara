@@ -168,7 +168,7 @@ class Feedback extends Core
             return throw_exception(404, phrase('The comment you want to hide is not found'), current_page('../'));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->_primary . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             $this->model->update(
                 $this->_table,
                 [
@@ -184,7 +184,7 @@ class Feedback extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1($this->_primary . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->_primary . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="text-center py-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>

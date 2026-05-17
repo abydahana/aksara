@@ -281,7 +281,7 @@ class Comment extends Core
             return throw_exception(404, phrase('The comment you want to update was not found.'));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             $this->formValidation->setRule('comments', phrase('Comments'), 'required');
             $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
@@ -333,7 +333,7 @@ class Comment extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form" enctype="multipart/form-data">
-                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="form-group mb-3">
                     <label class="d-block text-muted" for="comments_input">
                         '. phrase('Comments') . '
@@ -409,7 +409,7 @@ class Comment extends Core
             return throw_exception(404, phrase('The comment you want to report was not found.'));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             $checker = $this->model->getWhere(
                 'post_comments_reports',
                 [
@@ -451,7 +451,7 @@ class Comment extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="text-center pt-3 pb-3 border-bottom">
                     ' . phrase('Are you sure want to report this comment?') . '
                 </div>
@@ -506,7 +506,7 @@ class Comment extends Core
             return throw_exception(404, phrase('The comment you want to hide was not found.'));
         }
 
-        if ($this->request->getPost('comment_id') == sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated'))) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             $this->model->update(
                 $this->_table,
                 [
@@ -525,7 +525,7 @@ class Comment extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . sha1($this->request->getGet('id') . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>

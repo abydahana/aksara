@@ -163,6 +163,9 @@ class Auth extends Core
                         }
                     }
 
+                    // Regenerate session ID to prevent Session Fixation
+                    service('session')->regenerate();
+
                     // Set the user credential into session
                     set_userdata([
                         'is_logged' => true,

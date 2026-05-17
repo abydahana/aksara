@@ -152,8 +152,8 @@ if (! function_exists('aksara_header')) {
         // Reserved for dynamic inline styles if needed
         $stylesheet = null;
 
-        // Generate security token meta tag
-        $output = '<meta name="_token" content="' . sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated')) . '" />' . "\n";
+        // Generate security token meta tag (Upgraded to HMAC-SHA256)
+        $output = '<meta name="_token" content="' . hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />' . "\n";
 
         // Load theme-specific minified styles
         $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/' . $theme . '/styles.min.css') . '" />' . "\n";

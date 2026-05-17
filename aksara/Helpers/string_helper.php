@@ -80,7 +80,7 @@ if (! function_exists('make_json')) {
         ini_set('memory_limit', -1);
 
         if (isset($data->status) && 200 === $data->status) {
-            $data->_token = sha1(current_page() . ENCRYPTION_KEY . get_userdata('session_generated'));
+            $data->_token = hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY);
         }
 
         $data = encoding_fixer($data);

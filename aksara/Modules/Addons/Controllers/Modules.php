@@ -67,7 +67,7 @@ class Modules extends Core
 
         if ($package) {
             $package->folder = $this->_primary;
-            $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
+            $package->integrity = hash_hmac('sha256', $package->folder . get_userdata('session_generated'), ENCRYPTION_KEY);
         }
 
         $this->setTitle(phrase('Module Detail'))
@@ -709,7 +709,7 @@ class Modules extends Core
 
                     if ($package) {
                         $package->folder = str_replace(DIRECTORY_SEPARATOR, '', $key);
-                        $package->integrity = sha1($package->folder . ENCRYPTION_KEY . get_userdata('session_generated'));
+                        $package->integrity = hash_hmac('sha256', $package->folder . get_userdata('session_generated'), ENCRYPTION_KEY);
 
                         $output[] = $package;
                     }

@@ -236,6 +236,8 @@ body{overscroll-behavior:none}
 .pb-wysiwyg-editor p{margin-bottom:8px}
 .pb-wysiwyg-editor p:last-child{margin-bottom:0}
 .pb-wysiwyg-editor ul,.pb-wysiwyg-editor ol{margin-bottom:8px;padding-left:20px}
+.pb-wysiwyg-editor a{color:#0d6efd;text-decoration:underline;cursor:pointer}
+.pb-wysiwyg-editor a:hover{color:#0a58ca}
 
 /* Block styling */
 .pb-block{position:relative;margin-bottom:4px;border:1px dashed transparent;transition:all .15s;min-height:20px;border-radius:6px}

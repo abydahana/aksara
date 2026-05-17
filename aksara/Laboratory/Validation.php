@@ -372,6 +372,11 @@ class Validation
             $this->_uploadError = phrase('The selected file format is not allowed to upload');
 
             return false;
+        } elseif (! in_array(strtolower($source->getExtension()), $filetype)) {
+            // Extension is invalid (bypassed mime check)
+            $this->_uploadError = phrase('The selected file extension is not allowed to upload');
+
+            return false;
         } elseif ((float) $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
             // Size is exceeded the maximum allocation
             $this->_uploadError = phrase('The selected file size exceeds the maximum allocation');
