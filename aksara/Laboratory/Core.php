@@ -159,8 +159,16 @@ abstract class Core extends Controller
         // --- Theme Preview Mode ---
 
         // Check for theme preview mode.
-        if ('preview-theme' == $this->request->getGet('aksara_mode') && hash_equals(hash_hmac('sha256', $this->request->getGet('aksara_theme') . get_userdata('session_generated'), ENCRYPTION_KEY), (string) $this->request->getGet('integrity_check')) && is_dir(ROOTPATH . 'themes/' . $this->request->getGet('aksara_theme'))) {
-            $this->_setTheme = strip_tags($this->request->getGet('aksara_theme'));
+        if ('preview-theme' == $this->request->getGet('aksara_mode')) {
+            $themeName = $this->request->getGet('aksara_theme');
+
+            if (
+                hash_equals(hash_hmac('sha256', $themeName . get_userdata('session_generated'), ENCRYPTION_KEY), (string) $this->request->getGet('integrity_check')) &&
+                preg_match('/^[a-zA-Z0-9_-]+$/', $themeName) &&
+                is_dir(ROOTPATH . 'themes/' . $themeName)
+            ) {
+                $this->_setTheme = $themeName;
+            }
         }
 
         // --- API Handshake & Logging ---
@@ -277,21 +285,20 @@ abstract class Core extends Controller
      *
      * @return bool TRUE if token is valid or request is from API client.
      */
-    public function validToken(?string $token = null): bool
+    public function validToken(?string $token): bool
     {
         $isPostRequest = Services::request()->getPost();
 
         // Must be a POST request.
         if ($isPostRequest) {
-            // Check URI-based token match.
+            // Check stored URI-based token match.
             if ($token && hash_equals((string) get_userdata(sha1(uri_string())), $token)) {
                 return true;
             }
 
-            // Regenerate the valid token using HMAC-SHA256 based on Referer
-            $expectedToken = hash_hmac('sha256', Services::request()->getHeaderLine('Referer') . get_userdata('session_generated'), ENCRYPTION_KEY);
+            // Regenerate the valid token using the centralized CSRF helper.
+            $expectedToken = generate_csrf_token();
 
-            // Check Referer-based token match.
             if ($token && hash_equals($expectedToken, $token)) {
                 return true;
             }
@@ -2278,7 +2285,7 @@ abstract class Core extends Controller
 
         if (! $this->request->getPost('_token')) {
             // Set CSRF Token
-            $this->_token = hash_hmac('sha256', uri_string() . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
+            $this->_token = generate_csrf_token();
 
             // There may be a form without using form renderer
             // Set CSRF Token into unique session key
@@ -2844,7 +2851,12 @@ abstract class Core extends Controller
 
                         if (isset($this->_setField[$this->request->getPost('origin')]['parameter']) && $this->model->fieldExists(($val && stripos($val, '.') !== false ? substr($val, strripos($val, '.') + 1) : $val), $table)) {
                             // Push order by best match to the prepared query builder
-                            $this->_prepare('orderBy', ['(CASE WHEN ' . $val . ' LIKE "' . $this->request->getPost('q') . '%" THEN 1 WHEN ' . $val . ' LIKE "%' . $this->request->getPost('q') . '" THEN 3 ELSE 2 END)']);
+                            $queryString = ('autocomplete' == $this->request->getPost('method') && $this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q'));
+                            $queryString = str_replace("'", "''", $queryString);
+                            $queryString = str_replace('\\', '\\\\', $queryString);
+                            $queryString = str_replace(['%', '_'], ['\\%', '\\_'], $queryString);
+
+                            $this->_prepare('orderBy', ['(CASE WHEN ' . $val . ' LIKE \'%' . $queryString . '%\' ESCAPE \'\\\' THEN 1 WHEN ' . $val . ' LIKE \'%' . $queryString . '\' ESCAPE \'\\\' THEN 3 ELSE 2 END)']);
                         }
 
                         $compiledLike[] = $fieldOrigin;
@@ -3681,6 +3693,9 @@ abstract class Core extends Controller
                 // Unlink the files
                 $this->_unlinkFiles(get_userdata('_uploaded_files'));
 
+                // Unset uploaded files session to prevent orphaned files if update is successful
+                unset_userdata('_uploaded_files');
+
                 // Data invalid
                 $errors = $this->formValidation->getErrors();
 
@@ -3992,6 +4007,9 @@ abstract class Core extends Controller
                 // Unlink the files
                 $this->_unlinkFiles(get_userdata('_uploaded_files'));
 
+                // Unset uploaded files session to prevent orphaned files if update is successful
+                unset_userdata('_uploaded_files');
+
                 // Throw the exception messages
                 return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->apiClient ? $this->_redirectBack : null));
             }
@@ -4102,6 +4120,10 @@ abstract class Core extends Controller
         // --- 1. API Method Validation ---
         if ($this->apiClient && ! in_array($this->request->getMethod(), ['POST'])) {
             $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+            // Unset uploaded files session to prevent orphaned files if update is successful
+            unset_userdata('_uploaded_files');
+
             return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirectBack);
         }
 
@@ -4141,24 +4163,26 @@ abstract class Core extends Controller
 
                 $this->_insertId = $autoIncrement ? $this->model->insertId() : 0;
 
-                // Cleanup files and tokens
+                // Update token timestamp and invalidate token
+                set_userdata('token_timestamp', time());
+                unset_userdata(sha1(uri_string()));
+
+                // Unset uploaded files session to prevent orphaned files if update is successful
                 unset_userdata('_uploaded_files');
-                unset_userdata(hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY));
 
                 // --- 5. After Insert Hook ---
                 if (method_exists($this, 'afterInsert')) {
                     $this->afterInsert();
                 }
 
-                // Invalidate token by updating timestamp
-                set_userdata('token_timestamp', time());
-                unset_userdata(sha1(uri_string()));
-
                 // Send success response
                 return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirectBack);
             } else {
                 // --- 6. Failure: Error Handling and Cleanup ---
                 $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+                // Unset uploaded files session to prevent orphaned files if update is successful
+                unset_userdata('_uploaded_files');
 
                 $error = $this->model->error();
                 $errorMessage = $error['message'] ?? phrase('Unable to submit your data.');
@@ -4175,6 +4199,10 @@ abstract class Core extends Controller
         } else {
             // --- 7. Failure: Table Not Found ---
             $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+            // Unset uploaded files session to prevent orphaned files if update is successful
+            unset_userdata('_uploaded_files');
+
             return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirectBack);
         }
     }
@@ -4208,6 +4236,10 @@ abstract class Core extends Controller
         // --- 1. API Method Validation ---
         if ($this->apiClient && ! in_array($this->request->getMethod(), ['POST'])) {
             $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+            // Unset uploaded files session to prevent orphaned files if update is successful
+            unset_userdata('_uploaded_files');
+
             return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirectBack);
         }
 
@@ -4233,13 +4265,16 @@ abstract class Core extends Controller
                 }
             }
 
+            // Update token timestamp and invalidate token
+            set_userdata('token_timestamp', time());
+            unset_userdata(sha1(uri_string()));
+
+            // Unset uploaded files session to prevent orphaned files if update is successful
+            unset_userdata('_uploaded_files');
+
             if (method_exists($this, 'afterUpdate')) {
                 $this->afterUpdate();
             }
-
-            // Invalidate token
-            set_userdata('token_timestamp', time());
-            unset_userdata(sha1(uri_string()));
 
             return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
         }
@@ -4254,6 +4289,10 @@ abstract class Core extends Controller
                 // If WHERE is still missing, data cannot be updated
                 if (! $where) {
                     $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+                    // Unset uploaded files session to prevent orphaned files if update is successful
+                    unset_userdata('_uploaded_files');
+
                     return throw_exception(404, phrase('The data you would to delete is not found.'), $this->_redirectBack);
                 }
 
@@ -4287,24 +4326,29 @@ abstract class Core extends Controller
 
                 // Attempt to update data
                 if ($this->model->update($table, $data, $where)) {
-                    // Success: Cleanup and Hooks
+                    // Update token timestamp and invalidate token
+                    set_userdata('token_timestamp', time());
+                    unset_userdata(sha1(uri_string()));
+
+                    // Unset uploaded files session to prevent orphaned files if update is successful
                     unset_userdata('_uploaded_files');
-                    unset_userdata(hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY));
+
+                    // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
 
                     if (method_exists($this, 'afterUpdate')) {
                         $this->afterUpdate();
                     }
 
-                    // Invalidate token
-                    set_userdata('token_timestamp', time());
-                    unset_userdata(sha1(uri_string()));
-
                     // Send success response
                     return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
                 } else {
                     // Failure: Error Handling
                     $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+                    // Unset uploaded files session to prevent orphaned files if update fails
+                    unset_userdata('_uploaded_files');
+
                     $error = $this->model->error();
 
                     if (get_userdata('group_id') == 1 && isset($error['message'])) {
@@ -4319,11 +4363,19 @@ abstract class Core extends Controller
             } else {
                 // --- 6. Data Not Found, UPSERT Not Permitted ---
                 $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+                // Unset uploaded files session to prevent orphaned files if no data is found for update
+                unset_userdata('_uploaded_files');
+
                 return throw_exception(404, phrase('The data you would to update is not found.'), $this->_redirectBack);
             }
         } else {
             // --- 7. Failure: Table Not Found ---
             $this->_unlinkFiles(get_userdata('_uploaded_files'));
+
+            // Unset uploaded files session to prevent orphaned files if table does not exist
+            unset_userdata('_uploaded_files');
+
             return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirectBack);
         }
 
@@ -4400,16 +4452,19 @@ abstract class Core extends Controller
 
                 // Attempt to delete data
                 if ($this->model->delete($table, $where, $limit)) {
+                    // Update token timestamp and invalidate token
+                    set_userdata('token_timestamp', time());
+                    unset_userdata(sha1(uri_string()));
+
+                    // Unset uploaded files session to prevent orphaned files if update is successful
+                    unset_userdata('_uploaded_files');
+
                     // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
 
                     if (method_exists($this, 'afterDelete')) {
                         $this->afterDelete();
                     }
-
-                    // Invalidate token
-                    set_userdata('token_timestamp', time());
-                    unset_userdata(sha1(uri_string()));
 
                     // Send success response
                     return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully deleted.'), $this->_redirectBack);

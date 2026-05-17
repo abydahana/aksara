@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "{{deleted}} из {{total}} успешно удалено.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}} языков и {{total_phrases}} фраз успешно синхронизированы.",
     "{{user}}'s Activities": "Активности {{user}}",
-    "{{user}}'s Likes": "Лайки {{user}}"
+    "{{user}}'s Likes": "Лайки {{user}}",
+    "The file was only partially uploaded": "Файл был загружен только частично",
+    "Missing a temporary folder for upload": "Отсутствует временная папка для загрузки",
+    "Failed to write file to disk": "Не удалось записать файл на диск",
+    "File upload stopped by extension": "Загрузка файла была остановлена расширением",
+    "The selected image file is not valid": "Выбранный файл изображения недействителен",
+    "Unable to process the uploaded image": "Не удалось обработать загруженное изображение"
 }

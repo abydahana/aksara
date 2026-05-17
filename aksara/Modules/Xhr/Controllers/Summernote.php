@@ -57,7 +57,19 @@ class Summernote extends Core
             $valid_mime[] = $mime_type->guessTypeFromExtension($val);
         }
 
-        if (! $source->getName() || ! in_array($source->getMimeType(), $valid_mime) || $source->getSizeByMetricUnit(\CodeIgniter\Files\FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source->getName() || $source->getSizeByMetricUnit(\CodeIgniter\Files\FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+            return make_json([
+                'status' => 'error',
+                'messages' => phrase('Upload Error!')
+            ]);
+        }
+
+        $extension = strtolower($source->getClientExtension() ?: pathinfo($source->getName(), PATHINFO_EXTENSION));
+        $mimeType = strtolower($source->getMimeType());
+        $validExtensions = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
+        $validMimeTypes = array_filter($valid_mime);
+
+        if (! in_array($extension, $validExtensions, true) || ! in_array($mimeType, $validMimeTypes, true)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('Upload Error!')
@@ -69,16 +81,22 @@ class Summernote extends Core
         // Read file contents
         $fileContent = file_get_contents($source->getPathName());
 
-        // Check for PHP tags
-        if (preg_match('/<\?php/i', $fileContent)) {
-            // Ensure the file is not contain exploit command
+        // Reject embedded PHP / scripts in uploaded image files
+        if (preg_match('/<\?(php|=)|<script\b/i', $fileContent)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('The file is not allowed to upload')
             ]);
         }
 
-        $imageinfo = getimagesize($source);
+        $imageinfo = @getimagesize($source->getPathName());
+        if (! $imageinfo || ! isset($imageinfo[2]) || ! in_array(image_type_to_mime_type($imageinfo[2]), $validMimeTypes, true)) {
+            return make_json([
+                'status' => 'error',
+                'messages' => phrase('Upload Error!')
+            ]);
+        }
+
         $width = ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
         $height = ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
         $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');

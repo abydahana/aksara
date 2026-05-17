@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "{{deleted}} des {{total}} ont été supprimés avec succès.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}} langues et {{total_phrases}} phrases ont été synchronisées avec succès.",
     "{{user}}'s Activities": "Activités de {{user}}",
-    "{{user}}'s Likes": "J'aime de {{user}}"
+    "{{user}}'s Likes": "J'aime de {{user}}",
+    "The file was only partially uploaded": "Le fichier n'a été téléchargé que partiellement",
+    "Missing a temporary folder for upload": "Dossier temporaire de téléchargement manquant",
+    "Failed to write file to disk": "Échec de l'écriture du fichier sur le disque",
+    "File upload stopped by extension": "Le téléchargement du fichier a été arrêté par une extension",
+    "The selected image file is not valid": "Le fichier image sélectionné n'est pas valide",
+    "Unable to process the uploaded image": "Impossible de traiter l'image téléchargée"
 }

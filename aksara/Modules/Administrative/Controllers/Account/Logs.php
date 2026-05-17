@@ -54,13 +54,18 @@ class Logs extends Core
 
     public function kick()
     {
-        if ($this->request->getGet('session')) {
-            if ($this->request->getGet('session') && file_exists(WRITEPATH . 'session/' . $this->request->getGet('session'))) {
-                unlink(WRITEPATH . 'session/' . $this->request->getGet('session'));
+        $sessionId = basename((string) $this->request->getGet('session'));
+
+        if ($sessionId) {
+            $sessionDir = realpath(WRITEPATH . 'session');
+            $sessionPath = $sessionDir ? realpath($sessionDir . DIRECTORY_SEPARATOR . $sessionId) : false;
+
+            if ($sessionPath && strpos($sessionPath, $sessionDir) === 0 && file_exists($sessionPath)) {
+                unlink($sessionPath);
             }
 
             // Update table to skip getting session_id on next execution
-            $this->model->update($this->_table, ['session_id' => ''], ['session_id' => $this->request->getGet('session')]);
+            $this->model->update($this->_table, ['session_id' => ''], ['session_id' => $sessionId]);
 
             return throw_exception(301, phrase('The device was successfully kicked.'), current_page('../', ['session' => null]));
         }

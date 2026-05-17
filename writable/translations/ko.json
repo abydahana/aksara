@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "{{total}}개 중 {{deleted}}개가 성공적으로 제거되었습니다.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}}개의 언어와 {{total_phrases}}개의 구문이 성공적으로 동기화되었습니다.",
     "{{user}}'s Activities": "{{user}}님의 활동",
-    "{{user}}'s Likes": "{{user}}님이 좋아함"
+    "{{user}}'s Likes": "{{user}}님이 좋아함",
+    "The file was only partially uploaded": "파일이 부분적으로만 업로드되었습니다",
+    "Missing a temporary folder for upload": "업로드를 위한 임시 폴더가 없습니다",
+    "Failed to write file to disk": "파일을 디스크에 쓰지 못했습니다",
+    "File upload stopped by extension": "확장 프로그램에 의해 파일 업로드가 중단되었습니다",
+    "The selected image file is not valid": "선택한 이미지 파일이 유효하지 않습니다",
+    "Unable to process the uploaded image": "업로드된 이미지를 처리할 수 없습니다"
 }

@@ -218,7 +218,7 @@ class Updater extends Core
              * STEP 1
              * Open and extract the updater file to the temporary directory to get the updater files
              */
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo($tmp_path . DIRECTORY_SEPARATOR)) {
+            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, $tmp_path . DIRECTORY_SEPARATOR)) {
                 // Close zip
                 $zip->close();
 
@@ -248,7 +248,7 @@ class Updater extends Core
              * STEP 2
              * Extract created updater file to root of the Aksara installation
              */
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $zip->extractTo(ROOTPATH)) {
+            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, ROOTPATH)) {
                 // Updater success, change the state
                 $updated = true;
 
@@ -381,7 +381,7 @@ class Updater extends Core
 
         try {
             // Update failed, restore the backup file
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name) === true && $zip->extractTo(ROOTPATH)) {
+            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name) === true && $this->_extractZipArchive($zip, ROOTPATH)) {
                 // Close the opened zip
                 $zip->close();
 
@@ -488,5 +488,42 @@ class Updater extends Core
 
             rmdir($directory);
         }
+    }
+
+    /**
+     * Check if zip entry path is safe for extraction.
+     * @param null|mixed $entry
+     */
+    private function _isSafeZipEntry($entry = null)
+    {
+        if (! $entry || strpos($entry, "\0") !== false) {
+            return false;
+        }
+
+        if (preg_match('/^(?:[\/\\]|[A-Za-z]:[\/\\])/', $entry)) {
+            return false;
+        }
+
+        if (preg_match('/(?:^|[\/\\])\.\.([\/\\]|$)/', $entry)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Extract zip archive safely after validating all entries.
+     */
+    private function _extractZipArchive(ZipArchive $zip, string $destination): bool
+    {
+        for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
+            $entryName = $zip->getNameIndex($i);
+
+            if (false === $entryName || ! $this->_isSafeZipEntry($entryName)) {
+                return false;
+            }
+        }
+
+        return $zip->extractTo($destination);
     }
 }

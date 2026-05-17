@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "{{deleted}} van {{total}} zijn succesvol verwijderd.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}} talen en {{total_phrases}} zinnen zijn succesvol gesynchroniseerd.",
     "{{user}}'s Activities": "Activiteiten van {{user}}",
-    "{{user}}'s Likes": "Likes van {{user}}"
+    "{{user}}'s Likes": "Likes van {{user}}",
+    "The file was only partially uploaded": "Het bestand is slechts gedeeltelijk geüpload",
+    "Missing a temporary folder for upload": "Een tijdelijke map voor upload ontbreekt",
+    "Failed to write file to disk": "Het bestand kon niet naar de schijf worden geschreven",
+    "File upload stopped by extension": "Het uploaden van het bestand is gestopt door een extensie",
+    "The selected image file is not valid": "Het geselecteerde afbeeldingsbestand is ongeldig",
+    "Unable to process the uploaded image": "Het geüploade beeld kan niet worden verwerkt"
 }

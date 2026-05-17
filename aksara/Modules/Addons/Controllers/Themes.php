@@ -349,8 +349,16 @@ class Themes extends Core
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
-                // Extract the repository
-                $zip->extractTo($tmp_path);
+                // Validate the zip contents and extract safely
+                if (! $this->_extractZipArchive($zip, $tmp_path)) {
+                    // Close the opened zip
+                    $zip->close();
+
+                    // Remove temporary directory
+                    $this->_rmdir($tmp_path);
+
+                    return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
+                }
 
                 $files = directory_map($tmp_path);
 
@@ -369,8 +377,8 @@ class Themes extends Core
                 $extract = false;
 
                 foreach ($files as $key => $val) {
-                    if (! $package_path) {
-                        $package_path = str_replace(DIRECTORY_SEPARATOR, '', $key);
+                    if (! $package_path && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
+                        $package_path = basename(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($key, '/\\')));
                     }
 
                     if (! is_array($val)) {
@@ -427,8 +435,8 @@ class Themes extends Core
                 }
 
                 if (is_writable(ROOTPATH . 'themes')) {
-                    // Extract package contents
-                    $extract = $zip->extractTo(ROOTPATH . 'themes');
+                    // Extract package contents safely
+                    $extract = $this->_extractZipArchive($zip, ROOTPATH . 'themes');
 
                     // Close zip
                     $zip->close();
@@ -610,5 +618,42 @@ class Themes extends Core
 
             rmdir($directory);
         }
+    }
+
+    /**
+     * Check if zip entry path is safe for extraction.
+     * @param null|mixed $entry
+     */
+    private function _isSafeZipEntry($entry = null)
+    {
+        if (! $entry || strpos($entry, "\0") !== false) {
+            return false;
+        }
+
+        if (preg_match('/^(?:[\/\\]|[A-Za-z]:[\/\\])/', $entry)) {
+            return false;
+        }
+
+        if (preg_match('/(?:^|[\/\\])\.\.([\/\\]|$)/', $entry)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Extract zip archive safely after validating all entries.
+     */
+    private function _extractZipArchive(ZipArchive $zip, string $destination): bool
+    {
+        for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
+            $entryName = $zip->getNameIndex($i);
+
+            if (false === $entryName || ! $this->_isSafeZipEntry($entryName)) {
+                return false;
+            }
+        }
+
+        return $zip->extractTo($destination);
     }
 }

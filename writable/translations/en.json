@@ -1078,5 +1078,11 @@
     "{{deleted}} of {{total}} was successfully removed.": "{{deleted}} of {{total}} was successfully removed.",
     "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.": "{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.",
     "{{user}}'s Activities": "{{user}}'s Activities",
-    "{{user}}'s Likes": "{{user}}'s Likes"
+    "{{user}}'s Likes": "{{user}}'s Likes",
+    "The file was only partially uploaded": "The file was only partially uploaded",
+    "Missing a temporary folder for upload": "Missing a temporary folder for upload",
+    "Failed to write file to disk": "Failed to write file to disk",
+    "File upload stopped by extension": "File upload stopped by extension",
+    "The selected image file is not valid": "The selected image file is not valid",
+    "Unable to process the uploaded image": "Unable to process the uploaded image"
 }
