@@ -67,7 +67,7 @@ class Form
         'date', 'datetime', 'time', 'week', 'month',
         'hidden', 'email', 'password', 'encryption',
         'file', 'files', 'image', 'images',
-        'accordion', 'attribution', 'carousel', 'geospatial',
+        'attribution', 'geospatial',
         'custom'
     ];
 
@@ -225,7 +225,7 @@ class Form
             ];
 
             // Specific handling for File/Image inputs
-            if (in_array($finalType, ['image', 'images', 'carousel'])) {
+            if (in_array($finalType, ['image', 'images'])) {
                 $fieldData[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED))));
                 $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
             } elseif (in_array($finalType, ['file', 'files'])) {

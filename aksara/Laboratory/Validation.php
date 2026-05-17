@@ -273,29 +273,22 @@ class Validation
 
         list($field, $type) = array_pad(explode('.', $params), 2, null);
 
-        // Typically the suffix used for carousel or future addition
-        if (isset($_FILES[$field]['name']['background'])) {
-            $suffix = '.background';
-        } else {
-            $suffix = null;
-        }
-
-        $files = $request->getFile($field . $suffix) ?? $request->getFileMultiple($field . $suffix);
+        $files = $request->getFile($field) ?? $request->getFileMultiple($field);
 
         if (is_array($files)) {
             foreach ($files as $key => $val) {
                 if (is_array($val)) {
                     foreach ($val as $_key => $_val) {
                         // Typically using nested input like field[foo][bar]
-                        $this->_doUpload($field . $suffix . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
+                        $this->_doUpload($field . '.' . $key . '.' . $_key, $field, $type, $key, $_key);
                     }
                 } else {
                     // Typically using nested input like field[foo]
-                    $this->_doUpload($field . $suffix . '.' . $key, $field, $type, $key);
+                    $this->_doUpload($field . '.' . $key, $field, $type, $key);
                 }
             }
         } else {
-            $this->_doUpload($field . $suffix, $field, $type);
+            $this->_doUpload($field, $field, $type);
         }
 
         if ($this->_uploadError) {

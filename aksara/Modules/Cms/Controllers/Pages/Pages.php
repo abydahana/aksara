@@ -55,9 +55,9 @@ class Pages extends Core
         ->setIcon('mdi mdi-file-document-outline')
         ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
         ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
-        ->unsetColumn('page_id, author, page_slug, page_content, carousel_title, faq_title, carousel_id, faq_id, created_timestamp, updated_timestamp, language')
-        ->unsetField('page_id, author, carousel_id, faq_id')
-        ->unsetView('page_id, author, page_content, carousel_id, faq_id')
+        ->unsetColumn('page_id, author, page_slug, page_content, created_timestamp, updated_timestamp, language')
+        ->unsetField('page_id, author')
+        ->unsetView('page_id, author, page_content')
         ->columnOrder('page_title, page_description, updated, status')
         ->fieldOrder('page_title, page_description, language_id, created_timestamp, updated_timestamp, status')
         ->setField([
@@ -210,7 +210,7 @@ class Pages extends Core
 
         $this->setTitle(phrase('Translate Page'))
         ->setIcon('mdi mdi-translate')
-        ->unsetField('page_id, language_id, page_slug, author, carousel_id, faq_id, status, created_timestamp, updated_timestamp')
+        ->unsetField('page_id, language_id, page_slug, author, status, created_timestamp, updated_timestamp')
         ->setField([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',
