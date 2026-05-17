@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Encryption language settings
 return [
-    'noDriverRequested'    => '드라이버가 요청되지 않았습니다.', // 'No driver requested; Miss Daisy will be so upset!'
-    'noHandlerAvailable'   => '사용 가능한 "{0}" 암호화 핸들러를 찾을 수 없습니다.', // 'Unable to find an available "{0}" encryption handler.'
-    'unKnownHandler'       => '"{0}"을 (를) 구성 할 수 없습니다.', // '"{0}" cannot be configured.'
-    'starterKeyNeeded'     => '암호화를 하려면 시작 키가 필요합니다.', // 'Encrypter needs a starter key.'
+    'noDriverRequested' => '드라이버가 요청되지 않았습니다.', // 'No driver requested; Miss Daisy will be so upset!'
+    'noHandlerAvailable' => '사용 가능한 "{0}" 암호화 핸들러를 찾을 수 없습니다.', // 'Unable to find an available "{0}" encryption handler.'
+    'unKnownHandler' => '"{0}"을 (를) 구성 할 수 없습니다.', // '"{0}" cannot be configured.'
+    'starterKeyNeeded' => '암호화를 하려면 시작 키가 필요합니다.', // 'Encrypter needs a starter key.'
     'authenticationFailed' => '복호화: 인증에 실패했습니다.', // 'Decrypting: authentication failed.'
-    'encryptionFailed'     => '암호화 실패', // 'Encryption failed.'
+    'encryptionFailed' => '암호화 실패', // 'Encryption failed.'
 ];

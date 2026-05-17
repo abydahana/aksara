@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // Core language settings
 return [
-    'copyError'                    => 'Beim Versuch, die Datei ({0}) zu ersetzen, ist ein Fehler aufgetreten. Bitte sicherstellen, dass das Verzeichnis beschreibbar ist.',
+    'copyError' => 'Beim Versuch, die Datei ({0}) zu ersetzen, ist ein Fehler aufgetreten. Bitte sicherstellen, dass das Verzeichnis beschreibbar ist.',
     'enabledZlibOutputCompression' => 'Die zlib.output_compression ini Direktive ist aktiviert. Dies funktioniert nicht gut mit Ausgabe-Pufferung.',
-    'invalidFile'                  => 'Ungültige Datei: {0}',
-    'invalidDirectory'             => 'Verzeichnis existiert nicht: "{0}"',
-    'invalidPhpVersion'            => 'Um CodeIgniter ausführen zu können, muss PHP in der Version {0} oder höher installiert sein. Aktuelle Version: {1}',
-    'missingExtension'             => 'Für das Framework müssen die folgende(n) Erweiterung(en) installiert und geladen werden: {0}.',
-    'noHandlers'                   => '{0} muss mindestens einen Handler bereitstellen.',
+    'invalidFile' => 'Ungültige Datei: {0}',
+    'invalidDirectory' => 'Verzeichnis existiert nicht: "{0}"',
+    'invalidPhpVersion' => 'Um CodeIgniter ausführen zu können, muss PHP in der Version {0} oder höher installiert sein. Aktuelle Version: {1}',
+    'missingExtension' => 'Für das Framework müssen die folgende(n) Erweiterung(en) installiert und geladen werden: {0}.',
+    'noHandlers' => '{0} muss mindestens einen Handler bereitstellen.',
 ];

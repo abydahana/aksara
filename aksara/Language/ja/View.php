@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // View language settings
 return [
-    'invalidCellMethod'     => '{class}::{method} は有効なメソッドではありません。', // '{class}::{method} is not a valid method.'
+    'invalidCellMethod' => '{class}::{method} は有効なメソッドではありません。', // '{class}::{method} is not a valid method.'
     'missingCellParameters' => '{class}::{method} にはパラメータがありません。', // '{class}::{method} has no params.'
-    'invalidCellParameter'  => '"{0}" は有効なパラメータ名ではありません。', // '"{0}" is not a valid param name.'
-    'noCellClass'           => 'ビューセルクラスは提供されていません。', // 'No view cell class provided.'
-    'invalidCellClass'      => 'ビューセルクラス "{0}" を見つけることができません。', // 'Unable to locate view cell class: "{0}".'
-    'tagSyntaxError'        => 'パーサータグ "{0}" に構文エラーがあります。', // 'You have a syntax error in your Parser tags: "{0}"'
+    'invalidCellParameter' => '"{0}" は有効なパラメータ名ではありません。', // '"{0}" is not a valid param name.'
+    'noCellClass' => 'ビューセルクラスは提供されていません。', // 'No view cell class provided.'
+    'invalidCellClass' => 'ビューセルクラス "{0}" を見つけることができません。', // 'Unable to locate view cell class: "{0}".'
+    'tagSyntaxError' => 'パーサータグ "{0}" に構文エラーがあります。', // 'You have a syntax error in your Parser tags: "{0}"'
     'invalidDecoratorClass' => '"{0}" は有効なビューデコレーターではありません。', // '"{0}" is not a valid View Decorator.'
 ];

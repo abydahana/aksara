@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,9 +28,9 @@ declare(strict_types=1);
 
 // Publisher language settings
 return [
-    'collision'             => '分發器在 將{1} 複製 到{2} 時遇到意外 {0}。',
+    'collision' => '分發器在 將{1} 複製 到{2} 時遇到意外 {0}。',
     'destinationNotAllowed' => '目標不在分發器目錄的允許清單中：{0}',
-    'fileNotAllowed'        => '{0}未通過以下限制 {1}: {2}{0}。',
+    'fileNotAllowed' => '{0}未通過以下限制 {1}: {2}{0}。',
 
     // Publish Command
     'publishMissing' => '在所有命名空間中未檢測到 {0} 分發器類。',

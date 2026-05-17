@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,8 +28,8 @@ declare(strict_types=1);
 
 // Errors language settings
 return [
-    'pageNotFound'    => '404 - Pagina niet gevonden',
+    'pageNotFound' => '404 - Pagina niet gevonden',
     'sorryCannotFind' => 'Sorry! De pagina die u zoekt kon niet gevonden worden.',
-    'whoops'          => 'Oeps!',
-    'weHitASnag'      => 'Er gaat iets fout. Probeer het later nog eens...',
+    'whoops' => 'Oeps!',
+    'weHitASnag' => 'Er gaat iets fout. Probeer het later nog eens...',
 ];

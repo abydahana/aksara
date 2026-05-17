@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +28,6 @@ declare(strict_types=1);
 
 // Router language settings
 return [
-    'invalidParameter'    => '一个参数不符合预期的类型。',
+    'invalidParameter' => '一个参数不符合预期的类型。',
     'missingDefaultRoute' => '无法确定应显示的内容。路由文件中没有指定默认路由。',
 ];

@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,13 +28,13 @@ declare(strict_types=1);
 
 // Cast language settings
 return [
-    'baseCastMissing'        => '"{0}" 必须继承 "CodeIgniter\Entity\Cast\BaseCast"。',
-    'invalidCastMethod'      => '"{0}" 是一个无效的转换器方法, 可用的方法有: ["get", "set"]。',
-    'invalidTimestamp'       => '转换 "timestamp" 类型期望一个正确的时间戳。',
-    'jsonErrorCtrlChar'      => '控制字符错误，可能是编码不对。',
-    'jsonErrorDepth'         => '到达了最大堆栈深度。',
+    'baseCastMissing' => '"{0}" 必须继承 "CodeIgniter\Entity\Cast\BaseCast"。',
+    'invalidCastMethod' => '"{0}" 是一个无效的转换器方法, 可用的方法有: ["get", "set"]。',
+    'invalidTimestamp' => '转换 "timestamp" 类型期望一个正确的时间戳。',
+    'jsonErrorCtrlChar' => '控制字符错误，可能是编码不对。',
+    'jsonErrorDepth' => '到达了最大堆栈深度。',
     'jsonErrorStateMismatch' => '出现了下溢 (underflow) 或者模式不匹配。',
-    'jsonErrorSyntax'        => '语法错误。',
-    'jsonErrorUnknown'       => '未知错误。',
-    'jsonErrorUtf8'          => '异常的 UTF-8 字符，也许是因为不正确的编码。',
+    'jsonErrorSyntax' => '语法错误。',
+    'jsonErrorUnknown' => '未知错误。',
+    'jsonErrorUtf8' => '异常的 UTF-8 字符，也许是因为不正确的编码。',
 ];

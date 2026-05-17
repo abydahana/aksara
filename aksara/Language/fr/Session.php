@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // Session language settings
 return [
-    'missingDatabaseTable'   => '`sessionSavePath` doit contenir le nom de la table pour que le gestionnaire de session de base de données puisse fonctionner.',
-    'invalidSavePath'        => 'Session : le chemin de sauvegarde configuré "{0}" n\'est pas un répertoire, n\'existe pas ou ne peut être créé.',
+    'missingDatabaseTable' => '`sessionSavePath` doit contenir le nom de la table pour que le gestionnaire de session de base de données puisse fonctionner.',
+    'invalidSavePath' => 'Session : le chemin de sauvegarde configuré "{0}" n\'est pas un répertoire, n\'existe pas ou ne peut être créé.',
     'writeProtectedSavePath' => 'Session : le chemin de sauvegarde configuré "{0}" ne permet pas l\'écriture par le processus PHP.',
-    'emptySavePath'          => 'Session : aucun chemin de sauvegarde configuré.',
-    'invalidSavePathFormat'  => 'Session : format du chemin de sauvegarde Redis invalide : {0}',
+    'emptySavePath' => 'Session : aucun chemin de sauvegarde configuré.',
+    'invalidSavePathFormat' => 'Session : format du chemin de sauvegarde Redis invalide : {0}',
 
     // @deprecated
     'invalidSameSiteSetting' => 'Session : Le paramètre SameSite doit être None, Lax, Strict, ou une chaîne vide. Fourni : {0}',

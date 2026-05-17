@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,8 +28,8 @@ declare(strict_types=1);
 
 // Cache language settings
 return [
-    'unableToWrite'   => 'Không thể ghi cache vào {0}',
+    'unableToWrite' => 'Không thể ghi cache vào {0}',
     'invalidHandlers' => '$validHandlers phải chứa một mảng cấu hình cache.',
-    'noBackup'        => 'Cấu hình cache phải có một trình xử lý và một trình xử lý dự phòng.',
+    'noBackup' => 'Cấu hình cache phải có một trình xử lý và một trình xử lý dự phòng.',
     'handlerNotFound' => 'Có một trình xử lý hoặc trình xử lý dự phòng không hợp lệ trong cấu hình cache.',
 ];

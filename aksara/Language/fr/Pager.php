@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,13 +28,13 @@ declare(strict_types=1);
 
 // Pager language settings
 return [
-    'pageNavigation'         => 'Page de navigation',
-    'first'                  => 'Premier',
-    'previous'               => 'Précédent',
-    'next'                   => 'Suivant',
-    'last'                   => 'Dernier',
-    'older'                  => 'Plus ancien',
-    'newer'                  => 'Plus récent',
-    'invalidTemplate'        => '{0} n\'est pas un template de pagination valide.',
+    'pageNavigation' => 'Page de navigation',
+    'first' => 'Premier',
+    'previous' => 'Précédent',
+    'next' => 'Suivant',
+    'last' => 'Dernier',
+    'older' => 'Plus ancien',
+    'newer' => 'Plus récent',
+    'invalidTemplate' => '{0} n\'est pas un template de pagination valide.',
     'invalidPaginationGroup' => '{0} n\'est pas un groupe de pagination valide.',
 ];

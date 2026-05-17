@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -17,7 +32,7 @@ return [
     'gigabyteAbbr' => 'GB', // 'GB'
     'megabyteAbbr' => 'MB', // 'MB'
     'kilobyteAbbr' => 'KB', // 'KB'
-    'bytes'        => 'Bytes', // 'Bytes'
+    'bytes' => 'Bytes', // 'Bytes'
 
     // don't forget the space in front of these!
     // Japanese numeral are ten-thousand-based, cause it can not adapt 'number_to_amount()' as below.
@@ -28,9 +43,9 @@ return [
     // billion → '0億' 1 billionは 10億 ただし、カンマ位取りがおかしくなります（1,0000億というような表示になります）
     // trillion → '兆'
     // quadrillion → ',000兆' 京としたいところだが 1 quadrillion は 1000兆なので
-    'thousand'    => ' thousand', // ' thousand'
-    'million'     => ' million', // ' million'
-    'billion'     => ' billion', // ' billion'
-    'trillion'    => ' trillion', // ' trillion'
+    'thousand' => ' thousand', // ' thousand'
+    'million' => ' million', // ' million'
+    'billion' => ' billion', // ' billion'
+    'trillion' => ' trillion', // ' trillion'
     'quadrillion' => ' quadrillion', // ' quadrillion'
 ];

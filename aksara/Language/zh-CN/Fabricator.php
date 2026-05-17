@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,7 +28,7 @@ declare(strict_types=1);
 
 // Fabricator language settings
 return [
-    'invalidModel'      => '给构造器提供的模型无效。',
+    'invalidModel' => '给构造器提供的模型无效。',
     'missingFormatters' => '没有定义有效的格式化器',
-    'createFailed'      => '构造器在表 {0} 中插入数据失败。错误: {1}',
+    'createFailed' => '构造器在表 {0} 中插入数据失败。错误: {1}',
 ];

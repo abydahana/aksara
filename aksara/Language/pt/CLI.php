@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,43 +28,43 @@ declare(strict_types=1);
 
 // CLI language settings
 return [
-    'altCommandPlural'   => 'Por acaso querias um destes?',
+    'altCommandPlural' => 'Por acaso querias um destes?',
     'altCommandSingular' => 'Por acaso querias este?',
-    'commandNotFound'    => 'Comando "{0}" não encontrado.',
-    'generator'          => [
+    'commandNotFound' => 'Comando "{0}" não encontrado.',
+    'generator' => [
         'cancelOperation' => 'Operação foi cancelada.',
-        'className'       => [
-            'cell'       => 'Nome da Class Cell',
-            'command'    => 'Nome da Class Command',
-            'config'     => 'Nome da Class Config',
+        'className' => [
+            'cell' => 'Nome da Class Cell',
+            'command' => 'Nome da Class Command',
+            'config' => 'Nome da Class Config',
             'controller' => 'Nome da Class Controller',
-            'default'    => 'Nome da Class',
-            'entity'     => 'Nome da Class Entity',
-            'filter'     => 'Nome da Class Filter',
-            'migration'  => 'Nome da Class Migration',
-            'model'      => 'Nome da Class Model',
-            'seeder'     => 'Nome da Class Seeder',
-            'test'       => 'Nome da Class Test',
+            'default' => 'Nome da Class',
+            'entity' => 'Nome da Class Entity',
+            'filter' => 'Nome da Class Filter',
+            'migration' => 'Nome da Class Migration',
+            'model' => 'Nome da Class Model',
+            'seeder' => 'Nome da Class Seeder',
+            'test' => 'Nome da Class Test',
             'validation' => 'Nome da Class Validation',
         ],
-        'commandType'      => 'Tipo de comando',
-        'databaseGroup'    => 'Grupo de Base de Dados',
-        'fileCreate'       => 'Ficheiro Criado: {0}',
-        'fileError'        => 'Erro ao criar ficheiro: "{0}"',
-        'fileExist'        => 'Ficheiro já existe: "{0}"',
-        'fileOverwrite'    => 'Ficheiro reescrito: "{0}"',
-        'parentClass'      => 'Classe Pai',
-        'returnType'       => 'Tipo de Retorno',
-        'tableName'        => 'Nome da Tabela',
+        'commandType' => 'Tipo de comando',
+        'databaseGroup' => 'Grupo de Base de Dados',
+        'fileCreate' => 'Ficheiro Criado: {0}',
+        'fileError' => 'Erro ao criar ficheiro: "{0}"',
+        'fileExist' => 'Ficheiro já existe: "{0}"',
+        'fileOverwrite' => 'Ficheiro reescrito: "{0}"',
+        'parentClass' => 'Classe Pai',
+        'returnType' => 'Tipo de Retorno',
+        'tableName' => 'Nome da Tabela',
         'usingCINamespace' => 'Alerta: Usar o namespace "CodeIgniter" vai gerar o ficheiro no diretório do sistema.',
-        'viewName'         => [
+        'viewName' => [
             'cell' => 'Nome da Cell view',
         ],
     ],
-    'helpArguments'       => 'Argumentos:',
-    'helpDescription'     => 'Descrição:',
-    'helpOptions'         => 'Opções:',
-    'helpUsage'           => 'Uso:',
-    'invalidColor'        => 'Cor inválida {0}: {1}.',
+    'helpArguments' => 'Argumentos:',
+    'helpDescription' => 'Descrição:',
+    'helpOptions' => 'Opções:',
+    'helpUsage' => 'Uso:',
+    'invalidColor' => 'Cor inválida {0}: {1}.',
     'namespaceNotDefined' => 'O namespace "{0}" não est+a defenido.',
 ];

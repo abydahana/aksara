@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,49 +28,49 @@ declare(strict_types=1);
 
 // CLI language settings
 return [
-    'altCommandPlural'   => 'هل كنت تعني إحدى هذه الأوامر؟',
+    'altCommandPlural' => 'هل كنت تعني إحدى هذه الأوامر؟',
     'altCommandSingular' => 'هل كنت تعني هذا؟',
-    'commandNotFound'    => 'الأمر "{0}" غير موجود.',
-    'generator'          => [
+    'commandNotFound' => 'الأمر "{0}" غير موجود.',
+    'generator' => [
         'cancelOperation' => 'تم إلغاء العملية.',
-        'className'       => [
-            'cell'        => 'اسم فئة الخلية (Cell class)',
-            'command'     => 'اسم فئة الأمر (Command class)',
-            'config'      => 'اسم فئة الإعدادات (Config class)',
-            'controller'  => 'اسم فئة المتحكم (Controller class)',
-            'default'     => 'اسم الفئة',
-            'entity'      => 'اسم فئة الكيان (Entity class)',
-            'filter'      => 'اسم فئة المرشح (Filter class)',
-            'migration'   => 'اسم فئة الترحيل (Migration class)',
-            'model'       => 'اسم فئة النموذج (Model class)',
-            'seeder'      => 'اسم فئة الباذر (Seeder class)',
-            'test'        => 'اسم فئة الاختبار (Test class)',
+        'className' => [
+            'cell' => 'اسم فئة الخلية (Cell class)',
+            'command' => 'اسم فئة الأمر (Command class)',
+            'config' => 'اسم فئة الإعدادات (Config class)',
+            'controller' => 'اسم فئة المتحكم (Controller class)',
+            'default' => 'اسم الفئة',
+            'entity' => 'اسم فئة الكيان (Entity class)',
+            'filter' => 'اسم فئة المرشح (Filter class)',
+            'migration' => 'اسم فئة الترحيل (Migration class)',
+            'model' => 'اسم فئة النموذج (Model class)',
+            'seeder' => 'اسم فئة الباذر (Seeder class)',
+            'test' => 'اسم فئة الاختبار (Test class)',
             'transformer' => 'اسم فئة المحوّل (Transformer class)',
-            'validation'  => 'اسم فئة التحقق (Validation class)',
+            'validation' => 'اسم فئة التحقق (Validation class)',
         ],
-        'commandType'      => 'نوع الأمر',
-        'databaseGroup'    => 'مجموعة قاعدة البيانات',
-        'fileCreate'       => 'تم إنشاء الملف: {0}',
-        'fileError'        => 'خطأ أثناء إنشاء الملف: "{0}"',
-        'fileExist'        => 'الملف موجود مسبقاً: "{0}"',
-        'fileOverwrite'    => 'تمت الكتابة فوق الملف: "{0}"',
-        'parentClass'      => 'الفئة الأب (Parent class)',
-        'returnType'       => 'نوع الإرجاع (Return type)',
-        'tableName'        => 'اسم الجدول',
+        'commandType' => 'نوع الأمر',
+        'databaseGroup' => 'مجموعة قاعدة البيانات',
+        'fileCreate' => 'تم إنشاء الملف: {0}',
+        'fileError' => 'خطأ أثناء إنشاء الملف: "{0}"',
+        'fileExist' => 'الملف موجود مسبقاً: "{0}"',
+        'fileOverwrite' => 'تمت الكتابة فوق الملف: "{0}"',
+        'parentClass' => 'الفئة الأب (Parent class)',
+        'returnType' => 'نوع الإرجاع (Return type)',
+        'tableName' => 'اسم الجدول',
         'usingCINamespace' => 'تحذير: استخدام مساحة الأسماء "CodeIgniter" سيؤدي إلى توليد الملف في دليل النظام (system directory).',
-        'viewName'         => [
+        'viewName' => [
             'cell' => 'اسم عرض الخلية (Cell view)',
         ],
     ],
-    'helpArguments'       => 'الوسائط (Arguments):',
-    'helpDescription'     => 'الوصف:',
-    'helpOptions'         => 'الخيارات:',
-    'helpUsage'           => 'الاستخدام:',
-    'invalidColor'        => 'اللون "{0}" غير صالح: "{1}".',
+    'helpArguments' => 'الوسائط (Arguments):',
+    'helpDescription' => 'الوصف:',
+    'helpOptions' => 'الخيارات:',
+    'helpUsage' => 'الاستخدام:',
+    'invalidColor' => 'اللون "{0}" غير صالح: "{1}".',
     'namespaceNotDefined' => 'مساحة الأسماء "{0}" غير معرفة.',
-    'signals'             => [
+    'signals' => [
         'noPcntlExtension' => 'ملحق PCNTL غير متاح. تم تعطيل معالجة الإشارات (Signal handling).',
         'noPosixExtension' => 'معالجة SIGTSTP/SIGCONT تتطلب ملحق POSIX. ستتم إزالة هذه الإشارات من التسجيل.',
-        'failedSignal'     => 'فشل تسجيل المعالج للإشارة: "{0}".',
+        'failedSignal' => 'فشل تسجيل المعالج للإشارة: "{0}".',
     ],
 ];

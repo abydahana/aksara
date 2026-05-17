@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,8 +28,8 @@ declare(strict_types=1);
 
 // Cache language settings
 return [
-    'unableToWrite'   => 'Le cache est incapable d\'écrire dans {0}.',
+    'unableToWrite' => 'Le cache est incapable d\'écrire dans {0}.',
     'invalidHandlers' => 'La configuration du cache doit avoir un tableau de $validHandlers.',
-    'noBackup'        => 'La configuration du cache doit avoir un gestionnaire de cache (handler) et un gestionnaire de relève (backup handler) définis.',
+    'noBackup' => 'La configuration du cache doit avoir un gestionnaire de cache (handler) et un gestionnaire de relève (backup handler) définis.',
     'handlerNotFound' => 'La configuration du cache contient un gestionnaire de cache (handler) ou un gestionnaire de relève (backup handler) invalide.',
 ];

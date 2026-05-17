@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,13 +28,13 @@ declare(strict_types=1);
 
 // Publisher language settings
 return [
-    'collision'             => 'Publisher hat ein unerwartetes {0} beim Kopieren von {1} nach {2} festgestellt.',
+    'collision' => 'Publisher hat ein unerwartetes {0} beim Kopieren von {1} nach {2} festgestellt.',
     'destinationNotAllowed' => 'Das Ziel befindet sich nicht in der Liste der zulässigen Publisher-Verzeichnisse: {0}',
-    'fileNotAllowed'        => '{0} erfüllt die folgende Einschränkung für {1} nicht: {2}',
+    'fileNotAllowed' => '{0} erfüllt die folgende Einschränkung für {1} nicht: {2}',
 
     // Publish Command
-    'publishMissing'          => 'Es konnten keine Publisher-Klassen in {0} in allen Namensräumen gefunden werden.',
+    'publishMissing' => 'Es konnten keine Publisher-Klassen in {0} in allen Namensräumen gefunden werden.',
     'publishMissingNamespace' => 'Es konnten keine Publisher-Klassen in {0} im {1} Namespace gefunden werden.',
-    'publishSuccess'          => '{0} hat {1} Datei(en) nach {2} publiziert.',
-    'publishFailure'          => '{0} konnte nicht nach {1} publiziert werden!',
+    'publishSuccess' => '{0} hat {1} Datei(en) nach {2} publiziert.',
+    'publishFailure' => '{0} konnte nicht nach {1} publiziert werden!',
 ];

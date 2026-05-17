@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,23 +28,23 @@ declare(strict_types=1);
 
 // Time language settings
 return [
-    'invalidFormat'  => '"{0}" 不是一个有效的日期时间格式',
-    'invalidMonth'   => '月份数必须在 1 到 12 之间。当前是 {0}',
-    'invalidDay'     => '日期数必须在 1 到 31 之间。当前是 {0}',
+    'invalidFormat' => '"{0}" 不是一个有效的日期时间格式',
+    'invalidMonth' => '月份数必须在 1 到 12 之间。当前是 {0}',
+    'invalidDay' => '日期数必须在 1 到 31 之间。当前是 {0}',
     'invalidOverDay' => '日期数必须在 1 到 {0} 之间。当前是 {1}',
-    'invalidHours'   => '小时数必须在 0 到 23 之间。当前是 {0}',
+    'invalidHours' => '小时数必须在 0 到 23 之间。当前是 {0}',
     'invalidMinutes' => '分钟数必须在 0 到 59 之间。当前是 {0}',
     'invalidSeconds' => '秒数必须在 0 到 59 之间。当前是 {0}',
-    'years'          => '{0} 年',
-    'months'         => '{0} 月',
-    'weeks'          => '{0} 星期',
-    'days'           => '{0} 天',
-    'hours'          => '{0} 小时',
-    'minutes'        => '{0} 分钟',
-    'seconds'        => '{0} 秒',
-    'ago'            => '{0} 以前',
-    'inFuture'       => '{0} 后',
-    'yesterday'      => '昨天',
-    'tomorrow'       => '明天',
-    'now'            => '当前',
+    'years' => '{0} 年',
+    'months' => '{0} 月',
+    'weeks' => '{0} 星期',
+    'days' => '{0} 天',
+    'hours' => '{0} 小时',
+    'minutes' => '{0} 分钟',
+    'seconds' => '{0} 秒',
+    'ago' => '{0} 以前',
+    'inFuture' => '{0} 后',
+    'yesterday' => '昨天',
+    'tomorrow' => '明天',
+    'now' => '当前',
 ];

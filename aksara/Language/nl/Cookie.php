@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,14 +28,14 @@ declare(strict_types=1);
 
 // Cookie language settings
 return [
-    'invalidExpiresTime'    => 'Onjuist "{0}" type voor het attribuut "Expires". Verwacht: string, integer, DateTimeInterface object.',
-    'invalidExpiresValue'   => 'De cookie-vervaldatum is onjuist.',
-    'invalidCookieName'     => 'De cookie-naam "{0}" bevat tekens die niet zijn toegestaan.',
-    'emptyCookieName'       => 'De cookie-naam mag niet leeg zijn.',
-    'invalidSecurePrefix'   => 'Om de prefix "__Secure-" te gebruiken moet het "Secure" attribuut ingesteld zijn.',
-    'invalidHostPrefix'     => 'De "__Host-" prefix gebruikt worden met de "Secure" optie, mag geen "Domain" optie hebben, en "Path" moet "/" zijn.',
-    'invalidSameSite'       => 'De waarde van SameSite moet zijn: None, Lax, Strict of een lege string, {0} gegeven.',
-    'invalidSameSiteNone'   => 'Om "SameSite=None" te gebruiken moet het "Secure" attribuut ingesteld zijn.',
+    'invalidExpiresTime' => 'Onjuist "{0}" type voor het attribuut "Expires". Verwacht: string, integer, DateTimeInterface object.',
+    'invalidExpiresValue' => 'De cookie-vervaldatum is onjuist.',
+    'invalidCookieName' => 'De cookie-naam "{0}" bevat tekens die niet zijn toegestaan.',
+    'emptyCookieName' => 'De cookie-naam mag niet leeg zijn.',
+    'invalidSecurePrefix' => 'Om de prefix "__Secure-" te gebruiken moet het "Secure" attribuut ingesteld zijn.',
+    'invalidHostPrefix' => 'De "__Host-" prefix gebruikt worden met de "Secure" optie, mag geen "Domain" optie hebben, en "Path" moet "/" zijn.',
+    'invalidSameSite' => 'De waarde van SameSite moet zijn: None, Lax, Strict of een lege string, {0} gegeven.',
+    'invalidSameSiteNone' => 'Om "SameSite=None" te gebruiken moet het "Secure" attribuut ingesteld zijn.',
     'invalidCookieInstance' => '"{0}" class verwacht dat de cookie-array in instance is van "{1}" maar vond "{2}" voor index {3}.',
     'unknownCookieInstance' => 'Cookie-object met de naam "{0}" en prefix "{1}" kon niet gevonden worden in de collectie.',
 ];

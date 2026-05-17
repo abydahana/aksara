@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // Core language settings
 return [
-    'copyError'                    => 'Đã xảy ra lỗi khi cố gắng thay thế tệp ({0}). Vui lòng đảm bảo rằng thư mục có quyền ghi.',
+    'copyError' => 'Đã xảy ra lỗi khi cố gắng thay thế tệp ({0}). Vui lòng đảm bảo rằng thư mục có quyền ghi.',
     'enabledZlibOutputCompression' => 'Chỉ thị zlib.output_compression trong tệp cấu hình ini đã được kích hoạt. Điều này không hoạt động tốt với việc đệm đầu ra.',
-    'invalidFile'                  => 'Tệp không hợp lệ: {0}',
-    'invalidDirectory'             => 'Thư mục không tồn tại: "{0}"',
-    'invalidPhpVersion'            => 'Để chạy CodeIgniter, PHP phải được cài đặt phiên bản {0} trở lên. Phiên bản hiện tại: {1}',
-    'missingExtension'             => 'Để framework hoạt động, cần cài đặt và tải các phần mở rộng sau: {0}.',
-    'noHandlers'                   => '{0} phải cung cấp ít nhất một trình xử lý (handler).',
+    'invalidFile' => 'Tệp không hợp lệ: {0}',
+    'invalidDirectory' => 'Thư mục không tồn tại: "{0}"',
+    'invalidPhpVersion' => 'Để chạy CodeIgniter, PHP phải được cài đặt phiên bản {0} trở lên. Phiên bản hiện tại: {1}',
+    'missingExtension' => 'Để framework hoạt động, cần cài đặt và tải các phần mở rộng sau: {0}.',
+    'noHandlers' => '{0} phải cung cấp ít nhất một trình xử lý (handler).',
 ];

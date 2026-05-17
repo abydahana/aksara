@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +29,7 @@ declare(strict_types=1);
 // Security language settings
 return [
     'disallowedAction' => '요청하신 작업은 허용되지 않습니다.', // 'The action you requested is not allowed.'
-    'insecureCookie'   => '비보안(non-secure) 연결을 통해 보안 쿠키를 전송하려고 시도했습니다.', // 'Attempted to send a secure cookie over a non-secure connection.'
+    'insecureCookie' => '비보안(non-secure) 연결을 통해 보안 쿠키를 전송하려고 시도했습니다.', // 'Attempted to send a secure cookie over a non-secure connection.'
 
     // @deprecated
     'invalidSameSite' => 'SameSite 값("{0}")은 None, Lax, Strict 또는 빈 문자열이어야합니다.', // 'The SameSite value must be None, Lax, Strict, or a blank string. Given: "{0}"'
