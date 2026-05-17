@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,49 +28,49 @@ declare(strict_types=1);
 
 // CLI language settings
 return [
-    'altCommandPlural'   => 'Вы подразумевали один из этих?',
+    'altCommandPlural' => 'Вы подразумевали один из этих?',
     'altCommandSingular' => 'Вы подразумевали этот?',
-    'commandNotFound'    => 'Команда "{0}" не найдена.',
-    'generator'          => [
+    'commandNotFound' => 'Команда "{0}" не найдена.',
+    'generator' => [
         'cancelOperation' => 'Операция была отменена.',
-        'className'       => [
-            'cell'        => 'Имя класса ячейки',
-            'command'     => 'Имя класса команды',
-            'config'      => 'Имя класса конфигурации',
-            'controller'  => 'Имя класса контроллера',
-            'default'     => 'Имя класса',
-            'entity'      => 'Имя класса сущности',
-            'filter'      => 'Имя класса фильтра',
-            'migration'   => 'Имя класса миграции',
-            'model'       => 'Имя класса модели',
-            'seeder'      => 'Имя класса Seeder`а',
-            'test'        => 'Имя тестового класса',
+        'className' => [
+            'cell' => 'Имя класса ячейки',
+            'command' => 'Имя класса команды',
+            'config' => 'Имя класса конфигурации',
+            'controller' => 'Имя класса контроллера',
+            'default' => 'Имя класса',
+            'entity' => 'Имя класса сущности',
+            'filter' => 'Имя класса фильтра',
+            'migration' => 'Имя класса миграции',
+            'model' => 'Имя класса модели',
+            'seeder' => 'Имя класса Seeder`а',
+            'test' => 'Имя тестового класса',
             'transformer' => 'Имя класса трансформера',
-            'validation'  => 'Имя класса валидации',
+            'validation' => 'Имя класса валидации',
         ],
-        'commandType'      => 'Тип команды',
-        'databaseGroup'    => 'Группа базы данных',
-        'fileCreate'       => 'Создан файл: {0}',
-        'fileError'        => 'Ошибка при создании файла: "{0}"',
-        'fileExist'        => 'Файл существует: "{0}"',
-        'fileOverwrite'    => 'Файл перезаписан: "{0}"',
-        'parentClass'      => 'Родительский класс',
-        'returnType'       => 'Возвращаемый тип',
-        'tableName'        => 'Имя таблицы',
+        'commandType' => 'Тип команды',
+        'databaseGroup' => 'Группа базы данных',
+        'fileCreate' => 'Создан файл: {0}',
+        'fileError' => 'Ошибка при создании файла: "{0}"',
+        'fileExist' => 'Файл существует: "{0}"',
+        'fileOverwrite' => 'Файл перезаписан: "{0}"',
+        'parentClass' => 'Родительский класс',
+        'returnType' => 'Возвращаемый тип',
+        'tableName' => 'Имя таблицы',
         'usingCINamespace' => 'Предупреждение: Использование пространства имён "CodeIgniter" создаст файл в системной директории.',
-        'viewName'         => [
+        'viewName' => [
             'cell' => 'Имя представления ячейки',
         ],
     ],
-    'helpArguments'       => 'Аргументы:',
-    'helpDescription'     => 'Описание:',
-    'helpOptions'         => 'Опции:',
-    'helpUsage'           => 'Использование:',
-    'invalidColor'        => 'Недопустимый "{0}" цвет: "{1}".',
+    'helpArguments' => 'Аргументы:',
+    'helpDescription' => 'Описание:',
+    'helpOptions' => 'Опции:',
+    'helpUsage' => 'Использование:',
+    'invalidColor' => 'Недопустимый "{0}" цвет: "{1}".',
     'namespaceNotDefined' => 'Пространство имён "{0}" не определено.',
-    'signals'             => [
+    'signals' => [
         'noPcntlExtension' => 'Расширение PCNTL не установлено. Обработка сигналов отключена.',
         'noPosixExtension' => 'Обработка SIGTSTP/SIGCONT требует расширение POSIX. Эти сигналы будут удалены из системы регистрации.',
-        'failedSignal'     => 'Не удалось зарегистрировать обработчик для сигнала: "{0}".',
+        'failedSignal' => 'Не удалось зарегистрировать обработчик для сигнала: "{0}".',
     ],
 ];

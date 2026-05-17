@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,7 +28,7 @@ declare(strict_types=1);
 
 // Fabricator language settings
 return [
-    'invalidModel'      => 'Suministrado Modelo inválido para fabricación.', // 'Invalid model supplied for fabrication.',
+    'invalidModel' => 'Suministrado Modelo inválido para fabricación.', // 'Invalid model supplied for fabrication.',
     'missingFormatters' => 'No se han definido formateadores válidos.', // 'No valid formatters defined.',
-    'createFailed'      => 'El fabricante no pudo insertar en la tabla {0}: {1}', // 'Fabricator failed to insert on table {0}: {1}',
+    'createFailed' => 'El fabricante no pudo insertar en la tabla {0}: {1}', // 'Fabricator failed to insert on table {0}: {1}',
 ];

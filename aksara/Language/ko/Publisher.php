@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,13 +28,13 @@ declare(strict_types=1);
 
 // Publisher language settings
 return [
-    'collision'             => '"{1}"을(를) "{2}"에 복사하는 동안 예기치 않은 에러("{0}")가 발생했습니다.', // 'Publisher encountered an unexpected "{0}" while copying "{1}" to "{2}".'
+    'collision' => '"{1}"을(를) "{2}"에 복사하는 동안 예기치 않은 에러("{0}")가 발생했습니다.', // 'Publisher encountered an unexpected "{0}" while copying "{1}" to "{2}".'
     'destinationNotAllowed' => '"{0}" 대상이 디렉토리의 허용 목록에 없습니다.', // 'Destination is not on the allowed list of Publisher directories: "{0}"'
-    'fileNotAllowed'        => '"{0}"은(는) "{1}"제한에 의해 실패했습니다. ("{2}")', // '"{0}" fails the following restriction for "{1}": {2}'
+    'fileNotAllowed' => '"{0}"은(는) "{1}"제한에 의해 실패했습니다. ("{2}")', // '"{0}" fails the following restriction for "{1}": {2}'
 
     // Publish Command
-    'publishMissing'          => '모든 네임스페이스에서 {0} 클래스를 찾지 못했습니다.', // 'No Publisher classes detected in {0} across all namespaces.'
+    'publishMissing' => '모든 네임스페이스에서 {0} 클래스를 찾지 못했습니다.', // 'No Publisher classes detected in {0} across all namespaces.'
     'publishMissingNamespace' => '{1} 네임스페이스의 {0}에서 클래스가 감지되지 않았습니다.', // 'No Publisher classes detected in {0} in the {1} namespace.'
-    'publishSuccess'          => '"{0}"가 {1} 파일들을 "{2}"에 게시했습니다.', // '"{0}" published {1} file(s) to "{2}".'
-    'publishFailure'          => '"{0}"가 "{1}"에 게시하지 못했습니다!', // '"{0}" failed to publish to "{1}".'
+    'publishSuccess' => '"{0}"가 {1} 파일들을 "{2}"에 게시했습니다.', // '"{0}" published {1} file(s) to "{2}".'
+    'publishFailure' => '"{0}"가 "{1}"에 게시하지 못했습니다!', // '"{0}" failed to publish to "{1}".'
 ];

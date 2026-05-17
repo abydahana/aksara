@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,8 +28,8 @@ declare(strict_types=1);
 
 // Files language settings
 return [
-    'fileNotFound'      => '파일을 찾을 수 없습니다: "{0}"', // 'File not found: "{0}"'
-    'cannotMove'        => '파일 "{0}" 경우에 "{1}" ({2}) 쪽으로 이동할 수 없습니다.', // 'Could not move file "{0}" to "{1}". Reason: {2}'
+    'fileNotFound' => '파일을 찾을 수 없습니다: "{0}"', // 'File not found: "{0}"'
+    'cannotMove' => '파일 "{0}" 경우에 "{1}" ({2}) 쪽으로 이동할 수 없습니다.', // 'Could not move file "{0}" to "{1}". Reason: {2}'
     'expectedDirectory' => '{0}에 유효한 디렉토리가 없습니다.', // '{0} expects a valid directory.'
-    'expectedFile'      => '{0}에 유효한 파일이 없습니다.', // '{0} expects a valid file.'
+    'expectedFile' => '{0}에 유효한 파일이 없습니다.', // '{0} expects a valid file.'
 ];

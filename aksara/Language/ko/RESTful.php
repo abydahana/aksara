@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -15,5 +30,5 @@ declare(strict_types=1);
 return [
     'notImplemented' => '"{0}" 동작이 구현되지 않았습니다.', // '"{0}" action not implemented.'
     'cannotPaginate' => '페이지 단위 데이터를 불러오지 못했습니다.', // 'Unable to retrieve paginated data.'
-    'paginateError'  => '결과를 페이지 단위로 나누는 과정에서 에러가 발생하였습니다.', // 'An error occurred while paginating results.'
+    'paginateError' => '결과를 페이지 단위로 나누는 과정에서 에러가 발생하였습니다.', // 'An error occurred while paginating results.'
 ];

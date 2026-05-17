@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Encryption language settings
 return [
-    'noDriverRequested'    => '没有指定的加密处理程序。',
-    'noHandlerAvailable'   => '指定的加密处理程序 "{0}" 不可用。',
-    'unKnownHandler'       => '未知的加密处理程序 "{0}"。',
-    'starterKeyNeeded'     => '加密器需要一个密钥。',
+    'noDriverRequested' => '没有指定的加密处理程序。',
+    'noHandlerAvailable' => '指定的加密处理程序 "{0}" 不可用。',
+    'unKnownHandler' => '未知的加密处理程序 "{0}"。',
+    'starterKeyNeeded' => '加密器需要一个密钥。',
     'authenticationFailed' => '解密: 认证失败。',
-    'encryptionFailed'     => '加密失败。',
+    'encryptionFailed' => '加密失败。',
 ];

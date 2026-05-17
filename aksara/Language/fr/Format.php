@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +29,7 @@ declare(strict_types=1);
 // Format language settings
 return [
     'invalidFormatter' => '"{0}" n\'est pas une classe Formatter valide.',
-    'invalidJSON'      => 'Échec de l\'analyse de la chaîne json, erreur : "{0}".',
-    'invalidMime'      => 'Aucun Formatter défini pour le type mime : "{0}".',
+    'invalidJSON' => 'Échec de l\'analyse de la chaîne json, erreur : "{0}".',
+    'invalidMime' => 'Aucun Formatter défini pour le type mime : "{0}".',
     'missingExtension' => 'L\'extension SimpleXML est nécessaire pour formater le XML.',
 ];

@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,9 +28,9 @@ declare(strict_types=1);
 
 // API language settings
 return [
-    'invalidFields'       => '유효하지 않은 필드 요청: {0}', // 'Invalid field requested: {0}'
-    'invalidIncludes'     => '유효하지 않은 항목 포함 요청: {0}', // 'Invalid include requested: {0}'
-    'missingInclude'      => '포함 메서드가 없습니다: {0}', // 'Missing include method for: {0}'
+    'invalidFields' => '유효하지 않은 필드 요청: {0}', // 'Invalid field requested: {0}'
+    'invalidIncludes' => '유효하지 않은 항목 포함 요청: {0}', // 'Invalid include requested: {0}'
+    'missingInclude' => '포함 메서드가 없습니다: {0}', // 'Missing include method for: {0}'
     'transformerNotFound' => 'Transformer 클래스 \'{0}\'를 찾을 수 없습니다.', // 'Transformer class \'{0}\' not found.'
-    'invalidTransformer'  => 'Transformer 클래스 \'{0}\'는 TransformerInterface를 구현해야 합니다.', // 'Transformer class \'{0}\' must implement TransformerInterface.'
+    'invalidTransformer' => 'Transformer 클래스 \'{0}\'는 TransformerInterface를 구현해야 합니다.', // 'Transformer class \'{0}\' must implement TransformerInterface.'
 ];

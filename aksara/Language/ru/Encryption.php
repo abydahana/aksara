@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Encryption language settings
 return [
-    'noDriverRequested'    => 'Требуется подключить драйвер шифрования.',
-    'noHandlerAvailable'   => 'Не удается найти доступный обработчик шифрования {0}.',
-    'unKnownHandler'       => 'Обработчик "{0}" не может быть настроен.',
-    'starterKeyNeeded'     => 'Для шифрования требуется указать секретный ключ',
+    'noDriverRequested' => 'Требуется подключить драйвер шифрования.',
+    'noHandlerAvailable' => 'Не удается найти доступный обработчик шифрования {0}.',
+    'unKnownHandler' => 'Обработчик "{0}" не может быть настроен.',
+    'starterKeyNeeded' => 'Для шифрования требуется указать секретный ключ',
     'authenticationFailed' => 'Ошибка: Не удалось выполнить проверку подлинности.',
-    'encryptionFailed'     => 'Сбой шифрования.',
+    'encryptionFailed' => 'Сбой шифрования.',
 ];

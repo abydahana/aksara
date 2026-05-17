@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,9 +28,9 @@ declare(strict_types=1);
 
 // Publisher language settings
 return [
-    'collision'             => '"{1}" を "{2}" にコピーする際に、Publisherが予期しない "{0}" が発生しました。', // 'Publisher encountered an unexpected "{0}" while copying "{1}" to "{2}".'
+    'collision' => '"{1}" を "{2}" にコピーする際に、Publisherが予期しない "{0}" が発生しました。', // 'Publisher encountered an unexpected "{0}" while copying "{1}" to "{2}".'
     'destinationNotAllowed' => '送信先がPublisherのディレクトリ許可リストにありません: "{0}"', // 'Destination is not on the allowed list of Publisher directories: "{0}"'
-    'fileNotAllowed'        => '"{0}" は "{1}" に対する次の制限で失敗しました: {2}', // '"{0}" fails the following restriction for "{1}": {2}'
+    'fileNotAllowed' => '"{0}" は "{1}" に対する次の制限で失敗しました: {2}', // '"{0}" fails the following restriction for "{1}": {2}'
 
     // Publish Command
     'publishMissing' => 'すべての名前空間において、{0} の中にPublisherクラスは検出されませんでした。', // 'No Publisher classes detected in {0} across all namespaces.'

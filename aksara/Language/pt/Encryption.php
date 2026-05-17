@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Encryption language settings
 return [
-    'noDriverRequested'    => 'Nenhum driver solicitado; Miss Daisy vai ficar tão chateada!',
-    'noHandlerAvailable'   => 'Não foi possível encontrar um manipulador de criptografia {0} disponível.',
-    'unKnownHandler'       => '"{0}" não pode ser configurado.',
-    'starterKeyNeeded'     => 'A biblioteca de encriptação precisa de uma chave inicial.',
+    'noDriverRequested' => 'Nenhum driver solicitado; Miss Daisy vai ficar tão chateada!',
+    'noHandlerAvailable' => 'Não foi possível encontrar um manipulador de criptografia {0} disponível.',
+    'unKnownHandler' => '"{0}" não pode ser configurado.',
+    'starterKeyNeeded' => 'A biblioteca de encriptação precisa de uma chave inicial.',
     'authenticationFailed' => 'Descriptografando: autenticação falhou.',
-    'encryptionFailed'     => 'Encriptação falhou.',
+    'encryptionFailed' => 'Encriptação falhou.',
 ];

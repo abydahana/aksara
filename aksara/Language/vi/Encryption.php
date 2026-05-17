@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Encryption language settings
 return [
-    'noDriverRequested'    => 'Không tìm thấy ổ đĩa yêu cầu.',
-    'noHandlerAvailable'   => 'Không tìm thấy trình xử lý mã hóa {0} nào.',
-    'unKnownHandler'       => 'Không thể cấu hình "{0}".',
-    'starterKeyNeeded'     => 'Bộ mã hóa cần một khóa khởi động.',
+    'noDriverRequested' => 'Không tìm thấy ổ đĩa yêu cầu.',
+    'noHandlerAvailable' => 'Không tìm thấy trình xử lý mã hóa {0} nào.',
+    'unKnownHandler' => 'Không thể cấu hình "{0}".',
+    'starterKeyNeeded' => 'Bộ mã hóa cần một khóa khởi động.',
     'authenticationFailed' => 'Giải mã: Xác thực thất bại.',
-    'encryptionFailed'     => 'Mã hóa thất bại.',
+    'encryptionFailed' => 'Mã hóa thất bại.',
 ];

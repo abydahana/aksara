@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // Session language settings
 return [
-    'missingDatabaseTable'   => '`sessionSavePath` debe tener un nombre de tabla para que funcione el manejador de sesión de la base de datos.',
-    'invalidSavePath'        => 'Sesión: La ruta de guardado configurada "{0}" no es un directorio, no existe o no puede ser creada.',
+    'missingDatabaseTable' => '`sessionSavePath` debe tener un nombre de tabla para que funcione el manejador de sesión de la base de datos.',
+    'invalidSavePath' => 'Sesión: La ruta de guardado configurada "{0}" no es un directorio, no existe o no puede ser creada.',
     'writeProtectedSavePath' => 'Sesión: La ruta de guardado configurada "{0}" no es escribible por el proceso de PHP.',
-    'emptySavePath'          => 'Sesión: No se ha configurado una ruta de guardado.',
-    'invalidSavePathFormat'  => 'Sesión: Formato de ruta de guardado de Redis no válido: {0}',
+    'emptySavePath' => 'Sesión: No se ha configurado una ruta de guardado.',
+    'invalidSavePathFormat' => 'Sesión: Formato de ruta de guardado de Redis no válido: {0}',
 
     // @deprecated
     'invalidSameSiteSetting' => 'Sesión: La configuración de SameSite debe ser None, Lax, Strict o una cadena en blanco. Dado: {0}', // 'Session: The SameSite setting must be None, Lax, Strict, or a blank string. Given: {0}',

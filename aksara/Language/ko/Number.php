@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -17,12 +32,12 @@ return [
     'gigabyteAbbr' => 'GB', // 'GB'
     'megabyteAbbr' => 'MB', // 'MB'
     'kilobyteAbbr' => 'KB', // 'KB'
-    'bytes'        => 'Bytes', // 'Bytes'
+    'bytes' => 'Bytes', // 'Bytes'
 
     // don't forget the space in front of these!
-    'thousand'    => ' 천', // ' thousand'
-    'million'     => ' 백만', // ' million'
-    'billion'     => ' 십억', // ' billion'
-    'trillion'    => ' 조', // ' trillion'
+    'thousand' => ' 천', // ' thousand'
+    'million' => ' 백만', // ' million'
+    'billion' => ' 십억', // ' billion'
+    'trillion' => ' 조', // ' trillion'
     'quadrillion' => ' 천조', // ' quadrillion'
 ];

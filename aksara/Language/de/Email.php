@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,27 +28,27 @@ declare(strict_types=1);
 
 // Email language settings
 return [
-    'mustBeArray'           => 'Der E-Mail-Validierungsmethode muss ein Array übergeben werden.',
-    'invalidAddress'        => 'Ungültige E-Mailadresse: {0}',
-    'attachmentMissing'     => 'Der folgende E-Mail-Anhang konnte nicht gefunden werden: {0}',
-    'attachmentUnreadable'  => 'Fehler beim Öffnen des Anhangs: {0}',
-    'noFrom'                => 'E-Mails ohne "From"-Header können nicht gesendet werden.',
-    'noRecipients'          => 'Kein Empfänger gesetzt. Ein Wert für To, Cc oder Bcc ist erforderlich.',
-    'sendFailurePHPMail'    => 'E-Mailversand mit PHP mail() fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
-    'sendFailureSendmail'   => 'E-Mailversand mit PHP Sendmail fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
-    'sendFailureSmtp'       => 'E-Mailversand mit PHP SMTP fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
-    'sent'                  => 'Die Nachricht wurde erfolgreich mit folgendem Protokoll gesendet: {0}',
-    'noSocket'              => 'Der socket für Sendmail konnte nicht geöffnet werden. Bitte Einstellungen prüfen.',
-    'noHostname'            => 'Der SMTP-Hostname wurde nicht definiert.',
-    'SMTPError'             => 'Folgender SMTP-Fehler ist aufgetreten: {0}',
-    'noSMTPAuth'            => 'Fehler: Es muss ein SMTP Benutzername und Passwort angegeben werden.',
+    'mustBeArray' => 'Der E-Mail-Validierungsmethode muss ein Array übergeben werden.',
+    'invalidAddress' => 'Ungültige E-Mailadresse: {0}',
+    'attachmentMissing' => 'Der folgende E-Mail-Anhang konnte nicht gefunden werden: {0}',
+    'attachmentUnreadable' => 'Fehler beim Öffnen des Anhangs: {0}',
+    'noFrom' => 'E-Mails ohne "From"-Header können nicht gesendet werden.',
+    'noRecipients' => 'Kein Empfänger gesetzt. Ein Wert für To, Cc oder Bcc ist erforderlich.',
+    'sendFailurePHPMail' => 'E-Mailversand mit PHP mail() fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
+    'sendFailureSendmail' => 'E-Mailversand mit PHP Sendmail fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
+    'sendFailureSmtp' => 'E-Mailversand mit PHP SMTP fehlgeschlagen. Möglicherweise ist der Server nicht so konfiguriert, dass er E-Mails mit dieser Methode senden kann.',
+    'sent' => 'Die Nachricht wurde erfolgreich mit folgendem Protokoll gesendet: {0}',
+    'noSocket' => 'Der socket für Sendmail konnte nicht geöffnet werden. Bitte Einstellungen prüfen.',
+    'noHostname' => 'Der SMTP-Hostname wurde nicht definiert.',
+    'SMTPError' => 'Folgender SMTP-Fehler ist aufgetreten: {0}',
+    'noSMTPAuth' => 'Fehler: Es muss ein SMTP Benutzername und Passwort angegeben werden.',
     'invalidSMTPAuthMethod' => 'Fehler: Die SMTP-Authentifizierungsmethode "{0}" wird in CodeIgniter nicht unterstützt. Wählen Sie entweder die Authentifizierungsmethode "login" oder "plain".',
     'failureSMTPAuthMethod' => 'Der AUTH-Befehl kann nicht ausgeführt werden. Ihr Server ist möglicherweise nicht für die Verwendung der Authentifizierungsmethode AUTH {0} konfiguriert.',
-    'SMTPAuthCredentials'   => 'Die Authentifizierung der Benutzerdaten ist fehlgeschlagen. Fehler: {0}',
-    'SMTPAuthUsername'      => 'Der Benutzername konnte nicht authentifiziert werden. Fehler: {0}',
-    'SMTPAuthPassword'      => 'Das Passwort konnte nicht authentifiziert werden. Fehler: {0}',
-    'SMTPDataFailure'       => 'Daten können nicht gesendet werden: {0}',
-    'exitStatus'            => 'Exit Status Code: {0}',
+    'SMTPAuthCredentials' => 'Die Authentifizierung der Benutzerdaten ist fehlgeschlagen. Fehler: {0}',
+    'SMTPAuthUsername' => 'Der Benutzername konnte nicht authentifiziert werden. Fehler: {0}',
+    'SMTPAuthPassword' => 'Das Passwort konnte nicht authentifiziert werden. Fehler: {0}',
+    'SMTPDataFailure' => 'Daten können nicht gesendet werden: {0}',
+    'exitStatus' => 'Exit Status Code: {0}',
     // @deprecated
     'failedSMTPLogin' => 'Das AUTH LOGIN konnte nicht gesendet werden. Fehler: {0}',
 ];

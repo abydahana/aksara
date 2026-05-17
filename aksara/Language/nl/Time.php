@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,23 +28,23 @@ declare(strict_types=1);
 
 // Time language settings
 return [
-    'invalidFormat'  => '"{0}" is een ongeldig datetime formaat',
-    'invalidMonth'   => 'Maand moet vallen tussen 1 en 12. Opgegeven: {0}',
-    'invalidDay'     => 'Dag moet vallen tussen 1 end 31. Opgegeven: {0}',
+    'invalidFormat' => '"{0}" is een ongeldig datetime formaat',
+    'invalidMonth' => 'Maand moet vallen tussen 1 en 12. Opgegeven: {0}',
+    'invalidDay' => 'Dag moet vallen tussen 1 end 31. Opgegeven: {0}',
     'invalidOverDay' => 'Dag moet vallen tussen 1 end {0}. Opgegeven: {1}',
-    'invalidHours'   => 'Uur moet vallen tussen 0 end 23. Opgegeven: {0}',
+    'invalidHours' => 'Uur moet vallen tussen 0 end 23. Opgegeven: {0}',
     'invalidMinutes' => 'Minuten moet vallen tussen 0 end 59. Opgegeven: {0}',
     'invalidSeconds' => 'Seconden moet vallen tussen 0 end 59. Opgegeven: {0}',
-    'years'          => '{0, plural, =1{# jaar} other{# jaren}}',
-    'months'         => '{0, plural, =1{# maand} other{# maanden}}',
-    'weeks'          => '{0, plural, =1{# week} other{# weken}}',
-    'days'           => '{0, plural, =1{# dag} other{# dagen}}',
-    'hours'          => '{0, plural, =1{# uur} other{# uren}}',
-    'minutes'        => '{0, plural, =1{# minuut} other{# minuten}}',
-    'seconds'        => '{0, plural, =1{# seconde} other{# seconden}}',
-    'ago'            => '{0} geleden',
-    'inFuture'       => 'binnen {0}',
-    'yesterday'      => 'Gisteren',
-    'tomorrow'       => 'Morgen',
-    'now'            => 'Zonet',
+    'years' => '{0, plural, =1{# jaar} other{# jaren}}',
+    'months' => '{0, plural, =1{# maand} other{# maanden}}',
+    'weeks' => '{0, plural, =1{# week} other{# weken}}',
+    'days' => '{0, plural, =1{# dag} other{# dagen}}',
+    'hours' => '{0, plural, =1{# uur} other{# uren}}',
+    'minutes' => '{0, plural, =1{# minuut} other{# minuten}}',
+    'seconds' => '{0, plural, =1{# seconde} other{# seconden}}',
+    'ago' => '{0} geleden',
+    'inFuture' => 'binnen {0}',
+    'yesterday' => 'Gisteren',
+    'tomorrow' => 'Morgen',
+    'now' => 'Zonet',
 ];

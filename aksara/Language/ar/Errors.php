@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Errors language settings
 return [
-    'pageNotFound'    => '404 - الصفحة غير موجودة',
+    'pageNotFound' => '404 - الصفحة غير موجودة',
     'sorryCannotFind' => 'عذراً! يبدو أننا غير قادرين على العثور على الصفحة التي تبحث عنها.',
-    'badRequest'      => '400 - طلب غير صالح',
+    'badRequest' => '400 - طلب غير صالح',
     'sorryBadRequest' => 'عذراً! هناك خطأ ما في طلبك.',
-    'whoops'          => 'عفواً!',
-    'weHitASnag'      => 'يبدو أننا واجهنا مشكلة. يرجى المحاولة مرة أخرى لاحقاً...',
+    'whoops' => 'عفواً!',
+    'weHitASnag' => 'يبدو أننا واجهنا مشكلة. يرجى المحاولة مرة أخرى لاحقاً...',
 ];

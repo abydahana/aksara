@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +29,7 @@ declare(strict_types=1);
 // Security language settings
 return [
     'disallowedAction' => 'Запрошенное вами действие не разрешено.',
-    'insecureCookie'   => 'Попытка отправить защищенный файл cookie через незащищенное соединение.',
+    'insecureCookie' => 'Попытка отправить защищенный файл cookie через незащищенное соединение.',
 
     // @deprecated
     'invalidSameSite' => 'Значение SameSite должно быть None, Lax, Strict или пустая строка. Дано: "{0}"',

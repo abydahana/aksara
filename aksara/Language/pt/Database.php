@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,21 +28,21 @@ declare(strict_types=1);
 
 // Database language settings
 return [
-    'invalidEvent'                     => '{0} não é um Model Event callback.',
-    'invalidArgument'                  => 'Você deve fornecer um {0} válido.',
-    'invalidAllowedFields'             => 'Os campos permitidos devem ser especificados para o model: {0}',
-    'emptyDataset'                     => 'Não há dados para {0}.',
-    'emptyPrimaryKey'                  => 'Não há chave primária defenida ao tentar criar {0}.',
-    'failGetFieldData'                 => 'Não foi possível receber informação da base de dados.',
-    'failGetIndexData'                 => 'Não foi possível receber o index da base de dados.',
-    'failGetForeignKeyData'            => 'Não foi possível receber a Chave Forasteira da base de dados.',
-    'parseStringFail'                  => 'Análise da chave string falhou.',
-    'featureUnavailable'               => 'Esta funcionalidade não se encontra disponível na base de dados selecionada.',
-    'tableNotFound'                    => 'A tabela `{0}` não foi encontrada na base de dados selecionada.',
-    'noPrimaryKey'                     => 'Classe model `{0}` não especifica uma Chave Primária.',
-    'noDateFormat'                     => 'Classe model `{0}` não tem uma data válida.',
-    'fieldNotExists'                   => 'Campo `{0}` não encontrado.',
-    'forEmptyInputGiven'               => 'Declaração vazia passada para o campo `{0}`',
+    'invalidEvent' => '{0} não é um Model Event callback.',
+    'invalidArgument' => 'Você deve fornecer um {0} válido.',
+    'invalidAllowedFields' => 'Os campos permitidos devem ser especificados para o model: {0}',
+    'emptyDataset' => 'Não há dados para {0}.',
+    'emptyPrimaryKey' => 'Não há chave primária defenida ao tentar criar {0}.',
+    'failGetFieldData' => 'Não foi possível receber informação da base de dados.',
+    'failGetIndexData' => 'Não foi possível receber o index da base de dados.',
+    'failGetForeignKeyData' => 'Não foi possível receber a Chave Forasteira da base de dados.',
+    'parseStringFail' => 'Análise da chave string falhou.',
+    'featureUnavailable' => 'Esta funcionalidade não se encontra disponível na base de dados selecionada.',
+    'tableNotFound' => 'A tabela `{0}` não foi encontrada na base de dados selecionada.',
+    'noPrimaryKey' => 'Classe model `{0}` não especifica uma Chave Primária.',
+    'noDateFormat' => 'Classe model `{0}` não tem uma data válida.',
+    'fieldNotExists' => 'Campo `{0}` não encontrado.',
+    'forEmptyInputGiven' => 'Declaração vazia passada para o campo `{0}`',
     'forFindColumnHaveMultipleColumns' => 'Apenas uma coluna é permitida no nome da coluna.',
-    'methodNotAvailable'               => 'Não podes usar "{1}" no "{0}". Isto é um metodo da classe do Query Builder.',
+    'methodNotAvailable' => 'Não podes usar "{1}" no "{0}". Isto é um metodo da classe do Query Builder.',
 ];

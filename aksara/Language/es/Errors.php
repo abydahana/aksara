@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // Errors language settings
 return [
-    'pageNotFound'    => '404 Pagina no encontrada', // '404 - Page Not Found',
+    'pageNotFound' => '404 Pagina no encontrada', // '404 - Page Not Found',
     'sorryCannotFind' => '¡Lo siento! Parece que no puedo encontrar la página que estabas buscando.', // 'Sorry! Cannot seem to find the page you were looking for.',
-    'badRequest'      => '400 - Solicitud incorrecta', // '400 - Bad Request',
+    'badRequest' => '400 - Solicitud incorrecta', // '400 - Bad Request',
     'sorryBadRequest' => '¡Lo siento!, algo no está bien con tu solicitud.', // 'Sorry! Something is wrong with your request.',
-    'whoops'          => '¡Vaya!', // 'Whoops!',
-    'weHitASnag'      => 'Parece que nos hemos topado con un problema. Por favor, inténtelo de nuevo más tarde...', // 'We seem to have hit a snag. Please try again later...',
+    'whoops' => '¡Vaya!', // 'Whoops!',
+    'weHitASnag' => 'Parece que nos hemos topado con un problema. Por favor, inténtelo de nuevo más tarde...', // 'We seem to have hit a snag. Please try again later...',
 ];

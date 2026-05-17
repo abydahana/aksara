@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,48 +29,48 @@ declare(strict_types=1);
 // Migration language settings
 return [
     // Migration Runner
-    'missingTable'  => 'Должна быть установлена таблица миграций.',
-    'disabled'      => 'Миграции были загружены, но отключены или неправильно настроены.',
-    'notFound'      => 'Файл миграции не найден: ',
+    'missingTable' => 'Должна быть установлена таблица миграций.',
+    'disabled' => 'Миграции были загружены, но отключены или неправильно настроены.',
+    'notFound' => 'Файл миграции не найден: ',
     'batchNotFound' => 'Целевой пакет не найден: ',
-    'empty'         => 'Не найдены файлы миграции.',
-    'gap'           => 'Существует разрыв в последовательности миграции рядом с номером версии: ',
+    'empty' => 'Не найдены файлы миграции.',
+    'gap' => 'Существует разрыв в последовательности миграции рядом с номером версии: ',
     'classNotFound' => 'Не удалось найти класс миграции "%s".',
     'missingMethod' => 'В классе миграции отсутствует метод "%s".',
-    'locked'        => 'Миграции уже запущенны в другом процессе. Пропущено.',
+    'locked' => 'Миграции уже запущенны в другом процессе. Пропущено.',
 
     // Migration Command
-    'migHelpLatest'   => "\t\tПереносит базу данных на последнюю доступную миграцию.",
-    'migHelpCurrent'  => "\t\tПереносит базу данных в версию, установленную как 'текущая' в конфигурации.",
-    'migHelpVersion'  => "\tПеренос базы данных в версию {v}.",
+    'migHelpLatest' => "\t\tПереносит базу данных на последнюю доступную миграцию.",
+    'migHelpCurrent' => "\t\tПереносит базу данных в версию, установленную как 'текущая' в конфигурации.",
+    'migHelpVersion' => "\tПеренос базы данных в версию {v}.",
     'migHelpRollback' => "\tЗапускает все миграции 'вниз' до версии 0.",
-    'migHelpRefresh'  => "\t\tУдаляет и повторно запускает все миграции для обновления базы данных.",
-    'migHelpSeed'     => "\tРаботает SEEDER имени [name].",
-    'migCreate'       => "\tСоздает новую миграцию с именем [name].",
-    'nameMigration'   => 'Имя файла миграции',
-    'migNumberError'  => 'Номер миграции должен состоять из трех цифр, и в нем не должно быть пробелов.',
+    'migHelpRefresh' => "\t\tУдаляет и повторно запускает все миграции для обновления базы данных.",
+    'migHelpSeed' => "\tРаботает SEEDER имени [name].",
+    'migCreate' => "\tСоздает новую миграцию с именем [name].",
+    'nameMigration' => 'Имя файла миграции',
+    'migNumberError' => 'Номер миграции должен состоять из трех цифр, и в нем не должно быть пробелов.',
     'rollBackConfirm' => 'Вы уверены, что хотите откатиться назад?',
-    'refreshConfirm'  => 'Вы уверены, что хотите обновить?',
+    'refreshConfirm' => 'Вы уверены, что хотите обновить?',
 
-    'latest'            => 'Запуск всех новых миграций...',
-    'generalFault'      => 'Миграция не удалась !',
-    'migrated'          => 'Миграция завершена.',
+    'latest' => 'Запуск всех новых миграций...',
+    'generalFault' => 'Миграция не удалась !',
+    'migrated' => 'Миграция завершена.',
     'migInvalidVersion' => 'Указан неверный номер версии.',
-    'toVersionPH'       => 'Переход к версии %s...',
-    'toVersion'         => 'Переход к текущей версии...',
-    'rollingBack'       => 'Откат миграции в: ',
-    'noneFound'         => 'Миграций не обнаружено.',
-    'migSeeder'         => 'Имя SEEDER`a',
-    'migMissingSeeder'  => 'Необходимо указать имя для SEEDER`a.',
-    'nameSeeder'        => 'Имя файла SEEDER`a',
-    'removed'           => 'Откат: ',
-    'added'             => 'Запуск: ',
+    'toVersionPH' => 'Переход к версии %s...',
+    'toVersion' => 'Переход к текущей версии...',
+    'rollingBack' => 'Откат миграции в: ',
+    'noneFound' => 'Миграций не обнаружено.',
+    'migSeeder' => 'Имя SEEDER`a',
+    'migMissingSeeder' => 'Необходимо указать имя для SEEDER`a.',
+    'nameSeeder' => 'Имя файла SEEDER`a',
+    'removed' => 'Откат: ',
+    'added' => 'Запуск: ',
 
     // Migrate Status
     'namespace' => 'Пространство имён',
-    'filename'  => 'Имя файла',
-    'version'   => 'Версия',
-    'group'     => 'Группа',
-    'on'        => 'Миграция на: ',
-    'batch'     => 'Пакет',
+    'filename' => 'Имя файла',
+    'version' => 'Версия',
+    'group' => 'Группа',
+    'on' => 'Миграция на: ',
+    'batch' => 'Пакет',
 ];

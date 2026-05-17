@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +28,11 @@ declare(strict_types=1);
 
 // View language settings
 return [
-    'invalidCellMethod'     => '{class}::{method} n\'est pas une méthode valide.',
+    'invalidCellMethod' => '{class}::{method} n\'est pas une méthode valide.',
     'missingCellParameters' => '{class}::{method} n\'a pas de paramètres.',
-    'invalidCellParameter'  => '"{0}" n\'est pas un nom de paramètre valide.',
-    'noCellClass'           => 'Aucune classe de vue de cellule fournie.',
-    'invalidCellClass'      => 'Impossible de localiser la classe de vue de cellule: "{0}".',
-    'tagSyntaxError'        => 'Vous avez une erreur de syntaxe dans vos balises de parseur: "{0}"',
+    'invalidCellParameter' => '"{0}" n\'est pas un nom de paramètre valide.',
+    'noCellClass' => 'Aucune classe de vue de cellule fournie.',
+    'invalidCellClass' => 'Impossible de localiser la classe de vue de cellule: "{0}".',
+    'tagSyntaxError' => 'Vous avez une erreur de syntaxe dans vos balises de parseur: "{0}"',
     'invalidDecoratorClass' => '"{0}" n\'est pas un décorateur de vue valide.',
 ];

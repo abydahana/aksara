@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +29,10 @@ declare(strict_types=1);
 // Encryption language settings
 return [
     // ダジャレは翻訳しません → Miss Daisy will be so upset!
-    'noDriverRequested'    => 'ドライバは不要です。', // 'No driver requested; Miss Daisy will be so upset!'
-    'noHandlerAvailable'   => '利用可能な "{0}" 暗号化ハンドラが見つかりません。', // 'Unable to find an available "{0}" encryption handler.'
-    'unKnownHandler'       => '"{0}" は設定できません。', // '"{0}" cannot be configured.'
-    'starterKeyNeeded'     => '暗号化にはスターターキーが必要です。', // 'Encrypter needs a starter key.'
+    'noDriverRequested' => 'ドライバは不要です。', // 'No driver requested; Miss Daisy will be so upset!'
+    'noHandlerAvailable' => '利用可能な "{0}" 暗号化ハンドラが見つかりません。', // 'Unable to find an available "{0}" encryption handler.'
+    'unKnownHandler' => '"{0}" は設定できません。', // '"{0}" cannot be configured.'
+    'starterKeyNeeded' => '暗号化にはスターターキーが必要です。', // 'Encrypter needs a starter key.'
     'authenticationFailed' => '復号化: 認証に失敗しました。', // 'Decrypting: authentication failed.'
-    'encryptionFailed'     => '暗号化に失敗しました。', // 'Encryption failed.'
+    'encryptionFailed' => '暗号化に失敗しました。', // 'Encryption failed.'
 ];

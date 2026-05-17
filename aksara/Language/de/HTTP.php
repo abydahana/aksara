@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -14,15 +29,15 @@ declare(strict_types=1);
 // HTTP language settings
 return [
     // CurlRequest
-    'missingCurl'     => 'CURL muss aktiviert sein, um die CURLRequest Klasse zu nutzen.',
-    'invalidSSLKey'   => 'Kann SSL-Schlüssel nicht setzen. {0} ist kein gültiger Dateiname.',
+    'missingCurl' => 'CURL muss aktiviert sein, um die CURLRequest Klasse zu nutzen.',
+    'invalidSSLKey' => 'Kann SSL-Schlüssel nicht setzen. {0} ist kein gültiger Dateiname.',
     'sslCertNotFound' => 'SSL-Zertifikat nicht gefunden unter: {0}',
-    'curlError'       => '{0} : {1}',
+    'curlError' => '{0} : {1}',
 
     // IncomingRequest
     'invalidNegotiationType' => '{0} ist kein gültiger Inhaltstyp. Gültige Typen: media, charset, encoding, language.',
-    'invalidJSON'            => 'JSON-String konnte nicht geparst werden. Fehler: {0}',
-    'unsupportedJSONFormat'  => 'Das angegebene JSON-Format wird nicht unterstützt.',
+    'invalidJSON' => 'JSON-String konnte nicht geparst werden. Fehler: {0}',
+    'unsupportedJSONFormat' => 'Das angegebene JSON-Format wird nicht unterstützt.',
 
     // Message
     'invalidHTTPProtocol' => 'Ungültige HTTP Protokoll-Version: {0}',
@@ -34,28 +49,28 @@ return [
     'invalidRoute' => 'Die Route {0} konnte nicht gefunden werden.',
 
     // DownloadResponse
-    'cannotSetBinary'        => 'Fehler beim Download. Filepath kann nicht auf Binär gesetzt werden.',
-    'cannotSetFilepath'      => 'Fehler beim Binär-Download. Kann filepath nicht setzen: {0}',
+    'cannotSetBinary' => 'Fehler beim Download. Filepath kann nicht auf Binär gesetzt werden.',
+    'cannotSetFilepath' => 'Fehler beim Binär-Download. Kann filepath nicht setzen: {0}',
     'notFoundDownloadSource' => 'Fehler beim Herunterladen der Datei.',
-    'cannotSetCache'         => 'Download-Caching wird nicht unterstützt.',
-    'cannotSetStatusCode'    => 'Fehler beim Download. Status-Code konnte nicht gesetzt werden. Code: {0}, Grund: {1}',
+    'cannotSetCache' => 'Download-Caching wird nicht unterstützt.',
+    'cannotSetStatusCode' => 'Fehler beim Download. Status-Code konnte nicht gesetzt werden. Code: {0}, Grund: {1}',
 
     // Response
     'missingResponseStatus' => 'Die HTTP Response enthält keinen Statuscode',
-    'invalidStatusCode'     => '{0} ist ein ungültiger HTTP-Statuscode',
-    'unknownStatusCode'     => 'Unbekannter HTTP-Statuscode ohne Statusnachricht übergeben: {0}',
+    'invalidStatusCode' => '{0} ist ein ungültiger HTTP-Statuscode',
+    'unknownStatusCode' => 'Unbekannter HTTP-Statuscode ohne Statusnachricht übergeben: {0}',
 
     // URI
-    'cannotParseURI'       => 'URI kann nicht geparst werden: {0}',
-    'segmentOutOfRange'    => 'URI-Segment des Requests ausserhalb des gültigen Bereichs: {0}',
-    'invalidPort'          => 'Ports müssen zwischen 0 und 65535 liegen. Gegeben: {0}',
+    'cannotParseURI' => 'URI kann nicht geparst werden: {0}',
+    'segmentOutOfRange' => 'URI-Segment des Requests ausserhalb des gültigen Bereichs: {0}',
+    'invalidPort' => 'Ports müssen zwischen 0 und 65535 liegen. Gegeben: {0}',
     'malformedQueryString' => 'Query-Strings dürfen keine URI-Fragmente enthalten.',
 
     // Page Not Found
-    'pageNotFound'       => 'Seite nicht gefunden.',
-    'emptyController'    => 'Kein Controller angegeben.',
+    'pageNotFound' => 'Seite nicht gefunden.',
+    'emptyController' => 'Kein Controller angegeben.',
     'controllerNotFound' => 'Der Controller oder seine Methode wurde nicht gefunden: {0}::{1}',
-    'methodNotFound'     => 'Die Controllermethode wurde nicht gefunden: {0}',
+    'methodNotFound' => 'Die Controllermethode wurde nicht gefunden: {0}',
     'localeNotSupported' => 'Nicht unterstützte Sprache: {0}',
 
     // CSRF
@@ -64,18 +79,18 @@ return [
 
     // Uploaded file moving
     'alreadyMoved' => 'Die hochgeladene Datei wurde bereits verschoben.',
-    'invalidFile'  => 'Die Originaldatei ist keine gültige Datei.',
-    'moveFailed'   => 'Die Datei konnte nicht von {0} nach {1} verschoben werden ({2}).',
+    'invalidFile' => 'Die Originaldatei ist keine gültige Datei.',
+    'moveFailed' => 'Die Datei konnte nicht von {0} nach {1} verschoben werden ({2}).',
 
-    'uploadErrOk'        => 'Die Datei wurde erfolgreich hochgeladen.',
-    'uploadErrIniSize'   => 'Die Datei "%s" überschreitet die upload_max_filesize ini Direktive.',
-    'uploadErrFormSize'  => 'Die Datei "%s" ist grösser als die im Formular definierte Begrenzung.',
-    'uploadErrPartial'   => 'Die Datei "%s" wurde nur teilweise hochgeladen.',
-    'uploadErrNoFile'    => 'Es wurde keine Datei hochgeladen',
+    'uploadErrOk' => 'Die Datei wurde erfolgreich hochgeladen.',
+    'uploadErrIniSize' => 'Die Datei "%s" überschreitet die upload_max_filesize ini Direktive.',
+    'uploadErrFormSize' => 'Die Datei "%s" ist grösser als die im Formular definierte Begrenzung.',
+    'uploadErrPartial' => 'Die Datei "%s" wurde nur teilweise hochgeladen.',
+    'uploadErrNoFile' => 'Es wurde keine Datei hochgeladen',
     'uploadErrCantWrite' => 'Die Datei "%s" konnte nicht gespeichert werden.',
-    'uploadErrNoTmpDir'  => 'Fehler beim Hochladen: Temporäres Verzeichnis fehlt.',
+    'uploadErrNoTmpDir' => 'Fehler beim Hochladen: Temporäres Verzeichnis fehlt.',
     'uploadErrExtension' => 'Der Datei-Upload wurde von einer PHP-Erweiterung gestoppt.',
-    'uploadErrUnknown'   => 'Die Datei "%s" konnte wegen eines unbekannten Fehlers nicht hochgeladen werden.',
+    'uploadErrUnknown' => 'Die Datei "%s" konnte wegen eines unbekannten Fehlers nicht hochgeladen werden.',
 
     // SameSite setting
     // @deprecated

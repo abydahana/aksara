@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
 declare(strict_types=1);
 
 /**
@@ -13,10 +28,10 @@ declare(strict_types=1);
 
 // View language settings
 return [
-    'invalidCellMethod'     => '{class}::{method} 不是有效的方法。',
+    'invalidCellMethod' => '{class}::{method} 不是有效的方法。',
     'missingCellParameters' => '{class}::{method} 沒有參數。',
-    'invalidCellParameter'  => '{0} 不是有效的參數名稱。',
-    'noCellClass'           => '沒有提供視圖元件類別。',
-    'invalidCellClass'      => '無法找到視圖元件類別： {0}.',
-    'tagSyntaxError'        => '您的解析器標籤（Parser tags）中存在著語法錯誤： {0}',
+    'invalidCellParameter' => '{0} 不是有效的參數名稱。',
+    'noCellClass' => '沒有提供視圖元件類別。',
+    'invalidCellClass' => '無法找到視圖元件類別： {0}.',
+    'tagSyntaxError' => '您的解析器標籤（Parser tags）中存在著語法錯誤： {0}',
 ];
