@@ -164,6 +164,5 @@ return [
     'Subscribe to my channel' => 'チャンネル登録',
     'Be my friend' => '友達になる',
     'Follow my GitHub' => 'GitHub をフォロー',
-    'Import sample data' => 'サンプルデータを含めてインストール',
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'サンプルデータを含めてインストール'
 ];

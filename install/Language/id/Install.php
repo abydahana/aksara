@@ -201,8 +201,5 @@ return [
     'Subscribe to my channel' => 'Berlangganan saluran YouTube',
     'Be my friend' => 'Jalin silaturahmi',
     'Follow my GitHub' => 'Ikuti pembaruan GitHub',
-    'Import sample data' => 'Sertakan data contoh',
-
-    // Additional phrases
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'Sertakan data contoh'
 ];

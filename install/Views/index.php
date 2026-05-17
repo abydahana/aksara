@@ -145,7 +145,7 @@
                                                 <div class="col-5">
                                                     <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>">
                                                         <option value="en"<?= ($language == 'en' ? ' selected' : null); ?>>English</option>
-                                                        <option value="en-pir"<?= ($language == 'en-pir' ? ' selected' : null); ?>>English (Pirate)</option>
+                                                        <option value="en-PIR"<?= ($language == 'en-PIR' ? ' selected' : null); ?>>English (Pirate)</option>
                                                         <option value="id"<?= ($language == 'id' ? ' selected' : null); ?>>Indonesia</option>
                                                         <option value="es"<?= ($language == 'es' ? ' selected' : null); ?>>Español</option>
                                                         <option value="pt"<?= ($language == 'pt' ? ' selected' : null); ?>>Português</option>
@@ -153,7 +153,8 @@
                                                         <option value="de"<?= ($language == 'de' ? ' selected' : null); ?>>Deutsch</option>
                                                         <option value="nl"<?= ($language == 'nl' ? ' selected' : null); ?>>Nederlands</option>
                                                         <option value="ru"<?= ($language == 'ru' ? ' selected' : null); ?>>Русский</option>
-                                                        <option value="zh"<?= ($language == 'zh' ? ' selected' : null); ?>>中文</option>
+                                                        <option value="zh-CN"<?= ($language == 'zh-CN' ? ' selected' : null); ?>>简体中文</option>
+                                                        <option value="zh-TW"<?= ($language == 'zh-TW' ? ' selected' : null); ?>>繁體中文</option>
                                                         <option value="ar"<?= ($language == 'ar' ? ' selected' : null); ?>>العربية</option>
                                                         <option value="ja"<?= ($language == 'ja' ? ' selected' : null); ?>>日本語</option>
                                                         <option value="ko"<?= ($language == 'ko' ? ' selected' : null); ?>>한국어</option>

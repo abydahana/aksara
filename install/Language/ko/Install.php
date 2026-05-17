@@ -164,6 +164,5 @@ return [
     'Subscribe to my channel' => '채널 구독',
     'Be my friend' => '친구 되기',
     'Follow my GitHub' => 'GitHub 팔로우',
-    'Import sample data' => '샘플 데이터와 함께 설치',
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => '샘플 데이터와 함께 설치'
 ];

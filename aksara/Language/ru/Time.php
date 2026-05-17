@@ -1,38 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
-// Настройки языка Time
+// Time language settings
 return [
-    'invalidMonth' => 'Месяц должен быть от 1 до 12. Предоставлено: {0}',
-    'invalidDay' => 'День должен быть от 1 до 31. Предоставлено: {0}',
-    'invalidOverDay' => 'День должен быть от 1 до {0}. Предоставлено: {1}',
-    'invalidHours' => 'Часы должны быть от 0 до 23. Предоставлено: {0}',
-    'invalidMinutes' => 'Минуты должны быть от 0 до 59. Предоставлено: {0}',
-    'invalidSeconds' => 'Секунды должны быть от 0 до 59. Предоставлено: {0}',
-    'years' => '{0, plural, =1{# год} other{# года}}',
-    'months' => '{0, plural, =1{# месяц} other{# месяцев}}',
-    'weeks' => '{0, plural, =1{# неделя} other{# недель}}',
-    'days' => '{0, plural, =1{# день} other{# дней}}',
-    'hours' => '{0, plural, =1{# час} other{# часов}}',
-    'minutes' => '{0, plural, =1{# минута} other{# минут}}',
-    'seconds' => '{0, plural, =1{# секунда} other{# секунд}}',
-    'ago' => '{0} назад',
-    'inFuture' => 'через {0}',
-    'yesterday' => 'Вчера',
-    'tomorrow' => 'Завтра',
-    'now' => 'Прямо сейчас',
+    'invalidFormat'  => '"{0}" неверный формат часового пояса',
+    'invalidMonth'   => 'Должен быть указан месяц между 1 и 12. Указано: {0}',
+    'invalidDay'     => 'Должен быть указан день между 1 и 31. Указано: {0}',
+    'invalidOverDay' => 'Дни должны быть от 1 до {0}. Указано: {1}.',
+    'invalidHours'   => 'Часы должны быть указаны между 0 и 23. Указано: {0}.',
+    'invalidMinutes' => 'Минуты должны быть указаны между 0 и 59. Указано: {0}.',
+    'invalidSeconds' => 'Секунды должны быть указаны между 0 и 59. Указано: {0}.',
+    'years'          => '{0, plural, =1{# год} other{# лет}}',
+    'months'         => '{0, plural, =1{# месяц} other{# месяцев}}',
+    'weeks'          => '{0, plural, =1{# неделя} other{# недель}}',
+    'days'           => '{0, plural, =1{# день} other{# дней}}',
+    'hours'          => '{0, plural, =1{# час} other{# часов}}',
+    'minutes'        => '{0, plural, =1{# минута} other{# минут}}',
+    'seconds'        => '{0, plural, =1{# секунда} other{# секунд}}',
+    'ago'            => '{0} назад',
+    'inFuture'       => 'в {0}',
+    'yesterday'      => 'Вчера',
+    'tomorrow'       => 'Завтра',
+    'now'            => 'Прямо сейчас',
 ];

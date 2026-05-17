@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
-// Настройки языка RESTful
+// RESTful language settings
 return [
-    'notImplemented' => 'Действие "{0}" не реализовано.',
+    'notImplemented' => '"{0}" действие не реализовано.',
+    'cannotPaginate' => 'Не удается получить данные для разделения на страницы.',
+    'paginateError'  => 'Произошла ошибка при разделении результатов на страницы.',
 ];

@@ -201,8 +201,5 @@ return [
     'Subscribe to my channel' => 'Подписаться на мой канал',
     'Be my friend' => 'Будь моим другом',
     'Follow my GitHub' => 'Подписаться на мой GitHub',
-    'Import sample data' => 'Установить с образцовыми данными',
-
-    // Дополнительные фразы
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'Установить с образцовыми данными'
 ];

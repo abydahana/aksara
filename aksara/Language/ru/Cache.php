@@ -1,25 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
 // Cache language settings
-// Настройки языка для кэша
 return [
-    'unableToWrite' => 'Невозможно записать в кэш по пути {0}',
-    'invalidHandlers' => 'Конфигурация кэша должна содержать массив $validHandlers.',
-    'noBackup' => 'Конфигурация кэша должна содержать набор обработчиков и резервный обработчик (backupHandler).',
-    'handlerNotFound' => 'Конфигурация кэша содержит недопустимый обработчик или указанный резервный обработчик не найден.',
+    'unableToWrite'   => 'Не удается записать кэш в {0}',
+    'invalidHandlers' => 'Переменная $validHandlers в конфигурации кэша должна содержать массив.',
+    'noBackup'        => 'В конфигурации кэширования не указан обработчик $backupHandler.',
+    'handlerNotFound' => 'В конфигурации кэширования указан недопустимый обработчик.',
 ];

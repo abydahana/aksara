@@ -164,6 +164,5 @@ return [
     'Subscribe to my channel' => 'Đăng ký kênh của tôi',
     'Be my friend' => 'Kết bạn với tôi',
     'Follow my GitHub' => 'Theo dõi GitHub của tôi',
-    'Import sample data' => 'Cài đặt với dữ liệu mẫu',
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'Cài đặt với dữ liệu mẫu'
 ];

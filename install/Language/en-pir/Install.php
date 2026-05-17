@@ -164,6 +164,5 @@ return [
     'Subscribe to my channel' => 'Follow my Signal',
     'Be my friend' => 'Join the Crew',
     'Follow my GitHub' => 'Follow my Charts',
-    'Import sample data' => 'Load merchant cargo',
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'Load merchant cargo'
 ];
