@@ -159,7 +159,7 @@ abstract class Core extends Controller
         // --- Theme Preview Mode ---
 
         // Check for theme preview mode.
-        if ('preview-theme' == $this->request->getGet('aksara_mode') && sha1($this->request->getGet('aksara_theme') . ENCRYPTION_KEY . get_userdata('session_generated')) == $this->request->getGet('integrity_check') && is_dir(ROOTPATH . 'themes/' . $this->request->getGet('aksara_theme'))) {
+        if ('preview-theme' == $this->request->getGet('aksara_mode') && hash_equals(hash_hmac('sha256', $this->request->getGet('aksara_theme') . get_userdata('session_generated'), ENCRYPTION_KEY), (string) $this->request->getGet('integrity_check')) && is_dir(ROOTPATH . 'themes/' . $this->request->getGet('aksara_theme'))) {
             $this->_setTheme = strip_tags($this->request->getGet('aksara_theme'));
         }
 
@@ -284,12 +284,15 @@ abstract class Core extends Controller
         // Must be a POST request.
         if ($isPostRequest) {
             // Check URI-based token match.
-            if ($token && get_userdata(sha1(uri_string())) === $token) {
+            if ($token && hash_equals((string) get_userdata(sha1(uri_string())), $token)) {
                 return true;
             }
 
+            // Regenerate the valid token using HMAC-SHA256 based on Referer
+            $expectedToken = hash_hmac('sha256', Services::request()->getHeaderLine('Referer') . get_userdata('session_generated'), ENCRYPTION_KEY);
+
             // Check Referer-based token match.
-            if ($token && sha1(Services::request()->getHeaderLine('Referer') . ENCRYPTION_KEY . get_userdata('session_generated')) === $token) {
+            if ($token && hash_equals($expectedToken, $token)) {
                 return true;
             }
 
@@ -4140,7 +4143,7 @@ abstract class Core extends Controller
 
                 // Cleanup files and tokens
                 unset_userdata('_uploaded_files');
-                unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
+                unset_userdata(hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY));
 
                 // --- 5. After Insert Hook ---
                 if (method_exists($this, 'afterInsert')) {
@@ -4286,7 +4289,7 @@ abstract class Core extends Controller
                 if ($this->model->update($table, $data, $where)) {
                     // Success: Cleanup and Hooks
                     unset_userdata('_uploaded_files');
-                    unset_userdata(sha1(current_page() . get_userdata('session_generated') . ENCRYPTION_KEY));
+                    unset_userdata(hash_hmac('sha256', current_page() . get_userdata('session_generated'), ENCRYPTION_KEY));
                     $this->_unlinkFiles($oldFiles);
 
                     if (method_exists($this, 'afterUpdate')) {

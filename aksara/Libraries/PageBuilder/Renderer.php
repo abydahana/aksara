@@ -792,16 +792,21 @@ class Renderer
     /**
      * Sanitize HTML content — allow safe inline tags, strip dangerous ones.
      */
-    private function sanitizeHtml($html): string
+    private function sanitizeHtml($html = ''): string
     {
-        if (! is_string($html)) {
+        if (! $html) {
             return '';
         }
 
-        // Convert Markdown to HTML first
+        // Escape raw HTML first to prevent XSS via attributes or unallowed tags.
+        // Since we only allow Markdown, any raw HTML will be treated as plain text.
+        $html = htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        // Convert Markdown to HTML
         $html = $this->markdownToHtml($html);
 
-        return strip_tags($html, '<b><i><u><em><strong><s><a><br><ul><ol><li><span><sub><sup><mark><small><p><del>');
+        // We can safely return this because markdownToHtml only generates safe tags.
+        return $html;
     }
 
     /**
