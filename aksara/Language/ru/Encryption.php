@@ -1,26 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
-// Настройки языка для шифрования
+// Encryption language settings
 return [
-    'noDriverRequested' => 'Нет запрошенного драйвера; ',
-    'noHandlerAvailable' => 'Не удается найти доступный обработчик шифрования {0}.',
-    'unKnownHandler' => '"{0}" не может быть настроен.',
-    'starterKeyNeeded' => 'Encrypter требует начального ключа.',
-    'authenticationFailed' => 'Дешифровка: аутентификация не удалась.',
-    'encryptionFailed' => 'Шифрование не удалось.',
+    'noDriverRequested'    => 'Требуется подключить драйвер шифрования.',
+    'noHandlerAvailable'   => 'Не удается найти доступный обработчик шифрования {0}.',
+    'unKnownHandler'       => 'Обработчик "{0}" не может быть настроен.',
+    'starterKeyNeeded'     => 'Для шифрования требуется указать секретный ключ',
+    'authenticationFailed' => 'Ошибка: Не удалось выполнить проверку подлинности.',
+    'encryptionFailed'     => 'Сбой шифрования.',
 ];

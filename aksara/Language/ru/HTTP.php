@@ -1,82 +1,82 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
-// Настройки языка HTTP
+// HTTP language settings
 return [
     // CurlRequest
-    'missingCurl' => 'CURL должен быть включен для использования класса CURLRequest.',
-    'invalidSSLKey' => 'Не удалось установить ключ SSL. {0} не является допустимым файлом.',
-    'sslCertNotFound' => 'Сертификат SSL не найден в: {0}',
-    'curlError' => '{0} : {1}',
+    'missingCurl'     => 'На вашем сервере должна быть включена библиотека CURL для использования класса CURLRequest.',
+    'invalidSSLKey'   => 'Не удается установить ключ SSL. {0} не является допустимым файлом.',
+    'sslCertNotFound' => 'SSL-сертификат не найден в {0}',
+    'curlError'       => '{0} : {1}',
 
     // IncomingRequest
-    'invalidNegotiationType' => '{0} не является допустимым типом согласования. Должен быть одним из: media, charset, encoding, language.',
+    'invalidNegotiationType' => '{0} не является допустимым типом согласования. Должен быть один из: media, charset, encoding, language.',
+    'invalidJSON'            => 'Не удалось разобрать строку JSON. Ошибка: {0}',
+    'unsupportedJSONFormat'  => 'Предоставленный формат JSON не поддерживается.',
 
     // Message
-    'invalidHTTPProtocol' => 'Неверная версия протокола HTTP. Должна быть одной из: {0}',
+    'invalidHTTPProtocol' => 'Неверная версия протокола HTTP. Должно быть одно из следующих значений: {0}',
 
     // Negotiate
-    'emptySupportedNegotiations' => 'Вы должны предоставить массив поддерживаемых значений для всех согласований.',
+    'emptySupportedNegotiations' => 'Необходимо предоставить массив поддерживаемых значений для всех переговоров.',
 
     // RedirectResponse
-    'invalidRoute' => '{0} не является допустимым маршрутом.',
+    'invalidRoute' => '{0} маршрут не может быть найден при обратной маршрутизации.',
 
     // DownloadResponse
-    'cannotSetBinary' => 'При установке пути к файлу невозможно установить бинарный режим.',
-    'cannotSetFilepath' => 'При установке бинарного режима невозможно установить путь к файлу: {0}',
-    'notFoundDownloadSource' => 'Источник для скачиваемого тела не найден.',
-    'cannotSetCache' => 'Невозможно использовать кэш для скачивания.',
-    'cannotSetStatusCode' => 'Невозможно изменить код состояния для скачивания. Код: {0}, Причина: {1}',
+    'cannotSetBinary'        => 'При установке $filepath не удается установить двоичный файл.',
+    'cannotSetFilepath'      => 'При установке двоичного файла не удается установить $filepath: {0}.',
+    'notFoundDownloadSource' => 'Не найден источник загрузки тела.',
+    'cannotSetCache'         => 'Для загрузки кэширование не поддерживается.',
+    'cannotSetStatusCode'    => 'При скачивании изменение HTTP кода не поддерживается. Код: {0}, Причина: {1}.',
 
     // Response
-    'missingResponseStatus' => 'HTTP-ответу не хватает кода состояния',
-    'invalidStatusCode' => '{0} не является допустимым кодом состояния HTTP-ответа',
-    'unknownStatusCode' => 'Неизвестный код состояния HTTP-ответа без сообщения: {0}',
+    'missingResponseStatus' => 'В ответе HTTP отсутствует код состояния.',
+    'invalidStatusCode'     => '{0} не является допустимым кодом состояния.',
+    'unknownStatusCode'     => 'Неизвестный HTTP код состояния, предоставленный без сообщения: {0}.',
 
     // URI
-    'cannotParseURI' => 'Невозможно разобрать URI: {0}',
-    'segmentOutOfRange' => 'Сегмент URI вне диапазона: {0}',
-    'invalidPort' => 'Порт должен быть от 0 до 65535. Передано: {0}',
-    'malformedQueryString' => 'Строка запроса не должна включать фрагмент URI.',
+    'cannotParseURI'       => 'Невозможно разобрать URI: {0}',
+    'segmentOutOfRange'    => 'Сегмент URI запроса имеет диапазон: {0}',
+    'invalidPort'          => 'Указанный порт должен быть между 0 и 65535. Указан: {0}',
+    'malformedQueryString' => 'Строки запроса могут не включать в себя фрагменты URI.',
 
     // Page Not Found
-    'pageNotFound' => 'Страница не найдена',
-    'emptyController' => 'Не указан контроллер.',
+    'pageNotFound'       => 'Страница не найдена.',
+    'emptyController'    => 'Не указан контроллер.',
     'controllerNotFound' => 'Контроллер или его метод не найден: {0}::{1}',
-    'methodNotFound' => 'Метод контроллера не найден: {0}',
+    'methodNotFound'     => 'Метод контроллера не найден: {0}',
+    'localeNotSupported' => 'Региональные настройки не поддерживаются: {0}',
 
     // CSRF
-    'disallowedAction' => 'Действие, которое вы запрашиваете, не разрешено.',
+    'disallowedAction' => 'Действие, которое вы запросили, не разрешено.',
 
     // Uploaded file moving
     'alreadyMoved' => 'Загруженный файл уже перемещен.',
-    'invalidFile' => 'Исходный файл не является допустимым файлом.',
-    'moveFailed' => 'Невозможно переместить файл {0} в {1} ({2})',
+    'invalidFile'  => 'Исходный файл не является допустимым файлом.',
+    'moveFailed'   => 'Не удалось переместить файл из {0} в {1}. ({2})',
 
-    'uploadErrOk' => 'Файл успешно загружен.',
-    'uploadErrIniSize' => 'Файл "%s" превышает установленное вами ограничение upload_max_filesize.',
-    'uploadErrFormSize' => 'Файл "%s" превышает установленное в форме ограничение загрузки.',
-    'uploadErrPartial' => 'Файл "%s" был загружен только частично.',
-    'uploadErrNoFile' => 'Файл не был загружен.',
-    'uploadErrCantWrite' => 'Невозможно записать файл "%s" на диск.',
-    'uploadErrNoTmpDir' => 'Файл не может быть загружен: отсутствует временная директория.',
+    'uploadErrOk'        => 'Файл успешно загружен !',
+    'uploadErrIniSize'   => 'Ваш файл "%s" превышает директиву upload_max_filesize.',
+    'uploadErrFormSize'  => 'Файл "%s" превышает лимит загрузки, установленную в форме.',
+    'uploadErrPartial'   => 'Файл "%s" был загружен только частично.',
+    'uploadErrNoFile'    => 'Файл не был загружен.',
+    'uploadErrCantWrite' => 'Не удалось записать на диск файл "%s".',
+    'uploadErrNoTmpDir'  => 'Не удалось загрузить файл: Отсутствует временный каталог.',
     'uploadErrExtension' => 'Загрузка файла была остановлена расширением PHP.',
-    'uploadErrUnknown' => 'Файл "%s" не был загружен из-за неизвестной ошибки.',
+    'uploadErrUnknown'   => 'Файл "%s" не был загружен из-за неизвестной ошибки.',
 
     // SameSite setting
-    'invalidSameSiteSetting' => 'Настройка SameSite должна быть None, Lax, Strict или пустой строкой. Передано: {0}',
+    // @deprecated
+    'invalidSameSiteSetting' => 'Значение SameSite должно быть None, Lax, Strict или пустая строка. Дано: {0}',
 ];

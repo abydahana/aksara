@@ -33,8 +33,8 @@ class MainSeeder extends Seeder
             ],
             [
                 'language' => 'English (Pirate)',
-                'code' => 'en-pir',
-                'locale' => 'en-x-pirate,en_pirate,en-pir,pirate',
+                'code' => 'en-PIR',
+                'locale' => 'en-x-pirate,en_pirate,en-PIR,pirate',
                 'status' => 1
             ],
             [
@@ -81,8 +81,14 @@ class MainSeeder extends Seeder
             ],
             [
                 'language' => '简体中文',
-                'code' => 'zh',
+                'code' => 'zh-CN',
                 'locale' => 'zh-CN,zh_CN,zh_CN.UTF8,zh-cn,zh,chinese',
+                'status' => 1
+            ],
+            [
+                'language' => '繁體中文',
+                'code' => 'zh-TW',
+                'locale' => 'zh-TW,zh_TW,zh_TW.UTF8,zh-tw,chinese-traditional',
                 'status' => 1
             ],
             [

@@ -164,6 +164,5 @@ return [
     'Subscribe to my channel' => 'Abonniere meinen Kanal',
     'Be my friend' => 'Sei mein Freund',
     'Follow my GitHub' => 'Folge meinem GitHub',
-    'Import sample data' => 'Mit Beispieldaten installieren',
-    'WebGIS' => 'WebGIS'
+    'Import sample data' => 'Mit Beispieldaten installieren'
 ];

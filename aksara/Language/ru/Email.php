@@ -1,39 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
-// Настройки языка для электронной почты
+// Email language settings
 return [
-    'mustBeArray' => 'Метод валидации электронной почты должен принимать массив.',
-    'invalidAddress' => 'Недопустимый адрес электронной почты: {0}',
-    'attachmentMissing' => 'Не удается найти следующее вложение в письме: {0}',
-    'attachmentUnreadable' => 'Невозможно прочитать это вложение: {0}',
-    'noFrom' => 'Невозможно отправить письмо без заголовка "От".',
-    'noRecipients' => 'Вы должны указать получателей: Кому, Копия, или Скрытая копия',
-    'sendFailurePHPMail' => 'Невозможно отправить письмо с использованием PHP mail(). Ваш сервер, возможно, не настроен для отправки писем этим методом.',
-    'sendFailureSendmail' => 'Невозможно отправить письмо с использованием PHP Sendmail. Ваш сервер, возможно, не настроен для отправки писем этим методом.',
-    'sendFailureSmtp' => 'Невозможно отправить письмо с использованием PHP SMTP. Ваш сервер, возможно, не настроен для отправки писем этим методом.',
-    'sent' => 'Ваше сообщение успешно отправлено с использованием следующего протокола: {0}',
-    'noSocket' => 'Не удается открыть сокет для Sendmail. Пожалуйста, проверьте настройки.',
-    'noHostname' => 'Вы не указали имя хоста SMTP.',
-    'SMTPError' => 'Обнаружена ошибка SMTP: {0}',
-    'noSMTPAuth' => 'Ошибка: вы должны установить имя пользователя и пароль SMTP.',
-    'failedSMTPLogin' => 'Не удалось отправить команду AUTH LOGIN. Ошибка: {0}',
-    'SMTPAuthUsername' => 'Не удалось аутентифицировать имя пользователя. Ошибка: {0}',
-    'SMTPAuthPassword' => 'Не удалось аутентифицировать пароль. Ошибка: {0}',
-    'SMTPDataFailure' => 'Не удается отправить данные: {0}',
-    'exitStatus' => 'Статус кода завершения: {0}',
+    'mustBeArray'           => 'В метод проверки электронной почты должен быть передан массив.',
+    'invalidAddress'        => 'Неверный адрес электронной почты: {0}',
+    'attachmentMissing'     => 'Не удается найти следующее вложение: {0}',
+    'attachmentUnreadable'  => 'Не удается открыть это вложение: {0}',
+    'noFrom'                => 'Не удается отправить почту без заголовка "From".',
+    'noRecipients'          => 'Необходимо указать получателей "To".',
+    'sendFailurePHPMail'    => 'Невозможно отправить письмо с помощью PHP_Mail().',
+    'sendFailureSendmail'   => 'Невозможно отправить письмо с помощью PHP_SendMail().',
+    'sendFailureSmtp'       => 'Невозможно отправить письмо с помощью PHP_SMTP().',
+    'sent'                  => 'Ваше сообщение было отправлено по протоколу: {0}',
+    'noSocket'              => 'Не удается открыть сокет для PHP_SendMail(). Пожалуйста, проверьте настройки.',
+    'noHostname'            => 'Вы не указали имя хоста SMTP.',
+    'SMTPError'             => 'Произошла следующая ошибка SMTP: {0}',
+    'noSMTPAuth'            => 'Ошибка: Необходимо указать логин и пароль SMTP.',
+    'invalidSMTPAuthMethod' => 'Ошибка: Метод авторизации SMTP "{0}" не поддерживается codeigniter, установите "login" или "plain" метод авторизации',
+    'failureSMTPAuthMethod' => 'Не удается инициировать команду AUTH. Возможно, ваш сервер не настроен на использование метода аутентификации AUTH {0}.',
+    'SMTPAuthCredentials'   => 'Не удалось подтвердить подлинность учетных данных пользователя. Ошибка: {0}',
+    'SMTPAuthUsername'      => 'Не удалось проверить подлинность логина. Ошибка: {0}',
+    'SMTPAuthPassword'      => 'Не удалось проверить подлинность пароля. Ошибка: {0}',
+    'SMTPDataFailure'       => 'Не удается отправить данные: {0}',
+    'exitStatus'            => 'Статус-код выхода: {0}',
+    // @deprecated
+    'failedSMTPLogin' => 'Не удалось выполнить команду AUTH LOGIN. Ошибка: {0}',
 ];

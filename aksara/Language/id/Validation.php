@@ -1,69 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * This file is part of Aksara CMS, both framework and publishing
- * platform.
+ * This file is part of CodeIgniter 4 framework.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
- * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
- * @license    MIT License
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the LICENSE.txt file.
- *
- * When the signs come, those who don't believe at "that time"
- * will have only two choices, commit suicide or become brutal.
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
 // Validation language settings
 return [
     // Core Messages
-    'noRuleSets' => 'Tidak ada aturan yang ditentukan dalam konfigurasi Validasi.',
-    'ruleNotFound' => '{0} bukan sebuah aturan yang valid.',
-    'groupNotFound' => '{0} bukan sebuah grup aturan validasi.',
-    'groupNotArray' => '{0} grup aturan harus berupa sebuah array.',
-    'invalidTemplate' => '{0} bukan sebuah template Validasi yang valid.',
+    'noRuleSets'      => 'Tidak ada aturan yang ditentukan dalam konfigurasi Validasi.',
+    'ruleNotFound'    => '"{0}" bukan sebuah aturan yang valid.',
+    'groupNotFound'   => '"{0}" bukan sebuah grup aturan validasi.',
+    'groupNotArray'   => '"{0}" grup aturan harus berupa sebuah array.',
+    'invalidTemplate' => '"{0}" bukan sebuah template Validasi yang valid.',
 
     // Rule Messages
-    'alpha' => 'Bidang {field} hanya boleh mengandung karakter alfabet.',
-    'alpha_dash' => 'Bidang {field} hanya boleh berisi karakter alfanumerik, setrip bawah, dan tanda pisah.',
-    'alpha_numeric' => 'Bidang {field} hanya boleh berisi karakter alfanumerik.',
-    'alpha_numeric_punct' => 'Bidang {field} hanya boleh berisi karakter alfanumerik, spasi, dan karakter ~! # $% & * - _ + = | :..',
-    'alpha_numeric_space' => 'Bidang {field} hanya boleh berisi karakter alfanumerik dan spasi.',
-    'alpha_space' => 'Bidang {field} hanya boleh berisi karakter alfabet dan spasi.',
-    'decimal' => 'Bidang {field} harus mengandung sebuah angka desimal.',
-    'differs' => 'Bidang {field} harus berbeda dari bidang {param}.',
-    'equals' => 'Bidang {field} harus persis: {param}.',
-    'exact_length' => 'Bidang {field} harus tepat {param} panjang karakter.',
-    'greater_than' => 'Bidang {field} harus berisi sebuah angka yang lebih besar dari {param}.',
+    'alpha'                 => 'Bidang {field} hanya boleh mengandung karakter alfabet.',
+    'alpha_dash'            => 'Bidang {field} hanya boleh berisi karakter alfanumerik, setrip bawah, dan tanda pisah.',
+    'alpha_numeric'         => 'Bidang {field} hanya boleh berisi karakter alfanumerik.',
+    'alpha_numeric_punct'   => 'Bidang {field} hanya boleh berisi karakter alfanumerik, spasi, dan karakter ~! # $% & * - _ + = | :..',
+    'alpha_numeric_space'   => 'Bidang {field} hanya boleh berisi karakter alfanumerik dan spasi.',
+    'alpha_space'           => 'Bidang {field} hanya boleh berisi karakter alfabet dan spasi.',
+    'decimal'               => 'Bidang {field} harus mengandung sebuah angka desimal.',
+    'differs'               => 'Bidang {field} harus berbeda dari bidang {param}.',
+    'equals'                => 'Bidang {field} harus persis: {param}.',
+    'exact_length'          => 'Bidang {field} harus tepat {param} panjang karakter.',
+    'field_exists'          => 'Bidang {field} harus ada.',
+    'greater_than'          => 'Bidang {field} harus berisi sebuah angka yang lebih besar dari {param}.',
     'greater_than_equal_to' => 'Bidang {field} harus berisi sebuah angka yang lebih besar atau sama dengan {param}.',
-    'hex' => 'Bidang {field} hanya boleh berisi karakter heksadesimal.',
-    'in_list' => 'Bidang {field} harus salah satu dari: {param}.',
-    'integer' => 'Bidang {field} harus mengandung bilangan bulat.',
-    'is_natural' => 'Bidang {field} hanya boleh berisi angka.',
-    'is_natural_no_zero' => 'Bidang {field} hanya boleh berisi angka dan harus lebih besar dari nol.',
-    'is_not_unique' => 'Bidang {field} harus berisi nilai yang sudah ada sebelumnya dalam database.',
-    'is_unique' => 'Bidang {field} harus mengandung sebuah nilai unik.',
-    'less_than' => 'Bidang {field} harus berisi sebuah angka yang kurang dari {param}.',
-    'less_than_equal_to' => 'Bidang {field} harus berisi sebuah angka yang kurang dari atau sama dengan {param}.',
-    'matches' => 'Bidang {field} tidak cocok dengan bidang {param}.',
-    'max_length' => 'Bidang {field} tidak bisa melebihi {param} panjang karakter.',
-    'min_length' => 'Bidang {field} setidaknya harus {param} panjang karakter.',
-    'not_equals' => 'Bidang {field} tidak boleh: {param}.',
-    'not_in_list' => 'Bidang {field} tidak boleh salah satu dari: {param}.',
-    'numeric' => 'Bidang {field} hanya boleh mengandung angka.',
-    'regex_match' => 'Bidang {field} tidak dalam format yang benar.',
-    'required' => 'Bidang {field} diperlukan.',
-    'required_with' => 'Bidang {field} diperlukan saat {param} hadir.',
-    'required_without' => 'Bidang {field} diperlukan saat {param} tidak hadir.',
-    'string' => 'Bidang {field} harus berupa string yang valid.',
-    'timezone' => 'Bidang {field} harus berupa sebuah zona waktu yang valid.',
-    'valid_base64' => 'Bidang {field} harus berupa sebuah string base64 yang valid.',
-    'valid_email' => 'Bidang {field} harus berisi sebuah alamat email yang valid.',
-    'valid_emails' => 'Bidang {field} harus berisi semua alamat email yang valid.',
-    'valid_ip' => 'Bidang {field} harus berisi sebuah IP yang valid.',
-    'valid_url' => 'Bidang {field} harus berisi sebuah URL yang valid.',
-    'valid_date' => 'Bidang {field} harus berisi sebuah tanggal yang valid.',
+    'hex'                   => 'Bidang {field} hanya boleh berisi karakter heksadesimal.',
+    'in_list'               => 'Bidang {field} harus salah satu dari: {param}.',
+    'integer'               => 'Bidang {field} harus mengandung bilangan bulat.',
+    'is_natural'            => 'Bidang {field} hanya boleh berisi angka.',
+    'is_natural_no_zero'    => 'Bidang {field} hanya boleh berisi angka dan harus lebih besar dari nol.',
+    'is_not_unique'         => 'Bidang {field} harus berisi nilai yang sudah ada sebelumnya dalam database.',
+    'is_unique'             => 'Bidang {field} harus mengandung sebuah nilai unik.',
+    'less_than'             => 'Bidang {field} harus berisi sebuah angka yang kurang dari {param}.',
+    'less_than_equal_to'    => 'Bidang {field} harus berisi sebuah angka yang kurang dari atau sama dengan {param}.',
+    'matches'               => 'Bidang {field} tidak cocok dengan bidang {param}.',
+    'max_length'            => 'Bidang {field} tidak bisa melebihi {param} panjang karakter.',
+    'min_length'            => 'Bidang {field} setidaknya harus {param} panjang karakter.',
+    'not_equals'            => 'Bidang {field} tidak boleh: {param}.',
+    'not_in_list'           => 'Bidang {field} tidak boleh salah satu dari: {param}.',
+    'numeric'               => 'Bidang {field} hanya boleh mengandung angka.',
+    'regex_match'           => 'Bidang {field} tidak dalam format yang benar.',
+    'required'              => 'Bidang {field} diperlukan.',
+    'required_with'         => 'Bidang {field} diperlukan saat {param} hadir.',
+    'required_without'      => 'Bidang {field} diperlukan saat {param} tidak hadir.',
+    'string'                => 'Bidang {field} harus berupa string yang valid.',
+    'timezone'              => 'Bidang {field} harus berupa sebuah zona waktu yang valid.',
+    'valid_base64'          => 'Bidang {field} harus berupa sebuah string base64 yang valid.',
+    'valid_email'           => 'Bidang {field} harus berisi sebuah alamat surel yang valid.',
+    'valid_emails'          => 'Bidang {field} harus berisi semua alamat surel yang valid.',
+    'valid_ip'              => 'Bidang {field} harus berisi sebuah IP yang valid.',
+    'valid_url'             => 'Bidang {field} harus berisi sebuah URL yang valid.',
+    'valid_url_strict'      => 'Bidang {field} harus berisi sebuah URL yang valid.',
+    'valid_date'            => 'Bidang {field} harus berisi sebuah tanggal yang valid.',
+    'valid_json'            => 'Bidang {field} harus berisi sebuah json yang valid.',
 
     // Credit Cards
     'valid_cc_num' => '{field} tidak tampak sebagai sebuah nomor kartu kredit yang valid.',
@@ -72,18 +71,18 @@ return [
     'uploaded' => '{field} bukan sebuah berkas diunggah yang valid.',
     'max_size' => '{field} terlalu besar dari sebuah berkas.',
     'is_image' => '{field} bukan berkas gambar diunggah yang valid.',
-    'mime_in' => '{field} tidak memiliki sebuah tipe mime yang valid.',
-    'ext_in' => '{field} tidak memiliki sebuah ekstensi berkas yang valid.',
+    'mime_in'  => '{field} tidak memiliki sebuah tipe mime yang valid.',
+    'ext_in'   => '{field} tidak memiliki sebuah ekstensi berkas yang valid.',
     'max_dims' => '{field} bukan gambar, atau terlalu lebar atau tinggi.',
+    'min_dims' => '{field} bukan gambar, atau tidak cukup lebar atau tinggi.',
 
     // Custom
-    'unique' => '{field} yang dimasukkan telah terdaftar.',
-    'boolean' => 'Bidang {field} hanya boleh dicentang atau abaikan.',
-    'currency' => 'Bidang {field} hanya boleh berformat mata uang.',
-    'valid_date' => 'Bidang {field} harus menggunakan format tanggal.',
-    'valid_time' => 'Bidang {field} harus menggunakan format waktu.',
-    'valid_datetime' => 'Bidang {field} harus menggunakan format tanggal dan waktu.',
-    'valid_year' => 'Bidang {field} harus menggunakan format tahun.',
-    'valid_hex' => 'Bidang {field} hanya boleh berisi kode warna hex.',
-    'relation_checker' => 'Relasi pada bidang {field} tidak ditemukan.'
+    'unique' => '{field} yang Anda masukkan sudah terdaftar.',
+    'boolean' => '{field} hanya boleh dicentang atau diabaikan.',
+    'currency' => '{field} harus berisi format mata uang yang valid.',
+    'valid_time' => '{field} harus berisi waktu yang valid.',
+    'valid_datetime' => '{field} harus berisi tanggal dan waktu yang valid.',
+    'valid_year' => '{field} harus berisi tahun yang valid.',
+    'valid_hex' => '{field} hanya boleh berisi kode warna hex.',
+    'relation_checker' => 'Data relasi dari {field} tidak ditemukan.'
 ];
