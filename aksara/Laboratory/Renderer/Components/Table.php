@@ -73,8 +73,7 @@ class Table
         'date', 'datetime', 'time', 'week', 'month',
         'hidden', 'email', 'password', 'encryption',
         'file', 'files', 'image', 'images',
-        'hyperlink',
-        'accordion', 'attribution', 'carousel', 'geospatial',
+        'hyperlink', 'attribution', 'geospatial',
         'custom'
     ];
 
@@ -264,7 +263,7 @@ class Table
                 ];
 
                 // Special handling for specific types
-                if (in_array($final_type, ['image', 'images', 'carousel'])) {
+                if (in_array($final_type, ['image', 'images'])) {
                     $field_data[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
                 } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
                     $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);

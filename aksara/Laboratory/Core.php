@@ -3584,21 +3584,6 @@ abstract class Core extends Controller
 
                     // Files upload validation rules
                     $this->formValidation->setRule($key . '.*', (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
-                } elseif (array_intersect(['carousel'], $type)) {
-                    $validation = true;
-
-                    $val['validation'][] = 'validate_upload[' . $key . '.image]';
-
-                    // Carousel upload validation rules
-                    $this->formValidation->setRule($key . '.background.*', (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
-                } elseif (array_intersect(['accordion'], $type)) {
-                    $validation = true;
-
-                    $val['validation'][] = 'required';
-
-                    // Accordion upload validation rules
-                    $this->formValidation->setRule($key . '.title.*', phrase('Accordion Title') . ' ' . (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
-                    $this->formValidation->setRule($key . '.body.*', phrase('Accordion Body') . ' ' . (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['password'], $type)) {
                     $validation = true;
 
@@ -3734,7 +3719,7 @@ abstract class Core extends Controller
                     continue;
                 }
 
-                if (array_key_exists($field, $this->request->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'carousel', 'accordion', 'attribution'])) {
+                if (array_key_exists($field, $this->request->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
                         if ($this->request->getPost($field)) {
@@ -3825,60 +3810,6 @@ abstract class Core extends Controller
 
                         // Push the json encoded file to data preparation
                         $prepare[$field] = json_encode(array_reverse($files));
-                    } elseif (array_intersect(['carousel'], $type)) {
-                        // Get the submitted carousel
-                        $carousel = $this->request->getPost($field);
-
-                        // Check if submitted data is not supported
-                        if (! $carousel || ! isset($carousel['title']) || sizeof($carousel['title']) <= 0) {
-                            // Continue the loops to other fields
-                            continue;
-                        }
-
-                        // Set the default value of variables and shorts the key to match ruler indent
-                        $items = [];
-
-                        // Loop the submitted carousel data
-                        foreach ($carousel['title'] as $key => $val) {
-                            // Push the carousel collection
-                            $items[$key] = [
-                                'title' => $val,
-                                'description' => (isset($carousel['description'][$key]) ? $carousel['description'][$key] : ''),
-                                'link' => (isset($carousel['link'][$key]) ? $carousel['link'][$key] : ''),
-                                'label' => (isset($carousel['label'][$key]) ? $carousel['label'][$key] : '')
-                            ];
-
-                            // Check if the carousel has uploaded background
-                            if (isset($this->_uploadedFiles[$field][$key]) && $this->_uploadedFiles[$field][$key]) {
-                                // Pair with newer uploaded background
-                                $items[$key]['background'] = $this->_uploadedFiles[$field][$key];
-                            } else {
-                                // Use default background instead
-                                $items[$key]['background'] = (isset($carousel['default_background'][$key]) ? $carousel['default_background'][$key] : 'placeholder.png');
-                            }
-                        }
-
-                        // Push the json encoded to data preparation
-                        $prepare[$field] = json_encode($items);
-                    } elseif (array_intersect(['accordion'], $type)) {
-                        // Get the submitted accordion
-                        $accordion = $this->request->getPost($field);
-                        $items = [];
-
-                        // Check if the accordion has correct value
-                        if (isset($accordion['title']) && sizeof($accordion['title']) > 0) {
-                            // Loops the submitted accordion
-                            foreach ($accordion['title'] as $key => $val) {
-                                // Collects the accordion
-                                $items[] = [
-                                    'title' => $val,
-                                    'body' => (isset($accordion['body'][$key]) ? $accordion['body'][$key] : null)
-                                ];
-                            }
-                        }
-
-                        // Push the json encoded accordion to data preparation
-                        $prepare[$field] = json_encode($items);
                     } elseif (array_intersect(['attribution'], $type)) {
                         // Get the submitted attribution
                         $attribution = $this->request->getPost($field);

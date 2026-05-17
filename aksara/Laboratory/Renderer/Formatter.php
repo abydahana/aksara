@@ -91,16 +91,6 @@ class Formatter
             elseif ('hyperlink' === $key) {
                 $value = $this->_formatHyperlink($val, $replacement);
             }
-            // 7. JSON Based Components (Attribution, Accordion)
-            elseif (in_array($key, ['attribution', 'accordion'])) {
-                if (is_string($value) && is_json($value)) {
-                    $value = json_decode($value);
-                }
-            }
-            // 8. Carousel
-            elseif ('carousel' === $key) {
-                $value = $this->_formatCarousel($value);
-            }
             // 9. Geospatial
             elseif ('geospatial' === $key) {
                 if (in_array($this->_method, ['create', 'update'])) {
@@ -303,36 +293,6 @@ class Formatter
         }
 
         return base_url($parameter, $query_params);
-    }
-
-    /**
-     * Format Carousel Data.
-     */
-    private function _formatCarousel(mixed $value): mixed
-    {
-        if (is_string($value) && is_json($value)) {
-            $items = json_decode($value);
-            $carousels = [];
-
-            if (is_array($items) || is_object($items)) {
-                foreach ($items as $item) {
-                    // Ensure object property access
-                    if (is_array($item)) {
-                        $item = (object) $item;
-                    }
-
-                    $item->src = [
-                        'background' => get_image($this->_setUploadPath, $item->background ?? ''),
-                        'thumbnail' => get_image($this->_setUploadPath, $item->background ?? '', 'thumb'),
-                        'placeholder' => get_image($this->_setUploadPath, 'placeholder.png', 'thumb')
-                    ];
-
-                    $carousels[] = $item;
-                }
-            }
-            return $carousels;
-        }
-        return $value;
     }
 
     /**

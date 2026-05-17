@@ -634,48 +634,6 @@ class Table
     }
 
     /**
-     * Generate Accordion Count Column.
-     * Renders a badge showing the number of accordion items.
-     *
-     * @return  array Returns component configuration array
-     */
-    public function accordion(): array
-    {
-        // Template for Accordion Items Count Badge
-        $component = <<<EOF
-        <span class="badge bg-secondary">
-            {{ content | length }} {{ content | length > 1 ? phrase('items') : phrase('item') }}
-        </span>
-        EOF;
-
-        return [
-            'type' => __FUNCTION__,
-            'component' => $component
-        ];
-    }
-
-    /**
-     * Generate Carousel Count Column.
-     * Renders a badge showing the number of slides.
-     *
-     * @return  array Returns component configuration array
-     */
-    public function carousel(): array
-    {
-        // Template for Carousel Slides Count Badge
-        $component = <<<EOF
-        <span class="badge bg-secondary">
-            {{ content | length }} {{ content | length > 1 ? phrase('slides') : phrase('slide') }}
-        </span>
-        EOF;
-
-        return [
-            'type' => __FUNCTION__,
-            'component' => $component
-        ];
-    }
-
-    /**
      * Generate Custom Format Column.
      * Passthrough component for raw content rendering.
      *
