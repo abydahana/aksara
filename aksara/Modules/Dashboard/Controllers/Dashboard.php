@@ -249,6 +249,7 @@ class Dashboard extends Core
 
         return $query;
     }
+
     private function _userLogs()
     {
         return $this->model->select('timestamp, platform, browser, ip_address')

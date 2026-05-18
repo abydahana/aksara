@@ -22,9 +22,9 @@ use Config\Services;
 class Router
 {
     private $_request;
-    private $_uriString;
-    private $_found;
-    private $_collection;
+    private string $_uriString;
+    private bool $_found;
+    private array $_collection;
 
     public function __construct($routes = null)
     {
@@ -58,7 +58,35 @@ class Router
             $namespace = $this->_collection[$higher];
             $namespace = substr($namespace, 0, strrpos($namespace, '.'));
             $controller = substr($namespace, strrpos($namespace, '\\') + 1);
-            $method = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
+
+            // Extract segments to find the actual method and its extra parameters
+            $method = '';
+            $extra_params = [];
+            $uri_segments = explode('/', $this->_uriString);
+            $method_found = false;
+            
+            if (class_exists($namespace)) {
+                foreach ($uri_segments as $segment) {
+                    if (strtolower($segment) == strtolower($controller)) {
+                        continue;
+                    }
+                    if (!$method_found) {
+                        $discovered = $this->_discoverMethod($namespace, $segment);
+                        if ($discovered && method_exists($namespace, $discovered)) {
+                            $method = $discovered;
+                            $method_found = true;
+                            continue;
+                        }
+                    }
+                    if ($method_found) {
+                        $extra_params[] = $segment;
+                    }
+                }
+            }
+            
+            if (!$method) {
+                $method = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
+            }
 
             // Get priority file
             $file = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method) . '.php'), '\\')));
@@ -74,7 +102,11 @@ class Router
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $routes->add($this->_uriString, $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null));
+                $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
+                if (!empty($extra_params)) {
+                    $dest .= '/' . implode('/', $extra_params);
+                }
+                $routes->add($this->_uriString, $dest);
             }
 
             // Check if second file is exists
@@ -85,12 +117,20 @@ class Router
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $routes->add($this->_uriString, $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null));
+                $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
+                if (!empty($extra_params)) {
+                    $dest .= '/' . implode('/', $extra_params);
+                }
+                $routes->add($this->_uriString, $dest);
             } else {
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $routes->add($this->_uriString, $namespace . (! $is_duplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null));
+                $dest = $namespace . (! $is_duplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null);
+                if (!empty($extra_params)) {
+                    $dest .= '/' . implode('/', $extra_params);
+                }
+                $routes->add($this->_uriString, $dest);
             }
         }
 
@@ -168,6 +208,19 @@ class Router
                         $this->_collection[$x] = $namespace . $val;
 
                         $this->_found = true;
+                    } elseif (strpos($this->_uriString, $module . '/') === 0) {
+                        $remaining_path = substr($this->_uriString, strlen($module . '/'));
+                        $segments = explode('/', $remaining_path);
+                        $method_candidate = $segments[0] ?? '';
+                        $controller_class = $namespace . pathinfo($val, PATHINFO_FILENAME);
+                        if ($method_candidate && class_exists($controller_class)) {
+                            $matched_method = $this->_discoverMethod($controller_class, $method_candidate);
+                            if (method_exists($controller_class, $matched_method)) {
+                                $x = substr_count($namespace . $val, '\\');
+                                $this->_collection[$x] = $namespace . $val;
+                                $this->_found = true;
+                            }
+                        }
                     }
                 }
             }
@@ -194,7 +247,7 @@ class Router
     /**
      * Smart discovery to match methods that might be camelCase while the URI uses snake_case or dash-case
      */
-    private function _discoverMethod($namespace, $method)
+    private function _discoverMethod(string $namespace, string $method): string
     {
         if ($method && class_exists($namespace)) {
             foreach (get_class_methods($namespace) as $class_method) {

@@ -266,7 +266,7 @@ class Validation
      * @param string|null $params Field name and file type (format: field.type)
      * @return bool Always returns true, sets validation errors if needed
      */
-    public function validate_upload($value = null, ?string $params = null, ?array $data = null, ?string &$error = null, ?string $field = null): bool
+    public function validate_upload($value = null, ?string $params = null): bool
     {
         $request = Services::request();
         $validation = Services::validation();
@@ -293,7 +293,7 @@ class Validation
 
         if ($this->_uploadError) {
             // Validation error
-            $error = $this->_uploadError;
+            $validation->setError($field, $this->_uploadError);
 
             return false;
         } elseif (! $this->_uploadedFiles) {
@@ -302,7 +302,7 @@ class Validation
 
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
-                $error = phrase('Please choose the file to upload');
+                $validation->setError($field, phrase('Please choose the file to upload'));
 
                 return false;
             }
@@ -390,7 +390,7 @@ class Validation
         }
 
         if (! is_dir(UPLOAD_PATH . '/' . $upload_path)) {
-            // Attempt to new directory
+            // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
                 copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
@@ -402,7 +402,7 @@ class Validation
         }
 
         if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/thumbs')) {
-            // Attempt to new directory
+            // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
@@ -414,7 +414,7 @@ class Validation
         }
 
         if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/icons')) {
-            // Attempt to new directory
+            // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
                 copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
