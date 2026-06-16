@@ -194,10 +194,10 @@ class Form
             // --- Handle Logic based on Method (Create vs Update) ---
             if ('create' === $this->_method) {
                 // CREATE MODE
-                list($value, $checked) = $this->_handleCreateMode($field, $type, $value, $checked);
+                list($value, $checked) = $this->_handleCreateMode($field, $type, $value, $checked, $serialized);
             } else {
                 // UPDATE MODE
-                list($value, $content) = $this->_handleUpdateMode($type, $value, $content);
+                list($value, $content) = $this->_handleUpdateMode($type, $value, $content, $serialized);
             }
 
             // Prepare Field Data Structure
@@ -321,7 +321,7 @@ class Form
      * Handle logic specific to 'Create' mode.
      * Includes setting default values and calculating 'Last Insert' custom IDs.
      */
-    private function _handleCreateMode(string $field, array $type, mixed $value, bool $checked): array
+    private function _handleCreateMode(string $field, array $type, mixed $value, bool $checked, array $serialized = []): array
     {
         if (isset($this->_defaultValue[$field])) {
             $value = $this->_defaultValue[$field];
@@ -334,19 +334,24 @@ class Form
             if (! isset($this->_defaultValue[$field])) {
                 $parameter = $type['last_insert']['parameter'];
                 $extraParams = $type['last_insert']['alpha'];
+                $extraClause = $type['last_insert']['beta'];
                 $typeKey = array_search('{1}', explode('/', $parameter));
 
                 // Construct CAST statement based on DB Driver
-                $castField = in_array($this->_dbDriver, ['SQLSRV'])
-                    ? 'CONVERT(' . $field . ', SIGNED INTEGER)'
-                    : 'CAST(' . $field . ' AS SIGNED INTEGER)';
-
-                // Build Query
-                if ($extraParams) {
-                    $this->model->where($extraParams);
+                if (in_array($this->_dbDriver, ['SQLSRV'])) {
+                    $castField = 'CONVERT(INT, ' . $field . ')';
+                } elseif (in_array($this->_dbDriver, ['Postgre'])) {
+                    $castField = 'CAST(SUBSTRING(CAST(' . $field . ' AS TEXT) FROM \'^[0-9]+\') AS INTEGER)';
+                } else {
+                    $castField = 'CAST(' . $field . ' AS UNSIGNED)';
                 }
 
-                $maxFunc = (in_array($this->_dbDriver, ['Postgre']) ? 'NULLIF' : 'IFNULL') . '(MAX(' . $castField . '), 0) AS ' . $field;
+                // Build Query
+                if ($extraClause && is_array($extraClause)) {
+                    $this->model->where($extraClause);
+                }
+
+                $maxFunc = (in_array($this->_dbDriver, ['Postgre']) ? 'COALESCE' : 'IFNULL') . '(MAX(' . $castField . '), 0) AS ' . $field;
 
                 $lastInsert = $this->model->select($maxFunc)
                     ->orderBy($field, 'desc')
@@ -371,6 +376,13 @@ class Form
                 // Replace placeholder in parameter
                 if ($parameter && ! is_array($parameter)) {
                     $value = str_replace('{1}', $value, $parameter);
+                    if (preg_match_all('/\{\{(.*?)\}\}/', $value, $matches)) {
+                        foreach ($matches[1] as $match) {
+                            if (isset($serialized[$match]['value'])) {
+                                $value = str_replace('{{' . $match . '}}', $serialized[$match]['value'], $value);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -382,7 +394,7 @@ class Form
      * Handle logic specific to 'Update' mode.
      * Includes marking selected options in Select/Checkbox/Radio.
      */
-    private function _handleUpdateMode(array $type, mixed $value, mixed $content): array
+    private function _handleUpdateMode(array $type, mixed $value, mixed $content, array $serialized = []): array
     {
         if (array_key_exists('select', $type) && is_array($content)) {
             foreach ($content as $key => $val) {
@@ -412,6 +424,13 @@ class Form
 
             if ($parameter && ! is_array($parameter)) {
                 $value = str_replace('{1}', $value, $parameter);
+                if (preg_match_all('/\{\{(.*?)\}\}/', $value, $matches)) {
+                    foreach ($matches[1] as $match) {
+                        if (isset($serialized[$match]['value'])) {
+                            $value = str_replace('{{' . $match . '}}', $serialized[$match]['value'], $value);
+                        }
+                    }
+                }
             }
         }
 

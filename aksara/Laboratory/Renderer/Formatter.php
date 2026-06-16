@@ -238,7 +238,11 @@ class Formatter
         $alpha = $config['alpha'] ?? [];
         $query_params = [
             'per_page' => null,
-            'limit' => null
+            'limit' => null,
+            'column' => null,
+            'order' => null,
+            'sort' => null,
+            'q' => null
         ];
 
         // 1. Replace Magic Strings {{ key }} in Parameter (URL)
@@ -276,7 +280,7 @@ class Formatter
                 // Determine value from replacement array
                 if (isset($replacement[$q_val])) {
                     $query_params[$q_key] = $replacement[$q_val];
-                } elseif (isset($replacement[$q_key])) {
+                } elseif ($q_val && isset($replacement[$q_key])) {
                     // Backup check
                     $query_params[$q_key] = $replacement[$q_key];
                 } else {
