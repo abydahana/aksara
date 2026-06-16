@@ -218,6 +218,5 @@ class Database extends Config
 
         // Dynamically set DBDebug based on environment
         $this->default['DBDebug'] = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
-        $this->tests['DBDebug']   = (defined('ENVIRONMENT') && ENVIRONMENT !== 'production');
     }
 }
