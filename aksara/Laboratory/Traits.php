@@ -72,6 +72,11 @@ trait Traits
     private $_afterUpdate;
 
     /**
+     * Flag indicating if the submitted API token is valid.
+     */
+    private bool $_apiToken = false;
+
+    /**
      * Callback to execute before a delete operation.
      * @var callable|null
      */
@@ -338,7 +343,7 @@ trait Traits
     /**
      * Upsert (Insert on Duplicate Update) permission status.
      */
-    private bool $_permitUpsert;
+    private bool $_permitUpsert = false;
 
     /**
      * Prepared statement data.
@@ -356,6 +361,12 @@ trait Traits
      * Redirect back status/url.
      */
     private string $_redirectBack;
+    
+    /**
+     * Cache for resolved relations to prevent N+1 queries.
+     * @var array
+     */
+    protected array $_relationCache = [];
 
     /**
      * Demo mode restriction status.
@@ -554,6 +565,11 @@ trait Traits
      * @var string
      */
     private $_table;
+
+    /**
+     * CSRF Token storage.
+     */
+    private ?string $_token = null;
 
     /**
      * Total rows count (used for pagination).

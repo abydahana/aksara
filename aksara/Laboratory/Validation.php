@@ -46,53 +46,53 @@ class Validation
      */
     public function unique($value = null, ?string $params = null, array $data = []): bool
     {
-        // Normalize parameter separators: Replace commas with dots, then split by dot.
-        // This is necessary to separate table.field.where_field.where_value parameters.
-        $params = explode('.', str_replace(',', '.', $params));
+        // Normalize parameter separators: Support both comma and dot formats
+        if (strpos($params, ',') !== false) {
+            $parts = explode(',', $params);
+            $tableField = explode('.', $parts[0]);
+            $params = array_merge($tableField, array_slice($parts, 1));
+        } else {
+            $params = explode('.', $params);
+        }
 
         if ($params) {
             $model = new Model();
 
             if (isset($_ENV['DBDriver'])) {
-                // Check if cross-database connection is configured via environment variables.
-                // If set, apply the configuration to the model instance.
                 $model->databaseConfig($_ENV);
             }
 
-            // Slice parameters starting from index 2 to get the WHERE conditions (key-value pairs).
             $sliced = array_slice($params, 2, sizeof($params));
             $where = [];
 
-            // Iterate over the sliced parameters to build an associative array of WHERE conditions.
             foreach ($sliced as $key => $val) {
-                // Ensure we only process key names (which are at even indices relative to $sliced).
                 if ($key % 2 === 0) {
-                    // Assign the key (field name) its corresponding value (at the next index).
                     $where[$val] = (isset($sliced[$key + 1]) ? $sliced[$key + 1] : '');
                 }
             }
 
-            // Initialize a counter to track the position of the WHERE condition (used to apply '!=' to the first condition).
             $num = 0;
 
-            // Apply the extracted WHERE conditions to the model query.
             foreach ($where as $key => $val) {
-                // Condition check 1: Skip if the WHERE value is effectively empty (not set or not numeric 0).
-                if (! $val && ! is_numeric($val)) {
-                    // Change the loop number before skipping.
-                    $num++;
+                // If the value is a placeholder like (field_name), extract it securely from the request data
+                if (is_string($val) && preg_match('/^\((.*)\)$/', $val, $match)) {
+                    $fieldName = $match[1];
+                    if (array_key_exists($fieldName, $data)) {
+                        $val = $data[$fieldName];
+                    } else {
+                        $req = service('request');
+                        $val = $req->getPost($fieldName) ?? $req->getGet($fieldName) ?? $val;
+                    }
+                }
 
-                    // Value is empty, continue next loops
+                if (! $val && ! is_numeric($val)) {
+                    $num++;
                     continue;
                 }
 
-                // Condition check 2: Determine if this is the first condition being applied.
                 if (! $num) {
-                    // First condition: Assume this is typically the primary key exclusion (e.g., ID != current_ID).
-                    // Apply a 'NOT EQUAL' condition (e.g., where('id !=', 5)).
                     $model->where($key . ' != ', $val);
                 } else {
-                    // Subsequent conditions: Apply a standard 'EQUAL' condition (e.g., where('user_id', 10)).
                     $model->where($key, $val);
                 }
 

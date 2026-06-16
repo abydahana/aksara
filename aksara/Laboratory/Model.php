@@ -615,6 +615,10 @@ class Model
      */
     public function selectSum(string $column, ?string $alias = null): static
     {
+        if (! $alias) {
+            $alias = $column;
+        }
+
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -634,6 +638,10 @@ class Model
      */
     public function selectMin(string $column, ?string $alias = null): static
     {
+        if (! $alias) {
+            $alias = $column;
+        }
+        
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -653,6 +661,10 @@ class Model
      */
     public function selectMax(string $column, ?string $alias = null): static
     {
+        if (! $alias) {
+            $alias = $column;
+        }
+        
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -672,6 +684,10 @@ class Model
      */
     public function selectAvg(string $column, ?string $alias = null): static
     {
+        if (! $alias) {
+            $alias = $column;
+        }
+        
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -969,6 +985,11 @@ class Model
      */
     public function like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1019,6 +1040,11 @@ class Model
      */
     public function orLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1069,6 +1095,11 @@ class Model
      */
     public function notLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1119,6 +1150,11 @@ class Model
      */
     public function orNotLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1167,6 +1203,11 @@ class Model
      */
     public function having(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             // Run having command
             foreach ($field as $key => $val) {
@@ -1201,6 +1242,11 @@ class Model
      */
     public function orHaving(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             // Run or having command
             foreach ($field as $key => $val) {
@@ -1235,6 +1281,11 @@ class Model
      */
     public function havingIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             foreach ($field as $key => $val) {
                 $this->_prepare[] = [
@@ -1262,6 +1313,11 @@ class Model
      */
     public function orHavingIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             foreach ($field as $key => $val) {
                 $this->_prepare[] = [
@@ -1289,6 +1345,11 @@ class Model
      */
     public function havingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             foreach ($field as $key => $val) {
                 $this->_prepare[] = [
@@ -1316,6 +1377,11 @@ class Model
      */
     public function orHavingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
+        // Skip if match is empty
+        if (! $value) {
+            return $this;
+        }
+
         if (is_array($field)) {
             foreach ($field as $key => $val) {
                 $this->_prepare[] = [
@@ -1345,6 +1411,11 @@ class Model
      */
     public function havingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1395,6 +1466,11 @@ class Model
      */
     public function orHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1445,6 +1521,11 @@ class Model
      */
     public function notHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1495,6 +1576,11 @@ class Model
      */
     public function orNotHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
+        // Skip if match is empty
+        if (! $match) {
+            return $this;
+        }
+
         /** @var array<string, array<string, mixed>> $column */
         $column = [];
 
@@ -1876,6 +1962,22 @@ class Model
         ];
 
         return $this;
+    }
+
+    /**
+     * Compiles the SELECT statement without executing it, returning the SQL string.
+     *
+     * @param bool $reset Whether to reset the query parameters after compiling.
+     * @return string The compiled SQL query.
+     */
+    public function getCompiledSelect(bool $reset = true): string
+    {
+        $this->_prepare[] = [
+            'function' => 'getCompiledSelect',
+            'arguments' => [$reset],
+        ];
+
+        return $this->_runQuery();
     }
 
     /**
@@ -2557,6 +2659,17 @@ class Model
     public function transRollback(): bool
     {
         return $this->db->transRollback();
+    }
+
+    /**
+     * Transaction Exception
+     * Your contribution is needed to write complete hint about this method
+     */
+    public function transException(bool $exception = true): static
+    {
+        $this->db->transException($exception);
+
+        return $this;
     }
 
     /**
