@@ -341,27 +341,17 @@ class Auth extends Core
      */
     private function _getActiveYears()
     {
-        $output = [];
+        $years = [];
 
-        $query = $this->model->getWhere(
-            'app_years',
-            [
-                'status' => 1
-            ]
-        )
-        ->result();
-
-        if ($query) {
-            foreach ($query as $key => $val) {
-                $output[] = [
-                    'value' => $val->year,
-                    'label' => $val->year,
-                    'selected' => $val->default
-                ];
-            }
+        foreach (get_active_years() as $key => $val) {
+            $years[] = [
+                'value' => $val->year,
+                'label' => $val->year,
+                'selected' => $val->default
+            ];
         }
 
-        return $output;
+        return $years;
     }
 
     /**
