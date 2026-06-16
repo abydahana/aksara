@@ -103,3 +103,8 @@
   border-color: var(--bs-border-color) !important;
   color: var(--bs-body-color) !important;
 }
+
+.select2-selection--single.border-danger,
+.select2-selection--multiple.border-danger {
+  border-color: var(--bs-form-invalid-border-color)!important
+}
