@@ -411,7 +411,7 @@
 
 /* ============================================
    PLUGINS RTL OVERRIDE
-   Swiper + Summernote + Select2 + OpenLayers + mCustomScrollbar
+   Swiper + Summernote + Select2 + OpenLayers
    ============================================ */
 
 /* ============================================
@@ -568,32 +568,4 @@
     left: 5% !important;
     right: 5% !important;
   }
-}
-
-/* ============================================
-   MCUSTOMSCROLLBAR RTL
-   ============================================ */
-[dir="rtl"] .mCSB_container_wrapper {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-[dir="rtl"] .mCSB_inside > .mCSB_container {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-[dir="rtl"] .mCSB_container_wrapper > .mCSB_container {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-[dir="rtl"] .mCSB_scrollTools {
-  right: auto !important;
-  left: 0 !important;
-}
-
-[dir="rtl"] .mCSB_vertical_horizontal > .mCSB_scrollTools.mCSB_scrollTools_horizontal {
-  right: auto !important;
-  left: 10px !important;
 }

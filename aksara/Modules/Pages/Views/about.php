@@ -184,8 +184,8 @@
                 Material Design Icons
             </a>
             &middot;
-            <a href="//manos.malihu.gr/jquery-custom-content-scroller/" target="_blank">
-                mCustomScrollbar
+            <a href="//github.com/KingSora/OverlayScrollbars" target="_blank">
+                OverlayScrollbars
             </a>
             &middot;
             <a href="//www.mediaelementjs.com/" target="_blank">
