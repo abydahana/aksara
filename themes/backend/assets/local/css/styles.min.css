@@ -88,8 +88,7 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 }
 
 #sidebar-wrapper .nav-link {
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+  padding-block: .35rem;
   word-wrap: break-word;
 }
 

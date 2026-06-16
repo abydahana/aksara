@@ -28,7 +28,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '6.0.3';
+        $version = '6.0.4';
 
         if ('version' == $parameter) {
             return $version;
@@ -305,6 +305,28 @@ if (! function_exists('user_language')) {
         ->row('language');
 
         return $language;
+    }
+}
+
+if (! function_exists('get_active_years')) {
+    /**
+     * Get active years from database.
+     *
+     * @return object Returns object of active years
+     */
+    function get_active_years()
+    {
+        $model = new Model();
+
+        $years = $model->getWhere(
+            'app_years',
+            [
+                'status' => 1
+            ]
+        )
+        ->result();
+
+        return $years ?? [];
     }
 }
 
