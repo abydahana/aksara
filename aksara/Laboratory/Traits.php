@@ -361,10 +361,9 @@ trait Traits
      * Redirect back status/url.
      */
     private string $_redirectBack;
-    
+
     /**
      * Cache for resolved relations to prevent N+1 queries.
-     * @var array
      */
     protected array $_relationCache = [];
 
