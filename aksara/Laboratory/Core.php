@@ -66,6 +66,12 @@ abstract class Core extends Controller
     protected $request;
 
     /**
+     * Cache for resolved relations to prevent N+1 queries.
+     * @var array
+     */
+    protected array $_relationCache = [];
+
+    /**
      * Theme template properties.
      * @var object
      */
@@ -234,7 +240,7 @@ abstract class Core extends Controller
      */
     public function debug(?string $resultType = null): static
     {
-        $this->_debugging = $resultType;
+        $this->_debugging = $resultType ?? 'parameter';
 
         return $this;
     }
@@ -1685,8 +1691,8 @@ abstract class Core extends Controller
         int $limit = 0,
         bool $translate = false
     ): static {
-        // --- 1. Initial Setup and Magic String Extraction ---
         $alias = $field;
+
         preg_match_all('/\{\{(.*?)\}\}/', $output ?? '', $matches);
         $select = array_map('trim', $matches[1]);
 
@@ -1696,150 +1702,162 @@ abstract class Core extends Controller
             }
         }
 
-        $isComposite = (strpos($field, ',') !== false && strpos($primaryKey, ',') !== false);
+        $isComposite = strpos($field, ',') !== false && strpos($primaryKey, ',') !== false;
 
-        // Default relation parts
         $relationTable = null;
         $relationKeys = [];
         $fieldLocal = [];
-        $groupByFields = [];
 
-        // --- 2. Handle Composite Keys vs. Single Key ---
         if ($isComposite) {
             $fieldLocal = array_map('trim', explode(',', $field));
             $primaryKeysForeign = array_map('trim', explode(',', $primaryKey));
 
             $alias = $fieldLocal[0];
-            $groupByFields = [];
 
             foreach ($primaryKeysForeign as $key => $val) {
-                // Ensure the foreign key is selected
-                if (! in_array($val, $select)) {
+                if (! in_array($val, $select, true)) {
                     $select[] = $val;
-                    $groupByFields[] = $val;
                 }
 
-                // Extract table and key parts
-                list($tableName, $keyName) = array_pad(explode('.', $val), 2, null);
+                [$tableName, $keyName] = array_pad(explode('.', $val), 2, null);
 
                 if ($tableName && $keyName) {
                     $relationTable = $tableName;
                     $relationKeys[] = $keyName;
                 }
 
-                // Cleanup: Add related columns to unset properties
                 $this->_unsetColumn[] = $keyName;
                 $this->_unsetView[] = $keyName;
 
-                // Handle masking for composite keys (original logic)
-                if (0 == $key) {
-                    // The first key is often used as the primary identifier for the merged field.
-                    // The original code has complex logic to add an alias_masking column here,
-                    // which is highly specific to Aksara's rendering.
-                    array_unshift($select, $relationTable . '.' . $fieldLocal[0] . ' AS ' . $alias . '_masking');
+                if (0 === $key) {
+                    array_unshift(
+                        $select,
+                        $relationTable . '.' . $fieldLocal[0] . ' AS ' . $alias . '_masking'
+                    );
                 }
             }
         } else {
-            // Single Key Relation
             $fieldLocal = $field;
 
-            // Ensure primary key value is selected, alias it using the local field name if simple
-            if (! in_array($primaryKey, $select)) {
-                $select[] = (strpos($primaryKey, ' ') !== false ? substr($primaryKey, strpos($primaryKey, ' ') + 1) : $primaryKey) . ' AS ' . $alias;
+            if (! in_array($primaryKey, $select, true)) {
+                $select[] = (
+                    strpos($primaryKey, ' ') !== false
+                        ? substr($primaryKey, strpos($primaryKey, ' ') + 1)
+                        : $primaryKey
+                ) . ' AS ' . $alias;
             }
 
-            // Merge select from existing attributes (e.g., 'data-image="{{image}}"' attribute)
             if (isset($this->_setAttribute[$field])) {
                 preg_match_all('/\{\{(.*?)\}\}/', $this->_setAttribute[$field] ?? '', $matchesAttributes);
                 $select = array_merge($select, array_map('trim', $matchesAttributes[1]));
             }
 
-            // Extract relation table and key
             $parts = explode('.', $primaryKey);
             $relationTable = $parts[0] ?? null;
             $relationKeys = $parts[1] ?? null;
 
-            // Cleanup: Add local field to unset properties
-            $this->_unsetColumn[] = $field;
-            $this->_unsetView[] = $field;
+            if ($field !== $relationKeys) {
+                $this->_unsetColumn[] = $field;
+                $this->_unsetView[] = $field;
+            }
         }
 
-        // --- 3. Additional Query Setup (Join, Where, Select Merge) ---
-
-        // Ensure JOIN input is standardized
+        // Standarize JOIN
         if ($join && ! isset($join[0])) {
             $join = [$join];
         }
 
-        // Standardize WHERE conditions (prefixing if needed)
-        if ($where) {
-            foreach ($where as $key => $val) {
-                if (! preg_match('/[.<=>()]/', $key)) {
-                    $where[$key] = $val; // Assuming the framework adds the table prefix later if necessary
-                }
+        // Remove JOIN table that is not used in SELECT, WHERE, ORDER, GROUP
+        $usedTables = [];
+
+        foreach ($select as $val) {
+            if (preg_match_all('/\b([a-zA-Z_][a-zA-Z0-9_]*)\./', $val, $m)) {
+                $usedTables = array_merge($usedTables, $m[1]);
             }
         }
 
-        // Merge final unique selection list
+        foreach (array_keys($where) as $key) {
+            if (preg_match_all('/\b([a-zA-Z_][a-zA-Z0-9_]*)\./', $key, $m)) {
+                $usedTables = array_merge($usedTables, $m[1]);
+            }
+        }
+
+        foreach (array_keys($orderBy) as $key) {
+            if (preg_match_all('/\b([a-zA-Z_][a-zA-Z0-9_]*)\./', $key, $m)) {
+                $usedTables = array_merge($usedTables, $m[1]);
+            }
+        }
+
+        if ($groupBy && preg_match_all('/\b([a-zA-Z_][a-zA-Z0-9_]*)\./', $groupBy, $m)) {
+            $usedTables = array_merge($usedTables, $m[1]);
+        }
+
+        $usedTables = array_unique($usedTables);
+
+        if ($join) {
+            $join = array_filter($join, function ($val) use ($usedTables) {
+                $table = trim($val[0]);
+
+                $parts = preg_split('/\s+/', $table);
+                $tableName = $parts[0] ?? $table;
+                $aliasName = $parts[1] ?? $tableName;
+
+                return in_array($tableName, $usedTables, true)
+                    || in_array($aliasName, $usedTables, true);
+            });
+
+            $join = array_values($join);
+        }
+
         $this->_select = array_unique(array_merge($this->_select ?? [], $select));
 
-        // --- 4. Define Framework JOIN and Validation ---
-
-        if (! in_array($this->_method, ['create', 'update', 'delete'])) {
+        if (! in_array($this->_method, ['create', 'update', 'delete'], true)) {
             $condition = '';
             $relationTableClean = $relationTable;
 
-            // Clean table name if aliased (e.g., 'table t' -> 't')
             if (strpos($relationTable, ' ') !== false) {
-                list($baseTable, $relationTableClean) = explode(' ', $relationTable);
+                [, $relationTableClean] = explode(' ', $relationTable);
             }
 
             if (is_array($fieldLocal)) {
-                // Composite JOIN condition
                 foreach ($fieldLocal as $key => $val) {
                     $fkKey = $relationKeys[$key] ?? $val;
-                    $condition .= ($condition ? ' AND ' : '') . $relationTableClean . '.' . $fkKey . ' = __PRIMARY_TABLE__.' . $val;
 
-                    // Apply validation for each key
-                    $this->setValidation($val, 'relation_checker[' . $relationTableClean . '.' . $fkKey . ']');
+                    $condition .= ($condition ? ' AND ' : '')
+                        . $relationTableClean . '.' . $fkKey
+                        . ' = __PRIMARY_TABLE__.' . $val;
+
+                    $this->setValidation(
+                        $val,
+                        'relation_checker[' . $relationTableClean . '.' . $fkKey . ']'
+                    );
                 }
             } else {
-                // Single JOIN condition
-                $condition = $relationTableClean . '.' . $relationKeys . ' = __PRIMARY_TABLE__.' . $fieldLocal;
+                $condition = $relationTableClean . '.' . $relationKeys
+                    . ' = __PRIMARY_TABLE__.' . $fieldLocal;
 
-                // Apply validation for the single key
-                $this->setValidation($fieldLocal, 'relation_checker[' . $relationTableClean . '.' . $relationKeys . ']');
+                $this->setValidation(
+                    $fieldLocal,
+                    'relation_checker[' . $relationTableClean . '.' . $relationKeys . ']'
+                );
             }
 
-            // Add the primary relation table to compilation and JOIN property
             $this->_compiledTable[] = $relationTable;
             $this->_join[$relationTable] = [
                 'condition' => $condition,
                 'type' => 'LEFT',
                 'escape' => true
             ];
-
-            // Add additional JOINs
-            if ($join) {
-                foreach ($join as $val) {
-                    // $val format: [table, condition, type]
-                    $this->_compiledTable[] = $val[0];
-                    $this->_join[$val[0]] = [
-                        'condition' => $val[1],
-                        'type' => $val[2] ?? 'LEFT',
-                        'escape' => true
-                    ];
-                }
-            }
         }
 
-        // --- 5. Finalize Relation Property ---
-        $finalLimit = (is_numeric($limit) && $limit > 0) ? $limit : $this->_limit;
+        $finalLimit = is_numeric($limit) && $limit > 0 ? $limit : $this->_limit;
 
-        // Calculate offset for paginated requests (used by AJAX SELECT)
-        $offset = (is_numeric(Services::request()->getPost('page')) ? Services::request()->getPost('page') - 1 : 0) * $finalLimit;
+        $offset = (
+            is_numeric(Services::request()->getPost('page'))
+                ? Services::request()->getPost('page') - 1
+                : 0
+        ) * $finalLimit;
 
-        // Add set relation property
         $this->_setRelation[$alias] = [
             'select' => $select,
             'primaryKey' => $fieldLocal,
@@ -1848,14 +1866,12 @@ abstract class Core extends Controller
             'where' => $where,
             'join' => $join,
             'orderBy' => $orderBy,
-            'groupBy' => $groupBy ?? (is_array($groupByFields) ? $groupByFields : null),
+            'groupBy' => $groupBy,
             'limit' => $finalLimit,
             'offset' => $offset,
             'output' => $output,
             'translate' => $translate
         ];
-
-        // Add visual diagram of relationship setup here
 
         return $this;
     }
@@ -2548,7 +2564,7 @@ abstract class Core extends Controller
                 }
 
                 if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) &&
-                    ($this->_searchable && ! $this->_like && $this->request->getGet('q')) ||
+                    ($this->_searchable && $this->request->getGet('q')) ||
                     ('autocomplete' == $this->request->getPost('method') && $this->_searchable && $this->request->getPost('q'))
                 ) {
                     $isAutocomplete = ('autocomplete' == $this->request->getPost('method'));
@@ -2579,7 +2595,7 @@ abstract class Core extends Controller
 
                         if (! empty($validColumns)) {
                             foreach ($validColumns as $validColumn) {
-                                $this->_prepare('like', [$validColumn, $searchQuery]);
+                                $this->_prepare('like', [$validColumn, $searchQuery, 'both', true, true]);
                             }
                         }
                     }
@@ -2611,12 +2627,17 @@ abstract class Core extends Controller
                             }
 
                             foreach ($columns as $key => $val) {
+                                if (in_array($val, $this->_unsetColumn)) {
+                                    // Skip unset columns
+                                    continue;
+                                }
+
                                 // Add table name prefix if not present to prevent ambiguity
                                 if (strpos($val, '.') === false && strpos($val, '(') === false && strpos($val, ')') === false) {
                                     $val = $this->_table . '.' . $val;
                                 }
 
-                                $this->_prepare(($key ? 'orLike' : 'like'), [$val, $searchQuery]);
+                                $this->_prepare(($key ? 'orLike' : 'like'), [$val, $searchQuery, 'both', true, true]);
                             }
 
                             $this->groupEnd();
@@ -2684,7 +2705,7 @@ abstract class Core extends Controller
                                 }
 
                                 foreach ($searchConditions as $condition) {
-                                    $this->_prepare($condition['type'], [$condition['field'], $condition['query']]);
+                                    $this->_prepare($condition['type'], [$condition['field'], $condition['query'], 'both', true, true]);
                                 }
 
                                 $this->groupEnd();
@@ -2839,7 +2860,7 @@ abstract class Core extends Controller
                         }
 
                         // Push like an or like to the prepared query builder
-                        $this->_prepare(($key ? 'orLike' : 'like'), [$val, htmlspecialchars(('autocomplete' == $this->request->getPost('method') && $this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q')))]);
+                        $this->_prepare(($key ? 'orLike' : 'like'), [$val, htmlspecialchars(('autocomplete' == $this->request->getPost('method') && $this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q'))), 'both', true, true]);
 
                         if (isset($this->_setField[$this->request->getPost('origin')]['parameter'])) {
                             if (is_array($this->_setField[$this->request->getPost('origin')]['parameter'])) {
@@ -2928,35 +2949,53 @@ abstract class Core extends Controller
             }
 
             if ($this->request->getGet('sort') && 'desc' == strtolower($this->request->getGet('sort'))) {
-                // Order ASC from query string
-                set_userdata('sortOrder', 'ASC');
-            } else {
                 // Order DESC from query string
                 set_userdata('sortOrder', 'DESC');
+            } else {
+                // Order ASC from query string
+                set_userdata('sortOrder', 'ASC');
             }
 
-            if ($this->request->getGet('order') && $this->model->fieldExists($this->request->getGet('order'), $this->_table)) {
-                // Match order by the primary table
-                // Push order to the prepared query builder
-                $this->_prepare[] = [
-                    'function' => 'orderBy',
-                    'arguments' => [$this->_table . '.' . $this->request->getGet('order'), get_userdata('sortOrder')]
-                ];
-            } elseif ($this->_compiledTable) {
-                // Otherwhise, find it from the relation table
-                foreach ($this->_compiledTable as $key => $dbTable) {
-                    // Validate the column to check if column is exist in table
-                    if ($this->request->getGet('order') && $this->model->fieldExists($this->request->getGet('order'), $dbTable)) {
-                        if (strpos($dbTable, ' ') !== false && strpos($dbTable, '(') == false && strpos($dbTable, ')') == false) {
-                            // Get original table
-                            $dbTable = explode(' ', $dbTable)[1];
-                        }
+            $orderField = $this->request->getGet('order');
+            if ($orderField) {
+                // If the ordered field is a merged column, apply sorting to all its component fields
+                if (isset($this->_mergeContent[$orderField])) {
+                    $orderFieldsToApply = $this->_mergeContent[$orderField]['column'];
+                } else {
+                    $orderFieldsToApply = [$orderField];
+                }
 
+                foreach ($orderFieldsToApply as $currentOrderField) {
+                    $checkField = $currentOrderField;
+                    if (substr($checkField, -8) === '_masking') {
+                        $checkField = substr($checkField, 0, -8);
+                    }
+
+                    if ($this->model->fieldExists($checkField, $this->_table)) {
+                        // Match order by the primary table
                         // Push order to the prepared query builder
                         $this->_prepare[] = [
                             'function' => 'orderBy',
-                            'arguments' => [$dbTable . '.' . $this->request->getGet('order'), get_userdata('sortOrder')]
+                            'arguments' => [$this->_table . '.' . $checkField, get_userdata('sortOrder')]
                         ];
+                    } elseif ($this->_compiledTable) {
+                        // Otherwhise, find it from the relation table
+                        foreach ($this->_compiledTable as $key => $dbTable) {
+                            // Validate the column to check if column is exist in table
+                            if ($this->model->fieldExists($checkField, $dbTable)) {
+                                if (strpos($dbTable, ' ') !== false && strpos($dbTable, '(') == false && strpos($dbTable, ')') == false) {
+                                    // Get original table
+                                    $dbTable = explode(' ', $dbTable)[1];
+                                }
+
+                                // Push order to the prepared query builder
+                                $this->_prepare[] = [
+                                    'function' => 'orderBy',
+                                    'arguments' => [$dbTable . '.' . $checkField, get_userdata('sortOrder')]
+                                ];
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -3330,6 +3369,26 @@ abstract class Core extends Controller
             return make_json($output);
         }
 
+        // Benchmark dumping
+        if ('benchmark' === $this->_debugging) {
+            $timers = Services::timer()->getTimers();
+            $results = [];
+            foreach ($timers as $name => $timer) {
+                $results[$name] = $timer['duration'];
+            }
+            arsort($results); // sort by highest duration
+            
+            $html = "<div style='padding:20px; font-family:sans-serif;'>";
+            $html .= "<h2>Aksara Benchmark Results</h2><table border='1' cellpadding='10' style='border-collapse:collapse; width:100%; max-width:800px;'>";
+            $html .= "<tr style='background:#f4f4f4;'><th>Process Name</th><th>Duration (Seconds)</th></tr>";
+            foreach ($results as $name => $duration) {
+                $color = $duration > 0.5 ? 'red' : ($duration > 0.1 ? 'orange' : 'green');
+                $html .= sprintf("<tr><td>%s</td><td style='color:%s; font-weight:bold; text-align:right;'>%.5f</td></tr>", $name, $color, $duration);
+            }
+            $html .= "</table></div>";
+            exit($html);
+        }
+
         // Send to client
         return $this->template->build($this->_view, $output, $this->_table);
     }
@@ -3351,7 +3410,9 @@ abstract class Core extends Controller
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
+        timer('Core::serialize() Data Formatting');
         $serialized = $this->serialize($data);
+        timer('Core::serialize() Data Formatting');
 
         $tableData = [];
 
@@ -3378,8 +3439,10 @@ abstract class Core extends Controller
             $renderer->setProperty($properties); // Send necessary context properties
             $renderer->setPath('table'); // Specify the renderer path (e.g., table renderer)
 
+            timer('Core::renderTable() Formatter & HTML Table Output');
             // Run the renderer to format the serialized data into final table structure.
             $tableData = $renderer->render($serialized, count($data));
+            timer('Core::renderTable() Formatter & HTML Table Output');
         }
 
         return $tableData;
@@ -3400,7 +3463,7 @@ abstract class Core extends Controller
         // --- Initial Validation ---
         // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
         if (! $data && ! $this->_permitUpsert && 'autocomplete' != $this->request->getPost('method')) {
-            return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirectBack);
+            return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), current_page('../'));
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
@@ -3509,7 +3572,7 @@ abstract class Core extends Controller
         // Check if method is update
         if ('update' == $this->_method && ! $this->_where && ! $this->_permitUpsert) {
             // Fail because no primary keyword and insert is restricted
-            return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->apiClient ? $this->_redirectBack : null));
+            return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->apiClient ? current_page('../') : null));
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
@@ -3586,12 +3649,13 @@ abstract class Core extends Controller
                     $this->formValidation->setRule($key . '.*', (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                 } elseif (array_intersect(['password'], $type)) {
                     $validation = true;
+                    $required = ('create' == $this->_method ? 'required|' : '');
 
                     // Password validation only when post field has value
-                    if ($this->request->getPost($key)) {
+                    if ($this->request->getPost($key) || 'create' == $this->_method) {
                         // Password validation rules
-                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), 'min_length[6]');
-                        $this->formValidation->setRule($key . '_confirmation', phrase('Confirmation') . ' ' . (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), ('create' == $this->_method ? 'required|matches[' . $key . ']' : 'matches[' . $key . ']'));
+                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $required . 'min_length[6]');
+                        $this->formValidation->setRule($key . '_confirmation', phrase('Confirmation') . ' ' . (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $required . 'matches[' . $key . ']');
                     }
                 } elseif (array_intersect(['encryption'], $type) && $val['validation']) {
                     $validation = true;
@@ -3611,8 +3675,13 @@ abstract class Core extends Controller
 
                     // Relation table validation
                     if (in_array('required', $val['validation'])) {
+                        $relationKey = $this->_setRelation[$key]['relationKey'];
+                        
+                        if (is_array($relationKey) && isset($relationKey[0])) {
+                            $relationKey = $relationKey[0];
+                        }
                         // Apply rules only when it's required
-                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']']);
+                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $relationKey . ']']);
                     } else {
                         // Find foreign data
                         $constrained = false;
@@ -3642,7 +3711,7 @@ abstract class Core extends Controller
                         // Hour validation rules
                         $val['validation'][] = 'numeric';
                         $val['validation'][] = 'max_length[2]';
-                    } elseif (array_intersect(['date', 'datepicker'], $type)) {
+                    } elseif (array_intersect(['date', 'datepicker'], $type) && service('request')->getPost($key)) {
                         // Date (YYYY-MM-DD) validation rules
                         $val['validation'][] = 'valid_date';
                     } elseif (array_intersect(['timestamp', 'datetime', 'datetimepicker'], $type)) {
@@ -3714,7 +3783,8 @@ abstract class Core extends Controller
                     (in_array($field, $this->_unsetField) && ! isset($this->_setDefault[$field]) && ! array_intersect(['slug', 'current_timestamp', 'created_timestamp', 'updated_timestamp'], $type)) ||
                     (in_array('disabled', $type) && ! isset($this->_setDefault[$field])) ||
                     ('create' === $this->_method && array_intersect(['updated_timestamp'], $type)) ||
-                    ('update' === $this->_method && array_intersect(['created_timestamp'], $type))
+                    ('update' === $this->_method && array_intersect(['created_timestamp'], $type)) ||
+                    (in_array('password', $type) && ! $this->request->getPost($field) && 'create' !== $this->_method)
                 ) {
                     continue;
                 }
@@ -4182,6 +4252,14 @@ abstract class Core extends Controller
 
             // Iteratively upsert vertical schema
             $hasType = $this->model->fieldExists('type', $table);
+
+            // Ensure unchecked boolean fields are saved as 0
+            foreach ($this->_setField as $field => $config) {
+                if (isset($config['boolean']) && ! array_key_exists($field, $data)) {
+                    $data[$field] = '0';
+                }
+            }
+
             foreach ($data as $key => $val) {
                 $upsertData = ['value' => $val];
                 if ($hasType) {
@@ -4233,6 +4311,17 @@ abstract class Core extends Controller
 
                     if (! $this->model->fieldExists($key, $table)) {
                         unset($where[$keyBackup]);
+                    }
+                }
+            }
+
+            // Remove where clause that does not exist in table
+            foreach ($where as $key => $val) {
+                if (strpos($key, '.') !== false) {
+                    $sourceTable = strstr($key, '.', true);
+
+                    if ($sourceTable != $table) {
+                        unset($where[$key]);
                     }
                 }
             }
@@ -4360,6 +4449,17 @@ abstract class Core extends Controller
 
                     if (! $this->model->fieldExists($key, $table)) {
                         unset($where[$keyBackup]);
+                    }
+                }
+            }
+
+            // Remove where clause that does not exist in table
+            foreach ($where as $key => $val) {
+                if (strpos($key, '.') !== false) {
+                    $sourceTable = strstr($key, '.', true);
+
+                    if ($sourceTable != $table) {
+                        unset($where[$key]);
                     }
                 }
             }
@@ -5361,10 +5461,40 @@ abstract class Core extends Controller
                 // Generate join query passed from set_relation
                 if (is_array($this->_join) && sizeof($this->_join) > 0) {
                     foreach ($this->_join as $dbTable => $params) {
-                        // Push join to prepared query builder
+                        $condition = str_replace('__PRIMARY_TABLE__', $table, $params['condition']);
+
+                        foreach ($this->_setRelation ?? [] as $relation) {
+                            if (($relation['relationTable'] ?? null) !== $dbTable) {
+                                continue;
+                            }
+
+                            $relationTableClean = $dbTable;
+
+                            if (strpos($relationTableClean, ' ') !== false) {
+                                [, $relationTableClean] = explode(' ', $relationTableClean);
+                            }
+
+                            foreach ($relation['where'] ?? [] as $whereKey => $whereValue) {
+                                if (
+                                    is_string($whereKey) &&
+                                    str_starts_with($whereKey, $relationTableClean . '.')
+                                ) {
+                                    $localField = substr($whereKey, strlen($relationTableClean . '.'));
+
+                                    if ($this->model->fieldExists($localField, $table)) {
+                                        $extraCondition = $whereKey . ' = ' . $table . '.' . $localField;
+
+                                        if (strpos($condition, $extraCondition) === false) {
+                                            $condition .= ' AND ' . $extraCondition;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         $this->_prepare[] = [
                             'function' => 'join',
-                            'arguments' => [$dbTable, str_replace('__PRIMARY_TABLE__', $this->_table, $params['condition']), $params['type'], $params['escape']]
+                            'arguments' => [$dbTable, $condition, $params['type'], $params['escape']]
                         ];
                     }
                 }
@@ -5517,7 +5647,7 @@ abstract class Core extends Controller
     private function _fetch(?string $table = null, ?bool $row = false): array
     {
         // --- 1. Debugger ---
-        if ($this->_debugging) {
+        if ($this->_debugging && 'benchmark' !== $this->_debugging) {
             // Run query with limit/offset for debug output
             $queryBuilder = $this->_runQuery($table);
 
@@ -5535,7 +5665,7 @@ abstract class Core extends Controller
 
             if ('query' == $this->_debugging) {
                 exit(nl2br($this->model->lastQuery()));
-            } else {
+            } elseif($this->_debugging) {
                 if (ENVIRONMENT === 'production') {
                     exit('<pre>' . print_r($query, true) . '</pre>');
                 }
@@ -5576,6 +5706,7 @@ abstract class Core extends Controller
 
         // --- 2. Execute Queries ---
 
+        timer('Core::_fetchData() Database Query');
         // Query for results (with LIMIT/OFFSET)
         $resultsBuilder = $this->_runQuery($table);
         // Apply limit/offset after running the main query builder parameters
@@ -5596,6 +5727,7 @@ abstract class Core extends Controller
             // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
             $total = $this->_runQuery($table, true)->countAllResults();
         }
+        timer('Core::_fetchData() Database Query');
 
         // --- 3. Reset and Return ---
         $this->_prepare = []; // Reset preparation property for subsequent queries
@@ -5620,6 +5752,15 @@ abstract class Core extends Controller
      */
     private function _getRelation(array $params = [], int|string|null $selected = 0, bool $ajax = false): array|string
     {
+        // Try to fetch from runtime cache first to avoid N+1 query bottleneck
+        $cacheKey = '';
+        if ($selected && ! $ajax) {
+            $cacheKey = md5(json_encode($params) . '_' . $selected);
+            if (isset($this->_relationCache[$cacheKey])) {
+                return $this->_relationCache[$cacheKey];
+            }
+        }
+
         // Use default value if nothing is selected and a default is defined.
         $fieldNameForDefault = is_array($params['primaryKey']) ? end($params['primaryKey']) : ($params['primaryKey'] ?? null);
         if (! $selected && ($this->_defaultValue[$fieldNameForDefault] ?? null)) {
@@ -5637,7 +5778,7 @@ abstract class Core extends Controller
             $table = $parts[0] ?? null;
 
             // Handle column aliasing to prevent ambiguity if column names clash.
-            if (in_array($column, $compiledSelect) && $table != $this->_table) {
+            if (in_array($column, $compiledSelect) && $table != $params['relationTable']) {
                 $val .= ' AS ' . $column . '_' . $table;
             }
 
@@ -5675,43 +5816,85 @@ abstract class Core extends Controller
 
         // --- 3. WHERE Clause Modification for Selected Item ---
         if ($selected) {
-            // Find the actual table name (stripping alias if present).
-            $relationTable = (strpos($params['relationTable'], ' ') !== false) ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1) : $params['relationTable'];
+            $relationTable = (strpos($params['relationTable'], ' ') !== false)
+                ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1)
+                : $params['relationTable'];
 
-            // Force WHERE clause to retrieve only the selected item.
-            $relationKey = $relationTable . '.' . $params['relationKey'];
-            $params['where'][$relationKey] = $selected;
-            $params['limit'] = 1; // Limit to 1 result.
+            /*
+            * When resolving selected value on update form, do not let relation scope
+            * hide the selected option. The selected option should be resolved by its
+            * relation key first.
+            */
+            foreach ($params['where'] as $whereKey => $whereValue) {
+                if (
+                    is_string($whereKey) &&
+                    str_starts_with($whereKey, $relationTable . '.')
+                ) {
+                    $whereField = substr($whereKey, strlen($relationTable . '.'));
+
+                    if (
+                        ! is_array($params['relationKey']) &&
+                        $whereField !== $params['relationKey']
+                    ) {
+                        unset($params['where'][$whereKey]);
+                    }
+                }
+            }
+
+            if (is_array($params['relationKey'])) {
+                $selectedParts = explode('.', $selected);
+
+                foreach ($params['relationKey'] as $k => $relKey) {
+                    if (isset($selectedParts[$k])) {
+                        $params['where'][$relationTable . '.' . $relKey] = $selectedParts[$k];
+                    }
+                }
+            } else {
+                $params['where'][$relationTable . '.' . $params['relationKey']] = $selected;
+            }
+
+            $params['limit'] = 1;
+        }
+
+        // --- 3.5 Capture Depends Payload (AJAX) ---
+        if ($ajax) {
+            $relationTable = (strpos($params['relationTable'], ' ') !== false) ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1) : $params['relationTable'];
+            $reserved = ['aksara', 'method', 'source', 'selected_list', 'search', 'page'];
+
+            foreach ($this->request->getPost() as $key => $val) {
+                if (! in_array($key, $reserved) && '' !== $val && null !== $val) {
+                    // Prevent SQL injection on column names by only allowing alphanumeric, underscore, and dot
+                    if (preg_match('/^[a-zA-Z0-9_\.]+$/', $key)) {
+                        $checkField = (strpos($key, '.') !== false) ? substr($key, strpos($key, '.') + 1) : $key;
+
+                        // Verify the field exists in the database table to prevent SQL errors
+                        if ($this->model->fieldExists($checkField, $relationTable)) {
+                            // Prefix with relation table to prevent ambiguous column errors if not explicitly prefixed
+                            $whereKey = (strpos($key, '.') === false) ? $relationTable . '.' . $key : $key;
+                            $params['where'][$whereKey] = $val;
+                        }
+                    }
+                }
+            }
         }
 
         // --- 4. Apply Custom WHERE Clauses ---
         if ($params['where']) {
             foreach ($params['where'] as $key => $val) {
                 // Complex custom WHERE logic (IN, NOT IN) requiring raw SQL injection (false flag).
-                if ((strpos($key, ' IN') !== false || strpos($key, ' NOT IN') !== false) && is_array($val)) {
+                if ((strpos($key, ' IN') !== false || strpos($key, ' NOT IN') !== false || strpos($key, ' LIKE') !== false || strpos($key, ' NOT LIKE') !== false) && is_array($val)) {
                     $this->model->where($key, $val, false);
-                } elseif ($val && (strpos($val, ' IN') !== false || strpos($val, ' NOT IN') !== false) && strpos($val, '(') !== false && strpos($val, ')') !== false) {
+                } elseif ($val && (strpos($val, ' IN') !== false || strpos($val, ' NOT IN') !== false || strpos($val, ' LIKE') !== false || strpos($val, ' NOT LIKE') !== false) && strpos($val, '(') !== false && strpos($val, ')') !== false) {
                     $this->model->where($val, null, false);
+                } elseif (strpos($key, ' NOT LIKE') !== false) {
+                    $field = trim(str_replace(' NOT LIKE', '', $key));
+                    $this->model->notLike($field, $val, 'none');
+                } elseif (strpos($key, ' LIKE') !== false) {
+                    $field = trim(str_replace(' LIKE', '', $key));
+                    $this->model->like($field, $val, 'none');
                 } else {
                     $this->model->where($key, $val);
                 }
-            }
-        }
-
-        // Handle WHERE clause for relation key when method is NOT 'create' or 'update'. (Possibly redundant with step 3, but preserved)
-        if (! in_array($this->_method, ['create', 'update']) && $selected) {
-            $relationTableName = (strpos($params['relationTable'], ' ') !== false ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1) : $params['relationTable']);
-
-            if (is_array($params['relationKey'])) {
-                // Composite key handling
-                $selectedParts = explode('.', $selected);
-                foreach ($params['relationKey'] as $k => $relKey) {
-                    if ($selectedParts[$k] ?? null) {
-                        $this->model->where($relationTableName . '.' . $relKey, $selectedParts[$k]);
-                    }
-                }
-            } else {
-                $this->model->where($relationTableName . '.' . $params['relationKey'], $selected);
             }
         }
 
@@ -5721,7 +5904,7 @@ abstract class Core extends Controller
                 foreach ($params['orderBy'] as $key => $val) {
                     if (strpos($key, '.') === false && strpos($key, '(') === false && strpos($key, ')') === false) {
                         // Add table name prefix if not present to prevent ambiguity
-                        $key = $this->_table . '.' . $key;
+                        $key = $params['relationTable'] . '.' . $key;
                     }
 
                     $this->model->orderBy($key, $val);
@@ -5786,17 +5969,25 @@ abstract class Core extends Controller
                 if (in_array($this->_method, ['create', 'update'])) {
                     // Formatting for form field (dropdown/select2)
 
-                    // Determine the value/ID for the option
-                    $value = $val->$primaryKey ?? $val->$params['relationKey'] ?? 0;
-
-                    // Determine the selected status
-                    $isSelected = ($value == $selected);
-
                     if (is_array($params['primaryKey'])) {
                         // Composite key value and selected status determination.
                         $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['primaryKey']));
-                        $isSelected = ($value == $selected);
+                    } else {
+                        // Determine the value/ID for the option
+                        $value = $val->$primaryKey ?? null;
                     }
+
+                    if (null === $value) {
+                        if (is_array($params['relationKey'])) {
+                            $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['relationKey']));
+                        } else {
+                            $relationKey = $params['relationKey'];
+                            $value = $val->$relationKey ?? 0;
+                        }
+                    }
+
+                    // Determine the selected status
+                    $isSelected = ($value == $selected);
 
                     if ($ajax) {
                         $output[] = ['id' => $value, 'text' => ($params['translate'] ? phrase($label) : $label)];
@@ -5806,6 +5997,10 @@ abstract class Core extends Controller
                 } else {
                     // Formatting for read/index view (single label string)
                     $output = ($params['translate'] ? phrase($label) : $label);
+
+                    if ($cacheKey) {
+                        $this->_relationCache[$cacheKey] = $output;
+                    }
 
                     // If it's a read method, only one label is needed, so return immediately.
                     return $output;
