@@ -202,6 +202,31 @@ class Document
             $params['format'] = [preg_replace('/[^0-9.]/', '', (float) $params['page-width']) * 25.4, (float) preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4];
         }
 
+        if (is_dir(FCPATH . 'assets/local/bookos')) {
+            // Custom font configuration
+            $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+            $fontDirs = $defaultConfig['fontDir'];
+
+            $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+            $fontData = $defaultFontConfig['fontdata'];
+
+            $params['fontDir'] = array_merge($fontDirs, [
+                FCPATH . 'assets/local/bookos',
+            ]);
+
+            $params['fontdata'] = $fontData + [
+                'bookos' => [
+                    'R' => 'bookos.ttf',
+                    'B' => 'bookosb.ttf',
+                    'I' => 'bookosi.ttf',
+                    'BI' => 'bookosbi.ttf',
+                ],
+            ];
+        }
+
+        // Fix missing table border on page breaks
+        $params['splitTableBorderWidth'] = 0.265;
+
         // Load generator
         $pdf = new Mpdf($params);
 
