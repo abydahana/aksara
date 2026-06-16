@@ -8,7 +8,7 @@
 // calling it twice would corrupt slugs (all links become target="_blank")
 $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 ?>
-<header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper">
+<header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url(); ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
