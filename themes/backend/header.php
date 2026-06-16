@@ -3,13 +3,14 @@
  * @var object $meta
  */
 ?>
-<header role="header" class="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top" id="header-wrapper">
+<header role="header" class="navbar navbar-expand-lg navbar-dark bg-primary border-bottom fixed-top" id="header-wrapper">
     <div class="container-fluid">
-        <a class="navbar-brand pt-0 pb-0 d-none d-lg-block" href="<?= base_url(); ?>" target="_blank">
-            <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
-            <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
-            <?= (get_userdata('year') ? '<span class="badge bg-warning">' . get_userdata('year') . '</span>' : ''); ?>
-        </a>
+        <div class="navbar-brand pt-0 pb-0 d-none d-lg-block">
+            <a href="<?= base_url(); ?>" target="_blank">
+                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
+                <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
+            </a>
+        </div>
         <a href="<?= current_page(); ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" role="title">
             <?= $meta->title; ?>
         </a>
@@ -17,11 +18,27 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link" data-toggle="sidebar">
                         <i class="mdi mdi-arrow-left"></i>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <?php if (get_userdata('year')): ?>
+                        <div class="dropdown">
+                            <button class="btn btn-danger btn-sm border-light fw-bold rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <?= get_userdata('year'); ?>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php foreach(get_active_years() as $key => $val): ?>
+                                    <li>
+                                        <a class="dropdown-item --xhr<?= get_userdata('year') == $val->year ? ' active' : ''; ?>" href="<?= base_url('xhr/set_year', ['year' => $val->year]); ?>"><?= $val->year; ?></a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">

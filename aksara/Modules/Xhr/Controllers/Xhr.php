@@ -44,6 +44,17 @@ class XHR extends Core
         return make_json($output);
     }
 
+    public function set_year()
+    {
+        $year = $this->request->getGet('year');
+
+        if ($year) {
+            set_userdata('year', $year);
+        }
+
+        return throw_exception(301, phrase('Year changed successfully.'), $this->request->getServer('HTTP_REFERER'), true);
+    }
+
     public function captcha()
     {
         // Load captcha helper
