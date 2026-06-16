@@ -641,7 +641,7 @@ class Model
         if (! $alias) {
             $alias = $column;
         }
-        
+
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -664,7 +664,7 @@ class Model
         if (! $alias) {
             $alias = $column;
         }
-        
+
         $this->_selection = true;
 
         $this->_prepare[] = [
@@ -687,7 +687,7 @@ class Model
         if (! $alias) {
             $alias = $column;
         }
-        
+
         $this->_selection = true;
 
         $this->_prepare[] = [

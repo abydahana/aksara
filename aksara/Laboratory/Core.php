@@ -67,7 +67,6 @@ abstract class Core extends Controller
 
     /**
      * Cache for resolved relations to prevent N+1 queries.
-     * @var array
      */
     protected array $_relationCache = [];
 
@@ -3377,7 +3376,7 @@ abstract class Core extends Controller
                 $results[$name] = $timer['duration'];
             }
             arsort($results); // sort by highest duration
-            
+
             $html = "<div style='padding:20px; font-family:sans-serif;'>";
             $html .= "<h2>Aksara Benchmark Results</h2><table border='1' cellpadding='10' style='border-collapse:collapse; width:100%; max-width:800px;'>";
             $html .= "<tr style='background:#f4f4f4;'><th>Process Name</th><th>Duration (Seconds)</th></tr>";
@@ -3676,7 +3675,7 @@ abstract class Core extends Controller
                     // Relation table validation
                     if (in_array('required', $val['validation'])) {
                         $relationKey = $this->_setRelation[$key]['relationKey'];
-                        
+
                         if (is_array($relationKey) && isset($relationKey[0])) {
                             $relationKey = $relationKey[0];
                         }
@@ -5665,7 +5664,7 @@ abstract class Core extends Controller
 
             if ('query' == $this->_debugging) {
                 exit(nl2br($this->model->lastQuery()));
-            } elseif($this->_debugging) {
+            } elseif ($this->_debugging) {
                 if (ENVIRONMENT === 'production') {
                     exit('<pre>' . print_r($query, true) . '</pre>');
                 }
