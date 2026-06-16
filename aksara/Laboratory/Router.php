@@ -64,13 +64,13 @@ class Router
             $extra_params = [];
             $uri_segments = explode('/', $this->_uriString);
             $method_found = false;
-            
+
             if (class_exists($namespace)) {
                 foreach ($uri_segments as $segment) {
                     if (strtolower($segment) == strtolower($controller)) {
                         continue;
                     }
-                    if (!$method_found) {
+                    if (! $method_found) {
                         $discovered = $this->_discoverMethod($namespace, $segment);
                         if ($discovered && method_exists($namespace, $discovered)) {
                             $method = $discovered;
@@ -83,8 +83,8 @@ class Router
                     }
                 }
             }
-            
-            if (!$method) {
+
+            if (! $method) {
                 $method = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
             }
 
@@ -103,7 +103,7 @@ class Router
 
                 // Add route for current request
                 $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
-                if (!empty($extra_params)) {
+                if (! empty($extra_params)) {
                     $dest .= '/' . implode('/', $extra_params);
                 }
                 $routes->add($this->_uriString, $dest);
@@ -118,7 +118,7 @@ class Router
 
                 // Add route for current request
                 $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
-                if (!empty($extra_params)) {
+                if (! empty($extra_params)) {
                     $dest .= '/' . implode('/', $extra_params);
                 }
                 $routes->add($this->_uriString, $dest);
@@ -127,7 +127,7 @@ class Router
 
                 // Add route for current request
                 $dest = $namespace . (! $is_duplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null);
-                if (!empty($extra_params)) {
+                if (! empty($extra_params)) {
                     $dest .= '/' . implode('/', $extra_params);
                 }
                 $routes->add($this->_uriString, $dest);

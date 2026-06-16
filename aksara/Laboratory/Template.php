@@ -197,6 +197,26 @@ class Template
         // Method name to force as view when exists
         $method = (! in_array($router->methodName(), ['404', 'index', 'create', 'read', 'update']) ? $router->methodName() : $view);
 
+        if (preg_match('#^(\.\./)+#', $view)) {
+            // The view path starts with one or more parent directory traversals
+            preg_match_all('#\.\./#', $view, $matches);
+
+            $levels = count($matches[0]);
+
+            // Traverse up the directory tree based on the number of "../" segments.
+            while ($levels--) {
+                $theme_viewfinder = dirname($theme_viewfinder);
+                $fallback_theme_viewfinder = dirname($fallback_theme_viewfinder);
+                $module_viewfinder = dirname($module_viewfinder);
+                $core_viewfinder = dirname($core_viewfinder);
+                $fallback_viewfinder = dirname($fallback_viewfinder);
+            }
+
+            // Strip leading "../" segments since the base view directories
+            // have already been adjusted accordingly.
+            $view = preg_replace('#^(\.\./)+#', '', $view);
+        }
+
         /**
          * ---------------------------------------------------------------------
          * Find view from theme
