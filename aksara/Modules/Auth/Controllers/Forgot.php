@@ -38,9 +38,13 @@ class Forgot extends Core
             return $this->_validateForm();
         }
 
+        helper('captcha');
+
         $this->setTitle(phrase('Reset Password'))
         ->setDescription(phrase('Reset your password and request new one.'))
         ->setIcon('mdi mdi-account-key-outline')
+
+        ->setOutput('captcha', generate_captcha())
 
         ->render();
     }
@@ -73,6 +77,7 @@ class Forgot extends Core
     {
         // Set validation rules
         $this->formValidation->setRule('username', phrase('Username or email'), 'required');
+        $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Validate form
         if ($this->formValidation->run($this->request->getPost()) === false) {
@@ -166,6 +171,9 @@ class Forgot extends Core
                 ]
             );
         }
+
+        // Unset stored captcha
+        unset_userdata(['captcha', 'captcha_file']);
 
         return throw_exception(301, phrase('The password reset link has been sent to') . ' ' . $query->email, base_url('auth'));
     }
