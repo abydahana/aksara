@@ -370,6 +370,8 @@ class Table
 
         if ($this->_addToolbar) {
             foreach ($this->_addToolbar as $val) {
+                if (in_array($val['url'], $this->_unsetMethod)) continue;
+
                 $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['new_tab']);
             }
         }
@@ -547,6 +549,31 @@ class Table
      */
     private function _setLink(?string $path, ?string $label, ?string $class, ?string $icon, array $query_params = [], bool $new_tab = false, ?string $attribution = null): ?array
     {
+        if (! isset($query_params['limit'])) {
+            // Unset limit from query params
+            $query_params['limit'] = null;
+        }
+        if (! isset($query_params['offset'])) {
+            // Unset offset from query params
+            $query_params['offset'] = null;
+        }
+        if (! isset($query_params['per_page'])) {
+            // Unset page from query params
+            $query_params['per_page'] = null;
+        }
+        if (! isset($query_params['order'])) {
+            // Unset order from query params
+            $query_params['order'] = null;
+        }
+        if (! isset($query_params['sort'])) {
+            // Unset sort from query params
+            $query_params['sort'] = null;
+        }
+        if (! isset($query_params['q'])) {
+            // Unset search keyword from query params
+            $query_params['q'] = null;
+        }
+
         // Check Restrictions (Unset Read/Update/Delete based on specific conditions)
         foreach ($query_params as $keyword => $value) {
             if (in_array($path, $this->_unsetMethod)) {
