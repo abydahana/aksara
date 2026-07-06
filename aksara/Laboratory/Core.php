@@ -5663,7 +5663,7 @@ abstract class Core extends Controller
             }
 
             if ('query' == $this->_debugging) {
-                exit(nl2br($this->model->lastQuery()));
+                exit('<div style="font-family:monospace">' . nl2br($this->model->lastQuery()) . '</div>');
             } elseif ($this->_debugging) {
                 if (ENVIRONMENT === 'production') {
                     exit('<pre>' . print_r($query, true) . '</pre>');

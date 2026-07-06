@@ -20,6 +20,7 @@ namespace Aksara\Modules\Assets\Controllers;
 use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
+use Aksara\Laboratory\Builder\Builder;
 
 class Assets extends Core
 {
@@ -291,9 +292,15 @@ class Assets extends Core
         $allowed_types = ['core', 'table', 'form', 'view'];
 
         try {
-            if (is_dir($base_path)) {
-                helper('filesystem');
+            helper('filesystem');
 
+            $builder = new Builder();
+
+            foreach ($allowed_types as $type) {
+                $builder->getComponent($theme, $type);
+            }
+
+            if (is_dir($base_path)) {
                 // Map the directory with a depth of 2
                 $map = directory_map($base_path, 2);
 
