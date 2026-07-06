@@ -196,9 +196,6 @@ a {
     .carousel-headline {
         height: 420px
     }
-    .navbar-nav:not(.ml-auto) > .nav-item > .nav-link > .mdi {
-        display: none
-    }
 }
 @media (min-width: 1200px) {
     .text-xl-justify {
