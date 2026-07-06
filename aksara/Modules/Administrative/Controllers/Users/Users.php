@@ -127,6 +127,7 @@ class Users extends Core
                 'password' => phrase('Password'),
                 'phone' => phrase('Phone'),
                 'bio' => phrase('Biography'),
+                'gender' => phrase('Gender'),
                 'address' => phrase('Address'),
                 'postal_code' => phrase('Postal Code'),
                 'country_id' => phrase('Country'),
