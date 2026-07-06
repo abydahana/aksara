@@ -370,7 +370,9 @@ class Table
 
         if ($this->_addToolbar) {
             foreach ($this->_addToolbar as $val) {
-                if (in_array($val['url'], $this->_unsetMethod)) continue;
+                if (in_array($val['url'], $this->_unsetMethod)) {
+                    continue;
+                }
 
                 $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['new_tab']);
             }
