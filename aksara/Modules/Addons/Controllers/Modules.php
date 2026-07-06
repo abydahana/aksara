@@ -25,7 +25,7 @@ use Aksara\Laboratory\Core;
 
 class Modules extends Core
 {
-    private string $_primary;
+    private ?string $_primary;
 
     public function __construct()
     {

@@ -24,7 +24,7 @@ use Aksara\Laboratory\Core;
 
 class Themes extends Core
 {
-    private string $_primary;
+    private ?string $_primary;
 
     public function __construct()
     {
