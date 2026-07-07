@@ -111,7 +111,8 @@ class Edit extends Core
             'postal_code' => phrase('Postal Code'),
             'country_id' => phrase('Country'),
             'language_id' => phrase('Language'),
-            'bio' => phrase('Biography')
+            'bio' => phrase('Biography'),
+            'gender' => phrase('Gender')
         ])
 
         ->render($this->_table);
