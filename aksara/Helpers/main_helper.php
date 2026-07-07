@@ -247,7 +247,8 @@ if (! function_exists('throw_exception')) {
             $target = $target ?: base_url();
 
             // Redirect to target
-            exit(header('Location: ' . $target));
+            header('Location: ' . $target);
+            exit;
         }
 
         // Logic for AJAX Request: Return JSON Response
