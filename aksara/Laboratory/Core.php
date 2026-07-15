@@ -66,20 +66,10 @@ abstract class Core extends Controller
     protected $request;
 
     /**
-     * Cache for resolved relations to prevent N+1 queries.
-     */
-    protected array $_relationCache = [];
-
-    /**
      * Theme template properties.
      * @var object
      */
     public $template;
-
-    /**
-     * CSRF Token storage.
-     */
-    private ?string $_token = null;
 
     /**
      * Flag indicating if the submitted API token is valid.
@@ -1847,6 +1837,17 @@ abstract class Core extends Controller
                 'type' => 'LEFT',
                 'escape' => true
             ];
+        }
+
+        if ($join && ! in_array($this->_method, ['create', 'update', 'delete'], true)) {
+            // Add additional JOINs from the $join parameter, ensuring they are properly formatted
+            foreach ($join as $key => $val) {
+                $this->_join[$val[0]] = [
+                    'condition' => $val[1],
+                    'type' => $val[2] ?? '',
+                    'escape' => true
+                ];
+            }
         }
 
         $finalLimit = is_numeric($limit) && $limit > 0 ? $limit : $this->_limit;
