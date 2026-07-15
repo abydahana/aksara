@@ -173,7 +173,7 @@ class Table
 
                 // Skip hidden fields (Logic: Hide if hidden=true, UNLESS it's primary key AND we are in API mode)
                 // If API client is active, we might need primary key even if hidden.
-                if ($hidden && (! $this->apiClient || ($this->apiClient && ! $primary))) {
+                if (($hidden || in_array($field, $this->_unsetColumn)) && (! $this->apiClient || ($this->apiClient && ! $primary))) {
                     continue;
                 }
 
