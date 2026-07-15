@@ -89,37 +89,57 @@ class Messaging
             $encrypter = Services::encrypter();
             $request = Services::request();
 
-            // Send email immediately
-            $host = get_setting('smtp_host');
-            $username = get_setting('smtp_username');
-            $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : $request->getServer('SERVER_ADMIN'));
-            $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
+            // SMTP configuration
+            $host = trim((string) get_setting('smtp_host'));
+            $username = trim((string) get_setting('smtp_username'));
 
-            $email = \Config\Services::email();
+            $encryptedPassword = get_setting('smtp_password');
 
-            if ($host && $username && $password) {
-                $config['userAgent'] = 'Aksara';
-                $config['protocol'] = 'smtp';
-                $config['SMTPCrypto'] = 'ssl';
-                $config['SMTPTimeout'] = 5;
-                $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-                $config['SMTPPort'] = get_setting('smtp_port');
-                $config['SMTPUser'] = $username;
-                $config['SMTPPass'] = $password;
-            } else {
-                $config['protocol'] = 'mail';
+            $password = $encryptedPassword
+                ? $encrypter->decrypt(base64_decode($encryptedPassword))
+                : '';
+
+            /*
+            * Do not attempt to send email if SMTP is not configured.
+            * This prevents CodeIgniter from falling back to PHP mail()
+            * and generating unnecessary log entries.
+            */
+            if (! $host || ! $username || ! $password) {
+                return false;
             }
 
-            $config['charset'] = 'utf-8';
-            $config['newline'] = "\r\n";
-            $config['mailType'] = 'html'; // Text or html
-            $config['wordWrap'] = true;
-            $config['validation'] = true; // Bool whether to validate email or not
+            $senderEmail = get_setting('smtp_email_masking')
+                ?: $request->getServer('SERVER_ADMIN');
 
+            $senderName = get_setting('smtp_sender_masking')
+                ?: get_setting('app_name');
+
+            if (! $senderEmail) {
+                return false;
+            }
+
+            $config = [
+                'userAgent' => 'Aksara',
+                'protocol' => 'smtp',
+                'SMTPCrypto' => 'ssl',
+                'SMTPTimeout' => 5,
+                'SMTPHost' => (strpos($host, '://') !== false
+                    ? trim(substr($host, strpos($host, '://') + 3))
+                    : $host),
+                'SMTPPort' => (int) get_setting('smtp_port'),
+                'SMTPUser' => $username,
+                'SMTPPass' => $password,
+                'charset' => 'utf-8',
+                'newline' => "\r\n",
+                'mailType' => 'html',
+                'wordWrap' => true,
+                'validation' => true,
+            ];
+
+            $email = Services::email();
             $email->initialize($config);
 
-            $email->setFrom($sender_email, $sender_name);
+            $email->setFrom($senderEmail, $senderName);
             $email->setTo($this->_recipientEmail);
 
             $email->setSubject($this->_subject);
@@ -129,9 +149,7 @@ class Messaging
                     <head>
                         <meta name="viewport" content="width=device-width" />
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                        <title>
-                            ' . $this->_subject . '
-                        </title>
+                        <title>' . $this->_subject . '</title>
                     </head>
                     <body>
                         ' . $this->_message . '
@@ -140,27 +158,25 @@ class Messaging
             ');
 
             try {
-                // Send email
-                $email->send();
+                return $email->send(false);
             } catch (Throwable $e) {
-                // return throw_exception(400, array('message' => $email->printDebugger()));
+                return false;
             }
-        } else {
-            // Load model
-            $model = new \Aksara\Laboratory\Model();
-
-            // Insert record into notification
-            $query = $model->insert(
-                'notifier',
-                [
-                    'phone' => $this->_recipientPhone ?? '',
-                    'email' => $this->_recipientEmail ?? '',
-                    'title' => $this->_subject ?? '',
-                    'message' => $this->_message ?? '',
-                    'timestamp' => date('Y-m-d H:i:s'),
-                    'status' => 0
-                ]
-            );
         }
+
+        // Queue notification
+        $model = new \Aksara\Laboratory\Model();
+
+        return $model->insert(
+            'notifier',
+            [
+                'phone' => $this->_recipientPhone ?? '',
+                'email' => $this->_recipientEmail ?? '',
+                'title' => $this->_subject ?? '',
+                'message' => $this->_message ?? '',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'status' => 0,
+            ]
+        );
     }
 }
