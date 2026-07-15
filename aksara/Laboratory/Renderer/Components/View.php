@@ -142,7 +142,7 @@ class View
             }
 
             // Skip hidden fields
-            if ($hidden) {
+            if ($hidden || in_array($field, $this->_unsetView)) {
                 continue;
             }
 

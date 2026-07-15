@@ -145,7 +145,7 @@ class Form
             }
 
             // Skip hidden fields or timestamps
-            if ($hidden || array_intersect(['current_timestamp'], array_keys($type))) {
+            if ($hidden || in_array($field, $this->_unsetField) || array_intersect(['current_timestamp'], array_keys($type))) {
                 continue;
             }
 
