@@ -1847,6 +1847,8 @@ abstract class Core extends Controller
                     'type' => $val[2] ?? '',
                     'escape' => true
                 ];
+
+                $this->_compiledTable[] = $val[0];
             }
         }
 
