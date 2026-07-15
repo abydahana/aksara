@@ -32,6 +32,11 @@ class AppUsersBlocked extends Migration
             ],
             'blocked_until' => [
                 'type' => 'timestamp'
+            ],
+            'blocked_reason' => [
+                'type' => 'varchar',
+                'constraint' => 255,
+                'null' => true
             ]
         ]);
 
