@@ -402,16 +402,23 @@ class Form
             }
         } elseif (array_intersect(['checkbox', 'radio'], array_keys($type)) && is_array($content)) {
             $hasChecked = false;
+            $checkedValues = $value;
+
+            if (array_key_exists('checkbox', $type) && is_string($checkedValues) && is_json($checkedValues)) {
+                $checkedValues = json_decode($checkedValues, true);
+            }
 
             foreach ($content as $key => $val) {
-                $content[$key]['checked'] = ($value == $val['value']);
-                if (! $hasChecked && $value == $val['value']) {
+                $isChecked = (is_array($checkedValues) ? in_array($val['value'], $checkedValues) : $checkedValues == $val['value']);
+
+                $content[$key]['checked'] = $isChecked;
+                if (! $hasChecked && $isChecked) {
                     $hasChecked = true;
                 }
             }
 
-            // Fallback: Check the first option if nothing matches (optional safety)
-            if (! $hasChecked && ! empty($content)) {
+            // Fallback for radio fields when nothing matches.
+            if (! $hasChecked && array_key_exists('radio', $type) && ! empty($content)) {
                 $content[array_key_first($content)]['checked'] = true;
             }
         }
