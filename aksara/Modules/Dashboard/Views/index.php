@@ -518,7 +518,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     }
                 },
                 grid: {
-                    left: '3%',
+                    left: '4%',
                     right: '3%',
                     bottom: '3%',
                     containLabel: true
@@ -531,6 +531,8 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 yAxis: {
                     type: 'value',
                     name: '<?= phrase('Visitor Total'); ?>',
+                    nameLocation: 'middle',
+                    nameGap: 20,
                     minInterval: 1
                 },
                 series: [{

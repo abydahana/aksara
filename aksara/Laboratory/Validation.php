@@ -295,7 +295,7 @@ class Validation
             // Validation error
             $validation->setError($field, $this->_uploadError);
 
-            return false;
+            //return false;
         } elseif (! $this->_uploadedFiles) {
             // Find required
             $rules = $validation->getRules();
@@ -304,7 +304,7 @@ class Validation
                 // Field is required
                 $validation->setError($field, phrase('Please choose the file to upload'));
 
-                return false;
+                //return false;
             }
         }
 
@@ -431,7 +431,7 @@ class Validation
         $fileContent = file_get_contents($source->getPathName());
 
         // Check for PHP tags
-        if (preg_match('/<\?(php|=)|<script\b/i', $fileContent)) {
+        if (preg_match('/<\?(?:php\s|=\s)|<script\b/i', $fileContent, $match)) {
             // Ensure the file is not contain exploit command
             $this->_uploadError = phrase('The file is not allowed to upload');
 

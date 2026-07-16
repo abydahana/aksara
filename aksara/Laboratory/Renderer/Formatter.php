@@ -165,6 +165,22 @@ class Formatter
             return $formatted_options;
         }
 
+        if ('checkbox' === $type && is_string($value) && is_json($value)) {
+            $value = json_decode($value, true);
+        }
+
+        if ('checkbox' === $type && is_array($value)) {
+            $labels = [];
+
+            foreach ($value as $item) {
+                if (isset($options[$item])) {
+                    $labels[] = htmlspecialchars($options[$item]);
+                }
+            }
+
+            return implode(', ', $labels);
+        }
+
         // Read Mode: Return Label
         return $options[$value] ?? null;
     }
