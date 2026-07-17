@@ -37,6 +37,13 @@ class Search extends Core
             $this->where('blogs_categories.category_slug', $this->request->getGet('category'));
         }
 
+        if ($this->_keywords) {
+            $this->groupStart()
+                ->like('blogs.post_title', $this->_keywords)
+                ->orLike('blogs.post_excerpt', $this->_keywords)
+                ->groupEnd();
+        }
+
         $this->setTitle(phrase('Search'))
         ->setDescription(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->request->getGet('category') ? '{{ category_title }}' : phrase('all'))))
         ->setIcon('mdi mdi-magnify')
@@ -75,11 +82,6 @@ class Search extends Core
             'app_users',
             'app_users.user_id = blogs.author'
         )
-
-        ->groupStart()
-        ->like('blogs.post_title', $this->_keywords)
-        ->orLike('blogs.post_excerpt', $this->_keywords)
-        ->groupEnd()
 
         ->where([
             'blogs.status' => 1
