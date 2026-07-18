@@ -22,5 +22,8 @@ if (! isset($routes)) {
     $routes = \Config\Services::routes(true);
 }
 
-$routes->get('themes/assets/(:any)', '\Aksara\Modules\Themes\Controllers\Themes::index');
-$routes->get('themes/(:any)', '\Aksara\Modules\Themes\Controllers\Themes::index');
+$routes->match(
+    ['GET', 'HEAD'],
+    'themes/(:any)',
+    '\Aksara\Modules\Themes\Controllers\Themes::index/$1'
+);
