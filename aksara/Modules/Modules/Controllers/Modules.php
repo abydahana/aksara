@@ -18,6 +18,7 @@
 namespace Aksara\Modules\Modules\Controllers;
 
 use Aksara\Laboratory\Core;
+use CodeIgniter\Files\File;
 
 class Modules extends Core
 {
@@ -50,8 +51,7 @@ class Modules extends Core
             if ($realPath && is_file($realPath)) {
                 // Ensure the file is actually inside ROOTPATH or APPPATH for safety
                 if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
-                    $this->response->download($realPath, null, true)->send();
-                    exit;
+                    $this->_serveAsset($realPath);
                 }
             }
         }
@@ -62,5 +62,66 @@ class Modules extends Core
     private function _error404()
     {
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+    }
+
+    private function _serveAsset(string $realPath): void
+    {
+        $mimeType = $this->_guessMimeType($realPath);
+
+        // Bersihkan output yang mungkin sudah terkirim
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Length: ' . filesize($realPath));
+        header(
+            'Content-Disposition: inline; filename="' .
+            addslashes(basename($realPath)) .
+            '"'
+        );
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: public, max-age=3600');
+
+        readfile($realPath);
+        exit;
+    }
+
+    private function _guessMimeType(string $realPath): string
+    {
+        $extension = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'mjs' => 'application/javascript',
+            'json' => 'application/json',
+            'map' => 'application/json',
+            'svg' => 'image/svg+xml',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'avif' => 'image/avif',
+            'ico' => 'image/x-icon',
+            'mp3' => 'audio/mpeg',
+            'wav' => 'audio/wav',
+            'ogg' => 'audio/ogg',
+            'mp4' => 'video/mp4',
+            'webm' => 'video/webm',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'otf' => 'font/otf',
+            'eot' => 'application/vnd.ms-fontobject',
+        ];
+
+        if (isset($mimeTypes[$extension])) {
+            return $mimeTypes[$extension];
+        }
+
+        $file = new File($realPath);
+
+        return $file->getMimeType() ?: 'application/octet-stream';
     }
 }
