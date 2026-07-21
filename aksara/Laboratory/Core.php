@@ -5462,6 +5462,56 @@ abstract class Core extends Controller
 
                 // Generate join query passed from set_relation
                 if (is_array($this->_join) && sizeof($this->_join) > 0) {
+                    $sortedJoin = [];
+                    $visited = [];
+                    $idToKey = [];
+
+                    foreach (array_keys($this->_join) as $key) {
+                        $id = trim($key);
+
+                        if (preg_match('/\s+AS\s+(.+)$/i', $id, $m)) {
+                            $id = trim($m[1], '`"');
+                        } else {
+                            $parts = preg_split('/\s+/', $id);
+                            $id = trim(end($parts), '`"');
+                        }
+
+                        $idToKey[$id] = $key;
+                    }
+
+                    $visit = function ($key) use (&$visit, &$visited, &$sortedJoin, $idToKey) {
+                        if (isset($visited[$key])) {
+                            return;
+                        }
+
+                        $visited[$key] = true;
+                        $condition = $this->_join[$key]['condition'] ?? '';
+                        $id = trim($key);
+
+                        if (preg_match('/\s+AS\s+(.+)$/i', $id, $m)) {
+                            $id = trim($m[1], '`"');
+                        } else {
+                            $parts = preg_split('/\s+/', $id);
+                            $id = trim(end($parts), '`"');
+                        }
+
+                        if (preg_match_all('/\b([a-zA-Z0-9_]+)\b\./', $condition, $matches)) {
+                            foreach (array_unique($matches[1]) as $refId) {
+                                if ($refId !== $id && isset($idToKey[$refId])) {
+                                    $visit($idToKey[$refId]);
+                                }
+                            }
+                        }
+
+                        $sortedJoin[$key] = $this->_join[$key];
+                    };
+
+                    foreach (array_keys($this->_join) as $key) {
+                        $visit($key);
+                    }
+
+                    $this->_join = $sortedJoin;
+
                     foreach ($this->_join as $dbTable => $params) {
                         $condition = str_replace('__PRIMARY_TABLE__', $table, $params['condition']);
 
