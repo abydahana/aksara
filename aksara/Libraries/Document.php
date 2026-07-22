@@ -202,7 +202,7 @@ class Document
             $params['format'] = [preg_replace('/[^0-9.]/', '', (float) $params['page-width']) * 25.4, (float) preg_replace('/[^0-9.]/', '', $params['page-height']) * 25.4];
         }
 
-        if (is_dir(FCPATH . 'assets/local/bookos')) {
+        if (is_dir(FCPATH . 'assets/local/fonts/bookos')) {
             // Custom font configuration
             $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
             $fontDirs = $defaultConfig['fontDir'];
@@ -211,7 +211,7 @@ class Document
             $fontData = $defaultFontConfig['fontdata'];
 
             $params['fontDir'] = array_merge($fontDirs, [
-                FCPATH . 'assets/local/bookos',
+                FCPATH . 'assets/local/fonts/bookos',
             ]);
 
             $params['fontdata'] = $fontData + [
