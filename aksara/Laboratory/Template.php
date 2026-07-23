@@ -183,13 +183,13 @@ class Template
         $module_viewfinder = ROOTPATH . 'modules' . $view_path;
 
         // Core module based viewfinder
-        $core_viewfinder = ROOTPATH . 'aksara/Modules' . $view_path;
+        $core_viewfinder = APPPATH . 'Modules' . $view_path;
 
         // Core based viewfinder
-        $fallback_viewfinder = ROOTPATH . 'aksara/Views/components/core';
+        $fallback_viewfinder = APPPATH . 'Views/components/core';
 
         // View suffix
-        $suffix = ($request->getUserAgent()->isMobile() ? '_mobile' : ('modal' == $request->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
+        $suffix = (! is_cli() && $request->getUserAgent()->isMobile() ? '_mobile' : ('modal' == $request->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
 
         // Get user language for i18n view
         $language = get_userdata('language');
@@ -398,6 +398,11 @@ class Template
         // Remove duplicate directory separator
         $view = str_replace('//', '/', $view);
 
+        // Adjust relative path prefix dynamically based on active view directory to support vendor layout
+        if (str_starts_with($view, '../../')) {
+            $view = $this->_getRelativePrefix() . substr($view, 6);
+        }
+
         return $view;
     }
 
@@ -442,33 +447,36 @@ class Template
             }
         }
 
+        // Get relative path prefix dynamically
+        $relativePrefix = $this->_getRelativePrefix();
+
         // Main templates definition
         $main_templates = [
-            '../../aksara/Views/core/index',
-            '../../themes/' . $this->theme . '/components/core/index',
-            '../../aksara/Views/core/index_grid',
-            '../../themes/' . $this->theme . '/components/core/index_grid',
-            '../../aksara/Views/core/index_mobile',
-            '../../themes/' . $this->theme . '/components/core/index_mobile',
-            '../../aksara/Views/core/form',
-            '../../themes/' . $this->theme . '/components/core/form',
-            '../../aksara/Views/core/form_modal',
-            '../../themes/' . $this->theme . '/components/core/form_modal',
-            '../../aksara/Views/core/read',
-            '../../themes/' . $this->theme . '/components/core/read',
-            '../../aksara/Views/core/read_modal',
-            '../../themes/' . $this->theme . '/components/core/read_modal',
-            '../../aksara/Views/core/error',
-            '../../themes/' . $this->theme . '/components/core/error'
+            $relativePrefix . 'aksara/Views/core/index',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/index',
+            $relativePrefix . 'aksara/Views/core/index_grid',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/index_grid',
+            $relativePrefix . 'aksara/Views/core/index_mobile',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/index_mobile',
+            $relativePrefix . 'aksara/Views/core/form',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/form',
+            $relativePrefix . 'aksara/Views/core/form_modal',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/form_modal',
+            $relativePrefix . 'aksara/Views/core/read',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/read',
+            $relativePrefix . 'aksara/Views/core/read_modal',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/read_modal',
+            $relativePrefix . 'aksara/Views/core/error',
+            $relativePrefix . 'themes/' . $this->theme . '/components/core/error'
         ];
 
         // Set view to response
         $data->view = basename($view);
 
-        $view_path_twig = str_replace('../../', ROOTPATH, $view . '.twig');
-        $view_path_php = str_replace('../../', ROOTPATH, $view . '.php');
+        $view_path_twig = str_replace($relativePrefix, ROOTPATH, $view . '.twig');
+        $view_path_php = str_replace($relativePrefix, ROOTPATH, $view . '.php');
 
-        if ((file_exists($view_path_twig) || file_exists($view_path_php)) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && ! $request->isAJAX()))) {
+        if ((file_exists($view_path_twig) || file_exists($view_path_php)) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && (is_cli() || ! $request->isAJAX())))) {
             if (file_exists($view_path_twig)) {
                 // Load Twig template parser
                 $parser = new Parser();
@@ -491,7 +499,7 @@ class Template
             }
         }
 
-        if ($request->isAJAX() && $request->getServer('HTTP_REFERER') && stripos($request->getServer('HTTP_REFERER'), $request->getServer('SERVER_NAME')) !== false) {
+        if (! is_cli() && $request->isAJAX() && $request->getServer('HTTP_REFERER') && stripos($request->getServer('HTTP_REFERER'), $request->getServer('SERVER_NAME')) !== false) {
             // Send to client
             return make_json($data);
         } else {
@@ -509,7 +517,7 @@ class Template
                 $parsed_view = $parser->parse(ROOTPATH . 'themes/' . $this->theme . '/layout.twig', (array) $data);
             } else {
                 // Build html from result object
-                $parsed_view = view('../../themes/' . $this->theme . '/layout', (array) $data);
+                $parsed_view = view($relativePrefix . 'themes/' . $this->theme . '/layout', (array) $data);
             }
 
             // Minify output
@@ -1187,5 +1195,36 @@ class Template
         });
 
         return $menus;
+    }
+
+    /**
+     * Compute relative path prefix from CodeIgniter's viewDirectory to project's ROOTPATH
+     */
+    private function _getRelativePrefix(): string
+    {
+        $paths = new \Config\Paths();
+        $viewDirectory = realpath($paths->viewDirectory);
+        $rootPath = realpath(ROOTPATH);
+
+        if ($viewDirectory && $rootPath) {
+            $fromParts = explode(DIRECTORY_SEPARATOR, trim(str_replace('\\', '/', $viewDirectory), '/'));
+            $toParts = explode(DIRECTORY_SEPARATOR, trim(str_replace('\\', '/', $rootPath), '/'));
+            $commonLength = 0;
+            $minParts = min(count($fromParts), count($toParts));
+
+            for ($i = 0; $i < $minParts; $i++) {
+                if (strtolower($fromParts[$i]) === strtolower($toParts[$i])) {
+                    $commonLength++;
+                } else {
+                    break;
+                }
+            }
+
+            $upCount = count($fromParts) - $commonLength;
+
+            return str_repeat('../', $upCount);
+        }
+
+        return '../../';
     }
 }

@@ -27,14 +27,6 @@ namespace Aksara\Laboratory\Builder\Components;
 class Form
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required
-    }
-
-    /**
      * Generate Text Input Component.
      * Renders a standard single-line text input field.
      *

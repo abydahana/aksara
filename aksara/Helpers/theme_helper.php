@@ -51,8 +51,9 @@ if (! function_exists('asset_loader')) {
             if (file_exists(ROOTPATH . 'themes/' . $theme . '/assets/' . $val)) {
                 $file_url = base_url('themes/' . $theme . '/assets/' . $val);
             }
+
             // Priority 2: Fallback to core assets directory
-            elseif (file_exists(ROOTPATH . 'assets/' . $val)) {
+            elseif (file_exists(FCPATH . 'assets/' . $val)) {
                 $file_url = base_url('assets/' . $val);
             }
 

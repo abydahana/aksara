@@ -26,14 +26,6 @@ namespace Aksara\Laboratory\Builder\Components;
 class Core
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required
-    }
-
-    /**
      * Generate Table View Component.
      * Renders a standard data grid (table) with checkboxes, column sorting,
      * action buttons, and dynamic data rows.

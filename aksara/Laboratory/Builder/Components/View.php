@@ -27,14 +27,6 @@ namespace Aksara\Laboratory\Builder\Components;
 class View
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required
-    }
-
-    /**
      * Generate Text Component.
      * Renders standard text content wrapped in a div with word-break styling.
      *

@@ -43,24 +43,6 @@ class Renderer
     private ?string $path = null;
 
     /**
-     * Database Model Instance (injected).
-     */
-    private mixed $model = null;
-
-    /**
-     * API Client Status/Instance (injected).
-     */
-    private mixed $apiClient = null;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required. Properties are set via setProperty().
-    }
-
-    /**
      * Set dynamic properties inherited from the controller (hydration).
      *
      * @param   array $properties Associative array of properties to inject
