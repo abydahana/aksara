@@ -28,14 +28,6 @@ namespace Aksara\Laboratory\Builder\Components;
 class Table
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required
-    }
-
-    /**
      * Generate Text Column.
      * Renders plain text with optional HTML escaping.
      *

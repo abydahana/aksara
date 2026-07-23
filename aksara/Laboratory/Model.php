@@ -65,6 +65,11 @@ class Model
     private ?int $_limit = null;
 
     /**
+     * @var array Stores mock fields created on-the-fly.
+     */
+    private array $_mockFields = [];
+
+    /**
      * @var int|null Stores the offset value for the query.
      */
     private ?int $_offset = null;
@@ -393,7 +398,13 @@ class Model
         }
 
         if ($table && $this->db->tableExists($table)) {
-            return $this->db->getFieldNames($table);
+            $fields = $this->db->getFieldNames($table);
+            if (isset($this->_mockFields[$table])) {
+                foreach ($this->_mockFields[$table] as $mock) {
+                    $fields[] = $mock['name'];
+                }
+            }
+            return $fields;
         }
 
         return false;
@@ -457,6 +468,34 @@ class Model
         }
 
         return false;
+    }
+
+    /**
+     * Add a mock field on-the-fly.
+     */
+    public function addMockField(string $table, string $name, string $type = 'varchar'): static
+    {
+        if (strpos($table, ' ') !== false) {
+            $table = explode(' ', $table)[0];
+        }
+
+        $this->_mockFields[$table][$name] = [
+            'name' => $name,
+            'type' => $type
+        ];
+        return $this;
+    }
+
+    /**
+     * Get mock fields.
+     */
+    public function getMockFields(string $table): array
+    {
+        if (strpos($table, ' ') !== false) {
+            $table = explode(' ', $table)[0];
+        }
+
+        return $this->_mockFields[$table] ?? [];
     }
 
     /**
@@ -2177,6 +2216,13 @@ class Model
         }
 
         $targetTable = $table ?: $this->_table;
+
+        if ($targetTable && isset($this->_mockFields[$targetTable])) {
+            foreach ($this->_mockFields[$targetTable] as $mock) {
+                unset($set[$mock['name']]);
+            }
+        }
+
         if ($targetTable) {
             $fieldData = $this->db->getFieldData($targetTable);
             foreach ($fieldData as $field) {
@@ -2316,6 +2362,13 @@ class Model
         }
 
         $targetTable = $table ?: $this->_table;
+
+        if ($targetTable && isset($this->_mockFields[$targetTable])) {
+            foreach ($this->_mockFields[$targetTable] as $mock) {
+                unset($set[$mock['name']]);
+            }
+        }
+
         if ($targetTable) {
             $fieldData = $this->db->getFieldData($targetTable);
             foreach ($fieldData as $field) {

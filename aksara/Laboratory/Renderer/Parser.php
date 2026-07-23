@@ -25,7 +25,7 @@ use Twig\TwigFunction;
 
 class Parser
 {
-    private $_theme;
+    private string $_theme;
 
     public function __construct()
     {
@@ -40,32 +40,32 @@ class Parser
     public function parse(string $component, $replacement = []): string
     {
         try {
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/core')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/core')) {
                 // Core components not exists, create directory
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/core', 0755, true);
             }
 
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/form')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/form')) {
                 // Form components not exists, create directory
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/form', 0755, true);
             }
 
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/table')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/table')) {
                 // Table components not exists, create directory
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/table', 0755, true);
             }
 
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/view')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/components/view')) {
                 // View components not exists, create directory
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/components/view', 0755, true);
             }
 
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/views')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/views')) {
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/views', 0755, true);
             }
 
             // Check components notes existence
-            if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/README')) {
+            if ($this->_theme && ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/README')) {
                 // Add readme notes
                 $notes = <<<EOF
                 You can override the template component here;
@@ -77,7 +77,7 @@ class Parser
             }
 
             // Check views path existence
-            if (! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/views')) {
+            if ($this->_theme && ! is_dir(ROOTPATH . 'themes/' . $this->_theme . '/views')) {
                 // Create views directory
                 mkdir(ROOTPATH . 'themes/' . $this->_theme . '/views', 0755, true);
 
@@ -93,7 +93,7 @@ class Parser
                 file_put_contents(ROOTPATH . 'themes/' . $this->_theme . '/views/README', $notes);
             }
 
-            if (! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig') && ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.php')) {
+            if ($this->_theme && ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig') && ! file_exists(ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.php')) {
                 // Copy master views
                 copy(APPPATH . 'Views/components/core/404.twig', ROOTPATH . 'themes/' . $this->_theme . '/components/core/404.twig');
             }
@@ -103,11 +103,12 @@ class Parser
         }
 
         // Search paths
-        $searchPaths = [
-            ROOTPATH . 'themes/' . $this->_theme . '/components/',
-            ROOTPATH . 'themes/' . $this->_theme . '/views/',
-            APPPATH . 'Views/components/'
-        ];
+        $searchPaths = [APPPATH . 'Views/components/'];
+
+        if ($this->_theme) {
+            $searchPaths[] = ROOTPATH . 'themes/' . $this->_theme . '/components/';
+            $searchPaths[] = ROOTPATH . 'themes/' . $this->_theme . '/views/';
+        }
 
         // Load search paths to twig loader
         $filesystemLoader = new FilesystemLoader($searchPaths);

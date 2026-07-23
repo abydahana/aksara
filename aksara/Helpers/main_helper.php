@@ -163,24 +163,14 @@ if (! function_exists('aksara_header')) {
         // Identify the active theme
         $theme = get_theme();
 
-        // Reserved for dynamic inline styles if needed
-        $stylesheet = null;
-
         // Generate security token meta tag using the same CSRF token helper as Core
         $output = '<meta name="_token" content="' . generate_csrf_token() . '" />' . "\n";
 
         // Load theme-specific minified styles
         $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/' . $theme . '/styles.min.css') . '" />' . "\n";
 
-        // Load Material Design Icons
-        $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '" />' . "\n";
-
         // Deferred jQuery execution snippet to handle scripts loaded before jQuery is ready
         $output .= '<script type="text/javascript">(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if (x=="ready"){w.bindReadyQ.push(y)}else{w.readyQ.push(x)}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if (f===d||f===u){return a}else{p(f)}}})(window,document)</script>' . "\n";
-
-        if ($stylesheet) {
-            $output .= '<style type="text/css">' . $stylesheet . '</style>';
-        }
 
         return $output;
     }
@@ -228,19 +218,24 @@ if (! function_exists('throw_exception')) {
      */
     function throw_exception(int $code = 500, string|array|null $data = [], ?string $target = null, mixed $redirect = false)
     {
-        $request = service('request');
-        $response = service('response');
-        $session = service('session');
+        if (is_cli()) {
+            if (is_array($data)) {
+                $data = json_encode($data, JSON_PRETTY_PRINT);
+            }
+
+            fwrite(STDERR, "[Error $code] " . $data . PHP_EOL);
+            exit(1);
+        }
 
         // Logic for Non-AJAX Request: Set Flashdata and Redirect
-        if (! $request->isAJAX()) {
+        if (! service('request')->isAJAX()) {
             if (! is_array($data)) {
                 if (in_array($code, [200, 301])) {
-                    $session->setFlashdata('success', $data);
+                    service('session')->setFlashdata('success', $data);
                 } elseif (in_array($code, [403, 404])) {
-                    $session->setFlashdata('warning', $data);
+                    service('session')->setFlashdata('warning', $data);
                 } else {
-                    $session->setFlashdata('error', $data);
+                    service('session')->setFlashdata('error', $data);
                 }
             }
 
@@ -266,7 +261,7 @@ if (! function_exists('throw_exception')) {
 
         // Determine redirect behavior for AJAX
         if (! $redirect) {
-            $redirect = ($request->getPost('__modal_index') <= 1 && 301 === $code ? 'soft' : false);
+            $redirect = (service('request')->getPost('__modal_index') <= 1 && 301 === $code ? 'soft' : false);
         }
 
         $output = json_encode([

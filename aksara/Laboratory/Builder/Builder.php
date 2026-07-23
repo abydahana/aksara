@@ -33,14 +33,6 @@ use Aksara\Laboratory\Builder\Components\View;
 class Builder
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        // No initialization required
-    }
-
-    /**
      * Get or create a component template file.
      *
      * This method checks if a specific Twig template exists in the theme directory.

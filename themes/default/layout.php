@@ -24,6 +24,7 @@
 
             echo asset_loader([
                 (is_rtl() ? 'bootstrap/css/bootstrap.rtl.min.css' : 'bootstrap/css/bootstrap.min.css'),
+                'materialdesignicons/css/materialdesignicons.min.css',
                 'local/css/styles.min.css',
                 'local/css/mobile.min.css',
                 'local/css/theme.min.css'

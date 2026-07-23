@@ -77,6 +77,11 @@ abstract class Core extends Controller
     private bool $_apiToken = false;
 
     /**
+     * Array of mock fields to be registered.
+     */
+    private array $_mockFields = [];
+
+    /**
      * Controller constructor, initializes dependencies and validates request integrity.
      *
      * @return void
@@ -1010,6 +1015,23 @@ abstract class Core extends Controller
         }
 
         $this->_setTooltip = array_merge($this->_setTooltip ?? [], $params);
+
+        return $this;
+    }
+
+    /**
+     * Add a mock field on-the-fly.
+     *
+     * @param string $name The field name.
+     * @param string $type The field type (varchar, text, select, etc.).
+     */
+    public function addField(string $name, string $type = 'varchar'): static
+    {
+        $this->_mockFields[$name] = $type;
+
+        if ($this->_table) {
+            $this->model->addMockField($this->_table, $name, $type);
+        }
 
         return $this;
     }
@@ -2040,6 +2062,20 @@ abstract class Core extends Controller
             $data = array_map(fn ($v) => '', array_flip(array_keys($fieldData)));
         }
 
+        if (is_object($data)) {
+            foreach (array_keys($fieldData) as $field) {
+                if (! property_exists($data, $field)) {
+                    $data->{$field} = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
+                }
+            }
+        } elseif (is_array($data)) {
+            foreach (array_keys($fieldData) as $field) {
+                if (! isset($data[$field])) {
+                    $data[$field] = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
+                }
+            }
+        }
+
         $output = [];
 
         foreach ($data as $field => $value) {
@@ -2299,6 +2335,12 @@ abstract class Core extends Controller
 
             // Push to compiled table
             $this->_compiledTable[] = $table;
+        }
+
+        if ($this->_mockFields && $this->_table) {
+            foreach ($this->_mockFields as $name => $type) {
+                $this->model->addMockField($this->_table, $name, $type);
+            }
         }
 
         if (! $this->request->getPost('_token')) {
@@ -5355,6 +5397,17 @@ abstract class Core extends Controller
         if (! $recycling) {
             // Prepare indexing the columns of table to be selected
             $select = preg_filter('/^/', $table . '.', $this->model->listFields($table));
+            $mockFields = $this->model->getMockFields($table);
+
+            if ($mockFields) {
+                foreach ($select as $s_key => $s_val) {
+                    $col = (strpos($s_val, '.') !== false) ? explode('.', $s_val)[1] : $s_val;
+                    if (isset($mockFields[$col])) {
+                        unset($select[$s_key]);
+                    }
+                }
+            }
+
             $columns = $this->model->fieldData($table);
 
             if ($columns) {
