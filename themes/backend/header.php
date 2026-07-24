@@ -41,7 +41,7 @@
                     <?php endif; ?>
                 </li>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link" data-toggle="theme">
                         <i class="mdi mdi-weather-night"></i>

@@ -38,7 +38,7 @@ a:hover {
   height: 32px;
 }
 .navbar-nav .nav-link {
-  color: var(--wg-text) !important;
+  color: var(--wg-text);
   padding: 0.5rem 0.65rem !important;
 }
 .navbar-nav .nav-link:hover {
