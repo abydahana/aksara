@@ -5479,11 +5479,28 @@ abstract class Core extends Controller
                             }
                         }
 
-                        // Cast to GeoJSON for create/update method (so form can read and manipulate it)
-                        $asGeojsonFunc = ('SQLite3' === $this->model->dbDriver()) ? 'AsGeoJSON' : 'ST_AsGeoJSON';
-                        if ($isGeospatial && in_array($this->_method, ['create', 'update']) && ! preg_match('/' . $asGeojsonFunc . '\s*\(/i', $val)) {
-                            $valOrigin = ($backupTable && $backupTable != $field ? $backupTable . '.' . $field : ($table ? $table . '.' . $field : $field));
-                            $val = $asGeojsonFunc . '(' . $valOrigin . ') AS ' . $field;
+                        // Cast geometry to GeoJSON for create/update methods
+                        // so the form can read and manipulate it.
+                        if ($isGeospatial && in_array($this->_method, ['create', 'update'], true)) {
+                            $driver = $this->model->dbDriver();
+
+                            $asGeoJsonFunc = match ($driver) {
+                                'SQLite3' => 'AsGeoJSON',
+                                'Postgre', 'MySQLi' => 'ST_AsGeoJSON',
+                                default => null,
+                            };
+
+                            if ($asGeoJsonFunc) {
+                                $valOrigin = (
+                                    $backupTable && $backupTable !== $field
+                                        ? $backupTable . '.' . $field
+                                        : ($table ? $table . '.' . $field : $field)
+                                );
+
+                                if (! preg_match('/(?:AsGeoJSON|ST_AsGeoJSON)\s*\(/i', $val)) {
+                                    $val = $asGeoJsonFunc . '(' . $valOrigin . ') AS ' . $field;
+                                }
+                            }
                         }
                     }
 

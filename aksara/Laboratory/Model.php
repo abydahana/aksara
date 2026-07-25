@@ -2805,9 +2805,18 @@ class Model
                         }
 
                         if (! $hasAggregation) {
-                            $func = ('SQLite3' === $this->db->DBDriver) ? 'AsGeoJSON' : 'ST_AsGeoJSON';
-                            foreach ($geometryFields as $field) {
-                                $this->_builder->select(new RawSql($func . "(" . $this->_table . "." . $field . ") AS " . $field));
+                            $func = match ($this->db->DBDriver) {
+                                'SQLite3' => 'AsGeoJSON',
+                                'Postgre', 'MySQLi' => 'ST_AsGeoJSON',
+                                default => null,
+                            };
+
+                            if ($func) {
+                                foreach ($geometryFields as $field) {
+                                    $this->_builder->select(
+                                        new RawSql($func . '(' . $this->_table . '.' . $field . ') AS ' . $field)
+                                    );
+                                }
                             }
                         }
                     } elseif (! $this->_selection) {
@@ -2868,18 +2877,28 @@ class Model
 
                 if (! empty($geometryFields)) {
                     $columns = $arguments[0];
+
                     if (is_array($columns)) {
-                        $func = ('SQLite3' === $this->db->DBDriver) ? 'AsGeoJSON' : 'ST_AsGeoJSON';
-                        foreach ($columns as $cKey => $cVal) {
-                            if (is_string($cVal)) {
-                                $cTrimmed = trim($cVal);
-                                foreach ($geometryFields as $gField) {
-                                    if ($cTrimmed === $gField || str_ends_with($cTrimmed, '.' . $gField)) {
-                                        $columns[$cKey] = new RawSql($func . "(" . $cVal . ") AS " . $gField);
+                        $func = match ($this->db->DBDriver) {
+                            'SQLite3' => 'AsGeoJSON',
+                            'Postgre', 'MySQLi' => 'ST_AsGeoJSON',
+                            default => null,
+                        };
+
+                        if ($func) {
+                            foreach ($columns as $cKey => $cVal) {
+                                if (is_string($cVal)) {
+                                    $cTrimmed = trim($cVal);
+
+                                    foreach ($geometryFields as $gField) {
+                                        if ($cTrimmed === $gField || str_ends_with($cTrimmed, '.' . $gField)) {
+                                            $columns[$cKey] = new RawSql($func . '(' . $cVal . ') AS ' . $gField);
+                                        }
                                     }
                                 }
                             }
                         }
+
                         $arguments[0] = $columns;
                     }
                 }
