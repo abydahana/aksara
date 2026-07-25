@@ -6,7 +6,7 @@
 
 // Cache menu output once — generate_menu() mutates $menus by reference,
 // calling it twice would corrupt slugs (all links become target="_blank")
-$_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
+$_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-3', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 ?>
 <header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container">
@@ -24,8 +24,10 @@ $_menu_html = generate_menu($menus, 'navbar-nav mx-auto gap-3', 'nav-item', 'nav
         </button>
         <!-- Desktop inline menu (lg+) -->
         <div class="collapse navbar-collapse d-none d-lg-flex">
-            <?= $_menu_html; ?>
-            <ul class="navbar-nav ml-auto align-items-lg-center gap-3">
+            <div class="overflow-x-auto">
+                <?= $_menu_html; ?>
+            </div>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-3">
                 <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" role="notifications">

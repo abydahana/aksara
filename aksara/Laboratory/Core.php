@@ -1773,11 +1773,6 @@ abstract class Core extends Controller
             }
         }
 
-        // Standarize JOIN
-        if ($join && ! isset($join[0])) {
-            $join = [$join];
-        }
-
         // Remove JOIN table that is not used in SELECT, WHERE, ORDER, GROUP
         $usedTables = [];
 
@@ -1866,7 +1861,7 @@ abstract class Core extends Controller
             foreach ($join as $key => $val) {
                 $this->_join[$val[0]] = [
                     'condition' => $val[1],
-                    'type' => $val[2] ?? '',
+                    'type' => 'LEFT', // Avoid data loss if data not exist
                     'escape' => true
                 ];
 
