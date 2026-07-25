@@ -234,7 +234,7 @@ abstract class Core extends Controller
      */
     public function debug(?string $resultType = null): static
     {
-        $this->_debugging = $resultType ?? 'parameter';
+        $this->_debugging = $resultType ?? 'properties';
 
         return $this;
     }
@@ -1022,15 +1022,23 @@ abstract class Core extends Controller
     /**
      * Add a mock field on-the-fly.
      *
-     * @param string $name The field name.
+     * @param string|array $name The field name or associative array of field names and types.
      * @param string $type The field type (varchar, text, select, etc.).
      */
-    public function addField(string $name, string $type = 'varchar'): static
+    public function addField(string|array $name, string $type = 'varchar'): static
     {
-        $this->_mockFields[$name] = $type;
+        if (! is_array($name)) {
+            $name = [
+                $name => $type
+            ];
+        }
 
-        if ($this->_table) {
-            $this->model->addMockField($this->_table, $name, $type);
+        foreach ($name as $field => $fieldType) {
+            $this->_mockFields[$field] = $fieldType;
+
+            if ($this->_table) {
+                $this->model->addMockField($this->_table, $field, $fieldType);
+            }
         }
 
         return $this;
@@ -2281,6 +2289,16 @@ abstract class Core extends Controller
     public function render(?string $table = null, ?string $view = null): object|array|string|null
     {
         // Debugger
+        if (in_array($this->_debugging, ['properties', 'property'])) {
+            $properties = $this->_debugProperties();
+
+            if (ENVIRONMENT === 'production') {
+                exit('<pre>' . print_r($properties, true) . '</pre>');
+            }
+
+            dd($properties);
+        }
+
         if (in_array($this->_debugging, ['params', 'parameter'])) {
             // Debug requested
             if (ENVIRONMENT === 'production') {
@@ -5755,6 +5773,28 @@ abstract class Core extends Controller
         }
 
         return $query;
+    }
+
+    /**
+     * Collect non-empty internal properties for controller chain debugging.
+     */
+    private function _debugProperties(): array
+    {
+        $output = [];
+
+        foreach (get_object_vars($this) as $key => $value) {
+            if (! str_starts_with($key, '_')) {
+                continue;
+            }
+
+            if (! is_array($value) || empty($value)) {
+                continue;
+            }
+
+            $output[$key] = $value;
+        }
+
+        return $output;
     }
 
     /**
