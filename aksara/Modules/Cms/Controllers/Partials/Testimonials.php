@@ -50,14 +50,12 @@ class Testimonials extends Core
 
         $this->setTitle(phrase('Testimonials'))
         ->setIcon('mdi mdi-comment-account-outline')
-        ->setPrimary('testimonial_id')
-        ->unsetColumn('testimonial_id, testimonial_content, timestamp, language')
-        ->unsetField('testimonial_id')
+        ->unsetColumn('testimonial_id, testimonial_content, language, updated_timestamp')
+        ->unsetField('testimonial_id, created_timestamp, update_timestamp')
         ->unsetView('testimonial_id')
         ->setField([
             'photo' => 'image',
             'testimonial_content' => 'textarea',
-            'timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
         ->setRelation(
@@ -82,12 +80,12 @@ class Testimonials extends Core
             'testimonial_title' => phrase('Title'),
             'testimonial_content' => phrase('Testimony'),
             'language_id' => phrase('Language'),
-            'status' => phrase('Status')
+            'status' => phrase('Status'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
         ->mergeField('first_name, last_name')
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
-
-        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
@@ -101,7 +99,11 @@ class Testimonials extends Core
             ]
         ];
 
-        $languages_query = $this->model->getWhere(
+        $languages_query = $this->model->select('
+            id,
+            language AS label
+        ')
+        ->getWhere(
             'app_languages',
             [
                 'status' => 1
@@ -113,7 +115,7 @@ class Testimonials extends Core
             foreach ($languages_query as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
-                    'label' => $val->language,
+                    'label' => $val->label,
                     'selected' => $this->request->getGet('language') === $val->id
                 ];
             }

@@ -56,10 +56,6 @@ class Testimonials extends Migration
                 'type' => 'text',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'language_id' => [
                 'type' => 'int',
                 'constraint' => 11,
@@ -71,6 +67,14 @@ class Testimonials extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'created_timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

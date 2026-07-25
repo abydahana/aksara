@@ -157,7 +157,11 @@ class Users extends Core
             ]
         ];
 
-        $query = $this->model->getWhere(
+        $query = $this->model->select('
+            group_id AS id,
+            group_name AS label
+        ')
+        ->getWhere(
             'app_groups',
             [
                 'status' => 1
@@ -168,9 +172,9 @@ class Users extends Core
         if ($query) {
             foreach ($query as $key => $val) {
                 $groups[] = [
-                    'id' => $val->group_id,
-                    'label' => $val->group_name,
-                    'selected' => $this->request->getGet('group') == $val->group_id ?? false
+                    'id' => $val->id,
+                    'label' => $val->label,
+                    'selected' => $this->request->getGet('group') == $val->id ?? false
                 ];
             }
         }

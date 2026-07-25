@@ -51,14 +51,14 @@ class AppNotifier extends Migration
                 'type' => 'text',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'status' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
                 'default' => '0',
+                'null' => false
+            ],
+            'timestamp' => [
+                'type' => 'timestamp',
                 'null' => false
             ]
         ]);

@@ -60,20 +60,6 @@ class Blogs extends Migration
                 'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
-            'created_timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
-            'updated_timestamp' => [
-                'type' => 'timestamp',
-                'null' => true
-            ],
-            'author' => [
-                'type' => 'bigint',
-                'constraint' => 22,
-                'unsigned' => true,
-                'null' => false
-            ],
             'headline' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
@@ -96,6 +82,20 @@ class Blogs extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'author' => [
+                'type' => 'bigint',
+                'constraint' => 22,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'created_timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

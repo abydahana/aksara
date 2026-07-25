@@ -43,8 +43,8 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
                         </a>
                     </h5>
                     <p class="mb-0">
-                        <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results->field_data->timestamp->value; ?>">
-                            <?= time_ago($results->field_data->timestamp->value); ?>
+                        <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results->field_data->created_timestamp->value; ?>">
+                            <?= time_ago($results->field_data->created_timestamp->value); ?>
                         </span>
                     </p>
                 </div>

@@ -66,7 +66,7 @@ class Contact extends Core
                 'sender_full_name' => htmlspecialchars($this->request->getPost('full_name')),
                 'subject' => htmlspecialchars($this->request->getPost('subject')),
                 'messages' => htmlspecialchars($this->request->getPost('messages')),
-                'timestamp' => date('Y-m-d H:i:s')
+                'created_timestamp' => date('Y-m-d H:i:s')
             ]
         );
 

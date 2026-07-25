@@ -281,7 +281,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-3 col-sm-2">
                                                     <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                        <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded" />
+                                                        <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" />
                                                     </a>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">

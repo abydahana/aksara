@@ -76,14 +76,14 @@ class PostComments extends Migration
                 'default' => '0',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'status' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
                 'default' => '0',
+                'null' => false
+            ],
+            'timestamp' => [
+                'type' => 'timestamp',
                 'null' => false
             ]
         ]);

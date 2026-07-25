@@ -37,15 +37,14 @@ class Videos extends Core
     {
         $this->setTitle(phrase('Videos'))
         ->setIcon('mdi mdi-youtube')
-        ->unsetColumn('id, slug, video_url, author, timestamp')
-        ->unsetField('id, author, timestamp')
-        ->unsetView('id, author, timestamp')
+        ->unsetColumn('id, slug, video_url, author, updated_timestamp')
+        ->unsetField('id, author, created_timestamp, updated_timestamp')
+        ->unsetView('id, author')
 
         ->setField([
             'cover' => 'image',
             'description' => 'textarea',
             'featured' => 'boolean',
-            'timestamp' => 'current_timestamp',
             'status' => 'boolean'
         ])
         ->setField('slug', 'slug', 'title')
@@ -67,7 +66,9 @@ class Videos extends Core
             'description' => phrase('Description'),
             'video_url' => phrase('Video URL'),
             'featured' => phrase('Featured'),
-            'status' => phrase('Status')
+            'status' => phrase('Status'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
         ->setPlaceholder([

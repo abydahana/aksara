@@ -8,22 +8,139 @@
  */
 ?>
 <!-- Hero Section -->
-<section class="hero-section pb-0 text-center">
+<style>
+    .home-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 7rem 0 5rem;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(var(--bs-primary-rgb), .18), transparent 28rem),
+            radial-gradient(circle at 88% 12%, rgba(25, 135, 84, .16), transparent 24rem),
+            linear-gradient(135deg, #ffffff 0%, #f6f8ff 52%, #eef8f3 100%);
+    }
+
+    .home-hero:before,
+    .home-hero:after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        opacity: .55;
+    }
+
+    .home-hero:before {
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(15, 23, 42, .055) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(15, 23, 42, .055) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+    }
+
+    .home-hero:after {
+        right: -8rem;
+        bottom: -13rem;
+        width: 28rem;
+        height: 28rem;
+        border: 1px solid rgba(var(--bs-primary-rgb), .18);
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 4rem rgba(255, 255, 255, .35);
+    }
+
+    .home-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .45rem .9rem;
+        border: 1px solid rgba(var(--bs-primary-rgb), .16);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .74);
+        color: var(--bs-primary);
+        font-size: .875rem;
+        font-weight: 700;
+        box-shadow: 0 1rem 3rem rgba(15, 23, 42, .06);
+    }
+
+    .hero-title {
+        max-width: 920px;
+        margin-inline: auto;
+        color: #111827;
+        font-size: clamp(2.75rem, 7vw, 6.25rem);
+        line-height: .95;
+        letter-spacing: 0;
+    }
+
+    .hero-title span {
+        color: var(--bs-primary);
+    }
+
+    .hero-copy {
+        max-width: 720px;
+        margin-inline: auto;
+        color: #64748b;
+        font-size: clamp(1.05rem, 2vw, 1.35rem);
+    }
+
+    .hero-action {
+        box-shadow: 0 1rem 2.5rem rgba(var(--bs-primary-rgb), .22);
+    }
+
+    .hero-pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: .75rem;
+        margin-top: 2.5rem;
+    }
+
+    .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .75rem 1rem;
+        border: 1px solid rgba(15, 23, 42, .08);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .72);
+        color: #334155;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 575.98px) {
+        .home-hero {
+            padding: 5rem 0 3.5rem;
+        }
+
+        .hero-pill {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+<section class="hero-section home-hero text-center">
     <div class="container">
-        <div class="section-padding fade-in">
-            <h1 class="display-4 fw-bold mb-3"><?= get_setting('app_name'); ?></h1>
-            <p class="fs-5 text-muted mb-4 mx-auto" style="max-width: 600px;">
+        <div class="fade-in">
+            <div class="hero-kicker mb-4">
+                <i class="mdi mdi-sparkles"></i>
+                <?= phrase('Welcome'); ?>
+            </div>
+            <h1 class="hero-title fw-bold mb-4">
+                <?= get_setting('app_name'); ?><span>.</span>
+            </h1>
+            <p class="hero-copy mb-4">
                 <?= get_setting('app_description'); ?>
             </p>
-            <div class="d-flex justify-content-center gap-3 mb-5">
-                <a href="<?= base_url('auth'); ?>" class="btn btn-primary rounded-pill px-4 --modal">GET STARTED <i class="mdi mdi-arrow-right"></i></a>
-            </div>
-            <div class="d-none d-lg-block">
-                <div class="row">
-                    <div class="col-lg-10 offset-lg-1">
-                        <img src="<?= get_module_asset('images/hero.png'); ?>" class="img-fluid rounded-5" alt="Hero" />
-                    </div>
-                </div>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a href="<?= base_url('auth'); ?>" class="btn btn-primary btn-lg rounded-pill px-4 hero-action --modal">
+                    <?= phrase('Get Started'); ?> <i class="mdi mdi-arrow-right"></i>
+                </a>
+                <a href="<?= base_url('blogs'); ?>" class="btn btn-light btn-lg border rounded-pill px-4 --xhr">
+                    <?= phrase('Explore Articles'); ?>
+                </a>
             </div>
         </div>
     </div>

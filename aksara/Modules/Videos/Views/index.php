@@ -47,7 +47,7 @@ if ($results): ?>
                                         </a>
                                     </p>
                                     <p class="mb-0 text-muted">
-                                        <?= time_ago($val->timestamp); ?>
+                                        <?= time_ago($val->created_timestamp); ?>
                                     </p>
                                 </div>
                             </div>

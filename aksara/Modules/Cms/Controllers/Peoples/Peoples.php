@@ -39,8 +39,8 @@ class Peoples extends Core
     {
         $this->setTitle(phrase('Peoples'))
         ->setIcon('mdi mdi-account-group-outline')
-        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter')
-        ->unsetField('people_id')
+        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter, updated_timestamp')
+        ->unsetField('people_id, created_timestamp, updated_timestamp')
         ->unsetView('people_id')
         ->setField([
             'biography' => 'textarea',
@@ -83,7 +83,9 @@ class Peoples extends Core
             'facebook' => phrase('Facebook Profile URL'),
             'twitter' => phrase('X Profile URL'),
             'biography' => phrase('Biography'),
-            'status' => phrase('Status')
+            'status' => phrase('Status'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);

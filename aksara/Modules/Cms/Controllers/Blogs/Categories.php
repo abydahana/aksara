@@ -38,7 +38,7 @@ class Categories extends Core
         $this->unsetDelete('category_id', [1]);
 
         // Ignore query string signature
-        $this->ignoreQueryString('language');
+        $this->ignoreQueryString('category, language');
     }
 
     public function index()
@@ -51,9 +51,8 @@ class Categories extends Core
 
         $this->setTitle(phrase('Blog Categories'))
         ->setIcon('mdi mdi-sitemap')
-        ->setPrimary('category_id')
-        ->unsetColumn('category_id, language')
-        ->unsetField('category_id')
+        ->unsetColumn('category_id, language, updated_timestamp')
+        ->unsetField('category_id, created_timestamp, updated_timestamp')
         ->unsetView('category_id')
         ->columnOrder('category_image')
         ->setField([
@@ -84,7 +83,9 @@ class Categories extends Core
             'category_slug' => phrase('Slug'),
             'category_description' => phrase('Description'),
             'language' => phrase('Language'),
-            'language_id' => phrase('Language')
+            'language_id' => phrase('Language'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
         ->setPlaceholder([
             'category_description' => phrase('Category details to improve SEO')
@@ -102,7 +103,11 @@ class Categories extends Core
             ]
         ];
 
-        $languages_query = $this->model->getWhere(
+        $languages_query = $this->model->select('
+            id,
+            language AS label
+        ')
+        ->getWhere(
             'app_languages',
             [
                 'status' => 1
@@ -114,7 +119,7 @@ class Categories extends Core
             foreach ($languages_query as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
-                    'label' => $val->language,
+                    'label' => $val->label,
                     'selected' => $this->request->getGet('language') === $val->id
                 ];
             }

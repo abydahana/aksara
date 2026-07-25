@@ -48,9 +48,8 @@ class Announcements extends Core
 
         $this->setTitle(phrase('Announcements'))
         ->setIcon('mdi mdi-bullhorn-outline')
-        ->setPrimary('announcement_id')
-        ->unsetColumn('announcement_id, content, created_timestamp, updated_timestamp, announcement_slug, language')
-        ->unsetField('announcement_id')
+        ->unsetColumn('announcement_id, content, announcement_slug, language, updated_timestamp')
+        ->unsetField('announcement_id, created_timestamp, updated_timestamp')
         ->unsetView('announcement_id')
         ->columnOrder('cover')
         ->setField([
@@ -58,8 +57,6 @@ class Announcements extends Core
             'cover' => 'image',
             'start_date' => 'date',
             'end_date' => 'date',
-            'created_timestamp' => 'created_timestamp',
-            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->setField(
@@ -91,7 +88,9 @@ class Announcements extends Core
             'end_date' => 2,
             'cover' => 2,
             'language_id' => 2,
-            'status' => 2
+            'status' => 2,
+            'created_timestamp' => 2,
+            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -101,7 +100,7 @@ class Announcements extends Core
             'title' => 'required|max_length[256]|unique[' . $this->_table . '.title.announcement_id.' . $this->request->getGet('announcement_id') . ']',
             'content' => 'required',
             'language_id' => 'required',
-            'start_date' => 'required',
+            'start_date' => 'required|callback_validateStartDate',
             'end_date' => 'required|callback_validateEndDate',
             'status' => 'boolean'
         ])
@@ -112,19 +111,30 @@ class Announcements extends Core
             'placement' => phrase('Placement'),
             'start_date' => phrase('Start Date'),
             'end_date' => phrase('End Date'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated'),
             'language_id' => phrase('Language'),
-            'status' => phrase('Status')
+            'status' => phrase('Status'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
-        ->defaultValue('placement', 0)
-
-        ->orderBy('updated_timestamp', 'DESC')
+        ->defaultValue([
+            'placement' => 0,
+            'start_date' => date('Y-m-d'),
+            'end_date' => date('Y-m-d', strtotime('+1 day'))
+        ])
 
         ->modalSize('modal-xl')
 
         ->render($this->_table);
+    }
+
+    public function validateStartDate($value = null)
+    {
+        if (strtotime($this->request->getPost('start_date')) < time()) {
+            $this->formValidation->setError('start_date', 'The start date must be greater than or equal to today');
+        }
+
+        return true;
     }
 
     public function validateEndDate($value = null)
@@ -145,7 +155,11 @@ class Announcements extends Core
             ]
         ];
 
-        $languages_query = $this->model->getWhere(
+        $languages_query = $this->model->select('
+            id,
+            language AS label
+        ')
+        ->getWhere(
             'app_languages',
             [
                 'status' => 1
@@ -157,7 +171,7 @@ class Announcements extends Core
             foreach ($languages_query as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
-                    'label' => $val->language,
+                    'label' => $val->label,
                     'selected' => $this->request->getGet('language') === $val->id
                 ];
             }

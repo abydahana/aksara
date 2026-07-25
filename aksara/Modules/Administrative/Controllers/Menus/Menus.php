@@ -39,11 +39,10 @@ class Menus extends Core
     {
         $this->setTitle(phrase('Menu Management'))
         ->setIcon('mdi mdi-menu')
-        ->unsetColumn('menu_id, serialized_data')
-        ->unsetView('menu_id')
-        ->columnOrder('menu_label, menu_placement, menu_description, group_name')
+        ->unsetColumn('menu_id, serialized_data, group_id')
         ->unsetField('menu_id')
-        ->setPrimary('menu_id')
+        ->unsetView('menu_id, group_id')
+        ->columnOrder('menu_label, menu_placement, menu_description, group_name')
         ->setField('serialized_data', 'custom', 'formatMenus')
         ->setField(
             'menu_placement',
