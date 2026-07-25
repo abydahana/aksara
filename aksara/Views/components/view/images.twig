@@ -1,0 +1,11 @@
+<div>
+    <ul>
+        {% for file in content %}
+            <li>
+                <a href="{{ file.url }}" target="_blank">
+                    {{ file.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

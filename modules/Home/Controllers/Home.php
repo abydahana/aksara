@@ -166,7 +166,7 @@ class Home extends Core
             'app_users',
             'app_users.user_id = blogs.author'
         )
-        ->orderBy('created_timestamp', 'DESC')
+        ->orderBy('blogs.created_timestamp', 'DESC')
         ->getWhere(
             'blogs',
             [

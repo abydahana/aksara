@@ -41,20 +41,17 @@ class Galleries extends Core
     {
         $this->setTitle(phrase('Galleries'))
         ->setIcon('mdi mdi-folder-multiple-image')
-        ->setPrimary('gallery_id')
-        ->unsetColumn('gallery_id, gallery_slug, gallery_tags, gallery_attributes, created_timestamp, updated_timestamp, featured')
-        ->unsetField('gallery_id, author')
+        ->unsetColumn('gallery_id, gallery_slug, gallery_tags, gallery_attributes, featured, updated_timestamp')
+        ->unsetField('gallery_id, author, created_timestamp, updated_timestamp')
         ->unsetView('gallery_id, first_name')
         ->columnOrder('gallery_images, gallery_title, gallery_description, first_name, featured, status')
-        ->fieldOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, created_timestamp, updated_timestamp, status')
-        ->viewOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, created_timestamp, updated_timestamp, status')
+        ->fieldOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, status')
+        ->viewOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, status')
         ->setField([
             'gallery_images' => 'images',
             'gallery_description' => 'textarea',
             'gallery_attributes' => 'attribution',
             'featured' => 'boolean',
-            'created_timestamp' => 'created_timestamp',
-            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->setField('gallery_slug', 'slug', 'gallery_title')
@@ -80,9 +77,9 @@ class Galleries extends Core
         ->fieldPosition([
             'gallery_tags' => 2,
             'featured' => 2,
+            'status' => 2,
             'created_timestamp' => 2,
-            'updated_timestamp' => 2,
-            'status' => 2
+            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-7',

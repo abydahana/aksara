@@ -58,15 +58,13 @@ class Galleries extends Migration
                 'type' => ('MySQLi' === $this->db->DBDriver ? 'tinytext' : 'text'),
                 'null' => false
             ],
-            'created_timestamp' => [
-                'type' => 'timestamp',
+            'featured' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'default' => '0',
                 'null' => false
             ],
-            'updated_timestamp' => [
-                'type' => 'timestamp',
-                'null' => true
-            ],
-            'featured' => [
+            'status' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
                 'default' => '0',
@@ -78,11 +76,13 @@ class Galleries extends Migration
                 'unsigned' => true,
                 'null' => false
             ],
-            'status' => [
-                'type' => 'tinyint',
-                'constraint' => 1,
-                'default' => '0',
+            'created_timestamp' => [
+                'type' => 'timestamp',
                 'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

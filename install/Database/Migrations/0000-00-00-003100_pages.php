@@ -50,20 +50,6 @@ class Pages extends Migration
                 'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text'),
                 'null' => false
             ],
-            'created_timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
-            'updated_timestamp' => [
-                'type' => 'timestamp',
-                'null' => true
-            ],
-            'author' => [
-                'type' => 'bigint',
-                'constraint' => 22,
-                'unsigned' => true,
-                'null' => false
-            ],
             'language_id' => [
                 'type' => 'int',
                 'constraint' => 11,
@@ -75,6 +61,20 @@ class Pages extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'author' => [
+                'type' => 'bigint',
+                'constraint' => 22,
+                'unsigned' => true,
+                'null' => false
+            ],
+            'created_timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

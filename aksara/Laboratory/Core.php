@@ -4030,6 +4030,12 @@ abstract class Core extends Controller
                 }
             }
 
+            if ('create' === $this->_method && $this->model->fieldExists('created_timestamp', $this->_table)) {
+                $prepare['created_timestamp'] = date('Y-m-d H:i:s');
+            } elseif ('update' === $this->_method && $this->model->fieldExists('updated_timestamp', $this->_table)) {
+                $prepare['updated_timestamp'] = date('Y-m-d H:i:s');
+            }
+
             // If data preparation is ready and the method is create
             if ($prepare && in_array('create', [$this->_method])) {
                 // Insert new data

@@ -80,10 +80,10 @@ class Blogs extends Core
         $this->setTitle(phrase('Blogs'))
         ->setIcon('mdi mdi-newspaper')
         ->setPrimary('post_id')
-        ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, created_timestamp, headline, language')
+        ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, headline, language, updated_timestamp')
         ->unsetField('post_id, author, created_timestamp, updated_timestamp')
         ->unsetView('post_id')
-        ->columnOrder('featured_image, post_title, category_title, first_name, headline, updated_timestamp, status')
+        ->columnOrder('featured_image, post_title, category_title, first_name, headline, status')
         ->fieldOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
         ->viewOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, headline, status')
         ->setField([
@@ -93,8 +93,6 @@ class Blogs extends Core
             'author' => 'current_user',
             'headline' => 'boolean',
             'featured_image' => 'image',
-            'created_timestamp' => 'created_timestamp',
-            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->setField('post_slug', 'slug', 'post_title')
@@ -140,7 +138,9 @@ class Blogs extends Core
             'headline' => 2,
             'featured_image' => 2,
             'language_id' => 2,
-            'language' => 2
+            'language' => 2,
+            'created_timestamp' => 2,
+            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -174,10 +174,10 @@ class Blogs extends Core
             'category_title' => phrase('Category'),
             'headline' => phrase('Headline'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated'),
             'language' => phrase('Language'),
-            'language_id' => phrase('Language')
+            'language_id' => phrase('Language'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);
@@ -301,14 +301,14 @@ class Blogs extends Core
 
     private function _filter()
     {
-        $all_categories = [
+        $categories = [
             [
                 'id' => 0,
                 'label' => phrase('All categories')
             ]
         ];
 
-        $categories = $this->model->select('
+        $categories_query = $this->model->select('
             category_id AS id,
             category_title AS label
         ')
@@ -318,7 +318,17 @@ class Blogs extends Core
                 'status' => 1
             ]
         )
-        ->resultArray();
+        ->result();
+
+        if ($categories_query) {
+            foreach ($categories_query as $key => $val) {
+                $categories[] = [
+                    'id' => $val->id,
+                    'label' => $val->label,
+                    'selected' => $this->request->getGet('category') === $val->id
+                ];
+            }
+        }
 
         $languages = [
             [
@@ -327,7 +337,11 @@ class Blogs extends Core
             ]
         ];
 
-        $languages_query = $this->model->getWhere(
+        $languages_query = $this->model->select('
+            id,
+            language AS label
+        ')
+        ->getWhere(
             'app_languages',
             [
                 'status' => 1
@@ -339,7 +353,7 @@ class Blogs extends Core
             foreach ($languages_query as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
-                    'label' => $val->language,
+                    'label' => $val->label,
                     'selected' => $this->request->getGet('language') === $val->id
                 ];
             }
@@ -348,7 +362,7 @@ class Blogs extends Core
         return [
             'category' => [
                 'label' => phrase('Category'),
-                'values' => array_merge($all_categories, $categories)
+                'values' => $categories
             ],
             'language' => [
                 'label' => phrase('Language'),

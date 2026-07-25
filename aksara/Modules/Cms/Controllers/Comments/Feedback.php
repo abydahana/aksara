@@ -120,12 +120,11 @@ class Feedback extends Core
 
         $this->setTitle(phrase('Feedback'))
         ->setIcon('mdi mdi-file-alert-outline')
-        ->unsetColumn('comment_id, post_id, reply_id, edited')
+        ->unsetColumn('comment_id, post_id, reply_id, edited, updated_timestamp')
+        ->unsetField('created_timestamp, updated_timestamp')
         ->unsetView('comment_id, post_id, reply_id, edited')
 
-        ->columnOrder('first_name, message, timestamp')
-
-        ->setPrimary('comment_id, user_id')
+        ->columnOrder('first_name, message')
 
         ->addToolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
 
@@ -146,7 +145,10 @@ class Feedback extends Core
             'comment_id' => $this->_primary
         ])
 
-        ->orderBy('timestamp', 'DESC')
+        ->setAlias([
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
+        ])
 
         ->render($this->_table);
     }

@@ -55,15 +55,13 @@ class Pages extends Core
         ->setIcon('mdi mdi-file-document-outline')
         ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
         ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
-        ->unsetColumn('page_id, author, page_slug, page_content, created_timestamp, updated_timestamp, language')
-        ->unsetField('page_id, author')
+        ->unsetColumn('page_id, author, page_slug, page_content, language, updated_timestamp')
+        ->unsetField('page_id, author, created_timestamp, updated_timestamp')
         ->unsetView('page_id, author, page_content')
         ->columnOrder('page_title, page_description, updated, status')
-        ->fieldOrder('page_title, page_description, language_id, created_timestamp, updated_timestamp, status')
+        ->fieldOrder('page_title, page_description, language_id, status')
         ->setField([
             'page_description' => 'textarea',
-            'created_timestamp' => 'created_timestamp',
-            'updated_timestamp' => 'updated_timestamp',
             'status' => 'boolean'
         ])
         ->setField('page_slug', 'slug', 'page_title')
@@ -93,20 +91,20 @@ class Pages extends Core
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_slug' => phrase('Slug'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated'),
             'language' => phrase('Language'),
-            'language_id' => phrase('Language')
+            'language_id' => phrase('Language'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
         ->setPlaceholder([
             'page_description' => phrase('Page summary to improve SEO')
         ])
         ->fieldPosition([
-            'created_timestamp' => 2,
-            'updated_timestamp' => 2,
             'status' => 2,
             'language_id' => 2,
-            'language' => 2
+            'language' => 2,
+            'created_timestamp' => 2,
+            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -420,7 +418,11 @@ class Pages extends Core
             ]
         ];
 
-        $languages_query = $this->model->getWhere(
+        $languages_query = $this->model->select('
+            id,
+            language AS label
+        ')
+        ->getWhere(
             'app_languages',
             [
                 'status' => 1
@@ -432,7 +434,7 @@ class Pages extends Core
             foreach ($languages_query as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
-                    'label' => $val->language,
+                    'label' => $val->label,
                     'selected' => $this->request->getGet('language') === $val->id
                 ];
             }

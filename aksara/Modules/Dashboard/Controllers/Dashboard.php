@@ -194,7 +194,7 @@ class Dashboard extends Core
             [
                 'app_users.status' => 1
             ],
-            7
+            10
         )
         ->result();
 

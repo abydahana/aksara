@@ -91,6 +91,14 @@ class Peoples extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'created_timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

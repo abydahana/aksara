@@ -51,9 +51,13 @@ class Inquiries extends Migration
                 'type' => 'text',
                 'null' => false
             ],
-            'timestamp' => [
+            'created_timestamp' => [
                 'type' => 'timestamp',
                 'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

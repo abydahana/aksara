@@ -28,7 +28,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '6.0.5';
+        $version = '6.0.6';
 
         if ('version' == $parameter) {
             return $version;

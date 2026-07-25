@@ -53,14 +53,14 @@ class AppNotifications extends Migration
                 'constraint' => 2000,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
             'opened' => [
                 'type' => 'tinyint',
                 'constraint' => 1,
                 'default' => '0'
+            ],
+            'timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
             ]
         ]);
 

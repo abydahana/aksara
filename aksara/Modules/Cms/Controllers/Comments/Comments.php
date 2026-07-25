@@ -37,10 +37,11 @@ class Comments extends Core
     {
         $this->setTitle(phrase('Comments'))
         ->setIcon('mdi mdi-comment-multiple-outline')
-        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment')
+        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment, updated_timestamp')
+        ->unsetField('created_timestamp, updated_timestamp')
         ->unsetView('post_id, post_type, reply_id, mention_id, edited, attachment')
 
-        ->columnOrder('first_name, post_id, post_path, comments, timestamp, status')
+        ->columnOrder('first_name, post_id, post_path, comments, status')
 
         ->addButton('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
 
@@ -60,7 +61,10 @@ class Comments extends Core
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->mergeContent('{{ comment_id }}', phrase('Feedback'), 'callback_getFeedback')
 
-        ->orderBy('timestamp', 'DESC')
+        ->setAlias([
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
+        ])
 
         ->render($this->_table);
     }

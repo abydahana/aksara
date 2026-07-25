@@ -39,16 +39,18 @@ class Inquiries extends Core
     {
         $this->setTitle(phrase('Inquiries'))
         ->setIcon('mdi mdi-message-text')
-        ->unsetColumn('id')
-        ->unsetField('id')
+        ->unsetColumn('id, updated_timestamp')
+        ->unsetField('id, created_timestamp, updated_timestamp')
         ->unsetView('id')
 
         ->setAlias([
             'sender_email' => phrase('Email'),
-            'sender_full_name' => phrase('Sender')
+            'sender_full_name' => phrase('Sender'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
-        ->orderBy('timestamp', 'DESC')
+        ->orderBy('created_timestamp', 'DESC')
 
         ->render($this->_table);
     }

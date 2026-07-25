@@ -65,14 +65,6 @@ class Announcements extends Migration
                 'type' => 'date',
                 'null' => false
             ],
-            'created_timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ],
-            'updated_timestamp' => [
-                'type' => 'timestamp',
-                'null' => true
-            ],
             'language_id' => [
                 'type' => 'int',
                 'constraint' => 11,
@@ -84,6 +76,14 @@ class Announcements extends Migration
                 'constraint' => 1,
                 'default' => '0',
                 'null' => false
+            ],
+            'created_timestamp' => [
+                'type' => 'timestamp',
+                'null' => false
+            ],
+            'updated_timestamp' => [
+                'type' => 'timestamp',
+                'null' => true
             ]
         ]);
 

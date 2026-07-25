@@ -175,7 +175,7 @@ class Read extends Core
 
         $post_tags = array_map('trim', explode(',', $post_tags));
 
-        if ($post_tags) {
+        if (! empty(array_filter($post_tags))) {
             $this->model->groupStart();
 
             foreach ($post_tags as $key => $tag) {
