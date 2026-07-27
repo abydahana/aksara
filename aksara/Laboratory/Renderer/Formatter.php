@@ -66,11 +66,11 @@ class Formatter
     {
         // Iterate through type definitions (usually only one primary type exists)
         foreach ($type as $key => $val) {
-            // 1. Checkbox & Radio (Options)
+            // Checkbox & Radio (Options)
             if (in_array($key, ['checkbox', 'radio']) && ! empty($val['parameter'])) {
                 $value = $this->_formatCheckboxRadio($key, $field, $value, $val['parameter']);
             }
-            // 2. Select (Options)
+            // Select (Options)
             elseif ('select' === $key && ! empty($val['parameter'])) {
                 $value = $this->_formatSelect($value, $val['parameter']);
             }
@@ -78,32 +78,32 @@ class Formatter
             elseif (in_array($key, ['files', 'images'])) {
                 $value = $this->_formatMultipleFiles($value);
             }
-            // 4. Single File
+            // Single File
             elseif ('file' === $key) {
                 $value = get_file($this->_setUploadPath, $value);
             }
-            // 5. Single Image
+            // Single Image
             elseif ('image' === $key) {
                 $thumb_mode = ! array_key_exists('original_thumbnail', $type) ? 'thumb' : null;
                 $value = get_image($this->_setUploadPath, $value, $thumb_mode);
             }
-            // 6. Hyperlink
+            // Hyperlink
             elseif ('hyperlink' === $key) {
                 $value = $this->_formatHyperlink($val, $replacement);
             }
-            // 9. Geospatial
+            // Attribution
+            elseif ('attribution' === $key) {
+                $value = $this->_formatAttribution($value);
+            }
+            // Geospatial
             elseif ('geospatial' === $key) {
                 if (in_array($this->_method, ['create', 'update'])) {
                     if (! $value || ! is_json($value)) {
                         $value = '{}';
                     }
-                } else {
-                    // Generates Vector Tile (MVT) endpoint URL for Read/View mode
-                    $id = (isset($replacement['id']) ? $replacement['id'] : '');
-                    $value = base_url('maps/geospatial/{z}/{x}/{y}', ['id' => $id, 'format' => (in_array(config('Database')->default['DBDriver'], ['Postgre']) ? 'mvt' : 'geojson')]);
                 }
             }
-            // 10. Date
+            // Date
             elseif ('date' === $key && $value && '0000-00-00' !== $value) {
                 $timestamp = strtotime($value);
                 if ($timestamp) {
@@ -111,7 +111,7 @@ class Formatter
                     $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp);
                 }
             }
-            // 11. DateTime
+            // DateTime
             elseif ('datetime' === $key && $value && '0000-00-00 00:00:00' !== $value) {
                 $timestamp = strtotime($value);
                 if ($timestamp) {
@@ -119,7 +119,7 @@ class Formatter
                     $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
                 }
             }
-            // 12. Sprintf Formatting
+            // Sprintf Formatting
             elseif ('sprintf' === $key) {
                 $value = $this->_formatSprintf($value, $val);
             }
@@ -243,6 +243,44 @@ class Formatter
             return $files_list;
         }
         return $value;
+    }
+
+    /**
+     * Format attribution JSON into a key-value array for form/read components.
+     */
+    private function _formatAttribution(mixed $value): array
+    {
+        if (is_string($value) && is_json($value)) {
+            $decoded = json_decode($value, true);
+
+            if (is_array($decoded)) {
+                $value = $decoded;
+            }
+        }
+
+        if (is_object($value)) {
+            $value = get_object_vars($value);
+        }
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $formatted = [];
+
+        foreach ($value as $label => $content) {
+            if ('' === trim((string) $label)) {
+                continue;
+            }
+
+            if (is_array($content) || is_object($content)) {
+                $content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+
+            $formatted[(string) $label] = (string) $content;
+        }
+
+        return $formatted;
     }
 
     /**

@@ -7,7 +7,7 @@
  * @var mixed $pagination
  */
 ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2 text-center text-md-start">
@@ -17,12 +17,15 @@
                 <p class="fs-5">
                     <?= $meta->description; ?>
                 </p>
-                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="form-horizontal position-relative">
-                    <div class="input-group input-group-lg border rounded-pill bg-white overflow-hidden">
-                        <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none" placeholder="<?= phrase('Search post'); ?>" />
-                        <button type="submit" class="btn btn-primary border-0 rounded-pill m-1 px-4">
-                            <i class="mdi mdi-magnify"></i>
-                        </button>
+                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
+                    <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                        <div class="input-group ps-4">
+                            <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                            <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars($keywords ?? ''); ?>" placeholder="<?= phrase('Search posts...'); ?>" required>
+                            <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -30,12 +33,12 @@
     </div>
 </section>
 
-<section class="section-padding fade-in">
+<section class="section-padding">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($keywords): ?>
-                    <div class="alert alert-info rounded-4 border-0 lead">
+                    <div class="alert alert-info rounded-4 border-0 lead fade-in">
                         <?php if ($pagination->total): ?>
                             <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($pagination->total)]); ?>
                         <?php else: ?>
@@ -45,7 +48,7 @@
                 <?php endif; ?>
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
-                        <div class="row g-0 g-md-3 align-items-center mb-5">
+                        <div class="row g-0 g-md-3 align-items-center mb-5 fade-in">
                             <div class="col-9 col-md-10">
                                 <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="text-muted --xhr">
                                     <span class="badge bg-dark">

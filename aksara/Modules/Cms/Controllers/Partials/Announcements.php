@@ -128,18 +128,18 @@ class Announcements extends Core
         ->render($this->_table);
     }
 
-    public function validateStartDate($value = null)
+    public function validateStartDate($value = '')
     {
-        if (strtotime($this->request->getPost('start_date')) < time()) {
+        if (strtotime($value) < time()) {
             $this->formValidation->setError('start_date', 'The start date must be greater than or equal to today');
         }
 
         return true;
     }
 
-    public function validateEndDate($value = null)
+    public function validateEndDate($value = '')
     {
-        if (strtotime($this->request->getPost('start_date')) >= strtotime($value)) {
+        if (strtotime($value) >= strtotime($value)) {
             $this->formValidation->setError('start_date', 'The end date must be greater than start date');
         }
 

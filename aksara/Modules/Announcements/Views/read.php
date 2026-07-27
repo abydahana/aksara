@@ -4,7 +4,7 @@
  * @var mixed $meta
  */
 if ($results): ?>
-<section class="section-padding">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start fade-in">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -16,29 +16,29 @@ if ($results): ?>
 </section>
 <?php endif; ?>
 <section class="section-padding">
-    <div class="container"> 
+    <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($results): ?>
                     <?php foreach($results as $key => $val): ?>
                         <?php if ($val->cover && 'placeholder.png' != $val->cover): ?>
-                            <img src="<?= get_image('announcements', $val->cover); ?>" class="img-fluid rounded-4 mb-3" alt="..." />
+                            <img src="<?= get_image('announcements', $val->cover); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="..." />
                         <?php endif; ?>
-                        <div class="fs-5">
+                        <div class="fs-5 fade-in">
                             <?= $val->content; ?>
                         </div>
-                        <p class="text-muted">
+                        <p class="text-muted fade-in">
                             <em>
                                 <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $val->end_date]); ?>
                             </em>
                         </p>
-                        <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 --xhr">
+                        <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
                             <i class="mdi mdi-arrow-left"></i>
                             <?= phrase('Back'); ?>
                         </a>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

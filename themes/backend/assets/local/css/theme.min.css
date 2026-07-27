@@ -58,7 +58,6 @@
   --bs-breadcrumb-bg: #f1f5f9;
   --bs-sidebar-bg: var(--bs-bg-white)
 }
-
 [data-bs-theme="dark"] {
   --bs-primary: var(--bs-surface-bg);
   --bs-primary-rgb: 39, 39, 42;
@@ -113,7 +112,6 @@
   --bs-surface-bg: #18181b;
   --bs-breadcrumb-bg: #09090b;
 }
-
 .btn-primary {
   --bs-btn-color: #fff; --bs-btn-bg: var(--bs-primary); --bs-btn-border-color: var(--bs-primary);
   --bs-btn-hover-color: #fff; --bs-btn-hover-bg: #1e293b; --bs-btn-hover-border-color: #1e293b;
@@ -527,7 +525,6 @@
   background-color: #cbd5e1 !important;
   color: #1e293b !important;
 }
-
 /* Dark mode Select2 */
 [data-bs-theme="dark"] .select2-dropdown {
   background-color: #18181b !important;

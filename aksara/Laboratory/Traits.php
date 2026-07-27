@@ -72,6 +72,11 @@ trait Traits
     private $_afterUpdate;
 
     /**
+     * Form submission permission status.
+     */
+    private bool $_publicFormSubmission = false;
+
+    /**
      * Flag indicating if the submitted API token is valid.
      */
     private bool $_apiToken = false;

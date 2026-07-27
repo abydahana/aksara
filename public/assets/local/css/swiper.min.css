@@ -12,11 +12,8 @@
   height: 40px !important;
   border-top-right-radius: 50% !important;
   border-bottom-right-radius: 50% !important;
-  
-  
   font-size: 20px !important;
   font-weight: bold;
-  
 }
 .swiper-button-next {
   position: absolute !important;
@@ -26,11 +23,8 @@
   height: 40px !important;
   border-top-left-radius: 50% !important;
   border-bottom-left-radius: 50% !important;
-  
-  
   font-size: 20px !important;
   font-weight: bold;
-  
 }
 .swiper-button-prev::after,
 .swiper-button-next::after {

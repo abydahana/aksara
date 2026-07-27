@@ -181,6 +181,7 @@ class View
                 'type' => $final_type,
                 'primary' => $primary,
                 'tooltip' => $this->_setTooltip[$field] ?? null,
+                'attribution' => $this->_setAttribute[$field] ?? null,
                 'position' => $this->_fieldPosition[$field] ?? 1,
                 'prepend' => $this->_fieldPrepend[$field] ?? null,
                 'append' => $this->_fieldAppend[$field] ?? null,

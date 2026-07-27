@@ -2061,6 +2061,24 @@ abstract class Core extends Controller
             $fieldData[$val->name] = $val;
         }
 
+        $mockFields = $this->model->getMockFields($this->_table);
+        if ($mockFields) {
+            $rawDetails = is_object($data) ? ($data->details ?? null) : ($data['details'] ?? null);
+            $details = is_string($rawDetails) ? json_decode($rawDetails, true) : (is_array($rawDetails) ? $rawDetails : []);
+
+            if (is_array($details)) {
+                foreach (array_keys($mockFields) as $field) {
+                    if (array_key_exists($field, $details)) {
+                        if (is_object($data)) {
+                            $data->{$field} = $details[$field];
+                        } elseif (is_array($data)) {
+                            $data[$field] = $details[$field];
+                        }
+                    }
+                }
+            }
+        }
+
         if (! $data) {
             $data = array_map(fn ($v) => '', array_flip(array_keys($fieldData)));
         }
@@ -2332,7 +2350,7 @@ abstract class Core extends Controller
                 // Check if request is made from promise
                 return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->apiClient ? go_to() : null));
             }
-        } elseif ($table && ! $this->_setPermission) {
+        } elseif ($table && ! $this->_setPermission && ! $this->_publicFormSubmission) {
             // Unset database modification because no permission is set
             $this->unsetMethod('create, update, delete');
 
@@ -3737,8 +3755,15 @@ abstract class Core extends Controller
                         if (is_array($relationKey) && isset($relationKey[0])) {
                             $relationKey = $relationKey[0];
                         }
+
+                        $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $relationKey . ']';
+
+                        if (! in_array($relationChecker, $val['validation'], true)) {
+                            $val['validation'][] = $relationChecker;
+                        }
+
                         // Apply rules only when it's required
-                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $relationKey . ']']);
+                        $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $val['validation']);
                     } else {
                         // Find foreign data
                         $constrained = false;
@@ -3756,8 +3781,15 @@ abstract class Core extends Controller
                         }
 
                         if ($constrained) {
+                            $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']';
+                            $relationValidation = array_merge(['required'], $val['validation']);
+
+                            if (! in_array($relationChecker, $relationValidation, true)) {
+                                $relationValidation[] = $relationChecker;
+                            }
+
                             // Apply only for constrained table relation
-                            $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), ['required', 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']']);
+                            $this->formValidation->setRule($key, (isset($this->_setAlias[$key]) ? $this->_setAlias[$key] : ucwords(str_replace('_', ' ', $key))), $relationValidation);
                         }
                     }
                 } else {
@@ -4081,6 +4113,18 @@ abstract class Core extends Controller
             // No data are found
             return throw_exception(404, phrase('No data can be executed.'), (! $this->apiClient ? $this->_redirectBack : null));
         }
+    }
+
+    /**
+     * Allow form submission without permission enforcement.
+     *
+     * Intended for public-facing forms that still use the core CRUD pipeline.
+     */
+    public function publicFormSubmission(bool $return = true): static
+    {
+        $this->_publicFormSubmission = $return;
+
+        return $this;
     }
 
     /**
@@ -5503,9 +5547,9 @@ abstract class Core extends Controller
                             }
                         }
 
-                        // Cast geometry to GeoJSON for create/update methods
+                        // Cast geometry to GeoJSON for form/read methods
                         // so the form can read and manipulate it.
-                        if ($isGeospatial && in_array($this->_method, ['create', 'update'], true)) {
+                        if ($isGeospatial && in_array($this->_method, ['create', 'read', 'update'], true)) {
                             $driver = $this->model->dbDriver();
 
                             $asGeoJsonFunc = match ($driver) {
@@ -5604,6 +5648,7 @@ abstract class Core extends Controller
                     foreach ($this->_join as $dbTable => $params) {
                         $condition = str_replace('__PRIMARY_TABLE__', $table, $params['condition']);
 
+                        /*
                         foreach ($this->_setRelation ?? [] as $relation) {
                             if (($relation['relationTable'] ?? null) !== $dbTable) {
                                 continue;
@@ -5632,6 +5677,7 @@ abstract class Core extends Controller
                                 }
                             }
                         }
+                            */
 
                         $this->_prepare[] = [
                             'function' => 'join',
@@ -6665,6 +6711,14 @@ abstract class Core extends Controller
      */
     private function _setLanguage(?string $languageId = null): void
     {
+        $appLanguage = get_setting('app_language');
+
+        if (get_setting('force_system_language') && ! get_userdata('is_logged')) {
+            $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+
+            set_userdata('language_id', $languageId);
+        }
+
         // Check if session language ID is not set.
         if (! get_userdata('language_id') || ! $languageId) {
             // Determine Initial Fallback Language ID

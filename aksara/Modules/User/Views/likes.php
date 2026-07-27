@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 if ($user): ?>
-    <section class="section-padding fade-in">
+    <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">

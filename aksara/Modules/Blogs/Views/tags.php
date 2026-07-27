@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-md-start">
@@ -17,12 +17,15 @@
                 </p>
             </div>
             <div class="col-md-6">
-                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="form-horizontal position-relative">
-                    <div class="input-group input-group-lg border rounded-pill bg-white overflow-hidden">
-                        <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none" placeholder="<?= phrase('Search post'); ?>" />
-                        <button type="submit" class="btn btn-primary border-0 rounded-pill m-1 px-4">
-                            <i class="mdi mdi-magnify"></i>
-                        </button>
+                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="my-5">
+                    <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                        <div class="input-group ps-4">
+                            <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                            <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars($keywords ?? ''); ?>" placeholder="<?= phrase('Search posts...'); ?>" required>
+                            <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -31,7 +34,7 @@
 </section>
 
 <?php if ($results): ?>
-    <section class="section-padding fade-in">
+    <section class="section-padding">
         <div class="container">
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
@@ -58,7 +61,7 @@
                         }
                     ?>
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
-                        <div class="h-100 d-flex flex-column">
+                        <div class="h-100 d-flex flex-column fade-in">
                             <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
                                 <div class="row g-0 align-items-center mb-3">
                                     <div class="col-1">

@@ -7,7 +7,7 @@
 ?>
 
 <?php if ($articles): ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-md-start">
@@ -19,12 +19,15 @@
                 </p>
                 <div class="row mb-5">
                     <div class="col-lg-10">
-                        <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="form-horizontal position-relative">
-                            <div class="input-group input-group-lg border rounded-pill bg-white overflow-hidden">
-                                <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none" placeholder="<?= phrase('Search post'); ?>" />
-                                <button type="submit" class="btn btn-primary border-0 rounded-pill m-1 px-4">
-                                    <i class="mdi mdi-magnify"></i>
-                                </button>
+                        <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
+                            <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                                <div class="input-group ps-4">
+                                    <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                    <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" placeholder="<?= phrase('Search posts...'); ?>" required>
+                                    <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                        <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -93,20 +96,20 @@
 </section>
 <?php endif; ?>
 
-<section class="section-padding fade-in">
+<section class="section-padding">
     <div class="container">
         <?php if ($articles): ?>
             <?php foreach ($articles as $key => $val): ?>
                 <div class="mb-5">
-                    <h3 class="text-center text-sm-start">
+                    <h3 class="text-center text-sm-start fade-in">
                         <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="--xhr">
                             <?= $val->category_title; ?> <i class="mdi mdi-arrow-right"></i>
                         </a>
                     </h3>
-                    <p class="text-muted fs-5 text-center text-sm-start">
+                    <p class="text-muted fs-5 text-center text-sm-start fade-in">
                         <?= $val->category_description; ?>
                     </p>
-                    <div class="swiper" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
+                    <div class="swiper fade-in" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
                         <div class="swiper-wrapper">
                             <?php foreach ($val->posts as $_key => $_val): ?>
                                 <div class="swiper-slide h-auto">
@@ -148,7 +151,7 @@
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

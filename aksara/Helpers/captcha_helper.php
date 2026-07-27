@@ -224,7 +224,7 @@ if (! function_exists('generate_captcha')) {
                     'colors' => [
                         'background' => [255, 255, 255],
                         'border' => [255, 255, 255],
-                        'grid' => [0, 0, 0],
+                        'grid' => [200, 200, 200],
                         'text' => [0, 0, 0]
                     ]
                 ]);

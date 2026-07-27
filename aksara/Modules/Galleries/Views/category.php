@@ -19,7 +19,7 @@ if ($results) {
                 $output .= '
                     <div class="col-sm-6 col-md-3">
                         <a href="' . current_page($src) . '" class="--xhr">
-                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4" alt="' . $alt . '" />
+                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4 fade-in" alt="' . $alt . '" />
                         </a>
                     </div>
                 ';
@@ -29,7 +29,7 @@ if ($results) {
 }
 
 if ($output): ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -51,7 +51,7 @@ if ($output): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

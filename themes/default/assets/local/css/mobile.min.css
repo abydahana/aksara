@@ -16,7 +16,6 @@
     height: calc(25vh - 56px) !important;
   }
 }
-
 @media (max-width: 991.98px) {
   #header-wrapper .mobile-menu-toggle {
     width: 40px;
@@ -75,7 +74,6 @@
     transform: translateY(-6.75px) rotate(-45deg);
   }
 }
-
 /* ──────────────────────────────────────────────
    Bottom Sheet – Adaptive Light / Dark
    ────────────────────────────────────────────── */
@@ -452,7 +450,7 @@
   #offcanvasNavbarDark .user-login .btn {
     width: 100%;
   }
-  
+
   #offcanvasNavbarDark .user-login.ms-2 {
     margin-left: 0 !important;
   }
