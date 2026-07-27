@@ -5,7 +5,7 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-<section class="section-padding">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start fade-in">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -23,7 +23,7 @@ if ($results): ?>
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
-                        <div class="row align-items-center mb-3 mb-lg-5">
+                        <div class="row align-items-center mb-3 mb-lg-5 fade-in">
                             <div class="col-8 col-md-9">
                                 <blockquote class="blockquote">
                                     <h2>
@@ -49,7 +49,7 @@ if ($results): ?>
 
                     <?= pagination($pagination); ?>
                 <?php else: ?>
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

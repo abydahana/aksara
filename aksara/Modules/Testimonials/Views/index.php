@@ -6,7 +6,7 @@
  */
 
 if ($results): ?>
-<section class="section-padding">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start fade-in">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -22,7 +22,7 @@ if ($results): ?>
     <div class="container">
         <?php if ($results): ?>
             <?php foreach ($results as $key => $val): ?>
-                <div class="mb-3">
+                <div class="mb-3 fade-in">
                     <div class="row align-items-center mb-4">
                         <div class="col-3 col-md-3 pt-2 order-sm-<?= ($key %2 === 0 ? '0' : '1'); ?>">
                             <img src="<?= get_image('testimonials', $val->photo, 'thumb'); ?>" class="img-fluid w-100 rounded-circle p-2 border">
@@ -36,7 +36,7 @@ if ($results): ?>
                                     <?= $val->testimonial_content; ?>
                                 </div>
                                 <footer class="blockquote-footer">
-                                    <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name; ?></b>, <?= $val->timestamp; ?>
+                                    <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name; ?></b>, <?= $val->created_timestamp; ?>
                                 </footer>
                             </blockquote>
                         </div>
@@ -46,7 +46,7 @@ if ($results): ?>
 
             <?= pagination($pagination); ?>
         <?php else: ?>
-            <div class="py-5">
+            <div class="py-5 fade-in">
                 <div class="text-center">
                     <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                 </div>

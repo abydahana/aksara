@@ -45,7 +45,7 @@
         }
     }
 ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>

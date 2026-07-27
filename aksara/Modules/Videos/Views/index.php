@@ -6,7 +6,7 @@
  */
 
 if ($results): ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -23,7 +23,7 @@ if ($results): ?>
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <div class="col-md-6 col-lg-4">
-                        <div class="mb-3">
+                        <div class="mb-3 fade-in">
                             <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr">
                                 <img src="<?= get_image('videos', $val->cover, 'thumb'); ?>" class="w-100 rounded-4 mb-3" style="max-height:240px;object-fit: cover" />
                             </a>
@@ -60,7 +60,7 @@ if ($results): ?>
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

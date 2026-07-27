@@ -424,7 +424,23 @@ class Model
         }
 
         if ($table && $this->db->tableExists($table)) {
-            return $this->db->getFieldData($table);
+            $fields = $this->db->getFieldData($table);
+
+            if (isset($this->_mockFields[$table])) {
+                foreach ($this->_mockFields[$table] as $mock) {
+                    $field = new \stdClass();
+                    $field->name = $mock['name'];
+                    $field->type = $mock['type'];
+                    $field->max_length = null;
+                    $field->primary_key = 0;
+                    $field->default = null;
+                    $field->nullable = true;
+
+                    $fields[] = $field;
+                }
+            }
+
+            return $fields;
         }
 
         return false;
@@ -2037,7 +2053,7 @@ class Model
     /**
      * Executes the query and returns the results as an array of objects.
      *
-     * @return object<int, object>|ResultInterface
+     * @return array<int, object<string, mixed>>|ResultInterface
      */
     public function result()
     {
@@ -2070,6 +2086,7 @@ class Model
      * Executes the query and returns a single row as an object.
      *
      * @param int|string $field The row number to retrieve, or the field name to return directly.
+     * @return object<string, mixed>|string|int|float|bool|null
      */
     public function row(int|string $field = 0)
     {
@@ -2117,6 +2134,7 @@ class Model
      *
      * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
      * @param bool $reset Whether to reset the query parameters after execution.
+     * @return int
      */
     public function numRows(string $table = '', bool $reset = true)
     {
@@ -2138,6 +2156,7 @@ class Model
      *
      * @param string $table The table name.
      * @param bool $reset Whether to reset the query parameters after execution.
+     * @return int
      */
     public function countAll(string $table = '', bool $reset = true)
     {
@@ -2159,6 +2178,7 @@ class Model
      *
      * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
      * @param bool $reset Whether to reset the query parameters after execution.
+     * @return int
      */
     public function countAllResults(string $table = '', bool $reset = true)
     {

@@ -146,6 +146,11 @@ class MainSeeder extends Seeder
                 'value' => 'logo.png'
             ],
             [
+                'key' => 'reports_icon',
+                'type' => 'image',
+                'value' => 'logo.png'
+            ],
+            [
                 'key' => 'frontend_theme',
                 'type' => 'varchar',
                 'value' => 'default'
@@ -159,6 +164,11 @@ class MainSeeder extends Seeder
                 'key' => 'app_language',
                 'type' => 'select',
                 'value' => htmlspecialchars(trim(session()->get('language') == 'id' ? '2' : '1'))
+            ],
+            [
+                'key' => 'force_system_language',
+                'type' => 'boolean',
+                'value' => '0'
             ],
             [
                 'key' => 'office_name',

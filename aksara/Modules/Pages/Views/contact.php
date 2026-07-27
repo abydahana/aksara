@@ -5,7 +5,7 @@
  */
 ?>
 <div class="position-relative">
-    <div role="map" class="bg-light" data-coordinate="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
+    <div role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
 
 <section class="section-padding fade-in">
@@ -19,7 +19,7 @@
     </div>
 </section>
 
-<section class="section-padding fade-in">
+<section class="section-padding pt-0 fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
@@ -98,7 +98,7 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card border-0 rounded-4 shadow">
+                <div class="card border-light-subtle rounded-5 fade-in">
                     <div class="card-body p-4">
                         <h3 class="mb-3">
                             <?= phrase('Direct Inquiry'); ?>
@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary rounded-pill">
                                             <?= phrase('Send Message'); ?> <i class="mdi mdi-send"></i>
                                         </button>
                                     </div>

@@ -47,23 +47,31 @@
                             <?= form_input($results->field_data->app_description); ?>
 
                             <div class="row align-items-center">
-                                <div class="col-6 col-md-3">
+                                <div class="col-6 col-sm-4">
                                     <?= form_input($results->field_data->app_logo); ?>
                                 </div>
-                                <div class="col-6 col-md-3">
+                                <div class="col-6 col-sm-4">
                                     <?= form_input($results->field_data->app_icon); ?>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <?= form_input($results->field_data->app_language); ?>
+                                <div class="col-12 col-sm-4">
+                                    <?= form_input($results->field_data->reports_icon); ?>
                                 </div>
                             </div>
-                            
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->app_language); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->force_system_language); ?>
+                                </div>
+                            </div>
+
                             <hr class="border-secondary" />
-                            
+
                             <h5>
                                 <?= phrase('Contact Information'); ?>
                             </h5>
-                            
+
                             <?= form_input($results->field_data->office_name); ?>
 
                             <div class="row">
@@ -90,9 +98,9 @@
                                     <?= form_input($results->field_data->twitter_username); ?>
                                 </div>
                             </div>
-                            
+
                             <?= form_input($results->field_data->office_address); ?>
-                            
+
                             <?= form_input($results->field_data->office_map); ?>
                         </div>
                         <div class="tab-pane fade" id="pills-membership">

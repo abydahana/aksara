@@ -80,9 +80,10 @@ class Settings extends Core
             'app_description' => 'textarea',
             'app_logo' => 'image',
             'app_icon' => 'image',
-            'reports_logo' => 'image',
+            'reports_icon' => 'image',
             'office_address' => 'textarea',
             'office_map' => 'geospatial',
+            'force_system_language' => 'boolean',
             'one_device_login' => 'boolean',
             'login_attempt' => 'number_format',
             'blocking_time' => 'number_format',
@@ -114,7 +115,7 @@ class Settings extends Core
             'spam_timer' => phrase('seconds')
         ])
         ->setAttribute([
-            'office_map' => 'data-drawing-type="coordinate" data-draggable="1"'
+            'office_map' => 'data-drawing-type="coordinate" data-draggable="1" data-zoom="12"'
         ])
         ->setPlaceholder([
             'openlayers_search_key' => phrase('Enter your API Key'),
@@ -151,6 +152,7 @@ class Settings extends Core
             'app_name' => 'required|string|max_length[60]',
             'app_description' => 'string',
             'app_language' => 'required',
+            'force_system_language' => 'boolean',
             'office_name' => 'required',
             'office_email' => 'required|valid_email',
             'office_phone' => 'required',
@@ -198,7 +200,9 @@ class Settings extends Core
             'office_map' => phrase('Office Map'),
             'app_logo' => phrase('Application Logo'),
             'app_icon' => phrase('Application Icon'),
+            'reports_icon' => phrase('Reports Icon'),
             'app_language' => phrase('System Language'),
+            'force_system_language' => phrase('Force System Language'),
 
             /* MEMBERSHIP */
             'one_device_login' => phrase('One Device Login'),

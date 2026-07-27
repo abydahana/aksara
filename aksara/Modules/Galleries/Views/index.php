@@ -6,7 +6,7 @@
  */
 
 if ($results): ?>
-<section class="section-padding fade-in">
+<section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -46,7 +46,7 @@ if ($results): ?>
                         }
                     ?>
                     <div class="col-lg-6">
-                        <div class="rounded-4 overflow-hidden mb-3">
+                        <div class="rounded-4 overflow-hidden mb-3 fade-in">
                             <div class="row g-0">
                                 <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-center" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:320px">
                                     <div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">
@@ -91,7 +91,7 @@ if ($results): ?>
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
+                    <div class="py-5 fade-in">
                         <div class="text-center">
                             <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
                         </div>

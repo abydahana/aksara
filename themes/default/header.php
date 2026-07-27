@@ -6,7 +6,7 @@
 
 // Cache menu output once — generate_menu() mutates $menus by reference,
 // calling it twice would corrupt slugs (all links become target="_blank")
-$_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-3', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
+$_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 ?>
 <header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container">
