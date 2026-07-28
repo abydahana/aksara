@@ -72,16 +72,6 @@ abstract class Core extends Controller
     public $template;
 
     /**
-     * Flag indicating if the submitted API token is valid.
-     */
-    private bool $_apiToken = false;
-
-    /**
-     * Array of mock fields to be registered.
-     */
-    private array $_mockFields = [];
-
-    /**
      * Controller constructor, initializes dependencies and validates request integrity.
      *
      * @return void
@@ -2027,10 +2017,13 @@ abstract class Core extends Controller
         }
 
         $output = [];
+        $fieldData = $this->_compiledFieldData();
+        $fieldNames = array_keys($fieldData);
+        $mockFields = $this->model->getMockFields($this->_table);
 
         foreach ($data as $row => $array) {
             // Process single row
-            $output[$row] = $this->serializeRow($array, false);
+            $output[$row] = $this->serializeRow($array, false, $fieldData, $mockFields, $fieldNames);
         }
 
         if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
@@ -2047,21 +2040,11 @@ abstract class Core extends Controller
      *
      * @return array|string The structured, serialized row data or JSON response if requested by API client.
      */
-    public function serializeRow(array|object $data, bool $return = true): array|string
+    public function serializeRow(array|object $data, bool $return = true, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|string
     {
-        // Define field data compilation
-        $fieldData = $this->model->fieldData($this->_table);
-
-        // Find primary key
-        foreach ($fieldData as $key => $val) {
-            // Unset indexed field data
-            unset($fieldData[$key]);
-
-            // Add properties to field data compilation
-            $fieldData[$val->name] = $val;
-        }
-
-        $mockFields = $this->model->getMockFields($this->_table);
+        $fieldData ??= $this->_compiledFieldData();
+        $fieldNames ??= array_keys($fieldData);
+        $mockFields ??= $this->model->getMockFields($this->_table);
         if ($mockFields) {
             $rawDetails = is_object($data) ? ($data->details ?? null) : ($data['details'] ?? null);
             $details = is_string($rawDetails) ? json_decode($rawDetails, true) : (is_array($rawDetails) ? $rawDetails : []);
@@ -2080,17 +2063,17 @@ abstract class Core extends Controller
         }
 
         if (! $data) {
-            $data = array_map(fn ($v) => '', array_flip(array_keys($fieldData)));
+            $data = array_map(fn ($v) => '', array_flip($fieldNames));
         }
 
         if (is_object($data)) {
-            foreach (array_keys($fieldData) as $field) {
+            foreach ($fieldNames as $field) {
                 if (! property_exists($data, $field)) {
                     $data->{$field} = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
                 }
             }
         } elseif (is_array($data)) {
-            foreach (array_keys($fieldData) as $field) {
+            foreach ($fieldNames as $field) {
                 if (! isset($data[$field])) {
                     $data[$field] = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
                 }
@@ -2256,14 +2239,13 @@ abstract class Core extends Controller
                     || (in_array($this->_method, ['create', 'update']) && ! in_array($field, $this->_unsetField))
                     || (in_array($this->_method, ['read']) && ! in_array($field, $this->_unsetRead))
                 ) {
-                    // Get callback method
                     $method = $this->_setField[$field]['custom']['parameter'];
-                    $content = $this->$method((array) $data);
 
-                    // We use reflection to get method visibility
-                    $ref = new ReflectionMethod($this, $method);
+                    if (! array_key_exists($method, $this->_customCallbackVisibilityCache)) {
+                        $this->_customCallbackVisibilityCache[$method] = (new ReflectionMethod($this, $method))->isProtected();
+                    }
 
-                    if ($ref->isProtected()) {
+                    if ($this->_customCallbackVisibilityCache[$method]) {
                         $content = $this->$method((array) $data);
                     } else {
                         $content = $method . '() must be protected';
@@ -2292,6 +2274,24 @@ abstract class Core extends Controller
         }
 
         return $output;
+    }
+
+    /**
+     * Compile field metadata into a map once per serialize cycle.
+     */
+    private function _compiledFieldData(): array
+    {
+        $fieldData = $this->model->fieldData($this->_table);
+        if (! $fieldData) {
+            return [];
+        }
+
+        $compiled = [];
+        foreach ($fieldData as $val) {
+            $compiled[$val->name] = $val;
+        }
+
+        return $compiled;
     }
 
     /**
