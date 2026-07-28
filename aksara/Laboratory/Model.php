@@ -70,6 +70,31 @@ class Model
     private array $_mockFields = [];
 
     /**
+     * @var array<string, bool> Request-level cache for table existence checks.
+     */
+    private array $_tableExistsCache = [];
+
+    /**
+     * @var array<string, bool> Request-level cache for field existence checks.
+     */
+    private array $_fieldExistsCache = [];
+
+    /**
+     * @var array<string, array<int, string>|false> Request-level cache for table field names.
+     */
+    private array $_listFieldsCache = [];
+
+    /**
+     * @var array<string, array<int, \stdClass>|false> Request-level cache for table field metadata.
+     */
+    private array $_fieldDataCache = [];
+
+    /**
+     * @var array<string, string|null> Request-level cache for resolved column types.
+     */
+    private array $_fieldTypeCache = [];
+
+    /**
      * @var int|null Stores the offset value for the query.
      */
     private ?int $_offset = null;
@@ -338,16 +363,17 @@ class Model
      */
     public function tableExists(string $table): bool
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
+        $table = $this->_normalizeTableName($table);
+
+        if (! $table) {
+            return false;
         }
 
-        if ($table && $this->db->tableExists($table)) {
-            return true;
+        if (! array_key_exists($table, $this->_tableExistsCache)) {
+            $this->_tableExistsCache[$table] = $this->db->tableExists($table);
         }
 
-        return false;
+        return $this->_tableExistsCache[$table];
     }
 
     /**
@@ -358,30 +384,26 @@ class Model
      */
     public function fieldExists(string $field, string $table): bool
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
-        }
+        $table = $this->_normalizeTableName($table);
+        $field = trim($field, "\"`[] \t\n\r\0\x0B");
 
-        if (strpos(trim($table), '(') !== false || strpos(strtolower(trim($table)), 'select ') !== false) {
+        if (! $table || ! $field) {
             return false;
         }
 
-        // Store alias for later use (though $_table_alias is not defined in properties, following original logic)
-        $tempTableAlias = [];
-        if (strpos(trim($table), ' ') !== false) {
-            $table = str_ireplace(' AS ', ' ', $table);
-            $destructure = explode(' ', $table);
-            $table = $destructure[0];
-
-            $tempTableAlias[$destructure[1]] = $table; // This variable is local now
+        $cacheKey = $table . '.' . $field;
+        if (array_key_exists($cacheKey, $this->_fieldExistsCache)) {
+            return $this->_fieldExistsCache[$cacheKey];
         }
 
-        if ($table && $field && $this->db->tableExists($table) && $this->db->fieldExists($field, $table)) {
-            return true;
+        $fields = $this->listFields($table);
+        if (false === $fields) {
+            $this->_fieldExistsCache[$cacheKey] = false;
+        } else {
+            $this->_fieldExistsCache[$cacheKey] = in_array($field, $fields, true);
         }
 
-        return false;
+        return $this->_fieldExistsCache[$cacheKey];
     }
 
     /**
@@ -392,22 +414,30 @@ class Model
      */
     public function listFields(string $table): array|false
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
+        $table = $this->_normalizeTableName($table);
+
+        if (! $table) {
+            return false;
         }
 
-        if ($table && $this->db->tableExists($table)) {
+        if (! array_key_exists($table, $this->_listFieldsCache)) {
+            $this->_listFieldsCache[$table] = false;
+
+            if (! $this->tableExists($table)) {
+                return false;
+            }
+
             $fields = $this->db->getFieldNames($table);
             if (isset($this->_mockFields[$table])) {
                 foreach ($this->_mockFields[$table] as $mock) {
                     $fields[] = $mock['name'];
                 }
             }
-            return $fields;
+
+            $this->_listFieldsCache[$table] = array_values(array_unique($fields));
         }
 
-        return false;
+        return $this->_listFieldsCache[$table];
     }
 
     /**
@@ -418,12 +448,19 @@ class Model
      */
     public function fieldData(string $table): array|false
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
+        $table = $this->_normalizeTableName($table);
+
+        if (! $table) {
+            return false;
         }
 
-        if ($table && $this->db->tableExists($table)) {
+        if (! array_key_exists($table, $this->_fieldDataCache)) {
+            $this->_fieldDataCache[$table] = false;
+
+            if (! $this->tableExists($table)) {
+                return false;
+            }
+
             $fields = $this->db->getFieldData($table);
 
             if (isset($this->_mockFields[$table])) {
@@ -440,10 +477,10 @@ class Model
                 }
             }
 
-            return $fields;
+            $this->_fieldDataCache[$table] = $fields;
         }
 
-        return false;
+        return $this->_fieldDataCache[$table];
     }
 
     /**
@@ -454,12 +491,9 @@ class Model
      */
     public function indexData(string $table): array|false
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
-        }
+        $table = $this->_normalizeTableName($table);
 
-        if ($table && $this->db->tableExists($table)) {
+        if ($table && $this->tableExists($table)) {
             return $this->db->getIndexData($table);
         }
 
@@ -474,12 +508,9 @@ class Model
      */
     public function foreignData(string $table): array|false
     {
-        // Get original table name from table with alias
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
-        }
+        $table = $this->_normalizeTableName($table);
 
-        if ($table && $this->db->tableExists($table)) {
+        if ($table && $this->tableExists($table)) {
             return $this->db->getForeignKeyData($table);
         }
 
@@ -491,14 +522,15 @@ class Model
      */
     public function addMockField(string $table, string $name, string $type = 'varchar'): static
     {
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
-        }
+        $table = $this->_normalizeTableName($table);
 
         $this->_mockFields[$table][$name] = [
             'name' => $name,
             'type' => $type
         ];
+        unset($this->_listFieldsCache[$table], $this->_fieldDataCache[$table]);
+        $this->_fieldExistsCache[$table . '.' . $name] = true;
+
         return $this;
     }
 
@@ -507,9 +539,7 @@ class Model
      */
     public function getMockFields(string $table): array
     {
-        if (strpos($table, ' ') !== false) {
-            $table = explode(' ', $table)[0];
-        }
+        $table = $this->_normalizeTableName($table);
 
         return $this->_mockFields[$table] ?? [];
     }
@@ -3109,6 +3139,7 @@ class Model
 
         if (in_array($this->db->DBDriver, ['SQLSRV', 'Postgre']) && ! stripos($column, '(') && ! stripos($column, ')')) {
             $castType = 'VARCHAR'; // Default cast type
+            $detectedType = $this->_columnType($column);
 
             // Determine data type and cast type based on value
             if (is_int($value)) {
@@ -3129,7 +3160,9 @@ class Model
 
             $columnNameOnly = (stripos($column, ' ') !== false ? substr($column, 0, stripos($column, ' ')) : $column);
 
-            if ('SQLSRV' == $this->db->DBDriver) {
+            if ($detectedType && $this->_columnTypeMatchesValue($detectedType, $value, $castType)) {
+                $column = $columnNameOnly;
+            } elseif ('SQLSRV' == $this->db->DBDriver) {
                 $column = 'CONVERT(' . $castType . ', ' . $columnNameOnly . ')';
             } else {
                 $column = 'CAST(' . $columnNameOnly . ' AS ' . $castType . ')';
@@ -3152,6 +3185,113 @@ class Model
             'value' => $value,
             'escape' => $escape,
         ];
+    }
+
+    /**
+     * Normalize a table reference into its physical table name.
+     */
+    private function _normalizeTableName(string $table): string
+    {
+        $table = trim($table);
+
+        if (! $table || strpos($table, '(') !== false || strpos(strtolower($table), 'select ') !== false) {
+            return '';
+        }
+
+        $table = str_ireplace(' AS ', ' ', $table);
+        $table = preg_split('/\s+/', $table)[0] ?? '';
+
+        return trim($table, "\"`[] \t\n\r\0\x0B");
+    }
+
+    /**
+     * Resolve a column type from cached field metadata.
+     */
+    private function _columnType(string $column): ?string
+    {
+        $column = trim($column);
+
+        if (! $column || str_contains($column, '(') || str_contains($column, ')')) {
+            return null;
+        }
+
+        $cacheKey = $this->_table . '|' . $column;
+        if (array_key_exists($cacheKey, $this->_fieldTypeCache)) {
+            return $this->_fieldTypeCache[$cacheKey];
+        }
+
+        $table = $this->_table;
+        $field = $column;
+
+        if (str_contains($column, '.')) {
+            [$table, $field] = explode('.', $column, 2);
+        }
+
+        $table = $this->_normalizeTableName((string) $table);
+        $field = trim($field, "\"`[] \t\n\r\0\x0B");
+
+        if (! $table || ! $field) {
+            return $this->_fieldTypeCache[$cacheKey] = null;
+        }
+
+        $fieldData = $this->fieldData($table);
+        if (! $fieldData) {
+            return $this->_fieldTypeCache[$cacheKey] = null;
+        }
+
+        foreach ($fieldData as $data) {
+            if (isset($data->name, $data->type) && $data->name === $field) {
+                return $this->_fieldTypeCache[$cacheKey] = strtolower((string) $data->type);
+            }
+        }
+
+        return $this->_fieldTypeCache[$cacheKey] = null;
+    }
+
+    /**
+     * Decide whether a database column can be compared without an extra CAST.
+     */
+    private function _columnTypeMatchesValue(string $columnType, mixed $value, string $castType): bool
+    {
+        $columnType = strtolower($columnType);
+        $castType = strtolower($castType);
+
+        if (str_starts_with($castType, 'varchar')) {
+            return $this->_isTextColumnType($columnType);
+        }
+
+        if ('integer' === $castType) {
+            return $this->_isIntegerColumnType($columnType);
+        }
+
+        if (in_array($castType, ['double', 'float'], true)) {
+            return $this->_isNumericColumnType($columnType);
+        }
+
+        if ('date' === $castType) {
+            return in_array($columnType, ['date'], true);
+        }
+
+        if (in_array($castType, ['datetime', 'timestamp'], true)) {
+            return in_array($columnType, ['datetime', 'timestamp', 'timestamp without time zone', 'timestamp with time zone'], true);
+        }
+
+        return false;
+    }
+
+    private function _isTextColumnType(string $type): bool
+    {
+        return in_array($type, ['char', 'varchar', 'character varying', 'text', 'tinytext', 'mediumtext', 'longtext', 'uuid'], true);
+    }
+
+    private function _isIntegerColumnType(string $type): bool
+    {
+        return in_array($type, ['tinyint', 'smallint', 'int', 'integer', 'mediumint', 'bigint', 'year', 'int2', 'int4', 'int8'], true);
+    }
+
+    private function _isNumericColumnType(string $type): bool
+    {
+        return $this->_isIntegerColumnType($type) || in_array($type, ['decimal', 'numeric', 'float', 'double', 'real', 'money'], true);
     }
 
     /**

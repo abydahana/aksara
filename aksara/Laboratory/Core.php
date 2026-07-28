@@ -2206,7 +2206,8 @@ abstract class Core extends Controller
                 $hidden = true;
             }
 
-            if ($value && isset($this->_setRelation[$field])) {
+            $resolveRelation = ! ($hidden && in_array($this->_method, ['index', 'export', 'print', 'pdf'], true));
+            if ($value && $resolveRelation && isset($this->_setRelation[$field])) {
                 // Get relation content
                 $content = $this->_getRelation($this->_setRelation[$field], $value);
             }
