@@ -114,10 +114,10 @@ class Form
             }
         }
 
-        // 1. Sort Fields based on configuration
+        // Sort Fields based on configuration
         $serialized = $this->_sortFields($serialized);
 
-        // 2. Loop serialized data to process each field
+        // Loop serialized data to process each field
         foreach ($serialized as $field => $params) {
             // Extract parameters
             $type = $params['type']; // Array of types/attributes
@@ -234,7 +234,7 @@ class Form
             }
         }
 
-        // 3. Prepare Final Output
+        // Prepare Final Output
         $highestColumn = 1;
         if (! empty($this->_fieldPosition)) {
             $highestColumn = max($this->_fieldPosition);

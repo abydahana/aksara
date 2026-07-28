@@ -2793,7 +2793,7 @@ class Model
     {
         $executed = false;
 
-        // 1. Initialize Builder if not set
+        // Initialize Builder if not set
         if (! $this->_builder) {
             if ($this->_isQuery) {
                 // For raw queries, use the connection itself

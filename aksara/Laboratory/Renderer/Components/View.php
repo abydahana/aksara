@@ -117,16 +117,16 @@ class View
             }
         }
 
-        // 1. Sort Fields
+        // Sort Fields
         $serialized = $this->_sortFields($serialized);
 
-        // 2. Prepare Replacements (for Mustache/Twig parsing)
+        // Prepare Replacements (for Mustache/Twig parsing)
         $replacement = [];
         foreach ($serialized as $field => $params) {
             $replacement[$field] = $params['value'];
         }
 
-        // 3. Process Fields
+        // Process Fields
         foreach ($serialized as $field => $params) {
             $type = $params['type'];
             $primary = $params['primary'];
@@ -207,7 +207,7 @@ class View
             }
         }
 
-        // 4. Final Output Preparation
+        // Final Output Preparation
         $highest_column = 1;
         if (! empty($this->_fieldPosition)) {
             $highest_column = max($this->_fieldPosition);
