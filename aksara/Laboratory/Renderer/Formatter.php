@@ -392,7 +392,7 @@ class Formatter
             'q' => null
         ];
 
-        // 1. Replace Magic Strings {{ key }} in Parameter (URL)
+        // Replace Magic Strings {{ key }} in Parameter (URL)
         if (is_string($parameter) && strpos($parameter, '{{') !== false) {
             preg_match_all('/\{\{(.*?)\}\}/', $parameter, $matches);
             if (! empty($matches[1])) {
@@ -405,7 +405,7 @@ class Formatter
             }
         }
 
-        // 2. Process Query Params (Alpha)
+        // Process Query Params (Alpha)
         // Handle if alpha contains magic strings
         if (is_string($alpha) && strpos($alpha, '{{') !== false) {
             preg_match_all('/\{\{(.*?)\}\}/', $alpha, $matches);
@@ -437,7 +437,7 @@ class Formatter
             }
         }
 
-        // 3. Build Final URL
+        // Build Final URL
         // Check for external link
         if (preg_match('/^(http|https):\/\//', $parameter)) {
             return $parameter . '?' . http_build_query($query_params);

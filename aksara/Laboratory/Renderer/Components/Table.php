@@ -130,6 +130,9 @@ class Table
         $callback_instances = [];
         $component_checked = [];
         $base_labels = [];
+        $known_fields = array_fill_keys($this->fields, true);
+        $unset_columns = array_fill_keys($this->_unsetColumn, true);
+        $unset_truncate = array_fill_keys($this->_unsetTruncate, true);
 
         // Loop through data rows
         foreach ($serialized as $key => $val) {
@@ -169,8 +172,9 @@ class Table
                 $label = $base_labels[$field];
 
                 // Collection unique fields
-                if (! in_array($field, $this->fields)) {
+                if (! isset($known_fields[$field])) {
                     $this->fields[] = $field;
+                    $known_fields[$field] = true;
                 }
 
                 // Store primary key
@@ -180,7 +184,7 @@ class Table
 
                 // Skip hidden fields (Logic: Hide if hidden=true, UNLESS it's primary key AND we are in API mode)
                 // If API client is active, we might need primary key even if hidden.
-                if (($hidden || in_array($field, $this->_unsetColumn)) && (! $this->apiClient || ($this->apiClient && ! $primary))) {
+                if (($hidden || isset($unset_columns[$field])) && (! $this->apiClient || ($this->apiClient && ! $primary))) {
                     continue;
                 }
 
@@ -277,7 +281,7 @@ class Table
                     $field_data[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
                 } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
                     $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
-                } elseif (in_array($final_type, ['text', 'mediumtext', 'longtext', 'textarea', 'wysiwyg']) && ! in_array($field, $this->_unsetTruncate) && ! isset($this->_mergeContent[$field])) {
+                } elseif (in_array($final_type, ['text', 'mediumtext', 'longtext', 'textarea', 'wysiwyg']) && ! isset($unset_truncate[$field]) && ! isset($this->_mergeContent[$field])) {
                     $field_data[$field]['content'] = truncate($field_data[$field]['content'], 64);
                 }
 

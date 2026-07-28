@@ -56,10 +56,10 @@ class Builder
         $component = null;
 
         try {
-            // 1. Set working directory path for the theme components
+            // Set working directory path for the theme components
             $directory = ROOTPATH . "themes/$theme/components";
 
-            // 2. Instantiate the appropriate Builder Class based on path
+            // Instantiate the appropriate Builder Class based on path
             switch ($path) {
                 case 'core':
                     $builder = new Core();
@@ -78,17 +78,17 @@ class Builder
                     return false;
             }
 
-            // 3. Get all available methods (templates) from the builder class
+            // Get all available methods (templates) from the builder class
             $templates = get_class_methods($builder);
 
-            // 4. Validate requested type
+            // Validate requested type
             // If requested type is invalid or missing, fallback to a default.
             if ($type && ! in_array($type, $templates)) {
                 // Fallback logic: 'index' for Core, 'text' for others
                 $type = ('core' === $path ? 'index' : 'text');
             }
 
-            // 5. Scaffold missing files
+            // Scaffold missing files
             // Loop through ALL available methods in the class to ensure all templates exist
             foreach ($templates as $template) {
                 // Skip constructor
@@ -115,7 +115,7 @@ class Builder
                 }
             }
 
-            // 6. Return the requested component content
+            // Return the requested component content
             if ($type) {
                 $requested_file = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '') . DIRECTORY_SEPARATOR . $type . '.twig';
 

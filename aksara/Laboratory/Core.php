@@ -5703,6 +5703,10 @@ abstract class Core extends Controller
             $function = $val['function'];
             $arguments = $val['arguments'];
 
+            if ($recycling && in_array($function, ['select', 'orderBy', 'limit', 'offset'], true)) {
+                continue;
+            }
+
             if ('select' == $function) {
                 // Slice unnecessary select
                 if (! is_array($arguments[0])) {
@@ -5932,8 +5936,15 @@ abstract class Core extends Controller
             // Get multiple rows
             $results = $resultsBuilder->result();
 
-            // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
-            $total = $this->_runQuery($table, true)->countAllResults();
+            $resultCount = is_array($results) ? count($results) : 0;
+            $limit = $this->_limit ?? $this->_limitBackup;
+
+            if ($limit && $resultCount < $limit) {
+                $total = ($this->_offset ?? 0) + $resultCount;
+            } else {
+                // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
+                $total = $this->_runQuery($table, true)->countAllResults();
+            }
         }
         timer('Core::_fetchData() Database Query');
 
@@ -6361,9 +6372,9 @@ abstract class Core extends Controller
             $inputName = substr($inputName, 0, strpos($inputName, '='));
 
             // Define exclusion conditions:
-            // 1. Placeholder file should never be deleted.
-            // 2. File is marked for preservation in POST data (i.e., the user didn't change it).
-            // 3. File upload slot is empty in $_FILES (meaning user didn't upload a new file).
+            // Placeholder file should never be deleted.
+            // File is marked for preservation in POST data (i.e., the user didn't change it).
+            // File upload slot is empty in $_FILES (meaning user didn't upload a new file).
             $fileUploadedEmpty = (! is_array($field) && isset($_FILES[$field]['tmp_name']) && empty($_FILES[$field]['tmp_name']));
 
             if ('placeholder.png' == $src || $this->request->getPost($inputName) || $fileUploadedEmpty) {
@@ -6534,12 +6545,12 @@ abstract class Core extends Controller
 
         $clientIp = Services::request()->getServer('REMOTE_ADDR');
 
-        // 1. Check for Exact IP Match
+        // Check for Exact IP Match
         if (in_array($clientIp, $whitelist)) {
             return true;
         }
 
-        // 2. Check for Wildcard Match
+        // Check for Wildcard Match
         foreach ($whitelist as $whitelistedIp) {
             $wildcardPos = strpos($whitelistedIp, '*');
 
@@ -6569,7 +6580,7 @@ abstract class Core extends Controller
      */
     private function _pushLog(): void
     {
-        // 1. Check and reset time-based counters first (Daily, Weekly, etc.).
+        // Check and reset time-based counters first (Daily, Weekly, etc.).
         $this->_autoResetCounters();
 
         $agent = Services::request()->getUserAgent();
@@ -6592,7 +6603,7 @@ abstract class Core extends Controller
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        // 2. Check if this IP has visited TODAY
+        // Check if this IP has visited TODAY
         $today = date('Y-m-d');
         $query = $this->model->getWhere('app_log_visitors', [
             'ip_address' => $prepare['ip_address'],
@@ -6805,13 +6816,13 @@ abstract class Core extends Controller
 
         // Loop through each tag and remove it using a regular expression.
         foreach ($tagsToRemove as $tag) {
-            // 1. Remove the tag and its content (e.g., <script>...</script>)
+            // Remove the tag and its content (e.g., <script>...</script>)
             $input = preg_replace('/<' . $tag . '.*?>.*?<\/' . $tag . '>/is', '', $input);
 
-            // 2. Remove self-closing tags (e.g., <meta />)
+            // Remove self-closing tags (e.g., <meta />)
             $input = preg_replace('/<' . $tag . '.*?\/?>/is', '', $input);
 
-            // 3. Remove opening tags that might not have a closing counterpart (e.g., <link ...>)
+            // Remove opening tags that might not have a closing counterpart (e.g., <link ...>)
             $input = preg_replace('/<' . $tag . '.*?>/is', '', $input);
         }
 
