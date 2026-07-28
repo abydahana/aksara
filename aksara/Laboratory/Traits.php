@@ -305,6 +305,16 @@ trait Traits
     private $_method;
 
     /**
+     * Array of mock fields to be registered.
+     */
+    private array $_mockFields = [];
+
+    /**
+     * Runtime cache for custom field callback visibility.
+     */
+    private array $_customCallbackVisibilityCache = [];
+
+    /**
      * Modal dialog size configuration.
      * @var string
      */
@@ -370,7 +380,7 @@ trait Traits
     /**
      * Cache for resolved relations to prevent N+1 queries.
      */
-    protected array $_relationCache = [];
+    private array $_relationCache = [];
 
     /**
      * Demo mode restriction status.

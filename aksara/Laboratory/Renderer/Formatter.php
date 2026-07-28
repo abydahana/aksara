@@ -39,6 +39,11 @@ class Formatter
     use Traits;
 
     /**
+     * Cached decimal and thousands separators for this render cycle.
+     */
+    private ?array $_numberSeparators = null;
+
+    /**
      * Constructor
      *
      * @param   array $properties Associative array of properties to inject (context)
@@ -203,13 +208,17 @@ class Formatter
      */
     private function _numberSeparators(): array
     {
+        if (null !== $this->_numberSeparators) {
+            return $this->_numberSeparators;
+        }
+
         $language = strtolower((string) (get_userdata('language') ?: ($this->_language ?? 'en')));
 
         if (str_starts_with($language, 'id')) {
-            return [',', '.'];
+            return $this->_numberSeparators = [',', '.'];
         }
 
-        return ['.', ','];
+        return $this->_numberSeparators = ['.', ','];
     }
 
     /**

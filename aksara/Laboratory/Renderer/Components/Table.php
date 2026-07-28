@@ -129,6 +129,7 @@ class Table
         ];
         $callback_instances = [];
         $component_checked = [];
+        $base_labels = [];
 
         // Loop through data rows
         foreach ($serialized as $key => $val) {
@@ -161,7 +162,11 @@ class Table
                 $content = $params['content'];
                 $hidden = $params['hidden'];
 
-                $label = ucwords(str_replace('_', ' ', $field));
+                if (! isset($base_labels[$field])) {
+                    $base_labels[$field] = ucwords(str_replace('_', ' ', $field));
+                }
+
+                $label = $base_labels[$field];
 
                 // Collection unique fields
                 if (! in_array($field, $this->fields)) {
