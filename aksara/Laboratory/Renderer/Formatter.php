@@ -119,6 +119,24 @@ class Formatter
                     $value = date('d', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ', ' . date('H:i:s', $timestamp);
                 }
             }
+            // Number Formatting
+            elseif (in_array($key, ['number', 'numeric', 'number_format', 'money', 'percent'], true) && ! in_array($this->_method, ['create', 'update'], true)) {
+                $numericValue = $this->_normalizeNumberValue($value);
+
+                if (null !== $numericValue) {
+                    $decimals = $this->_decimalPlaces($numericValue);
+
+                    if ('money' === $key) {
+                        $decimals = max($decimals, 2);
+                    }
+
+                    $value = $this->_formatNumber($numericValue, $decimals);
+
+                    if ('percent' === $key) {
+                        $value .= '%';
+                    }
+                }
+            }
             // Sprintf Formatting
             elseif ('sprintf' === $key) {
                 $value = $this->_formatSprintf($value, $val);
@@ -126,6 +144,72 @@ class Formatter
         }
 
         return $value;
+    }
+
+    /**
+     * Format numbers with separators matching the active language.
+     */
+    private function _formatNumber(string $value, int $decimals = 0): string
+    {
+        [$decimalPoint, $thousandsSeparator] = $this->_numberSeparators();
+
+        return number_format((float) $value, $decimals, $decimalPoint, $thousandsSeparator);
+    }
+
+    /**
+     * Normalize raw, US-formatted, or Indonesian-formatted numbers to a float string.
+     */
+    private function _normalizeNumberValue(mixed $value): ?string
+    {
+        if (null === $value || '' === $value) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+
+        if (is_numeric($value)) {
+            return $value;
+        }
+
+        $lastComma = strrpos($value, ',');
+        $lastDot = strrpos($value, '.');
+
+        if (false !== $lastComma && (false === $lastDot || $lastComma > $lastDot)) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } else {
+            $value = str_replace(',', '', $value);
+        }
+
+        return is_numeric($value) ? $value : null;
+    }
+
+    /**
+     * Detect decimal precision while trimming insignificant trailing zeroes.
+     */
+    private function _decimalPlaces(string $value): int
+    {
+        if (! str_contains($value, '.')) {
+            return 0;
+        }
+
+        $fraction = rtrim(substr(strrchr($value, '.'), 1), '0');
+
+        return strlen($fraction);
+    }
+
+    /**
+     * Returns decimal and thousands separators for the current language.
+     */
+    private function _numberSeparators(): array
+    {
+        $language = strtolower((string) (get_userdata('language') ?: ($this->_language ?? 'en')));
+
+        if (str_starts_with($language, 'id')) {
+            return [',', '.'];
+        }
+
+        return ['.', ','];
     }
 
     /**

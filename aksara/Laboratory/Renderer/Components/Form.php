@@ -21,6 +21,7 @@ use Config\Services;
 use Aksara\Laboratory\Traits;
 use Aksara\Laboratory\Builder\Builder;
 use Aksara\Laboratory\Renderer\Formatter;
+use Aksara\Laboratory\Model;
 
 /**
  * Form Component Renderer
@@ -45,11 +46,6 @@ class Form
      * Data Formatter Instance.
      */
     private Formatter $formatter;
-
-    /**
-     * Database Model Instance.
-     */
-    private mixed $model = null;
 
     /**
      * API Client Status/Instance.
@@ -346,14 +342,16 @@ class Form
                     $castField = 'CAST(' . $field . ' AS UNSIGNED)';
                 }
 
+                $model = new Model();
+
                 // Build Query
                 if ($extraClause && is_array($extraClause)) {
-                    $this->model->where($extraClause);
+                    $model->where($extraClause);
                 }
 
                 $maxFunc = (in_array($this->_dbDriver, ['Postgre']) ? 'COALESCE' : 'IFNULL') . '(MAX(' . $castField . '), 0) AS ' . $field;
 
-                $lastInsert = $this->model->select($maxFunc)
+                $lastInsert = $model->select($maxFunc)
                     ->orderBy($field, 'desc')
                     ->get($this->_table, 1)
                     ->row($field);

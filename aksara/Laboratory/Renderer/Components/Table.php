@@ -127,6 +127,8 @@ class Table
                 'label' => phrase('All columns')
             ]
         ];
+        $callback_instances = [];
+        $component_checked = [];
 
         // Loop through data rows
         foreach ($serialized as $key => $val) {
@@ -234,7 +236,10 @@ class Table
 
                         // Callback execution
                         $namespace = $router->controllerName();
-                        $class = new $namespace();
+                        if (! isset($callback_instances[$namespace])) {
+                            $callback_instances[$namespace] = new $namespace();
+                        }
+                        $class = $callback_instances[$namespace];
                         $callback = $this->_mergeContent[$field]['callback'];
 
                         if (method_exists($class, $callback)) {
@@ -286,8 +291,9 @@ class Table
                 }
 
                 // Scaffolding: Create component template if missing
-                if (! $request->isAJAX() && ! $this->apiClient && $final_type) {
+                if (! $request->isAJAX() && ! $this->apiClient && $final_type && ! isset($component_checked[$final_type])) {
                     $this->builder->getComponent($this->_setTheme, 'table', $final_type);
+                    $component_checked[$final_type] = true;
                 }
             }
 
