@@ -46,6 +46,13 @@ class Builder
      */
     public function getComponent(string $theme, string $path, ?string $type = null): string|bool
     {
+        static $cache = [];
+
+        $cacheKey = $theme . '|' . $path . '|' . ($type ?? '');
+        if (array_key_exists($cacheKey, $cache)) {
+            return $cache[$cacheKey];
+        }
+
         $component = null;
 
         try {
@@ -120,9 +127,13 @@ class Builder
             // Log error or handle gracefully instead of exiting
             log_message('error', '[COMPONENT] ' . $e->getMessage());
 
+            $cache[$cacheKey] = false;
+
             return false;
         }
 
-        return (string) $component;
+        $cache[$cacheKey] = (string) $component;
+
+        return $cache[$cacheKey];
     }
 }

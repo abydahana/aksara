@@ -5648,7 +5648,6 @@ abstract class Core extends Controller
                     foreach ($this->_join as $dbTable => $params) {
                         $condition = str_replace('__PRIMARY_TABLE__', $table, $params['condition']);
 
-                        /*
                         foreach ($this->_setRelation ?? [] as $relation) {
                             if (($relation['relationTable'] ?? null) !== $dbTable) {
                                 continue;
@@ -5677,7 +5676,6 @@ abstract class Core extends Controller
                                 }
                             }
                         }
-                            */
 
                         $this->_prepare[] = [
                             'function' => 'join',
