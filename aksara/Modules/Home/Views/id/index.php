@@ -65,7 +65,7 @@ if (! $permission->uploads || ! $permission->writable): ?>
                         <b>Bagaimana hal itu bisa dilakukan?</b> Karena Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
                     </p>
                 </div>
-                
+
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Lebih Jauh Lagi

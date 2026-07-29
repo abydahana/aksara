@@ -39,11 +39,11 @@ class Menus extends Core
     {
         $this->setTitle(phrase('Menu Management'))
         ->setIcon('mdi mdi-menu')
-        ->unsetColumn('menu_id, serialized_data, group_id')
+        ->unsetColumn('menu_id, menu_structure, group_id')
         ->unsetField('menu_id')
         ->unsetView('menu_id, group_id')
         ->columnOrder('menu_label, menu_placement, menu_description, group_name')
-        ->setField('serialized_data', 'custom', 'formatMenus')
+        ->setField('menu_structure', 'custom', 'formatMenus')
         ->setField(
             'menu_placement',
             'select',
@@ -65,7 +65,7 @@ class Menus extends Core
             'menu_placement' => phrase('Placement'),
             'menu_label' => phrase('Menu Label'),
             'menu_description' => phrase('Description'),
-            'serialized_data' => phrase('Menus'),
+            'menu_structure' => phrase('Menus'),
             'group_id' => phrase('Group'),
             'group_name' => phrase('Group'),
             'status' => phrase('Status')
@@ -99,7 +99,7 @@ class Menus extends Core
         $output = null;
         $menus = null;
 
-        $serialized_menus = ($data['serialized_data'] ? json_decode($data['serialized_data']) : []);
+        $serialized_menus = ($data['menu_structure'] ? json_decode($data['menu_structure']) : []);
 
         if ($serialized_menus) {
             foreach ($serialized_menus as $key => $val) {
@@ -133,7 +133,7 @@ class Menus extends Core
         }
 
         $output = '
-            <div class="w-100 mb-3" id="serialized_data_input">
+            <div class="w-100 mb-3" id="menu_structure_input">
                 <ul class="list sortable" role="sortable-menu">
                     <li class="ignore-sort">
                         <div class="d-grid">
@@ -163,7 +163,7 @@ class Menus extends Core
                     </li>
                     ' . $menus . '
                 </ul>
-                <input type="hidden" name="serialized_data" value="' . ($data['serialized_data'] ? htmlspecialchars($data['serialized_data']) : '[]') . '" class="serialized_data" />
+                <input type="hidden" name="menu_structure" value="' . ($data['menu_structure'] ? htmlspecialchars($data['menu_structure']) : '[]') . '" class="menu_structure" />
             </div>
         ';
 

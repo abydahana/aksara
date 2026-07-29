@@ -57,7 +57,7 @@ class Edit extends Core
         $this->setTitle(phrase('Account Settings'))
         ->setIcon('mdi mdi-account-edit')
         ->setUploadPath('users')
-        ->unsetField('user_id, group_id, registered_date, last_login, status')
+        ->unsetField('user_id, group_id, created_timestamp, last_login, status')
         ->setField([
             'bio' => 'textarea',
             'address' => 'textarea',

@@ -42,8 +42,6 @@ class Setting extends Core
 
         ->setDescription('Cron job command: <br /><input value="*/1 * * * * curl ' . base_url('notifier/send') . ' > /dev/null 2>&1" class="form-control" disabled>')
 
-        ->unsetField('site_id')
-
         ->setField([
             'whatsapp_api_header' => 'attribution',
             'whatsapp_api_payload' => 'attribution'
@@ -59,8 +57,7 @@ class Setting extends Core
             'whatsapp_api_payload' => phrase('WhatsApp API Payloads')
         ])
 
-        ->where('site_id', get_setting('id'))
-        ->setDefault('site_id', get_setting('id'))
+        ->where('id', 1)
 
         ->render($this->_table);
     }

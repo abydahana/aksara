@@ -718,7 +718,7 @@ class Comment extends Core
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread.')]);
         }
 
-        $earlier = new DateTime(get_userdata('registered_date'));
+        $earlier = new DateTime(get_userdata('created_timestamp'));
         $later = new DateTime(date('Y-m-d'));
         $difference = $earlier->diff($later);
         $interval = $difference->days;

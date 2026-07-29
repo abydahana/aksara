@@ -97,7 +97,7 @@ class Register extends Core
             'password' => password_hash($this->request->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT),
             'group_id' => (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3),
             'language_id' => (get_setting('app_language') > 0 ? get_setting('app_language') : 1),
-            'registered_date' => date('Y-m-d'),
+            'created_timestamp' => date('Y-m-d'),
             'last_login' => date('Y-m-d H:i:s'),
             'status' => (get_setting('auto_active_registration') ? 1 : 0)
         ];

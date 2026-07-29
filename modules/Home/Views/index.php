@@ -69,7 +69,7 @@
         max-width: 920px;
         margin-inline: auto;
         color: #111827;
-        font-size: clamp(2.75rem, 7vw, 6.25rem);
+        font-size: clamp(2.5rem, 7vw, 5rem);
         line-height: .95;
         letter-spacing: 0;
     }
@@ -138,8 +138,8 @@
                 <a href="<?= base_url('auth'); ?>" class="btn btn-primary btn-lg rounded-pill px-4 hero-action --modal">
                     <?= phrase('Get Started'); ?> <i class="mdi mdi-arrow-right"></i>
                 </a>
-                <a href="<?= base_url('blogs'); ?>" class="btn btn-light btn-lg border rounded-pill px-4 --xhr">
-                    <?= phrase('Explore Articles'); ?>
+                <a href="<?= base_url('blogs'); ?>" class="btn btn-primary btn-lg border rounded-pill px-4 --xhr">
+                    <i class="mdi mdi-magnify"></i> <?= phrase('Explore Articles'); ?>
                 </a>
             </div>
         </div>
@@ -328,10 +328,10 @@
                 </div>
                 <div class="row">
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
-                        <div class="counter color fw-semibold display-5">
+                        <div class="counter color display-5 fw-semibold">
                             <span data-from="1" data-to="<?= $statistics->daily; ?>" data-refresh-interval="100" data-speed="1500"> <?= number_format($statistics->daily); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary">
+                        <h4 class="mt-0 text-secondary fw-light">
                             <?= phrase('Daily Visits'); ?>
                         </h4>
                     </div>
@@ -339,7 +339,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->weekly; ?>" data-refresh-interval="2" data-speed="600"> <?= number_format($statistics->weekly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary">
+                        <h4 class="mt-0 text-secondary fw-light">
                             <?= phrase('Weekly Visits'); ?>
                         </h4>
                     </div>
@@ -347,7 +347,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->monthly; ?>" data-refresh-interval="11" data-speed="900"> <?= number_format($statistics->monthly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary">
+                        <h4 class="mt-0 text-secondary fw-light">
                             <?= phrase('Monthly Visits'); ?>
                         </h4>
                     </div>
@@ -355,7 +355,7 @@
                         <div class="counter color fw-semibold display-5">
                             <span data-from="100" data-to="<?= $statistics->yearly; ?>" data-refresh-interval="3" data-speed="1000"> <?= number_format($statistics->yearly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary">
+                        <h4 class="mt-0 text-secondary fw-light">
                             <?= phrase('Yearly Visits'); ?>
                         </h4>
                     </div>

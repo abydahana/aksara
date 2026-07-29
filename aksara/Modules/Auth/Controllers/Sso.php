@@ -182,7 +182,7 @@ class Sso extends Core
                         'postal_code' => '',
                         'language_id' => $language_id,
                         'group_id' => $default_membership,
-                        'registered_date' => date('Y-m-d'),
+                        'created_timestamp' => date('Y-m-d'),
                         'last_login' => date('Y-m-d H:i:s'),
                         'status' => 1
                     ]
