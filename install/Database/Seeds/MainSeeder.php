@@ -198,7 +198,7 @@ class MainSeeder extends Seeder
             [
                 'key' => 'office_map',
                 'type' => 'text',
-                'value' => ''
+                'value' => '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[107.08190061646347,-6.235067930225753]}}]}'
             ],
             [
                 'key' => 'one_device_login',

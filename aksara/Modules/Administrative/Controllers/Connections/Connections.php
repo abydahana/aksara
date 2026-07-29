@@ -18,7 +18,6 @@
 namespace Aksara\Modules\Administrative\Controllers\Connections;
 
 use Throwable;
-use Config\Services;
 use Aksara\Laboratory\Core;
 
 class Connections extends Core
@@ -45,8 +44,8 @@ class Connections extends Core
 
         $this->setTitle(phrase('Third Party Connection'))
         ->setIcon('mdi mdi-power-plug')
-        ->unsetColumn('hostname, port, username, password, database_name')
-        ->unsetField('id')
+        ->unsetColumn('hostname, port, username, password, database_name, updated_timestamp')
+        ->unsetField('id, created_timestamp, updated_timestamp')
 
         ->addButton('connect', phrase('Check Connection'), 'btn btn-success --xhr show-progress', 'mdi mdi-sync', ['id' => 'id'])
 
@@ -86,6 +85,7 @@ class Connections extends Core
             'status' => 2
         ])
         ->mergeField('hostname, port')
+        ->mergeField('created_timestamp, updated_timestamp')
         ->fieldSize([
             'hostname' => 'col-sm-8',
             'port' => 'col-sm-4'
@@ -106,7 +106,9 @@ class Connections extends Core
             'database_driver' => phrase('Database Driver'),
             'username' => phrase('Username'),
             'password' => phrase('Password'),
-            'database_name' => phrase('Database Name')
+            'database_name' => phrase('Database Name'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
         ->render($this->_table);
     }

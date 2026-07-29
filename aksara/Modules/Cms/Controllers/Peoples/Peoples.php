@@ -64,6 +64,7 @@ class Peoples extends Core
         ->mergeField('first_name, last_name')
         ->mergeField('mobile, instagram')
         ->mergeField('facebook, twitter')
+        ->mergeField('created_timestamp, updated_timestamp')
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->fieldSize([
             'mobile' => 'col-md-6',
