@@ -6,7 +6,7 @@
  */
 
 if ($results): ?>
-<section class="section-padding border-fade-bottom fade-in">
+<section class="section-padding fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
@@ -17,7 +17,7 @@ if ($results): ?>
     </div>
 </section>
 <?php endif; ?>
-<section class="section-padding">
+<section class="pb-5">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">
