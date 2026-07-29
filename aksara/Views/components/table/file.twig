@@ -1,5 +1,5 @@
 <span>
     <a href="{{ content }}" class="{{ class }}" target="{{ target }}">
-        <b>{{ truncate(value, 32) }}</b>
+        <b>{{ truncate ? truncate(value, 32) : value }}</b>
     </a>
 </span>

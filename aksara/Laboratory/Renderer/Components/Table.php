@@ -273,7 +273,8 @@ class Table
                     'type' => $final_type,
                     'primary' => $primary,
                     'hidden' => $hidden,
-                    'escape' => ! isset($this->_mergeContent[$field])
+                    'escape' => ! isset($this->_mergeContent[$field]),
+                    'truncate' => ! isset($unset_truncate[$field])
                 ];
 
                 // Special handling for specific types

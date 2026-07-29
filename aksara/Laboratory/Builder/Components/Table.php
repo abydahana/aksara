@@ -58,9 +58,7 @@ class Table
     {
         // Template for Truncated Text
         $component = <<<EOF
-        <span>
-            {{ truncate(value, 64) }}
-        </span>
+        <span>{{ truncate ? truncate(value, 64) : value }}</span>
         EOF;
 
         return [
@@ -484,7 +482,7 @@ class Table
         $component = <<<EOF
         <span>
             <a href="{{ content }}" class="{{ class }}" target="{{ target }}">
-                <b>{{ truncate(value, 32) }}</b>
+                <b>{{ truncate ? truncate(value, 32) : value }}</b>
             </a>
         </span>
         EOF;
@@ -572,7 +570,7 @@ class Table
         $component = <<<EOF
         <span>
             <a href="{{ content }}" class="--xhr" target="{{ target }}">
-                <b> {{ truncate(value, 32) }}<i class="mdi mdi-launch"></i> </b>
+                <b>{{ truncate ? truncate(value, 32) : value }}<i class="mdi mdi-launch"></i></b>
             </a>
         </span>
         EOF;
