@@ -2402,7 +2402,7 @@ abstract class Core extends Controller
         }
 
         // Load template class
-        $this->template = new Template($this->_setTheme, $this->_method);
+        $this->template = new Template($this->_setTheme);
 
         // Load template parser
         $renderer = new Renderer();
@@ -3554,7 +3554,7 @@ abstract class Core extends Controller
                 '_addClass', '_columnOrder', '_columnSize', '_defaultValue', '_dbDriver',
                 '_fieldAppend', '_fieldPrepend', '_fieldOrder', '_viewOrder', '_extraSubmit',
                 '_fieldPosition', '_fieldSize', '_groupField', '_mergeField', '_mergeLabel',
-                '_method', '_modalSize', '_setAlias', '_setAttribute', '_setAutocomplete',
+                '_method', '_modalSize', '_mockFields', '_setAlias', '_setAttribute', '_setAutocomplete',
                 '_setField', '_setHeading', '_setPlaceholder', '_setRelation', '_setTooltip',
                 '_setUploadPath', '_table', 'apiClient', 'model'
             ];
@@ -3645,8 +3645,10 @@ abstract class Core extends Controller
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), $this->_redirectBack);
         }
 
+        $verticalSchema = $this->_table && $this->model->fieldExists('key', $this->_table) && $this->model->fieldExists('value', $this->_table) && ! $this->model->fieldExists('app_name', $this->_table);
+
         // Check if method is update
-        if ('update' == $this->_method && ! $this->_where && ! $this->_permitUpsert) {
+        if ('update' == $this->_method && ! $this->_where && ! $this->_permitUpsert && ! $verticalSchema) {
             // Fail because no primary keyword and insert is restricted
             return throw_exception(404, phrase('The data you would to update is not found.'), (! $this->apiClient ? current_page('../') : null));
         }
@@ -4368,7 +4370,16 @@ abstract class Core extends Controller
                 }
             }
 
+            $mockFields = $this->model->getMockFields($table);
+
             foreach ($data as $key => $val) {
+                // Skip unused key
+                if (in_array($key, ['_token'])) continue;
+
+                if (isset($mockFields[$key])) {
+                    continue;
+                }
+
                 $upsertData = ['value' => $val];
                 if ($hasType) {
                     $upsertData['type'] = (isset($this->_setField[$key]['field_type']) ? (is_array($this->_setField[$key]['field_type']) ? 'varchar' : $this->_setField[$key]['field_type']) : 'varchar');

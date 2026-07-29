@@ -54,29 +54,33 @@ if (! function_exists('get_setting')) {
      */
     function get_setting(string $parameter): string
     {
-        $model = new Model();
+        static $settings = null;
 
-        // Magic Interceptor for Vertical EAV Schema
-        if ($model->fieldExists('key', 'app_settings') && $model->fieldExists('value', 'app_settings') && ! $model->fieldExists('app_name', 'app_settings')) {
-            $query = $model->getWhere('app_settings', ['key' => $parameter], 1)->row();
-            if ($query) {
-                return $query->value;
-            }
-        } else {
-            // Legacy Horizontal Schema Fallback
-            if ($model->fieldExists($parameter, 'app_settings')) {
-                return $model->select($parameter)->getWhere(
-                    'app_settings',
-                    [
-                        'id' => 1
-                    ],
-                    1
-                )
-                ->row($parameter);
+        if (null === $settings) {
+            $cache = service('cache');
+            $settings = $cache->get('aksara_app_settings');
+
+            if (! is_array($settings)) {
+                $settings = [];
+
+                try {
+                    $model = new Model();
+                    $rows = $model->getWhere('app_settings')->resultArray();
+
+                    foreach ($rows as $row) {
+                        if (isset($row['key'])) {
+                            $settings[$row['key']] = $row['value'] ?? '';
+                        }
+                    }
+
+                    $cache->save('aksara_app_settings', $settings, 300);
+                } catch (\Throwable $e) {
+                    log_message('error', 'Unable to load application settings: ' . $e->getMessage());
+                }
             }
         }
 
-        return '';
+        return $settings[$parameter] ?? '';
     }
 }
 
