@@ -4374,7 +4374,9 @@ abstract class Core extends Controller
 
             foreach ($data as $key => $val) {
                 // Skip unused key
-                if (in_array($key, ['_token'])) continue;
+                if (in_array($key, ['_token'])) {
+                    continue;
+                }
 
                 if (isset($mockFields[$key])) {
                     continue;

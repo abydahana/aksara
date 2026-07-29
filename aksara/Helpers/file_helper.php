@@ -213,6 +213,9 @@ if (! function_exists('get_filesize')) {
 if (! function_exists('get_storage_object_path')) {
     /**
      * Build cloud object path relative to UPLOAD_PATH.
+     * @param null|mixed $path
+     * @param null|mixed $file
+     * @param null|mixed $dimension
      */
     function get_storage_object_path($path = null, $file = null, $dimension = null): string
     {
