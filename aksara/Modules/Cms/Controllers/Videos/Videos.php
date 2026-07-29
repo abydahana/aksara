@@ -49,6 +49,8 @@ class Videos extends Core
         ])
         ->setField('slug', 'slug', 'title')
 
+        ->mergeField('created_timestamp, updated_timestamp')
+
         ->setDefault([
             'author' => get_userdata('user_id')
         ])

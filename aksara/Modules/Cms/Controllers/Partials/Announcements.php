@@ -130,7 +130,7 @@ class Announcements extends Core
 
     public function validateStartDate($value = '')
     {
-        if (strtotime($value) < time()) {
+        if (strtotime($value) < strtotime(date('Y-m-d'))) {
             $this->formValidation->setError('start_date', 'The start date must be greater than or equal to today');
         }
 
@@ -139,8 +139,8 @@ class Announcements extends Core
 
     public function validateEndDate($value = '')
     {
-        if (strtotime($value) >= strtotime($value)) {
-            $this->formValidation->setError('start_date', 'The end date must be greater than start date');
+        if (strtotime($value) <= strtotime(service('request')->getPost('start_date') ?? '')) {
+            $this->formValidation->setError('end_date', 'The end date must be greater than start date');
         }
 
         return true;

@@ -39,8 +39,8 @@ class Menus extends Core
     {
         $this->setTitle(phrase('Menu Management'))
         ->setIcon('mdi mdi-menu')
-        ->unsetColumn('menu_id, menu_structure, group_id')
-        ->unsetField('menu_id')
+        ->unsetColumn('menu_id, menu_structure, group_id, updated_timestamp')
+        ->unsetField('menu_id, created_timestamp, updated_timestamp')
         ->unsetView('menu_id, group_id')
         ->columnOrder('menu_label, menu_placement, menu_description, group_name')
         ->setField('menu_structure', 'custom', 'formatMenus')
@@ -68,7 +68,9 @@ class Menus extends Core
             'menu_structure' => phrase('Menus'),
             'group_id' => phrase('Group'),
             'group_name' => phrase('Group'),
-            'status' => phrase('Status')
+            'status' => phrase('Status'),
+            'created_timestamp' => phrase('Created'),
+            'updated_timestamp' => phrase('Updated')
         ])
 
         ->setValidation([
@@ -79,6 +81,7 @@ class Menus extends Core
 
         ->mergeField('menu_label, menu_placement')
         ->mergeField('group_id, status')
+        ->mergeField('created_timestamp, updated_timestamp')
 
         ->fieldSize([
             'menu_label' => 'col-md-6',

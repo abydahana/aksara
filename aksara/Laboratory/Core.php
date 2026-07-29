@@ -2351,7 +2351,7 @@ abstract class Core extends Controller
                 // Check if request is made from promise
                 return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->apiClient ? go_to() : null));
             }
-        } elseif ($table && ! $this->_setPermission && ! $this->_publicFormSubmission) {
+        } elseif ($table && ! $this->_setPermission && ! $this->_allowPublicFormSubmission) {
             // Unset database modification because no permission is set
             $this->unsetMethod('create, update, delete');
 
@@ -4123,9 +4123,9 @@ abstract class Core extends Controller
      *
      * Intended for public-facing forms that still use the core CRUD pipeline.
      */
-    public function publicFormSubmission(bool $return = true): static
+    public function allowPublicFormSubmission(bool $return = true): static
     {
-        $this->_publicFormSubmission = $return;
+        $this->_allowPublicFormSubmission = $return;
 
         return $this;
     }

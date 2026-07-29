@@ -85,6 +85,7 @@ class Testimonials extends Core
             'updated_timestamp' => phrase('Updated')
         ])
         ->mergeField('first_name, last_name')
+        ->mergeField('created_timestamp, updated_timestamp')
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
         ->render($this->_table);

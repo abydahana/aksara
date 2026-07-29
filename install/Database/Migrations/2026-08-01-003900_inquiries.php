@@ -36,6 +36,11 @@ class Inquiries extends Migration
                 'constraint' => 64,
                 'null' => false
             ],
+            'sender_phone' => [
+                'type' => 'varchar',
+                'constraint' => 16,
+                'null' => false
+            ],
             'sender_email' => [
                 'type' => 'varchar',
                 'constraint' => 255,
@@ -50,18 +55,20 @@ class Inquiries extends Migration
                 'type' => 'text',
                 'null' => false
             ],
-            'created_timestamp' => [
-                'type' => 'timestamp',
+            'status' => [
+                'type' => 'tinyint',
+                'default' => '0',
                 'null' => false
             ],
-            'updated_timestamp' => [
+            'timestamp' => [
                 'type' => 'timestamp',
-                'null' => true
+                'null' => false
             ]
         ]);
 
         // Add primary and unique index
         $this->forge->addKey('id', true, true);
+        $this->forge->addKey('status');
 
         // Create table
         $this->forge->createTable('inquiries');

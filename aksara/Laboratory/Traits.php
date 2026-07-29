@@ -74,7 +74,7 @@ trait Traits
     /**
      * Form submission permission status.
      */
-    private bool $_publicFormSubmission = false;
+    private bool $_allowPublicFormSubmission = false;
 
     /**
      * Flag indicating if the submitted API token is valid.
