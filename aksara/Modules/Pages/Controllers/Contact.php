@@ -20,109 +20,79 @@ namespace Aksara\Modules\Pages\Controllers;
 use Throwable;
 use Config\Services;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\Messaging;
 
 class Contact extends Core
 {
+    private $_table = 'inquiries';
+
     public function __construct()
     {
         parent::__construct();
+
+        $this->setMethod('create');
+        $this->allowPublicFormSubmission();
     }
 
     public function index()
     {
-        if ($this->validToken($this->request->getPost('_token'))) {
-            return $this->_sendMessage();
+        if (! service('request')->getPost('_token')) {
+            // Load captcha helper
+            helper('captcha');
+
+            $this->setOutput('captcha', generate_captcha());
         }
 
-        // Load captcha helper
-        helper('captcha');
-
-        $this->setOutput('captcha', generate_captcha())
-
-        ->setTitle(phrase('Contact Us'))
+        $this->setTitle(phrase('Contact Us'))
         ->setIcon('mdi mdi-phone-classic')
         ->setDescription(phrase('Submit your inquiries or questions to us.'))
 
-        ->render();
+        ->addField('copy', 'boolean')
+
+        ->setField([
+            'email' => 'email',
+            'messages' => 'textarea',
+            'copy' => 'boolean'
+        ])
+
+        ->setDefault('timestamp', date('Y-m-d H:i:s'))
+
+        ->setValidation([
+            'sender_full_name' => 'required',
+            'sender_phone' => 'required',
+            'sender_email' => 'required|valid_email',
+            'subject' => 'required',
+            'messages' => 'required',
+            'captcha' => 'required|regex_match[/' . get_userdata('captcha') . '/i]',
+            'copy' => 'boolean'
+        ])
+        ->setAlias([
+            'sender_full_name' => phrase('Full Name'),
+            'sender_phone' => phrase('Phone'),
+            'sender_email' => phrase('Email'),
+            'subject' => phrase('Subject'),
+            'messages' => phrase('Messages'),
+            'captcha' => phrase('Captcha'),
+            'copy' => phrase('Copy Message')
+        ])
+        ->render($this->_table);
     }
 
-    public function _sendMessage()
+    public function afterInsert()
     {
-        $this->formValidation->setRule('full_name', phrase('Full Name'), 'required');
-        $this->formValidation->setRule('email', phrase('Email'), 'required|valid_email');
-        $this->formValidation->setRule('subject', phrase('Subject'), 'required');
-        $this->formValidation->setRule('messages', phrase('Messages'), 'required');
-        $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
-        $this->formValidation->setRule('copy', phrase('Send copy'), 'boolean');
-
-        if ($this->formValidation->run($this->request->getPost()) === false) {
-            return throw_exception(400, $this->formValidation->getErrors());
-        }
-
-        $this->model->insert(
-            'inquiries',
-            [
-                'sender_email' => $this->request->getPost('email'),
-                'sender_full_name' => htmlspecialchars($this->request->getPost('full_name')),
-                'subject' => htmlspecialchars($this->request->getPost('subject')),
-                'messages' => htmlspecialchars($this->request->getPost('messages')),
-                'created_timestamp' => date('Y-m-d H:i:s')
-            ]
-        );
-
         if ($this->request->getPost('copy')) {
-            /**
-             * To working with Google SMTP, make sure to activate less secure apps setting
-             */
-            $encrypter = Services::encrypter();
+            $messaging = new Messaging();
 
-            $host = get_setting('smtp_host');
-            $username = get_setting('smtp_username');
-            $password = (get_setting('smtp_password') ? $encrypter->decrypt(base64_decode(get_setting('smtp_password'))) : '');
-            $sender_email = (get_setting('smtp_email_masking') ? get_setting('smtp_email_masking') : ($this->request->getServer('SERVER_ADMIN') ? $this->request->getServer('SERVER_ADMIN') : 'webmaster@' . $this->request->getServer('SERVER_NAME')));
-            $sender_name = (get_setting('smtp_sender_masking') ? get_setting('smtp_sender_masking') : get_setting('app_name'));
-
-            if ($host && $username && $password) {
-                $config['userAgent'] = 'Aksara';
-                $config['protocol'] = 'smtp';
-                $config['SMTPCrypto'] = 'ssl';
-                $config['SMTPTimeout'] = 5;
-                $config['SMTPHost'] = (strpos($host, '://') !== false ? trim(substr($host, strpos($host, '://') + 3)) : $host);
-                $config['SMTPPort'] = get_setting('smtp_port');
-                $config['SMTPUser'] = $username;
-                $config['SMTPPass'] = $password;
-            } else {
-                $config['protocol'] = 'mail';
-            }
-
-            $config['charset'] = 'utf-8';
-            $config['newline'] = "\r\n";
-            $config['mailType'] = 'html'; // Text or html
-            $config['wordWrap'] = true;
-            $config['validation'] = true; // Bool whether to validate email or not
-
-            $email = Services::email();
-
-            $email->initialize($config);
-            $email->setFrom($sender_email, $sender_name);
-            $email->setTo($this->request->getPost('email'));
-            $email->setSubject($this->request->getPost('subject'));
-            $email->setMessage($this->request->getPost('messages'));
-
-            if (! $email->send()) {
-                // Get delivery errors
-                $error_message = $email->printDebugger();
-
-                // Log errors
-                log_message('error', 'Email failed to send: ' . $error_message);
-
-                return throw_exception(400, ['message' => phrase('An unknown error occurred during email delivery.')]);
-            }
+            $messaging->setPhone($this->request->getPost('sender_phone'))
+            ->setEmail($this->request->getPost('sender_email'))
+            ->setSubject($this->request->getPost('subject'))
+            ->setMessage($this->request->getPost('messages'))
+            ->send(true);
         }
 
         // Unset stored captcha
         unset_userdata(['captcha', 'captcha_file']);
 
-        return throw_exception(301, phrase('Your inquiry was successfully submitted.'), current_page());
+        return throw_exception(301, phrase('Your inquiry was successfully submitted.'), current_page(null, ['success' => 1]));
     }
 }
