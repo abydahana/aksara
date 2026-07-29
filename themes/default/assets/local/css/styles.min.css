@@ -6,6 +6,10 @@ html.dark-mode img {
   margin-top: 56px;
   word-wrap: break-word;
 }
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+  padding-left: 1rem;
+  padding-right: 1rem
+}
 .navbar-brand {
   max-width: 260px;
 }
