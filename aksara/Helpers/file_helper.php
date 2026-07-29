@@ -17,6 +17,8 @@
 
 use Config\Services;
 use CodeIgniter\Files\File;
+use Aksara\Libraries\Storage;
+use Aksara\Laboratory\Model;
 
 if (! function_exists('get_file')) {
     /**
@@ -27,6 +29,12 @@ if (! function_exists('get_file')) {
      */
     function get_file($path = null, $file = null)
     {
+        $storage = get_active_storage();
+
+        if ($storage) {
+            return (new Storage($storage))->url(get_storage_object_path($path, $file));
+        }
+
         return base_url(UPLOAD_PATH . '/' . ($path ? $path . '/' : null) . $file);
     }
 }
@@ -41,6 +49,14 @@ if (! function_exists('get_image')) {
      */
     function get_image($type = null, $name = null, $dimension = null)
     {
+        $storage = get_active_storage();
+
+        if ($storage) {
+            $name = $name ?: 'placeholder.png';
+
+            return (new Storage($storage))->url(get_storage_object_path($type, $name, $dimension));
+        }
+
         if ('thumb' == $dimension) {
             if (! file_exists(UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png')) {
                 try {
@@ -191,5 +207,78 @@ if (! function_exists('get_filesize')) {
         $factor = (int) floor((strlen($bytes) - 1) / 3);
 
         return sprintf('%.2f', ($bytes / pow(1024, $factor))) . ($size[$factor] ?? '');
+    }
+}
+
+if (! function_exists('get_storage_object_path')) {
+    /**
+     * Build cloud object path relative to UPLOAD_PATH.
+     */
+    function get_storage_object_path($path = null, $file = null, $dimension = null): string
+    {
+        $segments = [];
+
+        if ($path) {
+            $segments[] = trim(str_replace('\\', '/', $path), '/');
+        }
+
+        if ('thumb' == $dimension) {
+            $segments[] = 'thumbs';
+        } elseif ('icon' == $dimension) {
+            $segments[] = 'icons';
+        }
+
+        if ($file) {
+            $segments[] = trim(str_replace('\\', '/', $file), '/');
+        }
+
+        return trim(implode('/', array_filter($segments, 'strlen')), '/');
+    }
+}
+
+if (! function_exists('get_active_storage')) {
+    /**
+     * Get active cloud storage configuration with request and shared cache.
+     */
+    function get_active_storage(bool $refresh = false): ?object
+    {
+        static $storage = false;
+        $cache = Services::cache();
+
+        if ($refresh) {
+            $storage = false;
+            $cache->delete('aksara_active_storage');
+        }
+
+        if (false !== $storage) {
+            return $storage;
+        }
+
+        $cached = $cache->get('aksara_active_storage');
+
+        if (is_array($cached)) {
+            return $storage = (object) $cached;
+        } elseif (is_object($cached)) {
+            return $storage = $cached;
+        }
+
+        try {
+            $model = new Model();
+            $config = $model->getWhere('app_storage', ['status' => 1], 1)->row();
+
+            if (! $config || 'disabled' === strtolower((string) ($config->provider ?? ''))) {
+                log_message('debug', 'No active cloud storage configuration found.');
+
+                return $storage = null;
+            }
+
+            $cache->save('aksara_active_storage', (array) $config, 300);
+
+            return $storage = $config;
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to load active cloud storage: ' . $e->getMessage());
+
+            return $storage = null;
+        }
     }
 }

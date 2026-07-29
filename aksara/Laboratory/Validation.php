@@ -23,6 +23,7 @@ use Config\Mimes;
 use Config\Services;
 use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Model;
+use Aksara\Libraries\Storage;
 
 class Validation
 {
@@ -482,12 +483,76 @@ class Validation
             $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
         }
 
+        if (! $this->_syncToCloudStorage($upload_path, $filename, 'image' == $type)) {
+            return false;
+        }
+
         if (null !== $_index) {
             // Collect uploaded data (has sub-name)
             $this->_uploadedFiles[$field][$index][$_index] = $filename;
         } else {
             // Collect uploaded data (single name)
             $this->_uploadedFiles[$field][$index] = $filename;
+        }
+
+        return true;
+    }
+
+    /**
+     * Sync uploaded local files to active cloud storage.
+     */
+    private function _syncToCloudStorage(string $path, string $filename, bool $image = false): bool
+    {
+        if (! function_exists('get_active_storage')) {
+            helper('file');
+        }
+
+        $config = get_active_storage();
+
+        if (! $config) {
+            return true;
+        }
+
+        $storage = new Storage($config);
+        $files = [
+            UPLOAD_PATH . '/' . $path . '/' . $filename => trim($path . '/' . $filename, '/')
+        ];
+
+        if ($image) {
+            $files[UPLOAD_PATH . '/' . $path . '/thumbs/' . $filename] = trim($path . '/thumbs/' . $filename, '/');
+            $files[UPLOAD_PATH . '/' . $path . '/icons/' . $filename] = trim($path . '/icons/' . $filename, '/');
+        }
+
+        foreach ($files as $local => $remote) {
+            if (! is_file($local)) {
+                continue;
+            }
+
+            try {
+                $stream = fopen($local, 'rb');
+
+                if (! $stream) {
+                    throw new \RuntimeException('Unable to read uploaded file.');
+                }
+
+                $storage->putStream($remote, $stream);
+
+                fclose($stream);
+            } catch (Throwable $e) {
+                if (isset($stream) && is_resource($stream)) {
+                    fclose($stream);
+                }
+
+                $this->_uploadError = phrase('Unable to upload file to cloud storage');
+
+                return false;
+            }
+        }
+
+        foreach (array_keys($files) as $local) {
+            if (is_file($local)) {
+                @unlink($local);
+            }
         }
 
         return true;

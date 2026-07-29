@@ -18,6 +18,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="#pills-storage" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-cloud-outline"></i> <?= phrase('Storage'); ?>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#pills-apis" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
                         <i class="mdi mdi-code-braces"></i> <?= phrase('API'); ?>
                     </a>
@@ -145,6 +150,44 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="pills-storage">
+                            <h5>
+                                <?= phrase('Storage'); ?>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->provider); ?>
+                                </div>
+                            </div>
+                            <?= form_input($results->field_data->endpoint); ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->region); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->bucket); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->access_key); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->secret_key); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->sync_existing_uploads); ?>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning callout">
+                                <?= phrase('If you check Sync Existing Uploads, existing files will be transferred and overwritten when needed.'); ?>
+                                <div class="text-danger fw-bold">
+                                    <?= phrase('Saving may take longer because files will be transferred during this process.'); ?>
+                                </div>
+                            </div>
+                        </div>
                         <div class="tab-pane fade" id="pills-apis">
                             <h5>
                                 <?= phrase('APIs'); ?>
@@ -243,3 +286,60 @@
         </div>
     </form>
 </div>
+<script>
+(function() {
+    window.aksaraStorageProviderChanged = function(provider) {
+        if (! provider) {
+            return;
+        }
+
+        const scope = provider.closest('form') || document;
+        const formData = new FormData();
+
+        formData.append('fetch', 'storageProvider');
+        formData.append('provider', provider.value);
+
+        fetch(scope.action || window.location.href, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            if (! response || 200 !== response.status || ! response.results) {
+                return;
+            }
+
+            Object.keys(response.results).forEach((key) => {
+                const field = scope.querySelector('[name="' + key + '"][type="checkbox"], [name="' + key + '"]');
+
+                if (! field || field === provider) {
+                    return;
+                }
+
+                if ('checkbox' === field.type) {
+                    field.checked = '1' == response.results[key] || 1 === response.results[key] || true === response.results[key];
+                } else {
+                    field.value = response.results[key] || '';
+
+                    if (window.jQuery) {
+                        window.jQuery(field).trigger('change').trigger('change.select2');
+                    }
+                }
+            });
+        });
+    };
+
+    document.addEventListener('change', function(event) {
+        const provider = event.target.closest('[name="provider"]');
+
+        if (! provider) {
+            return;
+        }
+
+        window.aksaraStorageProviderChanged(provider);
+    });
+})();
+</script>
