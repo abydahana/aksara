@@ -18,10 +18,30 @@
 namespace Aksara\Modules\Administrative\Controllers\Settings;
 
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\Storage;
 
 class Settings extends Core
 {
     private string $_table = 'app_settings';
+    private string $_storageTable = 'app_storage';
+    private array $_storageFields = [
+        'provider',
+        'endpoint',
+        'region',
+        'bucket',
+        'access_key',
+        'secret_key',
+        'sync_existing_uploads'
+    ];
+    private array $_storageProviders = [
+        'disabled' => 'None / Disabled',
+        's3' => 'Amazon S3',
+        'r2' => 'Cloudflare R2',
+        'spaces' => 'DigitalOcean Spaces',
+        'minio' => 'MinIO',
+        'wasabi' => 'Wasabi'
+    ];
+    private array $_storageData = [];
 
     public function __construct()
     {
@@ -40,6 +60,10 @@ class Settings extends Core
 
     public function index()
     {
+        if ('storageProvider' === $this->request->getPost('fetch')) {
+            return $this->_fetchStorageProvider();
+        }
+
         $default_map_tile = null;
         $required_api_key = null;
         $required_analytic_key = null;
@@ -72,10 +96,22 @@ class Settings extends Core
             $required_google_client_id = 'required';
         }
 
+        $storage = $this->_storage();
+
         $this->setTitle(phrase('Application Settings'))
         ->setIcon('mdi mdi-wrench-outline')
         ->setPrimary('id')
-        ->unsetField('id')
+        ->addField([
+            'provider' => 'varchar',
+            'endpoint' => 'varchar',
+            'region' => 'varchar',
+            'bucket' => 'varchar',
+            'access_key' => 'varchar',
+            'secret_key' => 'varchar',
+            'sync_existing_uploads' => 'boolean'
+        ])
+        ->setDefault($storage)
+        ->defaultValue($storage)
         ->setField([
             'app_description' => 'textarea',
             'app_logo' => 'image',
@@ -97,8 +133,16 @@ class Settings extends Core
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
             'smtp_port' => 'integer',
-            'smtp_password' => 'encryption'
+            'smtp_password' => 'encryption',
+            'access_key' => 'encryption',
+            'secret_key' => 'encryption',
+            'sync_existing_uploads' => 'boolean'
         ])
+        ->setField(
+            'provider',
+            'select',
+            $this->_storageProviders
+        )
         ->setField(
             'openlayers_search_provider',
             'radio',
@@ -115,11 +159,15 @@ class Settings extends Core
             'spam_timer' => phrase('seconds')
         ])
         ->setAttribute([
-            'office_map' => 'data-drawing-type="coordinate" data-draggable="1" data-zoom="12"'
+            'office_map' => 'data-drawing-type="coordinate" data-draggable="1" data-zoom="12"',
+            'provider' => 'data-storage-provider="1" onchange="aksaraStorageProviderChanged(this)"'
         ])
         ->setPlaceholder([
             'openlayers_search_key' => phrase('Enter your API Key'),
-            'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+            'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+            'endpoint' => 'https://s3.amazonaws.com',
+            'region' => 'us-east-1',
+            'bucket' => phrase('Bucket name')
         ])
         ->setTooltip([
             'login_attempt' => phrase('Maximum number of login attempts.'),
@@ -127,7 +175,10 @@ class Settings extends Core
             'account_age_restriction' => phrase('How many days before user can post interaction after registration.'),
             'spam_timer' => phrase('How many seconds before user can post another comment.'),
             'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider.'),
-            'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.')
+            'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.'),
+            'provider' => phrase('The selected provider will become active after saving.'),
+            'endpoint' => phrase('Required for S3-compatible storage such as MinIO, Cloudflare R2, DigitalOcean Spaces, or Wasabi.'),
+            'sync_existing_uploads' => phrase('Sync existing uploads after saving. When enabling cloud storage, local files are uploaded to cloud. When disabling cloud storage, cloud files are downloaded to local storage.')
         ])
         ->fieldAppend([
             'default_map_tile' => '<a href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers" target="_blank">Reference<i class="mdi mdi-launch"></i></a>'
@@ -234,13 +285,395 @@ class Settings extends Core
             'smtp_hostname' => phrase('SMTP Hostname'),
             'smtp_port' => phrase('SMTP Port'),
             'smtp_username' => phrase('SMTP Username'),
-            'smtp_password' => phrase('SMTP Password')
+            'smtp_password' => phrase('SMTP Password'),
+
+            /* STORAGE */
+            'provider' => phrase('Provider'),
+            'endpoint' => phrase('Endpoint'),
+            'region' => phrase('Region'),
+            'bucket' => phrase('Bucket'),
+            'access_key' => phrase('Access Key'),
+            'secret_key' => phrase('Secret Key'),
+            'sync_existing_uploads' => phrase('Sync Existing Uploads')
         ])
-        ->where([
-            'id' => 1
-        ])
-        ->limit(1)
 
         ->render($this->_table);
+    }
+
+    private function _fetchStorageProvider()
+    {
+        $provider = $this->request->getPost('provider');
+
+        if (! isset($this->_storageProviders[$provider])) {
+            return make_json([
+                'status' => 400,
+                'message' => phrase('The selected provider is not valid.')
+            ]);
+        }
+
+        $storage = $this->_storage($provider);
+
+        if ($this->_decryptStorageSecret($storage['access_key'] ?? '')) {
+            $storage['access_key'] = '*****';
+        } else {
+            $storage['access_key'] = '';
+        }
+
+        if ($this->_decryptStorageSecret($storage['secret_key'] ?? '')) {
+            $storage['secret_key'] = '*****';
+        } else {
+            $storage['secret_key'] = '';
+        }
+
+        return make_json([
+            'status' => 200,
+            'results' => $storage
+        ]);
+    }
+
+    public function beforeUpdate()
+    {
+        $post = $this->request->getPost();
+
+        if (! $post) {
+            return;
+        }
+
+        foreach ($post as $key => $value) {
+            if (in_array($key, $this->_storageFields)) {
+                $this->_storageData[$key] = $value;
+
+                unset($post[$key]);
+            }
+        }
+
+        $this->request->setGlobal('post', $post);
+    }
+
+    public function afterUpdate()
+    {
+        service('cache')->delete('aksara_app_settings');
+
+        $db = db_connect();
+
+        if (! $this->_storageData || ! $db->tableExists($this->_storageTable)) {
+            return;
+        }
+
+        $provider = $this->_storageData['provider'] ?? null;
+
+        if (! isset($this->_storageProviders[$provider])) {
+            return;
+        }
+
+        if ('disabled' === $provider) {
+            $activeStorage = $db->table($this->_storageTable)->where('status', 1)->limit(1)->get()->getRow();
+
+            if (! empty($this->_storageData['sync_existing_uploads'])) {
+                $this->_extendStorageSyncExecutionTime();
+                $this->_syncExistingUploadsFromCloud($activeStorage);
+            }
+
+            $db->table($this->_storageTable)->update(['status' => 0]);
+            $db->table($this->_storageTable)->where('provider', 'disabled')->delete();
+            $this->_refreshStorageCache();
+
+            return;
+        }
+
+        $storage = $db->table($this->_storageTable)->where('provider', $provider)->limit(1)->get()->getRowArray() ?? [];
+        $encrypter = service('encrypter');
+        $accessKey = trim($this->_storageData['access_key'] ?? '');
+        $secretKey = trim($this->_storageData['secret_key'] ?? '');
+
+        $data = [
+            'provider' => $provider,
+            'endpoint' => trim($this->_storageData['endpoint'] ?? ''),
+            'region' => trim($this->_storageData['region'] ?? ''),
+            'bucket' => trim($this->_storageData['bucket'] ?? ''),
+            'access_key' => ('' === $accessKey || '*****' === $accessKey ? ($storage['access_key'] ?? '') : base64_encode($encrypter->encrypt($accessKey))),
+            'secret_key' => ('' === $secretKey || '*****' === $secretKey ? ($storage['secret_key'] ?? '') : base64_encode($encrypter->encrypt($secretKey))),
+            'status' => 1,
+            'updated_timestamp' => date('Y-m-d H:i:s')
+        ];
+
+        if ($db->fieldExists('name', $this->_storageTable)) {
+            $data['name'] = $storage['name'] ?? 'A';
+        }
+
+        $db->table($this->_storageTable)->update(['status' => 0]);
+
+        if ($storage) {
+            $db->table($this->_storageTable)->where('provider', $provider)->update($data);
+        } else {
+            $data['created_timestamp'] = date('Y-m-d H:i:s');
+
+            $db->table($this->_storageTable)->insert($data);
+        }
+
+        $this->_refreshStorageCache();
+
+        if (! empty($this->_storageData['sync_existing_uploads'])) {
+            $this->_extendStorageSyncExecutionTime();
+            $storage = $db->table($this->_storageTable)->where('provider', $provider)->limit(1)->get()->getRow();
+            $this->_syncExistingUploads($storage);
+        }
+    }
+
+    private function _refreshStorageCache(): void
+    {
+        if (! function_exists('get_active_storage')) {
+            helper('file');
+        }
+
+        get_active_storage(true);
+    }
+
+    private function _extendStorageSyncExecutionTime(): void
+    {
+        if (function_exists('ini_set')) {
+            ini_set('max_execution_time', '0');
+        }
+
+        if (function_exists('set_time_limit')) {
+            set_time_limit(0);
+        }
+    }
+
+    private function _syncExistingUploads(?object $config = null): void
+    {
+        if (! $config) {
+            return;
+        }
+
+        $uploadPath = defined('FCPATH') ? FCPATH . UPLOAD_PATH : ROOTPATH . 'public' . DIRECTORY_SEPARATOR . UPLOAD_PATH;
+        $uploadPath = rtrim(str_replace('\\', '/', $uploadPath), '/');
+
+        if (! is_dir($uploadPath)) {
+            log_message('warning', 'Upload sync skipped because local upload path does not exist: ' . $uploadPath);
+
+            return;
+        }
+
+        $storage = new Storage($config);
+        $directory = new \RecursiveDirectoryIterator($uploadPath, \FilesystemIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator($directory);
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+
+            $local = str_replace('\\', '/', $file->getPathname());
+            $remote = ltrim(substr($local, strlen($uploadPath)), '/');
+
+            if (! $remote || $this->_isIgnoredUploadPath($remote)) {
+                continue;
+            }
+
+            try {
+                $stream = fopen($local, 'rb');
+
+                if (! $stream) {
+                    continue;
+                }
+
+                $storage->putStream($remote, $stream);
+                fclose($stream);
+            } catch (\Throwable $e) {
+                if (isset($stream) && is_resource($stream)) {
+                    fclose($stream);
+                }
+
+                log_message('error', 'Unable to sync local upload "' . $remote . '" to cloud storage: ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function _syncExistingUploadsFromCloud(?object $config = null): void
+    {
+        if (! $config || 'disabled' === strtolower((string) ($config->provider ?? ''))) {
+            return;
+        }
+
+        $uploadPath = defined('FCPATH') ? FCPATH . UPLOAD_PATH : ROOTPATH . 'public' . DIRECTORY_SEPARATOR . UPLOAD_PATH;
+        $uploadPath = rtrim(str_replace('\\', '/', $uploadPath), '/');
+
+        if (! is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $storage = new Storage($config);
+
+        try {
+            $contents = $storage->listContents('', true);
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to list cloud storage contents for local sync: ' . $e->getMessage());
+
+            return;
+        }
+
+        foreach ($contents as $item) {
+            if (! method_exists($item, 'isFile') || ! $item->isFile()) {
+                continue;
+            }
+
+            $remote = trim($item->path(), '/');
+
+            if ($this->_isIgnoredUploadPath($remote)) {
+                continue;
+            }
+
+            $local = $uploadPath . '/' . $remote;
+            $directory = dirname($local);
+
+            if (! is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            try {
+                $stream = $storage->readStream($remote);
+                $target = fopen($local, 'wb');
+
+                if (! $stream || ! $target) {
+                    throw new \RuntimeException('Unable to open stream for "' . $remote . '".');
+                }
+
+                stream_copy_to_stream($stream, $target);
+                fclose($stream);
+                fclose($target);
+            } catch (\Throwable $e) {
+                if (isset($stream) && is_resource($stream)) {
+                    fclose($stream);
+                }
+
+                if (isset($target) && is_resource($target)) {
+                    fclose($target);
+                }
+
+                log_message('error', 'Unable to sync cloud upload "' . $remote . '" to local storage: ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function _isIgnoredUploadPath(string $path): bool
+    {
+        $segments = array_filter(explode('/', trim(str_replace('\\', '/', $path), '/')), 'strlen');
+        $filename = strtolower((string) end($segments));
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $ignoredNames = [
+            '.ds_store',
+            'thumbs.db',
+            'desktop.ini',
+            '.htaccess',
+            '.htpasswd',
+            'index.html',
+            'index.htm'
+        ];
+        $ignoredDirectories = [
+            '.spotlight-v100',
+            '.trashes',
+            '__macosx'
+        ];
+
+        if (! $filename || in_array($filename, $ignoredNames) || in_array($extension, ['html', 'htm'])) {
+            return true;
+        }
+
+        if (str_starts_with($filename, '._')) {
+            return true;
+        }
+
+        foreach ($segments as $segment) {
+            if (in_array(strtolower($segment), $ignoredDirectories)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function _storage(?string $provider = null): array
+    {
+        $activeStorage = null;
+
+        if ($this->model->tableExists($this->_storageTable)) {
+            $activeStorage = $this->model->getWhere($this->_storageTable, ['status' => 1], 1)->rowArray();
+
+            if (! $provider && $activeStorage) {
+                $provider = $activeStorage['provider'];
+            }
+        }
+
+        if (! $provider || ! isset($this->_storageProviders[$provider])) {
+            $provider = 'disabled';
+        }
+
+        $default = $this->_storageDefaults($provider);
+
+        if ('disabled' === $provider || ! $this->model->tableExists($this->_storageTable)) {
+            return $default;
+        }
+
+        $storage = ($activeStorage && $activeStorage['provider'] == $provider)
+            ? $activeStorage
+            : $this->model->getWhere($this->_storageTable, ['provider' => $provider], 1)->rowArray() ?? [];
+
+        unset($storage['access_key'], $storage['secret_key']);
+
+        return array_merge($default, $storage);
+    }
+
+    private function _storageDefaults(string $provider = 'disabled'): array
+    {
+        $defaults = [
+            'disabled' => [
+                'endpoint' => null,
+                'region' => null
+            ],
+            's3' => [
+                'endpoint' => 'https://s3.amazonaws.com',
+                'region' => 'us-east-1'
+            ],
+            'r2' => [
+                'endpoint' => 'https://<account_id>.r2.cloudflarestorage.com',
+                'region' => 'auto'
+            ],
+            'spaces' => [
+                'endpoint' => 'https://<region>.digitaloceanspaces.com',
+                'region' => 'sgp1'
+            ],
+            'minio' => [
+                'endpoint' => 'http://localhost:9000',
+                'region' => 'us-east-1'
+            ],
+            'wasabi' => [
+                'endpoint' => 'https://s3.wasabisys.com',
+                'region' => 'us-east-1'
+            ]
+        ];
+
+        return array_merge([
+            'provider' => $provider,
+            'endpoint' => null,
+            'region' => null,
+            'bucket' => null,
+            'access_key' => null,
+            'secret_key' => null,
+            'sync_existing_uploads' => 0
+        ], $defaults[$provider] ?? $defaults['disabled']);
+    }
+
+    private function _decryptStorageSecret(?string $value = null): string
+    {
+        if (! $value) {
+            return '';
+        }
+
+        try {
+            return service('encrypter')->decrypt(base64_decode($value, true));
+        } catch (\Throwable $e) {
+            return $value;
+        }
     }
 }

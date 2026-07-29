@@ -20,11 +20,13 @@ namespace Aksara\Modules\CMS\Controllers\Partials;
 use Throwable;
 use CodeIgniter\Files\File;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\Storage;
 
 class Media extends Core
 {
     private array $_folders = [];
     private array $_files = [];
+    private ?object $_storage = null;
 
     public function __construct()
     {
@@ -36,10 +38,24 @@ class Media extends Core
         $this->setTheme('backend');
 
         $this->setMethod('index');
+
+        if (! function_exists('get_active_storage')) {
+            helper('file');
+        }
+
+        $this->_storage = get_active_storage();
     }
 
     public function index()
     {
+        if ($this->request->getPost('hideCloudStorageMediaNotice')) {
+            set_userdata('hideCloudStorageMediaNotice', true);
+
+            return make_json([
+                'status' => 200
+            ]);
+        }
+
         if ($this->request->getGet('action') == 'delete') {
             return $this->_deleteFile($this->request->getGet('file'));
         }
@@ -117,6 +133,12 @@ class Media extends Core
             // Sanitize filename before deletion
             $filename = $this->_sanitizePath($filename);
 
+            if ($this->_storage) {
+                (new Storage($this->_storage))->delete($this->_remotePath($filename));
+
+                return throw_exception(301, phrase('The file was successfully removed.'), current_page(null, ['file' => null, 'action' => null]));
+            }
+
             // Ensure we're deleting within UPLOAD_PATH
             $full_path = UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
 
@@ -148,6 +170,10 @@ class Media extends Core
 
     private function _directoryList($directory = null)
     {
+        if ($this->_storage) {
+            return $this->_cloudDirectoryList($directory);
+        }
+
         // Validate that directory is within allowed path
         if ($directory && ! $this->_isValidDirectory($directory)) {
             return throw_exception(403, phrase('Access denied'));
@@ -177,7 +203,7 @@ class Media extends Core
 
         if (is_array($data)) {
             // Define protected values (directory_map adds a trailing slash to folders)
-            $protected_dirs = ['_extension/', '_import_tmp/', 'captcha/', 'logs/'];
+            $protected_dirs = ['_extension/', '_import_tmp/', 'captcha/', 'logs/', '.Spotlight-V100/', '.Trashes/', '__MACOSX/'];
 
             // Remove protected folders by comparing values
             $data = array_diff($data, $protected_dirs);
@@ -223,6 +249,81 @@ class Media extends Core
         return [
             'parent_directory' => $parent_directory,
             'directory' => $directory,
+            'cloud_storage' => false,
+            'data' => $data,
+            'description' => $description
+        ];
+    }
+
+    private function _cloudDirectoryList($directory = null): array
+    {
+        if ($directory && ! $this->_isValidDirectory($directory)) {
+            return throw_exception(403, phrase('Access denied'));
+        }
+
+        $storage = new Storage($this->_storage);
+        $directory = $directory ? trim(str_replace('\\', '/', $directory), '/') : null;
+        $parent_directory = ($directory ? $this->_getParentDirectory(str_replace('/', DIRECTORY_SEPARATOR, $directory)) : null);
+        $filename = ($this->request->getGet('file') ? $this->_remotePath($this->_sanitizePath($this->request->getGet('file'))) : null);
+
+        try {
+            foreach ($storage->listContents($directory ?: '', false) as $item) {
+                $path = trim($item->path(), '/');
+                $name = basename($path);
+
+                if (! $name || $this->_isIgnoredMediaPath($path) || stripos($name, 'placeholder') !== false) {
+                    continue;
+                }
+
+                if (method_exists($item, 'isDir') && $item->isDir()) {
+                    $this->_folders[] = [
+                        'source' => $name,
+                        'label' => $name,
+                        'type' => 'directory',
+                        'icon' => base_url('assets/svg/folder')
+                    ];
+                } elseif (method_exists($item, 'isFile') && $item->isFile()) {
+                    $this->_files[] = [
+                        'source' => $name,
+                        'label' => $name,
+                        'type' => $this->_mimeType($path),
+                        'icon' => $this->_getIcon(dirname($path) == '.' ? null : dirname($path), $name)
+                    ];
+                }
+            }
+        } catch (Throwable $e) {
+            log_message('error', 'Unable to list cloud media: ' . $e->getMessage());
+        }
+
+        $description = null;
+
+        if ($filename && $storage->exists($filename)) {
+            $description = [
+                'name' => basename($filename),
+                'server_path' => $storage->url($filename),
+                'url' => $storage->url($filename),
+                'icon' => $this->_getIcon(dirname($filename) == '.' ? null : dirname($filename), basename($filename)),
+                'mime_type' => $this->_mimeType($filename),
+                'size' => $this->_fileSize($filename),
+                'formatted_size' => $this->_formatBytes($this->_fileSize($filename)),
+                'date' => $this->_lastModified($filename)
+            ];
+        }
+
+        $data = array_merge($this->_folders, $this->_files);
+
+        usort($data, function ($sourceA, $sourceB) {
+            if ($sourceA['type'] == $sourceB['type']) {
+                return strcmp($sourceA['label'], $sourceB['label']);
+            }
+
+            return ('directory' == $sourceA['type']) ? -1 : 1;
+        });
+
+        return [
+            'parent_directory' => $parent_directory ? str_replace(DIRECTORY_SEPARATOR, '/', $parent_directory) : null,
+            'directory' => $directory,
+            'cloud_storage' => true,
             'data' => $data,
             'description' => $description
         ];
@@ -290,7 +391,7 @@ class Media extends Core
                     if (is_array($val)) {
                         $this->_parseFiles($val, $directory);
                     } else {
-                        if (stripos($val, 'placeholder') !== false) {
+                        if (stripos($val, 'placeholder') !== false || $this->_isIgnoredMediaPath(($directory ? $directory . DIRECTORY_SEPARATOR : null) . $val)) {
                             continue;
                         }
 
@@ -313,6 +414,117 @@ class Media extends Core
                 }
             }
         }
+    }
+
+    private function _remotePath(?string $path = null): string
+    {
+        return trim(str_replace('\\', '/', (string) $path), '/');
+    }
+
+    private function _isProtectedPath(string $path): bool
+    {
+        $first = strtok(trim($path, '/'), '/');
+
+        return in_array($first, ['_extension', '_import_tmp', 'captcha', 'logs']);
+    }
+
+    private function _isIgnoredMediaPath(string $path): bool
+    {
+        $path = trim(str_replace('\\', '/', $path), '/');
+        $segments = array_filter(explode('/', $path), 'strlen');
+        $filename = strtolower((string) end($segments));
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $ignoredNames = [
+            '.ds_store',
+            'thumbs.db',
+            'desktop.ini',
+            '.htaccess',
+            '.htpasswd',
+            'index.html',
+            'index.htm'
+        ];
+        $ignoredDirectories = [
+            '_extension',
+            '_import_tmp',
+            'captcha',
+            'logs',
+            '.spotlight-v100',
+            '.trashes',
+            '__macosx'
+        ];
+
+        if (! $filename || in_array($filename, $ignoredNames) || in_array($extension, ['html', 'htm'])) {
+            return true;
+        }
+
+        if (str_starts_with($filename, '._')) {
+            return true;
+        }
+
+        foreach ($segments as $segment) {
+            if (in_array(strtolower($segment), $ignoredDirectories)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function _mimeType(string $path): string
+    {
+        try {
+            return (new Storage($this->_storage))->filesystem()->mimeType($path);
+        } catch (Throwable $e) {
+            return $this->_mimeTypeFromExtension($path);
+        }
+    }
+
+    private function _mimeTypeFromExtension(string $path): string
+    {
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'css' => 'text/css',
+            'js' => 'text/javascript',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'webp' => 'image/webp',
+            'svg' => 'image/svg+xml',
+            'pdf' => 'application/pdf',
+            default => 'application/octet-stream'
+        };
+    }
+
+    private function _fileSize(string $path): int
+    {
+        try {
+            return (new Storage($this->_storage))->filesystem()->fileSize($path);
+        } catch (Throwable $e) {
+            return 0;
+        }
+    }
+
+    private function _lastModified(string $path): int
+    {
+        try {
+            return (new Storage($this->_storage))->filesystem()->lastModified($path);
+        } catch (Throwable $e) {
+            return time();
+        }
+    }
+
+    private function _formatBytes(int $bytes): string
+    {
+        if ($bytes <= 0) {
+            return '0 B';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $power = min((int) floor(log($bytes, 1024)), count($units) - 1);
+
+        return round($bytes / (1024 ** $power), 2) . ' ' . $units[$power];
     }
 
     private function _getIcon($directory = null, $filename = null)

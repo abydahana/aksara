@@ -28,6 +28,7 @@
         "halaxa/json-machine": "^1.1",
         "gasparesganga/php-shapefile": "^3.4",
         "phpoffice/phpword": "^1.4",
+        "league/flysystem-aws-s3-v3": "^3.35",
         "brick/geo": "^0.13.1"
     },
     "require-dev": {

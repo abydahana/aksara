@@ -7,6 +7,12 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-white border-end">
+            <?php if (! empty($results->cloud_storage) && ! get_userdata('hideCloudStorageMediaNotice')): ?>
+                <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
+                    <?= phrase('Cloud storage is active. File browsing may be slower.'); ?>
+                    <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close'); ?>"></button>
+                </div>
+            <?php endif; ?>
             <div class="row align-items-center mb-3">
                 <div class="col-md-9">
                     <?php
@@ -132,8 +138,8 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
                 <?php if ($results->description): ?>
                     <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
                         <div class="text-center mb-3">
-                            <a href="<?= base_url($results->description->server_path); ?>" target="_blank">
-                                <img src="<?= base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="" style="max-width: 256px; max-height: 256px" />
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" target="_blank">
+                                <img src="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="" style="max-width: 256px; max-height: 256px" />
                             </a>
                         </div>
                     <?php endif; ?>
@@ -142,7 +148,7 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
                             <?= phrase('Filename'); ?>
                         </label>
                         <label class="d-block text-break-word">
-                            <a href="<?= base_url($results->description->server_path); ?>" download="<?= $results->description->name; ?>">
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" download="<?= $results->description->name; ?>">
                                 <?= $results->description->name; ?>
                             </a>
                         </label>
@@ -164,7 +170,7 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
                                     <?= phrase('Size'); ?>
                                 </label>
                                 <label class="d-block text-break-word">
-                                    <?= get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
+                                    <?= $results->description->formatted_size ?? get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
                                 </label>
                             </div>
                         </div>
@@ -179,13 +185,13 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <a href="<?= base_url($results->description->server_path); ?>" class="btn btn-primary btn-sm d-block rounded-pill"  download="<?= $results->description->name; ?>">
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name; ?>">
                                 <i class="mdi mdi-download"></i>
                                 <?= phrase('Download'); ?>
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $view_mode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --xhr">
+                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $view_mode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove'); ?>" data-bs-original-title="<?= phrase('Remove'); ?>">
                                 <i class="mdi mdi-window-close"></i>
                                 <?= phrase('Remove'); ?>
                             </a>
@@ -196,3 +202,20 @@ $view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid'; 
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('body').off('click.cloudStorageMediaNotice touch.cloudStorageMediaNotice');
+        $('body').on('click.cloudStorageMediaNotice touch.cloudStorageMediaNotice', '.btn-cloud-storage-media-notice', function() {
+            $.ajax({
+                url: '<?= current_page(); ?>',
+                method: 'POST',
+                data: {
+                    hideCloudStorageMediaNotice: true
+                }
+            });
+
+            $(this).closest('.cloud-storage-media-notice').slideUp();
+        });
+    });
+</script>
