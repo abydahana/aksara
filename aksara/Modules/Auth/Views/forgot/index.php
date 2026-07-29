@@ -4,8 +4,8 @@
  * @var mixed $captcha
  */
 ?>
-<section class="section-padding">
-    <div class="container position-relative text-center text-md-start fade-in">
+<section class="section-padding fade-in">
+    <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
             <?= $meta->title; ?>
         </h1>
@@ -52,7 +52,7 @@
                             <div class="col-6">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-check"></i> 
+                                        <i class="mdi mdi-check"></i>
                                         <?= phrase('Reset Password'); ?>
                                     </button>
                                 </div>

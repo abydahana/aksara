@@ -177,42 +177,7 @@ class Updater extends Core
 
         try {
             // Get update package from the remote server
-            if (! copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip')) {
-                // Unable to copy file, use FTP instead
-                $site_id = get_setting('id');
-
-                $query = $this->model->getWhere(
-                    'app_ftp',
-                    [
-                        'site_id' => $site_id
-                    ],
-                    1
-                )
-                ->row();
-
-                if (! $query) {
-                    return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
-                }
-
-                $encrypter = Services::encrypter();
-
-                // Configuration found, decrypt password
-                $query->username = $encrypter->decrypt(base64_decode($query->username));
-                $query->password = $encrypter->decrypt(base64_decode($query->password));
-
-                // Try to connect to FTP
-                $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                if (! $connection || ! ftp_login($connection, $query->username, $query->password)) {
-                    return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration.'));
-                }
-
-                // Download file over FTP
-                ftp_get($connection, $response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', FTP_BINARY);
-
-                // Close FTP connection
-                ftp_close($connection);
-            }
+            copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip');
 
             /**
              * STEP 1

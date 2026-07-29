@@ -47,7 +47,7 @@
                                 <?= phrase('Member Since'); ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= (get_userdata('registered_date') ? date('d M Y', strtotime(get_userdata('registered_date'))) : '-'); ?>
+                                <?= (get_userdata('created_timestamp') ? date('d M Y', strtotime(get_userdata('created_timestamp'))) : '-'); ?>
                             </div>
                         </div>
                     </div>

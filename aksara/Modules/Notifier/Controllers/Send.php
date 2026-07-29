@@ -150,7 +150,7 @@ class Send extends Core
         $notifier_config = $this->model->getWhere(
             'notifier_settings',
             [
-                'site_id' => get_setting('id')
+                'id' => 1
             ],
             1
         )

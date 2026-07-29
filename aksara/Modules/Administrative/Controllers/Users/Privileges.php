@@ -137,7 +137,7 @@ class Privileges extends Core
 
         /* get sidebar menu by user group from the database */
         $visible_menu = $this->model->select('
-            app_menus.serialized_data
+            app_menus.menu_structure
         ')
         ->join(
             'app_groups',
@@ -155,7 +155,7 @@ class Privileges extends Core
             ],
             1
         )
-        ->row('serialized_data');
+        ->row('menu_structure');
 
         /* decode serialized menu */
         $visible_menu = json_decode($visible_menu);
