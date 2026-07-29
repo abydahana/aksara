@@ -366,7 +366,7 @@ class Modules extends Core
                                 ->row();
 
                                 // Populate the link obtained
-                                $serialized = (isset($existing->serialized_data) ? $existing->serialized_data : '[]');
+                                $serialized = (isset($existing->menu_structure) ? $existing->menu_structure : '[]');
                                 $serialized = ($serialized ? json_decode($serialized, true) : []);
 
                                 // Check if obtained links is populated
@@ -383,7 +383,7 @@ class Modules extends Core
                                     $this->model->update(
                                         'app_menus',
                                         [
-                                            'serialized_data' => json_encode($links)
+                                            'menu_structure' => json_encode($links)
                                         ],
                                         [
                                             'menu_id' => $existing->menu_id
@@ -397,7 +397,7 @@ class Modules extends Core
                                             'menu_placement' => $val->placement,
                                             'menu_label' => phrase('Generated Menu'),
                                             'menu_description' => phrase('Generated menu from module installation.'),
-                                            'serialized_data' => json_encode($links),
+                                            'menu_structure' => json_encode($links),
                                             'group_id' => $_val,
                                             'status' => 1
                                         ]
@@ -606,7 +606,7 @@ class Modules extends Core
                     // Query has result, loops the menus
                     foreach ($query as $key => $val) {
                         // Populate the menu as array
-                        $menus = json_decode($val->serialized_data);
+                        $menus = json_decode($val->menu_structure);
 
                         // Check if menus not empty
                         if ($menus) {
@@ -624,7 +624,7 @@ class Modules extends Core
                         $this->model->update(
                             'app_menus',
                             [
-                                'serialized_data' => json_encode($menus)
+                                'menu_structure' => json_encode($menus)
                             ],
                             [
                                 'menu_id' => $val->menu_id

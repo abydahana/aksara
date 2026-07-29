@@ -19,12 +19,6 @@
                     <?= phrase('Installed Module'); ?>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="<?= go_to('ftp'); ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-console-network"></i>
-                    <?= phrase('FTP Configuration'); ?>
-                </a>
-            </li>
         </ul>
     </div>
     <div class="row">

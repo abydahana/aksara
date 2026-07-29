@@ -181,42 +181,7 @@ class Addons extends Core
                         mkdir($tmp_path, 0755, true);
 
                         // Copy the repository to temporary path
-                        if (! copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip')) {
-                            // Unable to copy file, use FTP instead
-                            $site_id = get_setting('id');
-
-                            $query = $this->model->getWhere(
-                                'app_ftp',
-                                [
-                                    'site_id' => $site_id
-                                ],
-                                1
-                            )
-                            ->row();
-
-                            if (! $query) {
-                                return throw_exception(404, phrase('You need to set up an FTP connection to update your core system due the server does not appear to be writable.'), go_to('ftp'));
-                            }
-
-                            $encrypter = Services::encrypter();
-
-                            // Configuration found, decrypt password
-                            $query->username = $encrypter->decrypt(base64_decode($query->username));
-                            $query->password = $encrypter->decrypt(base64_decode($query->password));
-
-                            // Try to connect to FTP
-                            $connection = ftp_connect($query->hostname, $query->port, 10);
-
-                            if (! $connection || ! ftp_login($connection, $query->username, $query->password)) {
-                                return throw_exception(403, phrase('Unable to connect to the FTP using the provided configuration.'));
-                            }
-
-                            // Download file over FTP
-                            ftp_get($connection, $package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip', FTP_BINARY);
-
-                            // Close FTP connection
-                            ftp_close($connection);
-                        }
+                        copy($package->repository, $tmp_path . DIRECTORY_SEPARATOR . 'file.zip');
                     } catch (Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReasonPhrase(), go_to());
@@ -415,7 +380,7 @@ class Addons extends Core
                                     ->row();
 
                                     // Populate the link obtained
-                                    $serialized = (isset($existing->serialized_data) ? $existing->serialized_data : '[]');
+                                    $serialized = (isset($existing->menu_structure) ? $existing->menu_structure : '[]');
                                     $serialized = ($serialized ? json_decode($serialized, true) : []);
 
                                     // Check if obtained links is populated
@@ -432,7 +397,7 @@ class Addons extends Core
                                         $this->model->update(
                                             'app_menus',
                                             [
-                                                'serialized_data' => json_encode($links)
+                                                'menu_structure' => json_encode($links)
                                             ],
                                             [
                                                 'menu_id' => $existing->menu_id
@@ -446,7 +411,7 @@ class Addons extends Core
                                                 'menu_placement' => $val->placement,
                                                 'menu_label' => phrase('Generated Menu'),
                                                 'menu_description' => phrase('Generated menu from module installation.'),
-                                                'serialized_data' => json_encode($links),
+                                                'menu_structure' => json_encode($links),
                                                 'group_id' => $_val,
                                                 'status' => 1
                                             ]
