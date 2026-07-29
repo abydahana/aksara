@@ -1,6 +1,7 @@
 <?php
 /**
  * @var mixed $meta
+ * @var object $results
  * @var mixed $captcha
  */
 ?>
@@ -98,30 +99,32 @@
                 </div>
             </div>
             <div class="col-lg-6">
+                <?php if (service('request')->getGet('success')): ?>
+                    <div class="alert alert-success callout p-4 rounded-4">
+                        <h2><?= phrase('Your message has been sent.'); ?></h2>
+                        <p><?= phrase('We have received your message and will follow up as soon as possible using the phone number or email address you provided.'); ?></p>
+                        <a href="<?= go_to(null, ['success' => null]); ?>" class="btn btn-success rounded-pill --xhr">
+                            <?= phrase('Send another message') ?> <i class="mdi mdi-arrow-right"></i>
+                        </a>
+                    </div>
+                <?php else: ?>
                 <div class="card border-light-subtle rounded-5 fade-in">
                     <div class="card-body p-4">
                         <h3 class="mb-3">
                             <?= phrase('Direct Inquiry'); ?>
                         </h3>
                         <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
+                            <?= form_input($results->field_data->sender_full_name); ?>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <input type="text" name="full_name" class="form-control" placeholder="<?= phrase('Full Name'); ?>" id="full_name_input" />
-                                    </div>
+                                    <?= form_input($results->field_data->sender_phone); ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <input type="text" name="email" class="form-control" placeholder="<?= phrase('Email Address'); ?>" id="email_input" />
-                                    </div>
+                                    <?= form_input($results->field_data->sender_email); ?>
                                 </div>
                             </div>
-                            <div class="form-group mb-3">
-                                <input type="text" name="subject" class="form-control" placeholder="<?= phrase('Subject'); ?>" id="subject_input" />
-                            </div>
-                            <div class="form-group mb-3">
-                                <textarea type="text" name="messages" class="form-control" placeholder="<?= phrase('Messages'); ?>" rows="1" id="messages_input"></textarea>
-                            </div>
+                            <?= form_input($results->field_data->subject); ?>
+                            <?= form_input($results->field_data->messages); ?>
                             <div class="form-group mb-4">
                                 <div class="input-group">
                                     <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
@@ -138,10 +141,7 @@
                             </div>
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" name="copy" class="form-check-input" value="1" id="copy_input" checked />
-                                        <label class="form-check-label" for="copy_input"> <?= phrase('Request a copy'); ?> </label>
-                                    </div>
+                                    <?= form_input($results->field_data->copy); ?>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-grid">
@@ -154,6 +154,7 @@
                         </form>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

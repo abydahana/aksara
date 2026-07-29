@@ -32,7 +32,7 @@ class Inquiries extends Core
         $this->setPermission();
         $this->setTheme('backend');
 
-        $this->unsetMethod('create, update, clone');
+        $this->unsetMethod('create, clone');
     }
 
     public function index()
@@ -40,17 +40,26 @@ class Inquiries extends Core
         $this->setTitle(phrase('Inquiries'))
         ->setIcon('mdi mdi-message-text')
         ->unsetColumn('id, updated_timestamp')
-        ->unsetField('id, created_timestamp, updated_timestamp')
+        ->unsetField('id, sender_full_name, sender_phone, sender_email, subject, messages, timestamp')
         ->unsetView('id')
+
+        ->setButton('update', 'update', 'Mark as Followed Up', 'btn-success --modal', 'mdi mdi-check-bold', ['id' => 'id'])
+
+        ->setField([
+            'messages' => 'textarea'
+        ])
+        ->setField('status', 'radio', [
+            0 => '<span class="badge bg-warning">' . phrase('Awaiting Response') . '</span>',
+            1 => '<span class="badge bg-success">' . phrase('Followed Up') . '</span>'
+        ])
 
         ->setAlias([
             'sender_email' => phrase('Email'),
             'sender_full_name' => phrase('Sender'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
+            'timestamp' => phrase('Timestamp')
         ])
 
-        ->orderBy('created_timestamp', 'DESC')
+        ->orderBy('timestamp', 'DESC')
 
         ->render($this->_table);
     }
