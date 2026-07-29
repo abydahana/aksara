@@ -253,15 +253,13 @@ class Themes extends Core
             $target = 'frontend_theme';
         }
 
-        $site_id = get_setting('id');
-
         $query = $this->model->update(
             'app_settings',
             [
-                $target => $this->request->getPost('theme')
+                'value' => $this->request->getPost('theme') ?? ''
             ],
             [
-                'id' => $site_id
+                'key' => $target
             ]
         );
 
@@ -532,19 +530,9 @@ class Themes extends Core
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall theme with invalid package.')]);
                 }
 
-                // Get the site id
-                $site_id = get_setting('id');
+                $activeTheme = get_setting($package->type . '_theme');
 
-                $active_theme = $this->model->getWhere(
-                    'app_settings',
-                    [
-                        'id' => $site_id
-                    ],
-                    1
-                )
-                ->row($package->type . '_theme');
-
-                if ($this->request->getPost('theme') == $active_theme) {
+                if ($this->request->getPost('theme') == $activeTheme) {
                     return throw_exception(400, ['theme' => phrase('Unable to uninstall the theme that is in use.')]);
                 }
 
