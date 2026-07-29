@@ -193,7 +193,7 @@ class Form
                 list($value, $checked) = $this->_handleCreateMode($field, $type, $value, $checked, $serialized);
             } else {
                 // UPDATE MODE
-                list($value, $content) = $this->_handleUpdateMode($type, $value, $content, $serialized);
+                list($value, $content) = $this->_handleUpdateMode($field, $type, $value, $content, $serialized);
             }
 
             // Prepare Field Data Structure
@@ -392,8 +392,13 @@ class Form
      * Handle logic specific to 'Update' mode.
      * Includes marking selected options in Select/Checkbox/Radio.
      */
-    private function _handleUpdateMode(array $type, mixed $value, mixed $content, array $serialized = []): array
+    private function _handleUpdateMode(string $field, array $type, mixed $value, mixed $content, array $serialized = []): array
     {
+        if (! $value && isset($this->_mockFields[$field]) && isset($this->_defaultValue[$field])) {
+            $value = $this->_defaultValue[$field];
+            $content = $this->formatter->format($field, $value, $type);
+        }
+
         if (array_key_exists('select', $type) && is_array($content)) {
             foreach ($content as $key => $val) {
                 $content[$key]['selected'] = ($value == $val['value']);
