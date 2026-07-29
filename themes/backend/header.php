@@ -20,8 +20,8 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link" data-toggle="sidebar">
-                        <i class="mdi mdi-arrow-left"></i>
+                    <a href="javascript:void(0)" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
+                        <i class="mdi mdi-menu-open fs-4" data-sidebar-toggle-icon></i>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -84,3 +84,29 @@
         </div>
     </div>
 </header>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const icons = document.querySelectorAll('[data-sidebar-toggle-icon]');
+
+        if (! icons.length) {
+            return;
+        }
+
+        const updateSidebarIcon = function() {
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+
+            icons.forEach(function(icon) {
+                icon.classList.toggle('mdi-menu', isCollapsed);
+                icon.classList.toggle('mdi-menu-open', ! isCollapsed);
+            });
+        };
+
+        document.body.addEventListener('click', function(event) {
+            if (event.target.closest('[data-toggle="sidebar"]')) {
+                setTimeout(updateSidebarIcon, 0);
+            }
+        });
+
+        updateSidebarIcon();
+    });
+</script>
