@@ -162,12 +162,12 @@ class MainSeeder extends Seeder
             ],
             [
                 'key' => 'app_language',
-                'type' => 'select',
+                'type' => 'varchar',
                 'value' => htmlspecialchars(trim(session()->get('language') == 'id' ? '2' : '1'))
             ],
             [
                 'key' => 'force_system_language',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '0'
             ],
             [
@@ -202,27 +202,27 @@ class MainSeeder extends Seeder
             ],
             [
                 'key' => 'one_device_login',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '0'
             ],
             [
                 'key' => 'username_change',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '1'
             ],
             [
                 'key' => 'frontend_registration',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '1'
             ],
             [
                 'key' => 'default_membership_group',
-                'type' => 'select',
+                'type' => 'tinyint',
                 'value' => '3'
             ],
             [
                 'key' => 'auto_active_registration',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '1'
             ],
             [
@@ -282,7 +282,7 @@ class MainSeeder extends Seeder
             ],
             [
                 'key' => 'action_sound',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '1'
             ],
             [
@@ -307,7 +307,7 @@ class MainSeeder extends Seeder
             ],
             [
                 'key' => 'update_check',
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'value' => '0'
             ],
             [
@@ -339,11 +339,6 @@ class MainSeeder extends Seeder
             [
                 'path' => 'addons',
                 'privileges' => json_encode(['index', 'detail', 'install']),
-                'last_generated' => date('Y-m-d H:i:s')
-            ],
-            [
-                'path' => 'addons/ftp',
-                'privileges' => json_encode(['index']),
                 'last_generated' => date('Y-m-d H:i:s')
             ],
             [
@@ -567,7 +562,7 @@ class MainSeeder extends Seeder
         $this->db->table('app_groups')->insert([
             'group_name' => 'Global Administrator',
             'group_description' => 'Super User',
-            'group_privileges' => '{"addons":["index","detail","install"],"addons/ftp":["index"],"addons/modules":["index","detail","import","update","delete"],"addons/themes":["index","detail","import","update","delete","activate","customize"],"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"administrative/logs":["index"],"administrative/logs/activities":["index","read","truncate","delete","print","pdf"],"administrative/logs/errors":["index","remove","clear"],"administrative/cleaner":["index","clean"],"administrative/connections":["index","create","read","update","delete","export","print","pdf","connect"],"administrative/countries":["index","create","read","update","delete","export","print","pdf"],"administrative/groups":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/privileges":["index","create","update","read","delete","export","print","pdf"],"administrative/menus":["index","create","read","update","delete","export","print","pdf"],"administrative/settings":["index","update"],"administrative/translations":["index","create","read","update","delete","export","print","pdf"],"administrative/translations/synchronize":["index"],"administrative/translations/translate":["index","delete_phrase"],"administrative/updater":["index","update"],"administrative/users":["index","create","read","update","delete","export","print","pdf"],"administrative/users/privileges":["index","update"],"administrative/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf","translate"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf","translate","builder-preview","builder-images","builder-upload","builder-delete"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifier":["index","read","export","print","pdf"],"notifier/setting":["index"]}',
+            'group_privileges' => '{"addons":["index","detail","install"],"addons/modules":["index","detail","import","update","delete"],"addons/themes":["index","detail","import","update","delete","activate","customize"],"administrative":["index"],"administrative/account":["index","edit"],"administrative/account/logs":["index","kick"],"administrative/logs":["index"],"administrative/logs/activities":["index","read","truncate","delete","print","pdf"],"administrative/logs/errors":["index","remove","clear"],"administrative/cleaner":["index","clean"],"administrative/connections":["index","create","read","update","delete","export","print","pdf","connect"],"administrative/countries":["index","create","read","update","delete","export","print","pdf"],"administrative/groups":["index","create","read","update","delete","export","print","pdf"],"administrative/groups/privileges":["index","create","update","read","delete","export","print","pdf"],"administrative/menus":["index","create","read","update","delete","export","print","pdf"],"administrative/settings":["index","update"],"administrative/translations":["index","create","read","update","delete","export","print","pdf"],"administrative/translations/synchronize":["index"],"administrative/translations/translate":["index","delete_phrase"],"administrative/updater":["index","update"],"administrative/users":["index","create","read","update","delete","export","print","pdf"],"administrative/users/privileges":["index","update"],"administrative/years":["index","create","read","update","delete","export","print","pdf"],"apis":["index"],"apis/debug_tool":["index"],"apis/documentation":["index"],"apis/services":["index","create","read","update","delete","export","print","pdf"],"cms":["index"],"cms/blogs":["index","create","read","update","delete","export","print","pdf","translate"],"cms/blogs/categories":["index","create","read","update","delete","export","print","pdf"],"cms/comments":["index","read","export","print","pdf","hide"],"cms/comments/feedback":["index","read","export","print","pdf","hide"],"cms/galleries":["index","create","read","update","delete","export","print","pdf"],"cms/pages":["index","create","read","update","delete","export","print","pdf","translate","builder-preview","builder-images","builder-upload","builder-delete"],"cms/partials":["index"],"cms/partials/announcements":["index","create","read","update","delete","export","print","pdf"],"cms/partials/inquiries":["index","read","delete","export","print","pdf"],"cms/partials/media":["index"],"cms/partials/testimonials":["index","create","read","update","delete","export","print","pdf"],"cms/peoples":["index","create","read","update","delete","export","print","pdf"],"cms/videos":["index","create","read","update","delete","export","print","pdf"],"dashboard":["index"],"notifier":["index","read","export","print","pdf"],"notifier/setting":["index"]}',
             'status' => 1
         ]);
 
@@ -603,7 +598,7 @@ class MainSeeder extends Seeder
             'language_id' => (session()->get('language') == 'id' ? 2 : 1),
             'country_id' => 0,
             'group_id' => 1,
-            'registered_date' => date('Y-m-d'),
+            'created_timestamp' => date('Y-m-d'),
             'last_login' => date('Y-m-d H:i:s'),
             'status' => 1
         ]);

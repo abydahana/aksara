@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the LICENSE.txt file.
+ *
+ * When the signs come, those who don't believe at "that time"
+ * will have only two choices, commit suicide or become brutal.
+ */
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class AppNotifierSettings extends Migration
+{
+    public function up()
+    {
+        // Add columns to table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'int',
+                'unsigned' => true,
+                'null' => false
+            ],
+            'whatsapp_api_url' => [
+                'type' => 'varchar',
+                'constraint' => 255
+            ],
+            'whatsapp_api_header' => [
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text')
+            ],
+            'whatsapp_api_payload' => [
+                'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text')
+            ]
+        ]);
+
+        // Add primary and unique index
+        $this->forge->addKey('id', true, true);
+
+        // Create table
+        $this->forge->createTable('notifier_settings');
+    }
+
+    public function down()
+    {
+        // Safe abstraction
+    }
+}
