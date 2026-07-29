@@ -29,86 +29,28 @@ use Aksara\Laboratory\Renderer\Parser;
 class Template
 {
     /**
-     * @var string The active theme directory name (e.g., 'frontend' or 'backend').
+     * @var string The active theme directory name.
      */
     public string $theme;
 
     /**
-     * @var array|null Stores CSS files/links to be included.
-     */
-    private ?array $_css = null;
-
-    /**
-     * @var array|null Stores JavaScript files/links to be included.
-     */
-    private ?array $_js = null;
-
-    /**
-     * @var Model The database model instance.
-     */
-    private Model $_model;
-
-    /**
-     * @var string|null Stores partial view data.
-     */
-    private ?string $_partialView = null;
-
-    /**
-     * @var string The current controller method name.
-     */
-    private string $_method;
-
-    /**
      * Template constructor.
      *
-     * @param string $theme The theme directory name to use, defaults to 'frontend'.
-     * @param string $method The current controller method name, defaults to 'index'.
+     * @param string $theme The theme context or directory name to use, defaults to 'frontend'.
      */
-    public function __construct(string $theme = 'frontend', string $method = 'index')
+    public function __construct(string $theme = 'frontend')
     {
-        $this->theme = $theme;
-        $this->_method = $method;
-
-        $this->_model = new Model();
-
-        if (! $this->theme) {
-            // Throwback the default theme from site configuration
-            $site_id = get_setting('id');
-
-            $this->theme = (string) $this->_model->select('frontend_theme')->getWhere(
-                'app_settings',
-                [
-                    'id' => $site_id
-                ],
-                1
-            )
-            ->row('frontend_theme');
-        }
+        $this->theme = $this->_resolveTheme($theme);
     }
 
     /**
-     * Getting active theme name from database configuration.
+     * Getting active theme name.
      *
-     * @return string|false The active theme directory name or false if the theme type is invalid.
+     * @return string The active theme directory name.
      */
-    public function getTheme(): string|false
+    public function getTheme(): string
     {
-        if (! in_array($this->theme, ['frontend', 'backend'])) {
-            return false;
-        }
-
-        $site_id = get_setting('id');
-
-        $query = $this->_model->select($this->theme . '_theme')->getWhere(
-            'app_settings',
-            [
-                'id' => $site_id
-            ],
-            1
-        )
-        ->row($this->theme . '_theme');
-
-        return (string) $query;
+        return $this->theme;
     }
 
     /**
@@ -807,6 +749,22 @@ class Template
     }
 
     /**
+     * Resolve a theme context (frontend/backend) or explicit theme folder.
+     */
+    private function _resolveTheme(string $theme): string
+    {
+        if (! $theme) {
+            $theme = 'frontend';
+        }
+
+        if (in_array($theme, ['frontend', 'backend'])) {
+            return get_setting($theme . '_theme') ?: ('backend' == $theme ? 'backend' : 'default');
+        }
+
+        return $theme;
+    }
+
+    /**
      * Function to minify HTML.
      *
      * @param string|null $buffer The HTML content to minify.
@@ -860,8 +818,12 @@ class Template
         if (! $menus) {
             $group_id = get_userdata('group_id');
 
-            $menus_data = $this->_model->select('
-                serialized_data
+            // Load model
+            $model = new Model();
+
+            // Get menu data
+            $serializedMenu = $model->select('
+                menu_structure
             ')
             ->groupStart()
             ->where('group_id', $group_id)
@@ -874,9 +836,9 @@ class Template
                 ],
                 1
             )
-            ->row('serialized_data');
+            ->row('menu_structure');
 
-            $menus = ($menus_data ? json_decode($menus_data, true) : []);
+            $menus = ($serializedMenu ? json_decode($serializedMenu, true) : []);
             $cms_menus = [
                 [
                     'id' => 0,
