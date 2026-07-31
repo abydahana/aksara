@@ -17,10 +17,14 @@
 
 namespace Config;
 
+use Aksara\Libraries\InvalidUriExceptionHandler;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Debug\ExceptionHandler;
 use CodeIgniter\Debug\ExceptionHandlerInterface;
+use CodeIgniter\HTTP\Exceptions\BadRequestException;
+use CodeIgniter\Router\Router;
 use Psr\Log\LogLevel;
+use Throwable;
 
 /**
  * Setup how the exception handler works.
@@ -47,7 +51,7 @@ class Exceptions extends BaseConfig
      *
      * @var list<int>
      */
-    public array $ignoreCodes = [404];
+    public array $ignoreCodes = [400, 404];
 
     /**
      * --------------------------------------------------------------------------
@@ -113,8 +117,39 @@ class Exceptions extends BaseConfig
      *          return new \App\Libraries\MyExceptionHandler();
      *      }
      */
-    public function handler(int $statusCode, \Throwable $exception): ExceptionHandlerInterface
-    {
+    public function handler(
+        int $statusCode,
+        Throwable $exception
+    ): ExceptionHandlerInterface {
+        if ($this->isDisallowedUriException($exception)) {
+            return new InvalidUriExceptionHandler($this);
+        }
+
         return new ExceptionHandler($this);
+    }
+
+    /**
+     * Determines whether the exception was thrown by the router's
+     * disallowed URI character validation.
+     */
+    private function isDisallowedUriException(Throwable $exception): bool
+    {
+        if (! $exception instanceof BadRequestException) {
+            return false;
+        }
+
+        foreach ($exception->getTrace() as $trace) {
+            if (
+                Router::class === ($trace['class'] ?? null)
+                && 'checkDisallowedChars' === ($trace['function'] ?? null)
+            ) {
+                return true;
+            }
+        }
+
+        return str_ends_with(
+            str_replace('\\', '/', $exception->getFile()),
+            '/system/Router/Router.php'
+        );
     }
 }

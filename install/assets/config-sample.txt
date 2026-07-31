@@ -79,3 +79,9 @@ define('IMAGE_FORMAT_ALLOWED', '%IMAGE_EXTENSION%');
 define('IMAGE_DIMENSION', %IMAGE_DIMENSION%); // In pixels
 define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%); // In pixels
 define('ICON_DIMENSION', %ICON_DIMENSION%); // In pixels
+
+/**
+ * Invalid URI protection
+ */
+define('INVALID_URI_MAX_ATTEMPTS', 3);
+define('INVALID_URI_BAN_DURATION', 1800); // In seconds
