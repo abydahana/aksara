@@ -3,9 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="msapplication-navbutton-color" content="#ffffff" />
-        <meta name="theme-color" content="#ffffff" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png'); ?>">
@@ -25,7 +22,8 @@
             }
             .content-wrapper {
                 background-color: #ffffff;
-                border-radius: 8px;
+                border: 3px dashed #faa;
+                border-radius: 3rem;
                 padding: 3rem 2.5rem;
                 max-width: 480px;
                 width: 90%;
@@ -116,7 +114,7 @@
             <a href="<?= base_url(); ?>" class="btn-install">
                 Start Installation
             </a>
-            
+
             <div class="social-links">
                 <!-- YouTube -->
                 <a href="https://youtube.com/abydahana" target="_blank" title="YouTube">
