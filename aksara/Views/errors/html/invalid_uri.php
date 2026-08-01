@@ -39,7 +39,6 @@ $remainingAttempts = isset($remainingAttempts)
                 border-radius: 3rem;
                 padding: 3rem 2.5rem;
                 max-width: 480px;
-                width: 90%;
                 text-align: center;
             }
             .forbidden-icon img {
