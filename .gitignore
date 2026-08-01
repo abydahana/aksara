@@ -56,34 +56,13 @@ config.php
 config-*.php
 
 #-------------------------
-# Theme Files
-#-------------------------
-themes/backend/components
-themes/default/components
-
-#-------------------------
 # Temporary Files
-#-------------------------
-writable/cache/*
-!writable/cache/index.html
-
-writable/debugbar/*
-!writable/debugbar/index.html
-
-writable/logs/*
-!writable/logs/index.html
-
-writable/session/*
-!writable/session/index.html
-
-writable/**/*.db
-writable/**/*.sqlite
-
-#-------------------------
-# Public Uploads
 #-------------------------
 public/uploads/*
 !public/uploads/_extension
+!public/uploads/geospatial
+!public/uploads/maps
+!public/uploads/tiles
 !public/uploads/settings/logo.png
 !public/uploads/settings/thumbs/logo.png
 !public/uploads/settings/icons/logo.png
@@ -95,6 +74,24 @@ public/uploads/*
 !public/uploads/placeholder.png
 !public/uploads/placeholder_icon.png
 !public/uploads/placeholder_thumb.png
+
+themes/**/components/*
+!themes/**/components/README
+
+writable/cache/*
+!writable/cache/index.html
+
+writable/debugbar/*
+!writable/debugbar/.gitkeep
+
+writable/logs/*
+!writable/logs/index.html
+
+writable/session/*
+!writable/session/index.html
+
+writable/**/*.db
+writable/**/*.sqlite
 
 #-------------------------
 # Composer
