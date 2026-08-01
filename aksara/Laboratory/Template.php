@@ -127,8 +127,9 @@ class Template
         // Core module based viewfinder
         $core_viewfinder = APPPATH . 'Modules' . $view_path;
 
-        // Core based viewfinder
-        $fallback_viewfinder = APPPATH . 'Views/components/core';
+        // Fallback theme based viewfinder
+        $fallback_theme = ('backend' == $this->getThemeProperty('type') ? (get_setting('backend_theme') ?: 'backend') : (get_setting('frontend_theme') ?: 'default'));
+        $fallback_viewfinder = ROOTPATH . 'themes/' . $fallback_theme . '/components/core';
 
         // View suffix
         $suffix = (! is_cli() && $request->getUserAgent()->isMobile() ? '_mobile' : ('modal' == $request->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
