@@ -151,7 +151,7 @@ class Parser
         }
 
         // Search paths
-        $searchPaths = [APPPATH . 'Views/components/'];
+        $searchPaths = [];
 
         if ($this->_theme) {
             $searchPaths[] = ROOTPATH . 'themes/' . $this->_theme . '/components/';
