@@ -24,7 +24,6 @@
                 background-color: #ffffff;
                 border-radius: 3rem;
                 max-width: 480px;
-                width: 90%;
                 text-align: center;
                 box-sizing: border-box;
             }
