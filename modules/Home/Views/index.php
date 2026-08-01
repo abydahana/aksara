@@ -12,7 +12,7 @@
     .home-hero {
         position: relative;
         overflow: hidden;
-        padding: 7rem 0 5rem;
+        padding: 8rem 0;
         background:
             radial-gradient(circle at 15% 20%, rgba(var(--bs-primary-rgb), .18), transparent 28rem),
             radial-gradient(circle at 88% 12%, rgba(25, 135, 84, .16), transparent 24rem),
