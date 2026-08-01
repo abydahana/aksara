@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "المربع {{number}}، فارغ",
     "Use arrow keys or swipe.": "استخدم مفاتيح الأسهم أو اسحب.",
     "Watch robot": "مشاهدة الروبوت",
-    "We will be right back.": "سنعود قريبًا."
+    "We will be right back.": "سنعود قريبًا.",
+    "Dark mode": "الوضع الداكن",
+    "Light mode": "الوضع الفاتح"
 }

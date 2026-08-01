@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Tile {{number}}, empty",
     "Use arrow keys or swipe.": "Use arrow keys or swipe.",
     "Watch robot": "Watch robot",
-    "We will be right back.": "We will be right back."
+    "We will be right back.": "We will be right back.",
+    "Dark mode": "Dark mode",
+    "Light mode": "Light mode"
 }

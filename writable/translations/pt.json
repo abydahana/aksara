@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Bloco {{number}}, vazio",
     "Use arrow keys or swipe.": "Use as setas ou deslize.",
     "Watch robot": "Ver robô",
-    "We will be right back.": "Voltaremos em breve."
+    "We will be right back.": "Voltaremos em breve.",
+    "Dark mode": "Modo escuro",
+    "Light mode": "Modo claro"
 }

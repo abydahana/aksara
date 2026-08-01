@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Плитка {{number}}, пусто",
     "Use arrow keys or swipe.": "Используйте стрелки или свайп.",
     "Watch robot": "Смотреть робота",
-    "We will be right back.": "Мы скоро вернёмся."
+    "We will be right back.": "Мы скоро вернёмся.",
+    "Dark mode": "Тёмный режим",
+    "Light mode": "Светлый режим"
 }

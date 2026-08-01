@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Kachel {{number}}, leer",
     "Use arrow keys or swipe.": "Pfeiltasten verwenden oder wischen.",
     "Watch robot": "Roboter ansehen",
-    "We will be right back.": "Wir sind gleich zurück."
+    "We will be right back.": "Wir sind gleich zurück.",
+    "Dark mode": "Dunkler Modus",
+    "Light mode": "Heller Modus"
 }

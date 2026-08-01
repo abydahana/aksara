@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Tuile {{number}}, vide",
     "Use arrow keys or swipe.": "Utilisez les flèches ou balayez.",
     "Watch robot": "Voir le robot",
-    "We will be right back.": "Nous revenons très vite."
+    "We will be right back.": "Nous revenons très vite.",
+    "Dark mode": "Mode sombre",
+    "Light mode": "Mode clair"
 }

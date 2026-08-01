@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "方塊 {{number}}，空",
     "Use arrow keys or swipe.": "使用方向鍵或滑動。",
     "Watch robot": "觀看機器人",
-    "We will be right back.": "我們馬上回來。"
+    "We will be right back.": "我們馬上回來。",
+    "Dark mode": "深色模式",
+    "Light mode": "淺色模式"
 }

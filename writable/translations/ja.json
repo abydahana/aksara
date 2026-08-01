@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "タイル{{number}}、空",
     "Use arrow keys or swipe.": "矢印キーまたはスワイプを使用してください。",
     "Watch robot": "ロボットを見る",
-    "We will be right back.": "まもなく戻ります。"
+    "We will be right back.": "まもなく戻ります。",
+    "Dark mode": "ダークモード",
+    "Light mode": "ライトモード"
 }

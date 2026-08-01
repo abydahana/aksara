@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Ô {{number}}, trống",
     "Use arrow keys or swipe.": "Dùng phím mũi tên hoặc vuốt.",
     "Watch robot": "Xem robot",
-    "We will be right back.": "Chúng tôi sẽ quay lại ngay."
+    "We will be right back.": "Chúng tôi sẽ quay lại ngay.",
+    "Dark mode": "Chế độ tối",
+    "Light mode": "Chế độ sáng"
 }
