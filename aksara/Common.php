@@ -90,42 +90,41 @@ if (! function_exists('get_userdata')) {
      * Prioritizes session storage, falls back to database lookup.
      *
      * @param   string $field The key to retrieve
-     * @return  mixed Returns session data or null
+     * @return  string|int|null Returns session data or null
      */
-    function get_userdata(string $field = ''): mixed
+    function get_userdata(string $field = ''): string|int|null
     {
         // Check if data is missing in session but user is logged in
         if (! service('session')->get($field) && service('session')->get('user_id')) {
-            $model = new Model();
-            $user_id = service('session')->get('user_id');
+            try {
+                $model = new Model();
+                $user_id = service('session')->get('user_id');
 
-            // Attempt to fetch from privileges table first
-            if ($model->fieldExists($field, 'app_users_privileges')) {
-                return $model->select($field)->getWhere(
-                    'app_users_privileges',
-                    [
-                        'user_id' => $user_id
-                    ],
-                    1
-                )
-                ->row($field);
+                // Attempt to fetch from privileges table first
+                if ($model->fieldExists($field, 'app_users_privileges')) {
+                    return $model->select($field)->getWhere(
+                        'app_users_privileges',
+                        [
+                            'user_id' => $user_id
+                        ],
+                        1
+                    )
+                    ->row($field);
+                }
+                // Attempt to fetch from main users table
+                elseif ($model->fieldExists($field, 'app_users')) {
+                    return $model->select($field)->getWhere(
+                        'app_users',
+                        [
+                            'user_id' => $user_id
+                        ],
+                        1
+                    )
+                    ->row($field);
+                }
+            } catch (\Throwable $e) {
+                log_message('error', 'Unable to retrieve user data: ' . $e->getMessage());
             }
-            // Attempt to fetch from main users table
-            elseif ($model->fieldExists($field, 'app_users')) {
-                return $model->select(
-                    $field
-                )
-                ->getWhere(
-                    'app_users',
-                    [
-                        'user_id' => $user_id
-                    ],
-                    1
-                )
-                ->row($field);
-            }
-
-            return null;
         }
 
         return service('session')->get($field);
@@ -187,8 +186,6 @@ if (! function_exists('phrase')) {
             return '';
         }
 
-        $model = new Model();
-
         // Sanitize and Normalize
         $phrase = preg_replace('/[^\w\s\p{P}\p{L}]/u', ' ', $phrase);
         $phrase = str_replace(['[', ']'], ['(', ')'], $phrase);
@@ -199,17 +196,22 @@ if (! function_exists('phrase')) {
         $language = get_userdata('language');
 
         if (! $language) {
-            $app_language = get_setting('app_language');
-            $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
+            try {
+                $model = new Model();
+                $app_language = get_setting('app_language');
+                $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
 
-            $language = $model->select('code')
-            ->getWhere(
-                'app_languages',
-                [
-                    'id' => $language_id
-                ]
-            )
-            ->row('code');
+                $language = $model->select('code')
+                ->getWhere(
+                    'app_languages',
+                    [
+                        'id' => $language_id
+                    ]
+                )
+                ->row('code');
+            } catch (\Throwable $e) {
+                log_message('error', 'Unable to retrieve language code: ' . $e->getMessage());
+            }
         }
 
         // 2. File Handling
@@ -234,11 +236,15 @@ if (! function_exists('phrase')) {
 
         try {
             // 3. Process Translation
+            $phrases = [];
             $buffer = file_get_contents($translation_file);
-            $phrases = (is_json($buffer) ? json_decode($buffer, true) : []);
 
-            if (! is_array($phrases)) {
-                $phrases = [];
+            if ($buffer && is_string($buffer)) {
+                $buffer = json_decode($buffer, true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $phrases = $buffer;
+                }
             }
 
             if (! isset($phrases[$phrase]) && ! $checking) {
@@ -297,18 +303,22 @@ if (! function_exists('user_language')) {
     // Get language from user session
     function get_user_language()
     {
-        $model = new Model();
+        try {
+            $model = new Model();
 
-        $language = $model->getWhere(
-            'app_languages',
-            [
-                'code' => get_userdata('language')
-            ],
-            1
-        )
-        ->row('language');
+            return $model->getWhere(
+                'app_languages',
+                [
+                    'code' => get_userdata('language')
+                ],
+                1
+            )
+            ->row('language');
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to retrieve user language: ' . $e->getMessage());
+        }
 
-        return $language;
+        return null;
     }
 }
 
@@ -320,17 +330,21 @@ if (! function_exists('get_active_years')) {
      */
     function get_active_years()
     {
-        $model = new Model();
+        try {
+            $model = new Model();
 
-        $years = $model->getWhere(
-            'app_years',
-            [
-                'status' => 1
-            ]
-        )
-        ->result();
+            return $model->getWhere(
+                'app_years',
+                [
+                    'status' => 1
+                ]
+            )
+            ->result();
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to retrieve active years: ' . $e->getMessage());
+        }
 
-        return $years ?? [];
+        return [];
     }
 }
 
@@ -356,17 +370,23 @@ if (! function_exists('is_liked')) {
      */
     function is_liked(int $post_id, ?string $post_path = null): bool
     {
-        $model = new Model();
+        try {
+            $model = new Model();
 
-        return $model->getWhere(
-            'post_likes',
-            [
-                'user_id' => get_userdata('user_id'),
-                'post_id' => $post_id,
-                'post_path' => $post_path
-            ],
-            1
-        )
-        ->numRows() > 0;
+            return $model->getWhere(
+                'post_likes',
+                [
+                    'user_id' => get_userdata('user_id'),
+                    'post_id' => $post_id,
+                    'post_path' => $post_path
+                ],
+                1
+            )
+            ->numRows() > 0;
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to check if post is liked: ' . $e->getMessage());
+        }
+
+        return false;
     }
 }

@@ -144,7 +144,7 @@ if (! function_exists('get_theme')) {
             }
         }
 
-        return $theme;
+        return $theme ?: (get_setting('frontend_theme') ?: 'default');
     }
 }
 
