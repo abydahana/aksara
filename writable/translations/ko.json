@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "타일 {{number}}, 비어 있음",
     "Use arrow keys or swipe.": "화살표 키를 사용하거나 스와이프하세요.",
     "Watch robot": "로봇 보기",
-    "We will be right back.": "곧 돌아오겠습니다."
+    "We will be right back.": "곧 돌아오겠습니다.",
+    "Dark mode": "다크 모드",
+    "Light mode": "라이트 모드"
 }

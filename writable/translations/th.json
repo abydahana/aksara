@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "แผ่น {{number}}, ว่าง",
     "Use arrow keys or swipe.": "ใช้ปุ่มลูกศรหรือปัดหน้าจอ",
     "Watch robot": "ดูโรบอต",
-    "We will be right back.": "เราจะกลับมาในไม่ช้า"
+    "We will be right back.": "เราจะกลับมาในไม่ช้า",
+    "Dark mode": "โหมดมืด",
+    "Light mode": "โหมดสว่าง"
 }

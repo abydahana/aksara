@@ -6,6 +6,13 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title><?= phrase('Aksara Maintenance'); ?></title>
+        <script>
+            (() => {
+                const storedTheme = window.localStorage.getItem('aksara-maintenance-theme');
+                const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.dataset.theme = storedTheme || preferredTheme;
+            })();
+        </script>
         <style>
             :root {
                 color-scheme: light;
@@ -16,7 +23,12 @@
                 --page: #f4f7fb;
                 --accent: #0f766e;
                 --accent-soft: #dff7f3;
+                --accent-ink: #134e4a;
+                --board: #dbe3ee;
+                --button-primary: #172033;
+                --button-primary-ink: #ffffff;
                 --danger: #dc2626;
+                --tile-empty: rgba(255, 255, 255, .54);
                 --tile: #eef2f7;
                 --tile-2: #dff7f3;
                 --tile-4: #d9eaf7;
@@ -24,6 +36,29 @@
                 --tile-16: #fed7aa;
                 --tile-32: #fecaca;
                 --tile-64: #fca5a5;
+                --tile-high: #0f766e;
+            }
+            html[data-theme="dark"] {
+                color-scheme: dark;
+                --ink: #f4f7fb;
+                --muted: #9ba8bd;
+                --line: rgba(255,255,255,0.12);
+                --panel: #111827;
+                --page: #070b13;
+                --accent: #5eead4;
+                --accent-soft: #123d3b;
+                --accent-ink: #8ff7e8;
+                --board: #0b1220;
+                --button-primary: #5eead4;
+                --button-primary-ink: #042f2e;
+                --tile-empty: #1b2433;
+                --tile: #1f2937;
+                --tile-2: #143c3a;
+                --tile-4: #17324a;
+                --tile-8: #4a3217;
+                --tile-16: #5a2f16;
+                --tile-32: #5f2128;
+                --tile-64: #7f1d1d;
                 --tile-high: #0f766e;
             }
             * {
@@ -130,7 +165,7 @@
                 border-radius: .5rem;
                 border: 1px solid var(--line);
                 text-align: center;
-                color: #134e4a;
+                color: var(--accent-ink);
                 padding: .6rem .75rem;
                 font-size: .925rem;
                 line-height: 1.25;
@@ -144,7 +179,7 @@
                 gap: .5rem;
                 width: 100%;
                 aspect-ratio: 1;
-                background: #dbe3ee;
+                background: var(--board);
                 border: 1px solid var(--line);
                 border-radius: 8px;
                 padding: .5rem;
@@ -191,7 +226,7 @@
                 z-index: 5;
             }
             .tile-0 {
-                background: rgba(255, 255, 255, .54);
+                background: var(--tile-empty);
             }
             .tile-2 {
                 background: var(--tile-2);
@@ -228,8 +263,8 @@
                 appearance: none;
                 border: 0;
                 border-radius: .5rem;
-                background: var(--ink);
-                color: #fff;
+                background: var(--button-primary);
+                color: var(--button-primary-ink);
                 cursor: pointer;
                 font: inherit;
                 font-size: .925rem;
@@ -239,9 +274,35 @@
                 width: 100%;
             }
             .btn.secondary {
-                background: #fff;
+                background: var(--panel);
                 border: 1px solid var(--line);
                 color: var(--ink);
+            }
+            .theme-toggle {
+                align-items: center;
+                background: var(--panel);
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                color: var(--ink);
+                cursor: pointer;
+                display: inline-flex;
+                font: inherit;
+                font-size: .875rem;
+                font-weight: 700;
+                gap: .5rem;
+                min-height: 2.5rem;
+                padding: .5rem .85rem;
+                position: fixed;
+                right: 1rem;
+                top: 1rem;
+                z-index: 45;
+            }
+            .theme-toggle-icon {
+                display: inline-grid;
+                font-size: 1rem;
+                height: 1.25rem;
+                place-items: center;
+                width: 1.25rem;
             }
             .actions {
                 display: grid;
@@ -324,6 +385,10 @@
         </style>
     </head>
     <body>
+        <button class="theme-toggle" type="button" id="theme-toggle">
+            <span class="theme-toggle-icon" id="theme-toggle-icon">◐</span>
+            <span id="theme-toggle-label"><?= phrase('Dark mode'); ?></span>
+        </button>
         <div class="ready-alert" id="ready-alert" role="alert">
             <p><?= phrase('The website is ready to access again.'); ?></p>
             <button class="btn" type="button" id="refresh-page"><?= phrase('Refresh'); ?></button>
@@ -368,7 +433,9 @@
             (() => {
                 const i18n = <?= json_encode([
                     'emptyTile' => phrase('Tile {{number}}, empty'),
+                    'darkMode' => phrase('Dark mode'),
                     'keepSliding' => phrase('Keep sliding.'),
+                    'lightMode' => phrase('Light mode'),
                     'mergedPoints' => phrase('Merged {{points}} points.'),
                     'movesLeft' => phrase('No moves left. New game?'),
                     'paused' => phrase('Robot paused. Your move.'),
@@ -388,6 +455,9 @@
                 const statusElement = document.getElementById('status');
                 const resetButton = document.getElementById('reset');
                 const robotButton = document.getElementById('robot');
+                const themeToggle = document.getElementById('theme-toggle');
+                const themeToggleIcon = document.getElementById('theme-toggle-icon');
+                const themeToggleLabel = document.getElementById('theme-toggle-label');
                 const scoreElement = document.getElementById('score');
                 const bestElement = document.getElementById('best');
                 const readyAlert = document.getElementById('ready-alert');
@@ -402,6 +472,19 @@
                 let touchStart = null;
                 let robotTimer = null;
                 let isAnimating = false;
+
+                const applyThemeLabel = () => {
+                    const isDark = document.documentElement.dataset.theme === 'dark';
+                    themeToggleIcon.textContent = isDark ? '☀' : '☾';
+                    themeToggleLabel.textContent = isDark ? translate('lightMode') : translate('darkMode');
+                };
+
+                const toggleTheme = () => {
+                    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.dataset.theme = nextTheme;
+                    window.localStorage.setItem('aksara-maintenance-theme', nextTheme);
+                    applyThemeLabel();
+                };
 
                 const createCells = () => {
                     boardElement.innerHTML = '';
@@ -856,6 +939,7 @@
 
                 resetButton.addEventListener('click', reset);
                 robotButton.addEventListener('click', toggleRobot);
+                themeToggle.addEventListener('click', toggleTheme);
                 refreshButton.addEventListener('click', () => {
                     window.location.reload();
                 });
@@ -919,6 +1003,7 @@
                 };
 
                 createCells();
+                applyThemeLabel();
                 reset();
                 window.setInterval(checkMaintenanceStatus, 15000);
                 window.setTimeout(checkMaintenanceStatus, 3000);

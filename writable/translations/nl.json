@@ -1164,5 +1164,7 @@
     "Tile {{number}}, empty": "Tegel {{number}}, leeg",
     "Use arrow keys or swipe.": "Gebruik pijltoetsen of veeg.",
     "Watch robot": "Robot bekijken",
-    "We will be right back.": "We zijn zo terug."
+    "We will be right back.": "We zijn zo terug.",
+    "Dark mode": "Donkere modus",
+    "Light mode": "Lichte modus"
 }
