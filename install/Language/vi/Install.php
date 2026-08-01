@@ -16,8 +16,10 @@
  */
 
 return [
+    'Aksara is not installed!' => 'Aksara chưa được cài đặt!',
     'Aksara Installer' => 'Trình cài đặt Aksara',
     'Whoops!' => 'Rất tiếc!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'Hệ thống yêu cầu cấu hình ban đầu để hoạt động đúng. Hãy thiết lập các thứ.',
     'Back' => 'Quay lại',
     'Refresh' => 'Làm mới',
     'Continue' => 'Tiếp tục',

@@ -16,8 +16,10 @@
  */
 
 return [
+    'Aksara is not installed!' => 'Aksara가 설치되지 않았습니다!',
     'Aksara Installer' => 'Aksara 설치 프로그램',
     'Whoops!' => '앗!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => '시스템은 초기 설정이 필요합니다. 설정해 봅시다.',
     'Back' => '뒤로',
     'Refresh' => '새로고침',
     'Continue' => '계속',

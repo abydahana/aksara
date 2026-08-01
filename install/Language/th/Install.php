@@ -16,8 +16,10 @@
  */
 
 return [
+    'Aksara is not installed!' => 'Aksara ไม่ได้รับการติดตั้ง!',
     'Aksara Installer' => 'ตัวติดตั้ง Aksara',
     'Whoops!' => 'อุ๊ปส์!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'ระบบต้องการการกำหนดค่าเริ่มต้นเพื่อทำงานอย่างถูกต้อง ลองจัดเตรียมสิ่งต่างๆ กัน',
     'Back' => 'ย้อนกลับ',
     'Refresh' => 'รีเฟรช',
     'Continue' => 'ดำเนินการต่อ',

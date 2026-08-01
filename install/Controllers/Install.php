@@ -26,9 +26,6 @@ class Install extends BaseController
 {
     public function __construct()
     {
-        // Load language helper
-        helper('language');
-
         // Check user locale and apply language
         if (service('request')->getGet('language') && is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . service('request')->getGet('language'))) {
             // Set default language

@@ -17,8 +17,10 @@
 
 return [
     // Global
+    'Aksara is not installed!' => 'Aksara belum diinstal!',
     'Aksara Installer' => 'Instalasi Aksara',
     'Whoops!' => 'Galat!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'Sistem memerlukan konfigurasi awal untuk bekerja dengan baik. Mari kita siapkan dulu semuanya.',
     'Back' => 'Kembali',
     'Refresh' => 'Periksa Ulang',
     'Continue' => 'Lanjutkan',

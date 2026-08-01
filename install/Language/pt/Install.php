@@ -16,8 +16,10 @@
  */
 
 return [
+    'Aksara is not installed!' => 'Aksara não está instalado!',
     'Aksara Installer' => 'Instalador Aksara',
     'Whoops!' => 'Ops!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'O sistema requer uma configuração inicial para funcionar corretamente. Vamos configurar!',
     'Back' => 'Voltar',
     'Refresh' => 'Atualizar',
     'Continue' => 'Continuar',

@@ -17,8 +17,10 @@
 
 return [
     // Global
+    'Aksara is not installed!' => 'Aksara is not installed!',
     'Aksara Installer' => 'Aksara Installer',
     'Whoops!' => 'Whoops!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'The system requires an initial configuration to work properly. Let\'s get things set up.',
     'Back' => 'Back',
     'Refresh' => 'Refresh',
     'Continue' => 'Continue',

@@ -16,8 +16,10 @@
  */
 
 return [
+    'Aksara is not installed!' => 'أكسارا غير مثبت!',
     'Aksara Installer' => 'مثبت أكسارا',
     'Whoops!' => 'عذراً!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'يتطلب النظام تكويناً أولياً ليعمل بشكل صحيح. لنقم بإعداد الأمور.',
     'Back' => 'رجوع',
     'Refresh' => 'تحديث',
     'Continue' => 'استمرار',

@@ -6,7 +6,7 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
-        <title>Site Under Maintenance!</title>
+        <title><?= phrase('Whoops!'); ?></title>
         <style>
             html, body {
                 min-height: 100vh;
@@ -20,28 +20,19 @@
                 justify-content: center;
             }
             .content-wrapper {
+                position: relative;
                 background-color: #ffffff;
                 border-radius: 3rem;
-                padding: 3rem 2.5rem;
                 max-width: 480px;
-                width: 90%;
                 text-align: center;
+                box-sizing: border-box;
             }
-            .logo-container img {
+            .person img {
                 width: 128px;
                 height: auto;
             }
-            .banner {
-                position: relative;
-                background: #fff;
-                border: 1px solid #8494ab;
-                padding: 2rem;
-                margin-top: -1rem;
-                border-radius: 1rem;
-                z-index: 10;
-            }
-            .banner::before,
-            .banner::after {
+            .person::before,
+            .person::after {
                 content: "";
                 position: absolute;
                 top: calc(50% - 6px);
@@ -54,13 +45,31 @@
                 pointer-events: none;
                 z-index: 11;
             }
-            .banner::before {
-                left: -22px;
+            .person::before {
+                left: -21px;
                 background-position: 0 0;
             }
-            .banner::after {
-                right: -21px;
+            .person::after {
+                right: -20px;
                 background-position: -40px 0;
+            }
+            .logo-container {
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px dashed #8494ab;
+            }
+            .logo-container img {
+                max-width: 100%;
+                max-height: 40px;
+            }
+            .banner {
+                position: relative;
+                background: #fff;
+                border: 1px solid #8494ab;
+                padding: 2rem;
+                margin-top: -1rem;
+                border-radius: 1rem;
+                z-index: 10;
             }
             h1 {
                 font-weight: 700;
@@ -79,6 +88,9 @@
             }
             .text-muted {
                 color: #8494ab
+            }
+            .text-danger {
+                color: #f55;
             }
             .btn-back {
                 display: inline-flex;
@@ -104,22 +116,19 @@
             .btn-back:active {
                 background-color: #0f172a;
             }
-            @media (max-width: 640px) {
-                .content-wrapper {
-                    padding: 2.5rem 1.5rem;
-                }
-            }
         </style>
     </head>
     <body>
         <div class="content-wrapper">
-            <div class="logo-container">
+            <div class="person">
                 <img src="<?= base_url('assets/yao-ming.png'); ?>" alt="Error" />
             </div>
             <div class="banner">
-                <h1><?= phrase('Whoops!'); ?></h1>
+                <div class="logo-container">
+                    <img src="<?= base_url('uploads/settings/logo.png'); ?>" height="48" alt="Logo" />
+                </div>
+                <h1 class="text-danger"><?= phrase('Whoops!'); ?></h1>
                 <p><?= phrase('We are temporary down for maintenance. Please come back again later...'); ?></p>
-
                 <a href="<?= base_url(); ?>" class="btn-back">
                     <span>
                         <img
