@@ -42,12 +42,16 @@ $remainingAttempts = isset($remainingAttempts)
                 width: 90%;
                 text-align: center;
             }
+            .forbidden-icon img {
+                max-width: 128px;
+                max-height: auto;
+            }
             .logo-container {
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
             }
             .logo-container img {
-                width: 200px;
-                height: auto;
+                max-width: 200px;
+                max-height: 48px;
             }
             h1 {
                 font-weight: 700;
@@ -65,6 +69,9 @@ $remainingAttempts = isset($remainingAttempts)
             }
             .text-muted {
                 color: #8494ab
+            }
+            .text-danger {
+                color: #f55;
             }
             .btn-back {
                 display: inline-flex;
@@ -100,13 +107,13 @@ $remainingAttempts = isset($remainingAttempts)
     <body>
         <div class="content-wrapper">
             <div class="logo-container">
-                <img src="<?= base_url('assets/forbidden.png'); ?>" alt="Forbidden" />
+                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Forbidden" />
             </div>
             <h1>400 - <?= phrase('Invalid Request'); ?></h1>
             <p class="text-muted"><?= phrase('The requested URL contains characters that are not allowed.'); ?></p>
 
             <p>
-                <?= ($remainingAttempts > 1 ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts]) : phrase('Your next invalid request will temporarily ban your network address.')); ?>
+                <?= ($remainingAttempts > 0 ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts]) : phrase('Your next invalid request will temporarily ban your network address.')); ?>
             </p>
 
             <a href="<?= base_url(); ?>" class="btn-back">

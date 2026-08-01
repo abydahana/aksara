@@ -45,12 +45,17 @@ $remainingMinutes = $remainingSeconds > 0
                 width: 90%;
                 text-align: center;
             }
+            .forbidden-icon img {
+                max-width: 128px;
+                max-height: auto;
+            }
             .logo-container {
-                margin-bottom: 2rem;
+                margin-top: 2rem;
             }
             .logo-container img {
-                width: 200px;
-                height: auto;
+                max-width: 200px;
+                max-height: 48px;
+                opacity: 0.5;
             }
             h1 {
                 font-weight: 700;
@@ -68,6 +73,9 @@ $remainingMinutes = $remainingSeconds > 0
             }
             .text-muted {
                 color: #8494ab
+            }
+            .text-danger {
+                color: #f55;
             }
             .btn-back {
                 display: inline-flex;
@@ -102,10 +110,10 @@ $remainingMinutes = $remainingSeconds > 0
     </head>
     <body>
         <div class="content-wrapper">
-            <div class="logo-container">
-                <img src="<?= base_url('assets/forbidden.png'); ?>" alt="Forbidden" />
+            <div class="forbidden-icon">
+                <img src="<?= base_url('assets/forbidden.png'); ?>" alt="Forbidden" width="128" />
             </div>
-            <h1>403 - <?= phrase('Access Banned'); ?></h1>
+            <h1 class="text-danger">403 - <?= phrase('Access Banned'); ?></h1>
             <p class="text-muted"><?= phrase('Your network address has been temporarily banned because it repeatedly submitted URLs containing disallowed characters.'); ?></p>
 
             <?php if ($remainingMinutes > 0): ?>
@@ -113,6 +121,10 @@ $remainingMinutes = $remainingSeconds > 0
                     <b><?= ($remainingMinutes > 1 ? phrase('Access will be restored in approximately {{remaining}} minutes.', ['remaining' => $remainingMinutes]) : phrase('Access will be restored in approximately {{remaining}} minute.', ['remaining' => $remainingMinutes])); ?></b>
                 </p>
             <?php endif; ?>
+
+            <div class="logo-container">
+                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Logo" />
+            </div>
         </div>
     </body>
 </html>
