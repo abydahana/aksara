@@ -28,6 +28,7 @@ use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 use Aksara\Filters\BannedIp;
+use Aksara\Filters\MaintenanceMode;
 
 class Filters extends BaseFilters
 {
@@ -51,6 +52,7 @@ class Filters extends BaseFilters
         'pagecache' => PageCache::class,
         'performance' => PerformanceMetrics::class,
         'banned-ip' => BannedIp::class,
+        'maintenance-mode' => MaintenanceMode::class,
     ];
 
     /**
@@ -68,6 +70,7 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
+            'maintenance-mode',
             'banned-ip',
             'forcehttps', // Force Global Secure Requests
             'pagecache',  // Web Page Caching

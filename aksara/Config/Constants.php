@@ -93,6 +93,7 @@ defined('TIMEZONE') || define('TIMEZONE', 'UTC');
 defined('ENVIRONMENT') || define('ENVIRONMENT', 'production');
 defined('BASE_URL') || define('BASE_URL', '');
 defined('DEMO_MODE') || define('DEMO_MODE', false);
+defined('MAINTENANCE_MODE') || define('MAINTENANCE_MODE', false);
 defined('ENCRYPTION_KEY') || define('ENCRYPTION_KEY', '');
 defined('COOKIE_NAME') || define('COOKIE_NAME', 'aksara');
 defined('SESSION_EXPIRATION') || define('SESSION_EXPIRATION', 0);

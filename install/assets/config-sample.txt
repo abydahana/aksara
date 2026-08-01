@@ -40,6 +40,11 @@ define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) =
 define('DEMO_MODE', false);
 
 /**
+ * Set maintenance mode
+ */
+define('MAINTENANCE_MODE', false);
+
+/**
  * Set the security hash
  * Make it secret!
  */
