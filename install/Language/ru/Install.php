@@ -17,8 +17,10 @@
 
 return [
     // Глобальные
+    'Aksara is not installed!' => 'Aksara не установлен!',
     'Aksara Installer' => 'Установщик Aksara',
     'Whoops!' => 'Упс!',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'Система требует начальной конфигурации для правильной работы. Давайте настроим все.',
     'Back' => 'Назад',
     'Refresh' => 'Обновить',
     'Continue' => 'Продолжить',

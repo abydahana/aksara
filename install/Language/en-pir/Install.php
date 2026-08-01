@@ -16,7 +16,9 @@
  */
 
 return [
+    'Aksara is not installed!' => 'Arrr! Aksara be not installed!',
     'Aksara Installer' => 'Aksara Shipwright',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => 'Ahoy, matey! This vessel can\'t sail \'til Aksara be properly configured. Let\'s get \'er set up!',
     'Whoops!' => 'Blimey!',
     'Back' => 'Retreat!',
     'Refresh' => 'Scrub the Deck',

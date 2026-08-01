@@ -1,5 +1,5 @@
 <?php
-    $language = session()->get('language', 'en');
+    $language = session()->get('language') ?? 'en';
     $is_rtl = in_array(session()->get('language'), [
         'ar',  // Arabic
         'arc', // Aramaic

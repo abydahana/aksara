@@ -17,8 +17,10 @@
 
 return [
     // Global
+    'Aksara is not installed!' => 'Aksara 未安装!',
     'Aksara Installer' => 'Aksara 安装程序',
     'Whoops!' => '哎呀！',
+    'The system requires an initial configuration to work properly. Let\'s get things set up.' => '系统需要初始配置才能正常工作。让我们来设置一下。',
     'Back' => '返回',
     'Refresh' => '刷新',
     'Continue' => '继续',

@@ -7,7 +7,7 @@
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png'); ?>">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-        <title>Aksara is not installed!</title>
+        <title><?= phrase('Aksara is not installed!') ?></title>
         <style>
             html, body {
                 min-height: 100vh;
@@ -18,16 +18,15 @@
                 color: #0f172a;
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: center
             }
             .content-wrapper {
                 background-color: #ffffff;
-                border: 3px dashed #faa;
                 border-radius: 3rem;
-                padding: 3rem 2.5rem;
+                padding: 2rem;
                 max-width: 480px;
-                width: 90%;
                 text-align: center;
+                box-sizing: border-box;
             }
             .logo-container {
                 margin-bottom: 2rem;
@@ -107,13 +106,9 @@
             <div class="logo-container">
                 <img src="<?= base_url('uploads/settings/logo.png'); ?>" alt="Aksara Logo" />
             </div>
-            <h1>Aksara is not installed!</h1>
-            <p>
-                The system requires an initial configuration to work properly. Let's get things set up.
-            </p>
-            <a href="<?= base_url(); ?>" class="btn-install">
-                Start Installation
-            </a>
+            <h1><?= phrase('Aksara is not installed!') ?></h1>
+            <p><?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?></p>
+            <a href="<?= base_url(); ?>" class="btn-install"><?= phrase('Start Installation') ?></a>
 
             <div class="social-links">
                 <!-- YouTube -->
