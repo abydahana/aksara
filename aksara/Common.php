@@ -90,9 +90,9 @@ if (! function_exists('get_userdata')) {
      * Prioritizes session storage, falls back to database lookup.
      *
      * @param   string $field The key to retrieve
-     * @return  string|int|null Returns session data or null
+     * @return  mixed Returns session data or null
      */
-    function get_userdata(string $field = ''): string|int|null
+    function get_userdata(string $field = ''): mixed
     {
         // Check if data is missing in session but user is logged in
         if (! service('session')->get($field) && service('session')->get('user_id')) {
