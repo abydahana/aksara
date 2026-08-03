@@ -15,13 +15,13 @@
  * will have only two choices, commit suicide or become brutal.
  */
 
-if (! function_exists('recommendation_generator')) {
+if (! function_exists('article_with_recommendation')) {
     /**
-     * Table of content generator
+     * Article with recommendation generator
      *
      * @param   string $content
      */
-    function recommendation_generator($content = null, array|object $recommendations = [], int $per_paragraph = 5)
+    function article_with_recommendation($content = null, array|object $recommendations = [], int $per_paragraph = 5)
     {
         // Reformat recommendation object into array
         $recommendations = json_decode(json_encode($recommendations), true);
