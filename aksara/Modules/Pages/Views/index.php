@@ -1,17 +1,27 @@
 <?php
-/**
- * @var mixed $results
- * @var mixed $meta
- * @var mixed $suggestions
- */
-if (isset($results[0])): ?>
-    <?php
-        $page = $results[0];
-        $builder = new \Aksara\Libraries\PageBuilder\PageBuilder();
-        $decoded = json_decode($page->page_content, true);
 
-        if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): 
+/**
+ * @var object|null $results
+ * @var mixed $meta
+ * @var iterable|null $suggestions
+ */
+$field_data = $results->field_data ?? null;
+
+if ($field_data): ?>
+    <?php
+    $builder = new \Aksara\Libraries\PageBuilder\PageBuilder();
+    $page_content = $field_data->page_content->value ?? '';
+    $decoded = json_decode($page_content, true);
+
+    $updated_at = $field_data->updated_timestamp->value ?? null;
+    $created_at = $field_data->created_timestamp->value ?? null;
+    $timestamp = $updated_at ?: $created_at;
+    $timestamp_label = $updated_at
+        ? phrase('Updated at')
+        : phrase('Created at');
     ?>
+
+    <?php if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): ?>
         <div class="fade-in">
             <?= $builder->render($decoded); ?>
         </div>
@@ -19,13 +29,32 @@ if (isset($results[0])): ?>
         <section class="section-padding fade-in">
             <div class="container">
                 <div class="text-justify mb-3">
-                    <?= preg_replace('/(<[^>]+) style=".*?"/i', '$1', preg_replace('/<img src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $page->page_content)); ?>
+                    <?php
+                    $content = preg_replace(
+                        '/<img src="(.*?)"/i',
+                        '<img id="og-image" src="$1" class="img-fluid rounded"',
+                        $page_content
+                    );
+
+                    $content = preg_replace(
+                        '/(<[^>]+) style=".*?"/i',
+                        '$1',
+                        $content
+                    );
+                    ?>
+
+                    <?= $content; ?>
                 </div>
-                <p>
-                    <i class="text-muted text-sm">
-                        <?= ($page->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($page->updated_timestamp))) . ', ' . $page->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($page->created_timestamp))) . ', ' . $page->created_timestamp); ?>
-                    </i>
-                </p>
+
+                <?php if ($timestamp): ?>
+                    <p>
+                        <i class="text-muted text-sm">
+                            <?= $timestamp_label; ?>
+                            <?= phrase(date('l', strtotime($timestamp))); ?>,
+                            <?= esc($timestamp); ?>
+                        </i>
+                    </p>
+                <?php endif; ?>
             </div>
         </section>
     <?php endif; ?>
@@ -37,33 +66,44 @@ if (isset($results[0])): ?>
             </h1>
             <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
         </div>
+
         <div class="row mb-5">
             <div class="col-md-6 offset-md-3">
                 <h2 class="text-center">
                     <?= phrase('Page not found!'); ?>
                 </h2>
+
                 <p class="fs-5 text-center mb-5">
-                    <?= phrase('The page you requested does not exist or already been archived.'); ?>
+                    <?= phrase('The page you requested does not exist or has already been archived.'); ?>
                 </p>
+
                 <div class="text-center mt-5">
-                    <a href="<?= base_url(); ?>" class="btn btn-sm btn-outline-primary rounded-pill px-lg-5 --xhr">
+                    <a
+                        href="<?= base_url(); ?>"
+                        class="btn btn-sm btn-outline-primary rounded-pill px-lg-5 --xhr"
+                    >
                         <i class="mdi mdi-arrow-left"></i>
                         <?= phrase('Back to Homepage'); ?>
                     </a>
                 </div>
             </div>
         </div>
-        <?php if (isset($suggestions) && $suggestions): ?>
+
+        <?php if (! empty($suggestions)): ?>
             <div class="row mb-2">
                 <div class="col-md-10 offset-md-1">
                     <h5>
                         <?= phrase('Our Suggestions'); ?>
-                        <blink>_</blink>
+                        <span class="blink">_</span>
                     </h5>
+
                     <?php foreach ($suggestions as $index => $page): ?>
-                        <?php if ($index): ?> &middot; <?php endif; ?>
-                        <a href="<?= base_url('pages/' . $page->page_slug); ?>">
-                            <?= $page->page_title; ?>
+                        <?php if ($index): ?>
+                            &middot;
+                        <?php endif; ?>
+
+                        <a href="<?= base_url('pages/' . rawurlencode($page->page_slug)); ?>">
+                            <?= esc($page->page_title); ?>
                         </a>
                     <?php endforeach; ?>
                 </div>

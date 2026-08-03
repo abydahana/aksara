@@ -1,22 +1,24 @@
 <?php
-    $language = session()->get('language') ?? 'en';
-    $is_rtl = in_array(session()->get('language'), [
-        'ar',  // Arabic
-        'arc', // Aramaic
-        'dv',  // Dhivehi/Maldivian
-        'fa',  // Persian/Farsi
-        'ha',  // Hausa
-        'he',  // Hebrew
-        'khw', // Khowar
-        'ks',  // Kashmiri
-        'ku',  // Kurdish
-        'ps',  // Pashto
-        'ur',  // Urdu
-        'yi',  // Yiddish
-        'sd',  // Sindhi
-        'ug',  // Uyghur
-    ]);
+
+$language = session()->get('language') ?? 'en';
+$is_rtl = in_array(session()->get('language'), [
+    'ar',  // Arabic
+    'arc', // Aramaic
+    'dv',  // Dhivehi/Maldivian
+    'fa',  // Persian/Farsi
+    'ha',  // Hausa
+    'he',  // Hebrew
+    'khw', // Khowar
+    'ks',  // Kashmiri
+    'ku',  // Kurdish
+    'ps',  // Pashto
+    'ur',  // Urdu
+    'yi',  // Yiddish
+    'sd',  // Sindhi
+    'ug',  // Uyghur
+]);
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $language ?? 'en'; ?>"<?= ($is_rtl ? ' dir="rtl"' : null); ?>>
     <head>

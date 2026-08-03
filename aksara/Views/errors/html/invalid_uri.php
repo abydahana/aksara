@@ -1,8 +1,9 @@
 <?php
 
-/** @var int $attempts */
-/** @var int $remainingAttempts */
-
+/**
+ * @var int $attempts
+ * @var int $remainingAttempts
+ */
 $attempts = isset($attempts)
     ? (int) $attempts
     : 0;
@@ -10,8 +11,8 @@ $attempts = isset($attempts)
 $remainingAttempts = isset($remainingAttempts)
     ? (int) $remainingAttempts
     : 0;
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

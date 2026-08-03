@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $meta
@@ -6,45 +7,40 @@
  * @var mixed $related
  * @var mixed $categories
  */
-?>
+$field_data = $results->field_data ?? null;
+$toc = null;
+$article = null;
+$featured_image = null;
+$post_tags = null;
 
-<?php
-    $toc = null;
-    $article = null;
-    $featured_image = null;
-    $post_tags = null;
+if ($field_data) {
+    $tags = explode(',', $field_data->post_tags->value);
 
-    if ($results) {
-        $tags = [];
+    if (sizeof($tags) > 0) {
+        // Get post tags
+        foreach ($tags as $tag => $label) {
+            if (! $label) continue; // empty label
 
-        foreach ($results as $key => $val) {
-            $tags = explode(',', $val->post_tags);
-
-            if (sizeof($tags) > 0) {
-                // Get post tags
-                foreach ($tags as $tag => $label) {
-                    if (! $label) continue; // empty label
-
-                    $post_tags .= '
-                        <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="--xhr">
-                            <span class="badge bg-secondary">
-                                ' . trim($label) . '
-                            </span>
-                        </a>
-                    ';
-                }
-            }
-
-            // Reformat article output
-            list($toc, $article) = toc_generator(str_replace('MsoNormalTable', 'table table-bordered', preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $val->post_content)))));
-        }
-
-        if ($results[0]->featured_image && $results[0]->featured_image != 'placeholder.png') {
-            // Get featured image
-            $featured_image = $results[0]->featured_image;
+            $post_tags .= '
+                <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="--xhr">
+                    <span class="badge bg-secondary">
+                        ' . trim($label) . '
+                    </span>
+                </a>
+            ';
         }
     }
+
+    // Reformat article output
+    list($toc, $article) = toc_generator(str_replace('MsoNormalTable', 'table table-bordered', preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $field_data->post_content->value)))));
+
+    if ($field_data->featured_image->value && $field_data->featured_image->value != 'placeholder.png') {
+        // Get featured image
+        $featured_image = $field_data->featured_image->value;
+    }
+}
 ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
@@ -65,19 +61,19 @@
                             <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
                                 <div class="row align-items-center">
                                     <div class="col-2 pe-0">
-                                        <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
-                                            <img src="<?= get_image('users', $results[0]->photo, 'thumb'); ?>" class="img-fluid rounded-circle" />
+                                        <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
+                                            <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" />
                                         </a>
                                     </div>
                                     <div class="col-10">
                                         <h5 class="fw-bold mb-0">
-                                            <a href="<?= base_url('user/' . $results[0]->username); ?>" class="--xhr">
-                                                <?= $results[0]->first_name . ' ' . $results[0]->last_name; ?>
+                                            <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
+                                                <?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>
                                             </a>
                                         </h5>
                                         <p class="mb-0">
-                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $results[0]->created_timestamp; ?>">
-                                                <?= time_ago($results[0]->created_timestamp); ?>
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->created_timestamp->value; ?>">
+                                                <?= time_ago($field_data->created_timestamp->value); ?>
                                             </span>
                                         </p>
                                     </div>
@@ -125,10 +121,10 @@
                         </div>
 
                         <div>
-                            <i class="text-muted text-sm"><?= ($results[0]->updated_timestamp ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($results[0]->updated_timestamp))) . ', ' . $results[0]->updated_timestamp : phrase('Created at') . ' ' . phrase(date('l', strtotime($results[0]->created_timestamp))) . ', ' . $results[0]->created_timestamp); ?></i>
+                            <i class="text-muted text-sm"><?= ($field_data->updated_timestamp->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($field_data->updated_timestamp->value))) . ', ' . $field_data->updated_timestamp->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($field_data->created_timestamp->value))) . ', ' . $field_data->created_timestamp->value); ?></i>
                         </div>
 
-                        <?= comment_widget(['post_id' => $results[0]->post_id, 'path' => service('uri')->getRoutePath()]); ?>
+                        <?= comment_widget(['post_id' => $field_data->post_id->value, 'path' => service('uri')->getRoutePath()]); ?>
 
                         <div class="d-md-none py-3">&nbsp;</div>
                     <?php else: ?>

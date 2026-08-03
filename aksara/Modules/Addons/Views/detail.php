@@ -1,41 +1,43 @@
 <?php
+
 /**
  * @var mixed $detail
  */
 $carousel = null;
-    $attribution = null;
+$attribution = null;
 
-    if ($detail->screenshot) {
-        foreach ($detail->screenshot as $key => $val) {
-            $carousel .= '
-                <div class="carousel-item rounded' . (! $key ? ' active' : null) . '">
-                    <a href="' . $val->src . '" target="_blank">
-                        <img src="' . $val->src . '" class="d-block rounded w-100" alt="' . $val->alt . '">
-                    </a>
-                </div>
-            ';
-        }
+if ($detail->screenshot) {
+    foreach ($detail->screenshot as $key => $val) {
+        $carousel .= '
+            <div class="carousel-item rounded' . (! $key ? ' active' : null) . '">
+                <a href="' . $val->src . '" target="_blank">
+                    <img src="' . $val->src . '" class="d-block rounded w-100" alt="' . $val->alt . '">
+                </a>
+            </div>
+        ';
     }
+}
 
-    if (isset($detail->attribution) && $detail->attribution) {
-        foreach ($detail->attribution as $key => $val) {
-            $attribution .= '
-                <div class="row">
-                    <div class="col-4">
-                        <label class="mb-0 text-muted">
-                            ' . $key . '
-                        </label>
-                    </div>
-                    <div class="col-8">
-                        <label class="mb-0">
-                            ' . $val . '
-                        </label>
-                    </div>
+if (isset($detail->attribution) && $detail->attribution) {
+    foreach ($detail->attribution as $key => $val) {
+        $attribution .= '
+            <div class="row">
+                <div class="col-4">
+                    <label class="mb-0 text-muted">
+                        ' . $key . '
+                    </label>
                 </div>
-            ';
-        }
+                <div class="col-8">
+                    <label class="mb-0">
+                        ' . $val . '
+                    </label>
+                </div>
+            </div>
+        ';
     }
+}
 ?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 col-lg-7">

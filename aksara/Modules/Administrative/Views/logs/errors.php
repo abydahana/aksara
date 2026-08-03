@@ -1,43 +1,45 @@
 <?php
+
 /**
  * @var mixed $logs
  * @var mixed $report
  */
 ?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3 order-2 order-md-1">
             <div class="sticky-top">
                 <div class="pretty-scrollbar">
                     <?php
-                        $errors = null;
+                    $errors = null;
 
-                        if ($logs) {
-                            foreach ($logs as $key => $val) {
-                                $errors .= '
-                                    <li class="list-group-item px-0">
-                                        <a href="' . current_page('remove', ['log' => $val]) . '" class="float-end text-danger --modal" data-bs-toggle="tooltip" title="' . phrase('Remove') . '">
-                                            <i class="mdi mdi-window-close"></i>
-                                        </a>
-                                        <a href="' . current_page(null, ['report' => $val]) . '" class="' . ($val == service('request')->getGet('report') ? ' fw-bold' : null) . ' --xhr">' . $val . '</a>
-                                    </li>
-                                ';
-                            }
-
-                            echo '
-                                <div class="d-grid mt-3 mb-3">
-                                    <a href="' . current_page('clear') . '" class="btn btn-danger btn-sm --modal">
-                                        <i class="mdi mdi-delete-empty"></i>
-                                        ' . phrase('Clear Logs') . '
+                    if ($logs) {
+                        foreach ($logs as $key => $val) {
+                            $errors .= '
+                                <li class="list-group-item px-0">
+                                    <a href="' . current_page('remove', ['log' => $val]) . '" class="float-end text-danger --modal" data-bs-toggle="tooltip" title="' . phrase('Remove') . '">
+                                        <i class="mdi mdi-window-close"></i>
                                     </a>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    ' . $errors . '
-                                </ul>
+                                    <a href="' . current_page(null, ['report' => $val]) . '" class="' . ($val == service('request')->getGet('report') ? ' fw-bold' : null) . ' --xhr">' . $val . '</a>
+                                </li>
                             ';
-                        } else {
-                            echo '<div class="pt-3 pb-3">' . phrase('No error log') . '</div>';
                         }
+
+                        echo '
+                            <div class="d-grid mt-3 mb-3">
+                                <a href="' . current_page('clear') . '" class="btn btn-danger btn-sm --modal">
+                                    <i class="mdi mdi-delete-empty"></i>
+                                    ' . phrase('Clear Logs') . '
+                                </a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                ' . $errors . '
+                            </ul>
+                        ';
+                    } else {
+                        echo '<div class="pt-3 pb-3">' . phrase('No error log') . '</div>';
+                    }
                     ?>
                 </div>
             </div>
@@ -45,48 +47,48 @@
         <div class="col-md-9 order-1 order-md-2 stretch-height">
             <div class="sticky-top font-monospace">
                 <?php
-                    if ($report) {
-                        $errors = [];
-                        $num = 0;
+                if ($report) {
+                    $errors = [];
+                    $num = 0;
 
-                        foreach ($report as $key => $val) {
-                            if (! $val || ! trim($val)) {
-                                continue;
-                            }
-
-                            $title = null;
-
-                            if (strpos($val, 'CRITICAL - ') !== false || strpos($val, 'ALERT - ') !== false || strpos($val, 'EMERGENCY - ') !== false || strpos($val, 'DEBUG - ') !== false || strpos($val, 'ERROR - ') !== false || strpos($val, 'INFO - ') !== false || strpos($val, 'NOTICE - ') !== false || strpos($val, 'WARNING - ') !== false) {
-                                $errors[$num] = [
-                                    'title' => $val,
-                                    'traces' => []
-                                ];
-
-                                $num++;
-                            } elseif (isset($errors[$num - 1])) {
-                                $errors[$num - 1]['traces'][] = htmlspecialchars($val);
-                            }
+                    foreach ($report as $key => $val) {
+                        if (! $val || ! trim($val)) {
+                            continue;
                         }
 
-                        foreach($errors as $key => $val) {
-                            $traces = null;
+                        $title = null;
 
-                            foreach($val['traces'] as $_key => $_val) {
-                                $traces .= '<li>' . preg_replace('/^[\d\\s]+/', '', $_val) . '</li>';
-                            }
+                        if (strpos($val, 'CRITICAL - ') !== false || strpos($val, 'ALERT - ') !== false || strpos($val, 'EMERGENCY - ') !== false || strpos($val, 'DEBUG - ') !== false || strpos($val, 'ERROR - ') !== false || strpos($val, 'INFO - ') !== false || strpos($val, 'NOTICE - ') !== false || strpos($val, 'WARNING - ') !== false) {
+                            $errors[$num] = [
+                                'title' => $val,
+                                'traces' => []
+                            ];
 
-                            echo '
-                                <div>
-                                    <h6 class="text-danger">
-                                        ' . $val['title'] . '
-                                    </h6>
-                                    ' . ($traces ? '<ol>' . $traces . '</ol>' : null) . '
-                                </div>
-                            ';
+                            $num++;
+                        } elseif (isset($errors[$num - 1])) {
+                            $errors[$num - 1]['traces'][] = htmlspecialchars($val);
                         }
-                    } else {
-                        echo '<div class="pt-3 pb-3">' . ($errors ? phrase('Click on the log file to show the error details.') : phrase('Yay! Your application is working fine.')) . '</div>';
                     }
+
+                    foreach($errors as $key => $val) {
+                        $traces = null;
+
+                        foreach($val['traces'] as $_key => $_val) {
+                            $traces .= '<li>' . preg_replace('/^[\d\\s]+/', '', $_val) . '</li>';
+                        }
+
+                        echo '
+                            <div>
+                                <h6 class="text-danger">
+                                    ' . $val['title'] . '
+                                </h6>
+                                ' . ($traces ? '<ol>' . $traces . '</ol>' : null) . '
+                            </div>
+                        ';
+                    }
+                } else {
+                    echo '<div class="pt-3 pb-3">' . ($errors ? phrase('Click on the log file to show the error details.') : phrase('Yay! Your application is working fine.')) . '</div>';
+                }
                 ?>
             </div>
         </div>

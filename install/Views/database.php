@@ -1,15 +1,15 @@
 <?php
-    /**
-     * @var array $driver
-     */
 
-    // Database driver options
-    $driver_list = null;
+/**
+ * @var array $driver
+ */
+// Database driver options
+$driver_list = null;
 
-    foreach ($driver as $key => $val)
-    {
-        $driver_list .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
-    }
+foreach ($driver as $key => $val)
+{
+    $driver_list .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+}
 ?>
 <form action="<?= site_url('security'); ?>" method="POST" class="--validate-form">
     <h4>
@@ -132,7 +132,7 @@
             var driver = $(this).val();
             var port = '';
             var username = '';
-            
+
             if (driver === 'MySQLi' || driver === 'MySQL') {
                 port = '3306';
                 username = 'root';
@@ -149,28 +149,28 @@
                 port = '';
                 username = '';
             }
-            
+
             var $portInput = $('input[name=database_port]');
             var $userInput = $('input[name=database_username]');
-            
+
             var currentPort = $portInput.val();
             var defaultPorts = ['3306', '5432', '1433', '1521', ''];
-            
+
             // Overwrite value only if it is currently a default port
             if (defaultPorts.includes(currentPort)) {
                 $portInput.val(port);
             }
             $portInput.attr('placeholder', (port ? 'e.g: ' + port : ''));
-            
+
             var currentUsername = $userInput.val();
             var defaultUsernames = ['root', 'postgres', 'sa', 'SYSTEM', ''];
-            
+
             // Overwrite value only if it is currently a default username
             if (defaultUsernames.includes(currentUsername)) {
                 $userInput.val(username);
             }
             $userInput.attr('placeholder', (username ? 'e.g: ' + username : ''));
-            
+
             // Toggle required asterisks visibility
             var $asterisks = $('input[name=database_hostname], input[name=database_port], input[name=database_username]').prev('label').find('.text-danger');
             if (driver === 'SQLite3') {
@@ -179,7 +179,7 @@
                 $asterisks.removeClass('d-none');
             }
         });
-        
+
         // Trigger on load to adjust placeholder
         $('select[name=database_driver]').trigger('change');
     });

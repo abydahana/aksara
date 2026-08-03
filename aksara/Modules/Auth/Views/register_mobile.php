@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var mixed $meta
  * @var mixed $captcha
  */
 ?>
+
 <div class="section-padding">
     <div class="container position-relative fade-in">
         <div class="row">
@@ -78,11 +80,11 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
                                         <?php
-                                            if ($captcha->string) {
-                                                echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
-                                            } else {
-                                                echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
-                                            }
+                                        if ($captcha->string) {
+                                            echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                        } else {
+                                            echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
+                                        }
                                         ?>
                                     </span>
                                     <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="XXXXXX" maxlength="32" />
@@ -98,8 +100,7 @@
                     <div class="mb-3">
                         <div class="d-grid">
                             <button type="submit" class="btn btn-outline-primary rounded-pill">
-                                <i class="mdi mdi-check"></i>
-                                <?= phrase('Register Account'); ?>
+                                <i class="mdi mdi-check"></i> <?= phrase('Register Account'); ?>
                             </button>
                         </div>
                     </div>

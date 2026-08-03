@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @var mixed $logs
  */
 ?>
+
 <div class="container-fluid py-3">
     <div class="alert alert-info callout rounded-4">
         <h3><?= phrase('Information'); ?></h3>

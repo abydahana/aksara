@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var mixed $writable
  * @var mixed $detail
  */
 ?>
+
 <div>
     <?php if (! $writable): ?>
         <div class="alert alert-danger">
@@ -17,6 +19,7 @@
             </div>
         </div>
     <?php endif; ?>
+
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <div class="card mb-3">
             <div class="card-body p-2 rounded" style="background:<?= (isset($detail->colorscheme->page->background) ? $detail->colorscheme->page->background : '#ffffff'); ?>; color:<?= (isset($detail->colorscheme->page->text) ? $detail->colorscheme->page->text : '#333333'); ?>">

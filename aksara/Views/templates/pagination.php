@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var \CodeIgniter\Pager\PagerRenderer $pager
  */
@@ -21,11 +22,11 @@ if (is_numeric(service('request')->getGet('per_page')) && service('request')->ge
     </li>
 
     <?php if ($current_page > 1): ?>
-    <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page - 1)]); ?>" class="page-link --xhr" id="prev" aria-label="<?= phrase('Previous'); ?>">
-            <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Prev') : '&lt;'); ?>
-        </a>
-    </li>
+        <li class="page-item">
+            <a href="<?= current_page(null, ['per_page' => ($current_page - 1)]); ?>" class="page-link --xhr" id="prev" aria-label="<?= phrase('Previous'); ?>">
+                <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Prev') : '&lt;'); ?>
+            </a>
+        </li>
     <?php endif; ?>
 
     <li class="page-item active">
@@ -35,11 +36,11 @@ if (is_numeric(service('request')->getGet('per_page')) && service('request')->ge
     </li>
 
     <?php if ($last_page > $current_page): ?>
-    <li class="page-item">
-        <a href="<?= current_page(null, ['per_page' => ($current_page + 1)]); ?>" class="page-link --xhr" id="next" aria-label="<?= phrase('Next'); ?>">
-            <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Next') : '&gt;'); ?>
-        </a>
-    </li>
+        <li class="page-item">
+            <a href="<?= current_page(null, ['per_page' => ($current_page + 1)]); ?>" class="page-link --xhr" id="next" aria-label="<?= phrase('Next'); ?>">
+                <?= (service('request')->getHeaderLine('X-API-KEY') ? phrase('Next') : '&gt;'); ?>
+            </a>
+        </li>
     <?php endif; ?>
 
     <li class="page-item<?= ($last_page <= $current_page ? ' disabled' : null); ?>">

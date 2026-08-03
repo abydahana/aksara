@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $userdata
  * @var mixed $year
@@ -8,6 +9,7 @@
  * @var mixed $links
  */
 ?>
+
 <div class="container-fluid py-3">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">
@@ -89,7 +91,7 @@
                             $option = null;
                             foreach($sub_level_1 as $key => $val) {
                                 if (! isset($val->id) || ! isset($val->label)) continue;
-                                
+
                                 $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
                             }
                         ?>

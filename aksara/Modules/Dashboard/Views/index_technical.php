@@ -1,15 +1,17 @@
 <?php
-    /**
-     * @var mixed $card
-     * @var mixed $visitors
-     * @var mixed $recent_signed
-     * @var mixed $announcements
-     * @var mixed $system_language
-     * @var mixed $group_name
-     * @var mixed $logs
-     */
-    $logs = (isset($logs) ? $logs : []);
+
+/**
+ * @var mixed $card
+ * @var mixed $visitors
+ * @var mixed $recent_signed
+ * @var mixed $announcements
+ * @var mixed $system_language
+ * @var mixed $group_name
+ * @var mixed $logs
+ */
+$logs = (isset($logs) ? $logs : []);
 ?>
+
 <div class="container-fluid py-3">
     <div class="row mb-3">
         <div class="col-lg-8">
@@ -140,29 +142,29 @@
                             </div>
                             <div class="card-body p-3">
                                 <?php
-                                    $num = 0;
+                                $num = 0;
 
-                                    if (isset($visitors->browsers)) {
-                                        foreach ($visitors->browsers as $key => $val) {
-                                            echo '
-                                                ' . ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) . '
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-3 col-sm-2">
-                                                        <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
-                                                    </div>
-                                                    <div class="col-9 col-sm-10 ps-3">
-                                                        <b>
-                                                            ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
-                                                        </b>
-                                                        <p class="mb-0 text-sm text-muted">
-                                                            ' . number_format($val) . ' ' . phrase('usage in a week') . '
-                                                        </p>
-                                                    </div>
+                                if (isset($visitors->browsers)) {
+                                    foreach ($visitors->browsers as $key => $val) {
+                                        echo '
+                                            ' . ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) . '
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-3 col-sm-2">
+                                                    <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
                                                 </div>
-                                            ';
-                                            $num++;
-                                        }
+                                                <div class="col-9 col-sm-10 ps-3">
+                                                    <b>
+                                                        ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
+                                                    </b>
+                                                    <p class="mb-0 text-sm text-muted">
+                                                        ' . number_format($val) . ' ' . phrase('usage in a week') . '
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ';
+                                        $num++;
                                     }
+                                }
                                 ?>
                             </div>
                         </div>
@@ -176,28 +178,28 @@
                             </div>
                             <div class="card-body p-3">
                                 <?php
-                                    foreach ($recent_signed as $key => $val) {
-                                        echo '
-                                            ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-3 col-sm-2">
-                                                    <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                        <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" />
-                                                    </a>
-                                                </div>
-                                                <div class="col-9 col-sm-10 ps-3">
-                                                    <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                        <b>
-                                                            ' . $val->first_name . ' ' . $val->last_name . '
-                                                        </b>
-                                                    </a>
-                                                    <p class="mb-0 text-sm text-muted">
-                                                        ' . $val->group_name . '
-                                                    </p>
-                                                </div>
+                                foreach ($recent_signed as $key => $val) {
+                                    echo '
+                                        ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-3 col-sm-2">
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" />
+                                                </a>
                                             </div>
-                                        ';
-                                    }
+                                            <div class="col-9 col-sm-10 ps-3">
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <b>
+                                                        ' . $val->first_name . ' ' . $val->last_name . '
+                                                    </b>
+                                                </a>
+                                                <p class="mb-0 text-sm text-muted">
+                                                    ' . $val->group_name . '
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ';
+                                }
                                 ?>
                             </div>
                         </div>
@@ -262,17 +264,17 @@
                             </h5>
                         </div>
                         <?php
-                            $announcement = null;
+                        $announcement = null;
 
-                            foreach ($announcements as $key => $val) {
-                                $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
-                            }
+                        foreach ($announcements as $key => $val) {
+                            $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
+                        }
 
-                            echo '
-                                <ul class="list-group list-group-flush">
-                                    ' . $announcement . '
-                                </ul>
-                            ';
+                        echo '
+                            <ul class="list-group list-group-flush">
+                                ' . $announcement . '
+                            </ul>
+                        ';
                         ?>
                     </div>
                 <?php endif; ?>

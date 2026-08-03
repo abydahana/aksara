@@ -1,49 +1,50 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $meta
  * @var mixed $pagination
  */
-
 if ($results): ?>
-<section class="section-padding fade-in">
-    <div class="container text-center text-md-start">
-        <h1 class="display-4 fw-bold text-dark">
-            <?= $meta->title; ?>
-        </h1>
-        <p class="fs-5 text-muted mb-0">
-            <?= truncate($meta->description, 256); ?>
-        </p>
-    </div>
-</section>
+    <section class="section-padding fade-in">
+        <div class="container text-center text-md-start">
+            <h1 class="display-4 fw-bold text-dark">
+                <?= $meta->title; ?>
+            </h1>
+            <p class="fs-5 text-muted mb-0">
+                <?= truncate($meta->description, 256); ?>
+            </p>
+        </div>
+    </section>
 <?php endif; ?>
+
 <section class="pb-5">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
-                        $cover = null;
-                        $thumbnail = null;
-                        $images = json_decode($val->gallery_images, true);
+                    $cover = null;
+                    $thumbnail = null;
+                    $images = json_decode($val->gallery_images, true);
 
-                        if (! empty($images)) {
-                            $num = 1;
+                    if (! empty($images)) {
+                        $num = 1;
 
-                            foreach ($images as $src => $alt) {
-                                if ($num >= 4) {
-                                    break;
-                                }
-
-                                if (1 == $num) {
-                                    $cover = $src;
-                                } elseif ($num > 1) {
-                                    $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
-                                }
-
-                                $num++;
+                        foreach ($images as $src => $alt) {
+                            if ($num >= 4) {
+                                break;
                             }
+
+                            if (1 == $num) {
+                                $cover = $src;
+                            } elseif ($num > 1) {
+                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
+                            }
+
+                            $num++;
                         }
+                    }
                     ?>
                     <div class="col-lg-6">
                         <div class="rounded-4 overflow-hidden mb-3 fade-in">

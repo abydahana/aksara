@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var mixed $meta
  * @var mixed $captcha
  */
 ?>
+
 <section class="section-padding fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
@@ -29,11 +31,11 @@
                         <div class="input-group">
                             <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
                                 <?php
-                                    if ($captcha->string) {
-                                        echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
-                                    } else {
-                                        echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
-                                    }
+                                if ($captcha->string) {
+                                    echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                } else {
+                                    echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
+                                }
                                 ?>
                             </span>
                             <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="<?= phrase('Enter captcha'); ?>" maxlength="32" />
@@ -44,16 +46,14 @@
                             <div class="col-6">
                                 <div class="d-grid">
                                     <a href="<?= current_page('../'); ?>" class="btn btn-light --xhr">
-                                        <i class="mdi mdi-arrow-left"></i>
-                                        <?= phrase('Back'); ?>
+                                        <i class="mdi mdi-arrow-left"></i> <?= phrase('Back'); ?>
                                     </a>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-check"></i>
-                                        <?= phrase('Reset Password'); ?>
+                                        <i class="mdi mdi-check"></i> <?= phrase('Reset Password'); ?>
                                     </button>
                                 </div>
                             </div>

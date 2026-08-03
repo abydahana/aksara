@@ -1,13 +1,16 @@
 <?php
+
 /**
  * @var mixed $years
  */
 ?>
+
 <style type="text/css">
     .modal-body {
         padding: 0
     }
 </style>
+
 <div class="card-group">
     <div class="card border-top-0 border-bottom-0 border-start-0">
         <div class="card-body">
@@ -41,30 +44,30 @@
                         </span>
                     </div>
                 </div>
-                
+
                 <?php
-                    if ($years) {
-                        $option = null;
+                if ($years) {
+                    $option = null;
 
-                        foreach ($years as $key => $val) {
-                            $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
-                        }
-
-                        echo '
-                            <div class="form-group mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text rounded-pill rounded-end">
-                                        <i class="mdi mdi-calendar-check" style="width:22px"></i>
-                                    </span>
-                                    <select name="year" class="form-control rounded-pill rounded-start" placeholder="' . phrase('Choose year') . '" id="year_input">
-                                        ' . $option . '
-                                    </select>
-                                </div>
-                            </div>
-                        ';
+                    foreach ($years as $key => $val) {
+                        $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
                     }
+
+                    echo '
+                        <div class="form-group mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text rounded-pill rounded-end">
+                                    <i class="mdi mdi-calendar-check" style="width:22px"></i>
+                                </span>
+                                <select name="year" class="form-control rounded-pill rounded-start" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                    ' . $option . '
+                                </select>
+                            </div>
+                        </div>
+                    ';
+                }
                 ?>
-                
+
                 <div class="row align-items-center g-0 mt-3">
                     <div class="col-7">
                         <div class="d-grid">
@@ -76,8 +79,7 @@
                     <div class="col-5">
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary rounded-pill">
-                                <i class="mdi mdi-check"></i> 
-                                <?= phrase('Sign In'); ?>
+                                <i class="mdi mdi-check"></i> <?= phrase('Sign In'); ?>
                             </button>
                         </div>
                     </div>
@@ -85,37 +87,41 @@
             </form>
         </div>
     </div>
+
     <?php if (get_setting('frontend_registration')): ?>
-    <div class="card border-top-0 border-end-0 border-bottom-0">
-        <div class="card-body d-flex align-items-center justify-content-center">
-            <div>
-                <p class="fs-5 text-center text-black-50">
-                    <?= phrase('Do not have an account?'); ?>
-                </p>
-                <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>
-                <div class="d-grid mb-2">
-                    <a href="<?= base_url('auth/sso/google'); ?>" class="btn btn-outline-danger rounded-pill">
-                        <i class="mdi mdi-google"></i>
-                        <?= phrase('Sign in with Google'); ?>
-                    </a>
-                </div>
-                <?php endif; ?>
-                <?php if (get_setting('facebook_app_id') && get_setting('facebook_app_secret')): ?>
-                <div class="d-grid mb-2">
-                    <a href="<?= base_url('auth/sso/facebook'); ?>" class="btn btn-outline-primary rounded-pill">
-                        <i class="mdi mdi-facebook"></i>
-                        <?= phrase('Sign in with Facebook'); ?>
-                    </a>
-                </div>
-                <?php endif; ?>
-                <div class="d-grid">
-                    <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-primary rounded-pill">
-                        <i class="mdi mdi-account-plus"></i>
-                        <?= phrase('Register an Account'); ?>
-                    </a>
+        <div class="card border-top-0 border-end-0 border-bottom-0">
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <div>
+                    <p class="fs-5 text-center text-black-50">
+                        <?= phrase('Do not have an account?'); ?>
+                    </p>
+
+                    <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>
+                        <div class="d-grid mb-2">
+                            <a href="<?= base_url('auth/sso/google'); ?>" class="btn btn-outline-danger rounded-pill">
+                                <i class="mdi mdi-google"></i>
+                                <?= phrase('Sign in with Google'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (get_setting('facebook_app_id') && get_setting('facebook_app_secret')): ?>
+                        <div class="d-grid mb-2">
+                            <a href="<?= base_url('auth/sso/facebook'); ?>" class="btn btn-outline-primary rounded-pill">
+                                <i class="mdi mdi-facebook"></i>
+                                <?= phrase('Sign in with Facebook'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="d-grid">
+                        <a href="<?= base_url('auth/register'); ?>" class="btn btn-outline-primary rounded-pill">
+                            <i class="mdi mdi-account-plus"></i>
+                            <?= phrase('Register an Account'); ?>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 </div>

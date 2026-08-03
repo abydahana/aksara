@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var string          $title
  * @var string          $type
@@ -11,7 +12,8 @@
  */
 $errorId = uniqid('error', true);
 ?>
-<!doctype html>
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -60,7 +62,6 @@ $errorId = uniqid('error', true);
         </h2>
 
         <?php foreach ($trace as $index => $row) : ?>
-
             <div>
                 <p>
                     <!-- Trace info -->
@@ -119,7 +120,6 @@ $errorId = uniqid('error', true);
                     </div>
                 <?php endif; ?>
             </div>
-
         <?php endforeach; ?>
 
     </div> <!-- /container -->

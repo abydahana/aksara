@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @var mixed $results
  */
-$people = (isset($results[0]) ? $results[0] : []);
-?>
-<?php if ($people): ?>
+$field_data = $results->field_data ?? null;
+
+if ($field_data): ?>
     <div class="border-fade-bottom">
         <div class="container">
             <br />
@@ -21,8 +22,8 @@ $people = (isset($results[0]) ? $results[0] : []);
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="text-center" style="margin-top:-150px">
-                    <a href="<?= get_image('peoples', $people->photo); ?>" target="_blank">
-                        <img src="<?= get_image('peoples', $people->photo, 'thumb'); ?>" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="<?= $people->first_name . ' ' . $people->last_name; ?>" />
+                    <a href="<?= get_image('peoples', $field_data->photo->value); ?>" target="_blank">
+                        <img src="<?= get_image('peoples', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" />
                     </a>
                 </div>
                 <div class="mb-3">
@@ -30,7 +31,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <?= phrase('Full Name'); ?>
                     </h4>
                     <p class="fs-5">
-                        <?= $people->first_name . ' ' . $people->last_name; ?>
+                        <?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>
                     </p>
                 </div>
                 <div class="mb-3">
@@ -38,7 +39,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                         <?= phrase('Position'); ?>
                     </h4>
                     <p class="fs-5">
-                        <?= $people->position; ?>
+                        <?= $field_data->position->value; ?>
                     </p>
                 </div>
                 <div class="row mb-3">
@@ -47,7 +48,7 @@ $people = (isset($results[0]) ? $results[0] : []);
                             <?= phrase('Email'); ?>
                         </h4>
                         <p class="fs-5">
-                            <?= $people->email; ?>
+                            <?= $field_data->email->value; ?>
                         </p>
                     </div>
                     <div class="col-sm-6">
@@ -55,36 +56,36 @@ $people = (isset($results[0]) ? $results[0] : []);
                             <?= phrase('Mobile'); ?>
                         </h4>
                         <p class="fs-5">
-                            <?= $people->mobile; ?>
+                            <?= $field_data->mobile->value; ?>
                         </p>
                     </div>
                 </div>
                 <div class="mb-3">
                     <p class="fs-5 text-muted">
-                        <?= $people->biography; ?>
+                        <?= $field_data->biography->value; ?>
                     </p>
                 </div>
                 <div class="mb-3">
                     <div class="row">
-                        <?php if ($people->instagram): ?>
+                        <?php if ($field_data->instagram->value): ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="<?= $people->instagram; ?>" class="btn btn-outline-danger d-block rounded-pill mb-3" target="_blank">
+                                <a href="<?= $field_data->instagram->value; ?>" class="btn btn-outline-danger d-block rounded-pill mb-3" target="_blank">
                                     <i class="mdi mdi-instagram"></i>
                                     Instagram
                                 </a>
                             </div>
                         <?php endif; ?>
-                        <?php if ($people->facebook): ?>
+                        <?php if ($field_data->facebook->value): ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="<?= $people->facebook; ?>" class="btn btn-outline-primary d-block rounded-pill mb-3" target="_blank">
+                                <a href="<?= $field_data->facebook->value; ?>" class="btn btn-outline-primary d-block rounded-pill mb-3" target="_blank">
                                     <i class="mdi mdi-facebook"></i>
                                     Facebook
                                 </a>
                             </div>
                         <?php endif; ?>
-                        <?php if ($people->instagram): ?>
+                        <?php if ($field_data->twitter->value): ?>
                             <div class="col-sm-6 col-md-4">
-                                <a href="<?= $people->twitter; ?>" class="btn btn-outline-info d-block rounded-pill mb-3" target="_blank">
+                                <a href="<?= $field_data->twitter->value; ?>" class="btn btn-outline-info d-block rounded-pill mb-3" target="_blank">
                                     <i class="mdi mdi-twitter"></i>
                                     Twitter
                                 </a>

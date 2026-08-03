@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var mixed $activation
  * @var mixed $years
  */
 ?>
+
 <style type="text/css">
     #content-wrapper {
         margin-top: 0
@@ -12,6 +14,7 @@
         display: none
     }
 </style>
+
 <div class="vh-100">
     <div class="<?= (! $activation ? 'h-100 d-flex align-items-center justify-content-center' : null); ?>">
         <?php if ($activation): ?>
@@ -59,30 +62,30 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <?php
-                            if ($years) {
-                                $option = null;
+                        if ($years) {
+                            $option = null;
 
-                                foreach ($years as $key => $val) {
-                                    $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
-                                }
-
-                                echo '
-                                    <div class="form-group mb-3">
-                                        <div class="input-group">
-                                            <span class="input-group-text rounded-pill rounded-end">
-                                                <i class="mdi mdi-calendar-check" style="width:22px"></i>
-                                            </span>
-                                            <select name="year" class="form-control rounded-pill rounded-start" placeholder="' . phrase('Choose year') . '" id="year_input">
-                                                ' . $option . '
-                                            </select>
-                                        </div>
-                                    </div>
-                                ';
+                            foreach ($years as $key => $val) {
+                                $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
                             }
+
+                            echo '
+                                <div class="form-group mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text rounded-pill rounded-end">
+                                            <i class="mdi mdi-calendar-check" style="width:22px"></i>
+                                        </span>
+                                        <select name="year" class="form-control rounded-pill rounded-start" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                            ' . $option . '
+                                        </select>
+                                    </div>
+                                </div>
+                            ';
+                        }
                         ?>
-                        
+
                         <div class="row g-0 mb-5">
                             <div class="col-7">
                                 <div class="d-grid">
@@ -94,8 +97,7 @@
                             <div class="col-5">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary rounded-pill">
-                                        <i class="mdi mdi-check"></i> 
-                                        <?= phrase('Sign In'); ?>
+                                        <i class="mdi mdi-check"></i> <?= phrase('Sign In'); ?>
                                     </button>
                                 </div>
                             </div>
@@ -112,24 +114,24 @@
                                     <div class="col-6">
                                         <div class="d-grid">
                                             <a href="<?= base_url('auth/sso/google'); ?>" class="btn btn-outline-danger btn-sm rounded-pill">
-                                                <i class="mdi mdi-google"></i>
-                                                Google
+                                                <i class="mdi mdi-google"></i> Google
                                             </a>
                                         </div>
                                     </div>
                                 <?php endif; ?>
+
                                 <?php if (get_setting('facebook_app_id') && get_setting('facebook_app_secret')): ?>
                                     <div class="col-6">
                                         <div class="d-grid">
                                             <a href="<?= base_url('auth/sso/facebook'); ?>" class="btn btn-outline-primary btn-sm rounded-pill">
-                                                <i class="mdi mdi-facebook"></i>
-                                                Facebook
+                                                <i class="mdi mdi-facebook"></i> Facebook
                                             </a>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
+
                         <div class="text-center">
                             <p class="text-muted mb-0"><?= phrase('Do not have an account?'); ?></p>
                             <p>

@@ -1,51 +1,49 @@
 <?php
+
 /**
  * @var mixed $updater
  */
-?>
+$changelog = null;
 
-<?php
-    $changelog = null;
+if (isset($updater->changelog)) {
+    $parsedown = new \Aksara\Libraries\Parsedown();
 
-    if (isset($updater->changelog)) {
-        $parsedown = new \Aksara\Libraries\Parsedown();
-
-        foreach ($updater->changelog as $key => $val) {
-            if ($key) {
-                $changelog .= '<hr class="mt-1 mb-1" />';
-            }
-
-            $changelog .= '
-                <a href="' . $val->commit_url . '" target="_blank">
-                    <h2>
-                        ' . $val->title . '
-                        <i class="mdi mdi-launch"></i>
-                    </h2>
-                </a>
-                <hr />
-                <div class="row no-gutters">
-                    <div class="col-4 col-md-2 col-lg-1 pt-1">
-                        <a href="' . $val->profile_url . '" target="_blank">
-                            <img src="' . $val->profile_avatar . '" class="img-fluid rounded-more" />
-                        </a>
-                    </div>
-                    <div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">
-                        <a href="' . $val->profile_url . '" target="_blank">
-                            <h5>
-                                ' . $val->committer . '
-                                <i class="mdi mdi-launch"></i>
-                            </h5>
-                        </a>
-                        <span>
-                            ' . $val->date . '
-                        </span>
-                    </div>
-                </div>
-                <hr />
-                ' . $parsedown->parse($val->message) . '
-            ';
+    foreach ($updater->changelog as $key => $val) {
+        if ($key) {
+            $changelog .= '<hr class="mt-1 mb-1" />';
         }
+
+        $changelog .= '
+            <a href="' . $val->commit_url . '" target="_blank">
+                <h2>
+                    ' . $val->title . '
+                    <i class="mdi mdi-launch"></i>
+                </h2>
+            </a>
+            <hr />
+            <div class="row no-gutters">
+                <div class="col-4 col-md-2 col-lg-1 pt-1">
+                    <a href="' . $val->profile_url . '" target="_blank">
+                        <img src="' . $val->profile_avatar . '" class="img-fluid rounded-more" />
+                    </a>
+                </div>
+                <div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">
+                    <a href="' . $val->profile_url . '" target="_blank">
+                        <h5>
+                            ' . $val->committer . '
+                            <i class="mdi mdi-launch"></i>
+                        </h5>
+                    </a>
+                    <span>
+                        ' . $val->date . '
+                    </span>
+                </div>
+            </div>
+            <hr />
+            ' . $parsedown->parse($val->message) . '
+        ';
     }
+}
 ?>
 
 <div class="container-fluid py-3">

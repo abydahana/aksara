@@ -1,12 +1,18 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $forms
  */
+$page_content = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
 ?>
+
 <style type="text/css">
-    #title-wrapper, [role="meta"] { display: none !important; }
+    #title-wrapper, [role="meta"] {
+        display: none !important;
+    }
 </style>
+
 <div class="pb-form-wrapper">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <!-- Manually Placed Page Builder Toolbar -->
@@ -48,9 +54,6 @@
             <!-- Main: Page Builder Canvas -->
             <div class="col-12 bg-light">
                 <div id="page-builder"></div>
-                <?php
-                    $page_content = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
-                ?>
                 <input type="hidden" name="page_content" id="page_content" value="<?= htmlspecialchars($page_content, ENT_QUOTES); ?>" />
             </div>
         </div>
