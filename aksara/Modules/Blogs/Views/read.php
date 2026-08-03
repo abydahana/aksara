@@ -95,7 +95,9 @@ if ($field_data) {
                         </div>
 
                         <?php if ($featured_image): ?>
-                            <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="img-fluid rounded d-none" width="100%" /></a>
+                            <div class="ratio ratio-16x9 mb-3">
+                                <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="w-100 h-100 object-fit-cover rounded" /></a>
+                            </div>
                         <?php endif; ?>
 
                         <?php if ($toc): ?>
@@ -113,7 +115,7 @@ if ($field_data) {
                         <?php endif; ?>
 
                         <div class="fs-5">
-                            <?= recommendation_generator(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded"', $article), $recommendations); ?>
+                            <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations); ?>
                         </div>
 
                         <div class="tags">
@@ -144,6 +146,7 @@ if ($field_data) {
                         <h4 class="mb-3">
                             <?= phrase('Related Articles'); ?>
                         </h4>
+
                         <?php if ($related): ?>
                             <?php foreach ($related as $key => $val): ?>
                                 <div class="card rounded-4 border-light-subtle mb-3">
