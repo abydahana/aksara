@@ -1,7 +1,6 @@
 <?php
 
 /** @var int $expiresAt */
-
 $expiresAt = isset($expiresAt)
     ? (int) $expiresAt
     : 0;
@@ -13,8 +12,8 @@ $remainingSeconds = $expiresAt > time()
 $remainingMinutes = $remainingSeconds > 0
     ? (int) ceil($remainingSeconds / 60)
     : 0;
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

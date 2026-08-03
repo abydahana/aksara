@@ -1,62 +1,54 @@
 <?php
-    $thead = null;
-    $tbody = null;
-    $single_print = false;
-    $method = (isset($method) ? $method : null);
-    $pagination = (isset($pagination) ? $pagination : new stdClass());
 
-    if (isset($results->table_data)) {
-        foreach($results->table_data as $key => $row) {
-            $rows = null;
+$thead = null;
+$tbody = null;
+$single_print = false;
+$method = (isset($method) ? $method : null);
+$pagination = (isset($pagination) ? $pagination : new stdClass());
 
-            foreach($row->field_data as $fields => $params) {
-                if($params->hidden) continue;
+if (isset($results->table_data)) {
+    foreach($results->table_data as $key => $row) {
+        $rows = null;
 
-                // Backup label
-                $label = $params->label;
+        foreach($row->field_data as $fields => $params) {
+            if($params->hidden) continue;
 
-                // Remove label
-                $params->label = null;
+            $label = $params->label; // Backup label
+            $params->label = null; // Remove label
 
-                if(0 == $key) {
-                    $thead .= '<th class="bordered">' . $label . '</th>';
-                }
-
-                $rows .= '<td class="bordered">' . form_read($params) . '</td>';
+            if(0 == $key) {
+                $thead .= '<th class="bordered">' . $label . '</th>';
             }
 
-            $tbody .= '
-                <tr>
-                    ' . $rows . '
-                </tr>
-            ';
+            $rows .= '<td class="bordered">' . form_read($params) . '</td>';
         }
-    } else if(isset($results->field_data)) {
-        $single_print = true;
 
-        foreach($results->field_data as $field => $params) {
-            // Backup label
-            $label = $params->label;
-
-            // Remove label
-            $params->label = null;
-
-            $tbody .= '
-                <tr>
-                    <td class="text-muted text-uppercase text-end">
-                        ' . $label . '
-                    </td>
-                    <td width="70%">
-                        ' . form_read($params) . '
-                        <hr />
-                    </td>
-                </tr>
-            ';
-        }
-    } else {
-        exit(phrase('No result could be rendered!'));
+        $tbody .= '<tr>' . $rows . '</tr>';
     }
+} else if(isset($results->field_data)) {
+    $single_print = true;
+
+    foreach($results->field_data as $field => $params) {
+        $label = $params->label; // Backup label
+        $params->label = null; // Remove label
+
+        $tbody .= '
+            <tr>
+                <td class="text-muted text-uppercase text-end">
+                    ' . $label . '
+                </td>
+                <td width="70%">
+                    ' . form_read($params) . '
+                    <hr />
+                </td>
+            </tr>
+        ';
+    }
+} else {
+    exit(phrase('No result could be rendered!'));
+}
 ?>
+
 <html>
     <head>
         <title><?= (isset($meta->title) ? $meta->title : get_setting('app_name')); ?></title>

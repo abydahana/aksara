@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $user
  * @var mixed $results

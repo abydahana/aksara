@@ -28,12 +28,13 @@ class Pages extends Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->setMethod('read');
     }
 
     public function index($slug = null)
     {
         $this->setTitle('{{ page_title }}', phrase('Page not found!'))
-        ->setDescription('{{ page_description }}')
+        ->setDescription('{{ page_description }}', phrase('The page you requested does not exist or already been archived.'))
         ->setIcon('mdi mdi-file-document-outline')
         ->setOutput([
             'suggestions' => $this->model->select('
@@ -58,7 +59,7 @@ class Pages extends Core
         ->orderBy('(CASE WHEN pages.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(1)
 
-        ->render($this->_table);
+        ->render($this->_table, 'index');
     }
 
     public function notFound()

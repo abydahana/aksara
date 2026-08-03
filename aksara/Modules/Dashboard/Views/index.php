@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $permission
  * @var mixed $card
@@ -13,16 +14,19 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
         <h5>
             <?= phrase('Notice'); ?>
         </h5>
+
         <?php if (! $permission->uploads): ?>
             <p class="mb-0">
                 <b><?= str_replace('\\', '/', FCPATH . UPLOAD_PATH); ?></b> <?= phrase('is not writable.'); ?>
             </p>
         <?php endif; ?>
+
         <?php if (! $permission->uploads): ?>
             <p class="mb-0">
                 <b><?= str_replace('\\', '/', WRITEPATH); ?></b> <?= phrase('is not writable.'); ?>
             </p>
         <?php endif; ?>
+
         <br />
         <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here'); ?></b></a> <?= phrase('to get an advice to solve this problem.'); ?>
     </div>
@@ -37,95 +41,97 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
 <?php endif; ?>
 
 <div class="updater-placeholder"></div>
+
 <div class="container-fluid py-3">
     <?php if (! get_userdata('hideGreeting')): ?>
-    <div class="row" id="greeting-card">
-        <div class="col-12">
-            <div class="card rounded-4 overflow-hidden mb-3">
-                <div class="card-body">
-                    <h3>
-                        <button type="button" class="btn btn-close btn-greeting float-end"></button>
-                        <?= phrase('Welcome to'); ?> Aksara!
-                    </h3>
-                    <p class="text-muted">
-                        <?= phrase('We have assembled some links to get you started.'); ?>
-                    </p>
-                    <div class="row">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <h5 class="mb-3 mb-md-5">
-                                <?= phrase('Getting started'); ?>
-                            </h5>
-                            <div class="text-center text-md-start">
-                                <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
-                                    <i class="mdi mdi-palette"></i> <?= phrase('Customize your app'); ?>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <h5 class="mb-3">
-                                <?= phrase('Next step'); ?>
-                            </h5>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-plus"></i>
-                                </div>
-                                <div class="col-11">
-                                    <a href="<?= base_url('cms/blogs'); ?>" class="text-primary --xhr">
-                                        <?= phrase('Write a blog post'); ?>
+        <div class="row" id="greeting-card">
+            <div class="col-12">
+                <div class="card rounded-4 overflow-hidden mb-3">
+                    <div class="card-body">
+                        <h3>
+                            <button type="button" class="btn btn-close btn-greeting float-end"></button>
+                            <?= phrase('Welcome to'); ?> Aksara!
+                        </h3>
+                        <p class="text-muted">
+                            <?= phrase('We have assembled some links to get you started.'); ?>
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h5 class="mb-3 mb-md-5">
+                                    <?= phrase('Getting started'); ?>
+                                </h5>
+                                <div class="text-center text-md-start">
+                                    <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
+                                        <i class="mdi mdi-palette"></i> <?= phrase('Customize your app'); ?>
                                     </a>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-file"></i>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h5 class="mb-3">
+                                    <?= phrase('Next step'); ?>
+                                </h5>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-plus"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <a href="<?= base_url('cms/blogs'); ?>" class="text-primary --xhr">
+                                            <?= phrase('Write a blog post'); ?>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-11">
-                                    <a href="<?= base_url('cms/pages'); ?>" class="text-primary --xhr">
-                                        <?= phrase('Manage the page'); ?>
-                                    </a>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-file"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <a href="<?= base_url('cms/pages'); ?>" class="text-primary --xhr">
+                                            <?= phrase('Manage the page'); ?>
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-monitor-dashboard"></i>
-                                </div>
-                                <div class="col-11">
-                                    <a href="<?= base_url(); ?>" class="text-primary" target="_blank">
-                                        <?= phrase('View your site'); ?>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <h5 class="mb-3">
-                                <?= phrase('More action'); ?>
-                            </h5>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-puzzle"></i>
-                                </div>
-                                <div class="col-11">
-                                    <?= phrase('Manage'); ?> <a href="<?= base_url('addons'); ?>" class="text-primary --xhr"><?= phrase('Add-Ons'); ?></a> <?= phrase('or'); ?> <a href="<?= base_url('administrative/menus'); ?>" class="text-primary --xhr"><?= phrase('Menus'); ?></a>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-comment-multiple-outline"></i>
-                                </div>
-                                <div class="col-11">
-                                    <a href="<?= base_url('cms/comments'); ?>" class="text-primary --xhr">
-                                        <?= phrase('Turn commenting on or off'); ?>
-                                    </a>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-monitor-dashboard"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <a href="<?= base_url(); ?>" class="text-primary" target="_blank">
+                                            <?= phrase('View your site'); ?>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="mdi mdi-information-outline"></i>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h5 class="mb-3">
+                                    <?= phrase('More action'); ?>
+                                </h5>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-puzzle"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <?= phrase('Manage'); ?> <a href="<?= base_url('addons'); ?>" class="text-primary --xhr"><?= phrase('Add-Ons'); ?></a> <?= phrase('or'); ?> <a href="<?= base_url('administrative/menus'); ?>" class="text-primary --xhr"><?= phrase('Menus'); ?></a>
+                                    </div>
                                 </div>
-                                <div class="col-11">
-                                    <a href="//aksaracms.com/pages/documentation" class="text-primary" target="_blank">
-                                        <?= phrase('Learn more about'); ?> Aksara
-                                    </a>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-comment-multiple-outline"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <a href="<?= base_url('cms/comments'); ?>" class="text-primary --xhr">
+                                            <?= phrase('Turn commenting on or off'); ?>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <i class="mdi mdi-information-outline"></i>
+                                    </div>
+                                    <div class="col-11">
+                                        <a href="//aksaracms.com/pages/documentation" class="text-primary" target="_blank">
+                                            <?= phrase('Learn more about'); ?> Aksara
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -133,8 +139,8 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
+
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
             <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
@@ -239,29 +245,29 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="card-body">
                                 <?php
-                                    $num = 0;
+                                $num = 0;
 
-                                    if (isset($visitors->browsers)) {
-                                        foreach ($visitors->browsers as $key => $val) {
-                                            echo '
-                                                ' . ($num ? '<hr class="border-secondary my-0" />' : null) . '
-                                                <div class="row g-0 align-items-center">
-                                                    <div class="col-3 col-sm-2">
-                                                        <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
-                                                    </div>
-                                                    <div class="col-9 col-sm-10 ps-3">
-                                                        <b>
-                                                            ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
-                                                        </b>
-                                                        <p class="mb-0 text-sm text-muted">
-                                                            ' . number_format($val) . ' ' . phrase('usage in a week') . '
-                                                        </p>
-                                                    </div>
+                                if (isset($visitors->browsers)) {
+                                    foreach ($visitors->browsers as $key => $val) {
+                                        echo '
+                                            ' . ($num ? '<hr class="border-secondary my-0" />' : null) . '
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-3 col-sm-2">
+                                                    <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
                                                 </div>
-                                            ';
-                                            $num++;
-                                        }
+                                                <div class="col-9 col-sm-10 ps-3">
+                                                    <b>
+                                                        ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
+                                                    </b>
+                                                    <p class="mb-0 text-sm text-muted">
+                                                        ' . number_format($val) . ' ' . phrase('usage in a week') . '
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ';
+                                        $num++;
                                     }
+                                }
                                 ?>
                             </div>
                         </div>
@@ -275,28 +281,28 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="card-body">
                                 <?php
-                                    foreach ($recent_signed as $key => $val) {
-                                        echo '
-                                            ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-3 col-sm-2">
-                                                    <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                        <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" />
-                                                    </a>
-                                                </div>
-                                                <div class="col-9 col-sm-10 ps-3">
-                                                    <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                        <b>
-                                                            ' . $val->first_name . ' ' . $val->last_name . '
-                                                        </b>
-                                                    </a>
-                                                    <p class="mb-0 text-sm text-muted">
-                                                        ' . $val->group_name . '
-                                                    </p>
-                                                </div>
+                                foreach ($recent_signed as $key => $val) {
+                                    echo '
+                                        ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-3 col-sm-2">
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" />
+                                                </a>
                                             </div>
-                                        ';
-                                    }
+                                            <div class="col-9 col-sm-10 ps-3">
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <b>
+                                                        ' . $val->first_name . ' ' . $val->last_name . '
+                                                    </b>
+                                                </a>
+                                                <p class="mb-0 text-sm text-muted">
+                                                    ' . $val->group_name . '
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ';
+                                }
                                 ?>
                             </div>
                         </div>
@@ -361,17 +367,17 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </h5>
                         </div>
                         <?php
-                            $announcement = null;
+                        $announcement = null;
 
-                            foreach ($announcements as $key => $val) {
-                                $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
-                            }
+                        foreach ($announcements as $key => $val) {
+                            $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
+                        }
 
-                            echo '
-                                <ul class="list-group list-group-flush">
-                                    ' . $announcement . '
-                                </ul>
-                            ';
+                        echo '
+                            <ul class="list-group list-group-flush">
+                                ' . $announcement . '
+                            </ul>
+                        ';
                         ?>
                     </div>
                 <?php endif; ?>

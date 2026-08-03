@@ -28,6 +28,7 @@ class Read extends Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->setMethod('read');
     }
 
     public function index($slug = null)
@@ -37,7 +38,7 @@ class Read extends Core
         }
 
         $this->setTitle('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))
-        ->setDescription('{{ biography }}')
+        ->setDescription('{{ biography }}', phrase('The people you are looking for was not found.'))
         ->setIcon('mdi mdi-account-outline')
         ->setOutput(
             'similar',

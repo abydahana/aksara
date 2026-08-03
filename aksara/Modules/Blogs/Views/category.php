@@ -1,49 +1,50 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $meta
  * @var mixed $category
  * @var mixed $pagination
  */
-?>
-
-<?php if ($results): ?>
-<section class="section-padding border-fade-bottom fade-in">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8 text-center text-md-start">
-                <h1 class="display-5 fw-bold">
-                    <?= $meta->title; ?>
-                </h1>
-                <p class="fs-5">
-                    <?= $meta->description; ?>
-                </p>
-                <div class="row">
-                    <div class="col-lg-10">
-                        <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
-                            <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
-                                <div class="input-group ps-4">
-                                    <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                    <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" placeholder="<?= phrase('Search posts...'); ?>" required>
-                                    <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
-                                        <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
-                                    </button>
+if ($results): ?>
+    <section class="section-padding border-fade-bottom fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 text-center text-md-start">
+                    <h1 class="display-5 fw-bold">
+                        <?= $meta->title; ?>
+                    </h1>
+                    <p class="fs-5">
+                        <?= $meta->description; ?>
+                    </p>
+                    <div class="row">
+                        <div class="col-lg-10">
+                            <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
+                                <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                                    <div class="input-group ps-4">
+                                        <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                        <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" placeholder="<?= phrase('Search posts...'); ?>" required>
+                                        <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                            <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-none d-lg-block">
+
+                        <?php if($category): ?>
+                            <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-5" alt="..." />
+                        <?php endif; ?>
+
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="d-none d-lg-block">
-                    <?php if($category): ?>
-                        <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-5" alt="..." />
-                    <?php endif; ?>
-                </div>
-            </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <section class="section-padding">
@@ -52,27 +53,28 @@
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
-                        $item_tags = array_map('trim', explode(',', $val->post_tags));
-                        $tags = null;
+                    $item_tags = array_map('trim', explode(',', $val->post_tags));
+                    $tags = null;
 
-                        if (sizeof($item_tags) > 0) {
-                            foreach ($item_tags as $label => $badge) {
-                                if ($label == 2) {
-                                    break;
-                                }
+                    if (sizeof($item_tags) > 0) {
+                        foreach ($item_tags as $label => $badge) {
+                            if ($label == 2) {
+                                break;
+                            }
 
-                                if ($badge) {
-                                    $tags .= '
-                                        <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
-                                            <span class="badge bg-secondary me-2">
-                                                #' . trim($badge) . '
-                                            </span>
-                                        </a>
-                                    ';
-                                }
+                            if ($badge) {
+                                $tags .= '
+                                    <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
+                                        <span class="badge bg-secondary me-2">
+                                            #' . trim($badge) . '
+                                        </span>
+                                    </a>
+                                ';
                             }
                         }
+                    }
                     ?>
+
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column fade-in">
                             <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">

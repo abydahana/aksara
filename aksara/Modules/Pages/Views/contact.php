@@ -1,10 +1,12 @@
 <?php
+
 /**
  * @var mixed $meta
  * @var object $results
  * @var mixed $captcha
  */
 ?>
+
 <div class="position-relative">
     <div role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
@@ -129,11 +131,11 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
                                         <?php
-                                            if ($captcha->string) {
-                                                echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
-                                            } else {
-                                                echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
-                                            }
+                                        if ($captcha->string) {
+                                            echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                        } else {
+                                            echo '<img src="' . $captcha->image . '" class="img-fluid" alt="..." />';
+                                        }
                                         ?>
                                     </span>
                                     <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="<?= phrase('Bot Challenge'); ?>" maxlength="32" />

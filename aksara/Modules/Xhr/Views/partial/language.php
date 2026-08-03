@@ -1,13 +1,16 @@
 <?php
+
 /**
  * @var mixed $languages
  */
 ?>
+
 <div>
     <?php foreach ($languages as $key => $val): ?>
         <?php if ($key): ?>
             <hr />
         <?php endif; ?>
+
         <?php if ($val->code == get_userdata('language')): ?>
             <b class="d-block">
                 <?= $val->language; ?>

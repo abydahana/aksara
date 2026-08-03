@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $writable
  * @var mixed $detail
@@ -17,6 +18,7 @@
         </div>
     </div>
 <?php endif; ?>
+
 <div class="container-fluid py-3">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <div class="row">

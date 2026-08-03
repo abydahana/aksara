@@ -28,6 +28,7 @@ class Read extends Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->setMethod('read');
 
         helper('Aksara\Modules\Blogs\Helpers\blog');
     }
@@ -58,9 +59,11 @@ class Read extends Core
             'recommendations' => $this->_getRecommendations($category, $slug)
         ])
         ->select('
+            blogs.post_id,
             blogs.post_slug,
             blogs.post_title,
             blogs.post_excerpt,
+            blogs.post_content,
             blogs.post_tags,
             blogs.featured_image,
             blogs.created_timestamp,

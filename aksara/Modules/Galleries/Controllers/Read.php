@@ -28,25 +28,13 @@ class Read extends Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->setMethod('read');
     }
 
     public function index($category = null, $slug = null)
     {
-        $check = $this->model->getWhere(
-            $this->_table,
-            [
-                'galleries.gallery_slug' => $category
-            ]
-        )
-        ->row();
-
-        if (! $check) {
-            // No album found
-            return throw_exception(404, phrase('Album not found!'), current_page('../'));
-        }
-
         $this->setTitle('{{ gallery_title }}', phrase('Album not found!'))
-        ->setDescription('{{ gallery_description }}')
+        ->setDescription('{{ gallery_description }}', phrase('The album you requested was not found or its already been removed.'))
         ->setIcon('mdi mdi-image')
         ->setOutput(
             'similar',

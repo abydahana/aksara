@@ -1,23 +1,24 @@
 <?php
+
 /**
  * @var mixed $installation_mode
  * @var mixed $timezone
  */
 // Get installation mode options
-    $options = null;
+$options = null;
 
-    foreach($installation_mode as $key => $val)
-    {
-        $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
-    }
+foreach($installation_mode as $key => $val)
+{
+    $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
+}
 
-    // Get timezone options
-    $timezone_list = null;
+// Get timezone options
+$timezone_list = null;
 
-    foreach ($timezone as $key => $val)
-    {
-        $timezone_list .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
-    }
+foreach ($timezone as $key => $val)
+{
+    $timezone_list .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
+}
 ?>
 
 <form action="<?= site_url('finalizing'); ?>" method="POST" class="--validate-form">

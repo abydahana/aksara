@@ -1,9 +1,10 @@
 <?php
-    $logs = (isset($logs) ? $logs : []);
-    $announcements = (isset($announcements) ? $announcements : []);
-    $group_name = (isset($group_name) ? $group_name : phrase('Unknown'));
-?>
-<?php if (! get_userdata('username') || ! get_userdata('password')): ?>
+
+$logs = (isset($logs) ? $logs : []);
+$announcements = (isset($announcements) ? $announcements : []);
+$group_name = (isset($group_name) ? $group_name : phrase('Unknown'));
+
+if (! get_userdata('username') || ! get_userdata('password')): ?>
     <div class="alert alert-danger border-0 rounded-0 mb-0">
         <h5>
             <?= phrase('Notice'); ?>

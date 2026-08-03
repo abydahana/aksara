@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @var mixed $results
  */
 ?>
+
 <div class="container-fluid">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 border-bottom">
@@ -286,6 +288,7 @@
         </div>
     </form>
 </div>
+
 <script>
 (function() {
     window.aksaraStorageProviderChanged = function(provider) {

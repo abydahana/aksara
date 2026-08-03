@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var mixed $encryption_key
  * @var mixed $cookie_name
  */
 ?>
+
 <form action="<?= site_url('system'); ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Security Configuration'); ?>

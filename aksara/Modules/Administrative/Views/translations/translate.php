@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $total_phrases
@@ -7,6 +8,7 @@
  */
 $field_data = $results[0];
 ?>
+
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-lg-6">

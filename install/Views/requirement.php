@@ -1,15 +1,17 @@
 <?php
+
 /**
  * @var mixed $extension
  * @var mixed $mod_rewrite
  */
 $error = false;
 
-    if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
-    {
-        $error = true;
-    }
+if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
+{
+    $error = true;
+}
 ?>
+
 <form action="<?= site_url('database'); ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Awesome!'); ?>

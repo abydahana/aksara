@@ -1,11 +1,24 @@
 <?php
+
+/**
+ * This file is part of Aksara CMS, both framework and publishing
+ * platform.
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+use CodeIgniter\CLI\CLI;
+
 /**
  * @var mixed $exception
  * @var mixed $message
  * @var mixed $value
  */
-use CodeIgniter\CLI\CLI;
-
 // The main Exception
 CLI::write('[' . $exception::class . ']', 'light_gray', 'red');
 CLI::write($message);

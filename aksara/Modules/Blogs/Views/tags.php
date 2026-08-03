@@ -1,10 +1,12 @@
 <?php
+
 /**
  * @var mixed $meta
  * @var mixed $results
  * @var mixed $pagination
  */
 ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row align-items-center">
@@ -39,27 +41,28 @@
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
-                        $item_tags = array_map('trim', explode(',', $val->post_tags));
-                        $tags = null;
+                    $item_tags = array_map('trim', explode(',', $val->post_tags));
+                    $tags = null;
 
-                        if (sizeof($item_tags) > 0) {
-                            foreach ($item_tags as $label => $badge) {
-                                if ($label == 2) {
-                                    break;
-                                }
+                    if (sizeof($item_tags) > 0) {
+                        foreach ($item_tags as $label => $badge) {
+                            if ($label == 2) {
+                                break;
+                            }
 
-                                if ($badge) {
-                                    $tags .= '
-                                        <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
-                                            <span class="badge bg-secondary me-2">
-                                                #' . trim($badge) . '
-                                            </span>
-                                        </a>
-                                    ';
-                                }
+                            if ($badge) {
+                                $tags .= '
+                                    <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
+                                        <span class="badge bg-secondary me-2">
+                                            #' . trim($badge) . '
+                                        </span>
+                                    </a>
+                                ';
                             }
                         }
+                    }
                     ?>
+
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column fade-in">
                             <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
@@ -120,8 +123,7 @@
                         </p>
                         <div class="text-center mt-5">
                             <a href="<?= go_to('../', ['q' => null]); ?>" class="btn btn-outline-primary rounded-pill --xhr">
-                                <i class="mdi mdi-arrow-left"></i>
-                                <?= phrase('Back to Index'); ?>
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Index'); ?>
                             </a>
                         </div>
                     </div>

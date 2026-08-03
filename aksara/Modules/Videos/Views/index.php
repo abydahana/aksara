@@ -1,22 +1,23 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $meta
  * @var mixed $pagination
  */
-
 if ($results): ?>
-<section class="section-padding border-fade-bottom fade-in">
-    <div class="container text-center text-md-start">
-        <h1 class="display-4 fw-bold text-dark">
-            <?= $meta->title; ?>
-        </h1>
-        <p class="fs-5 text-muted mb-0">
-            <?= truncate($meta->description, 256); ?>
-        </p>
-    </div>
-</section>
+    <section class="section-padding border-fade-bottom fade-in">
+        <div class="container text-center text-md-start">
+            <h1 class="display-4 fw-bold text-dark">
+                <?= $meta->title; ?>
+            </h1>
+            <p class="fs-5 text-muted mb-0">
+                <?= truncate($meta->description, 256); ?>
+            </p>
+        </div>
+    </section>
 <?php endif; ?>
+
 <section class="section-padding">
     <div class="container">
         <?php if ($results): ?>

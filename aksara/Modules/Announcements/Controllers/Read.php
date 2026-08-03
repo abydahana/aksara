@@ -28,6 +28,7 @@ class Read extends Core
         parent::__construct();
 
         $this->searchable(false);
+        $this->setMethod('read');
     }
 
     public function index($slug = null)
@@ -36,7 +37,8 @@ class Read extends Core
             $slug = $this->request->getGet('announcement_slug');
         }
 
-        $this->setTitle('{{ title }}', phrase('Announcements'))
+        $this->setTitle('{{ title }}', phrase('No announcement is found!'))
+        ->setDescription('{{ content }}', phrase('The announcement you requested was not found or its already been removed.'))
         ->setIcon('mdi mdi-bullhorn')
         ->where('announcement_slug', $slug)
         ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')

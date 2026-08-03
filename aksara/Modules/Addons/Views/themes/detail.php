@@ -1,47 +1,49 @@
 <?php
+
 /**
  * @var mixed $detail
  */
 $carousel = null;
-    $attribution = null;
+$attribution = null;
 
-    if (isset($detail->screenshot) && $detail->screenshot) {
-        foreach ($detail->screenshot as $key => $val) {
-            if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(['../', '..\\', './', '.\\'], '', $val->src))) {
-                $screenshot = base_url('themes/' . $detail->folder . '/' . str_replace(['../', '..\\', './', '.\\'], '', $val->src));
-            } else {
-                $screenshot = get_image(null, 'placeholder_thumb.png');
-            }
-
-            $carousel .= '
-                <div class="carousel-item rounded' . (! $key ? ' active' : null) . '">
-                    <a href="' . $screenshot . '" target="_blank">
-                        <img src="' . $screenshot . '" class="d-block rounded w-100" alt="' . $val->alt . '">
-                    </a>
-                </div>
-            ';
+if (isset($detail->screenshot) && $detail->screenshot) {
+    foreach ($detail->screenshot as $key => $val) {
+        if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(['../', '..\\', './', '.\\'], '', $val->src))) {
+            $screenshot = base_url('themes/' . $detail->folder . '/' . str_replace(['../', '..\\', './', '.\\'], '', $val->src));
+        } else {
+            $screenshot = get_image(null, 'placeholder_thumb.png');
         }
-    }
 
-    if (isset($detail->attribution) && $detail->attribution) {
-        foreach ($detail->attribution as $key => $val) {
-            $attribution .= '
-                <div class="row">
-                    <div class="col-4">
-                        <label class="mb-0 text-muted">
-                            ' . $key . '
-                        </label>
-                    </div>
-                    <div class="col-8">
-                        <label class="mb-0">
-                            ' . $val . '
-                        </label>
-                    </div>
-                </div>
-            ';
-        }
+        $carousel .= '
+            <div class="carousel-item rounded' . (! $key ? ' active' : null) . '">
+                <a href="' . $screenshot . '" target="_blank">
+                    <img src="' . $screenshot . '" class="d-block rounded w-100" alt="' . $val->alt . '">
+                </a>
+            </div>
+        ';
     }
+}
+
+if (isset($detail->attribution) && $detail->attribution) {
+    foreach ($detail->attribution as $key => $val) {
+        $attribution .= '
+            <div class="row">
+                <div class="col-4">
+                    <label class="mb-0 text-muted">
+                        ' . $key . '
+                    </label>
+                </div>
+                <div class="col-8">
+                    <label class="mb-0">
+                        ' . $val . '
+                    </label>
+                </div>
+            </div>
+        ';
+    }
+}
 ?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 col-lg-7">
@@ -102,10 +104,10 @@ $carousel = null;
     <div class="row">
         <div class="col-md-6 col-lg-7">
             <a href="<?= current_page('../update', ['item' => $detail->folder]); ?>" class="btn btn-outline-success btn-sm --modal">
-                &nbsp; 
+                &nbsp;
                 <i class="mdi mdi-auto-fix"></i>
                 <?= phrase('Update'); ?>
-                &nbsp; 
+                &nbsp;
             </a>
         </div>
         <div class="col-md-6 col-lg-5">

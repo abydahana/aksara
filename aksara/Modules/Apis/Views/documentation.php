@@ -1,40 +1,41 @@
 <?php
+
 /**
  * @var mixed $permission
  * @var mixed $active
  * @var mixed $modules
  */
 $selected = service('request')->getGet('group');
-    $group_collector = [];
-    $access_token = false;
-    $method = [];
+$group_collector = [];
+$access_token = false;
+$method = [];
 
-    if ($permission->groups) {
-        $groups = null;
-        $privileges = [];
+if ($permission->groups) {
+    $groups = null;
+    $privileges = [];
 
-        foreach ($permission->groups as $key => $val)
-        {
-            $group_collector[] = $val->group_id;
-            $actions = null;
-            $extract_privileges = json_decode($val->group_privileges);
+    foreach ($permission->groups as $key => $val)
+    {
+        $group_collector[] = $val->group_id;
+        $actions = null;
+        $extract_privileges = json_decode($val->group_privileges);
 
-            if (isset($extract_privileges->$active)) {
-                foreach ($extract_privileges->$active as $_key => $_val)
-                {
-                    $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
-                }
+        if (isset($extract_privileges->$active)) {
+            foreach ($extract_privileges->$active as $_key => $_val)
+            {
+                $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
             }
-
-            if ($val->group_id) {
-                $access_token = true;
-            }
-
-            $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
-
-            $privileges[$selected] = $actions;
         }
+
+        if ($val->group_id) {
+            $access_token = true;
+        }
+
+        $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
+
+        $privileges[$selected] = $actions;
     }
+}
 ?>
 
 <div class="container-fluid py-3">
@@ -48,16 +49,16 @@ $selected = service('request')->getGet('group');
                     <br />
 
                     <?php
-                        if ($modules) {
-                            foreach ($modules as $key => $val) {
-                                echo '
-                                    <a href="' . current_page(null, ['slug' => $val, 'group' => null]) . '" class="' . ($val == $active ? ' text-primary fw-bold' : null) . ' --xhr">
-                                        ' . str_replace('/', ' &gt; ', $val) . '
-                                    </a>
-                                    <br />
-                                ';
-                            }
+                    if ($modules) {
+                        foreach ($modules as $key => $val) {
+                            echo '
+                                <a href="' . current_page(null, ['slug' => $val, 'group' => null]) . '" class="' . ($val == $active ? ' text-primary fw-bold' : null) . ' --xhr">
+                                    ' . str_replace('/', ' &gt; ', $val) . '
+                                </a>
+                                <br />
+                            ';
                         }
+                    }
                     ?>
                 </div>
             </div>

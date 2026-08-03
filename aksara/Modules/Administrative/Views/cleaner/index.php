@@ -1,6 +1,8 @@
 <?php
-    $hour = floor(SESSION_EXPIRATION / 3600);
+
+$hour = floor(SESSION_EXPIRATION / 3600);
 ?>
+
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-lg-7">

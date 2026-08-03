@@ -1,9 +1,13 @@
 <?php
+
 /**
  * @var mixed $results
  * @var mixed $meta
  */
-if ($results): ?>
+
+$field_data = $results->field_data ?? null;
+?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold text-dark">
@@ -14,29 +18,26 @@ if ($results): ?>
         </p>
     </div>
 </section>
-<?php endif; ?>
 <section class="section-padding">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <?php if ($results): ?>
-                    <?php foreach($results as $key => $val): ?>
-                        <?php if ($val->cover && 'placeholder.png' != $val->cover): ?>
-                            <img src="<?= get_image('announcements', $val->cover); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="..." />
-                        <?php endif; ?>
-                        <div class="fs-5 fade-in">
-                            <?= $val->content; ?>
-                        </div>
-                        <p class="text-muted fade-in">
-                            <em>
-                                <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $val->end_date]); ?>
-                            </em>
-                        </p>
-                        <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
-                            <i class="mdi mdi-arrow-left"></i>
-                            <?= phrase('Back'); ?>
-                        </a>
-                    <?php endforeach; ?>
+                <?php if ($field_data): ?>
+                    <?php if ($field_data->cover->value && 'placeholder.png' != $field_data->cover->value): ?>
+                        <img src="<?= get_image('announcements', $field_data->cover->value); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="..." />
+                    <?php endif; ?>
+                    <div class="fs-5 fade-in">
+                        <?= $field_data->content->value; ?>
+                    </div>
+                    <p class="text-muted fade-in">
+                        <em>
+                            <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $field_data->end_date->value]); ?>
+                        </em>
+                    </p>
+                    <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
+                        <i class="mdi mdi-arrow-left"></i>
+                        <?= phrase('Back'); ?>
+                    </a>
                 <?php else: ?>
                     <div class="py-5 fade-in">
                         <div class="text-center">

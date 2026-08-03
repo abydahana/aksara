@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $meta
  * @var mixed $keywords
@@ -7,6 +8,7 @@
  * @var mixed $pagination
  */
 ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row">
@@ -46,6 +48,7 @@
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
+
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
                         <div class="row g-0 g-md-3 align-items-center mb-5 fade-in">

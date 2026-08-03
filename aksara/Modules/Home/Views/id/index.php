@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $permission
  * @var mixed $meta
@@ -15,11 +16,13 @@ if (! $permission->uploads || ! $permission->writable): ?>
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> tidak dapat ditulisi.
                 </p>
             <?php endif; ?>
+
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= WRITEPATH; ?></b> tidak dapat ditulisi.
                 </p>
             <?php endif; ?>
+
             <br />
             <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>Klik di sini</b></a> untuk membaca dokumentasi untuk memperbaiki masalah ini.
         </div>

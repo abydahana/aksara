@@ -1,8 +1,5 @@
 <?php
-/**
- * @var mixed $code
- * @var mixed $message
- */
+
 /**
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
@@ -17,6 +14,10 @@
 
 use CodeIgniter\CLI\CLI;
 
+/**
+ * @var mixed $code
+ * @var mixed $message
+ */
 CLI::error('ERROR: ' . $code);
 CLI::write($message);
 CLI::newLine();
