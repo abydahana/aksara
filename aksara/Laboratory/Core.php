@@ -3078,7 +3078,7 @@ abstract class Core extends Controller
 
             if (in_array($this->_method, ['create'])) {
                 // List the field properties
-                $results = array_fill_keys(array_keys(array_flip($this->model->listFields($this->_table))), '');
+                $results = array_fill_keys(array_keys(array_flip($this->model->listFields($this->_table))), '') ?? [];
                 $total = 0;
             } else {
                 $singleRow = false;
@@ -3090,7 +3090,7 @@ abstract class Core extends Controller
 
                 // Run query using prepared property
                 $query = $this->_fetch($this->_table, $singleRow);
-                $results = $query['results'];
+                $results = $query['results'] ?? [];
                 $total = $query['total'];
             }
 
@@ -3145,18 +3145,18 @@ abstract class Core extends Controller
             } else {
                 // No result found
                 if (preg_match_all('/\{\{(.*?)\}\}/', $title ?? '')) {
-                    // Unset title contains magic string
-                    $title = null;
+                    // Use fallback title when magic string cannot be resolved.
+                    $title = $this->_setTitleFallback ?? null;
                 }
 
                 if (preg_match_all('/\{\{(.*?)\}\}/', $description ?? '')) {
-                    // Unset description contains magic string
-                    $description = null;
+                    // Use fallback description when magic string cannot be resolved.
+                    $description = $this->_setDescriptionFallback ?? null;
                 }
 
                 if (preg_match_all('/\{\{(.*?)\}\}/', $icon ?? '')) {
-                    // Unset icon contains magic string
-                    $icon = null;
+                    // Use fallback icon when magic string cannot be resolved.
+                    $icon = $this->_setIconFallback ?? null;
                 }
             }
 
@@ -3589,9 +3589,30 @@ abstract class Core extends Controller
     public function renderRead(array|object $data): array
     {
         // --- Initial Validation ---
-        // If data is empty, throw a 404 exception.
+        // If data is empty, keep the read payload contract stable without
+        // fabricating schema-only fields that look like a real record.
         if (! $data) {
-            return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), $this->_redirectBack);
+            $queryParams = $this->request->getGet();
+
+            if ($this->apiClient) {
+                unset($queryParams['aksara'], $queryParams['limit']);
+            }
+
+            return [
+                'column_size' => [],
+                'column_total' => 1,
+                'extra_action' => [
+                    'submit' => []
+                ],
+                'form_size' => '',
+                'field_size' => [],
+                'field_data' => [],
+                'merged_content' => [],
+                'merged_field' => [],
+                'set_heading' => [],
+                'grouped_field' => [],
+                'query_params' => $queryParams
+            ];
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
