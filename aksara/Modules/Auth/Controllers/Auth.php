@@ -75,7 +75,7 @@ class Auth extends Core
             }
 
             // Run form validation
-            if ($this->formValidation->run($this->request->getPost()) === false) {
+            if ($this->formValidation->withRequest(service('request')) === false) {
                 // Throw validation message
                 return throw_exception(400, $this->formValidation->getErrors());
             } else {

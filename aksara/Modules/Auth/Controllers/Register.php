@@ -82,7 +82,7 @@ class Register extends Core
         $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Run validation
-        if ($this->formValidation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->withRequest(service('request')) === false) {
             // Validation error
             return throw_exception(400, $this->formValidation->getErrors());
         }

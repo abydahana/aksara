@@ -197,7 +197,7 @@ class Modules extends Core
 
             $this->formValidation->setRule('file', phrase('Module Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->formValidation->run($this->request->getPost()) === false) {
+            if ($this->formValidation->withRequest(service('request')) === false) {
                 return throw_exception(400, $this->formValidation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No module package were chosen.')]);
@@ -549,7 +549,7 @@ class Modules extends Core
 
         $this->formValidation->setRule('module', phrase('Module'), 'required');
 
-        if ($this->formValidation->run($this->request->getPost()) === false) {
+        if ($this->formValidation->withRequest(service('request')) === false) {
             return throw_exception(400, ['module' => $this->formValidation->getErrors()]);
         }
 
