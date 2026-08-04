@@ -37,8 +37,7 @@ class AppUsersPrivileges extends Migration
             ],
             'visible_menu' => [
                 'type' => (in_array($this->db->DBDriver, ['Postgre', 'MySQLi']) ? 'json' : 'text'),
-                'null' => false,
-                'default' => '[]'
+                'null' => false
             ],
             'access_year' => [
                 'type' => ('MySQLi' === $this->db->DBDriver ? 'year' : 'smallint'),
