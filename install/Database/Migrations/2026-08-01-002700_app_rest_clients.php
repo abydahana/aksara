@@ -61,22 +61,22 @@ class AppRestClients extends Migration
                 'type' => 'int',
                 'null' => false
             ],
+            'created_at' => [
+                'type' => 'datetime',
+                'null' => true
+            ],
             'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
                 'null' => false
             ],
-            'created_at' => [
+            'updated_at' => [
                 'type' => 'datetime',
                 'null' => true
             ],
             'updated_by' => [
                 'type' => 'int',
                 'unsigned' => true,
-                'null' => true
-            ],
-            'updated_at' => [
-                'type' => 'datetime',
                 'null' => true
             ],
         ]);

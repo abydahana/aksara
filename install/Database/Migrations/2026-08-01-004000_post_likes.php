@@ -35,15 +35,15 @@ class PostLikes extends Migration
                 'constraint' => 2000,
                 'null' => false
             ],
+            'created_at' => [
+                'type' => 'datetime',
+                'null' => false
+            ],
             'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
                 'null' => false
             ],
-            'created_at' => [
-                'type' => 'datetime',
-                'null' => false
-            ]
         ]);
 
         // Add primary and unique index

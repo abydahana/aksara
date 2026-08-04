@@ -34,15 +34,15 @@ class PostCommentsReports extends Migration
                 'type' => 'text',
                 'null' => false
             ],
+            'created_at' => [
+                'type' => 'datetime',
+                'null' => false
+            ],
             'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
                 'null' => false
             ],
-            'created_at' => [
-                'type' => 'datetime',
-                'null' => false
-            ]
         ]);
 
         // Add primary and unique index

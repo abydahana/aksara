@@ -42,7 +42,7 @@ class PostCommentsHistory extends Migration
             'created_at' => [
                 'type' => 'datetime',
                 'null' => false
-            ]
+            ],
         ]);
 
         // Add primary and unique index

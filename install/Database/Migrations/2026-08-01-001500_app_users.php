@@ -108,22 +108,22 @@ class AppUsers extends Migration
                 'default' => '0',
                 'null' => false
             ],
-            'created_by' => [
-                'type' => 'int',
-                'unsigned' => true,
-                'null' => true
-            ],
             'created_at' => [
                 'type' => 'datetime',
                 'null' => true
             ],
-            'updated_by' => [
+            'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
                 'null' => true
             ],
             'updated_at' => [
                 'type' => 'datetime',
+                'null' => true
+            ],
+            'updated_by' => [
+                'type' => 'int',
+                'unsigned' => true,
                 'null' => true
             ],
         ]);
