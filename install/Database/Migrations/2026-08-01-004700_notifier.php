@@ -58,7 +58,7 @@ class AppNotifier extends Migration
             'created_at' => [
                 'type' => 'datetime',
                 'null' => false
-            ]
+            ],
         ]);
 
         // Add primary and unique index
