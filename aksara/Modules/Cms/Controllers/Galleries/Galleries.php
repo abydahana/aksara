@@ -4,7 +4,7 @@
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
  *
- * @     Aby Dahana <abydahana@gmail.com>
+ * @author     Aby Dahana <abydahana@gmail.com>
  * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
  * @license    MIT License
  *
@@ -68,7 +68,7 @@ class Galleries extends Core
             'featured' => 'boolean',
             'status' => 'boolean'
         ])
-        
+
         ->fieldPosition([
             'gallery_tags' => 2,
             'featured' => 2,
