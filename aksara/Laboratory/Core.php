@@ -72,6 +72,21 @@ abstract class Core extends Controller
     public $template;
 
     /**
+     * Audit trail columns managed automatically by the core CRUD pipeline.
+     */
+    private const AUDIT_COLUMNS = [
+        'created_by',
+        'created_at',
+        'updated_by',
+        'updated_at'
+    ];
+
+    /**
+     * Columns explicitly selected by the controller.
+     */
+    private array $_explicitSelect = [];
+
+    /**
      * Controller constructor, initializes dependencies and validates request integrity.
      *
      * @return void
@@ -1735,8 +1750,10 @@ abstract class Core extends Controller
                     $relationKeys[] = $keyName;
                 }
 
-                $this->_unsetColumn[] = $keyName;
-                $this->_unsetView[] = $keyName;
+                if (! in_array($keyName, self::AUDIT_COLUMNS, true)) {
+                    $this->_unsetColumn[] = $keyName;
+                    $this->_unsetView[] = $keyName;
+                }
 
                 if (0 === $key) {
                     array_unshift(
@@ -1765,7 +1782,7 @@ abstract class Core extends Controller
             $relationTable = $parts[0] ?? null;
             $relationKeys = $parts[1] ?? null;
 
-            if ($field !== $relationKeys) {
+            if ($field !== $relationKeys && ! in_array($field, self::AUDIT_COLUMNS, true)) {
                 $this->_unsetColumn[] = $field;
                 $this->_unsetView[] = $field;
             }
@@ -2178,7 +2195,10 @@ abstract class Core extends Controller
                 $value = null;
             }
 
-            if (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unsetField) || array_intersect(['current_timestamp', 'created_timestamp', 'updated_timestamp'], array_keys($this->_setField[$field])))) {
+            if ($this->_isAuditFieldHidden($field)) {
+                // Indicates that field should not be shown
+                $hidden = true;
+            } elseif (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unsetField) || array_intersect(['current_timestamp', 'created_at', 'updated_at'], array_keys($this->_setField[$field])))) {
                 // Indicates that field should not be shown
                 $hidden = true;
             } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unsetView)) {
@@ -3688,7 +3708,7 @@ abstract class Core extends Controller
                 $type = array_keys($val['type']);
 
                 // Skip field when it's disabled and has no default value
-                if (in_array($key, $this->_unsetField) || isset($this->_setDefault[$key]) || array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['updated_timestamp'], $type)) || ('update' === $this->_method && array_intersect(['created_timestamp'], $type))) {
+                if (in_array($key, $this->_unsetField) || isset($this->_setDefault[$key]) || array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['updated_at'], $type)) || ('update' === $this->_method && array_intersect(['created_at'], $type))) {
                     // Skip field from validation
                     continue;
                 }
@@ -3893,16 +3913,16 @@ abstract class Core extends Controller
 
                 // Skip field when it's disabled and has no default value
                 if (
-                    (in_array($field, $this->_unsetField) && ! isset($this->_setDefault[$field]) && ! array_intersect(['slug', 'current_timestamp', 'created_timestamp', 'updated_timestamp'], $type)) ||
+                    (in_array($field, $this->_unsetField) && ! isset($this->_setDefault[$field]) && ! array_intersect(['slug', 'current_timestamp', 'created_at', 'updated_at'], $type)) ||
                     (in_array('disabled', $type) && ! isset($this->_setDefault[$field])) ||
-                    ('create' === $this->_method && array_intersect(['updated_timestamp'], $type)) ||
-                    ('update' === $this->_method && array_intersect(['created_timestamp'], $type)) ||
+                    ('create' === $this->_method && array_intersect(['updated_at'], $type)) ||
+                    ('update' === $this->_method && array_intersect(['created_at'], $type)) ||
                     (in_array('password', $type) && ! $this->request->getPost($field) && 'create' !== $this->_method)
                 ) {
                     continue;
                 }
 
-                if (array_key_exists($field, $this->request->getPost()) || array_intersect($type, ['current_timestamp', 'created_timestamp', 'updated_timestamp', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'attribution'])) {
+                if (array_key_exists($field, $this->request->getPost()) || array_intersect($type, ['current_timestamp', 'created_at', 'updated_at', 'image', 'images', 'file', 'files', 'slug', 'current_user', 'attribution'])) {
                     if (array_intersect(['password'], $type)) {
                         // Check if password changed
                         if ($this->request->getPost($field)) {
@@ -4019,7 +4039,7 @@ abstract class Core extends Controller
                     } elseif (array_intersect(['boolean'], $type)) {
                         // Push the boolean field type to data preparation
                         $prepare[$field] = $this->request->getPost($field);
-                    } elseif (array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['created_timestamp'], $type)) || ('update' === $this->_method && array_intersect(['updated_timestamp'], $type))) {
+                    } elseif (array_intersect(['current_timestamp'], $type) || ('create' === $this->_method && array_intersect(['created_at'], $type)) || ('update' === $this->_method && array_intersect(['updated_at'], $type))) {
                         // Push the current timestamp field type to data preparation
                         $prepare[$field] = date('Y-m-d H:i:s');
                     } elseif (array_intersect(['date', 'datepicker'], $type)) {
@@ -4102,12 +4122,6 @@ abstract class Core extends Controller
                 if (isset($prepare[$field]) && ! array_intersect(['encryption'], $type)) {
                     $prepare[$field] = $this->_sanitizeInput($prepare[$field]);
                 }
-            }
-
-            if ('create' === $this->_method && $this->model->fieldExists('created_timestamp', $this->_table)) {
-                $prepare['created_timestamp'] = date('Y-m-d H:i:s');
-            } elseif ('update' === $this->_method && $this->model->fieldExists('updated_timestamp', $this->_table)) {
-                $prepare['updated_timestamp'] = date('Y-m-d H:i:s');
             }
 
             // If data preparation is ready and the method is create
@@ -4261,6 +4275,8 @@ abstract class Core extends Controller
 
         // --- 2. Table Existence Check and Execution ---
         if ($table && $this->model->tableExists($table)) {
+            $data = $this->_applyAuditValues($table, $data, 'create');
+
             // --- 3. Before Insert Hook ---
             if (method_exists($this, 'beforeInsert')) {
                 $this->beforeInsert();
@@ -4432,6 +4448,8 @@ abstract class Core extends Controller
 
         // --- 3. Table Existence Check and WHERE Determination ---
         if ($table && $this->model->tableExists($table)) {
+            $data = $this->_applyAuditValues($table, $data, 'update');
+
             // Determine WHERE condition if not explicitly provided
             if (! $where) {
                 $fieldExists = array_flip($this->model->listFields($table));
@@ -4802,6 +4820,7 @@ abstract class Core extends Controller
         foreach ($column as $val) {
             $backupVal = $val;
             $this->_select[] = $val;
+            $this->_explicitSelect[] = $val;
 
             // Clean up the value for internal compiled select list
             $valClean = $val;
@@ -5471,6 +5490,140 @@ abstract class Core extends Controller
     }
 
     /**
+     * Prepares the given Query Builder function and arguments into an internal queue.
+     *
+     * It also maintains a separate list for 'where' clauses.
+     *
+     * @param string $function The Query Builder method name (e.g., 'where', 'select').
+     * @param array $arguments The array of arguments passed to the method.
+     */
+    private function _prepare(string $function, array $arguments = []): void
+    {
+        // If the function is 'where', store it separately for easy access/manipulation.
+        if ('where' == $function) {
+            // Assuming arguments[0] is the field and arguments[1] is the value/condition.
+            $this->_where[$arguments[0]] = $arguments[1];
+        }
+
+        // Add the function call to the main preparation queue.
+        $this->_prepare[] = [
+            'function' => $function,
+            'arguments' => $arguments
+        ];
+    }
+
+    /**
+     * Fetches the data by running the prepared query builder parameters.
+     *
+     * Handles debugging output (query or results) and executes two queries: one for results
+     * (with limit/offset) and one for the total count (recycling the query parameters).
+     *
+     * @param string|null $table The primary table to run the fetch against.
+     *
+     * @return array Returns an array containing 'results' (ResultInterface or array) and 'total' (int).
+     */
+    private function _fetch(?string $table = null, ?bool $row = false): array
+    {
+        // --- 1. Debugger ---
+        if ($this->_debugging && 'benchmark' !== $this->_debugging) {
+            // Run query with limit/offset for debug output
+            $queryBuilder = $this->_runQuery($table);
+
+            if (null !== $this->_limit) {
+                $queryBuilder->limit($this->_limit, $this->_offset ?? 0);
+            }
+
+            if ($row) {
+                // Get single row
+                $query = $queryBuilder->row();
+            } else {
+                // Get multiple rows
+                $query = $queryBuilder->result();
+            }
+
+            if ('query' == $this->_debugging) {
+                exit('<div style="font-family:monospace">' . nl2br($this->model->lastQuery()) . '</div>');
+            } elseif ($this->_debugging) {
+                if (ENVIRONMENT === 'production') {
+                    exit('<pre>' . print_r($query, true) . '</pre>');
+                }
+                dd($query);
+            }
+        }
+
+        // --- 1. MAGIC INTERCEPTOR FOR VERTICAL EAV TABLES ---
+        if ($this->model->fieldExists('key', $table ?: $this->_table) && $this->model->fieldExists('value', $table ?: $this->_table) && ! $this->model->fieldExists('app_name', $table ?: $this->_table)) {
+            $verticalKeys = $this->model->get($table ?: $this->_table)->result();
+
+            // Transpose vertical to horizontal
+            $horizontalRow = new \stdClass();
+            $allKeys = [];
+            foreach ($verticalKeys as $vk) {
+                $horizontalRow->{$vk->key} = $vk->value;
+                $allKeys[] = $vk->key;
+            }
+
+            // Ensure all fields explicitly defined in the controller exist in the object
+            // to prevent "Undefined property" errors in the Form Builder
+            if (is_array($this->_setField)) {
+                foreach ($this->_setField as $fieldKey => $fieldVal) {
+                    if (! property_exists($horizontalRow, $fieldKey)) {
+                        $horizontalRow->{$fieldKey} = '';
+                    }
+                }
+            }
+
+            // Reset preparation property for subsequent queries
+            $this->_prepare = [];
+
+            return [
+                'results' => ($row ? $horizontalRow : [$horizontalRow]),
+                'total' => 1
+            ];
+        }
+
+        // --- 2. Execute Queries ---
+
+        timer('Core::_fetchData() Database Query');
+        // Query for results (with LIMIT/OFFSET)
+        $resultsBuilder = $this->_runQuery($table);
+        // Apply limit/offset after running the main query builder parameters
+        if (null !== $this->_limit) {
+            $resultsBuilder->limit($this->_limit, $this->_offset ?? 0);
+        }
+
+        if ($row) {
+            // Get single row
+            $results = $resultsBuilder->row();
+
+            // Assign total
+            $total = ($results ? 1 : 0);
+        } else {
+            // Get multiple rows
+            $results = $resultsBuilder->result();
+
+            $resultCount = is_array($results) ? count($results) : 0;
+            $limit = $this->_limit ?? $this->_limitBackup;
+
+            if ($limit && $resultCount < $limit) {
+                $total = ($this->_offset ?? 0) + $resultCount;
+            } else {
+                // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
+                $total = $this->_runQuery($table, true)->countAllResults();
+            }
+        }
+        timer('Core::_fetchData() Database Query');
+
+        // --- 3. Reset and Return ---
+        $this->_prepare = []; // Reset preparation property for subsequent queries
+
+        return [
+            'results' => $results,
+            'total' => $total
+        ];
+    }
+
+    /**
      * Executes the query based on the collected builder parameters ($this->_prepare).
      *
      * This method finalizes the SELECT columns (applying unset rules, aliasing, and table prefixes)
@@ -5859,139 +6012,6 @@ abstract class Core extends Controller
     }
 
     /**
-     * Collect non-empty internal properties for controller chain debugging.
-     */
-    private function _debugProperties(): array
-    {
-        $output = [];
-
-        foreach (get_object_vars($this) as $key => $value) {
-            if (! str_starts_with($key, '_')) {
-                continue;
-            }
-
-            if (! is_array($value) || empty($value)) {
-                continue;
-            }
-
-            $output[$key] = $value;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Fetches the data by running the prepared query builder parameters.
-     *
-     * Handles debugging output (query or results) and executes two queries: one for results
-     * (with limit/offset) and one for the total count (recycling the query parameters).
-     *
-     * @param string|null $table The primary table to run the fetch against.
-     *
-     * @return array Returns an array containing 'results' (ResultInterface or array) and 'total' (int).
-     */
-    private function _fetch(?string $table = null, ?bool $row = false): array
-    {
-        // --- 1. Debugger ---
-        if ($this->_debugging && 'benchmark' !== $this->_debugging) {
-            // Run query with limit/offset for debug output
-            $queryBuilder = $this->_runQuery($table);
-
-            if (null !== $this->_limit) {
-                $queryBuilder->limit($this->_limit, $this->_offset ?? 0);
-            }
-
-            if ($row) {
-                // Get single row
-                $query = $queryBuilder->row();
-            } else {
-                // Get multiple rows
-                $query = $queryBuilder->result();
-            }
-
-            if ('query' == $this->_debugging) {
-                exit('<div style="font-family:monospace">' . nl2br($this->model->lastQuery()) . '</div>');
-            } elseif ($this->_debugging) {
-                if (ENVIRONMENT === 'production') {
-                    exit('<pre>' . print_r($query, true) . '</pre>');
-                }
-                dd($query);
-            }
-        }
-
-        // --- 1. MAGIC INTERCEPTOR FOR VERTICAL EAV TABLES ---
-        if ($this->model->fieldExists('key', $table ?: $this->_table) && $this->model->fieldExists('value', $table ?: $this->_table) && ! $this->model->fieldExists('app_name', $table ?: $this->_table)) {
-            $verticalKeys = $this->model->get($table ?: $this->_table)->result();
-
-            // Transpose vertical to horizontal
-            $horizontalRow = new \stdClass();
-            $allKeys = [];
-            foreach ($verticalKeys as $vk) {
-                $horizontalRow->{$vk->key} = $vk->value;
-                $allKeys[] = $vk->key;
-            }
-
-            // Ensure all fields explicitly defined in the controller exist in the object
-            // to prevent "Undefined property" errors in the Form Builder
-            if (is_array($this->_setField)) {
-                foreach ($this->_setField as $fieldKey => $fieldVal) {
-                    if (! property_exists($horizontalRow, $fieldKey)) {
-                        $horizontalRow->{$fieldKey} = '';
-                    }
-                }
-            }
-
-            // Reset preparation property for subsequent queries
-            $this->_prepare = [];
-
-            return [
-                'results' => ($row ? $horizontalRow : [$horizontalRow]),
-                'total' => 1
-            ];
-        }
-
-        // --- 2. Execute Queries ---
-
-        timer('Core::_fetchData() Database Query');
-        // Query for results (with LIMIT/OFFSET)
-        $resultsBuilder = $this->_runQuery($table);
-        // Apply limit/offset after running the main query builder parameters
-        if (null !== $this->_limit) {
-            $resultsBuilder->limit($this->_limit, $this->_offset ?? 0);
-        }
-
-        if ($row) {
-            // Get single row
-            $results = $resultsBuilder->row();
-
-            // Assign total
-            $total = ($results ? 1 : 0);
-        } else {
-            // Get multiple rows
-            $results = $resultsBuilder->result();
-
-            $resultCount = is_array($results) ? count($results) : 0;
-            $limit = $this->_limit ?? $this->_limitBackup;
-
-            if ($limit && $resultCount < $limit) {
-                $total = ($this->_offset ?? 0) + $resultCount;
-            } else {
-                // Query for total count (recycling the prepared parameters but skipping complex SELECT logic)
-                $total = $this->_runQuery($table, true)->countAllResults();
-            }
-        }
-        timer('Core::_fetchData() Database Query');
-
-        // --- 3. Reset and Return ---
-        $this->_prepare = []; // Reset preparation property for subsequent queries
-
-        return [
-            'results' => $results,
-            'total' => $total
-        ];
-    }
-
-    /**
      * Retrieves related table data for a relational field (e.g., dropdown list for foreign keys).
      *
      * Constructs a complex query based on provided parameters, handles search ('like'),
@@ -6367,82 +6387,145 @@ abstract class Core extends Controller
     }
 
     /**
-     * Recursively unlinks uploaded files and their associated thumbnails/icons.
-     *
-     * Designed to handle nested file paths stored in arrays or JSON strings.
-     *
-     * @param array $files      An array of file fields/paths to be processed (field_name => path/array).
-     * @param string|null $fieldName  Internal tracking of the current field name (used for recursive calls).
-     * @param array $fieldList Internal tracking of file lists for exclusion logic.
-     *
-     * @return void Returns immediately if the input is not a valid array.
+     * Normalizes a table name by removing aliases from builder-compatible table strings.
      */
-    private function _unlinkFiles(?array $files = [], ?string $fieldName = null, array $fieldList = []): void
+    private function _getBaseTable(?string $table = null): ?string
     {
-        foreach ($files ?? [] as $field => $src) {
-            // Decode JSON source if necessary
-            if (is_string($src) && is_json($src)) {
-                $src = json_decode($src, true);
+        if (! $table) {
+            return null;
+        }
+
+        if (strpos($table, ' ') !== false && strpos($table, '(') === false && strpos($table, ')') === false) {
+            return explode(' ', $table)[0];
+        }
+
+        return $table;
+    }
+
+    /**
+     * Determines if a managed audit column exists on the current table.
+     */
+    private function _auditFieldExists(?string $table = null, string $field = ''): bool
+    {
+        $table = $this->_getBaseTable($table);
+
+        return $table && $field && $this->model->fieldExists($field, $table);
+    }
+
+    /**
+     * Determines whether a managed audit column should be hidden by template renderers.
+     */
+    private function _isAuditFieldHidden(string $field): bool
+    {
+        if (
+            $this->apiClient ||
+            ! in_array($field, self::AUDIT_COLUMNS, true) ||
+            ! $this->_auditFieldExists($this->_table, $field)
+        ) {
+            return false;
+        }
+
+        if (in_array($this->_method, ['create', 'update'], true)) {
+            return true;
+        }
+
+        if ($this->_isExplicitlySelected($field) || isset($this->_setRelation[$field])) {
+            return false;
+        }
+
+        if ('created_at' === $field && isset($this->_setRelation['created_by'])) {
+            return false;
+        }
+
+        if ('updated_at' === $field && isset($this->_setRelation['updated_by'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks whether a column was explicitly selected by the controller.
+     */
+    private function _isExplicitlySelected(string $field): bool
+    {
+        foreach ($this->_explicitSelect as $select) {
+            $select = trim((string) $select);
+
+            if (! $select) {
+                continue;
             }
 
-            // --- Recursive Call Handling ---
-            if (is_array($src)) {
-                // Rename field for next condition (used for tracking array paths)
-                $newFieldName = $fieldName ?? ($field . '_label');
+            $plainSelect = str_replace('`', '', $select);
 
-                // Merge field list for exclusion logic
-                $fieldList[$newFieldName] = array_merge($fieldList[$newFieldName] ?? [], $src);
-
-                // Reinitialize function recursively
-                $this->_unlinkFiles($src, $newFieldName, $fieldList);
-
-                continue; // Move to the next item once recursion is handled.
+            if ('*' === $plainSelect || str_ends_with($plainSelect, '.*')) {
+                return true;
             }
 
-            // --- File Unlinking Logic ---
-
-            // Determine the input name used in POST data for exclusion check.
-            $inputName = urldecode(http_build_query($fieldList));
-            $inputName = substr($inputName, 0, strpos($inputName, '='));
-
-            // Define exclusion conditions:
-            // Placeholder file should never be deleted.
-            // File is marked for preservation in POST data (i.e., the user didn't change it).
-            // File upload slot is empty in $_FILES (meaning user didn't upload a new file).
-            $fileUploadedEmpty = (! is_array($field) && isset($_FILES[$field]['tmp_name']) && empty($_FILES[$field]['tmp_name']));
-
-            if ('placeholder.png' == $src || $this->request->getPost($inputName) || $fileUploadedEmpty) {
-                continue; // Skip unlink
+            if (preg_match('/\s+AS\s+`?' . preg_quote($field, '/') . '`?$/i', $select)) {
+                return true;
             }
 
-            // Sanitize input file names to prevent directory traversal.
-            $safeSrc = basename($src);
-            $safeField = basename((string) $field); // Ensure $field is treated as string
-
-            // Define potential file names to check (source file name and field name).
-            $filesToCheck = [$safeSrc, $safeField];
-
-            // Define the directories to check (main upload, thumbs, icons).
-            $subdirectories = ['', 'thumbs/', 'icons/'];
-
-            // Base upload path for the current module.
-            $baseDir = UPLOAD_PATH . '/' . $this->_setUploadPath . '/';
-
-            // Loop through all potential paths and attempt deletion.
-            foreach ($subdirectories as $subdir) {
-                foreach ($filesToCheck as $filename) {
-                    $path = $baseDir . $subdir . $filename;
-
-                    if ($filename && is_file($path)) {
-                        try {
-                            unlink($path);
-                        } catch (Throwable $e) {
-                            // Safe abstraction: error during unlink (e.g., permissions)
-                        }
-                    }
-                }
+            if ($field === $plainSelect || str_ends_with($plainSelect, '.' . $field)) {
+                return true;
             }
         }
+
+        return false;
+    }
+
+    /**
+     * Adds audit values for create and update actions.
+     */
+    private function _applyAuditValues(?string $table = null, array $data = [], string $action = ''): array
+    {
+        $userId = get_userdata('user_id') ?: null;
+        $timestamp = date('Y-m-d H:i:s');
+        $fallback = fn (string $field, mixed $default = null) => array_key_exists($field, $data)
+            ? $data[$field]
+            : (array_key_exists($field, $this->_setDefault) ? $this->_setDefault[$field] : $default);
+
+        if ('create' === $action) {
+            if ($this->_auditFieldExists($table, 'created_by')) {
+                $data['created_by'] = $fallback('created_by', $userId);
+            }
+
+            if ($this->_auditFieldExists($table, 'created_at')) {
+                $data['created_at'] = $fallback('created_at', $timestamp);
+            }
+        } elseif ('update' === $action) {
+            if ($this->_auditFieldExists($table, 'updated_by')) {
+                $data['updated_by'] = $fallback('updated_by', $userId);
+            }
+
+            if ($this->_auditFieldExists($table, 'updated_at')) {
+                $data['updated_at'] = $fallback('updated_at', $timestamp);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Collect non-empty internal properties for controller chain debugging.
+     */
+    private function _debugProperties(): array
+    {
+        $output = [];
+
+        foreach (get_object_vars($this) as $key => $value) {
+            if (! str_starts_with($key, '_')) {
+                continue;
+            }
+
+            if (! is_array($value) || empty($value)) {
+                continue;
+            }
+
+            $output[$key] = $value;
+        }
+
+        return $output;
     }
 
     /**
@@ -6559,6 +6642,68 @@ abstract class Core extends Controller
         $this->apiClient = true;
 
         return $this;
+    }
+
+    /**
+     * Sets the application language based on user session, browser preference, or system default.
+     *
+     * @param string|null $languageId Language ID from the user session (or null if not set).
+     */
+    private function _setLanguage(?string $languageId = null): void
+    {
+        $appLanguage = get_setting('app_language');
+
+        if (get_setting('force_system_language') && ! get_userdata('is_logged')) {
+            $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+
+            set_userdata('language_id', $languageId);
+        }
+
+        // Check if session language ID is not set.
+        if (! get_userdata('language_id') || ! $languageId) {
+            // Determine Initial Fallback Language ID
+            $appLanguage = get_setting('app_language');
+            $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+
+            // Get browser accepted locales (e.g., "en-US,en;q=0.9,id;q=0.8").
+            $locales = explode(',', (Services::request()->getServer('HTTP_ACCEPT_LANGUAGE') ?: 'en-us'));
+
+            // Retrieve available and active languages from the database.
+            $languages = $this->model->getWhere('app_languages', ['status' => 1])->result();
+
+            // Match Browser Locale to Available Languages
+            foreach ($languages as $language) {
+                $items = array_map('trim', explode(',', strtolower($language->locale))); // Available locales for this language
+
+                foreach ($locales as $loc) {
+                    if (in_array(strtolower(trim($loc)), $items)) {
+                        $languageId = $language->id;
+
+                        break 2; // Found match, break both loops.
+                    }
+                }
+            }
+
+            // Store the determined language ID in the user session.
+            set_userdata('language_id', $languageId);
+        }
+
+        // Get the language code (e.g., 'en', 'id') from the determined ID.
+        $languageCode = $this->model->select('code')
+            ->getWhere('app_languages', ['id' => $languageId], 1)
+            ->row('code');
+
+        // Set language code to internal property.
+        $this->_language = $languageCode;
+
+        // Check if the corresponding language translation file directory exists.
+        if (is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . $languageCode)) {
+            // Set language code to session (legacy/redundant, but preserved).
+            set_userdata('language', $languageCode);
+
+            // Set locale to the framework's language service.
+            Services::language()->setLocale($languageCode);
+        }
     }
 
     /**
@@ -6749,88 +6894,82 @@ abstract class Core extends Controller
     }
 
     /**
-     * Sets the application language based on user session, browser preference, or system default.
+     * Recursively unlinks uploaded files and their associated thumbnails/icons.
      *
-     * @param string|null $languageId Language ID from the user session (or null if not set).
+     * Designed to handle nested file paths stored in arrays or JSON strings.
+     *
+     * @param array $files      An array of file fields/paths to be processed (field_name => path/array).
+     * @param string|null $fieldName  Internal tracking of the current field name (used for recursive calls).
+     * @param array $fieldList Internal tracking of file lists for exclusion logic.
+     *
+     * @return void Returns immediately if the input is not a valid array.
      */
-    private function _setLanguage(?string $languageId = null): void
+    private function _unlinkFiles(?array $files = [], ?string $fieldName = null, array $fieldList = []): void
     {
-        $appLanguage = get_setting('app_language');
+        foreach ($files ?? [] as $field => $src) {
+            // Decode JSON source if necessary
+            if (is_string($src) && is_json($src)) {
+                $src = json_decode($src, true);
+            }
 
-        if (get_setting('force_system_language') && ! get_userdata('is_logged')) {
-            $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+            // --- Recursive Call Handling ---
+            if (is_array($src)) {
+                // Rename field for next condition (used for tracking array paths)
+                $newFieldName = $fieldName ?? ($field . '_label');
 
-            set_userdata('language_id', $languageId);
-        }
+                // Merge field list for exclusion logic
+                $fieldList[$newFieldName] = array_merge($fieldList[$newFieldName] ?? [], $src);
 
-        // Check if session language ID is not set.
-        if (! get_userdata('language_id') || ! $languageId) {
-            // Determine Initial Fallback Language ID
-            $appLanguage = get_setting('app_language');
-            $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+                // Reinitialize function recursively
+                $this->_unlinkFiles($src, $newFieldName, $fieldList);
 
-            // Get browser accepted locales (e.g., "en-US,en;q=0.9,id;q=0.8").
-            $locales = explode(',', (Services::request()->getServer('HTTP_ACCEPT_LANGUAGE') ?: 'en-us'));
+                continue; // Move to the next item once recursion is handled.
+            }
 
-            // Retrieve available and active languages from the database.
-            $languages = $this->model->getWhere('app_languages', ['status' => 1])->result();
+            // --- File Unlinking Logic ---
 
-            // Match Browser Locale to Available Languages
-            foreach ($languages as $language) {
-                $items = array_map('trim', explode(',', strtolower($language->locale))); // Available locales for this language
+            // Determine the input name used in POST data for exclusion check.
+            $inputName = urldecode(http_build_query($fieldList));
+            $inputName = substr($inputName, 0, strpos($inputName, '='));
 
-                foreach ($locales as $loc) {
-                    if (in_array(strtolower(trim($loc)), $items)) {
-                        $languageId = $language->id;
+            // Define exclusion conditions:
+            // Placeholder file should never be deleted.
+            // File is marked for preservation in POST data (i.e., the user didn't change it).
+            // File upload slot is empty in $_FILES (meaning user didn't upload a new file).
+            $fileUploadedEmpty = (! is_array($field) && isset($_FILES[$field]['tmp_name']) && empty($_FILES[$field]['tmp_name']));
 
-                        break 2; // Found match, break both loops.
+            if ('placeholder.png' == $src || $this->request->getPost($inputName) || $fileUploadedEmpty) {
+                continue; // Skip unlink
+            }
+
+            // Sanitize input file names to prevent directory traversal.
+            $safeSrc = basename($src);
+            $safeField = basename((string) $field); // Ensure $field is treated as string
+
+            // Define potential file names to check (source file name and field name).
+            $filesToCheck = [$safeSrc, $safeField];
+
+            // Define the directories to check (main upload, thumbs, icons).
+            $subdirectories = ['', 'thumbs/', 'icons/'];
+
+            // Base upload path for the current module.
+            $baseDir = UPLOAD_PATH . '/' . $this->_setUploadPath . '/';
+
+            // Loop through all potential paths and attempt deletion.
+            foreach ($subdirectories as $subdir) {
+                foreach ($filesToCheck as $filename) {
+                    $path = $baseDir . $subdir . $filename;
+
+                    if ($filename && is_file($path)) {
+                        try {
+                            unlink($path);
+                        } catch (Throwable $e) {
+                            // Safe abstraction: error during unlink (e.g., permissions)
+                        }
                     }
                 }
             }
-
-            // Store the determined language ID in the user session.
-            set_userdata('language_id', $languageId);
         }
-
-        // Get the language code (e.g., 'en', 'id') from the determined ID.
-        $languageCode = $this->model->select('code')
-            ->getWhere('app_languages', ['id' => $languageId], 1)
-            ->row('code');
-
-        // Set language code to internal property.
-        $this->_language = $languageCode;
-
-        // Check if the corresponding language translation file directory exists.
-        if (is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . $languageCode)) {
-            // Set language code to session (legacy/redundant, but preserved).
-            set_userdata('language', $languageCode);
-
-            // Set locale to the framework's language service.
-            Services::language()->setLocale($languageCode);
-        }
-    }
-
-    /**
-     * Prepares the given Query Builder function and arguments into an internal queue.
-     *
-     * It also maintains a separate list for 'where' clauses.
-     *
-     * @param string $function The Query Builder method name (e.g., 'where', 'select').
-     * @param array $arguments The array of arguments passed to the method.
-     */
-    private function _prepare(string $function, array $arguments = []): void
-    {
-        // If the function is 'where', store it separately for easy access/manipulation.
-        if ('where' == $function) {
-            // Assuming arguments[0] is the field and arguments[1] is the value/condition.
-            $this->_where[$arguments[0]] = $arguments[1];
-        }
-
-        // Add the function call to the main preparation queue.
-        $this->_prepare[] = [
-            'function' => $function,
-            'arguments' => $arguments
-        ];
     }
 
     /**

@@ -46,6 +46,7 @@ $remainingMinutes = $remainingSeconds > 0
             .forbidden-icon img {
                 max-width: 128px;
                 max-height: auto;
+                opacity: 0.5;
             }
             .logo-container {
                 margin-top: 2rem;
@@ -73,7 +74,7 @@ $remainingMinutes = $remainingSeconds > 0
                 color: #8494ab
             }
             .text-danger {
-                color: #f55;
+                color: #800;
             }
             .btn-back {
                 display: inline-flex;

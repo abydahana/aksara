@@ -41,7 +41,7 @@ class Testimonials extends Core
             'status' => 1
         ])
 
-        ->orderBy('created_timestamp', 'DESC')
+        ->orderBy('created_at', 'DESC')
         ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render($this->_table);

@@ -128,7 +128,7 @@
                     <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" height="48" alt="Logo" />
                 </div>
                 <h1 class="text-danger"><?= phrase('Whoops!'); ?></h1>
-                <p><?= phrase('We are temporary down for maintenance. Please come back again later...'); ?></p>
+                <p><?= phrase('We seem to have hit a snag. Please try again later...'); ?></p>
                 <a href="<?= base_url(); ?>" class="btn-back">
                     <span>
                         <img

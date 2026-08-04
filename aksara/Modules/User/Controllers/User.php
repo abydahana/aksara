@@ -118,14 +118,14 @@ class User extends Core
         ])
         ->join(
             'app_users',
-            'app_users.user_id = post_comments.user_id'
+            'app_users.user_id = post_comments.created_by'
         )
         ->where([
             'app_users.username' => $username,
             'post_comments.status' => 1
         ])
         ->orderBy([
-            'post_comments.timestamp' => 'DESC'
+            'post_comments.created_at' => 'DESC'
         ])
         ->render('post_comments', 'activities');
     }
@@ -161,13 +161,13 @@ class User extends Core
         ])
         ->join(
             'app_users',
-            'app_users.user_id = post_likes.user_id'
+            'app_users.user_id = post_likes.created_by'
         )
         ->where([
             'app_users.username' => $username
         ])
         ->orderBy([
-            'post_likes.timestamp' => 'DESC'
+            'post_likes.created_at' => 'DESC'
         ])
         ->render('post_likes', 'likes');
     }

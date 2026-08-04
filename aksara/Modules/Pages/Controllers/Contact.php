@@ -55,8 +55,6 @@ class Contact extends Core
             'copy' => 'boolean'
         ])
 
-        ->setDefault('timestamp', date('Y-m-d H:i:s'))
-
         ->setValidation([
             'sender_full_name' => 'required',
             'sender_phone' => 'required',

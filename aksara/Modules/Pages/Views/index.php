@@ -13,8 +13,8 @@ if ($field_data): ?>
     $page_content = $field_data->page_content->value ?? '';
     $decoded = json_decode($page_content, true);
 
-    $updated_at = $field_data->updated_timestamp->value ?? null;
-    $created_at = $field_data->created_timestamp->value ?? null;
+    $updated_at = $field_data->updated_at->value ?? null;
+    $created_at = $field_data->created_at->value ?? null;
     $timestamp = $updated_at ?: $created_at;
     $timestamp_label = $updated_at
         ? phrase('Updated at')

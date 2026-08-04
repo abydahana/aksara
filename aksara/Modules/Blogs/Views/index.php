@@ -52,7 +52,7 @@ if ($articles): ?>
                                                         <?= truncate($val->post_excerpt, 90); ?>
                                                     </p>
                                                     <p class="text-muted">
-                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
+                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
                                                     </p>
                                                 </a>
                                             </div>
@@ -122,7 +122,7 @@ if ($articles): ?>
                                                 </div>
                                                 <div class="col-11 overflow-hidden">
                                                     <span class="text-muted text-sm float-end">
-                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($_val->updated_timestamp); ?>
+                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($_val->updated_at); ?>
                                                     </span>
                                                     <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
                                                         <b>

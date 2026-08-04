@@ -88,7 +88,7 @@ class Comment extends Core
             [
                 'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
                 'post_path' => $this->request->getGet('path'),
-                'user_id' => get_userdata('user_id')
+                'created_by' => get_userdata('user_id')
             ]
         )
         ->row();
@@ -99,7 +99,7 @@ class Comment extends Core
                 [
                     'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
                     'post_path' => $this->request->getGet('path'),
-                    'user_id' => get_userdata('user_id')
+                    'created_by' => get_userdata('user_id')
                 ]
             );
 
@@ -119,8 +119,8 @@ class Comment extends Core
                 [
                     'post_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
                     'post_path' => $this->request->getGet('path'),
-                    'user_id' => get_userdata('user_id'),
-                    'timestamp' => date('Y-m-d H:i:s')
+                    'created_by' => get_userdata('user_id'),
+                    'created_at' => date('Y-m-d H:i:s')
                 ]
             );
 
@@ -133,7 +133,7 @@ class Comment extends Core
                     'type' => 'like',
                     'interaction_id' => ($this->request->getGet('post_id') ? $this->request->getGet('post_id') : 0),
                     'path' => $this->request->getGet('path'),
-                    'timestamp' => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ]
             );
         }
@@ -190,7 +190,7 @@ class Comment extends Core
             'post_comments_likes',
             [
                 'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
-                'user_id' => get_userdata('user_id')
+                'created_by' => get_userdata('user_id')
             ]
         )
         ->row();
@@ -200,7 +200,7 @@ class Comment extends Core
                 'post_comments_likes',
                 [
                     'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
-                    'user_id' => get_userdata('user_id')
+                    'created_by' => get_userdata('user_id')
                 ]
             );
 
@@ -209,7 +209,7 @@ class Comment extends Core
                 'notifications',
                 [
                     'from_user' => get_userdata('user_id'),
-                    'to_user' => $interaction->user_id,
+                    'to_user' => $interaction->created_by,
                     'type' => 'upvote',
                     'path' => $this->request->getGet('path')
                 ]
@@ -219,8 +219,8 @@ class Comment extends Core
                 'post_comments_likes',
                 [
                     'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
-                    'user_id' => get_userdata('user_id'),
-                    'timestamp' => date('Y-m-d H:i:s')
+                    'created_by' => get_userdata('user_id'),
+                    'created_at' => date('Y-m-d H:i:s')
                 ]
             );
 
@@ -229,11 +229,11 @@ class Comment extends Core
                 'notifications',
                 [
                     'from_user' => get_userdata('user_id'),
-                    'to_user' => $interaction->user_id,
+                    'to_user' => $interaction->created_by,
                     'type' => 'upvote',
                     'interaction_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0),
                     'path' => $this->request->getGet('path'),
-                    'timestamp' => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ]
             );
         }
@@ -308,7 +308,7 @@ class Comment extends Core
                     'comment_id' => $query->comment_id,
                     'comments' => $query->comments,
                     'attachment' => $query->attachment,
-                    'timestamp' => $query->timestamp
+                    'created_at' => $query->created_at
                 ]
             );
 
@@ -414,7 +414,7 @@ class Comment extends Core
                 'post_comments_reports',
                 [
                     'comment_id' => $query->comment_id,
-                    'user_id' => get_userdata('user_id')
+                    'created_by' => get_userdata('user_id')
                 ],
                 1
             )
@@ -426,11 +426,11 @@ class Comment extends Core
                     'post_comments_reports',
                     [
                         'message' => htmlspecialchars($this->request->getPost('message')),
-                        'timestamp' => $query->timestamp
+                        'created_at' => $query->created_at
                     ],
                     [
                         'comment_id' => $query->comment_id,
-                        'user_id' => get_userdata('user_id')
+                        'created_by' => get_userdata('user_id')
                     ]
                 );
             } else {
@@ -439,9 +439,9 @@ class Comment extends Core
                     'post_comments_reports',
                     [
                         'comment_id' => $query->comment_id,
-                        'user_id' => get_userdata('user_id'),
+                        'created_by' => get_userdata('user_id'),
                         'message' => htmlspecialchars($this->request->getPost('message')),
-                        'timestamp' => $query->timestamp
+                        'created_at' => $query->created_at
                     ]
                 );
             }
@@ -586,7 +586,7 @@ class Comment extends Core
 
         $query = $this->model->select('
             post_comments.comment_id,
-            post_comments.user_id,
+            post_comments.created_by,
             post_comments.post_id,
             post_comments.post_path,
             post_comments.reply_id,
@@ -594,7 +594,7 @@ class Comment extends Core
             post_comments.comments,
             post_comments.attachment,
             post_comments.edited,
-            post_comments.timestamp,
+            post_comments.created_at,
             post_comments.status,
             app_users.photo,
             app_users.username,
@@ -605,7 +605,7 @@ class Comment extends Core
         ')
         ->join(
             'app_users',
-            'app_users.user_id = post_comments.user_id'
+            'app_users.user_id = post_comments.created_by'
         )
         ->join(
             'post_comments replies_table',
@@ -642,9 +642,9 @@ class Comment extends Core
                     'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'page' => null]),
                     'reply_url' => current_page(null, ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'reply' => $this->request->getGet('reply') ?? $val->comment_id]),
                     'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
-                    'report_url' => (get_userdata('user_id') !== $val->user_id ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
-                    'update_url' => (get_userdata('user_id') === $val->user_id ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->user_id || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
+                    'report_url' => (get_userdata('user_id') !== $val->created_by ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'update_url' => (get_userdata('user_id') === $val->created_by ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'hide_url' => (get_userdata('user_id') === $val->created_by || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {
@@ -666,7 +666,7 @@ class Comment extends Core
                     ')
                     ->join(
                         'app_users',
-                        'app_users.user_id = post_comments.user_id'
+                        'app_users.user_id = post_comments.created_by'
                     )
                     ->getWhere(
                         'post_comments',
@@ -686,8 +686,8 @@ class Comment extends Core
                     }
                 }
 
-                // Convert timestamp
-                $val->timestamp = time_ago($val->timestamp);
+                // Convert creation time
+                $val->created_at = time_ago($val->created_at);
 
                 // Set highlight
                 $val->highlight = $this->request->getGet('comment_highlight') == $val->comment_id;
@@ -718,7 +718,7 @@ class Comment extends Core
             return throw_exception(400, ['comments' => phrase('Unable to reply to invalid thread.')]);
         }
 
-        $earlier = new DateTime(get_userdata('created_timestamp'));
+        $earlier = new DateTime(get_userdata('created_at'));
         $later = new DateTime(date('Y-m-d'));
         $difference = $earlier->diff($later);
         $interval = $difference->days;
@@ -759,14 +759,14 @@ class Comment extends Core
         $this->model->insert(
             $this->_table,
             [
-                'user_id' => get_userdata('user_id'),
+                'created_by' => get_userdata('user_id'),
                 'post_id' => $this->request->getGet('post_id'),
                 'post_path' => $this->request->getGet('path'),
                 'reply_id' => $reply_id,
                 'mention_id' => $mention_id,
                 'comments' => htmlspecialchars($this->request->getPost('comments')),
                 'attachment' => $attachment,
-                'timestamp' => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
                 'status' => 1
             ]
         );
@@ -784,17 +784,17 @@ class Comment extends Core
             )
             ->row();
 
-            if ($interaction && get_userdata('user_id') != $interaction->user_id) {
+            if ($interaction && get_userdata('user_id') != $interaction->created_by) {
                 // Insert notification
                 $this->model->insert(
                     'notifications',
                     [
                         'from_user' => get_userdata('user_id'),
-                        'to_user' => $interaction->user_id,
+                        'to_user' => $interaction->created_by,
                         'type' => 'reply',
                         'interaction_id' => $comment_id,
                         'path' => $this->request->getGet('path'),
-                        'timestamp' => date('Y-m-d H:i:s'),
+                        'created_at' => date('Y-m-d H:i:s'),
                     ]
                 );
             }
@@ -812,14 +812,14 @@ class Comment extends Core
             post_comments.mention_id,
             post_comments.comments,
             post_comments.attachment,
-            post_comments.timestamp,
+            post_comments.created_at,
 
             app_users.first_name,
             app_users.last_name
         ')
         ->join(
             'app_users',
-            'app_users.user_id = post_comments.user_id'
+            'app_users.user_id = post_comments.created_by'
         )
         ->getWhere(
             'post_comments',

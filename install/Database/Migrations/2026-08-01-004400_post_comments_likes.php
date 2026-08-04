@@ -30,24 +30,24 @@ class PostCommentsLikes extends Migration
                 'unsigned' => true,
                 'null' => false
             ],
-            'user_id' => [
+            'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
+            'created_at' => [
+                'type' => 'datetime',
                 'null' => false
             ]
         ]);
 
         // Add primary and unique index
         $this->forge->addKey('comment_id', true);
-        $this->forge->addKey('user_id', true);
+        $this->forge->addKey('created_by', true);
 
         // Add foreign key to parent table
         $this->forge->addForeignKey('comment_id', 'post_comments', 'comment_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('user_id', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('post_comments_likes');

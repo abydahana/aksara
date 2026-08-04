@@ -179,7 +179,7 @@ $(document).ready(function() {
                   </a>
                   &middot;
                   <span class="text-muted text-sm">
-                    ${ val.timestamp }
+                    ${ val.created_at }
                   </span>
                 </div>
               </div>

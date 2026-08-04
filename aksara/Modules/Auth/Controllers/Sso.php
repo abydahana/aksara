@@ -182,7 +182,7 @@ class Sso extends Core
                         'postal_code' => '',
                         'language_id' => $language_id,
                         'group_id' => $default_membership,
-                        'created_timestamp' => date('Y-m-d'),
+                        'created_at' => date('Y-m-d H:i:s'),
                         'last_login' => date('Y-m-d H:i:s'),
                         'status' => 1
                     ]
@@ -190,6 +190,16 @@ class Sso extends Core
 
                 if ($this->model->affectedRows() > 0) {
                     $insert_id = $this->model->insertId();
+
+                    $this->model->update(
+                        'app_users',
+                        [
+                            'created_by' => $insert_id
+                        ],
+                        [
+                            'user_id' => $insert_id
+                        ]
+                    );
 
                     $this->model->insert(
                         'app_users_oauth',

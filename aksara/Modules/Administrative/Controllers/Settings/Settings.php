@@ -394,7 +394,7 @@ class Settings extends Core
             'access_key' => ('' === $accessKey || '*****' === $accessKey ? ($storage['access_key'] ?? '') : base64_encode($encrypter->encrypt($accessKey))),
             'secret_key' => ('' === $secretKey || '*****' === $secretKey ? ($storage['secret_key'] ?? '') : base64_encode($encrypter->encrypt($secretKey))),
             'status' => 1,
-            'updated_timestamp' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($db->fieldExists('name', $this->_storageTable)) {
@@ -406,7 +406,7 @@ class Settings extends Core
         if ($storage) {
             $db->table($this->_storageTable)->where('provider', $provider)->update($data);
         } else {
-            $data['created_timestamp'] = date('Y-m-d H:i:s');
+            $data['created_at'] = date('Y-m-d H:i:s');
 
             $db->table($this->_storageTable)->insert($data);
         }

@@ -36,7 +36,7 @@ if ($results): ?>
                                     <?= $val->testimonial_content; ?>
                                 </div>
                                 <footer class="blockquote-footer">
-                                    <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name; ?></b>, <?= $val->created_timestamp; ?>
+                                    <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name; ?></b>, <?= $val->created_at; ?>
                                 </footer>
                             </blockquote>
                         </div>

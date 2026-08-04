@@ -174,7 +174,7 @@ class Messaging
                 'email' => $this->_recipientEmail ?? '',
                 'title' => $this->_subject ?? '',
                 'message' => $this->_message ?? '',
-                'timestamp' => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
                 'status' => 0,
             ]
         );

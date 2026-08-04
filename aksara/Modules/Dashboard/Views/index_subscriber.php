@@ -48,7 +48,7 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                                 <?= phrase('Member Since'); ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= (get_userdata('created_timestamp') ? date('d M Y', strtotime(get_userdata('created_timestamp'))) : '-'); ?>
+                                <?= (get_userdata('created_at') ? date('d M Y', strtotime(get_userdata('created_at'))) : '-'); ?>
                             </div>
                         </div>
                     </div>

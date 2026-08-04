@@ -60,10 +60,24 @@ class Inquiries extends Migration
                 'default' => '0',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
-                'null' => false
-            ]
+            'created_by' => [
+                'type' => 'int',
+                'unsigned' => true,
+                'null' => true
+            ],
+            'created_at' => [
+                'type' => 'datetime',
+                'null' => true
+            ],
+            'updated_by' => [
+                'type' => 'int',
+                'unsigned' => true,
+                'null' => true
+            ],
+            'updated_at' => [
+                'type' => 'datetime',
+                'null' => true
+            ],
         ]);
 
         // Add primary and unique index
@@ -71,6 +85,12 @@ class Inquiries extends Migration
         $this->forge->addKey('status');
 
         // Create table
+        $this->forge->addKey('created_by');
+        $this->forge->addKey('updated_by');
+
+        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'SET NULL');
+        $this->forge->addForeignKey('updated_by', 'app_users', 'user_id', 'CASCADE', 'SET NULL');
+
         $this->forge->createTable('inquiries');
     }
 

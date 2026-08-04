@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="col-11 overflow-hidden">
                                         <span class="text-muted text-sm float-end">
-                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_timestamp); ?>
+                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
                                         </span>
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
                                             <b>

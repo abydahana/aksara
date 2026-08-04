@@ -50,8 +50,8 @@ class Testimonials extends Core
 
         $this->setTitle(phrase('Testimonials'))
         ->setIcon('mdi mdi-comment-account-outline')
-        ->unsetColumn('testimonial_id, testimonial_content, language, updated_timestamp')
-        ->unsetField('testimonial_id, created_timestamp, update_timestamp')
+        ->unsetColumn('testimonial_id, testimonial_content, language')
+        ->unsetField('testimonial_id')
         ->unsetView('testimonial_id')
         ->setField([
             'photo' => 'image',
@@ -81,11 +81,8 @@ class Testimonials extends Core
             'testimonial_content' => phrase('Testimony'),
             'language_id' => phrase('Language'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
         ->mergeField('first_name, last_name')
-        ->mergeField('created_timestamp, updated_timestamp')
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
         ->render($this->_table);

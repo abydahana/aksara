@@ -72,8 +72,8 @@ if ($field_data) {
                                             </a>
                                         </h5>
                                         <p class="mb-0">
-                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->created_timestamp->value; ?>">
-                                                <?= time_ago($field_data->created_timestamp->value); ?>
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->created_at->value; ?>">
+                                                <?= time_ago($field_data->created_at->value); ?>
                                             </span>
                                         </p>
                                     </div>
@@ -95,8 +95,8 @@ if ($field_data) {
                         </div>
 
                         <?php if ($featured_image): ?>
-                            <div class="ratio ratio-16x9 mb-3">
-                                <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="w-100 h-100 object-fit-cover rounded" /></a>
+                            <div class="mb-3">
+                                <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="w-100 rounded" /></a>
                             </div>
                         <?php endif; ?>
 
@@ -123,7 +123,7 @@ if ($field_data) {
                         </div>
 
                         <div>
-                            <i class="text-muted text-sm"><?= ($field_data->updated_timestamp->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($field_data->updated_timestamp->value))) . ', ' . $field_data->updated_timestamp->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($field_data->created_timestamp->value))) . ', ' . $field_data->created_timestamp->value); ?></i>
+                            <i class="text-muted text-sm"><?= ($field_data->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($field_data->updated_at->value))) . ', ' . $field_data->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($field_data->created_at->value))) . ', ' . $field_data->created_at->value); ?></i>
                         </div>
 
                         <?= comment_widget(['post_id' => $field_data->post_id->value, 'path' => service('uri')->getRoutePath()]); ?>

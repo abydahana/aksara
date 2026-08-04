@@ -37,8 +37,7 @@ class Comments extends Core
     {
         $this->setTitle(phrase('Comments'))
         ->setIcon('mdi mdi-comment-multiple-outline')
-        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment, updated_timestamp')
-        ->unsetField('created_timestamp, updated_timestamp')
+        ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment')
         ->unsetView('post_id, post_type, reply_id, mention_id, edited, attachment')
 
         ->columnOrder('first_name, post_id, post_path, comments, status')
@@ -52,18 +51,10 @@ class Comments extends Core
         ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
         ->setField('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
 
-        ->setRelation(
-            'user_id',
-            'app_users.user_id',
-            '{{ app_users.first_name }} {{ app_users.last_name }}'
-        )
-
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->mergeContent('{{ comment_id }}', phrase('Feedback'), 'callback_getFeedback')
 
         ->setAlias([
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);

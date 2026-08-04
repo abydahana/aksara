@@ -48,8 +48,8 @@ class Announcements extends Core
 
         $this->setTitle(phrase('Announcements'))
         ->setIcon('mdi mdi-bullhorn-outline')
-        ->unsetColumn('announcement_id, content, announcement_slug, language, updated_timestamp')
-        ->unsetField('announcement_id, created_timestamp, updated_timestamp')
+        ->unsetColumn('announcement_id, content, announcement_slug, language')
+        ->unsetField('announcement_id')
         ->unsetView('announcement_id')
         ->columnOrder('cover')
         ->setField([
@@ -89,8 +89,6 @@ class Announcements extends Core
             'cover' => 2,
             'language_id' => 2,
             'status' => 2,
-            'created_timestamp' => 2,
-            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -113,8 +111,6 @@ class Announcements extends Core
             'end_date' => phrase('End Date'),
             'language_id' => phrase('Language'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->defaultValue([

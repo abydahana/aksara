@@ -55,8 +55,8 @@ class AppNotifications extends Migration
                 'default' => '0',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
+            'created_at' => [
+                'type' => 'datetime',
                 'null' => false
             ]
         ]);

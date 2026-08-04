@@ -61,12 +61,25 @@
                 border-radius: 3rem;
                 transition: background-color 0.2s ease;
                 box-sizing: border-box;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
             }
             .btn-install:hover {
                 background-color: #334155;
             }
             .btn-install:active {
                 background-color: #0f172a;
+            }
+            .btn-install svg {
+                width: 1rem;
+                height: 1rem;
+                stroke: currentColor;
+                stroke-width: 2.5;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
             }
             .social-links {
                 margin-top: 2.5rem;
@@ -108,7 +121,13 @@
             </div>
             <h1><?= phrase('Aksara is not installed!') ?></h1>
             <p><?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?></p>
-            <a href="<?= base_url(); ?>" class="btn-install"><?= phrase('Start Installation') ?></a>
+            <a href="<?= base_url(); ?>" class="btn-install">
+                <?= phrase('Start Installation') ?>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+            </a>
 
             <div class="social-links">
                 <!-- YouTube -->

@@ -39,8 +39,8 @@ class Peoples extends Core
     {
         $this->setTitle(phrase('Peoples'))
         ->setIcon('mdi mdi-account-group-outline')
-        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter, updated_timestamp')
-        ->unsetField('people_id, created_timestamp, updated_timestamp')
+        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter')
+        ->unsetField('people_id')
         ->unsetView('people_id')
         ->setField([
             'biography' => 'textarea',
@@ -64,7 +64,6 @@ class Peoples extends Core
         ->mergeField('first_name, last_name')
         ->mergeField('mobile, instagram')
         ->mergeField('facebook, twitter')
-        ->mergeField('created_timestamp, updated_timestamp')
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->fieldSize([
             'mobile' => 'col-md-6',
@@ -85,8 +84,6 @@ class Peoples extends Core
             'twitter' => phrase('X Profile URL'),
             'biography' => phrase('Biography'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);

@@ -42,8 +42,8 @@ class Services extends Core
     {
         $this->setTitle(phrase('Manage Services'))
         ->setIcon('mdi mdi-link-variant')
-        ->unsetColumn('id, method, ip_range, updated_timestamp')
-        ->unsetField('id, created_timestamp, updated_timestamp')
+        ->unsetColumn('id, method, ip_range')
+        ->unsetField('id')
         ->unsetView('id')
         ->setField([
             'description' => 'textarea',
@@ -61,7 +61,6 @@ class Services extends Core
         )
         ->defaultValue('api_key', $this->_apiKeyGenerator())
         ->mergeField('valid_until, status')
-        ->mergeField('created_timestamp, updated_timestamp')
         ->setValidation([
             'title' => 'required|string|max_length[64]|unique[' . $this->_table . '.title.id.' . $this->_primary . ']',
             'description' => 'required|string',
@@ -79,8 +78,6 @@ class Services extends Core
             'method' => phrase('Request Method'),
             'valid_until' => phrase('Valid Until'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);

@@ -4,7 +4,7 @@
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
+ * @     Aby Dahana <abydahana@gmail.com>
  * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
  * @license    MIT License
  *
@@ -41,8 +41,8 @@ class Galleries extends Core
     {
         $this->setTitle(phrase('Galleries'))
         ->setIcon('mdi mdi-folder-multiple-image')
-        ->unsetColumn('gallery_id, gallery_slug, gallery_tags, gallery_attributes, featured, updated_timestamp')
-        ->unsetField('gallery_id, author, created_timestamp, updated_timestamp')
+        ->unsetColumn('gallery_id, gallery_slug, gallery_tags, gallery_attributes, featured')
+        ->unsetField('gallery_id')
         ->unsetView('gallery_id, first_name')
         ->columnOrder('gallery_images, gallery_title, gallery_description, first_name, featured, status')
         ->fieldOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, status')
@@ -60,11 +60,6 @@ class Galleries extends Core
         ->addButton('../../galleries', phrase('View Album'), 'btn-success', 'mdi mdi-eye', ['gallery_slug' => 'gallery_slug'], true)
 
         ->addClass('gallery_description', 'minimal')
-        ->setRelation(
-            'author',
-            'app_users.user_id',
-            '{{ app_users.first_name }} {{ app_users.last_name }}'
-        )
         ->mergeContent('{{ first_name }} {{ last_name }}', 'Author')
         ->setValidation([
             'gallery_title' => 'required|max_length[64]|unique[' . $this->_table . '.gallery_title.gallery_id.' . $this->request->getGet('gallery_id') . ']',
@@ -73,13 +68,11 @@ class Galleries extends Core
             'featured' => 'boolean',
             'status' => 'boolean'
         ])
-        ->setDefault('author', get_userdata('user_id'))
+
         ->fieldPosition([
             'gallery_tags' => 2,
             'featured' => 2,
             'status' => 2,
-            'created_timestamp' => 2,
-            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-7',
@@ -94,8 +87,6 @@ class Galleries extends Core
             'gallery_tags' => phrase('Tags'),
             'featured' => phrase('Featured'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
         ->setPlaceholder([
             'gallery_description' => phrase('Page summary to improve SEO'),
