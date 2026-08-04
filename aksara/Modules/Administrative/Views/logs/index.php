@@ -38,5 +38,24 @@
                 </div>
             </a>
         </div>
+        <div class="col-md-4">
+            <a href="<?= go_to('banned'); ?>" class="card rounded-4 mb-3 --xhr">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <i class="mdi mdi-shield-alert-outline mdi-3x"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="card-title mb-0">
+                                <?= phrase('Banned'); ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= phrase('Show banned request logs'); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>

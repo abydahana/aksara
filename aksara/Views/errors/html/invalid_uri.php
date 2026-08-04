@@ -100,6 +100,8 @@ $remainingAttempts = isset($remainingAttempts)
             @media (max-width: 640px) {
                 .content-wrapper {
                     padding: 2.5rem 1.5rem;
+                    border: 0;
+                    margin: 0 1rem;
                 }
             }
         </style>

@@ -1040,6 +1040,12 @@ class Template
                                     ],
                                     [
                                         'id' => 0,
+                                        'label' => 'Banned',
+                                        'slug' => 'administrative/logs/banned',
+                                        'icon' => 'mdi mdi-shield-alert-outline'
+                                    ],
+                                    [
+                                        'id' => 0,
                                         'label' => 'Errors',
                                         'slug' => 'administrative/logs/errors',
                                         'icon' => 'mdi mdi-bug'
