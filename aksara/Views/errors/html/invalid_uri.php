@@ -113,7 +113,7 @@ $remainingAttempts = isset($remainingAttempts)
             <p class="text-muted"><?= phrase('The requested URL contains characters that are not allowed.'); ?></p>
 
             <p>
-                <?= ($remainingAttempts > 0 ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts]) : phrase('Your next invalid request will temporarily ban your network address.')); ?>
+                <?= ($remainingAttempts > 1 ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts]) : phrase('You have {{remaining}} attempt remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts])); ?>
             </p>
 
             <a href="<?= base_url(); ?>" class="btn-back">

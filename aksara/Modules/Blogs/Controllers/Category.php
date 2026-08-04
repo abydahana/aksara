@@ -58,7 +58,7 @@ class Category extends Core
             blogs.post_excerpt,
             blogs.post_tags,
             blogs.featured_image,
-            blogs.updated_timestamp,
+            blogs.updated_at,
             blogs_categories.category_slug,
             blogs_categories.category_title,
             blogs_categories.category_description,
@@ -74,9 +74,9 @@ class Category extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('blogs.updated_timestamp', 'DESC')
+        ->orderBy('blogs.updated_at', 'DESC')
         ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->where([
             'blogs_categories.category_slug' => $slug,
@@ -121,7 +121,7 @@ class Category extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
-            blogs.updated_timestamp,
+            blogs.updated_at,
             blogs_categories.category_title,
             blogs_categories.category_slug,
             app_users.username,
@@ -135,7 +135,7 @@ class Category extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
         ->orderBy('blogs.post_id', 'DESC')
         ->getWhere(

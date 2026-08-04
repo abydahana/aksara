@@ -85,7 +85,7 @@ if ($user): ?>
                                         <div class="col-10 col-lg-9">
                                             <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
                                             <p class="text-muted mb-0">
-                                                <?= time_ago($val->timestamp); ?> &middot; <a href="<?= base_url($val->post_path); ?>" target="_blank"> <?= phrase('Liked'); ?> </a>
+                                                <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path); ?>" target="_blank"> <?= phrase('Liked'); ?> </a>
                                             </p>
                                         </div>
                                     </div>

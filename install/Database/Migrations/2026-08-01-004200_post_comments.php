@@ -31,11 +31,6 @@ class PostComments extends Migration
                 'auto_increment' => true,
                 'null' => false
             ],
-            'user_id' => [
-                'type' => 'int',
-                'unsigned' => true,
-                'null' => false
-            ],
             'post_id' => [
                 'type' => 'int',
                 'unsigned' => true,
@@ -75,22 +70,36 @@ class PostComments extends Migration
                 'default' => '0',
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
+            'created_by' => [
+                'type' => 'int',
+                'unsigned' => true,
                 'null' => false
-            ]
+            ],
+            'created_at' => [
+                'type' => 'datetime',
+                'null' => false
+            ],
+            'updated_by' => [
+                'type' => 'int',
+                'unsigned' => true,
+                'null' => true
+            ],
+            'updated_at' => [
+                'type' => 'datetime',
+                'null' => true
+            ],
         ]);
 
         // Add primary and unique index
         $this->forge->addKey('comment_id', true, true);
-        $this->forge->addKey('user_id');
+        $this->forge->addKey('created_by');
         $this->forge->addKey('post_id');
         $this->forge->addKey('reply_id');
         $this->forge->addKey('mention_id');
         $this->forge->addKey('status');
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('user_id', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('post_comments');

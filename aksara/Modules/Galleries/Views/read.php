@@ -74,8 +74,8 @@ if ($images) {
                             </a>
                         </h5>
                         <p class="mb-0">
-                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->updated_timestamp->value; ?>">
-                                <?= time_ago($field_data->updated_timestamp->value); ?>
+                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->updated_at->value; ?>">
+                                <?= time_ago($field_data->updated_at->value); ?>
                             </span>
                         </p>
                     </div>

@@ -376,7 +376,7 @@ if (! function_exists('is_liked')) {
             return $model->getWhere(
                 'post_likes',
                 [
-                    'user_id' => get_userdata('user_id'),
+                    'created_by' => get_userdata('user_id'),
                     'post_id' => $post_id,
                     'post_path' => $post_path
                 ],

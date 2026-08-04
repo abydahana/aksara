@@ -76,7 +76,7 @@ class Feedback extends Core
         ')
         ->join(
             'app_users',
-            'app_users.user_id = post_comments.user_id'
+            'app_users.user_id = post_comments.created_by'
         )
         ->getWhere(
             'post_comments',
@@ -120,8 +120,7 @@ class Feedback extends Core
 
         $this->setTitle(phrase('Feedback'))
         ->setIcon('mdi mdi-file-alert-outline')
-        ->unsetColumn('comment_id, post_id, reply_id, edited, updated_timestamp')
-        ->unsetField('created_timestamp, updated_timestamp')
+        ->unsetColumn('comment_id, post_id, reply_id, edited')
         ->unsetView('comment_id, post_id, reply_id, edited')
 
         ->columnOrder('first_name, message')
@@ -133,11 +132,6 @@ class Feedback extends Core
             'status' => 'boolean'
         ])
         ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->setRelation(
-            'user_id',
-            'app_users.user_id',
-            '{{ app_users.first_name }} {{ app_users.last_name }}'
-        )
 
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
@@ -146,8 +140,6 @@ class Feedback extends Core
         ])
 
         ->setAlias([
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);

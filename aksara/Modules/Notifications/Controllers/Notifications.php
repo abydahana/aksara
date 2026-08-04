@@ -48,13 +48,13 @@ class Notifications extends Core
             notifications.type,
             notifications.interaction_id,
             notifications.path AS url,
-            notifications.timestamp
+            notifications.created_at
         ')
         ->join(
             'app_users',
             'app_users.user_id = notifications.from_user'
         )
-        ->orderBy('notifications.timestamp', 'DESC')
+        ->orderBy('notifications.created_at', 'DESC')
         ->getWhere(
             $this->_table,
             [
@@ -88,7 +88,7 @@ class Notifications extends Core
                 $query[$key]->avatar = get_image('users', $val->avatar, 'icon');
                 $query[$key]->text = ('comment' === $val->type ? phrase('commented on your post.') : ('reply' === $val->type ? phrase('replying to your comment.') : ('like' === $val->type ? phrase('likes your post') : ('upvote' === $val->type ? phrase('upvoted your comment.') : phrase('reacted to your post.')))));
                 $query[$key]->url = base_url($val->url, $query_params);
-                $query[$key]->timestamp = time_ago($val->timestamp);
+                $query[$key]->created_at = time_ago($val->created_at);
             }
         }
 

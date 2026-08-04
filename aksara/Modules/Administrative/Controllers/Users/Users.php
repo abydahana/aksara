@@ -52,7 +52,6 @@ class Users extends Core
 
         if (in_array($this->getMethod(), ['create'])) {
             $this->setValidation('password', 'required|min_length[6]');
-            $this->setDefault('created_timestamp', date('Y-m-d'));
         }
 
         $this->setTitle(phrase('Manage Users'))
@@ -61,13 +60,13 @@ class Users extends Core
 
             ->addButton('privileges', phrase('Individual Privilege'), 'btn-success --xhr', 'mdi mdi-account-check-outline', ['user_id' => 'user_id'])
 
-            ->unsetColumn('user_id, group_id, password, phone, gender, bio, address, country, language, postal_code, created_timestamp, updated_timestamp')
-            ->unsetField('user_id, bio, phone, address, postal_code, country_id, last_login, is_logged, created_timestamp, updated_timestamp')
+            ->unsetColumn('user_id, group_id, password, phone, gender, bio, address, country, language, postal_code')
+            ->unsetField('user_id, bio, phone, address, postal_code, country_id, last_login, is_logged')
             ->unsetView('user_id, password')
 
             ->columnOrder('photo, username, first_name, email, group_name')
             ->fieldOrder('photo, first_name, last_name, gender, username, email, password, bio, phone, address, postal_code, country_id, language_id, group_id, status')
-            ->viewOrder('photo, first_name, last_name, gender, username, email, language, group_name, language_id, group_id, phone, address, postal_code, country, bio, status, created_timestamp, updated_timestamp, last_login')
+            ->viewOrder('photo, first_name, last_name, gender, username, email, language, group_name, language_id, group_id, phone, address, postal_code, country, bio, status, last_login')
 
             ->setField([
                 'password' => 'password',
@@ -136,8 +135,6 @@ class Users extends Core
                 'language' => phrase('Language'),
                 'group_id' => phrase('Group'),
                 'group_name' => phrase('Group'),
-                'created_timestamp' => phrase('Created'),
-                'updated_timestamp' => phrase('Updated')
             ])
             ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
             ->mergeField('first_name, last_name')
@@ -145,7 +142,6 @@ class Users extends Core
             ->mergeField('language_id, group_id')
             ->mergeField('language, group_name')
             ->mergeField('postal_code, country')
-            ->mergeField('created_timestamp, updated_timestamp')
             ->orderBy('user_id', 'ASC')
             ->render($this->_table);
     }

@@ -55,7 +55,7 @@ class Blogs extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
-            blogs.updated_timestamp,
+            blogs.updated_at,
             blogs_categories.category_title,
             blogs_categories.category_slug,
             app_users.username,
@@ -69,9 +69,9 @@ class Blogs extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('updated_timestamp', 'DESC')
+        ->orderBy('updated_at', 'DESC')
         ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
         ->getWhere(
             'blogs',
@@ -106,7 +106,7 @@ class Blogs extends Core
                     blogs.post_title,
                     blogs.post_excerpt,
                     blogs.featured_image,
-                    blogs.updated_timestamp,
+                    blogs.updated_at,
                     app_users.username,
                     app_users.first_name,
                     app_users.last_name,
@@ -114,9 +114,9 @@ class Blogs extends Core
                 ')
                 ->join(
                     'app_users',
-                    'app_users.user_id = blogs.author'
+                    'app_users.user_id = blogs.created_by'
                 )
-                ->orderBy('updated_timestamp', 'DESC')
+                ->orderBy('updated_at', 'DESC')
                 ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
                 ->getWhere(
                     'blogs',
@@ -158,7 +158,7 @@ class Blogs extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
-            blogs.updated_timestamp,
+            blogs.updated_at,
             blogs_categories.category_title,
             blogs_categories.category_slug,
             app_users.username,
@@ -172,7 +172,7 @@ class Blogs extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
         ->orderBy('blogs.post_id', 'DESC')
         ->getWhere(

@@ -44,9 +44,8 @@ class Connections extends Core
 
         $this->setTitle(phrase('Third Party Connection'))
         ->setIcon('mdi mdi-power-plug')
-        ->unsetColumn('hostname, port, username, password, database_name, updated_timestamp')
-        ->unsetField('id, created_timestamp, updated_timestamp')
-
+        ->unsetColumn('hostname, port, username, password, database_name')
+        ->unsetField('id')
         ->addButton('connect', phrase('Check Connection'), 'btn btn-success --xhr show-progress', 'mdi mdi-sync', ['id' => 'id'])
 
         ->setField([
@@ -82,10 +81,9 @@ class Connections extends Core
             'username' => 2,
             'password' => 2,
             'database_name' => 2,
-            'status' => 2
+            'status' => 2,
         ])
         ->mergeField('hostname, port')
-        ->mergeField('created_timestamp, updated_timestamp')
         ->fieldSize([
             'hostname' => 'col-sm-8',
             'port' => 'col-sm-4'
@@ -107,8 +105,6 @@ class Connections extends Core
             'username' => phrase('Username'),
             'password' => phrase('Password'),
             'database_name' => phrase('Database Name'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
         ->render($this->_table);
     }

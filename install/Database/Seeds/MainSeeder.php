@@ -598,9 +598,19 @@ class MainSeeder extends Seeder
             'language_id' => (session()->get('language') == 'id' ? 2 : 1),
             'country_id' => 0,
             'group_id' => 1,
-            'created_timestamp' => date('Y-m-d'),
             'last_login' => date('Y-m-d H:i:s'),
-            'status' => 1
+            'status' => 1,
+            'created_at' => date('Y-m-d H:i:s')
         ]);
+
+        $user_id = $this->db->insertID();
+
+        if ($user_id) {
+            $this->db->table('app_users')
+                ->where('user_id', $user_id)
+                ->update([
+                    'created_by' => $user_id
+                ]);
+        }
     }
 }

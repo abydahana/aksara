@@ -39,8 +39,8 @@ class PostCommentsHistory extends Migration
                 'constraint' => 255,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
+            'created_at' => [
+                'type' => 'datetime',
                 'null' => false
             ]
         ]);

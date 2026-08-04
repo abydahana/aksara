@@ -47,7 +47,7 @@ class Notifier extends Core
 
         ->setField([
             'message' => 'textarea',
-            'timestamp' => 'datetime'
+            'created_at' => 'datetime'
         ])
         ->setField('status', 'radio', [
             0 => phrase('Pending'),
@@ -55,7 +55,7 @@ class Notifier extends Core
             2 => phrase('Fully Sent')
         ])
 
-        ->orderBy('timestamp', 'DESC')
+        ->orderBy('created_at', 'DESC')
 
         ->render($this->_table);
     }

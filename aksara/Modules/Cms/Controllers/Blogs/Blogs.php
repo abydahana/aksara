@@ -4,7 +4,7 @@
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
+ * @     Aby Dahana <abydahana@gmail.com>
  * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
  * @license    MIT License
  *
@@ -80,8 +80,8 @@ class Blogs extends Core
         $this->setTitle(phrase('Blogs'))
         ->setIcon('mdi mdi-newspaper')
         ->setPrimary('post_id')
-        ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, headline, language, updated_timestamp')
-        ->unsetField('post_id, author, created_timestamp, updated_timestamp')
+        ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, headline, language')
+        ->unsetField('post_id')
         ->unsetView('post_id')
         ->columnOrder('featured_image, post_title, category_title, first_name, headline, status')
         ->fieldOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
@@ -90,7 +90,6 @@ class Blogs extends Core
             'post_excerpt' => 'textarea',
             'post_content' => 'wysiwyg',
             'post_tags' => 'tagsinput',
-            'author' => 'current_user',
             'headline' => 'boolean',
             'featured_image' => 'image',
             'status' => 'boolean'
@@ -110,11 +109,6 @@ class Blogs extends Core
             'post_category',
             'blogs_categories.category_id',
             '{{ blogs_categories.category_title }}'
-        )
-        ->setRelation(
-            'author',
-            'app_users.user_id',
-            '{{ app_users.first_name }} {{ app_users.last_name }}'
         )
         ->setRelation(
             'language_id',
@@ -139,17 +133,12 @@ class Blogs extends Core
             'featured_image' => 2,
             'language_id' => 2,
             'language' => 2,
-            'created_timestamp' => 2,
-            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
         ->modalSize('modal-xl')
-        ->setDefault([
-            'author' => get_userdata('user_id')
-        ])
         ->itemReference([
             'category_title'
         ])
@@ -176,8 +165,6 @@ class Blogs extends Core
             'status' => phrase('Status'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->render($this->_table);
@@ -274,7 +261,7 @@ class Blogs extends Core
 
         $this->setTitle(phrase('Translate Blog Post'))
         ->setIcon('mdi mdi-translate')
-        ->unsetField('post_id, post_category, language_id, post_slug, featured_image, author, headline, status, created_timestamp, updated_timestamp')
+        ->unsetField('post_id, post_category, language_id, post_slug, featured_image, headline, status')
         ->setField([
             'post_excerpt' => 'textarea',
             'post_content' => 'wysiwyg',

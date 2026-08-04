@@ -51,8 +51,8 @@ class Categories extends Core
 
         $this->setTitle(phrase('Blog Categories'))
         ->setIcon('mdi mdi-sitemap')
-        ->unsetColumn('category_id, language, updated_timestamp')
-        ->unsetField('category_id, created_timestamp, updated_timestamp')
+        ->unsetColumn('category_id, language')
+        ->unsetField('category_id')
         ->unsetView('category_id')
         ->columnOrder('category_image')
         ->setField([
@@ -84,8 +84,6 @@ class Categories extends Core
             'category_description' => phrase('Description'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
         ->setPlaceholder([
             'category_description' => phrase('Category details to improve SEO')

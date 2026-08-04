@@ -97,7 +97,7 @@ class Register extends Core
             'password' => password_hash($this->request->getPost('password') . ENCRYPTION_KEY, PASSWORD_DEFAULT),
             'group_id' => (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3),
             'language_id' => (get_setting('app_language') > 0 ? get_setting('app_language') : 1),
-            'created_timestamp' => date('Y-m-d'),
+            'created_at' => date('Y-m-d H:i:s'),
             'last_login' => date('Y-m-d H:i:s'),
             'status' => (get_setting('auto_active_registration') ? 1 : 0)
         ];
@@ -105,6 +105,16 @@ class Register extends Core
         // Insert user with safe checkpoint
         if ($this->model->insert('app_users', $prepare, 1)) {
             $prepare['user_id'] = $this->model->insertId();
+
+            $this->model->update(
+                'app_users',
+                [
+                    'created_by' => $prepare['user_id']
+                ],
+                [
+                    'user_id' => $prepare['user_id']
+                ]
+            );
 
             // Unset stored captcha
             unset_userdata(['captcha', 'captcha_file']);

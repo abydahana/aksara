@@ -4,7 +4,7 @@
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
+ * @     Aby Dahana <abydahana@gmail.com>
  * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
  * @license    MIT License
  *
@@ -37,9 +37,9 @@ class Videos extends Core
     {
         $this->setTitle(phrase('Videos'))
         ->setIcon('mdi mdi-youtube')
-        ->unsetColumn('id, slug, video_url, author, updated_timestamp')
-        ->unsetField('id, author, created_timestamp, updated_timestamp')
-        ->unsetView('id, author')
+        ->unsetColumn('id, slug, video_url')
+        ->unsetField('id')
+        ->unsetView('id')
 
         ->setField([
             'cover' => 'image',
@@ -48,12 +48,6 @@ class Videos extends Core
             'status' => 'boolean'
         ])
         ->setField('slug', 'slug', 'title')
-
-        ->mergeField('created_timestamp, updated_timestamp')
-
-        ->setDefault([
-            'author' => get_userdata('user_id')
-        ])
 
         ->setValidation([
             'title' => 'required|unique[' . $this->_table . '.title.id.' . $this->request->getGet('id') . ']',
@@ -69,8 +63,6 @@ class Videos extends Core
             'video_url' => phrase('Video URL'),
             'featured' => phrase('Featured'),
             'status' => phrase('Status'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
 
         ->setPlaceholder([

@@ -38,7 +38,7 @@ class Videos extends Core
             videos.title,
             videos.description,
             videos.video_url,
-            videos.created_timestamp,
+            videos.created_at,
             app_users.username,
             app_users.first_name,
             app_users.last_name,
@@ -46,7 +46,7 @@ class Videos extends Core
         ')
         ->join(
             'app_users',
-            'app_users.user_id = videos.author'
+            'app_users.user_id = videos.created_by'
         )
         ->render($this->_table);
     }
@@ -62,7 +62,7 @@ class Videos extends Core
             videos.title,
             videos.description,
             videos.video_url,
-            videos.created_timestamp,
+            videos.created_at,
             app_users.username,
             app_users.first_name,
             app_users.last_name,
@@ -70,7 +70,7 @@ class Videos extends Core
         ')
         ->join(
             'app_users',
-            'app_users.user_id = videos.author'
+            'app_users.user_id = videos.created_by'
         )
         ->where('videos.slug', $slug)
         ->limit(1)

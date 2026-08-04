@@ -39,8 +39,8 @@ class Inquiries extends Core
     {
         $this->setTitle(phrase('Inquiries'))
         ->setIcon('mdi mdi-message-text')
-        ->unsetColumn('id, updated_timestamp')
-        ->unsetField('id, sender_full_name, sender_phone, sender_email, subject, messages, timestamp')
+        ->unsetColumn('id')
+        ->unsetField('id, sender_full_name, sender_phone, sender_email, subject, messages')
         ->unsetView('id')
 
         ->setButton('update', 'update', 'Mark as Followed Up', 'btn-success --modal', 'mdi mdi-check-bold', ['id' => 'id'])
@@ -56,10 +56,9 @@ class Inquiries extends Core
         ->setAlias([
             'sender_email' => phrase('Email'),
             'sender_full_name' => phrase('Sender'),
-            'timestamp' => phrase('Timestamp')
         ])
 
-        ->orderBy('timestamp', 'DESC')
+        ->orderBy('created_at', 'DESC')
 
         ->render($this->_table);
     }

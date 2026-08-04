@@ -25,11 +25,6 @@ class PostLikes extends Migration
     {
         // Add columns to table
         $this->forge->addField([
-            'user_id' => [
-                'type' => 'int',
-                'unsigned' => true,
-                'null' => false
-            ],
             'post_id' => [
                 'type' => 'int',
                 'unsigned' => true,
@@ -40,18 +35,23 @@ class PostLikes extends Migration
                 'constraint' => 2000,
                 'null' => false
             ],
-            'timestamp' => [
-                'type' => 'timestamp',
+            'created_by' => [
+                'type' => 'int',
+                'unsigned' => true,
+                'null' => false
+            ],
+            'created_at' => [
+                'type' => 'datetime',
                 'null' => false
             ]
         ]);
 
         // Add primary and unique index
-        $this->forge->addKey('user_id', true);
+        $this->forge->addKey('created_by', true);
         $this->forge->addKey('post_id', true);
 
         // Add foreign key to parent table
-        $this->forge->addForeignKey('user_id', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'CASCADE');
 
         // Create table
         $this->forge->createTable('post_likes');

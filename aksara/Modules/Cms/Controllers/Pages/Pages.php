@@ -4,7 +4,7 @@
  * This file is part of Aksara CMS, both framework and publishing
  * platform.
  *
- * @author     Aby Dahana <abydahana@gmail.com>
+ * @     Aby Dahana <abydahana@gmail.com>
  * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
  * @license    MIT License
  *
@@ -55,9 +55,9 @@ class Pages extends Core
         ->setIcon('mdi mdi-file-document-outline')
         ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
         ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
-        ->unsetColumn('page_id, author, page_slug, page_content, language, updated_timestamp')
-        ->unsetField('page_id, author, created_timestamp, updated_timestamp')
-        ->unsetView('page_id, author, page_content')
+        ->unsetColumn('page_id, page_slug, page_content, language')
+        ->unsetField('page_id')
+        ->unsetView('page_id, page_content')
         ->columnOrder('page_title, page_description, updated, status')
         ->fieldOrder('page_title, page_description, language_id, status')
         ->setField([
@@ -69,7 +69,6 @@ class Pages extends Core
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
         ->addButton('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
-
         ->setRelation(
             'language_id',
             'app_languages.id',
@@ -84,17 +83,12 @@ class Pages extends Core
             'language_id' => 'required',
             'status' => 'boolean'
         ])
-        ->setDefault([
-            'author' => get_userdata('user_id')
-        ])
         ->setAlias([
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_slug' => phrase('Slug'),
             'language' => phrase('Language'),
             'language_id' => phrase('Language'),
-            'created_timestamp' => phrase('Created'),
-            'updated_timestamp' => phrase('Updated')
         ])
         ->setPlaceholder([
             'page_description' => phrase('Page summary to improve SEO')
@@ -103,8 +97,6 @@ class Pages extends Core
             'status' => 2,
             'language_id' => 2,
             'language' => 2,
-            'created_timestamp' => 2,
-            'updated_timestamp' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -208,7 +200,7 @@ class Pages extends Core
 
         $this->setTitle(phrase('Translate Page'))
         ->setIcon('mdi mdi-translate')
-        ->unsetField('page_id, language_id, page_slug, author, status, created_timestamp, updated_timestamp')
+        ->unsetField('page_id, language_id, page_slug, status')
         ->setField([
             'page_description' => 'textarea',
             'page_content' => 'wysiwyg',

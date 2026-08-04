@@ -58,7 +58,7 @@ class Read extends Core
         ')
         ->join(
             'app_users',
-            'app_users.user_id = galleries.author'
+            'app_users.user_id = galleries.created_by'
         )
         ->where([
             'galleries.gallery_slug' => $category

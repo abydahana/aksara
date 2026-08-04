@@ -398,10 +398,10 @@
                 <div class="logo-container">
                     <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Logo" />
                 </div>
-                <p class="eyebrow"><?= phrase('Aksara Maintenance'); ?></p>
+                <p class="eyebrow"><?= phrase('Under Maintenance'); ?></p>
                 <h1 id="maintenance-title"><?= phrase('We will be right back.'); ?></h1>
                 <p class="message">
-                    <?= phrase('Aksara is temporarily down for maintenance. While the system is being tuned up, you can pass the time by sliding a few tiles into place.'); ?>
+                    <?= phrase('We\'re currently performing maintenance.'); ?> <?= phrase('While the system is being tuned up, you can pass the time by sliding a few tiles into place.'); ?>
                 </p>
                 <div class="meta" aria-label="<?= phrase('Maintenance details'); ?>">
                     <span class="pill">HTTP 503</span>

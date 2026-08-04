@@ -104,7 +104,7 @@ class Home extends Core
 			blogs.post_title,
 			blogs.post_excerpt,
 			blogs.featured_image,
-			blogs.updated_timestamp,
+			blogs.updated_at,
 			blogs_categories.category_title,
 			blogs_categories.category_slug,
 			app_users.username,
@@ -118,9 +118,9 @@ class Home extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('updated_timestamp', 'DESC')
+        ->orderBy('updated_at', 'DESC')
         ->getWhere(
             'blogs',
             [
@@ -150,7 +150,7 @@ class Home extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
-            blogs.updated_timestamp,
+            blogs.updated_at,
             blogs_categories.category_slug,
             blogs_categories.category_title,
             app_users.username,
@@ -164,9 +164,9 @@ class Home extends Core
         )
         ->join(
             'app_users',
-            'app_users.user_id = blogs.author'
+            'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('blogs.created_timestamp', 'DESC')
+        ->orderBy('blogs.created_at', 'DESC')
         ->getWhere(
             'blogs',
             [
