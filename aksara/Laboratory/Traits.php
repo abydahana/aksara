@@ -586,6 +586,12 @@ trait Traits
     private ?string $_token = null;
 
     /**
+     * Indicates that the current mutation should consume the submitted token
+     * unless the response ends as a recoverable form error.
+     */
+    private bool $_tokenInvalidationPending = false;
+
+    /**
      * Total rows count (used for pagination).
      * @var int
      */
@@ -644,6 +650,12 @@ trait Traits
      * @var array
      */
     private $_unsetSelect = [];
+
+    /**
+     * Configuration to hide toolbar action buttons from view.
+     * @var array
+     */
+    private $_unsetToolbar = [];
 
     /**
      * Configuration to disable truncate operation.

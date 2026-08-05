@@ -218,6 +218,8 @@ class Permission
             $method = 'update';
         }
 
+        $path = $this->_normalizePath($path, $method, $router);
+
         // Identify the user
         $user = $this->_model->select('
             user_id,
@@ -300,6 +302,8 @@ class Permission
         } elseif ('clone' == $method) {
             $method = 'update';
         }
+
+        $path = $this->_normalizePath($path, $method, $router);
 
         // Fetch privileges
         $privileges = $this->_model->select('
@@ -455,9 +459,65 @@ class Permission
     }
 
     /**
-     * Smart discovery to match methods that might be camelCase while the database privilege uses snake_case or dash-case
+     * Resolve privilege path from the active controller, excluding method
+     * and dynamic URI parameters.
+     *
+     * @param   string|null $path
+     * @param   string      $method
+     * @param   mixed       $router
+     * @return  string|null
      */
-    private function _matchMethod($method, $privileges = [])
+    private function _normalizePath($path = null, $method = '', $router = null)
+    {
+        if (! $router) {
+            $router = Services::router();
+        }
+
+        $controller = $router->controllerName();
+
+        if ($controller) {
+            $slug = strtolower(str_replace('\\', '/', $controller));
+            $slug = preg_replace(['/\/aksara\/modules\//', '/\/modules\//', '/\/controllers\//'], ['', '', '/'], $slug, 1);
+
+            $segments = explode('/', $slug ?? '');
+            $final = [];
+            $previous = null;
+
+            foreach ($segments as $segment) {
+                if ($segment && $segment != $previous) {
+                    $final[] = $segment;
+                }
+
+                $previous = $segment;
+            }
+
+            if ($final) {
+                $controller_path = implode('/', $final);
+                $path = ($path ? trim($path, '/') : null);
+
+                if (! $path || $path == $controller_path || strpos($path, $controller_path . '/') === 0) {
+                    return $controller_path;
+                }
+            }
+        }
+
+        if ($path && $method && 'index' != $method) {
+            $segments = explode('/', trim($path, '/'));
+            $method_index = array_search(strtolower($method), array_map('strtolower', $segments), true);
+
+            if (false !== $method_index) {
+                return implode('/', array_slice($segments, 0, $method_index));
+            }
+        }
+
+        return $path;
+    }
+
+    /**
+     * Smart discovery to match methods that might be camelCase while
+     * the database privilege uses snake_case or dash-case
+     */
+    private function _matchMethod(string|int $method = '', array $privileges = [])
     {
         if (! is_array($privileges)) {
             return false;
