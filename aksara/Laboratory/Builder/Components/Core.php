@@ -367,7 +367,7 @@ class Core
                 </div>
             </div>
             <div class="col">
-                <form action="{{ action }}" method="GET" class="form-horizontal">
+                <form action="{{ action }}" method="GET" class="form-horizontal filter-form">
                     <div class="input-group input-group-sm">
                         {% for name, filter in filters %}
                             {% if filter.type == 'text' %}

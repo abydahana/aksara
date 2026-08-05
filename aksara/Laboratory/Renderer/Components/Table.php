@@ -380,13 +380,13 @@ class Table
     {
         $buttons = [];
 
-        if (! in_array('create', $this->_unsetMethod)) {
+        if (! in_array('create', $this->_unsetMethod) && ! in_array('create', $this->_unsetToolbar)) {
             $buttons[] = $this->_setLink('create', phrase('Create'), 'btn-primary --modal', 'mdi mdi-plus', $query_params);
         }
 
         if ($this->_addToolbar) {
             foreach ($this->_addToolbar as $val) {
-                if (in_array($val['url'], $this->_unsetMethod)) {
+                if (in_array($val['url'], $this->_unsetMethod) && in_array($val['url'], $this->_unsetToolbar)) {
                     continue;
                 }
 
@@ -401,18 +401,18 @@ class Table
             $export_params = array_merge($query_params, ['keep_query' => true]);
 
             if (! in_array('read', $this->_unsetMethod)) {
-                if (! in_array('export', $this->_unsetMethod)) {
+                if (! in_array('export', $this->_unsetMethod) && ! in_array('export', $this->_unsetToolbar)) {
                     $buttons[] = $this->_setLink('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $export_params, true);
                 }
-                if (! in_array('print', $this->_unsetMethod)) {
+                if (! in_array('print', $this->_unsetMethod) && ! in_array('print', $this->_unsetToolbar)) {
                     $buttons[] = $this->_setLink('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $export_params, true);
                 }
-                if (! in_array('pdf', $this->_unsetMethod)) {
+                if (! in_array('pdf', $this->_unsetMethod) && ! in_array('pdf', $this->_unsetToolbar)) {
                     $buttons[] = $this->_setLink('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $export_params, true);
                 }
             }
 
-            if (! in_array('delete', $this->_unsetMethod)) {
+            if (! in_array('delete', $this->_unsetMethod) && ! in_array('delete', $this->_unsetToolbar)) {
                 $buttons[] = $this->_setLink('delete', phrase('Batch Delete'), 'btn-danger d-none disabled --open-delete-confirm', 'mdi mdi-delete', $query_params);
             }
         } else {
@@ -423,6 +423,12 @@ class Table
 
         // Apply Button Overrides
         foreach ($buttons as $key => $val) {
+            if (! $val) {
+                unset($buttons[$key]);
+
+                continue;
+            }
+
             if (isset($this->_setButton[$val['path']])) {
                 $override = $this->_setButton[$val['path']];
                 $buttons[$key] = $this->_setLink(

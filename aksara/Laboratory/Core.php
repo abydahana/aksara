@@ -196,6 +196,20 @@ abstract class Core extends Controller
                 // Safe abstraction
             }
         }
+
+        // Token preparation
+        if (! $this->request->getPost('_token')) {
+            if (! get_userdata('token_timestamp')) {
+                set_userdata('token_timestamp', time());
+            }
+
+            // Set CSRF Token
+            $this->_token = generate_csrf_token();
+
+            // There may be a form without using form renderer
+            // Set CSRF Token into unique session key
+            set_userdata(sha1(uri_string()), $this->_token);
+        }
     }
 
     /**
@@ -315,6 +329,39 @@ abstract class Core extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Invalidate submitted form token.
+     */
+    private function _invalidateToken(): void
+    {
+        set_userdata('token_timestamp', time());
+        unset_userdata(sha1(uri_string()));
+
+        $this->_tokenInvalidationPending = false;
+    }
+
+    /**
+     * Keep token invalidation pending while an after hook is running.
+     */
+    private function _deferTokenInvalidation(): void
+    {
+        if ($this->_tokenInvalidationPending) {
+            return;
+        }
+
+        $this->_tokenInvalidationPending = true;
+
+        register_shutdown_function(function () {
+            if (! $this->_tokenInvalidationPending) {
+                return;
+            }
+
+            if (http_response_code() < 400) {
+                $this->_invalidateToken();
+            }
+        });
     }
 
     /**
@@ -788,6 +835,24 @@ abstract class Core extends Controller
 
         // Merge array and store to property
         $this->_addToolbar = array_merge($this->_addToolbar, $url);
+
+        return $this;
+    }
+
+    /**
+     * Removes a specific toolbar action button based on its key.
+     *
+     * @param string|array $methods Method name(s) to remove from the toolbar.
+     *
+     * @return static Current object instance (chainable).
+     */
+    public function unsetToolbar(string|array $methods): static
+    {
+        if (! is_array($methods)) {
+            $methods = array_map('trim', explode(',', $methods));
+        }
+
+        $this->_unsetToolbar = array_merge($this->_unsetToolbar, $methods);
 
         return $this;
     }
@@ -2395,15 +2460,6 @@ abstract class Core extends Controller
             }
         }
 
-        if (! $this->request->getPost('_token')) {
-            // Set CSRF Token
-            $this->_token = generate_csrf_token();
-
-            // There may be a form without using form renderer
-            // Set CSRF Token into unique session key
-            set_userdata(sha1(uri_string()), $this->_token);
-        }
-
         // Validate the restricted action
         if (in_array($this->_method, $this->_unsetMethod)) {
             return throw_exception(403, phrase('You are not allowed to perform the requested action.'), go_to());
@@ -3521,7 +3577,8 @@ abstract class Core extends Controller
                 '_itemReference', '_mergeContent', '_mergeLabel', '_method', '_parameter', '_select',
                 '_setAlias', '_setAutocomplete', '_setButton', '_setField', '_setRelation',
                 '_setUploadPath', '_sortable', '_table', '_unsetColumn', '_unsetClone', '_unsetDelete',
-                '_unsetMethod', '_unsetRead', '_unsetTruncate', '_unsetUpdate', 'apiClient', 'model'
+                '_unsetMethod', '_unsetRead', '_unsetTruncate', '_unsetUpdate', '_unsetToolbar',
+                'apiClient', 'model'
             ];
 
             // Create an array containing only the whitelisted properties from the current object.
@@ -4311,17 +4368,16 @@ abstract class Core extends Controller
 
                 $this->_insertId = $autoIncrement ? $this->model->insertId() : 0;
 
-                // Update token timestamp and invalidate token
-                set_userdata('token_timestamp', time());
-                unset_userdata(sha1(uri_string()));
-
                 // Unset uploaded files session to prevent orphaned files if update is successful
                 unset_userdata('_uploaded_files');
 
                 // --- 5. After Insert Hook ---
                 if (method_exists($this, 'afterInsert')) {
+                    $this->_deferTokenInvalidation();
                     $this->afterInsert();
                 }
+
+                $this->_invalidateToken();
 
                 // Send success response
                 return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirectBack);
@@ -4432,16 +4488,15 @@ abstract class Core extends Controller
                 }
             }
 
-            // Update token timestamp and invalidate token
-            set_userdata('token_timestamp', time());
-            unset_userdata(sha1(uri_string()));
-
             // Unset uploaded files session to prevent orphaned files if update is successful
             unset_userdata('_uploaded_files');
 
             if (method_exists($this, 'afterUpdate')) {
+                $this->_deferTokenInvalidation();
                 $this->afterUpdate();
             }
+
+            $this->_invalidateToken();
 
             return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
         }
@@ -4506,10 +4561,6 @@ abstract class Core extends Controller
 
                 // Attempt to update data
                 if ($this->model->update($table, $data, $where)) {
-                    // Update token timestamp and invalidate token
-                    set_userdata('token_timestamp', time());
-                    unset_userdata(sha1(uri_string()));
-
                     // Unset uploaded files session to prevent orphaned files if update is successful
                     unset_userdata('_uploaded_files');
 
@@ -4517,8 +4568,11 @@ abstract class Core extends Controller
                     $this->_unlinkFiles($oldFiles);
 
                     if (method_exists($this, 'afterUpdate')) {
+                        $this->_deferTokenInvalidation();
                         $this->afterUpdate();
                     }
+
+                    $this->_invalidateToken();
 
                     // Send success response
                     return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
@@ -4643,10 +4697,6 @@ abstract class Core extends Controller
 
                 // Attempt to delete data
                 if ($this->model->delete($table, $where, $limit)) {
-                    // Update token timestamp and invalidate token
-                    set_userdata('token_timestamp', time());
-                    unset_userdata(sha1(uri_string()));
-
                     // Unset uploaded files session to prevent orphaned files if update is successful
                     unset_userdata('_uploaded_files');
 
@@ -4654,8 +4704,11 @@ abstract class Core extends Controller
                     $this->_unlinkFiles($oldFiles);
 
                     if (method_exists($this, 'afterDelete')) {
+                        $this->_deferTokenInvalidation();
                         $this->afterDelete();
                     }
+
+                    $this->_invalidateToken();
 
                     // Send success response
                     return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully deleted.'), $this->_redirectBack);
@@ -4767,15 +4820,14 @@ abstract class Core extends Controller
 
             // After delete hook (runs once after the batch loop)
             if (method_exists($this, 'afterDelete')) {
+                $this->_deferTokenInvalidation();
                 $this->afterDelete();
             }
         }
 
         // --- 3. Final Response ---
         if ($affectedRows) {
-            // Update token timestamp and invalidate token
-            set_userdata('token_timestamp', time());
-            unset_userdata(sha1(uri_string()));
+            $this->_invalidateToken();
 
             $message = phrase('{{affected_rows}} of {{items}} data was successfully removed.', [
                 'affected_rows' => $affectedRows,
