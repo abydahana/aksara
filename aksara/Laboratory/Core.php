@@ -304,8 +304,13 @@ abstract class Core extends Controller
      *
      * @return bool TRUE if token is valid or request is from API client.
      */
-    public function validToken(?string $token): bool
+    public function validToken(?string $token, string|array $allowedUris = []): bool
     {
+        // Check API client status (bypasses token check).
+        if ($this->apiClient) {
+            return true;
+        }
+
         $isPostRequest = Services::request()->getPost();
 
         // Must be a POST request.
@@ -315,53 +320,29 @@ abstract class Core extends Controller
                 return true;
             }
 
+            if ($allowedUris) {
+                // Normalize allowed URIs to an array.
+                if (is_string($allowedUris)) {
+                    $allowedUris = [$allowedUris];
+                }
+
+                // Check if the token matches any of the allowed URIs.
+                foreach ($allowedUris as $allowedUri) {
+                    if ($token && hash_equals((string) get_userdata(sha1($allowedUri)), $token)) {
+                        return true;
+                    }
+                }
+            }
+
             // Regenerate the valid token using the centralized CSRF helper.
             $expectedToken = generate_csrf_token();
 
             if ($token && hash_equals($expectedToken, $token)) {
                 return true;
             }
-
-            // Check API client status (bypasses token check).
-            if ($this->apiClient) {
-                return true;
-            }
         }
 
         return false;
-    }
-
-    /**
-     * Invalidate submitted form token.
-     */
-    private function _invalidateToken(): void
-    {
-        set_userdata('token_timestamp', time());
-        unset_userdata(sha1(uri_string()));
-
-        $this->_tokenInvalidationPending = false;
-    }
-
-    /**
-     * Keep token invalidation pending while an after hook is running.
-     */
-    private function _deferTokenInvalidation(): void
-    {
-        if ($this->_tokenInvalidationPending) {
-            return;
-        }
-
-        $this->_tokenInvalidationPending = true;
-
-        register_shutdown_function(function () {
-            if (! $this->_tokenInvalidationPending) {
-                return;
-            }
-
-            if (http_response_code() < 400) {
-                $this->_invalidateToken();
-            }
-        });
     }
 
     /**
@@ -6694,6 +6675,39 @@ abstract class Core extends Controller
         $this->apiClient = true;
 
         return $this;
+    }
+
+    /**
+     * Invalidate submitted form token.
+     */
+    private function _invalidateToken(): void
+    {
+        set_userdata('token_timestamp', time());
+        unset_userdata(sha1(uri_string()));
+
+        $this->_tokenInvalidationPending = false;
+    }
+
+    /**
+     * Keep token invalidation pending while an after hook is running.
+     */
+    private function _deferTokenInvalidation(): void
+    {
+        if ($this->_tokenInvalidationPending) {
+            return;
+        }
+
+        $this->_tokenInvalidationPending = true;
+
+        register_shutdown_function(function () {
+            if (! $this->_tokenInvalidationPending) {
+                return;
+            }
+
+            if (http_response_code() < 400) {
+                $this->_invalidateToken();
+            }
+        });
     }
 
     /**
