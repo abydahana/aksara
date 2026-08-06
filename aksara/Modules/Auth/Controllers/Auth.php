@@ -172,7 +172,7 @@ class Auth extends Core
                         'user_id' => $execute->user_id,
                         'username' => $execute->username,
                         'group_id' => $execute->group_id,
-                        'language_id' => $execute->language_id,
+                        'language_id' => (get_userdata('language_id') ? get_userdata('language_id') : $execute->language_id),
                         'year' => ($this->_getActiveYears() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
                         'session_generated' => time()
                     ]);
@@ -181,7 +181,8 @@ class Auth extends Core
                     $this->model->update(
                         'app_users',
                         [
-                            'last_login' => date('Y-m-d H:i:s')
+                            'last_login' => date('Y-m-d H:i:s'),
+                            'language_id' => (get_userdata('language_id') ? get_userdata('language_id') : $execute->language_id)
                         ],
                         [
                             'user_id' => $execute->user_id

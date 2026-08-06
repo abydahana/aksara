@@ -43,6 +43,9 @@ class Language extends Core
             set_userdata('language', $params);
             set_userdata('language_id', $query);
 
+            helper('cookie');
+            set_cookie('aksara_language', $query, SESSION_EXPIRATION);
+
             if (get_userdata('is_logged') && ! DEMO_MODE) {
                 $this->model->update('app_users', ['language_id' => $query], ['user_id' => get_userdata('user_id')]);
             }
