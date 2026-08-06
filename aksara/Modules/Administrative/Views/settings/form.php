@@ -219,7 +219,7 @@
                             </h5>
                             <div class="row">
                                 <div class="col-md-5">
-                                        <?= form_input($results->field_data->facebook_app_id); ?>
+                                    <?= form_input($results->field_data->facebook_app_id); ?>
                                 </div>
                                 <div class="col-md-7">
                                     <?= form_input($results->field_data->facebook_app_secret); ?>
