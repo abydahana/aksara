@@ -464,7 +464,6 @@ class Permission
      *
      * @param   string|null $path
      * @param   string      $method
-     * @param   mixed       $router
      * @return  string|null
      */
     private function _normalizePath($path = null, $method = '', $router = null)
