@@ -86,9 +86,7 @@
     <div class="container py-3">
         <div class="row">
             <div class="col-md-6 text-center text-md-start">
-                <span class="text-secondary">
-                    &copy; <?= date('Y'); ?> <?= get_setting('office_name'); ?>
-                </span>
+                <p class="text-secondary m-0">&copy; <?= date('Y'); ?> <?= get_setting('office_name'); ?></p>
             </div>
             <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
                 <span class="text-secondary">
@@ -96,5 +94,8 @@
                 </span>
             </div>
         </div>
+        <p class="text-sm m-0 text-muted text-center text-md-start">
+            Powered by <a href="//aksaracms.com" target="_blank"><b>Aksara <?= aksara('build_version'); ?></b></a>
+        </p>
     </div>
 </footer>
