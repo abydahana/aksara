@@ -5,7 +5,7 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (! $permission->uploads || ! $permission->writable): ?>
+if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
