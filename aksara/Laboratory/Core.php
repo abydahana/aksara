@@ -22,10 +22,6 @@ use Throwable;
 use Config\Services;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\Response;
-use Aksara\Laboratory\Traits;
-use Aksara\Laboratory\Model;
-use Aksara\Laboratory\Permission;
-use Aksara\Laboratory\Template;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
 
@@ -100,9 +96,9 @@ abstract class Core extends Controller
         $this->request = Services::request();
         $this->response = Services::response();
 
-        // Clear previous upload session data.
-        unset_userdata('_set_upload_path');
-        unset_userdata('_uploaded_files');
+        // Clear previous upload memory data.
+        Validation::$uploadedFiles = [];
+        Validation::$uploadPath = '';
 
         // --- User Agent and IP Validation ---
         $userAgent = $this->request->getUserAgent();
@@ -3739,8 +3735,8 @@ abstract class Core extends Controller
         $serialized = $this->serializeRow($data, false);
 
         if ($this->request->getPost() && is_array($serialized) && sizeof($serialized) > 0) {
-            // Store upload path to session
-            set_userdata('_set_upload_path', $this->_setUploadPath);
+            // Store upload path to memory
+            Validation::$uploadPath = $this->_setUploadPath;
 
             // Default validation
             $validation = false;
@@ -3919,10 +3915,9 @@ abstract class Core extends Controller
             // Run validation
             if ($validation && $this->formValidation->withRequest(service('request'))->run() === false) {
                 // Unlink the files
-                $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                // Unset uploaded files session to prevent orphaned files if update is successful
-                unset_userdata('_uploaded_files');
+                Validation::$uploadedFiles = [];
 
                 // Data invalid
                 $errors = $this->formValidation->getErrors();
@@ -3937,8 +3932,8 @@ abstract class Core extends Controller
                 return throw_exception(400, $errors);
             }
 
-            // Attempt to get uploaded files string from the session
-            $this->_uploadedFiles = get_userdata('_uploaded_files');
+            // Attempt to get uploaded files string from memory
+            $this->_uploadedFiles = Validation::$uploadedFiles;
 
             $prepare = [];
             $clone = [];
@@ -4180,10 +4175,9 @@ abstract class Core extends Controller
                 }
             } else {
                 // Unlink the files
-                $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                // Unset uploaded files session to prevent orphaned files if update is successful
-                unset_userdata('_uploaded_files');
+                Validation::$uploadedFiles = [];
 
                 // Throw the exception messages
                 return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', (! $this->apiClient ? $this->_redirectBack : null));
@@ -4306,10 +4300,9 @@ abstract class Core extends Controller
     {
         // --- 1. API Method Validation ---
         if ($this->apiClient && ! in_array($this->request->getMethod(), ['POST'])) {
-            $this->_unlinkFiles(get_userdata('_uploaded_files'));
+            $this->_unlinkFiles(Validation::$uploadedFiles);
 
-            // Unset uploaded files session to prevent orphaned files if update is successful
-            unset_userdata('_uploaded_files');
+            Validation::$uploadedFiles = [];
 
             return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirectBack);
         }
@@ -4352,8 +4345,7 @@ abstract class Core extends Controller
 
                 $this->_insertId = $autoIncrement ? $this->model->insertId() : 0;
 
-                // Unset uploaded files session to prevent orphaned files if update is successful
-                unset_userdata('_uploaded_files');
+                Validation::$uploadedFiles = [];
 
                 // --- 5. After Insert Hook ---
                 if (method_exists($this, 'afterInsert')) {
@@ -4367,10 +4359,9 @@ abstract class Core extends Controller
                 return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirectBack);
             } else {
                 // --- 6. Failure: Error Handling and Cleanup ---
-                $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                // Unset uploaded files session to prevent orphaned files if update is successful
-                unset_userdata('_uploaded_files');
+                Validation::$uploadedFiles = [];
 
                 $error = $this->model->error();
                 $errorMessage = $error['message'] ?? phrase('Unable to submit your data.');
@@ -4386,10 +4377,9 @@ abstract class Core extends Controller
             }
         } else {
             // --- 7. Failure: Table Not Found ---
-            $this->_unlinkFiles(get_userdata('_uploaded_files'));
+            $this->_unlinkFiles(Validation::$uploadedFiles);
 
-            // Unset uploaded files session to prevent orphaned files if update is successful
-            unset_userdata('_uploaded_files');
+            Validation::$uploadedFiles = [];
 
             return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirectBack);
         }
@@ -4423,10 +4413,9 @@ abstract class Core extends Controller
     {
         // --- 1. API Method Validation ---
         if ($this->apiClient && ! in_array($this->request->getMethod(), ['POST'])) {
-            $this->_unlinkFiles(get_userdata('_uploaded_files'));
+            $this->_unlinkFiles(Validation::$uploadedFiles);
 
-            // Unset uploaded files session to prevent orphaned files if update is successful
-            unset_userdata('_uploaded_files');
+            Validation::$uploadedFiles = [];
 
             return throw_exception(403, phrase('The method you requested is not acceptable.') . ' (' . $this->request->getMethod() . ')', $this->_redirectBack);
         }
@@ -4472,8 +4461,7 @@ abstract class Core extends Controller
                 }
             }
 
-            // Unset uploaded files session to prevent orphaned files if update is successful
-            unset_userdata('_uploaded_files');
+            Validation::$uploadedFiles = [];
 
             if (method_exists($this, 'afterUpdate')) {
                 $this->_deferTokenInvalidation();
@@ -4496,10 +4484,9 @@ abstract class Core extends Controller
 
                 // If WHERE is still missing, data cannot be updated
                 if (! $where) {
-                    $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                    $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                    // Unset uploaded files session to prevent orphaned files if update is successful
-                    unset_userdata('_uploaded_files');
+                    Validation::$uploadedFiles = [];
 
                     return throw_exception(404, phrase('The data you would to delete is not found.'), $this->_redirectBack);
                 }
@@ -4545,8 +4532,7 @@ abstract class Core extends Controller
 
                 // Attempt to update data
                 if ($this->model->update($table, $data, $where)) {
-                    // Unset uploaded files session to prevent orphaned files if update is successful
-                    unset_userdata('_uploaded_files');
+                    Validation::$uploadedFiles = [];
 
                     // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
@@ -4562,10 +4548,9 @@ abstract class Core extends Controller
                     return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
                 } else {
                     // Failure: Error Handling
-                    $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                    $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                    // Unset uploaded files session to prevent orphaned files if update fails
-                    unset_userdata('_uploaded_files');
+                    Validation::$uploadedFiles = [];
 
                     $error = $this->model->error();
 
@@ -4580,19 +4565,17 @@ abstract class Core extends Controller
                 $this->insertData($table, $data);
             } else {
                 // --- 6. Data Not Found, UPSERT Not Permitted ---
-                $this->_unlinkFiles(get_userdata('_uploaded_files'));
+                $this->_unlinkFiles(Validation::$uploadedFiles);
 
-                // Unset uploaded files session to prevent orphaned files if no data is found for update
-                unset_userdata('_uploaded_files');
+                Validation::$uploadedFiles = [];
 
                 return throw_exception(404, phrase('The data you would to update is not found.'), $this->_redirectBack);
             }
         } else {
             // --- 7. Failure: Table Not Found ---
-            $this->_unlinkFiles(get_userdata('_uploaded_files'));
+            $this->_unlinkFiles(Validation::$uploadedFiles);
 
-            // Unset uploaded files session to prevent orphaned files if table does not exist
-            unset_userdata('_uploaded_files');
+            Validation::$uploadedFiles = [];
 
             return throw_exception(404, phrase('The selected database table does not exist.'), $this->_redirectBack);
         }
@@ -4681,8 +4664,7 @@ abstract class Core extends Controller
 
                 // Attempt to delete data
                 if ($this->model->delete($table, $where, $limit)) {
-                    // Unset uploaded files session to prevent orphaned files if update is successful
-                    unset_userdata('_uploaded_files');
+                    Validation::$uploadedFiles = [];
 
                     // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
