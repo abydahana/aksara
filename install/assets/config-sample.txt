@@ -86,6 +86,12 @@ define('THUMBNAIL_DIMENSION', %THUMBNAIL_DIMENSION%); // In pixels
 define('ICON_DIMENSION', %ICON_DIMENSION%); // In pixels
 
 /**
+ * Whitelist proxy IP addresses (HAProxy, Nginx, Cloudflare, etc.)
+ * Example: ['10.0.1.200' => 'X-Forwarded-For', '192.168.5.0/24' => 'X-Real-IP'] or ['10.0.1.200']
+ */
+define('PROXY_IP', []);
+
+/**
  * Invalid URI protection
  */
 define('INVALID_URI_MAX_ATTEMPTS', 3);

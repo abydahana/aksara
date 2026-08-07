@@ -197,7 +197,7 @@ class App extends BaseConfig
      *
      * @var array<string, string>
      */
-    public array $proxyIPs = [];
+    public array $proxyIPs = PROXY_IP;
 
     /**
      * --------------------------------------------------------------------------
@@ -216,4 +216,13 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (is_string(PROXY_IP) && ! empty(PROXY_IP)) {
+            $this->proxyIPs = [PROXY_IP];
+        }
+    }
 }

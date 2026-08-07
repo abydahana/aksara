@@ -111,3 +111,17 @@ defined('IMAGE_FORMAT_ALLOWED') || define('IMAGE_FORMAT_ALLOWED', '');
 defined('IMAGE_DIMENSION') || define('IMAGE_DIMENSION', 0);
 defined('THUMBNAIL_DIMENSION') || define('THUMBNAIL_DIMENSION', 0);
 defined('ICON_DIMENSION') || define('ICON_DIMENSION', 0);
+
+/**
+ * Reverse Proxy IPs configuration.
+ * Whitelist proxy IP addresses (HAProxy, Nginx, Cloudflare, etc.) from which CodeIgniter
+ * should trust headers like X-Forwarded-For to accurately resolve client IP address.
+ * Example: ['10.0.1.200' => 'X-Forwarded-For', '192.168.5.0/24' => 'X-Real-IP'] or ['10.0.1.200']
+ */
+defined('PROXY_IP') || define('PROXY_IP', []);
+
+/**
+ * Security: Invalid URI Exception Handler settings.
+ */
+defined('INVALID_URI_MAX_ATTEMPTS') || define('INVALID_URI_MAX_ATTEMPTS', 3);
+defined('INVALID_URI_BAN_DURATION') || define('INVALID_URI_BAN_DURATION', 1800);

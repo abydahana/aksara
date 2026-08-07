@@ -935,7 +935,7 @@ class Comment extends Core
             'path' => $path,
             'method' => $method,
             'query' => json_encode($query),
-            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
+            'ip_address' => $this->request->getIPAddress(),
             'browser' => $user_agent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')

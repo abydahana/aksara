@@ -110,7 +110,7 @@ abstract class Core extends Controller
         }
 
         // Validate client IP address.
-        $ipAddress = $this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress();
+        $ipAddress = $this->request->getIPAddress();
         if (! filter_var($ipAddress, FILTER_VALIDATE_IP)) {
             header('Location: https://google.com?q=' . $ipAddress);
             exit;
@@ -2463,27 +2463,27 @@ abstract class Core extends Controller
             $this->_compiledTable[] = $table;
         }
 
+        // Load template class
+        $this->template = new Template($this->_setTheme);
+
+        // Load template parser
+        $renderer = new Renderer();
+
+        // Send necessary properties
+        $renderer->setProperty(['_setTheme' => $this->template->theme]);
+
+        // Set core component path
+        $renderer->setPath('core');
+
+        // Create core component if not exists
+        $renderer->render();
+
         // Check if given table is exists in database
         if ($this->_table) {
             // Check if table is exists
             if (! $this->model->tableExists($this->_table)) {
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
-
-            // Load template class
-            $this->template = new Template($this->_setTheme);
-
-            // Load template parser
-            $renderer = new Renderer();
-
-            // Send necessary properties
-            $renderer->setProperty(['_setTheme' => $this->template->theme]);
-
-            // Set core component path
-            $renderer->setPath('core');
-
-            // Create core component if not exists
-            $renderer->render();
 
             // Check before action
             if ('create' == $this->_method && method_exists($this, 'beforeInsert')) {
@@ -6627,7 +6627,7 @@ abstract class Core extends Controller
         }
 
         $accessToken = get_userdata('access_token') ?? $this->request->getHeaderLine('X-ACCESS-TOKEN');
-        $clientIp = ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress());
+        $clientIp = $this->request->getIPAddress();
 
         // Retrieve session data using the access token.
         $cookie = $this->model->select('data')->getWhere(
@@ -6845,7 +6845,7 @@ abstract class Core extends Controller
 
         // Prepare log data
         $prepare = [
-            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
+            'ip_address' => $this->request->getIPAddress(),
             'browser' => $userAgent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
