@@ -65,8 +65,10 @@ if (! function_exists('get_image')) {
                         mkdir(UPLOAD_PATH . '/' . $type . '/thumbs', 0755, true);
                     }
 
-                    // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png');
+                    if (is_file(UPLOAD_PATH . '/placeholder_thumb.png')) {
+                        // Copy placeholder image
+                        copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'thumbs/placeholder.png');
+                    }
                 } catch (\Throwable $e) {
                     // Keep silent
                 }
@@ -82,8 +84,10 @@ if (! function_exists('get_image')) {
                         mkdir(UPLOAD_PATH . '/' . $type . '/icons', 0755, true);
                     }
 
-                    // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png');
+                    if (is_file(UPLOAD_PATH . '/placeholder_icon.png')) {
+                        // Copy placeholder image
+                        copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'icons/placeholder.png');
+                    }
                 } catch (\Throwable $e) {
                     // Keep silent
                 }
@@ -99,8 +103,10 @@ if (! function_exists('get_image')) {
                         mkdir(UPLOAD_PATH . '/' . $type, 0755, true);
                     }
 
-                    // Copy placeholder image
-                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png');
+                    if (is_file(UPLOAD_PATH . '/placeholder.png')) {
+                        // Copy placeholder image
+                        copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . ($type ? $type . '/' : null) . 'placeholder.png');
+                    }
                 } catch (\Throwable $e) {
                     // Keep silent
                 }
@@ -144,13 +150,17 @@ if (! function_exists('resize_image')) {
                 if (! is_dir($path . '/thumbs')) {
                     // Directory is not exists, create one
                     mkdir($path . '/thumbs', 0755, true);
-                    copy(UPLOAD_PATH . '/placeholder_thumb.png', $path . '/thumbs/placeholder.png');
+                    if (is_file(UPLOAD_PATH . '/placeholder_thumb.png')) {
+                        copy(UPLOAD_PATH . '/placeholder_thumb.png', $path . '/thumbs/placeholder.png');
+                    }
                 }
 
                 if (! is_dir($path . '/icons')) {
                     // Directory is not exists, create one
                     mkdir($path . '/icons', 0755, true);
-                    copy(UPLOAD_PATH . '/placeholder_icon.png', $path . '/icons/placeholder.png');
+                    if (is_file(UPLOAD_PATH . '/placeholder_icon.png')) {
+                        copy(UPLOAD_PATH . '/placeholder_icon.png', $path . '/icons/placeholder.png');
+                    }
                 }
 
                 // Uploaded file is image format, prepare image manipulation
@@ -203,10 +213,16 @@ if (! function_exists('get_filesize')) {
     function get_filesize($path = null, $file = null)
     {
         $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        $bytes = @filesize(FCPATH . UPLOAD_PATH . '/' . ($path ? $path . '/' : null) . $file);
-        $factor = (int) floor((strlen($bytes) - 1) / 3);
+        $filePath = FCPATH . UPLOAD_PATH . '/' . ($path ? $path . '/' : null) . $file;
+        $bytes = (is_file($filePath) ? @filesize($filePath) : 0);
 
-        return sprintf('%.2f', ($bytes / pow(1024, $factor))) . ($size[$factor] ?? '');
+        if (! $bytes || $bytes <= 0) {
+            return '0 B';
+        }
+
+        $factor = (int) floor((strlen((string) $bytes) - 1) / 3);
+
+        return sprintf('%.2f', ($bytes / pow(1024, $factor))) . ' ' . ($size[$factor] ?? '');
     }
 }
 

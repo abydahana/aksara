@@ -88,40 +88,51 @@ class Builder
                 $type = ('core' === $path ? 'index' : 'text');
             }
 
-            // Scaffold missing files
-            // Loop through ALL available methods in the class to ensure all templates exist
-            foreach ($templates as $template) {
-                // Skip constructor
-                if ('__construct' === $template) {
-                    continue;
+            $target_dir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
+            $requested_file = ($type ? $target_dir . DIRECTORY_SEPARATOR . $type . '.twig' : null);
+
+            // Scaffold components README if missing
+            if ($theme && ! file_exists($directory . DIRECTORY_SEPARATOR . 'README')) {
+                if (! is_dir($directory)) {
+                    mkdir($directory, 0755, true);
                 }
 
-                // Generate component data
-                $component_data = $builder->$template();
+                $notes = <<<EOF
+                You can override the template component here;
+                Only .twig file are allowed;
+                EOF;
 
-                // Define target file path
-                $target_dir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
-                $target_file = $target_dir . DIRECTORY_SEPARATOR . $component_data['type'] . '.twig';
+                file_put_contents($directory . DIRECTORY_SEPARATOR . 'README', $notes);
+            }
 
-                // Check if file exists
-                if (! file_exists($target_file) && $theme) {
-                    // Create directory if it doesn't exist (only if theme is not null)
-                    if (! is_dir($target_dir)) {
-                        mkdir($target_dir, 0755, true);
+            // Scaffold missing files only if target directory or requested file is missing
+            if ($theme && (! is_dir($target_dir) || ($requested_file && ! file_exists($requested_file)))) {
+                foreach ($templates as $template) {
+                    // Skip constructor
+                    if ('__construct' === $template) {
+                        continue;
                     }
 
-                    // Write the raw component content to the Twig file
-                    file_put_contents($target_file, $component_data['component']);
+                    // Generate component data
+                    $component_data = $builder->$template();
+                    $file_to_check = $target_dir . DIRECTORY_SEPARATOR . $component_data['type'] . '.twig';
+
+                    // Check if file exists
+                    if (! file_exists($file_to_check)) {
+                        // Create directory if it doesn't exist
+                        if (! is_dir($target_dir)) {
+                            mkdir($target_dir, 0755, true);
+                        }
+
+                        // Write the raw component content to the Twig file
+                        file_put_contents($file_to_check, $component_data['component']);
+                    }
                 }
             }
 
             // Return the requested component content
-            if ($type) {
-                $requested_file = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '') . DIRECTORY_SEPARATOR . $type . '.twig';
-
-                if (file_exists($requested_file)) {
-                    $component = file_get_contents($requested_file);
-                }
+            if ($requested_file && file_exists($requested_file)) {
+                $component = file_get_contents($requested_file);
             }
         } catch (Throwable $e) {
             // Log error or handle gracefully instead of exiting
