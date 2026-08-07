@@ -18,6 +18,7 @@
 namespace Aksara\Modules\XHR\Controllers\Widget;
 
 use Aksara\Laboratory\Core;
+use Aksara\Laboratory\Validation;
 use DateTime;
 
 class Comment extends Core
@@ -290,7 +291,7 @@ class Comment extends Core
             }
 
             $attachment = '';
-            $uploaded_files = get_userdata('_uploaded_files');
+            $uploaded_files = Validation::$uploadedFiles;
 
             // Check if the uploaded file is valid
             if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
@@ -742,7 +743,7 @@ class Comment extends Core
         }
 
         $attachment = '';
-        $uploaded_files = get_userdata('_uploaded_files');
+        $uploaded_files = Validation::$uploadedFiles;
 
         // Check if the uploaded file is valid
         if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {

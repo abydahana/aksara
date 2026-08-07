@@ -27,8 +27,25 @@ use Aksara\Libraries\Storage;
 
 class Validation
 {
-    private array $_uploadedFiles = [];
+    /**
+     * Upload path for files
+     *
+     * @var string
+     */
+    public static string $uploadPath = '';
 
+    /**
+     * Global uploaded files collection
+     *
+     * @var array
+     */
+    public static array $uploadedFiles = [];
+
+    /**
+     * Upload error
+     *
+     * @var string
+     */
     private string $_uploadError = '';
 
     public function __construct()
@@ -269,6 +286,7 @@ class Validation
      */
     public function validate_upload($value = null, ?string $params = null): bool
     {
+        $this->_uploadError = '';
         $request = Services::request();
         $validation = Services::validation();
 
@@ -297,7 +315,7 @@ class Validation
             $validation->setError($field, $this->_uploadError);
 
             //return false;
-        } elseif (! $this->_uploadedFiles) {
+        } elseif (! isset(self::$uploadedFiles[$field])) {
             // Find required
             $rules = $validation->getRules();
 
@@ -308,12 +326,6 @@ class Validation
                 //return false;
             }
         }
-
-        /**
-         * Because the property isn't accessible from its parent, put
-         * the upload data collection to temporary session instead
-         */
-        set_userdata('_uploaded_files', $this->_uploadedFiles);
 
         return true;
     }
@@ -332,7 +344,7 @@ class Validation
     {
         $request = Services::request();
         $router = Services::router();
-        $upload_path = get_userdata('_set_upload_path');
+        $upload_path = self::$uploadPath;
 
         if (! $upload_path) {
             $upload_path = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
@@ -489,10 +501,10 @@ class Validation
 
         if (null !== $_index) {
             // Collect uploaded data (has sub-name)
-            $this->_uploadedFiles[$field][$index][$_index] = $filename;
+            self::$uploadedFiles[$field][$index][$_index] = $filename;
         } else {
             // Collect uploaded data (single name)
-            $this->_uploadedFiles[$field][$index] = $filename;
+            self::$uploadedFiles[$field][$index] = $filename;
         }
 
         return true;
