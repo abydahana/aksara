@@ -2398,11 +2398,9 @@ abstract class Core extends Controller
             dd($this->_prepare);
         }
 
-        // Check if method is cloning
-        if ('clone' == $this->_method) {
-            // Switch method to update
-            $this->_method = 'update';
-            $this->_cloning = true;
+        // Validate the restricted action
+        if (in_array($this->_method, $this->_unsetMethod)) {
+            return throw_exception(403, phrase('You are not allowed to perform the requested action.'), go_to());
         }
 
         if ($this->apiClient) {
@@ -2430,52 +2428,6 @@ abstract class Core extends Controller
             }
         }
 
-        if (! $this->_table) {
-            // Set table when not present
-            $this->_table = $table;
-
-            // Push to compiled table
-            $this->_compiledTable[] = $table;
-        }
-
-        if ($this->_mockFields && $this->_table) {
-            foreach ($this->_mockFields as $name => $type) {
-                $this->model->addMockField($this->_table, $name, $type);
-            }
-        }
-
-        // Validate the restricted action
-        if (in_array($this->_method, $this->_unsetMethod)) {
-            return throw_exception(403, phrase('You are not allowed to perform the requested action.'), go_to());
-        }
-
-        // Check before action
-        if ('create' == $this->_method && method_exists($this, 'beforeInsert')) {
-            // Before insert
-            $this->beforeInsert();
-        } elseif ('update' == $this->_method && method_exists($this, 'beforeUpdate')) {
-            // Before update
-            $this->beforeUpdate();
-        } elseif ('delete' == $this->_method && method_exists($this, 'beforeDelete')) {
-            // Before delete
-            $this->beforeDelete();
-        }
-
-        // Load template class
-        $this->template = new Template($this->_setTheme);
-
-        // Load template parser
-        $renderer = new Renderer();
-
-        // Send necessary properties
-        $renderer->setProperty(['_setTheme' => $this->template->theme]);
-
-        // Set core component path
-        $renderer->setPath('core');
-
-        // Create core component if not exists
-        $renderer->render();
-
         // Query string filters
         $queryParams = $this->request->getGet();
 
@@ -2494,11 +2446,65 @@ abstract class Core extends Controller
             }
         }
 
+        // Check if method is cloning
+        if ('clone' == $this->_method) {
+            // Switch method to update
+            $this->_method = 'update';
+            $this->_cloning = true;
+        }
+
+        // Set template view when defined
+        if ($view) {
+            $this->setTemplate($this->_method, $view);
+        }
+
+        if (! $this->_table) {
+            // Set table when not present
+            $this->_table = $table;
+
+            // Push to compiled table
+            $this->_compiledTable[] = $table;
+        }
+
         // Check if given table is exists in database
         if ($this->_table) {
             // Check if table is exists
             if (! $this->model->tableExists($this->_table)) {
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
+            }
+
+            // Load template class
+            $this->template = new Template($this->_setTheme);
+
+            // Load template parser
+            $renderer = new Renderer();
+
+            // Send necessary properties
+            $renderer->setProperty(['_setTheme' => $this->template->theme]);
+
+            // Set core component path
+            $renderer->setPath('core');
+
+            // Create core component if not exists
+            $renderer->render();
+
+            // Check before action
+            if ('create' == $this->_method && method_exists($this, 'beforeInsert')) {
+                // Before insert
+                $this->beforeInsert();
+            } elseif ('update' == $this->_method && method_exists($this, 'beforeUpdate')) {
+                // Before update
+                $this->beforeUpdate();
+            } elseif ('delete' == $this->_method && method_exists($this, 'beforeDelete')) {
+                // Before delete
+                $this->beforeDelete();
+            }
+
+            // Add mock fields when defined
+            if ($this->_mockFields && $this->_table) {
+                foreach ($this->_mockFields as $name => $type) {
+                    $this->model->addMockField($this->_table, $name, $type);
+                }
             }
 
             // Define field data compilation
@@ -3294,7 +3300,6 @@ abstract class Core extends Controller
                  * Method is requesting document file or print
                  * -------------------------------------------------------------
                  */
-                $queryParams = $this->request->getGet();
                 $singlePrint = false;
 
                 if ($this->_setPrimary) {
@@ -3399,9 +3404,7 @@ abstract class Core extends Controller
             return make_json($results);
         }
 
-        // Get query string
-        $queryParams = $this->request->getGet();
-
+        // Unset unnecessary query string
         foreach ($queryParams as $key => $val) {
             if (in_array($this->_method, ['read', 'update']) && in_array($key, $this->_setPrimary)) {
                 // Remove query parameter from URL
