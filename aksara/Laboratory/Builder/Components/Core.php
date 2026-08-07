@@ -1022,16 +1022,18 @@ class Core
         $component = <<<EOF
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div class="toast align-items-center text-bg-{{ color }} fade show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body">
-                    <button type="button" class="btn-close me-2 m-auto float-end" data-bs-dismiss="toast" aria-label="{{ phrase('Close') }}"></button>
-                    <div class="row align-items-center">
-                        <div class="col-2">
-                            <i class="{{ icon }} mdi-2x"></i>
-                        </div>
-                        <div class="col-10 text-break">
-                            {{ message }}
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <div class="row align-items-center">
+                            <div class="col-2">
+                                <i class="{{ icon }} mdi-2x"></i>
+                            </div>
+                            <div class="col-10 text-break">
+                                {{ message }}
+                            </div>
                         </div>
                     </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="' . phrase('Close') . '"></button>
                 </div>
             </div>
         </div>
