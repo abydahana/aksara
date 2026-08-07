@@ -256,6 +256,10 @@ class Validation
      */
     public function relation_checker($value = 0, ?string $params = null): bool
     {
+        if (! $params) {
+            return false;
+        }
+
         $model = new Model();
 
         if (isset($_ENV['DBDriver'])) {
@@ -265,11 +269,11 @@ class Validation
 
         list($table, $field) = array_pad(explode('.', $params), 2, null);
 
-        if (strpos($table, ' ') !== false) {
-            $table = substr($table, 0, strrpos($table, ' '));
+        if ($table && strpos($table, ' ') !== false) {
+            $table = trim(explode(' ', trim($table))[0]);
         }
 
-        if (! $model->tableExists($table) || ! $model->fieldExists($field, $table) || ! $model->select($field)->getWhere($table, [$field => $value])->row($field)) {
+        if (! $table || ! $field || ! $model->tableExists($table) || ! $model->fieldExists($field, $table) || ! $model->select($field)->getWhere($table, [$field => $value])->row($field)) {
             return false;
         }
 
@@ -406,7 +410,9 @@ class Validation
             // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
-                copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
+                if (is_file(UPLOAD_PATH . '/placeholder.png')) {
+                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
+                }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
 
@@ -418,7 +424,9 @@ class Validation
             // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
-                copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
+                if (is_file(UPLOAD_PATH . '/placeholder_thumb.png')) {
+                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
+                }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
 
@@ -430,7 +438,9 @@ class Validation
             // Attempt to create new directory
             try {
                 mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
-                copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
+                if (is_file(UPLOAD_PATH . '/placeholder_icon.png')) {
+                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
+                }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
 
