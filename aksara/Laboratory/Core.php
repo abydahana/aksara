@@ -4460,7 +4460,14 @@ abstract class Core extends Controller
                     $this->model->update($table, $upsertData, ['key' => $key]);
                 } else {
                     $upsertData['key'] = $key;
-                    $this->model->insert($table, $upsertData);
+
+                    try {
+                        $this->model->insert($table, $upsertData);
+                    } catch (Throwable $e) {
+                        // Fallback to update if concurrent request inserted the key in parallel
+                        unset($upsertData['key']);
+                        $this->model->update($table, $upsertData, ['key' => $key]);
+                    }
                 }
             }
 
