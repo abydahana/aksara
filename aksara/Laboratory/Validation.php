@@ -150,6 +150,10 @@ class Validation
      */
     public function currency($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         if (! preg_match('/^\s*[$]?\s*((\d+)|(\d{1,3}(\,\d{3})+))(\.\d{2})?\s*$/', $value)) {
             return false;
         }
@@ -165,8 +169,12 @@ class Validation
      */
     public function valid_date($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         // Convert value to standardzitation
-        $value = date('Y-m-d', strtotime($value));
+        $value = date('Y-m-d', strtotime((string) $value));
 
         $valid_date = DateTime::createFromFormat('Y-m-d', $value);
 
@@ -185,8 +193,12 @@ class Validation
      */
     public function valid_time($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         //Assume $value SHOULD be entered as HH:MM
-        list($hh, $mm) = array_pad(explode(':', $value), 2, '00');
+        list($hh, $mm) = array_pad(explode(':', (string) $value), 2, '00');
 
         if (! is_numeric($hh) || ! is_numeric($mm) || (int) $hh > 24 || (int) $mm > 59 || mktime((int) $hh, (int) $mm) === false) {
             return false;
@@ -203,8 +215,12 @@ class Validation
      */
     public function valid_datetime($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         // Convert value to standardzitation
-        $value = date('Y-m-d H:i:s', strtotime($value));
+        $value = date('Y-m-d H:i:s', strtotime((string) $value));
 
         $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
 
@@ -223,6 +239,10 @@ class Validation
      */
     public function valid_year($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         $valid_year = range(1970, 2100);
 
         if (! in_array($value, $valid_year)) {
@@ -240,6 +260,10 @@ class Validation
      */
     public function valid_hex($value = null): bool
     {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
         if (! preg_match('/#([a-f0-9]{3}){1,2}\b/i', $value)) {
             return false;
         }
