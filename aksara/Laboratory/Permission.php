@@ -182,15 +182,30 @@ class Permission
             }
 
             // Store new session to database
-            return $this->_model->insert(
-                'app_sessions',
-                [
-                    'id' => get_userdata('access_token'),
-                    'ip_address' => $request->getIPAddress(),
-                    'timestamp' => date('Y-m-d H:i:s'),
-                    'data' => session_encode()
-                ]
-            );
+            try {
+                return $this->_model->insert(
+                    'app_sessions',
+                    [
+                        'id' => get_userdata('access_token'),
+                        'ip_address' => $request->getIPAddress(),
+                        'timestamp' => date('Y-m-d H:i:s'),
+                        'data' => session_encode()
+                    ]
+                );
+            } catch (Throwable $e) {
+                // Fallback: If session row was inserted concurrently, update the record
+                return $this->_model->update(
+                    'app_sessions',
+                    [
+                        'ip_address' => $request->getIPAddress(),
+                        'timestamp' => date('Y-m-d H:i:s'),
+                        'data' => session_encode()
+                    ],
+                    [
+                        'id' => get_userdata('access_token')
+                    ]
+                );
+            }
         } else {
             // Password mismatch or user not found
             return throw_exception(400, ['password' => phrase('Username or email and password combination does not match.')]);
