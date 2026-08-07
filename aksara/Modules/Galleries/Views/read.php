@@ -63,7 +63,7 @@ if ($images) {
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
                         <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
-                            <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" />
+                            <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" />
                         </a>
                     </div>
                     <div class="col-10">

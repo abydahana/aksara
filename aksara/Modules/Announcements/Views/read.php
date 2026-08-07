@@ -24,7 +24,7 @@ $field_data = $results->field_data ?? null;
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($field_data): ?>
                     <?php if ($field_data->cover->value && 'placeholder.png' != $field_data->cover->value): ?>
-                        <img src="<?= get_image('announcements', $field_data->cover->value); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="..." />
+                        <img src="<?= get_image('announcements', $field_data->cover->value); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="<?= $field_data->title->value ?? phrase('Announcement'); ?>" />
                     <?php endif; ?>
                     <div class="fs-5 fade-in">
                         <?= $field_data->content->value; ?>

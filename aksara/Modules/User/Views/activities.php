@@ -10,7 +10,7 @@ if ($user): ?>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
-                    <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
+                    <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
                 </div>
                 <div class="col-12 col-sm-12 col-lg-10">
                     <div class="text-center text-lg-start">
@@ -80,7 +80,7 @@ if ($user): ?>
                             <div class="bg-light rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
-                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
                                         </div>
                                         <div class="col-10 col-lg-9">
                                             <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
@@ -92,7 +92,7 @@ if ($user): ?>
                                     <p class="fs-5 mb-0"><?= truncate($val->comments, 160); ?></p>
                                     <?php if ($val->attachment): ?>
                                         <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
-                                            <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="..." />
+                                            <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="Attachment" />
                                         </a>
                                     <?php endif; ?>
                                     <?php if (isset($metadata->title)): ?>

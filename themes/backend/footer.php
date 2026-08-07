@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-3 offset-md-1 text-sm-center">
                 <a href="<?= base_url(); ?>" class="--xhr">
-                    <img src="<?= get_image('settings', get_setting('app_logo'), 'icon'); ?>" class="img-fluid mt-3" alt="..." style="opacity:.3" />
+                    <img src="<?= get_image('settings', get_setting('app_logo'), 'icon'); ?>" class="img-fluid mt-3" alt="<?= get_setting('app_name'); ?> Logo" style="opacity:.3" />
                 </a>
             </div>
             <div class="col col-md-2">

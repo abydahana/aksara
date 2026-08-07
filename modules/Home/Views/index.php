@@ -161,7 +161,7 @@
                         <div class="card rounded-4 border-0 overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-secondary' : 'bg-dark') : (($key + 1) % 2 == 0 ? 'bg-dark' : 'bg-secondary')); ?>" style="background:url(<?= get_image('blogs', $val->category_image, 'thumb'); ?>) center center no-repeat;background-size:cover">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                                 <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" />
+                                    <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" alt="<?= $val->category_title; ?>" />
                                 </a>
                                 <br />
                                 <h4 class="mb-3 text-truncate">
@@ -203,7 +203,7 @@
                                     <div class="row g-0 align-items-center mb-3">
                                         <div class="col-1">
                                             <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                             </a>
                                         </div>
                                         <div class="col-11 overflow-hidden">
@@ -296,7 +296,7 @@
                             <div class="card-body text-center py-lg-5">
                                 <p>
                                     <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
-                                        <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" />
+                                        <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                     </a>
                                 </p>
                                 <h4 class="text-truncate">

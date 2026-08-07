@@ -169,7 +169,7 @@ class Core
                                                     <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
                                                         <a href="{{ carousel_item.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="...">
+                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -185,7 +185,7 @@ class Core
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
+                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}">
                                         </a>
 
                                         {% set break = true %}
@@ -266,7 +266,7 @@ class Core
                                                     <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
                                                         <a href="{{ carousel_item.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="...">
+                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -282,7 +282,7 @@ class Core
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="...">
+                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}">
                                         </a>
 
                                         {% set break = true %}

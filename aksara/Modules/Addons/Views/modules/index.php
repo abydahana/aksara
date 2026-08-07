@@ -51,7 +51,7 @@
                     <div class="card rounded-4 mb-3">
                         <div class="card-body p-3">
                             <div class="position-relative mb-3">
-                                <img src="<?= $screenshot; ?>" class="img-fluid rounded-4 border" alt="..." />
+                                <img src="<?= $screenshot; ?>" class="img-fluid rounded-4 border" alt="<?= $val->name; ?>" />
                             </div>
                             <div class="mb-3">
                                 <b data-bs-toggle="tooltip" title="<?= $val->name; ?>">

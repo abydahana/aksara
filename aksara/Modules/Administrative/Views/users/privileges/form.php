@@ -14,7 +14,7 @@
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">
             <div class="col-sm-3 col-md-2 text-center">
-                <img src="<?= get_image('users', $userdata->photo, 'thumb'); ?>" class="img-fluid rounded" alt="..." />
+                <img src="<?= get_image('users', $userdata->photo, 'thumb'); ?>" class="img-fluid rounded" alt="<?= $userdata->first_name . ' ' . $userdata->last_name; ?>" />
             </div>
             <div class="col-sm-9 col-md-8">
                 <div class="row">

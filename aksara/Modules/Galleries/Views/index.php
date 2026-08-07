@@ -39,7 +39,7 @@ if ($results): ?>
                             if (1 == $num) {
                                 $cover = $src;
                             } elseif ($num > 1) {
-                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" /></a>';
+                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" alt="' . htmlspecialchars((string) ($alt ?: $val->gallery_title)) . '" /></a>';
                             }
 
                             $num++;

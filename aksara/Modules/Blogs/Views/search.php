@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-3 col-md-2">
                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="card-img rounded-4" alt="..." />
+                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="card-img rounded-4" alt="<?= $val->post_title; ?>" />
                                 </a>
                             </div>
                         </div>

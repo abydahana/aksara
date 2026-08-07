@@ -37,7 +37,7 @@ if ($results): ?>
                     <div class="d-none d-lg-block">
 
                         <?php if($category): ?>
-                            <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-5" alt="..." />
+                            <img src="<?= get_image('blogs', $category->category_image); ?>" class="img-fluid rounded-5" alt="<?= $category->category_title; ?>" />
                         <?php endif; ?>
 
                     </div>
@@ -81,7 +81,7 @@ if ($results): ?>
                                 <div class="row g-0 align-items-center mb-3">
                                     <div class="col-1">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                         </a>
                                     </div>
                                     <div class="col-11 overflow-hidden">
