@@ -210,8 +210,8 @@ class Table
                     $columns[$field] = [
                         'field' => $field,
                         'label' => $label,
-                        'url' => go_to(null, array_merge($query_params, ['order' => $field, 'sort' => get_userdata('sortOrder')])),
-                        'icon' => 'mdi mdi-sort-' . ('asc' == get_userdata('sortOrder') ? 'ascending' : 'descending'),
+                        'url' => go_to(null, array_merge($query_params, ['order' => $field, 'sort' => ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'desc' : 'asc')])),
+                        'icon' => 'mdi mdi-sort-' . ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'ascending' : 'descending'),
                         'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $field_type) ? 'right' : 'left')
                     ];
                 }
