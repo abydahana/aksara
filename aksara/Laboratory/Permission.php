@@ -80,7 +80,7 @@ class Permission
             $blocking_check = $this->_model->getWhere(
                 'app_users_blocked',
                 [
-                    'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
+                    'ip_address' => $request->getIPAddress()
                 ],
                 1
             )
@@ -95,7 +95,7 @@ class Permission
                     $this->_model->delete(
                         'app_users_blocked',
                         [
-                            'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress())
+                            'ip_address' => $request->getIPAddress()
                         ]
                     );
                 }
@@ -186,7 +186,7 @@ class Permission
                 'app_sessions',
                 [
                     'id' => get_userdata('access_token'),
-                    'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
+                    'ip_address' => $request->getIPAddress(),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => session_encode()
                 ]
@@ -448,7 +448,7 @@ class Permission
             'path' => $path,
             'method' => $method,
             'query' => json_encode($query),
-            'ip_address' => ($request->hasHeader('x-forwarded-for') ? $request->getHeaderLine('x-forwarded-for') : $request->getIPAddress()),
+            'ip_address' => $request->getIPAddress(),
             'browser' => $user_agent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
