@@ -409,7 +409,14 @@ class Permission
                     'last_generated' => date('Y-m-d H:i:s')
                 ];
 
-                $this->_model->insert('app_groups_privileges', $prepare);
+                try {
+                    $this->_model->insert('app_groups_privileges', $prepare);
+                } catch (Throwable $e) {
+                    // Fallback: If inserted concurrently by a parallel request, update the record
+                    unset($prepare['path']);
+                    
+                    $this->_model->update('app_groups_privileges', $prepare, ['path' => $path], 1);
+                }
             }
         }
     }
