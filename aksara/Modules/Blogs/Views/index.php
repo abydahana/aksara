@@ -40,7 +40,7 @@ if ($articles): ?>
                                     <div class="carousel-item<?= (! $key ? ' active' : null); ?>">
                                         <div class="clip gradient-top"></div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                            <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100 carousel-headline" alt="...">
+                                            <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100 carousel-headline" alt="<?= $val->post_title; ?>">
                                         </a>
                                         <div class="carousel-caption text-start">
                                             <div class="mb-3">
@@ -59,7 +59,7 @@ if ($articles): ?>
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-1">
                                                     <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary text-outline-dark --xhr">
-                                                        <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                                        <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                                     </a>
                                                 </div>
                                                 <div class="col-8">
@@ -117,7 +117,7 @@ if ($articles): ?>
                                             <div class="row g-0 align-items-center mb-3">
                                                 <div class="col-1">
                                                     <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary --xhr">
-                                                        <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="..." />
+                                                        <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $_val->first_name . ' ' . $_val->last_name; ?>" />
                                                     </a>
                                                 </div>
                                                 <div class="col-11 overflow-hidden">

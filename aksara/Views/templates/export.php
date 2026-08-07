@@ -195,7 +195,7 @@ if (isset($results->table_data)) {
             <thead>
                 <tr>
                     <th>
-                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" alt="..." />
+                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" alt="<?= get_setting('app_name'); ?>" />
                     </th>
                     <th>
                         <h3 class="no-margin">

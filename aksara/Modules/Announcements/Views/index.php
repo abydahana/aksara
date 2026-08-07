@@ -42,7 +42,7 @@ if ($results): ?>
                             </div>
                             <div class="col-4 col-md-3">
                                 <a href="<?= go_to($val->announcement_slug); ?>" class="--xhr">
-                                    <img src="<?= get_image('announcements', $val->cover, 'thumb'); ?>" class="img-fluid rounded-4" alt="..." />
+                                    <img src="<?= get_image('announcements', $val->cover, 'thumb'); ?>" class="img-fluid rounded-4" alt="<?= $val->title; ?>" />
                                 </a>
                             </div>
                         </div>

@@ -6,7 +6,7 @@
                     <div class="col-12 col-sm-12 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-lg-start">
                             <a href="<?= base_url(); ?>">
-                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" />
+                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" alt="<?= get_setting('app_name'); ?> Icon" />
                             </a>
                             <p class="text-muted">
                                 <?= get_setting('app_description'); ?>

@@ -8,7 +8,7 @@ if ($user): ?>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
-                    <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="..." />
+                    <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
                 </div>
                 <div class="col-12 col-sm-12 col-lg-10">
                     <div class="text-center text-lg-start">

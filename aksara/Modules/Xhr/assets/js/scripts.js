@@ -153,7 +153,7 @@ $(document).ready(function() {
                       ` + (Object.keys(val.attachment).length ? `
                         <div class="mt-3">
                           <a href="${ val.attachment.original }" target="_blank">
-                            <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="..." />
+                            <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="${ phrase('Attachment') }" />
                           </a>
                         </div>
                       ` : ``) + `
@@ -279,7 +279,7 @@ $(document).ready(function() {
                   <span class="btn btn-file" style="width:80px">
                     <input type="file" name="attachment" accept=".jpg,.png,.gif" role="image-upload" id="attachment_input" />
                     <div class="fileupload-new text-center">
-                      <img class="img-fluid upload_preview" src="${ config.base_url + 'uploads/placeholder_icon.png' }" alt="..." />
+                      <img class="img-fluid upload_preview" src="${ config.base_url + 'uploads/placeholder_icon.png' }" alt="${ phrase('Preview') }" />
                     </div>
                     <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', config.base_url + 'uploads/placeholder_icon.png'), $(this).closest('.fileupload').addClass('d-none'))">
                       <i class="mdi mdi-window-close"></i>

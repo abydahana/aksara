@@ -106,7 +106,7 @@
                                 <div class="card-body p-3">
                                     <div class="position-relative mb-3">
                                         ${ (val.type == 'backend' ? '<span class="badge bg-warning float-end mt-3 me-3"><?= phrase('Backend Theme'); ?></span>' : '<span class="badge bg-success float-end mt-3 me-3"><?= phrase('Frontend Theme'); ?></span>') }
-                                        <img src="${ val.thumbnail }" class="img-fluid rounded-4 border" alt="..." />
+                                        <img src="${ val.thumbnail }" class="img-fluid rounded-4 border" alt="${ val.name }" />
                                     </div>
                                     <div class="mb-3">
                                         <b data-bs-toggle="tooltip" title="${ val.name }">
@@ -136,7 +136,7 @@
                             <div class="card rounded-4 mb-3">
                                 <div class="card-body p-3">
                                     <div class="position-relative mb-3">
-                                        <img src="${ val.thumbnail }" class="img-fluid rounded-4 border" alt="..." />
+                                        <img src="${ val.thumbnail }" class="img-fluid rounded-4 border" alt="${ val.name }" />
                                     </div>
                                     <div class="mb-3">
                                         <b data-bs-toggle="tooltip" title="${ val.name }">

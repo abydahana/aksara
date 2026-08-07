@@ -524,9 +524,9 @@ class Table
     {
         // Template for Image Thumbnail
         $component = <<<EOF
-        <span>
+        <span class="d-flex align-items-center justify-content-center">
             <a href="{{ content | replace({'/thumbs/': '/'}) }}" class="{{ class }}" target="_blank">
-                <img src="{{ content }}" class="img-fluid rounded" width="22" height="22" alt="...">
+                <img src="{{ content }}" class="img-fluid rounded" width="22" height="22" alt="{{ label ? label : phrase('Thumbnail') }}">
             </a>
         </span>
         EOF;

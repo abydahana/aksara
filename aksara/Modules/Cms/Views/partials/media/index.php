@@ -80,7 +80,7 @@ $breadcrumbs = null;
                                 <div class="col-4 col-sm-3 col-xl-2 text-center">
                                     <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $view_mode]); ?>" class="--xhr">
                                         <div class="p-3">
-                                            <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="..." />
+                                            <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
                                         </div>
                                         <label class="d-block text-truncate">
                                             <?= $val->label; ?>
@@ -140,7 +140,7 @@ $breadcrumbs = null;
                     <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
                         <div class="text-center mb-3">
                             <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" target="_blank">
-                                <img src="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="" style="max-width: 256px; max-height: 256px" />
+                                <img src="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ?? 'Preview'; ?>" style="max-width: 256px; max-height: 256px" />
                             </a>
                         </div>
                     <?php endif; ?>

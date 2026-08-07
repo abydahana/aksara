@@ -24,7 +24,7 @@ if (isset($updater->changelog)) {
             <div class="row no-gutters">
                 <div class="col-4 col-md-2 col-lg-1 pt-1">
                     <a href="' . $val->profile_url . '" target="_blank">
-                        <img src="' . $val->profile_avatar . '" class="img-fluid rounded-more" />
+                        <img src="' . $val->profile_avatar . '" class="img-fluid rounded-more" alt="' . htmlspecialchars((string) $val->committer) . '" />
                     </a>
                 </div>
                 <div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">

@@ -7,8 +7,8 @@
     <div class="container-fluid">
         <div class="navbar-brand pt-0 pb-0 d-none d-lg-block">
             <a href="<?= base_url(); ?>" target="_blank">
-                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" />
-                <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" />
+                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" />
+                <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name'); ?> Logo" />
             </a>
         </div>
         <a href="<?= current_page(); ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" role="title">
