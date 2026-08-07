@@ -73,6 +73,8 @@ if ($user): ?>
                     <?php foreach ($results as $key => $val): ?>
                         <?php
                             $metadata = fetch_metadata($val->post_path);
+
+                            if (! $metadata) continue;
                         ?>
                         <div class="activity-item mb-3">
                             <div class="bg-light rounded-4 mb-4 p-4">
