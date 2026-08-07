@@ -107,10 +107,10 @@ class Template
         }
 
         // Replace backslash to match with directory separator
-        $view_path = str_replace([$current_module . '\\' . $current_module, '\\'], [strtolower($current_module), DIRECTORY_SEPARATOR], $view_path);
+        $view_path = str_replace([$current_module . '\\' . $current_module, '\\'], [strtolower($current_module), '/'], $view_path);
 
         // List module and view path
-        list($modules, $views) = array_pad(explode(DIRECTORY_SEPARATOR . 'Views', $view_path), 2, null);
+        list($modules, $views) = array_pad(explode('/Views', $view_path), 2, null);
 
         // Convert view path as lowercase
         $view_path = $modules . '/Views' . ($views ? strtolower($views) : null);
@@ -1176,8 +1176,8 @@ class Template
         $rootPath = realpath(ROOTPATH);
 
         if ($viewDirectory && $rootPath) {
-            $fromParts = explode(DIRECTORY_SEPARATOR, trim(str_replace('\\', '/', $viewDirectory), '/'));
-            $toParts = explode(DIRECTORY_SEPARATOR, trim(str_replace('\\', '/', $rootPath), '/'));
+            $fromParts = explode('/', trim(str_replace('\\', '/', $viewDirectory), '/'));
+            $toParts = explode('/', trim(str_replace('\\', '/', $rootPath), '/'));
             $commonLength = 0;
             $minParts = min(count($fromParts), count($toParts));
 
