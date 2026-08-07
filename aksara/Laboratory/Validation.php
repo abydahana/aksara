@@ -341,8 +341,6 @@ class Validation
         if ($this->_uploadError) {
             // Validation error
             $validation->setError($field, $this->_uploadError);
-
-            //return false;
         } elseif (! isset(self::$uploadedFiles[$field])) {
             // Find required
             $rules = $validation->getRules();
@@ -350,8 +348,6 @@ class Validation
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
                 $validation->setError($field, phrase('Please choose the file to upload'));
-
-                //return false;
             }
         }
 
