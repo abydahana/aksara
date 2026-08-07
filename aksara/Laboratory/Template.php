@@ -29,6 +29,11 @@ use Aksara\Laboratory\Renderer\Parser;
 class Template
 {
     /**
+     * @var string Static cache for the active theme directory name.
+     */
+    public static string $activeTheme = '';
+
+    /**
      * @var string The active theme directory name.
      */
     public string $theme;
@@ -41,6 +46,7 @@ class Template
     public function __construct(string $theme = 'frontend')
     {
         $this->theme = $this->_resolveTheme($theme);
+        self::$activeTheme = $this->theme;
     }
 
     /**
@@ -170,11 +176,11 @@ class Template
             $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method . $suffix);
         } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method . $suffix);
-        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $method. '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view);
-        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view. '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.php')) {
             // View is found under i18n path
             $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view);
         } elseif (file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.twig') || file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.php')) {
