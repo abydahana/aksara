@@ -328,7 +328,10 @@ abstract class Core extends Controller
 
                 // Check if the token matches any of the allowed URIs.
                 foreach ($allowedUris as $allowedUri) {
-                    if ($token && hash_equals((string) get_userdata(sha1($allowedUri)), $token)) {
+                    if ($token && (
+                        hash_equals((string) get_userdata(sha1($allowedUri)), $token) ||
+                        hash_equals(generate_csrf_token($allowedUri), $token)
+                    )) {
                         return true;
                     }
                 }
