@@ -35,6 +35,31 @@ use CodeIgniter\Database\RawSql;
 class Model
 {
     /**
+     * @var array<string, bool> Request-level cache for table existence checks.
+     */
+    private static array $_tableExistsCache = [];
+
+    /**
+     * @var array<string, bool> Request-level cache for field existence checks.
+     */
+    private static array $_fieldExistsCache = [];
+
+    /**
+     * @var array<string, array<int, string>|false> Request-level cache for table field names.
+     */
+    private static array $_listFieldsCache = [];
+
+    /**
+     * @var array<string, array<int, \stdClass>|false> Request-level cache for table field metadata.
+     */
+    private static array $_fieldDataCache = [];
+
+    /**
+     * @var array<string, string|null> Request-level cache for resolved column types.
+     */
+    private static array $_fieldTypeCache = [];
+
+    /**
      * @var bool Flag to check if a different database config was called.
      */
     private bool $_called = false;
@@ -68,31 +93,6 @@ class Model
      * @var array Stores mock fields created on-the-fly.
      */
     private array $_mockFields = [];
-
-    /**
-     * @var array<string, bool> Request-level cache for table existence checks.
-     */
-    private array $_tableExistsCache = [];
-
-    /**
-     * @var array<string, bool> Request-level cache for field existence checks.
-     */
-    private array $_fieldExistsCache = [];
-
-    /**
-     * @var array<string, array<int, string>|false> Request-level cache for table field names.
-     */
-    private array $_listFieldsCache = [];
-
-    /**
-     * @var array<string, array<int, \stdClass>|false> Request-level cache for table field metadata.
-     */
-    private array $_fieldDataCache = [];
-
-    /**
-     * @var array<string, string|null> Request-level cache for resolved column types.
-     */
-    private array $_fieldTypeCache = [];
 
     /**
      * @var int|null Stores the offset value for the query.
@@ -369,11 +369,11 @@ class Model
             return false;
         }
 
-        if (! array_key_exists($table, $this->_tableExistsCache)) {
-            $this->_tableExistsCache[$table] = $this->db->tableExists($table);
+        if (! array_key_exists($table, self::$_tableExistsCache)) {
+            self::$_tableExistsCache[$table] = $this->db->tableExists($table);
         }
 
-        return $this->_tableExistsCache[$table];
+        return self::$_tableExistsCache[$table];
     }
 
     /**
@@ -392,18 +392,18 @@ class Model
         }
 
         $cacheKey = $table . '.' . $field;
-        if (array_key_exists($cacheKey, $this->_fieldExistsCache)) {
-            return $this->_fieldExistsCache[$cacheKey];
+        if (array_key_exists($cacheKey, self::$_fieldExistsCache)) {
+            return self::$_fieldExistsCache[$cacheKey];
         }
 
         $fields = $this->listFields($table);
         if (false === $fields) {
-            $this->_fieldExistsCache[$cacheKey] = false;
+            self::$_fieldExistsCache[$cacheKey] = false;
         } else {
-            $this->_fieldExistsCache[$cacheKey] = in_array($field, $fields, true);
+            self::$_fieldExistsCache[$cacheKey] = in_array($field, $fields, true);
         }
 
-        return $this->_fieldExistsCache[$cacheKey];
+        return self::$_fieldExistsCache[$cacheKey];
     }
 
     /**
@@ -420,8 +420,8 @@ class Model
             return false;
         }
 
-        if (! array_key_exists($table, $this->_listFieldsCache)) {
-            $this->_listFieldsCache[$table] = false;
+        if (! array_key_exists($table, self::$_listFieldsCache)) {
+            self::$_listFieldsCache[$table] = false;
 
             if (! $this->tableExists($table)) {
                 return false;
@@ -434,10 +434,10 @@ class Model
                 }
             }
 
-            $this->_listFieldsCache[$table] = array_values(array_unique($fields));
+            self::$_listFieldsCache[$table] = array_values(array_unique($fields));
         }
 
-        return $this->_listFieldsCache[$table];
+        return self::$_listFieldsCache[$table];
     }
 
     /**
@@ -454,8 +454,8 @@ class Model
             return false;
         }
 
-        if (! array_key_exists($table, $this->_fieldDataCache)) {
-            $this->_fieldDataCache[$table] = false;
+        if (! array_key_exists($table, self::$_fieldDataCache)) {
+            self::$_fieldDataCache[$table] = false;
 
             if (! $this->tableExists($table)) {
                 return false;
@@ -477,10 +477,10 @@ class Model
                 }
             }
 
-            $this->_fieldDataCache[$table] = $fields;
+            self::$_fieldDataCache[$table] = $fields;
         }
 
-        return $this->_fieldDataCache[$table];
+        return self::$_fieldDataCache[$table];
     }
 
     /**
@@ -528,8 +528,8 @@ class Model
             'name' => $name,
             'type' => $type
         ];
-        unset($this->_listFieldsCache[$table], $this->_fieldDataCache[$table]);
-        $this->_fieldExistsCache[$table . '.' . $name] = true;
+        unset(self::$_listFieldsCache[$table], self::$_fieldDataCache[$table]);
+        self::$_fieldExistsCache[$table . '.' . $name] = true;
 
         return $this;
     }
@@ -3216,8 +3216,8 @@ class Model
         }
 
         $cacheKey = $this->_table . '|' . $column;
-        if (array_key_exists($cacheKey, $this->_fieldTypeCache)) {
-            return $this->_fieldTypeCache[$cacheKey];
+        if (array_key_exists($cacheKey, self::$_fieldTypeCache)) {
+            return self::$_fieldTypeCache[$cacheKey];
         }
 
         $table = $this->_table;
@@ -3231,21 +3231,21 @@ class Model
         $field = trim($field, "\"`[] \t\n\r\0\x0B");
 
         if (! $table || ! $field) {
-            return $this->_fieldTypeCache[$cacheKey] = null;
+            return self::$_fieldTypeCache[$cacheKey] = null;
         }
 
         $fieldData = $this->fieldData($table);
         if (! $fieldData) {
-            return $this->_fieldTypeCache[$cacheKey] = null;
+            return self::$_fieldTypeCache[$cacheKey] = null;
         }
 
         foreach ($fieldData as $data) {
             if (isset($data->name, $data->type) && $data->name === $field) {
-                return $this->_fieldTypeCache[$cacheKey] = strtolower((string) $data->type);
+                return self::$_fieldTypeCache[$cacheKey] = strtolower((string) $data->type);
             }
         }
 
-        return $this->_fieldTypeCache[$cacheKey] = null;
+        return self::$_fieldTypeCache[$cacheKey] = null;
     }
 
     /**
