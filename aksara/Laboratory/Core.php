@@ -22,6 +22,7 @@ use Throwable;
 use Config\Services;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\Response;
+use Aksara\Laboratory\Validation;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
 
@@ -6918,8 +6919,13 @@ abstract class Core extends Controller
                 'last_yearly_reset' => date('Y-m-d')
             ];
 
-            $this->model->insert('app_stats', $initialData);
-            $stats = (object) $initialData;
+            try {
+                $this->model->insert('app_stats', $initialData);
+                $stats = (object) $initialData;
+            } catch (Throwable $e) {
+                // Fallback to fetch newly inserted row if concurrent request inserted it in parallel
+                $stats = $this->model->get('app_stats', 1)->row() ?: (object) $initialData;
+            }
         }
 
         $today = date('Y-m-d');
