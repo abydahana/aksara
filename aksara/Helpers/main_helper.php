@@ -130,6 +130,10 @@ if (! function_exists('get_theme')) {
      */
     function get_theme(): string
     {
+        if (! empty(\Aksara\Laboratory\Template::$activeTheme)) {
+            return \Aksara\Laboratory\Template::$activeTheme;
+        }
+
         $theme = '';
         $backtrace = debug_backtrace();
 
@@ -341,7 +345,7 @@ if (! function_exists('fetch_metadata')) {
      * @param string $path  The internal URL path to fetch metadata from.
      * @return object|array|\Throwable Returns a decoded JSON object on success, an empty array, or a Throwable exception on failure.
      */
-    function fetch_metadata(string $path): object|array
+    function fetch_metadata(string $path): object
     {
         try {
             // Initialize the CURL request service
@@ -358,14 +362,17 @@ if (! function_exists('fetch_metadata')) {
                 ]
             ]);
 
-            // Return decoded JSON response
-            return json_decode($response->getBody());
+            $decoded = json_decode($response->getBody());
+
+            if (is_object($decoded)) {
+                return $decoded;
+            }
         } catch (\Throwable $e) {
             // Log the exception object for further handling
             log_message('error', $e->getMessage());
         }
 
-        return [];
+        return new \stdClass();
     }
 }
 
