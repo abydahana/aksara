@@ -118,14 +118,26 @@ class Documentation extends Core
         }
 
         $method = $this->request->getPost('method');
+        $response_type = $this->request->getPost('response_type');
         $title = $slug;
         $output = [];
         $session_id = session_id();
         $session = get_userdata();
+        $fetch_error = null;
 
         if (! $slug || ! $method) {
             return false;
         }
+
+        if (! in_array($response_type, ['simple', 'complete'])) {
+            $response_type = 'simple';
+        }
+
+        $sample_params = [
+            'format_result' => ('complete' == $response_type ? 'complete' : null),
+            'limit' => 1
+        ];
+        $sample_params = array_filter($sample_params, fn ($value) => null !== $value);
 
         if (get_userdata('group_id') != $group_id) {
             set_userdata('group_id', $group_id);
@@ -144,7 +156,7 @@ class Documentation extends Core
                 'id' => $session_id
             ]
         )
-        ->numRows();
+        ->row();
 
         if ($tmp_session) {
             // Temporary session exists, update it
@@ -214,7 +226,7 @@ class Documentation extends Core
                     $output[$val]['field_data'] = $response;
                 } elseif (in_array($val, ['read'])) {
                     // Get field data
-                    $request = $curl->get(base_url($slug, ['limit' => 1]));
+                    $request = $curl->get(base_url($slug, $sample_params));
                     $response = json_decode($request->getBody());
 
                     if (isset($response[0])) {
@@ -222,7 +234,7 @@ class Documentation extends Core
                     }
                 } elseif (! in_array($val, ['delete'])) {
                     // Get field data
-                    $request = $curl->get(base_url($slug, ['limit' => 1]));
+                    $request = $curl->get(base_url($slug, $sample_params));
                     $response = json_decode($request->getBody());
 
                     $output[$val]['response']['success'] = $response ?? [];
@@ -330,24 +342,37 @@ class Documentation extends Core
                     */
             }
         } catch (Throwable $e) {
-            echo $e->getMessage();
-            exit;
-            // Safe abstraction
+            $fetch_error = $e->getMessage();
         }
-
-        // Remove the temporary session
-        $this->model->delete(
-            'app_sessions',
-            [
-                'id' => $session_id
-            ]
-        );
 
         // Restore the session
         set_userdata([
             'is_logged' => (isset($session['is_logged']) ? $session['is_logged'] : 0),
             'group_id' => (isset($session['group_id']) ? $session['group_id'] : 0)
         ]);
+
+        if ($tmp_session) {
+            // Restore existing session data
+            $this->model->update(
+                'app_sessions',
+                [
+                    'ip_address' => $tmp_session->ip_address,
+                    'timestamp' => $tmp_session->timestamp,
+                    'data' => $tmp_session->data
+                ],
+                [
+                    'id' => $session_id
+                ]
+            );
+        } else {
+            // Remove the temporary session
+            $this->model->delete(
+                'app_sessions',
+                [
+                    'id' => $session_id
+                ]
+            );
+        }
 
         if (isset($output['export'])) {
             $output['export']['response']['success'] = phrase('Binary file');
@@ -359,10 +384,16 @@ class Documentation extends Core
             $output['pdf']['response']['success'] = phrase('Binary file');
         }
 
-        return make_json([
+        $response = [
             'title' => $title,
             'results' => $output
-        ]);
+        ];
+
+        if ($fetch_error) {
+            $response['error'] = $fetch_error;
+        }
+
+        return make_json($response);
     }
 
     private function _scanModule()

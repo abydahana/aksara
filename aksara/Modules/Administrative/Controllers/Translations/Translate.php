@@ -24,13 +24,13 @@ use Aksara\Laboratory\Core;
 class Translate extends Core
 {
     private string $_table = 'app_languages';
-    private int $_primary;
+    private ?int $_primary;
     private string $_code;
     private string $_translationFile;
-    private int $_totalPhrases = 0;
-    private int $_limit;
-    private int $_limitBackup = 99;
-    private int $_offset;
+    private ?int $_totalPhrases = 0;
+    private ?int $_limit;
+    private ?int $_limitBackup = 99;
+    private ?int $_offset;
 
     public function __construct()
     {
