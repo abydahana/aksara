@@ -3885,7 +3885,7 @@ abstract class Core extends Controller
                         // Hour validation rules
                         $val['validation'][] = 'numeric';
                         $val['validation'][] = 'max_length[2]';
-                    } elseif (array_intersect(['date', 'datepicker'], $type) && service('request')->getPost($key)) {
+                    } elseif (array_intersect(['date', 'datepicker'], $type) && $this->request->getPost($key)) {
                         // Date (YYYY-MM-DD) validation rules
                         $val['validation'][] = 'valid_date';
                     } elseif (array_intersect(['timestamp', 'datetime', 'datetimepicker'], $type)) {
@@ -3917,7 +3917,7 @@ abstract class Core extends Controller
             }
 
             // Run validation
-            if ($validation && $this->formValidation->withRequest(service('request'))->run() === false) {
+            if ($validation && $this->formValidation->run($this->request->getPost()) === false) {
                 // Unlink the files
                 $this->_unlinkFiles(Validation::$uploadedFiles);
 

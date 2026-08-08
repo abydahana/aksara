@@ -80,7 +80,7 @@ class Forgot extends Core
         $this->formValidation->setRule('captcha', phrase('Bot Challenge'), 'required|regex_match[/' . get_userdata('captcha') . '/i]');
 
         // Validate form
-        if ($this->formValidation->withRequest(service('request')) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             // Validation error
             return throw_exception(400, $this->formValidation->getErrors());
         }
@@ -183,7 +183,7 @@ class Forgot extends Core
         $this->formValidation->setRule('password', phrase('New Password'), 'required');
         $this->formValidation->setRule('confirm_password', phrase('Password Confirmation'), 'required|matches[password]');
 
-        if ($this->formValidation->withRequest(service('request')) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->formValidation->getErrors());
         }
 

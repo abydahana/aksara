@@ -330,7 +330,7 @@ class Themes extends Core
 
             $this->formValidation->setRule('file', phrase('Theme Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
-            if ($this->formValidation->withRequest(service('request')) === false) {
+            if ($this->formValidation->run($this->request->getPost()) === false) {
                 return throw_exception(400, $this->formValidation->getErrors());
             } elseif (empty($_FILES['file']['tmp_name'])) {
                 return throw_exception(400, ['file' => phrase('No theme package were chosen.')]);
@@ -512,7 +512,7 @@ class Themes extends Core
 
         $this->formValidation->setRule('theme', phrase('Theme'), 'required');
 
-        if ($this->formValidation->withRequest(service('request')) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             return throw_exception(400, ['theme' => $this->formValidation->getErrors()]);
         }
 
