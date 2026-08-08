@@ -25,32 +25,20 @@
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-12">
                         <div class="mb-3">
-                            <label class="d-block text-muted mb-0">
-                                AKSARA
-                            </label>
-                            <label class="d-block fw-bold">
-                                <?= aksara('version'); ?>
-                            </label>
+                            <span class="d-block text-muted mb-0">AKSARA</span>
+                            <span class="d-block fw-bold"><?= aksara('version'); ?></span>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-12">
                         <div class="mb-3">
-                            <label class="d-block text-muted mb-0">
-                                <?= phrase('Build Version'); ?>
-                            </label>
-                            <label class="d-block fw-bold">
-                                <?= aksara('build_version'); ?>
-                            </label>
+                            <span class="d-block text-muted mb-0"><?= phrase('Build Version'); ?></span>
+                            <span class="d-block fw-bold"><?= aksara('build_version'); ?></span>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="d-block text-muted mb-0">
-                        <?= phrase('Last Modified'); ?>
-                    </label>
-                    <label class="d-block">
-                        <?= aksara('date_modified'); ?>
-                    </label>
+                    <span class="d-block text-muted mb-0"><?= phrase('Last Modified'); ?></span>
+                    <span class="d-block"><?= aksara('date_modified'); ?></span>
                 </div>
             </div>
             <div class="col-md-4">
@@ -58,12 +46,12 @@
                     <?= phrase('The Laborant'); ?>
                 </h6>
                 <div class="mb-3">
-                    <label class="d-block mb-0">
-                        <a href="//abydahana.github.io" class="fw-bold" target="_blank">
+                    <a href="//abydahana.github.io" target="_blank">
+                        <b>
                             Aby Dahana
-                            <i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </label>
+                            <i class="mdi mdi-launch"></i>
+                        </b>
+                    </a>
                 </div>
             </div>
             <div class="col-md-4">
@@ -71,12 +59,12 @@
                     <?= phrase('Contributors'); ?>
                 </h6>
                 <div class="mb-3">
-                    <label class="d-block mb-0">
-                        <a href="//ganjar.id" class="fw-bold" target="_blank">
+                    <a href="//ganjar.id" target="_blank">
+                        <b>
                             Ganjar Nugraha
-                            <i class="mdi mdi-open-in-new"></i>
-                        </a>
-                    </label>
+                            <i class="mdi mdi-launch"></i>
+                        </b>
+                    </a>
                 </div>
             </div>
         </div>

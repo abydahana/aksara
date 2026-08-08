@@ -35,22 +35,22 @@ foreach ($timezone as $key => $val)
     <div class="row">
         <div class="col-md-6">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="installation_mode_input">
                     <?= phrase('Installation Mode'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="installation_mode" class="form-select form-select-sm rounded-pill">
+                <select name="installation_mode" class="form-select form-select-sm rounded-pill" id="installation_mode_input">
                     <?= $options; ?>
                 </select>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="timezone_input">
                     <?= phrase('Timezone'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="timezone" class="form-select form-select-sm rounded-pill">
+                <select name="timezone" class="form-select form-select-sm rounded-pill" id="timezone_input">
                     <?= $timezone_list; ?>
                 </select>
             </div>
@@ -65,22 +65,22 @@ foreach ($timezone as $key => $val)
     <div class="row">
         <div class="col-md-12">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="site_title_input">
                     <?= phrase('Site Title'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="site_title" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Enter the site title'); ?>" value="<?= session()->get('site_title'); ?>" />
+                <input type="text" name="site_title" class="form-control form-control-sm rounded-pill" id="site_title_input" placeholder="<?= phrase('Enter the site title'); ?>" value="<?= session()->get('site_title'); ?>" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="site_description_input">
                     <?= phrase('Site Description'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <textarea name="site_description" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Enter the site description'); ?>" rows="1"><?= session()->get('site_description'); ?></textarea>
+                <textarea name="site_description" class="form-control form-control-sm rounded-pill" id="site_description_input" placeholder="<?= phrase('Enter the site description'); ?>" rows="1"><?= session()->get('site_description'); ?></textarea>
             </div>
         </div>
     </div>
@@ -91,30 +91,30 @@ foreach ($timezone as $key => $val)
         <?= phrase('Upload Settings'); ?>
     </h5>
     <div class="form-group mb-3">
-        <label class="d-block mb-0">
+        <label class="d-block mb-0" for="file_extension_input">
             <?= phrase('Allowed File Extension'); ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ?? 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv'); ?>" />
+        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" id="file_extension_input" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('file_extension') ?? 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv'); ?>" />
     </div>
     <div class="row">
         <div class="col-md-8">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="image_extension_input">
                     <?= phrase('Allowed Image Extension'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ?? 'jpg,jpeg,png,gif'); ?>" />
+                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" id="image_extension_input" placeholder="<?= phrase('Separate with comma'); ?>" value="<?= (session()->get('image_extension') ?? 'jpg,jpeg,png,gif'); ?>" />
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="max_upload_size_input">
                     <?= phrase('Upload Limit'); ?>
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" placeholder="e.g: 2048" value="<?= (session()->get('max_upload_size') ?? ((int) ini_get('upload_max_filesize') ?? 10)); ?>" />
+                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" id="max_upload_size_input" placeholder="e.g: 2048" value="<?= (session()->get('max_upload_size') ?? ((int) ini_get('upload_max_filesize') ?? 10)); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         MB
                     </span>
@@ -131,12 +131,12 @@ foreach ($timezone as $key => $val)
     <div class="row">
         <div class="col-md-4">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="image_dimension_input">
                     <?= phrase('Original'); ?>
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('image_dimension') ?? 1920); ?>" />
+                    <input type="number" name="image_dimension" class="form-control form-control-sm rounded-pill rounded-end" id="image_dimension_input" placeholder="in pixel" value="<?= (session()->get('image_dimension') ?? 1920); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -145,12 +145,12 @@ foreach ($timezone as $key => $val)
         </div>
         <div class="col-md-4">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="thumbnail_dimension_input">
                     <?= phrase('Thumbnail'); ?>
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ?? 480); ?>" />
+                    <input type="number" name="thumbnail_dimension" class="form-control form-control-sm rounded-pill rounded-end" id="thumbnail_dimension_input" placeholder="in pixel" value="<?= (session()->get('thumbnail_dimension') ?? 480); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>
@@ -159,12 +159,12 @@ foreach ($timezone as $key => $val)
         </div>
         <div class="col-md-4">
             <div class="form-group mb-3">
-                <label class="d-block mb-0">
+                <label class="d-block mb-0" for="icon_dimension_input">
                     <?= phrase('Icon'); ?>
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ?? 128); ?>" />
+                    <input type="number" name="icon_dimension" class="form-control form-control-sm rounded-pill rounded-end" id="icon_dimension_input" placeholder="in pixel" value="<?= (session()->get('icon_dimension') ?? 128); ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         px
                     </span>

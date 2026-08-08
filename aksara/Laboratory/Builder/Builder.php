@@ -106,7 +106,7 @@ class Builder
             }
 
             // Scaffold missing files only if target directory or requested file is missing
-            if ($theme && (! is_dir($target_dir) || ($requested_file && ! file_exists($requested_file)))) {
+            if ($theme) {
                 foreach ($templates as $template) {
                     // Skip constructor
                     if ('__construct' === $template) {

@@ -196,9 +196,7 @@ class Core
                                         {% for field in row.field_data %}
                                             {% if field.type != 'image' and field.type != 'images' %}
                                                 <li class="list-group-item px-0">
-                                                    <label class="text-sm text-muted d-block">
-                                                        {{ field.label }}
-                                                    </label>
+                                                    <span class="text-sm text-muted d-block">{{ field.label }}</span>
                                                     {# Include table component #}
                                                     {% include 'table/' ~ field.type ~ '.twig' with field %}
                                                 </li>
@@ -293,9 +291,7 @@ class Core
                                         {% for field in row.field_data %}
                                             {% if field.type != 'image' and field.type != 'images' %}
                                                 <li class="list-group-item px-0">
-                                                    <label class="text-sm text-muted d-block">
-                                                        {{ field.label }}
-                                                    </label>
+                                                    <span class="text-sm text-muted d-block">{{ field.label }}</span>
                                                     {# Include table component #}
                                                     {% include 'table/' ~ field.type ~ '.twig' with field %}
                                                 </li>
@@ -930,7 +926,7 @@ class Core
         $component = <<<EOF
         <div class="mb-3">
             {% if params.label and params.type != 'geospatial' %}
-                <label class="form-label text-muted mb-0">
+                <span class="form-label text-muted mb-0 d-block">
                     {{ params.label }}
                     {% if params.tooltip %}
                         <i class="mdi mdi-information-outline text-info" data-bs-toggle="tooltip" title="{{ params.tooltip }}"></i>
@@ -938,7 +934,7 @@ class Core
                     {% if params.required %}
                         <span class="text-danger font-weight-bold">*</span>
                     {% endif %}
-                </label>
+                </span>
             {% endif %}
             <div class="input-group">
                 {% if params.prepend %}

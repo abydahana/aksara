@@ -419,9 +419,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         AKSARA
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= aksara('version'); ?>
                                     </p>
@@ -429,9 +429,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         <?= phrase('Build Version'); ?>
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= aksara('build_version'); ?>
                                     </p>
@@ -439,9 +439,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="d-block text-muted mb-0">
+                            <span class="d-block text-muted mb-0">
                                 <?= phrase('Last Modified'); ?>
-                            </label>
+                            </span>
                             <p>
                                 <?= aksara('date_modified'); ?>
                             </p>
@@ -449,9 +449,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         <?= phrase('System Language'); ?>
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= (isset($system_language) ? $system_language : null); ?>
                                     </p>
@@ -459,9 +459,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         <?= phrase('Membership'); ?>
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
                                     </p>
@@ -471,9 +471,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         <?= phrase('Secure Login Attempt'); ?>
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
                                     </p>
@@ -481,9 +481,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <label class="d-block text-muted mb-0">
+                                    <span class="d-block text-muted mb-0">
                                         <?= phrase('Blocking Time'); ?>
-                                    </label>
+                                    </span>
                                     <p>
                                         <?= (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
                                     </p>

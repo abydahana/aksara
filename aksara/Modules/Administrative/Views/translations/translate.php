@@ -14,62 +14,42 @@ $field_data = $results[0];
         <div class="col-lg-6">
             <div class="row">
                 <div class="col-sm-4">
-                    <label class="text-muted d-block">
-                        <?= phrase('Language'); ?>
-                    </label>
+                    <span class="text-muted"><?= phrase('Language'); ?></span>
                 </div>
                 <div class="col">
-                    <label>
-                        <?= (isset($field_data->language) ? $field_data->language : null); ?>
-                    </label>
+                    <span><?= (isset($field_data->language) ? $field_data->language : null); ?></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label class="text-muted d-block">
-                        <?= phrase('Alias'); ?>
-                    </label>
+                    <span class="text-muted"><?= phrase('Alias'); ?></span>
                 </div>
                 <div class="col">
-                    <label>
-                        <?= (isset($field_data->description) ? $field_data->description : null); ?>
-                    </label>
+                    <span><?= (isset($field_data->description) ? $field_data->description : null); ?></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label class="text-muted d-block">
-                        <?= phrase('Code'); ?>
-                    </label>
+                    <span class="text-muted"><?= phrase('Code'); ?></span>
                 </div>
                 <div class="col">
-                    <label>
-                        <?= (isset($field_data->code) ? $field_data->code : null); ?>
-                    </label>
+                    <span><?= (isset($field_data->code) ? $field_data->code : null); ?></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label class="text-muted d-block">
-                        <?= phrase('Locale'); ?>
-                    </label>
+                    <span class="text-muted"><?= phrase('Locale'); ?></span>
                 </div>
                 <div class="col">
-                    <label>
-                        <?= (isset($field_data->locale) ? $field_data->locale : null); ?>
-                    </label>
+                    <span><?= (isset($field_data->locale) ? $field_data->locale : null); ?></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label class="text-muted d-block">
-                        <?= phrase('Total Phrases'); ?>
-                    </label>
+                    <span class="text-muted"><?= phrase('Total Phrases'); ?></span>
                 </div>
                 <div class="col">
-                    <label>
-                        <?= number_format($total_phrases); ?>
-                    </label>
+                    <span><?= number_format($total_phrases); ?></span>
                 </div>
             </div>
         </div>
