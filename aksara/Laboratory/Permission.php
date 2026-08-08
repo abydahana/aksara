@@ -429,7 +429,7 @@ class Permission
                 } catch (Throwable $e) {
                     // Fallback: If inserted concurrently by a parallel request, update the record
                     unset($prepare['path']);
-                    
+
                     $this->_model->update('app_groups_privileges', $prepare, ['path' => $path], 1);
                 }
             }
@@ -486,6 +486,7 @@ class Permission
      *
      * @param   string|null $path
      * @param   string      $method
+     * @param   null|mixed  $router
      * @return  string|null
      */
     private function _normalizePath($path = null, $method = '', $router = null)

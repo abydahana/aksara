@@ -118,7 +118,7 @@ if (! function_exists('generate_csrf_token')) {
             throw new RuntimeException('ENCRYPTION_KEY must be defined for CSRF token generation');
         }
 
-        $uri = $path !== null ? trim($path, '/') : uri_string();
+        $uri = null !== $path ? trim($path, '/') : uri_string();
 
         return hash_hmac('sha256', $uri . get_userdata('session_generated') . get_userdata('token_timestamp'), ENCRYPTION_KEY);
     }
