@@ -19,8 +19,6 @@ namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
-defined('INSTALL_INDEX_PAGE') || define('INSTALL_INDEX_PAGE', 'index.php');
-
 class App extends BaseConfig
 {
     /**
@@ -57,7 +55,7 @@ class App extends BaseConfig
      * something else. If you have configured your web server to remove this file
      * from your site URIs, set this variable to an empty string.
      */
-    public string $indexPage = INSTALL_INDEX_PAGE;
+    public string $indexPage = '';
 
     /**
      * --------------------------------------------------------------------------
