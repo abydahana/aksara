@@ -23,7 +23,7 @@ use Aksara\Laboratory\Core;
 
 class Documentation extends Core
 {
-    private ?int $_primary;
+    private ?string $_primary;
     private array $_collection = [];
     private array $_namespace = [];
 

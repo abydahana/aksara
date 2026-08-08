@@ -20,9 +20,9 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
-                    <a href="<?= current_page(); ?>" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
+                    <button type="button" role="button" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
                         <i class="mdi mdi-menu-open fs-4" data-sidebar-toggle-icon></i>
-                    </a>
+                    </button>
                 </li>
                 <li class="nav-item">
                     <?php if (get_userdata('year')): ?>
@@ -43,18 +43,18 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="theme">
+                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="theme" aria-label="<?= phrase('Toggle theme'); ?>">
                         <i class="mdi mdi-weather-night"></i>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="fullscreen">
+                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="fullscreen" aria-label="<?= phrase('Toggle fullscreen'); ?>">
                         <i class="mdi mdi-fullscreen"></i>
                     </a>
                 </li>
                 <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications" aria-label="<?= phrase('Notifications'); ?>">
                         <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -63,7 +63,7 @@
                 </li>
                 <?php endif; ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language" aria-label="<?= phrase('Language'); ?>">
                         <i class="mdi mdi-translate"></i> <?= phrase('Language'); ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">

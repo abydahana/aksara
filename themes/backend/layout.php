@@ -15,7 +15,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="#212529" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="description" content="<?= truncate($meta->description); ?>" />
+        <meta name="description" content="<?= truncate($meta->description ?: get_setting('app_description')); ?>" />
         <meta name="referrer" content="strict-origin-when-cross-origin">
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
 
@@ -59,16 +59,16 @@
                         </div>
                         <div class="col-4 text-end">
                             <div class="btn-group btn-group-sm">
-                                <button type="button" class="btn<?= (! $meta->description ? ' d-none' : null); ?>" id="description-btn" data-bs-toggle="collapse" data-bs-target="#description-collapse">
+                                <button type="button" class="btn<?= (! $meta->description ? ' d-none' : null); ?>" id="description-btn" data-bs-toggle="collapse" data-bs-target="#description-collapse" aria-label="<?= phrase('Toggle Description'); ?>">
                                     <i class="mdi mdi-information-outline"></i>
                                 </button>
-                                <a href="<?= current_page(); ?>" class="btn --xhr" data-role="reload" data-bs-toggle="tooltip" title="<?= phrase('Refresh'); ?>">
+                                <a href="<?= current_page(); ?>" class="btn --xhr" data-role="reload" data-bs-toggle="tooltip" title="<?= phrase('Refresh'); ?>" aria-label="<?= phrase('Refresh'); ?>">
                                     <i class="mdi mdi-refresh"></i>
                                 </a>
-                                <button type="button" class="btn d-none d-sm-none d-md-none d-lg-block d-xl-block" data-role="expand" data-bs-toggle="tooltip" title="<?= phrase('Expand'); ?>">
+                                <button type="button" class="btn d-none d-sm-none d-md-none d-lg-block d-xl-block" data-role="expand" data-bs-toggle="tooltip" title="<?= phrase('Expand'); ?>" aria-label="<?= phrase('Expand'); ?>">
                                     <i class="mdi mdi-arrow-expand"></i>
                                 </button>
-                                <button type="button" class="btn d-none d-sm-none d-md-none d-lg-block d-xl-block" data-role="close" data-bs-toggle="tooltip" title="<?= phrase('Remove'); ?>">
+                                <button type="button" class="btn d-none d-sm-none d-md-none d-lg-block d-xl-block" data-role="close" data-bs-toggle="tooltip" title="<?= phrase('Remove'); ?>" aria-label="<?= phrase('Remove'); ?>">
                                     <i class="mdi mdi-window-close"></i>
                                 </button>
                             </div>

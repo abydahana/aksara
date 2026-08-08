@@ -48,7 +48,7 @@ class Core
                         <tr>
                             <th width="1">
                                 <div class="mb-0">
-                                    <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" data-role="checker" data-parent="table">
+                                    <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" aria-label="{{ phrase('Check All') }}" data-role="checker" data-parent="table">
                                 </div>
                             </th>
                             <th>
@@ -95,19 +95,19 @@ class Core
                                 <td>
                                     {% if row.deleting %}
                                         <div class="mb-0">
-                                            <input type="checkbox" name="bulk_delete[]" value="{{ row.primary | json_encode | escape }}" class="form-check-input">
+                                            <input type="checkbox" name="bulk_delete[]" value="{{ row.primary | json_encode | escape }}" class="form-check-input" aria-label="{{ phrase('Select Row') }}">
                                         </div>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-xs">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" aria-label="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -355,7 +355,7 @@ class Core
             <div class="col">
                 <div class="btn-group btn-group-sm">
                     {% for key, button in buttons %}
-                        <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.path == 'delete' %} data-bulk-delete="true" {% endif %} {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                        <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.path == 'delete' %} data-bulk-delete="true" {% endif %} {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                             <i class="{{ button.icon }}"></i>
                             {% if button.path != 'delete' %} {{ button.label }} {% endif %}
                         </a>
@@ -367,16 +367,16 @@ class Core
                     <div class="input-group input-group-sm">
                         {% for name, filter in filters %}
                             {% if filter.type == 'text' %}
-                                <input type="text" name="{{ name }}" value="{{ filter.values }}" placeholder="{{ filter.label }}" class="form-control">
+                                <input type="text" name="{{ name }}" value="{{ filter.values }}" placeholder="{{ filter.label }}" aria-label="{{ filter.label }}" class="form-control">
                             {% elseif filter.type == 'select' %}
-                                <select name="{{ name }}" placeholder="{{ filter.label }}" class="form-control">
+                                <select name="{{ name }}" placeholder="{{ filter.label }}" aria-label="{{ filter.label }}" class="form-control">
                                     {% for option in filter.values %}
                                     <option value="{{ option.id }}" {% if option.selected %} selected {% endif %}>{{ option.label }}</option>
                                     {% endfor %}
                                 </select>
                             {% endif %}
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" aria-label="{{ phrase('Search') }}">
                             <i class="mdi mdi-magnify"></i>
                         </button>
                     </div>
@@ -488,7 +488,7 @@ class Core
                     {% for input in filters.hidden %}
                         <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
                     {% endfor %}
-                    <div class="float-sm-end pagination">
+                    <nav class="float-sm-end pagination" aria-label="{{ phrase('Pagination') }}">
                         <ul class="pagination pagination-sm mb-0 me-1">
                             {% for link in links %}
                                 <li class="{{ link.parent_class }}">
@@ -500,20 +500,20 @@ class Core
                         </ul>
                         <div class="input-group input-group-sm">
                             {% for input in filters.select %}
-                                <select name="{{ input.name }}" class="form-control">
+                                <select name="{{ input.name }}" class="form-control" aria-label="{{ phrase('Per Page') }}">
                                     {% for option in input.values %}
                                         <option value="{{ option.value }}"{{ option.selected ? ' selected' : '' }}>{{ option.label }}</option>
                                     {% endfor %}
                                 </select>
                             {% endfor %}
                             {% for input in filters.number %}
-                                <input type="number" name="{{ input.name }}" value="{{ input.value }}" min="{{ input.min }}" max="{{ input.max }}" class="form-control">
+                                <input type="number" name="{{ input.name }}" value="{{ input.value }}" min="{{ input.min }}" max="{{ input.max }}" class="form-control" aria-label="{{ phrase('Page Number') }}">
                             {% endfor %}
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" aria-label="{{ phrase('Submit') }}">
                                 OK
                             </button>
                         </div>
-                    </div>
+                    </nav>
                 </form>
             </div>
         </div>
