@@ -63,13 +63,11 @@ if (! file_exists('../' . $frameworkPath . 'config.php')) {
     }
 
     define('BASE_URL', ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ? 'https' : 'http') . '://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost') . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
-    define('INSTALL_INDEX_PAGE', ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi' ? '' : 'index.php'));
 
     $config_path = $frameworkPath . 'install';
 } else {
     // include the configuration file
     require_once '../' . $frameworkPath . 'config.php';
-    define('AKSARA_INDEX_PAGE', ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi' ? '' : 'index.php'));
 
     $config_path = $frameworkPath . 'aksara';
 }

@@ -80,7 +80,7 @@ class Install extends BaseController
         $extension = array_map('strtolower', get_loaded_extensions());
 
         // Check rewrite module status
-        $mod_rewrite = (defined('INSTALL_INDEX_PAGE') ? '' === INSTALL_INDEX_PAGE : ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi'));
+        $mod_rewrite = ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi');
 
         $output = [
             'extension' => $extension,
