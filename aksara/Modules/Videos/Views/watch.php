@@ -22,7 +22,7 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
     <div class="col-lg-8">
         <div class="sticky-top">
             <div class="full-height bg-secondary p-3 d-flex align-items-center">
-                <video role="videoplayer" id="video" class="rounded-4">
+                <video data-role="videoplayer" id="video" class="rounded-4">
                     <source src="<?= $results->field_data->video_url->value; ?>" type="<?= $video_type; ?>">
                 </video>
             </div>
@@ -33,11 +33,11 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
             <div class="row align-items-center mb-3">
                 <div class="col-2 pe-0">
                     <a href="<?= base_url('user/' . $results->field_data->username->value); ?>" class="--xhr">
-                        <img src="<?= get_image('users', $results->field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value; ?>" />
+                        <img src="<?= get_image('users', $results->field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value; ?>" loading="lazy" decoding="async" />
                     </a>
                 </div>
                 <div class="col-10">
-                    <h5 class="fw-bold mb-0">
+                    <h2 class="h5 fw-bold mb-0">
                         <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">&nbsp;</a>
                         <a href="<?= base_url('user/' . $results->field_data->username->value); ?>" class="--xhr">
                             <?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value; ?>
@@ -50,9 +50,9 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
                     </p>
                 </div>
             </div>
-            <h4>
+            <h3 class="h4">
                 <?= $results->field_data->title->value; ?>
-            </h4>
+            </h3>
             <div>
                 <?= custom_nl2br($results->field_data->description->value, 1); ?>
             </div>

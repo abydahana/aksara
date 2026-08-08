@@ -10,11 +10,11 @@
         <title><?= truncate($meta->title) . ' | ' . get_setting('app_name'); ?></title>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="msapplication-navbutton-color" content="#007bff" />
-        <meta name="theme-color" content="#007bff" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="#007bff" />
+        <meta name="msapplication-navbutton-color" content="#212529" />
+        <meta name="theme-color" content="#212529" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#212529" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="description" content="<?= truncate($meta->description); ?>" />
         <meta name="referrer" content="strict-origin-when-cross-origin">
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />

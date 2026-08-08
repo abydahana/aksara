@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 注意！
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> 不可寫入。
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     您正在使用 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>！
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     走得更遠
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     文件
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         該指南包含簡介、教學課程、一些「操作方法」指南，以及構成 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> 的組件的參考文件。
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>查看文件</b></a>！
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     社群
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         您可以在以下社群論壇中發起有關功能、錯誤或建議的討論：
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         您還可以在您最喜歡的社群媒體上建立與 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> 相關的官方論壇討論。
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     貢獻
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         您可以編寫文件、建立模組並加入合適的庫來使 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> 變得更好。這些貢獻可以以 <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Issues（問題）</b></a> 或 <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Pull Request（拉取請求）</b></a> 的形式在 <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a> 上的 <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> 儲存庫中進行。
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     支持
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         作為一名獨立研究員（單打獨鬥者），我偶爾想去享受一下我從未探索過的外部世界。也許透過一個小長假，我可以想出另一個絕妙的主意來應用到我的研究中。
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

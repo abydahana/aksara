@@ -49,10 +49,10 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <?= $carousel; ?>
                     </div>
                     <?php if (sizeof($detail->screenshot) > 1) { ?>
-                        <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+                        <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous'); ?>">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         </a>
-                        <a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-bs-slide="next">
+                        <a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-bs-slide="next" aria-label="<?= phrase('Next'); ?>">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         </a>
                     <?php } ?>

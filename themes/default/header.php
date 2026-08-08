@@ -9,11 +9,11 @@
 $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 
 ?>
-<header role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
+<header data-role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url(); ?>">
-            <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" />
-            <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name'); ?> Logo" />
+            <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" loading="lazy" decoding="async" />
+            <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name'); ?> Logo" loading="lazy" decoding="async" />
             <?= (get_userdata('year') ? '<span class="badge bg-warning">' . get_userdata('year') . '</span>' : ''); ?>
         </a>
         <button class="navbar-toggler mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="<?= phrase('Toggle navigation'); ?>">
@@ -28,7 +28,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
             <?= $_menu_html; ?>
             <ul class="navbar-nav ms-auto align-items-lg-center gap-3">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
                         <i class="mdi mdi-translate"></i>
                         <span><?= phrase('Language'); ?></span>
                     </a>
@@ -38,7 +38,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
                 </li>
                 <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown user-account">
-                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('dashboard'); ?>" data-bs-toggle="dropdown">
                         <i class="mdi mdi-account-outline"></i>
                         <span><?= truncate(get_userdata('first_name'), 16); ?></span>
                     </a>
@@ -91,7 +91,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
         <ul class="navbar-nav ml-auto align-items-lg-center gap-3">
             <?php if (get_userdata('is_logged')): ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" role="notifications">
+                <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications">
                     <i class="mdi mdi-bell-ring"></i>
                     <span><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
                 </a>
@@ -101,7 +101,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
             </li>
             <?php endif; ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
+                <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
                     <i class="mdi mdi-translate"></i>
                     <span><?= phrase('Language'); ?></span>
                 </a>
@@ -111,7 +111,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
             </li>
             <?php if (get_userdata('is_logged')): ?>
             <li class="nav-item dropdown user-account">
-                <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" href="<?= base_url('dashboard'); ?>" data-bs-toggle="dropdown">
                     <i class="mdi mdi-account-outline"></i>
                     <span><?= truncate(get_userdata('first_name'), 16); ?></span>
                 </a>

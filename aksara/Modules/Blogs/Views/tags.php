@@ -83,11 +83,11 @@
                                         </a>
                                     </div>
                                 </div>
-                                <h5 class="mb-3">
+                                <h2 class="h5" class="mb-3">
                                     <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
                                         <?= truncate($val->post_title, 120); ?>
                                     </a>
-                                </h5>
+                                </h2>
                                 <p class="text-muted small">
                                     <?= truncate($val->post_excerpt, 120); ?>
                                 </p>

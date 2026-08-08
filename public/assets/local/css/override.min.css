@@ -6,13 +6,13 @@ html.fix-scrollbar body {
   overflow-x: inherit;
 }
 body.content-expanded .navbar,
-body.content-expanded [role="breadcrumb"] {
+body.content-expanded [data-role="breadcrumb"] {
   display: none;
 }
 body.content-expanded #page-wrapper {
   z-index: 1081;
 }
-body.content-expanded [role="content"] {
+body.content-expanded [data-role="content"] {
   position: fixed !important;
   padding-top: 0 !important;
   padding-left: 0 !important;
@@ -115,6 +115,12 @@ th[align="right"] {
 }
 .text-sm {
   font-size: 0.75rem !important;
+}
+.bg-dark .text-muted,
+.bg-secondary .text-muted,
+.dark-mode .text-muted,
+[data-bs-theme="dark"] .text-muted {
+  color: #cbd5e1 !important;
 }
 .btn.btn-file {
   position: relative;

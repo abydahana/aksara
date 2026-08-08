@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 ประกาศ!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> ไม่สามารถเขียนได้
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     คุณกำลังใช้ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     ไปให้ไกลกว่านั้น
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     เอกสารกำกับ
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         แนวทางปฏิบัติประกอบด้วยบทนำ บทช่วยสอน คู่มือ "วิธีใช้งาน" และเอกสารอ้างอิงสำหรับส่วนประกอบต่างๆ ที่สร้าง <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>ตรวจสอบเอกสารกำกับ</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     ชุมชน
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         คุณสามารถเปิดการสนทนาที่เกี่ยวข้องกับคุณสมบัติ ข้อบกพร่อง หรือข้อเสนอแนะในฟอรัมชุมชนต่อไปนี้:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         นอกจากนี้ คุณยังได้รับอนุญาตให้สร้างฟอรัมสนทนาอย่างเป็นทางการที่เกี่ยวข้องกับ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> บนโซเชียลมีเดียที่คุณชื่นชอบ
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     มีส่วนร่วม
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         คุณได้รับอนุญาตให้มีส่วนร่วมโดยการเขียนเอกสารประกอบ สร้างโมดูล และเพิ่มไลบรารีที่เหมาะสมเพื่อทำให้ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> ดียิ่งขึ้นไปอีก การมีส่วนร่วมเหล่านี้ทำในรูปแบบของ <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>ปัญหา (Issues)</b></a> หรือ <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>คำขอดึง (Pull Request)</b></a> บนพื้นที่เก็บข้อมูล <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> บน <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     การสนับสนุน
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         ในฐานะนักวิจัยอิสระ บางครั้งฉันต้องการเพลิดเพลินกับโลกภายนอกที่ไม่เคยสำรวจ บางทีอาจจะไปพักผ่อนสักหน่อยเพื่อนำไอเดียใหม่ ๆ มาใช้กับงานวิจัยของฉัน
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

@@ -38,17 +38,17 @@ class Core
         // Includes: Toolbar, Bulk Delete Checkbox, Sortable Headers, Data Loop, and Pagination
         $component = <<<EOF
         <div class="container-fluid">
-            <div role="toolbar" class="alias-table-toolbar py-1 border-bottom">
+            <div data-role="toolbar" class="alias-table-toolbar py-1 border-bottom">
                 {# Include toolbar component #}
                 {% include 'core/toolbar.twig' with results.toolbar %}
             </div>
-            <div role="table" class="table-responsive alias-table-index">
+            <div data-role="table" class="table-responsive alias-table-index">
                 <table class="table table-sm table-hover mb-0">
                     <thead>
                         <tr>
                             <th width="1">
                                 <div class="mb-0">
-                                    <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" role="checker" data-parent="table">
+                                    <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" data-role="checker" data-parent="table">
                                 </div>
                             </th>
                             <th>
@@ -72,7 +72,7 @@ class Core
                             {% endfor %}
                         </tr>
                     </thead>
-                    <tbody {{ results.sortable ? 'role=sortable data-url=' ~ results.sortable.sort_url : 'role="tbody"' }}>
+                    <tbody {{ results.sortable ? 'data-role="sortable" data-url="' ~ results.sortable.sort_url ~ '"' : 'data-role="tbody"' }}>
                         {% set references = [] %}
                         {% for key, row in results.table_data %}
                             {% set unique_reference = '' %}
@@ -107,7 +107,7 @@ class Core
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -124,7 +124,7 @@ class Core
                     </tbody>
                 </table>
             </div>
-            <div role="pagination" class="alias-pagination border-top py-2">
+            <div data-role="pagination" class="alias-pagination border-top py-2">
                 {# Include pagination component #}
                 {% include 'core/pagination.twig' with pagination %}
             </div>
@@ -148,13 +148,13 @@ class Core
         // Template for Grid View
         // Includes: Toolbar, Card Loop (Bootstrap Grid), Image Carousel logic, and Pagination
         $component = <<<EOF
-        <div role="toolbar" class="alias-table-toolbar py-2 border-bottom">
+        <div data-role="toolbar" class="alias-table-toolbar py-2 border-bottom">
             <div class="container-fluid">
                 {# Include toolbar component #}
                 {% include 'core/toolbar.twig' with results.toolbar %}
             </div>
         </div>
-        <div role="grid" class="pt-3">
+        <div data-role="grid" class="pt-3">
             <div class="container-fluid">
                 <div class="row">
                     {% for key, row in results.table_data %}
@@ -174,10 +174,10 @@ class Core
                                                     </div>
                                                 {% endfor %}
                                             </div>
-                                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev">
+                                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev" aria-label="{{ phrase('Previous') }}">
                                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             </a>
-                                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next">
+                                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next" aria-label="{{ phrase('Next') }}">
                                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             </a>
                                         </div>
@@ -212,7 +212,7 @@ class Core
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="javascript:void(0)" class="btn btn-light --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="{{ current_page() }}" class="btn btn-light --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -224,7 +224,7 @@ class Core
                 </div>
             </div>
         </div>
-        <div role="pagination" class="alias-pagination py-2 border-top">
+        <div data-role="pagination" class="alias-pagination py-2 border-top">
             <div class="container-fluid">
                 {# Include pagination component #}
                 {% include 'core/pagination.twig' with pagination %}
@@ -249,7 +249,7 @@ class Core
         // Template for Mobile View
         // Includes: Card Grid, Pagination, and Bottom Toolbar
         $component = <<<EOF
-        <div role="grid" class="pt-3">
+        <div data-role="grid" class="pt-3">
             <div class="container-fluid">
                 <div class="row">
                     {% for key, row in results.table_data %}
@@ -269,10 +269,10 @@ class Core
                                                     </div>
                                                 {% endfor %}
                                             </div>
-                                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev">
+                                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev" aria-label="{{ phrase('Previous') }}">
                                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             </a>
-                                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next">
+                                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next" aria-label="{{ phrase('Next') }}">
                                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             </a>
                                         </div>
@@ -307,7 +307,7 @@ class Core
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -319,13 +319,13 @@ class Core
                 </div>
             </div>
         </div>
-        <div role="pagination" class="alias-pagination pb-3">
+        <div data-role="pagination" class="alias-pagination pb-3">
             <div class="container-fluid">
                 {# Include pagination component #}
                 {% include 'core/pagination.twig' with pagination %}
             </div>
         </div>
-        <div role="toolbar" class="alias-table-toolbar py-1">
+        <div data-role="toolbar" class="alias-table-toolbar py-1">
             <div class="container-fluid">
                 {# Include toolbar component #}
                 {% include 'core/toolbar_mobile.twig' with results.toolbar %}
@@ -411,7 +411,7 @@ class Core
                         {{ button.label }}
                     </a>
                 {% elseif key == 3 %}
-                    <a href="javascript:void(0)" class="btn btn-secondary --open-item-option" data-options="{{ buttons | slice(3) | json_encode | escape }}">
+                    <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-options="{{ buttons | slice(3) | json_encode | escape }}">
                         <i class="mdi mdi-format-list-bulleted"></i>
                         {{ phrase('More') }}
                     </a>
@@ -583,7 +583,7 @@ class Core
                                     </div>
                                 {% endfor %}
                             </div>
-                            <div role="validation-callback"></div>
+                            <div data-role="validation-callback"></div>
                         </div>
                     </div>
                     <div class="opt-btn-overlap-fix"></div>

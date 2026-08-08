@@ -347,7 +347,7 @@ class Comment extends Core
                     </label>
                     <div data-provides="fileupload" class="fileupload fileupload-new">
                         <span class="btn btn-file d-block">
-                            <input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" role="image-upload" id="attachment_input" />
+                            <input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" data-role="image-upload" id="attachment_input" />
                             <div class="fileupload-new text-center">
                                 <img class="img-fluid upload_preview" src="' . get_image('comment', $query->attachment, 'thumb'). '" alt="' . phrase('Preview') . '" />
                             </div>
@@ -867,7 +867,7 @@ class Comment extends Core
                         </div>
                     </div>
                     <div class="py-1 ps-3">
-                        <a href="javascript:void(0)" data-href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
+                        <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
                             <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
                             &nbsp;
                             <b>
@@ -875,7 +875,7 @@ class Comment extends Core
                             </b>
                         </a>
                          &middot;
-                        <a href="javascript:void(0)" data-href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                        <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>

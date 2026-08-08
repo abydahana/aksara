@@ -27,34 +27,34 @@ if ($field_data): ?>
                     </a>
                 </div>
                 <div class="mb-3">
-                    <h4 class="text-muted mb-0">
+                    <h2 class="h4 text-muted mb-0">
                         <?= phrase('Full Name'); ?>
-                    </h4>
+                    </h2>
                     <p class="fs-5">
                         <?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>
                     </p>
                 </div>
                 <div class="mb-3">
-                    <h4 class="text-muted mb-0">
+                    <h2 class="h4 text-muted mb-0">
                         <?= phrase('Position'); ?>
-                    </h4>
+                    </h2>
                     <p class="fs-5">
                         <?= $field_data->position->value; ?>
                     </p>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-6">
-                        <h4 class="text-muted mb-0">
+                        <h2 class="h4 text-muted mb-0">
                             <?= phrase('Email'); ?>
-                        </h4>
+                        </h2>
                         <p class="fs-5">
                             <?= $field_data->email->value; ?>
                         </p>
                     </div>
                     <div class="col-sm-6">
-                        <h4 class="text-muted mb-0">
+                        <h2 class="h4 text-muted mb-0">
                             <?= phrase('Mobile'); ?>
-                        </h4>
+                        </h2>
                         <p class="fs-5">
                             <?= $field_data->mobile->value; ?>
                         </p>

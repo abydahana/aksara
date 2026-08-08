@@ -98,7 +98,7 @@ $(document).ready(function() {
             <div class="row g-0 mb-2">
               <div class="col-1 pt-1">
                 <a href="${ val.links.profile_url }" class="--xhr">
-                  <img src="${ val.photo }" class="img-fluid rounded-circle" />
+                  <img src="${ val.photo }" class="img-fluid rounded-circle" loading="lazy" decoding="async" />
                 </a>
               </div>
               <div class="col-11 ps-3">
@@ -153,7 +153,7 @@ $(document).ready(function() {
                       ` + (Object.keys(val.attachment).length ? `
                         <div class="mt-3">
                           <a href="${ val.attachment.original }" target="_blank">
-                            <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="${ phrase('Attachment') }" />
+                            <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="${ phrase('Attachment') }" loading="lazy" decoding="async" />
                           </a>
                         </div>
                       ` : ``) + `
@@ -163,7 +163,7 @@ $(document).ready(function() {
                   </div>
                 </div>
                 <div class="py-1 ps-3">
-                  <a href="javascript:void(0)" data-href="${ val.links.upvote_url }" class="text-sm --upvote">
+                  <a href="${ val.links.upvote_url || window.location.href }" data-href="${ val.links.upvote_url }" class="text-sm --upvote">
                     <b class="text-secondary" id="comment-upvote-${ val.comment_id }">
                       ${ (val.upvotes > 0 ? val.upvotes : '') }
                     </b>
@@ -172,7 +172,7 @@ $(document).ready(function() {
                     </b>
                   </a>
                   &middot;
-                  <a href="javascript:void(0)" data-href="${ val.links.reply_url }" class="text-sm --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
+                  <a href="${ val.links.reply_url || window.location.href }" data-href="${ val.links.reply_url }" class="text-sm --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
                     <b>
                       ${ phrase('Reply') }
                     </b>
@@ -191,7 +191,7 @@ $(document).ready(function() {
                     <div class="load-more-container row g-0">
                       <div class="col-12">
                         <div class="mb-3">
-                          <a href="javascript:void(0)" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-dark fw-bold">
+                          <a href="${ val.links.replies_url || window.location.href }" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-dark fw-bold">
                             <i class="mdi mdi-chevron-down"></i>
                             ${ val.replies } ${ (val.replies ? (val.replies > 1 ? phrase('Replies') : 'Reply') : '') }
                           </a>
@@ -212,7 +212,7 @@ $(document).ready(function() {
             <div class="col-12">
               <div class="mb-3">
                 <p class="text-${ (is_reply ? 'start' : 'center') }">
-                  <a href="javascript:void(0)" data-href="${ response.next_page }" data-is-reply="${ is_reply }" class="load-more --fetch-comments">
+                  <a href="${ response.next_page || window.location.href }" data-href="${ response.next_page }" data-is-reply="${ is_reply }" class="load-more --fetch-comments">
                     <b>${ (is_reply ? phrase('Load more replies') : phrase('Load more comments')) }</b>
                   </a>
                 </p>
@@ -277,7 +277,7 @@ $(document).ready(function() {
                 </div>
                 <div data-provides="fileupload" class="fileupload fileupload-new d-none">
                   <span class="btn btn-file" style="width:80px">
-                    <input type="file" name="attachment" accept=".jpg,.png,.gif" role="image-upload" id="attachment_input" />
+                    <input type="file" name="attachment" accept=".jpg,.png,.gif" data-role="image-upload" id="attachment_input" />
                     <div class="fileupload-new text-center">
                       <img class="img-fluid upload_preview" src="${ config.base_url + 'uploads/placeholder_icon.png' }" alt="${ phrase('Preview') }" />
                     </div>
@@ -291,7 +291,7 @@ $(document).ready(function() {
           </div>
           <div class="row g-0 align-items-center">
             <div class="col-11 offset-1 ps-3">
-              <div role="validation-callback"></div>
+              <div data-role="validation-callback"></div>
             </div>
           </div>
           <input type="hidden" name="_token" value="${ response.token }" />

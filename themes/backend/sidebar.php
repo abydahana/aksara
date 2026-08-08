@@ -3,12 +3,12 @@
  * @var array $menus
  */
 ?>
-<aside role="sidebar" class="sidebar-menu" id="sidebar-wrapper">
+<aside data-role="sidebar" class="sidebar-menu" id="sidebar-wrapper">
     <div class="p-3 user-bg-masking hide-on-collapse mb-4">
         <div class="row g-0 align-items-center">
             <div class="col-3 col-sm-2 col-lg-3">
                 <a href="<?= base_url('user'); ?>">
-                    <img src="<?= get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded-4" alt="<?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>" />
+                    <img src="<?= get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded-4" alt="<?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>" loading="lazy" decoding="async" />
                 </a>
             </div>
             <div class="col-9 col-sm-10 col-lg-9 ps-2">

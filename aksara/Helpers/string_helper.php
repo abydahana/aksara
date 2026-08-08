@@ -199,7 +199,7 @@ if (! function_exists('time_ago')) {
                     return phrase('Yesterday');
                 }
 
-                // Pakai suffix _plural hanya jika time > 1
+                // Use _plural suffix only if time > 1
                 $phrase_key = $labels[$label_key];
                 if ($time > 1) {
                     $phrase_key .= '_plural';

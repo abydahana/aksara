@@ -36,7 +36,7 @@ class Form
     {
         // Template for Text Input
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="text" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="text" name="{{ name }}" data-role="text" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -55,7 +55,7 @@ class Form
     {
         // Template for Textarea
         $component = <<<EOF
-        <textarea name="{{ name }}" role="textarea" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ attribution | raw }} {{ readonly }}>{{ value }}</textarea>
+        <textarea name="{{ name }}" data-role="textarea" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ attribution | raw }} {{ readonly }}>{{ value }}</textarea>
         EOF;
 
         return [
@@ -75,7 +75,7 @@ class Form
         // Template for WYSIWYG (Rich Text) Editor
         $component = <<<EOF
         <div class="w-100">
-            <textarea name="{{ name }}" role="wysiwyg" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ readonly }}>{{ value | raw }}</textarea>
+            <textarea name="{{ name }}" data-role="wysiwyg" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ readonly }}>{{ value | raw }}</textarea>
         </div>
         EOF;
 
@@ -95,7 +95,7 @@ class Form
     {
         // Template for Integer Input
         $component = <<<EOF
-        <input type="number" name="{{ name }}" role="number" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="1" {{ attribution | raw }} {{ readonly }}>
+        <input type="number" name="{{ name }}" data-role="number" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="1" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -114,7 +114,7 @@ class Form
     {
         // Template for Currency Input
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
+        <input type="text" name="{{ name }}" data-role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -133,7 +133,7 @@ class Form
     {
         // Template for Percentage Input
         $component = <<<EOF
-        <input type="text" name="{{ name }}" role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
+        <input type="text" name="{{ name }}" data-role="money" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" step="0.01" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -152,7 +152,7 @@ class Form
     {
         // Template for Select/Dropdown
         $component = <<<EOF
-        <select name="{{ name }}" role="select" data-relation="{{ relation }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" {{ attribution | raw }} {{ readonly }}>
+        <select name="{{ name }}" data-role="select" data-relation="{{ relation }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" {{ attribution | raw }} {{ readonly }}>
             {% for option in content %}
                 <option value="{{ option.value }}" {% if option.selected %} selected {% endif %}>{{ option.label }}</option>
             {% endfor %}
@@ -228,7 +228,7 @@ class Form
         // Template for Boolean Switch
         $component = <<<EOF
         <div class="form-check form-switch">
-            <input type="checkbox" name="{{ name }}" role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} {% if checked %} checked {% endif %}>
+            <input type="checkbox" name="{{ name }}" data-role="boolean" value="1" class="form-check-input {{ class }}" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} {% if checked %} checked {% endif %}>
             <label class="form-check-label" for="{{ name }}_input"> {{ placeholder }} </label>
         </div>
         EOF;
@@ -268,7 +268,7 @@ class Form
     {
         // Template for Color Picker
         $component = <<<EOF
-        <input type="color" name="{{ name }}" role="color" value="{{ value }}" class="form-control form-control-color {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="color" name="{{ name }}" data-role="color" value="{{ value }}" class="form-control form-control-color {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -287,7 +287,7 @@ class Form
     {
         // Template for Date Input
         $component = <<<EOF
-        <input type="date" name="{{ name }}" role="date" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="date" name="{{ name }}" data-role="date" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -306,7 +306,7 @@ class Form
     {
         // Template for DateTime Input
         $component = <<<EOF
-        <input type="datetime-local" name="{{ name }}" role="datetime" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="datetime-local" name="{{ name }}" data-role="datetime" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -325,7 +325,7 @@ class Form
     {
         // Template for Time Input
         $component = <<<EOF
-        <input type="time" name="{{ name }}" role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="time" name="{{ name }}" data-role="time" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -344,7 +344,7 @@ class Form
     {
         // Template for Week Input
         $component = <<<EOF
-        <input type="week" name="{{ name }}" role="week" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="week" name="{{ name }}" data-role="week" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -363,7 +363,7 @@ class Form
     {
         // Template for Month Input
         $component = <<<EOF
-        <input type="month" name="{{ name }}" role="month" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="month" name="{{ name }}" data-role="month" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -382,7 +382,7 @@ class Form
     {
         // Template for Hidden Input
         $component = <<<EOF
-        <input type="hidden" name="{{ name }}" role="hidden" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="hidden" name="{{ name }}" data-role="hidden" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -401,7 +401,7 @@ class Form
     {
         // Template for Email Input
         $component = <<<EOF
-        <input type="email" name="{{ name }}" role="email" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="email" name="{{ name }}" data-role="email" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -420,8 +420,8 @@ class Form
     {
         // Template for Password with Confirmation
         $component = <<<EOF
-        <input type="password" name="{{ name }}" role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
-        <input type="password" name="{{ name }}_confirmation" role="password" class="form-control {{ class }}" id="{{ name }}_confirmation_input" placeholder="{{ phrase('Retype') }} {{ name }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="password" name="{{ name }}" data-role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ readonly }}>
+        <input type="password" name="{{ name }}_confirmation" data-role="password" class="form-control {{ class }}" id="{{ name }}_confirmation_input" placeholder="{{ phrase('Retype') }} {{ name }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -440,7 +440,7 @@ class Form
     {
         // Template for Encrypted Field (Single Password Input)
         $component = <<<EOF
-        <input type="password" name="{{ name }}" role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="password" name="{{ name }}" data-role="password" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ phrase('Leave blank to ignore') }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -459,7 +459,7 @@ class Form
     {
         // Template for Standard File Input
         $component = <<<EOF
-        <input type="file" name="{{ name }}" role="file" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="file" name="{{ name }}" data-role="file" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
@@ -479,7 +479,7 @@ class Form
         // Template for Multiple File Uploader
         $component = <<<EOF
         <div class="uploader-input w-100">
-            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
+            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" data-role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
             <label class="form-control custom-file-label" for="{{ name }}_input">{{ label }}</label>
         </div>
         EOF;
@@ -502,7 +502,7 @@ class Form
         $component = <<<EOF
         <div data-provides="fileupload" class="fileupload fileupload-new text-sm-center {% if content and '/thumbs/' not in content %}w-100{% endif %}">
             <span class="btn btn-file d-block">
-                <input type="file" name="{{ name }}" accept="{{ accept }}" role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
+                <input type="file" name="{{ name }}" accept="{{ accept }}" data-role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
                 <div class="fileupload-new text-center {% if content and '/thumbs/' not in content %}w-100{% endif %}">
                     <img class="img-fluid upload_preview" src="{{ content }}" />
                 </div>
@@ -530,7 +530,7 @@ class Form
         // Template for Multiple Image Uploader
         $component = <<<EOF
         <div class="uploader-input w-100">
-            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
+            <input type="file" name="{{ name }}[]" class="custom-file-input d-none" data-role="uploader" id="{{ name }}_input" data-fileuploader-files="{{ content | json_encode | escape }}" accept="{{ accept }}" {{ attribution | raw }} multiple />
             <label class="form-control custom-file-label" for="{{ name }}_input">{{ label }}</label>
         </div>
         EOF;
@@ -552,7 +552,7 @@ class Form
         // Template for Map/Geospatial Input
         $component = <<<EOF
         <div class="drawing-placeholder preloader position-relative w-100 overflow-hidden">
-            <div role="map" id="map_{{ name }}" class="{{ class }}" data-coordinate="{{ value | escape }}" data-geojson="{{ content | escape }}" data-apply-coordinate-to="#{{ name }}_input" data-geocoder="1" control-mousewheel="0" title="{{ placeholder }}" {{ attribution | raw }} style="height:360px"></div>
+            <div data-role="map" id="map_{{ name }}" class="{{ class }}" data-coordinate="{{ value | escape }}" data-geojson="{{ content | escape }}" data-apply-coordinate-to="#{{ name }}_input" data-geocoder="1" control-mousewheel="0" title="{{ placeholder }}" {{ attribution | raw }} style="height:360px"></div>
             <input type="hidden" name="{{ name }}" id="{{ name }}_input" value="{{ content | escape }}" {{ readonly }} />
         </div>
         EOF;
@@ -585,13 +585,13 @@ class Form
                         </div>
                         <div class="col-3">
                             <div class="btn-group btn-group-sm float-end">
-                                <a href="javascript:void(0)" class="btn btn-secondary --move-up" data-element=".row" data-bs-toggle="tooltip" title="{{ phrase('Move Up') }}">
+                                <a href="{{ current_page() }}" class="btn btn-secondary --move-up" data-element=".row" data-bs-toggle="tooltip" title="{{ phrase('Move Up') }}">
                                     <i class="mdi mdi-arrow-collapse-up"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="btn btn-secondary --move-down" data-element=".row" data-bs-toggle="tooltip" title="{{ phrase('Move Down') }}">
+                                <a href="{{ current_page() }}" class="btn btn-secondary --move-down" data-element=".row" data-bs-toggle="tooltip" title="{{ phrase('Move Down') }}">
                                     <i class="mdi mdi-arrow-collapse-down"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="btn btn-secondary" role="remove-attribution" data-element=".row">
+                                <a href="{{ current_page() }}" class="btn btn-secondary" data-role="remove-attribution" data-element=".row">
                                     <i class="mdi mdi-delete" data-bs-toggle="tooltip" title="{{ phrase('Remove') }}"></i>
                                 </a>
                             </div>
@@ -602,7 +602,7 @@ class Form
             <div class="row">
                 <div class="col-4 pe-0">
                     <div class="d-grid">
-                        <button type="button" class="btn btn-secondary btn-sm d-block" role="add-attribution" data-label="{{ name }}[label][]" data-label-placeholder="{{ phrase('Label') }}" data-value-placeholder="{{ phrase('Value') }}" data-value="{{ name }}[value][]">
+                        <button type="button" class="btn btn-secondary btn-sm d-block" data-role="add-attribution" data-label="{{ name }}[label][]" data-label-placeholder="{{ phrase('Label') }}" data-value-placeholder="{{ phrase('Value') }}" data-value="{{ name }}[value][]">
                             <i class="mdi mdi-plus-circle-outline"></i>
                             &nbsp;
                             {{ phrase('Add') }}

@@ -92,10 +92,10 @@ if ($field_data): ?>
         <?php if (! empty($suggestions)): ?>
             <div class="row mb-2">
                 <div class="col-md-10 offset-md-1">
-                    <h5>
+                    <h2 class="h5">
                         <?= phrase('Our Suggestions'); ?>
                         <span class="blink">_</span>
-                    </h5>
+                    </h2>
 
                     <?php foreach ($suggestions as $index => $page): ?>
                         <?php if ($index): ?>

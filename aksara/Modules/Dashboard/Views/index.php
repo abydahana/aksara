@@ -11,9 +11,9 @@
  */
 if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
-        <h5>
+        <h4 class="h5">
             <?= phrase('Notice'); ?>
-        </h5>
+        </h4>
 
         <?php if (! $permission->uploads): ?>
             <p class="mb-0">
@@ -32,9 +32,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
     </div>
 <?php elseif (in_array(get_userdata('group_id'), array(1)) && is_dir(ROOTPATH . 'install')): ?>
     <div class="alert alert-warning rounded-0 border-0 mb-0">
-        <h5>
+        <h4 class="h5">
             <?= phrase('Notice'); ?>
-        </h5>
+        </h4>
         <?= phrase('Please remove or rename the following directory to secure your application:'); ?>
         <code><?= str_replace('\\', '/', ROOTPATH); ?>install</code>
     </div>
@@ -49,7 +49,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 <div class="card rounded-4 overflow-hidden mb-3">
                     <div class="card-body">
                         <h3>
-                            <button type="button" class="btn btn-close btn-greeting float-end"></button>
+                            <button type="button" class="btn btn-close btn-greeting float-end" aria-label="<?= phrase('Close'); ?>"></button>
                             <?= phrase('Welcome to'); ?> Aksara!
                         </h3>
                         <p class="text-muted">
@@ -59,7 +59,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h5 class="mb-3 mb-md-5">
                                     <?= phrase('Getting started'); ?>
-                                </h5>
+                                </h4>
                                 <div class="text-center text-md-start">
                                     <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
                                         <i class="mdi mdi-palette"></i> <?= phrase('Customize your app'); ?>
@@ -69,7 +69,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h5 class="mb-3">
                                     <?= phrase('Next step'); ?>
-                                </h5>
+                                </h4>
                                 <div class="row">
                                     <div class="col-1">
                                         <i class="mdi mdi-plus"></i>
@@ -104,7 +104,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h5 class="mb-3">
                                     <?= phrase('More action'); ?>
-                                </h5>
+                                </h4>
                                 <div class="row">
                                     <div class="col-1">
                                         <i class="mdi mdi-puzzle"></i>
@@ -154,7 +154,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
                                 <?= phrase('Blogs'); ?>
-                            </h5>
+                            </h4>
                             <p class="text-light mb-0">
                                 <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')); ?>
                             </p>
@@ -175,7 +175,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
                                 <?= phrase('Pages'); ?>
-                            </h5>
+                            </h4>
                             <p class="text-light mb-0">
                                 <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')); ?>
                             </p>
@@ -196,7 +196,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
                                 <?= phrase('Galleries'); ?>
-                            </h5>
+                            </h4>
                             <p class="text-light mb-0">
                                 <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')); ?>
                             </p>
@@ -217,7 +217,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
                                 <?= phrase('Users'); ?>
-                            </h5>
+                            </h4>
                             <p class="text-light mb-0">
                                 <?= number_format($card->users) . ' ' . ($card->users > 1 ? phrase('users') : phrase('user')); ?>
                             </p>
@@ -241,7 +241,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Most used browsers'); ?>
-                                </h5>
+                                </h4>
                             </div>
                             <div class="card-body">
                                 <?php
@@ -277,7 +277,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
                                     <?= phrase('Recent sign in'); ?>
-                                </h5>
+                                </h4>
                             </div>
                             <div class="card-body">
                                 <?php
@@ -312,7 +312,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     <div class="card-header border-0 p-4">
                         <h5 class="card-title mb-0">
                             <?= phrase('Recent Activities'); ?>
-                        </h5>
+                        </h4>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -364,7 +364,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="card-header border-0 p-4">
                             <h5 class="card-title mb-0">
                                 <?= phrase('Announcements'); ?>
-                            </h5>
+                            </h4>
                         </div>
                         <?php
                         $announcement = null;
@@ -386,7 +386,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     <div class="card-header bg-transparent border-0 p-4">
                         <h5 class="fw-bold mb-0">
                             <?= phrase('Announcements'); ?>
-                        </h5>
+                        </h4>
                     </div>
                     <div class="card-body p-4">
                         <?php if ($announcements): ?>
@@ -413,7 +413,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     <div class="card-header border-0">
                         <h5 class="card-title mb-0">
                             <?= phrase('Application Information'); ?>
-                        </h5>
+                        </h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -571,9 +571,9 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             if (response.update_available) {
                 $('.updater-placeholder').html(`
                     <div class="alert alert-info rounded-0 border-0 p-3 mb-0">
-                        <h5>
+                        <h4 class="h5">
                             <?= phrase('Update Available'); ?>
-                        </h5>
+                        </h4>
                         <p>
                             <?= phrase('A newer version of Aksara is available.') . ' ' . phrase('Click the button below to update your core system directly.') . ' ' . phrase('Your created module and theme will not be overwritten.'); ?>
                         </p>

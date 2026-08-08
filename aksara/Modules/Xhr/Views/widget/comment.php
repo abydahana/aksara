@@ -28,7 +28,7 @@
             </div>
             <div class="col-4">
                 <div class="d-grid">
-                    <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-truncate" role="share" data-href="<?= service('request')->getGet('path'); ?>">
+                    <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-truncate" data-role="share" data-href="<?= service('request')->getGet('path'); ?>">
                         <i class="mdi mdi-share"></i>
                         <?= phrase('Share'); ?>
                     </button>
@@ -55,7 +55,7 @@
                     </div>
                     <div data-provides="fileupload" class="fileupload fileupload-new d-none">
                         <span class="btn btn-file" style="width:80px">
-                            <input type="file" name="attachment" accept="<?= implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))); ?>" role="image-upload" id="attachment_input" />
+                            <input type="file" name="attachment" accept="<?= implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))); ?>" data-role="image-upload" id="attachment_input" />
                             <div class="fileupload-new text-center">
                                 <img class="img-fluid upload_preview" src="<?= get_image('comment', 'placeholder.png', 'icon'); ?>" alt="Preview" />
                             </div>
@@ -69,7 +69,7 @@
         </div>
         <div class="row g-0 align-items-center">
             <div class="col-11 offset-1 ps-3">
-                <div role="validation-callback"></div>
+                <div data-role="validation-callback"></div>
             </div>
         </div>
         <input type="hidden" name="_token" value="<?= $_token; ?>" />
@@ -79,7 +79,7 @@
         <?php if ($comments_count): ?>
             <div class="load-more-container">
                 <p class="text-center">
-                    <a href="javascript:void(0)" data-href="<?= current_page(); ?>" class="load-more --fetch-comments">
+                    <a href="<?= current_page(); ?>" data-href="<?= current_page(); ?>" class="load-more --fetch-comments">
                         <b><?= phrase('Load comments'); ?></b>
                     </a>
                 </p>

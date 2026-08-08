@@ -61,7 +61,7 @@ class Themes extends Core
     {
         $mimeType = $this->_guessMimeType($realPath);
 
-        // Bersihkan output yang mungkin sudah terkirim
+        // Clean output buffer that might have already been sent
         while (ob_get_level() > 0) {
             ob_end_clean();
         }

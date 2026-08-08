@@ -186,7 +186,7 @@
                         axis: 'y',
                         scrollInertia: 170,
                         mouseWheelPixels: 170,
-                        setHeight: $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0) + ($('.--apply-increase-one').outerHeight(true) ?? 0) + ($('.--apply-increase-two').outerHeight(true) ?? 0) + 65),
+                        setHeight: $(window).outerHeight(true) - (($('[data-role=header]').outerHeight(true) ?? 0) + ($('[data-role=breadcrumb]').outerHeight(true) ?? 0) + ($('[data-role=meta]').outerHeight(true) ?? 0) + ($('.--apply-increase-one').outerHeight(true) ?? 0) + ($('.--apply-increase-two').outerHeight(true) ?? 0) + 65),
                         advanced: {
                             updateOnContentResize: true
                         },

@@ -170,7 +170,7 @@ class Privileges extends Core
                 $items .= '
                     <li' . (isset($item->children) && $item->children ? ' class="check-group"' : null) . '>
                         <label class="big-label">
-                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input"' . (isset($item->children) && $item->children ? ' role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
+                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '
@@ -203,7 +203,7 @@ class Privileges extends Core
                 $items .= '
                     <li' . (isset($item->children) && $item->children ? ' class="check-group"' : null) . '>
                         <label class="big-label">
-                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input checker-children"' . (isset($item->children) && $item->children ? ' role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
+                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input checker-children"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '

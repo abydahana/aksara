@@ -16,7 +16,7 @@ if ($images) {
         $carousel .= '
             <div class="carousel-item text-center' . ($current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null) . '">
                 <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
-                    <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '">
+                    <img src="' . get_image('galleries', $key) . '" class="img-fluid" alt="' . $val . '" loading="lazy" decoding="async">
                     <div class="carousel-caption d-none d-md-block text-shadow">
                         ' . $val . '
                     </div>
@@ -40,13 +40,13 @@ if ($images) {
                                 <?= $carousel; ?>
                             </div>
                             <?php if ($count > 1): ?>
-                                <button class="carousel-control-prev gradient-right" type="button" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="prev">
+                                <button class="carousel-control-prev gradient-right" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" aria-label="<?= phrase('Previous'); ?>">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">
                                         <?= phrase('Previous'); ?>
                                     </span>
                                 </button>
-                                <button class="carousel-control-next gradient-left" type="button" data-bs-target="#carouselExampleControls" role="button" data-bs-slide="next">
+                                <button class="carousel-control-next gradient-left" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next" aria-label="<?= phrase('Next'); ?>">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">
                                         <?= phrase('Next'); ?>
@@ -63,11 +63,11 @@ if ($images) {
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
                         <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
-                            <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" />
+                            <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" loading="lazy" decoding="async" />
                         </a>
                     </div>
                     <div class="col-10">
-                        <h5 class="fw-bold mb-0">
+                        <h2 class="h5 fw-bold mb-0">
                             <a href="<?= current_page('../'); ?>" class="float-end btn btn-close --xhr">&nbsp;</a>
                             <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
                                 <?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>

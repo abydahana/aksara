@@ -66,11 +66,11 @@ if ($field_data) {
                                         </a>
                                     </div>
                                     <div class="col-10">
-                                        <h5 class="fw-bold mb-0">
+                                        <h2 class="h5" class="fw-bold mb-0">
                                             <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
                                                 <?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>
                                             </a>
-                                        </h5>
+                                        </h2>
                                         <p class="mb-0">
                                             <span class="text-muted" data-bs-toggle="tooltip" title="<?= $field_data->created_at->value; ?>">
                                                 <?= time_ago($field_data->created_at->value); ?>
@@ -158,11 +158,11 @@ if ($field_data) {
                                                 </a>
                                             </div>
                                             <div class="col-10 ps-3">
-                                                <h5>
+                                                <h2 class="h5">
                                                     <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug); ?>" class="text-dark --xhr">
                                                         <?= $val->post_title; ?>
                                                     </a>
-                                                </h5>
+                                                </h2>
                                             </div>
                                         </div>
                                     </div>

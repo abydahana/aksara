@@ -287,7 +287,7 @@ class Renderer
         $class = implode(' ', array_filter($classes));
         $style = ! empty($props['width']) ? " style=\"max-width:{$props['width']}px\"" : '';
 
-        return "<img src=\"{$src}\" alt=\"{$alt}\" class=\"{$class}\"{$style} />\n";
+        return "<img src=\"{$src}\" alt=\"{$alt}\" class=\"{$class}\"{$style} loading=\"lazy\" decoding=\"async\" />\n";
     }
 
     private function renderVideo(array $props, string $id): string
@@ -407,7 +407,7 @@ class Renderer
         $html = "<div class=\"{$class}\" style=\"overflow:hidden;position:relative\">\n";
 
         if (! empty($props['image'])) {
-            $html .= "  <img src=\"" . htmlspecialchars($props['image'], ENT_QUOTES) . "\" class=\"card-img-top\" alt=\"\" />\n";
+            $html .= "  <img src=\"" . htmlspecialchars($props['image'], ENT_QUOTES) . "\" class=\"card-img-top\" alt=\"\" loading=\"lazy\" decoding=\"async\" />\n";
         }
 
         $html .= "  <div class=\"{$this->classes['card_body']}\">\n";
@@ -523,7 +523,7 @@ class Renderer
 
             $html .= "    <div class=\"carousel-item{$active}\" style=\"height:450px; background:#f8f9fa\">\n";
             if ($src) {
-                $html .= "      <img src=\"{$src}\" class=\"d-block w-100 h-100\" style=\"object-fit:cover\" alt=\"\">\n";
+                $html .= "      <img src=\"{$src}\" class=\"d-block w-100 h-100\" style=\"object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
             }
             if ($title || $subtitle) {
                 $html .= "      <div class=\"carousel-caption d-none d-md-block\" style=\"background:rgba(0,0,0,0.5); border-radius:1rem; padding:1.5rem\">\n";
@@ -656,7 +656,7 @@ class Renderer
                . "    <div class=\"d-flex align-items-center\">\n";
 
         if ($image) {
-            $html .= "      <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle me-3\" style=\"width:50px;height:50px;object-fit:cover\" alt=\"\">\n";
+            $html .= "      <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle me-3\" style=\"width:50px;height:50px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
         } else {
             $html .= "      <div class=\"rounded-circle bg-secondary me-3\" style=\"width:50px;height:50px\"></div>\n";
         }
@@ -680,7 +680,7 @@ class Renderer
 
         $html = "<div class=\"text-center " . ($props['class'] ?? '') . "\">\n";
         if ($image) {
-            $html .= "  <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle mb-3 shadow-sm\" style=\"width:150px;height:150px;object-fit:cover\" alt=\"\">\n";
+            $html .= "  <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle mb-3 shadow-sm\" style=\"width:150px;height:150px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
         }
         $html .= "  <h5 class=\"fw-bold mb-1\">{$name}</h5>\n"
                . "  <p class=\"text-primary mb-2\">{$role}</p>\n"

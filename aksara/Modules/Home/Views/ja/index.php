@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 お知らせ！
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> は書き込み不可です。
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     あなたは <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> を使用しています！
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     さらに先へ
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     ドキュメンテーション
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         ガイドラインには、紹介、チュートリアル、多数の「ハウツー」ガイド、そして <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> を構成するコンポーネントの参照ドキュメントが含まれています。
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>ドキュメントを確認する</b></a>！
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     コミュニティ
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         機能、バグ、または提案に関連するディスカッションを、以下のコミュニティフォーラムで開くことができます。
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         また、お気に入りのソーシャルメディアで <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> に関連する公式のフォーラムディスカッションを作成することも許可されています。
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     貢献する
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         ドキュメントを作成したり、モジュールを作成したり、適切なライブラリを追加したりして、<a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> をさらに良くすることに貢献できます。これらの貢献は、<a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a> 上の <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> リポジトリに対する <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Issues</b></a> または <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Pull Request</b></a> の形で行われます。
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     サポート
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         一人で戦う研究者（シングルファイター）として、私は時折、今まで探求したことのない外の世界を楽しみたいと思っています。少しの休暇をとれば、研究に応用できる別の輝かしいアイデアを思いつくかもしれません。
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

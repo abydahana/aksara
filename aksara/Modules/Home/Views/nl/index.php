@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 Let op!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> is niet schrijfbaar.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     Je gebruikt <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Ga verder
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     Documentatie
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         De richtlijnen bevatten een introductie, tutorial, een aantal "how-to" gidsen, en vervolgens referentiedocumentatie voor de componenten waaruit <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> bestaat.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Bekijk de Documentatie</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     Gemeenschap
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Je kunt discussies openen over functies, bugs of suggesties op het volgende communityforum:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         Het is ook toegestaan om een officiële forumdiscussie met betrekking tot <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> te starten op je favoriete sociale media.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     Bijdragen
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Je bent welkom om bij te dragen door documentatie te schrijven, modules te maken en geschikte bibliotheken toe te voegen om <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> nog beter te maken. Deze bijdragen worden gedaan in de vorm van <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Issues</b></a> of <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Pull Requests</b></a> in de <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> repository op <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     Ondersteuning
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Als onafhankelijk onderzoeker wil ik af en toe genieten van een buitenwereld die ik nog nooit heb verkend. Misschien bedenk ik met een korte vakantie wel een ander briljant idee om toe te passen op mijn onderzoek.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

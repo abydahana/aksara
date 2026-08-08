@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 Thông báo!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> không thể ghi.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     Bạn đang sử dụng <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Tiến Xa Hơn
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     Tài liệu
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Tài liệu hướng dẫn bao gồm phần giới thiệu, hướng dẫn, một số bài hướng dẫn "cách làm" và sau đó là tài liệu tham khảo cho các thành phần tạo nên <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Kiểm tra Tài liệu</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     Cộng đồng
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Bạn có thể mở cuộc thảo luận liên quan đến các tính năng, lỗi hoặc đề xuất trên diễn đàn cộng đồng sau:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         Bạn cũng được phép tạo cuộc thảo luận trên diễn đàn chính thức liên quan đến <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> trên mạng xã hội yêu thích của bạn.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     Đóng góp
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Bạn được phép đóng góp bằng cách viết tài liệu, tạo các mô-đun và thêm các thư viện phù hợp để làm cho <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> trở nên tốt hơn nữa. Các đóng góp này được thực hiện dưới dạng <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Vấn đề (Issues)</b></a> hoặc <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Yêu cầu kéo (Pull Request)</b></a> trên kho lưu trữ <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> trên <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     Hỗ trợ
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Với tư cách là một nhà nghiên cứu độc lập (single fighter), đôi khi tôi muốn tận hưởng một thế giới bên ngoài mà tôi chưa từng khám phá. Có lẽ với một chút kỳ nghỉ, tôi có thể nghĩ ra một ý tưởng tuyệt vời khác để áp dụng cho nghiên cứu của mình.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

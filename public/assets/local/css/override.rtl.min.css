@@ -3,7 +3,7 @@
    ============================================ */
 
 /* Content expanded fixes */
-[dir="rtl"] body.content-expanded [role="content"] {
+[dir="rtl"] body.content-expanded [data-role="content"] {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
@@ -494,4 +494,17 @@
     left: 5% !important;
     right: 5% !important;
   }
+}
+
+[dir="rtl"] .text-secondary {
+  color: #525b63 !important;
+}
+[dir="rtl"] .text-muted {
+  color: #6c757d !important;
+}
+[dir="rtl"] .bg-dark .text-muted,
+[dir="rtl"] .bg-secondary .text-muted,
+[dir="rtl"] .dark-mode .text-muted,
+[dir="rtl"] [data-bs-theme="dark"] .text-muted {
+  color: #cbd5e1 !important;
 }

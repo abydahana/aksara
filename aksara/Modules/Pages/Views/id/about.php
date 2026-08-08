@@ -21,7 +21,7 @@
             <div class="col-md-4">
                 <h6 class="mb-3">
                     <?= phrase('Local Variables'); ?>
-                </h6>
+                </h3>
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-12">
                         <div class="mb-3">
@@ -44,7 +44,7 @@
             <div class="col-md-4">
                 <h6 class="mb-3">
                     <?= phrase('The Laborant'); ?>
-                </h6>
+                </h3>
                 <div class="mb-3">
                     <a href="//abydahana.github.io" target="_blank">
                         <b>
@@ -57,7 +57,7 @@
             <div class="col-md-4">
                 <h6 class="mb-3">
                     <?= phrase('Contributors'); ?>
-                </h6>
+                </h3>
                 <div class="mb-3">
                     <a href="//ganjar.id" target="_blank">
                         <b>
@@ -71,7 +71,7 @@
         <br />
         <h6 class="mb-3">
             <?= phrase('Dependencies'); ?>
-        </h6>
+        </h3>
         <div class="mb-3">
             <a href="//codeigniter.com" target="_blank">
                 CodeIgniter
@@ -108,7 +108,7 @@
         <br />
         <h6 class="mb-3">
             JS/CSS <small class="text-muted">(<?= phrase('sorted ascending'); ?>)</small>
-        </h6>
+        </h3>
         <div class="mb-3">
             <a href="//github.com/dreamerslab/jquery.actual" target="_blank">
                 Actual

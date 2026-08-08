@@ -92,7 +92,7 @@
         <div class="card border-top-0 border-end-0 border-bottom-0">
             <div class="card-body d-flex align-items-center justify-content-center">
                 <div>
-                    <p class="fs-5 text-center text-black-50">
+                    <p class="fs-5 text-center text-secondary">
                         <?= phrase('Do not have an account?'); ?>
                     </p>
 

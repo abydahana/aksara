@@ -113,7 +113,7 @@ class Menus extends Core
                             <button class="btn btn-secondary" type="button">
                                 <i class="mdi mdi-reorder-horizontal"></i>
                             </button>
-                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" role="iconpicker" data-iconset="materialdesign" data-icon="' . ($val->icon ? $val->icon : 'mdi mdi-radiobox-blank') . '"></button>
+                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" data-role="iconpicker" data-iconset="materialdesign" data-icon="' . ($val->icon ? $val->icon : 'mdi mdi-radiobox-blank') . '"></button>
                             <input type="text" class="form-control menu-label ignore-sort" placeholder="' . phrase('Menu Label') . '" value="' . $val->label . '" />
                             <input type="text" class="form-control menu-slug ignore-sort" placeholder="' . phrase('Menu Slug') . '" value="' . $val->slug . '" />
                             <div class="input-group-text bg-secondary border-0 ignore-sort pt-0" data-bs-toggle="tooltip" title="' . phrase('Open in new tab') . '">
@@ -134,7 +134,7 @@ class Menus extends Core
 
         $output = '
             <div class="w-100 mb-3" id="menu_structure_input">
-                <ul class="list sortable" role="sortable-menu">
+                <ul class="list sortable" data-role="sortable-menu">
                     <li class="ignore-sort">
                         <div class="d-grid">
                             <button type="button" class="btn btn-default btn-sm item-add masking">
@@ -147,7 +147,7 @@ class Menus extends Core
                             <button class="btn btn-secondary" type="button">
                                 <i class="mdi mdi-reorder-horizontal"></i>
                             </button>
-                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" role="iconpicker" data-iconset="materialdesign" data-icon="mdi mdi-radiobox-blank"></button>
+                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" data-role="iconpicker" data-iconset="materialdesign" data-icon="mdi mdi-radiobox-blank"></button>
                             <input type="text" class="form-control menu-label ignore-sort" placeholder="' . phrase('Menu Label') . '" value="' . phrase('Menu Label') . '" />
                             <input type="text" class="form-control menu-slug ignore-sort" placeholder="' . phrase('Menu Slug') . '" value="" />
                             <div class="input-group-text bg-secondary border-0 ignore-sort pt-0" data-bs-toggle="tooltip" title="' . phrase('Open in new tab') . '">
@@ -214,7 +214,7 @@ class Menus extends Core
                             <button class="btn btn-secondary" type="button">
                                 <i class="mdi mdi-reorder-horizontal"></i>
                             </button>
-                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" role="iconpicker" data-iconset="materialdesign" data-icon="' . ($val->icon ? $val->icon : 'mdi mdi-radiobox-blank') . '"></button>
+                            <button class="btn btn-secondary menu-icon ignore-sort" type="button" data-role="iconpicker" data-iconset="materialdesign" data-icon="' . ($val->icon ? $val->icon : 'mdi mdi-radiobox-blank') . '"></button>
                             <input type="text" class="form-control menu-label ignore-sort" placeholder="' . phrase('Menu Label') . '" value="' . $val->label . '" />
                             <input type="text" class="form-control menu-slug ignore-sort" placeholder="' . phrase('Menu Slug') . '" value="' . $val->slug . '" />
                             <div class="input-group-text bg-secondary border-0 ignore-sort pt-0" data-bs-toggle="tooltip" title="' . phrase('Open in new tab') . '">

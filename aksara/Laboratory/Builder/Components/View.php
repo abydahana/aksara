@@ -609,7 +609,7 @@ class View
         // Template for Map Visualization
         $component = <<<EOF
         <div class="drawing-placeholder preloader position-relative w-100 overflow-hidden">
-            <div role="map" id="map_{{ name }}" class="{{ class }}" data-geojson="{{ content | escape }}" control-mousewheel="0" title="{{ placeholder }}" style="height:360px" {{ attribution | raw }}></div>
+            <div data-role="map" id="map_{{ name }}" class="{{ class }}" data-geojson="{{ content | escape }}" control-mousewheel="0" title="{{ placeholder }}" style="height:360px" {{ attribution | raw }}></div>
         </div>
         EOF;
 
