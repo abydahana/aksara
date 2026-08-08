@@ -29,22 +29,16 @@ class Validation
 {
     /**
      * Upload path for files
-     *
-     * @var string
      */
     public static string $uploadPath = '';
 
     /**
      * Global uploaded files collection
-     *
-     * @var array
      */
     public static array $uploadedFiles = [];
 
     /**
      * Upload error
-     *
-     * @var string
      */
     private string $_uploadError = '';
 
