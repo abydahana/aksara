@@ -41,7 +41,7 @@
             <div class="row g-0 align-items-center">
                 <div class="col-1">
                     <a href="<?= (get_userdata('username') ? base_url('user/' . get_userdata('username')) : 'javascript:void(0)'); ?>" class="--xhr">
-                        <img src="<?= get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= get_userdata('first_name'); ?>" />
+                        <img src="<?= get_image('users', get_userdata('photo'), 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= get_userdata('first_name'); ?>" loading="lazy" decoding="async" />
                     </a>
                 </div>
                 <div class="col-11 ps-3">
@@ -57,7 +57,7 @@
                         <span class="btn btn-file" style="width:80px">
                             <input type="file" name="attachment" accept="<?= implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))); ?>" data-role="image-upload" id="attachment_input" />
                             <div class="fileupload-new text-center">
-                                <img class="img-fluid upload_preview" src="<?= get_image('comment', 'placeholder.png', 'icon'); ?>" alt="Preview" />
+                                <img class="img-fluid upload_preview" src="<?= get_image('comment', 'placeholder.png', 'icon'); ?>" alt="<?= phrase('Preview'); ?>" loading="lazy" decoding="async" />
                             </div>
                             <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', '<?= get_image('comment', 'placeholder.png', 'icon'); ?>'), $(this).closest('.fileupload').addClass('d-none'))">
                                 <i class="mdi mdi-window-close"></i>
