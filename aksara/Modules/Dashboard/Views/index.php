@@ -156,7 +156,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 <?= phrase('Blogs'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 2 ? phrase('articles') : phrase('article')); ?>
+                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')); ?>
                             </p>
                         </div>
                     </div>
@@ -177,7 +177,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 <?= phrase('Pages'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->pages) . ' ' . ($card->pages > 2 ? phrase('pages') : phrase('page')); ?>
+                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')); ?>
                             </p>
                         </div>
                     </div>
@@ -198,7 +198,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 <?= phrase('Galleries'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 2 ? phrase('albums') : phrase('album')); ?>
+                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')); ?>
                             </p>
                         </div>
                     </div>
@@ -219,7 +219,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 <?= phrase('Users'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->users) . ' ' . ($card->users > 2 ? phrase('users') : phrase('user')); ?>
+                                <?= number_format($card->users) . ' ' . ($card->users > 1 ? phrase('users') : phrase('user')); ?>
                             </p>
                         </div>
                     </div>
