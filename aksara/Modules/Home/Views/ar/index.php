@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 تنبيه!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> غير قابل للكتابة.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     أنت تستخدم <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>أكسارا</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     اذهب أبعد من ذلك
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     التوثيق
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         تحتوي الإرشادات على مقدمة، وبرامج تعليمية، وعدد من أدلة "كيفية"، ثم توثيق مرجعي للمكونات التي تشكل <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>أكسارا</b></a>.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>تحقق من التوثيق</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     المجتمع
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         يمكنك فتح نقاش يتعلق بالميزات أو الأخطاء أو الاقتراحات في منتدى المجتمع التالي:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         يُسمح لك أيضًا بإنشاء نقاش رسمي في المنتدى يتعلق بـ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>أكسارا</b></a> في وسائل التواصل الاجتماعي المفضلة لديك.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     المساهمة
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         يُسمح لك بالمساهمة عن طريق كتابة التوثيق، وإنشاء الوحدات وإضافة المكتبات المناسبة لجعل <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>أكسارا</b></a> أفضل. تتم هذه المساهمات في شكل <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>مشكلات (Issues)</b></a> أو <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>طلبات سحب (Pull Request)</b></a> على مستودع <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>أكسارا</b></a> على <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     الدعم
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         بصفتي باحثًا منفردًا، أرغب أحيانًا في الاستمتاع بعالم خارجي لم أستكشفه من قبل. ربما مع قليل من الإجازة، يمكنني الخروج بفكرة مشرقة أخرى لتطبيقها على بحثي.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank" dir="ltr"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

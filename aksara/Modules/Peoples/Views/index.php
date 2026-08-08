@@ -28,16 +28,16 @@ if ($results): ?>
                             <a href="<?= go_to($val->people_slug); ?>" class="--xhr">
                                 <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' '  . $val->last_name; ?>" />
                             </a>
-                            <h3 class="text-truncate">
+                            <h2 class="h3 text-truncate">
                                 <a href="<?= go_to($val->people_slug); ?>" class="--xhr">
                                     <?= truncate($val->first_name, 22) . ' ' . truncate($val->last_name, 22); ?>
                                 </a>
-                            </h3>
-                            <h6 class="text-truncate">
+                            </h2>
+                            <p class="fs-6 text-muted class="text-truncate">
                                 <a href="<?= go_to($val->people_slug); ?>" class="text-muted --xhr">
                                     <?= truncate($val->position, 22); ?>
                                 </a>
-                            </h6>
+                            </p>
                         </div>
                     </div>
                 <?php endforeach; ?>

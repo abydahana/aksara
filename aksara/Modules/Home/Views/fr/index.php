@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 Avis !
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> n'est pas accessible en écriture.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     Vous utilisez <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> !
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Allez plus loin
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     Documentation
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Les directives contiennent une introduction, un tutoriel, un certain nombre de guides pratiques, puis une documentation de référence pour les composants qui constituent <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Consultez la Documentation</b></a> !
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     Communauté
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Vous pouvez ouvrir une discussion liée aux fonctionnalités, bugs ou suggestions sur le forum communautaire suivant :
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         Il vous est également permis de créer une discussion de forum officielle liée à <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> sur vos réseaux sociaux préférés.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     Contribuer
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Vous êtes autorisé à contribuer en écrivant de la documentation, en créant des modules et en ajoutant des bibliothèques appropriées pour rendre <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> encore meilleur. Ces contributions se font sous forme de <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Problèmes (Issues)</b></a> ou <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Demandes d'extraction (Pull Request)</b></a> sur le dépôt <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> sur <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     Soutien
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         En tant que chercheur indépendant (single fighter), j'ai parfois envie de profiter d'un monde extérieur que je n'ai jamais exploré. Peut-être qu'avec quelques petites vacances, je pourrai trouver une autre idée brillante à appliquer à mes recherches.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

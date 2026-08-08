@@ -8,7 +8,7 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
 ?>
 
 <style type="text/css">
-    #title-wrapper, [role="meta"] {
+    #title-wrapper, [data-role="meta"] {
         display: none !important;
     }
 </style>
@@ -65,7 +65,7 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
             <?= (isset($results->field_data->page_description) ? form_input($results->field_data->page_description) : null); ?>
             <?= (isset($results->field_data->language_id) ? form_input($results->field_data->language_id) : null); ?>
             <?= (isset($results->field_data->status) ? form_input($results->field_data->status) : null); ?>
-            <div role="validation-callback"></div>
+            <div data-role="validation-callback"></div>
         </div>
     </form>
 </div>

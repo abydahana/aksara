@@ -168,7 +168,7 @@ class Groups extends Core
                     ' : '') . '
                     <div class="check-group w-100">
                         <div class="' . (in_array($this->getMethod(), ['create', 'update']) ? 'form-check form-switch' : null) . '">
-                            ' . (in_array($this->getMethod(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" role="checker" data-parent=".check-group" />' : null) . '
+                            ' . (in_array($this->getMethod(), ['create', 'update']) ? '<input type="checkbox" class="form-check-input" id="' . $path . '" data-bs-toggle="tooltip" title="' . phrase('Check all') . '" data-role="checker" data-parent=".check-group" />' : null) . '
                             <label class="fw-bold" for="' . $path . '">
                                 ' . $module_path . '
                             </label>

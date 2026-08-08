@@ -20,7 +20,7 @@ if ($results) {
                 $output .= '
                     <div class="col-sm-6 col-md-3">
                         <a href="' . current_page($src) . '" class="--xhr">
-                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4 fade-in" alt="' . $alt . '" />
+                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4 fade-in" alt="' . $alt . '" loading="lazy" decoding="async" />
                         </a>
                     </div>
                 ';

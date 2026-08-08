@@ -83,19 +83,19 @@ if ($user): ?>
                                             <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
                                         </div>
                                         <div class="col-10 col-lg-9">
-                                            <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
+                                            <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h4>
                                             <p class="text-muted mb-0">
                                                 <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path); ?>" target="_blank"> <?= phrase('Liked'); ?> </a>
                                             </p>
                                         </div>
                                     </div>
                                     <hr class="border-secondary-subtle" />
-                                    <h4>
+                                    <h3 class="h4">
                                         <a href="<?= base_url($val->post_path); ?>" class="text-dark" target="_blank">
                                             <?= $metadata->title; ?>
                                         </a>
                                         <p class="fs-5 text-muted"><?= truncate($metadata->description, 160); ?></p>
-                                    </h4>
+                                    </h3>
                                 </div>
                         </div>
                     <?php endforeach; ?>

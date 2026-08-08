@@ -8,7 +8,7 @@
 ?>
 
 <div class="position-relative">
-    <div role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
+    <div data-role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
 
 <section class="section-padding fade-in">
@@ -28,7 +28,7 @@
             <div class="col-lg-6">
                 <h3 class="mb-3">
                     <?= get_setting('office_name'); ?>
-                </h3>
+                </h2>
                 <div class="mb-3">
                     <span class="text-muted d-block mb-0"><?= phrase('Address'); ?></span>
                     <p class="fs-5">
@@ -102,7 +102,7 @@
                     <div class="card-body p-4">
                         <h3 class="mb-3">
                             <?= phrase('Direct Inquiry'); ?>
-                        </h3>
+                        </h2>
                         <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
                             <?= form_input($results->field_data->sender_full_name); ?>
                             <div class="row">

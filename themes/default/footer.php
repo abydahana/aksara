@@ -6,7 +6,7 @@
                     <div class="col-12 col-sm-12 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-lg-start">
                             <a href="<?= base_url(); ?>">
-                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" alt="<?= get_setting('app_name'); ?> Icon" />
+                                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid mb-3" width="48" alt="<?= get_setting('app_name'); ?> Icon" loading="lazy" decoding="async" />
                             </a>
                             <p class="text-muted">
                                 <?= get_setting('app_description'); ?>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-6 col-sm-4 col-lg-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <h6 class="fw-bold mb-3 text-dark"><?= phrase('Featured'); ?></h6>
+                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Featured'); ?></div>
                             <ul class="list-unstyled">
                                 <li class="mb-2"><a href="<?= base_url('blogs'); ?>" class="text-secondary text-decoration-none --xhr"><?= phrase('News'); ?></a></li>
                                 <li class="mb-2"><a href="<?= base_url('galleries'); ?>" class="text-secondary text-decoration-none --xhr"><?= phrase('Galleries'); ?></a></li>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-6 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <h6 class="fw-bold mb-3 text-dark"><?= phrase('Knowledge Center'); ?></h6>
+                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Knowledge Center'); ?></div>
                             <ul class="list-unstyled">
                                 <li class="mb-2"><a href="//www.aksaracms.com/pages/documentation" target="_blank" class="text-secondary text-decoration-none"><?= phrase('Documentation'); ?></a></li>
                                 <li class="mb-2"><a href="//www.aksaracms.com/pages/features" target="_blank" class="text-secondary text-decoration-none"><?= phrase('Features'); ?></a></li>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-12 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <h6 class="fw-bold mb-3 text-dark"><?= phrase('Contact Us'); ?></h6>
+                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Contact Us'); ?></div>
                             <div class="mb-4">
                                 <?php if (get_setting('office_email')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-secondary">
@@ -94,7 +94,7 @@
                 </span>
             </div>
         </div>
-        <p class="text-sm m-0 text-muted text-center text-md-start">
+        <p class="text-sm m-0 text-secondary text-center text-md-start">
             Powered by <a href="//aksaracms.com" target="_blank"><b>Aksara <?= aksara('build_version'); ?></b></a>
         </p>
     </div>

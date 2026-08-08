@@ -270,7 +270,7 @@
                     </div>
                 </div>
             </div>
-            <div role="validation-callback"></div>
+            <div data-role="validation-callback"></div>
             <div class="opt-btn-overlap-fix"></div>
             <div class="row opt-btn">
                 <div class="col-md-8">

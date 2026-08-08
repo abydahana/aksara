@@ -106,8 +106,11 @@ body.sidebar-collapsed .navbar-brand img.img-icon {
   color: var(--bs-dark);
   padding: 0.25rem 1rem;
 }
+.text-secondary {
+  color: #525b63 !important;
+}
 .text-muted {
-  color: #aaa !important;
+  color: #6c757d !important;
 }
 .rounded-top-4 {
   border-top-left-radius: 1rem;

@@ -3,24 +3,24 @@
  * @var object $meta
  */
 ?>
-<header role="header" class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top" id="header-wrapper">
+<header data-role="header" class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top" id="header-wrapper">
     <div class="container-fluid">
         <div class="navbar-brand pt-0 pb-0 d-none d-lg-block">
             <a href="<?= base_url(); ?>" target="_blank">
-                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" />
-                <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name'); ?> Logo" />
+                <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" loading="lazy" decoding="async" />
+                <img src="<?= get_image('settings', get_setting('app_logo')); ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name'); ?> Logo" loading="lazy" decoding="async" />
             </a>
         </div>
-        <a href="<?= current_page(); ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" role="title">
+        <a href="<?= current_page(); ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" data-role="title">
             <?= $meta->title; ?>
         </a>
-        <button class="navbar-toggler border-0" type="button" data-toggle="sidebar">
+        <button class="navbar-toggler border-0" type="button" data-toggle="sidebar" aria-label="<?= phrase('Toggle sidebar'); ?>">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
+                    <a href="<?= current_page(); ?>" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
                         <i class="mdi mdi-menu-open fs-4" data-sidebar-toggle-icon></i>
                     </a>
                 </li>
@@ -43,18 +43,18 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link" data-toggle="theme">
+                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="theme">
                         <i class="mdi mdi-weather-night"></i>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link" data-toggle="fullscreen">
+                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="fullscreen">
                         <i class="mdi mdi-fullscreen"></i>
                     </a>
                 </li>
                 <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" role="notifications">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications">
                         <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -63,7 +63,7 @@
                 </li>
                 <?php endif; ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" role="language">
+                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
                         <i class="mdi mdi-translate"></i> <?= phrase('Language'); ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">

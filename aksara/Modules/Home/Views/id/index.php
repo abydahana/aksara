@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 Pemberitahuan!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> tidak dapat ditulis.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     Anda menggunakan <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Lebih Lanjut
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     Dokumentasi
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Panduan ini berisi pengantar, tutorial, sejumlah panduan praktis, dan dokumentasi referensi untuk komponen-komponen yang menyusun <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Lihat Dokumentasi</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     Komunitas
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Anda dapat membuka diskusi terkait fitur, bug, atau saran di forum komunitas berikut:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         Anda juga diizinkan untuk membuat diskusi forum resmi terkait <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> di media sosial favorit Anda.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     Kontribusi
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Anda diizinkan untuk berkontribusi dengan menulis dokumentasi, membuat modul, dan menambahkan pustaka yang sesuai untuk membuat <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> menjadi lebih baik. Kontribusi ini dilakukan dalam bentuk <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Issues</b></a> atau <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Pull Request</b></a> di repositori <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> di <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     Dukungan
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Sebagai seorang peneliti tunggal (single fighter), saya sesekali ingin menikmati dunia luar yang belum pernah saya jelajahi. Mungkin dengan sedikit liburan, saya bisa mendapatkan ide cemerlang lainnya untuk diterapkan pada penelitian saya.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

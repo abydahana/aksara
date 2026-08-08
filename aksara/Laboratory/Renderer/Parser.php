@@ -171,6 +171,10 @@ class Parser
                 return base_url($slug, $query);
             }));
 
+            self::$_twig->addFunction(new TwigFunction('current_page', function ($slug = null, $query = [], $unset = null) {
+                return current_page($slug, $query, $unset);
+            }));
+
             self::$_twig->addFunction(new TwigFunction('phrase', function ($words = null) {
                 return phrase($words);
             }));

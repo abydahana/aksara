@@ -30,7 +30,7 @@ if (is_numeric(service('request')->getGet('per_page')) && service('request')->ge
     <?php endif; ?>
 
     <li class="page-item active">
-        <a href="javascript:void(0)" class="page-link" id="current">
+        <a href="<?= current_page(); ?>" class="page-link" id="current">
             <?= $current_page; ?>
         </a>
     </li>

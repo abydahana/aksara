@@ -21,6 +21,6 @@ if (! function_exists('comment_widget')) {
      */
     function comment_widget(?array $params = []): string
     {
-        return '<div role="widget" data-source="' . base_url('xhr/widget/comment', $params) . '"></div>';
+        return '<div data-role="widget" data-source="' . base_url('xhr/widget/comment', $params) . '"></div>';
     }
 }

@@ -45,9 +45,9 @@ if ($articles): ?>
                                         <div class="carousel-caption text-start">
                                             <div class="mb-3">
                                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                                    <h3 class="text-light text-outline-dark">
+                                                    <h2 class="h3 text-light text-outline-dark">
                                                         <?= truncate($val->post_title, 80); ?>
-                                                    </h3>
+                                                    </h2>
                                                     <p class="fs-5 text-light d-none d-md-inline text-outline-dark">
                                                         <?= truncate($val->post_excerpt, 90); ?>
                                                     </p>
@@ -70,7 +70,7 @@ if ($articles): ?>
                                                     </a>
                                                 </div>
                                                 <div class="col-3 text-end">
-                                                    <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger">
+                                                    <button type="button" class="btn btn-sm rounded-pill --modify <?= (is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger'); ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]); ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger" aria-label="<?= phrase('Like'); ?>" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>">
                                                         <i class="mdi mdi-heart"></i>
                                                     </button>
                                                 </div>
@@ -79,11 +79,11 @@ if ($articles): ?>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev" aria-label="<?= phrase('Previous'); ?>">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden"><?= phrase('Previous'); ?></span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next" aria-label="<?= phrase('Next'); ?>">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden"><?= phrase('Next'); ?></span>
                             </button>
@@ -100,11 +100,11 @@ if ($articles): ?>
         <?php if ($articles): ?>
             <?php foreach ($articles as $key => $val): ?>
                 <div class="mb-5">
-                    <h3 class="text-center text-sm-start fade-in">
+                    <h2 class="h3 text-center text-sm-start fade-in">
                         <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="--xhr">
                             <?= $val->category_title; ?> <i class="mdi mdi-arrow-right"></i>
                         </a>
-                    </h3>
+                    </h2>
                     <p class="text-muted fs-5 text-center text-sm-start fade-in">
                         <?= $val->category_description; ?>
                     </p>
@@ -131,11 +131,11 @@ if ($articles): ?>
                                                     </a>
                                                 </div>
                                             </div>
-                                            <h5 class="mb-3">
+                                            <h3 class="h5 mb-3">
                                                 <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
                                                     <?= truncate($_val->post_title, 64); ?>
                                                 </a>
-                                            </h5>
+                                            </h3>
                                         </div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr">
                                             <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">

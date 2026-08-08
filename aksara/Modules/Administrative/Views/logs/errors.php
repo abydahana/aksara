@@ -99,7 +99,7 @@
     $(document).ready(function() {
         if (UA !== 'mobile') {
             $('.stretch-height').css({
-                minHeight: $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
+                minHeight: $(window).outerHeight(true) - (($('[data-role=header]').outerHeight(true) ?? 0) + ($('[data-role=breadcrumb]').outerHeight(true) ?? 0) + ($('[data-role=meta]').outerHeight(true) ?? 0)),
                 borderLeft: '1px solid rgba(120,120,120,.1)'
             });
 
@@ -109,7 +109,7 @@
                     axis: 'y',
                     scrollInertia: 170,
                     mouseWheelPixels: 170,
-                    setHeight:  $(window).outerHeight(true) - (($('[role=header]').outerHeight(true) ?? 0) + ($('[role=breadcrumb]').outerHeight(true) ?? 0) + ($('[role=meta]').outerHeight(true) ?? 0)),
+                    setHeight:  $(window).outerHeight(true) - (($('[data-role=header]').outerHeight(true) ?? 0) + ($('[data-role=breadcrumb]').outerHeight(true) ?? 0) + ($('[data-role=meta]').outerHeight(true) ?? 0)),
                     advanced:
                     {
                         updateOnContentResize: true

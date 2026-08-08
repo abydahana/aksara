@@ -174,8 +174,11 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
   width: 1.5rem;
   display: inline-block;
 }
+.text-secondary {
+  color: #525b63 !important;
+}
 .text-muted {
-  color: #aaa !important;
+  color: #6c757d !important;
 }
 .alias-table-index .table tbody tr:last-child,
 .btn:focus,

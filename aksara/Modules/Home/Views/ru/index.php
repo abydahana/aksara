@@ -10,7 +10,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="container">
             <h4>
                 Внимание!
-            </h4>
+            </h2>
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH; ?></b> недоступен для записи.
@@ -41,7 +41,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </p>
                 <h3 class="mb-3 text-center">
                     Вы используете <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
-                </h3>
+                </h2>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 <hr class="mt-5 mb-5" />
                 <h3 class="mb-3 text-center">
                     Идите дальше
-                </h3>
-                <h4 class="mb-3">
+                </h2>
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-book-open-page-variant"></i>
                     &nbsp;
                     Документация
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Руководства содержат введение, учебник, ряд руководств "как сделать", а затем справочную документацию для компонентов, составляющих <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>.
@@ -84,11 +84,11 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         <a href="//www.aksaracms.com/pages/documentation" class="text-primary" target="_blank"><b>Проверить документацию</b></a>!
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-group-outline"></i>
                     &nbsp;
                     Сообщество
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Вы можете открыть обсуждение, связанное с функциями, ошибками или предложениями, на следующем форуме сообщества:
@@ -107,21 +107,21 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                         Вам также разрешено создавать официальные обсуждения, связанные с <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>, в ваших любимых социальных сетях.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-flask-outline"></i>
                     &nbsp;
                     Сделать вклад
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Вам разрешено вносить вклад, написав документацию, создав модули и добавив подходящие библиотеки, чтобы сделать <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> еще лучше. Эти вклады осуществляются в виде <a href="https://github.com/abydahana/aksara/issues" class="text-primary" target="blank"><b>Issues</b></a> (вопросов) или <a href="https://github.com/abydahana/aksara/pulls" class="text-primary" target="blank"><b>Pull Request</b></a> (запросов на извлечение) в репозитории <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>Aksara</b></a> на <a href="https://github.com/abydahana/aksara" class="text-primary" target="blank"><b>GitHub</b></a>.
                     </p>
                 </div>
-                <h4 class="mb-3">
+                <h2 class="h4 mb-3">
                     <i class="mdi mdi-account-heart-outline"></i>
                     &nbsp;
                     Поддержка
-                </h4>
+                </h2>
                 <div class="mb-5">
                     <p>
                         Как независимый исследователь (одинокий боец), я иногда хочу насладиться внешним миром, который никогда не исследовал. Возможно, с небольшим отпуском мне придет в голову еще одна блестящая идея, которую можно применить в моем исследовании.
@@ -138,7 +138,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                 </h5>
                 <h4 class="text-center">
                     <a href="//abydahana.github.io" target="_blank"><b><i class="mdi mdi-heart text-danger"></i> Aby Dahana</b></a>
-                </h4>
+                </h2>
             </div>
         </div>
     </div>

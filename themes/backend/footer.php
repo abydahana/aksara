@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-3 offset-md-1 text-sm-center">
                 <a href="<?= base_url(); ?>" class="--xhr">
-                    <img src="<?= get_image('settings', get_setting('app_logo'), 'icon'); ?>" class="img-fluid mt-3" alt="<?= get_setting('app_name'); ?> Logo" style="opacity:.3" />
+                    <img src="<?= get_image('settings', get_setting('app_logo'), 'icon'); ?>" class="img-fluid mt-3" alt="<?= get_setting('app_name'); ?> Logo" style="opacity:.3" loading="lazy" decoding="async" />
                 </a>
             </div>
             <div class="col col-md-2">
@@ -53,28 +53,28 @@
                 <ul class="nav flex-column row">
                     <?php if (get_setting('office_address')): ?>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= base_url(); ?>" class="nav-link">
                             <?= get_setting('office_address'); ?>
                         </a>
                     </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_email')): ?>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= base_url(); ?>" class="nav-link">
                             <?= get_setting('office_email'); ?>
                         </a>
                     </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_phone')): ?>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= base_url(); ?>" class="nav-link">
                             <?= get_setting('office_phone'); ?>
                         </a>
                     </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_fax')): ?>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= base_url(); ?>" class="nav-link">
                             <?= get_setting('office_fax'); ?>
                         </a>
                     </li>

@@ -152,7 +152,7 @@
     <section class="section-padding fade-in">
         <div class="container">
             <div class="text-center">
-                <h3 class="fw-bold m-0 display-6"><?= phrase('Post Categories'); ?></h3>
+                <h2 class="fw-bold m-0 display-6"><?= phrase('Post Categories'); ?></h2>
                 <p class="text-muted mb-5 fs-5"><?= phrase('Browse the articles by category'); ?></p>
             </div>
             <div class="row align-items-center">
@@ -161,14 +161,14 @@
                         <div class="card rounded-4 border-0 overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-secondary' : 'bg-dark') : (($key + 1) % 2 == 0 ? 'bg-dark' : 'bg-secondary')); ?>" style="background:url(<?= get_image('blogs', $val->category_image, 'thumb'); ?>) center center no-repeat;background-size:cover">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                                 <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" alt="<?= $val->category_title; ?>" />
+                                    <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
                                 </a>
                                 <br />
-                                <h4 class="mb-3 text-truncate">
+                                <h3 class="h4 mb-3 text-truncate">
                                     <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="text-light text-outline-dark --xhr">
                                         <?= $val->category_title; ?>
                                     </a>
-                                </h4>
+                                </h3>
                                 <p class="fs-5 mb-0 mb-md-3 text-light text-outline-dark">
                                     <?= number_format($val->post_total) . ' ' . phrase('Articles'); ?>
                                 </p>
@@ -191,7 +191,7 @@
     <section class="section-padding fade-in">
         <div class="container">
             <div class="text-center">
-                <h3 class="fw-bold m-0 display-6"><?= phrase('Recent Articles'); ?></h3>
+                <h2 class="fw-bold m-0 display-6"><?= phrase('Recent Articles'); ?></h2>
                 <p class="text-muted fs-5"><?= phrase('Read our newest articles'); ?></p>
             </div>
             <div class="swiper mb-4" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="4" data-autoplay="1">
@@ -203,7 +203,7 @@
                                     <div class="row g-0 align-items-center mb-3">
                                         <div class="col-1">
                                             <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
+                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" loading="lazy" decoding="async" />
                                             </a>
                                         </div>
                                         <div class="col-11 overflow-hidden">
@@ -217,14 +217,14 @@
                                             </a>
                                         </div>
                                     </div>
-                                    <h5 class="fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                    <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
                                         <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
                                             <?= truncate($val->post_title, 64); ?>
                                         </a>
-                                    </h5>
+                                    </h3>
                                 </div>
                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
+                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                                 </a>
                             </div>
                         </div>
@@ -243,7 +243,7 @@
     <section class="section-padding fade-in">
         <div class="container">
             <div class="text-center">
-                <h3 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries'); ?></h3>
+                <h2 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries'); ?></h2>
                 <p class="text-muted fs-5"><?= phrase('See our latest gallery activities'); ?></p>
             </div>
             <div class="swiper mb-4" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
@@ -263,9 +263,9 @@
                                         <div class="card-body" style="background:url(<?= get_image('galleries', $src, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                             <div class="clip gradient-top"></div>
                                             <div class="position-absolute bottom-0 p-3">
-                                                <h4 class="text-light text-outline-dark">
+                                                <h3 class="h4 text-light text-outline-dark">
                                                     <?= $val->gallery_title; ?>
-                                                </h4>
+                                                </h3>
                                             </div>
                                         </div>
                                     </a>
@@ -286,7 +286,7 @@
     <section class="section-padding fade-in">
         <div class="container">
             <div class="text-center">
-                <h3 class="fw-bold m-0 display-6"><?= phrase('Meet Us'); ?></h3>
+                <h2 class="fw-bold m-0 display-6"><?= phrase('Meet Us'); ?></h2>
                 <p class="text-muted fs-5"><?= phrase('Talk to us, straight to our team'); ?></p>
             </div>
             <div class="row align-items-center">
@@ -296,14 +296,14 @@
                             <div class="card-body text-center py-lg-5">
                                 <p>
                                     <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
-                                        <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
+                                        <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" loading="lazy" decoding="async" />
                                     </a>
                                 </p>
-                                <h4 class="text-truncate">
+                                <h3 class="h4 text-truncate">
                                     <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
                                         <?= $val->first_name . ' ' . $val->last_name; ?>
                                     </a>
-                                </h4>
+                                </h3>
                                 <p class="fs-5 mb-0 mb-md-3">
                                     <?= $val->position; ?>
                                 </p>
@@ -326,7 +326,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="text-center text-md-start">
-                    <h3 class="fw-bold m-0 display-6"><?= phrase('Today Statistics'); ?></h3>
+                    <h2 class="fw-bold m-0 display-6"><?= phrase('Today Statistics'); ?></h2>
                     <p class="text-muted fs-5"><?= phrase('and will continue to grow'); ?></p>
                 </div>
                 <div class="row">
@@ -334,33 +334,33 @@
                         <div class="counter color display-5 fw-semibold">
                             <span data-from="1" data-to="<?= $statistics->daily; ?>" data-refresh-interval="100" data-speed="1500"> <?= number_format($statistics->daily); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary fw-light">
+                        <h3 class="h4 mt-0 text-secondary fw-light">
                             <?= phrase('Daily Visits'); ?>
-                        </h4>
+                        </h3>
                     </div>
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->weekly; ?>" data-refresh-interval="2" data-speed="600"> <?= number_format($statistics->weekly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary fw-light">
+                        <h3 class="h4 mt-0 text-secondary fw-light">
                             <?= phrase('Weekly Visits'); ?>
-                        </h4>
+                        </h3>
                     </div>
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
                         <div class="counter color fw-semibold display-5">
                             <span data-from="10" data-to="<?= $statistics->monthly; ?>" data-refresh-interval="11" data-speed="900"> <?= number_format($statistics->monthly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary fw-light">
+                        <h3 class="h4 mt-0 text-secondary fw-light">
                             <?= phrase('Monthly Visits'); ?>
-                        </h4>
+                        </h3>
                     </div>
                     <div class="col-6 col-sm-6 text-center text-md-start mb-4">
                         <div class="counter color fw-semibold display-5">
                             <span data-from="100" data-to="<?= $statistics->yearly; ?>" data-refresh-interval="3" data-speed="1000"> <?= number_format($statistics->yearly); ?> </span>
                         </div>
-                        <h4 class="mt-0 text-secondary fw-light">
+                        <h3 class="h4 mt-0 text-secondary fw-light">
                             <?= phrase('Yearly Visits'); ?>
-                        </h4>
+                        </h3>
                     </div>
                 </div>
             </div>

@@ -26,16 +26,16 @@ if ($results): ?>
                     <div class="col-md-6 col-lg-4">
                         <div class="mb-3 fade-in">
                             <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr">
-                                <img src="<?= get_image('videos', $val->cover, 'thumb'); ?>" class="w-100 rounded-4 mb-3" style="max-height:240px;object-fit: cover" alt="<?= $val->title; ?>" />
+                                <img src="<?= get_image('videos', $val->cover, 'thumb'); ?>" class="w-100 rounded-4 mb-3" style="max-height:240px;object-fit: cover" alt="<?= $val->title; ?>" loading="lazy" decoding="async" />
                             </a>
                             <div class="row g-0">
                                 <div class="col-2">
                                     <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                        <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
+                                        <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" loading="lazy" decoding="async" />
                                     </a>
                                 </div>
                                 <div class="col-10 ps-2">
-                                    <h5 class="mb-0">
+                                    <h2 class="h5 mb-0">
                                         <a href="<?= base_url('videos/' . $val->slug); ?>" class="--xhr">
                                             <?= truncate($val->title, 80); ?>
                                         </a>

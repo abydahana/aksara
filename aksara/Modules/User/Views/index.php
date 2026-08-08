@@ -65,7 +65,7 @@ if ($user): ?>
                     <div class="mb-3">
                         <h4 class="text-muted mb-0">
                             <?= phrase('Biography'); ?>
-                        </h4>
+                        </h3>
                         <p class="fs-5">
                             <?= ($user->bio ? $user->bio : '-'); ?>
                         </p>
@@ -73,7 +73,7 @@ if ($user): ?>
                     <div class="mb-3">
                         <h4 class="text-muted mb-0">
                             <?= phrase('Last Activity'); ?>
-                        </h4>
+                        </h3>
                         <p class="fs-5">
                             <?= time_ago($user->last_activity); ?>
                         </p>

@@ -39,7 +39,7 @@ if ($results): ?>
                             if (1 == $num) {
                                 $cover = $src;
                             } elseif ($num > 1) {
-                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" alt="' . htmlspecialchars((string) ($alt ?: $val->gallery_title)) . '" /></a>';
+                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" alt="' . htmlspecialchars((string) ($alt ?: $val->gallery_title)) . '" loading="lazy" decoding="async" /></a>';
                             }
 
                             $num++;
@@ -51,7 +51,7 @@ if ($results): ?>
                             <div class="row g-0">
                                 <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-center" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:320px">
                                     <div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">
-                                        <h4 class="text-light">
+                                        <h2 class="h4 text-light">
                                             <span class="badge bg-primary float-end">
                                                 <?= count($images); ?>
                                             </span>

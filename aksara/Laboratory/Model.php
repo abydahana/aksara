@@ -3406,7 +3406,7 @@ class Model
 
                 // normalize values
                 $values = array_map(function ($val) {
-                    // kalau sudah quoted, biarkan
+                    // If already quoted, leave as is
                     if (preg_match("/^'.*'$/", $val)) {
                         return $val;
                     }
