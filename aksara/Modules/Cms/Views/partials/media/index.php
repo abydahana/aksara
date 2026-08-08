@@ -56,9 +56,9 @@ $breadcrumbs = null;
                                 <div class="p-3">
                                     <i class="mdi mdi-arrow-left mdi-4x"></i>
                                 </div>
-                                <label class="d-block text-truncate">
+                                <div class="d-block text-truncate">
                                     <?= phrase('Back'); ?>
-                                </label>
+                                </div>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -71,9 +71,9 @@ $breadcrumbs = null;
                                         <div class="p-3">
                                             <i class="mdi mdi-folder-image mdi-4x text-info"></i>
                                         </div>
-                                        <label class="d-block text-truncate">
+                                        <div class="text-truncate">
                                             <?= $val->label; ?>
-                                        </label>
+                                        </div>
                                     </a>
                                 </div>
                             <?php else: ?>
@@ -82,9 +82,9 @@ $breadcrumbs = null;
                                         <div class="p-3">
                                             <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
                                         </div>
-                                        <label class="d-block text-truncate">
+                                        <div class="text-truncate">
                                             <?= $val->label; ?>
-                                        </label>
+                                        </div>
                                     </a>
                                 </div>
                             <?php endif; ?>
@@ -145,44 +145,44 @@ $breadcrumbs = null;
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
-                        <label class="d-block text-muted mb-0">
+                        <span class="d-block text-muted mb-0">
                             <?= phrase('Filename'); ?>
-                        </label>
-                        <label class="d-block text-break-word">
+                        </span>
+                        <div class="text-break-word">
                             <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" download="<?= $results->description->name; ?>">
                                 <?= $results->description->name; ?>
                             </a>
-                        </label>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="mb-3">
-                                <label class="d-block text-muted mb-0">
+                                <span class="d-block text-muted mb-0">
                                     <?= phrase('Mime Type'); ?>
-                                </label>
-                                <label class="d-block text-break-word">
+                                </span>
+                                <div class="text-break-word">
                                     <?= $results->description->mime_type; ?>
-                                </label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="mb-3">
-                                <label class="d-block text-muted mb-0">
+                                <span class="d-block text-muted mb-0">
                                     <?= phrase('Size'); ?>
-                                </label>
-                                <label class="d-block text-break-word">
+                                </span>
+                                <div class="text-break-word">
                                     <?= $results->description->formatted_size ?? get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
-                                </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="d-block text-muted mb-0">
+                        <span class="d-block text-muted mb-0">
                             <?= phrase('Date Modified'); ?>
-                        </label>
-                        <label class="d-block text-break-word">
+                        </span>
+                        <div class="text-break-word">
                             <?= date('Y-m-d H:i:s', $results->description->date); ?>
-                        </label>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6">

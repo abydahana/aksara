@@ -633,9 +633,7 @@ class View
             {% for label, value in content %}
                 <div class="row mb-1 border-top">
                     <div class="col-12 col-sm-4">
-                        <label class="text-muted">
-                            {{ label }}
-                        </label>
+                        <span class="text-muted">{{ label }}</span>
                     </div>
                     <div class="col-12 col-sm-8">
                         {{ value }}

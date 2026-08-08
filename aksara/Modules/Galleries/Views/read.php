@@ -92,15 +92,11 @@ if ($images) {
 
                         echo '
                             <div class="row">
-                                <div class="col-sm-4 col-lg-3">
-                                    <label class="d-block text-muted">
-                                        ' . $label . '
-                                    </label>
+                                <div class="col-sm-4 col-lg-3 text-muted">
+                                    ' . $label . '
                                 </div>
                                 <div class="col-sm-8 col-lg-9">
-                                    <label>
-                                        ' . $value . '
-                                    </label>
+                                    ' . $value . '
                                 </div>
                             </div>
                         ';

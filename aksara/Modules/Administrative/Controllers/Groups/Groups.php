@@ -128,9 +128,9 @@ class Groups extends Core
                     if ('read' === $this->getMethod()) {
                         $privilege_output .= '
                             <div class="col-6 col-md-3">
-                                <label class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
+                                <span class="d-block mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
                                     <i class="fw-bold mdi ' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? 'mdi-checkbox-marked-circle text-primary' : 'mdi-checkbox-blank-circle-outline') . '"></i> ' . $label . '
-                                </label>
+                                </span>
                             </div>
                         ';
                     } else {

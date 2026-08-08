@@ -24,23 +24,19 @@
 
 <section class="section-padding pt-0 fade-in">
     <div class="container">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-lg-6">
                 <h3 class="mb-3">
                     <?= get_setting('office_name'); ?>
                 </h3>
                 <div class="mb-3">
-                    <label class="text-muted d-block mb-0">
-                        <?= phrase('Address'); ?>
-                    </label>
+                    <span class="text-muted d-block mb-0"><?= phrase('Address'); ?></span>
                     <p class="fs-5">
                         <?= get_setting('office_address'); ?>
                     </p>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted d-block mb-0">
-                        <?= phrase('Email'); ?>
-                    </label>
+                    <span class="text-muted d-block mb-0"><?= phrase('Email'); ?></span>
                     <p class="fs-5">
                         <a href="mailto:<?= get_setting('office_email'); ?>" target="_blank">
                             <?= get_setting('office_email'); ?>
@@ -50,9 +46,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="mb-3">
-                            <label class="text-muted d-block mb-0">
-                                <?= phrase('Phone'); ?>
-                            </label>
+                            <span class="text-muted d-block mb-0"><?= phrase('Phone'); ?></span>
                             <p class="fs-5">
                                 <a href="tel:<?= get_setting('office_phone'); ?>" target="_blank">
                                     <?= get_setting('office_phone'); ?>
@@ -62,9 +56,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="mb-3">
-                            <label class="text-muted d-block mb-0">
-                                <?= phrase('WhatsApp'); ?>
-                            </label>
+                            <span class="text-muted d-block mb-0"><?= phrase('WhatsApp'); ?></span>
                             <p class="fs-5">
                                 <a href="https://api.whatsapp.com/send?phone=<?= str_replace(['+', '-', ' '], '', get_setting('whatsapp_number')); ?>&text=<?= phrase('Hello') . '%20' . get_setting('app_name'); ?>..." target="_blank">
                                     <?= get_setting('whatsapp_number'); ?>
@@ -76,9 +68,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="mb-3">
-                            <label class="text-muted d-block mb-0">
-                                <?= phrase('Twitter'); ?>
-                            </label>
+                            <span class="text-muted d-block mb-0"><?= phrase('Twitter'); ?></span>
                             <p class="fs-5">
                                 <a href="//twitter.com/<?= get_setting('twitter_username'); ?>" target="_blank">
                                     <?= get_setting('twitter_username'); ?>
@@ -88,9 +78,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="mb-3">
-                            <label class="text-muted d-block mb-0">
-                                <?= phrase('Instagram'); ?>
-                            </label>
+                            <span class="text-muted d-block mb-0"><?= phrase('Instagram'); ?></span>
                             <p class="fs-5">
                                 <a href="//instagram.com/<?= get_setting('instagram_username'); ?>" target="_blank">
                                     <?= get_setting('instagram_username'); ?>

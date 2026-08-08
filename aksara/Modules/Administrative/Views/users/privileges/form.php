@@ -18,38 +18,38 @@
             </div>
             <div class="col-sm-9 col-md-8">
                 <div class="row">
-                    <label class="col-sm-4 col-md-3 text-muted">
+                    <div class="col-sm-4 col-md-3 text-muted">
                         <?= phrase('Username'); ?>
-                    </label>
-                    <label class="col-sm-8 col-md-9">
+                    </div>
+                    <div class="col-sm-8 col-md-9">
                         <?= $userdata->username; ?>
-                    </label>
+                    </div>
                 </div>
                 <hr class="my-2" />
                 <div class="row">
-                    <label class="col-sm-4 col-md-3 text-muted">
+                    <div class="col-sm-4 col-md-3 text-muted">
                         <?= phrase('Full Name'); ?>
-                    </label>
-                    <label class="col-8 col-md-9">
+                    </div>
+                    <div class="col-8 col-md-9">
                         <?= $userdata->first_name . ' ' . $userdata->last_name; ?>
-                    </label>
+                    </div>
                 </div>
                 <hr class="my-2" />
                 <div class="row">
-                    <label class="col-sm-4 col-md-3 text-muted">
+                    <div class="col-sm-4 col-md-3 text-muted">
                         <?= phrase('User Group'); ?>
-                    </label>
-                    <label class="col-8 col-md-9">
+                    </div>
+                    <div class="col-8 col-md-9">
                         <?= $userdata->group_name; ?>
-                    </label>
+                    </div>
                 </div>
                 <?php if ($year): ?>
                 <hr class="my-2" />
                 <div class="row">
-                    <label class="col-sm-4 col-md-3 text-muted">
+                    <label class="col-sm-4 col-md-3 text-muted" for="access_year_input">
                         <?= phrase('Access Year'); ?>
                     </label>
-                    <label class="col-sm-8 col-md-4">
+                    <div class="col-sm-8 col-md-4">
                         <?php
                             $options = null;
 
@@ -57,10 +57,10 @@
                                 $options .= '<option value="' . $val->year . '"' . (isset($field_data->access_year) && $field_data->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
                             }
                         ?>
-                        <select name="access_year" class="form-control" placeholder="<?= phrase('Please choose'); ?>">
+                        <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose'); ?>">
                             <?= $options; ?>
                         </select>
-                    </label>
+                    </div>
                 </div>
                 <?php endif; ?>
             </div>

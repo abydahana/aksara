@@ -85,10 +85,9 @@ class Privileges extends Core
                                 </a>
                             </div>
                         ' : '
-                            <label class="control-label">
-                                <i class="mdi mdi-check"></i>
-                                ' . phrase($val, [], true) . '
-                            </label>
+                            <span>
+                                <i class="mdi mdi-check"></i> ' . phrase($val, [], true) . '
+                            </span>
                         ') . '
                     </div>
                 ';

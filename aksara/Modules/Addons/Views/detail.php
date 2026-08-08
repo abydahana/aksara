@@ -22,15 +22,11 @@ if (isset($detail->attribution) && $detail->attribution) {
     foreach ($detail->attribution as $key => $val) {
         $attribution .= '
             <div class="row">
-                <div class="col-4">
-                    <label class="mb-0 text-muted">
-                        ' . $key . '
-                    </label>
+                <div class="col-4 text-muted">
+                    ' . $key . '
                 </div>
                 <div class="col-8">
-                    <label class="mb-0">
-                        ' . $val . '
-                    </label>
+                    ' . $val . '
                 </div>
             </div>
         ';
@@ -64,27 +60,19 @@ if (isset($detail->attribution) && $detail->attribution) {
             </h5>
             <hr class="mt-1 mb-1" />
             <div class="row">
-                <div class="col-4">
-                    <label class="mb-0 text-muted">
-                        <?= phrase('Author'); ?>
-                    </label>
+                <div class="col-4 text-muted">
+                    <?= phrase('Author'); ?>
                 </div>
                 <div class="col-8">
-                    <label class="mb-0">
-                        <?= (isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>'); ?>
-                    </label>
+                    <?= (isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>'); ?>
                 </div>
             </div>
             <div class="row">
-                <div class="col-4">
-                    <label class="mb-0 text-muted">
-                        <?= phrase('Version'); ?>
-                    </label>
+                <div class="col-4 text-muted">
+                    <?= phrase('Version'); ?>
                 </div>
                 <div class="col-8">
-                    <label class="mb-0">
-                        <?= $detail->version; ?>
-                    </label>
+                    <?= $detail->version; ?>
                 </div>
             </div>
             <?= $attribution; ?>

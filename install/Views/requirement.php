@@ -33,9 +33,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('PHP Version'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('PHP Version'); ?></span>
                 <p>
                     <?= (phpversion() < 8.2 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
                 </p>
@@ -43,9 +41,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('Rewrite Module'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('Rewrite Module'); ?></span>
                 <p>
                     <?= (! $mod_rewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
@@ -55,9 +51,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('Internationalization'); ?> (intl)
-                </label>
+                <span class="d-block mb-0"><?= phrase('Internationalization'); ?> (intl)</span>
                 <p>
                     <?= (! in_array('intl', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
@@ -65,9 +59,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('ZIP Archiver'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('ZIP Archiver'); ?></span>
                 <p>
                     <?= (! class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('Disabled') . '</b>' : '<b class="text-success">' . phrase('Available') . '</b>'); ?>
                 </p>
@@ -77,9 +69,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('Multibyte String'); ?> (mbstring)
-                </label>
+                <span class="d-block mb-0"><?= phrase('Multibyte String'); ?> (mbstring)</span>
                 <p>
                     <?= (! in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
@@ -87,9 +77,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('PHP GD'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('PHP GD'); ?></span>
                 <p>
                     <?= (! in_array('gd', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
@@ -99,9 +87,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('JSON'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('JSON'); ?></span>
                 <p>
                     <?= (! in_array('json', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
@@ -109,9 +95,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="d-block mb-0">
-                    <?= phrase('XML'); ?>
-                </label>
+                <span class="d-block mb-0"><?= phrase('XML'); ?></span>
                 <p>
                     <?= (! in_array('xml', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
