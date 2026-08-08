@@ -74,13 +74,13 @@ if ($user): ?>
                         <?php
                             $metadata = fetch_metadata($val->post_path);
 
-                            if (! $metadata) continue;
+                            if (! $metadata || ! isset($metadata->title)) continue;
                         ?>
                         <div class="activity-item mb-3">
                             <div class="bg-light rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
-                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
+                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
                                         </div>
                                         <div class="col-10 col-lg-9">
                                             <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h4>

@@ -6623,7 +6623,7 @@ abstract class Core extends Controller
 
         // --- 4. Session/Access Token Verification ---
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            service('session');
         }
 
         $accessToken = get_userdata('access_token') ?? $this->request->getHeaderLine('X-ACCESS-TOKEN');
