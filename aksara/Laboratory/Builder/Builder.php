@@ -33,6 +33,24 @@ use Aksara\Laboratory\Builder\Components\View;
 class Builder
 {
     /**
+     * Ensure the theme has the full component scaffold required by the renderer.
+     */
+    public function ensureThemeComponents(string $theme): bool
+    {
+        if (! $theme) {
+            return false;
+        }
+
+        foreach (['core', 'table', 'form', 'view'] as $path) {
+            if (false === $this->getComponent($theme, $path)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Get or create a component template file.
      *
      * This method checks if a specific Twig template exists in the theme directory.
