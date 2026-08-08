@@ -49,6 +49,12 @@ class Assets extends Core
          * This prevents users from using ../../../etc/passwd
          */
         if (false === $realPath || strpos($realPath, realpath(FCPATH)) !== 0) {
+            $placeholder = $this->_ensureUploadPlaceholder($path);
+
+            if ($placeholder) {
+                $this->_serveAsset($placeholder);
+            }
+
             return throw_exception(403, phrase('Access denied'), base_url());
         }
 
@@ -57,67 +63,6 @@ class Assets extends Core
         }
 
         return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
-    }
-
-    private function _serveAsset(string $realPath): void
-    {
-        $mimeType = $this->_guessMimeType($realPath);
-
-        // Clean output buffer that might have already been sent
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-
-        header('Content-Type: ' . $mimeType);
-        header('Content-Length: ' . filesize($realPath));
-        header(
-            'Content-Disposition: inline; filename="' .
-            addslashes(basename($realPath)) .
-            '"'
-        );
-        header('X-Content-Type-Options: nosniff');
-        header('Cache-Control: public, max-age=3600');
-
-        readfile($realPath);
-        exit;
-    }
-
-    private function _guessMimeType(string $realPath): string
-    {
-        $extension = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
-        $mimeTypes = [
-            'css' => 'text/css',
-            'js' => 'application/javascript',
-            'mjs' => 'application/javascript',
-            'json' => 'application/json',
-            'map' => 'application/json',
-            'svg' => 'image/svg+xml',
-            'png' => 'image/png',
-            'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'gif' => 'image/gif',
-            'webp' => 'image/webp',
-            'avif' => 'image/avif',
-            'ico' => 'image/x-icon',
-            'mp3' => 'audio/mpeg',
-            'wav' => 'audio/wav',
-            'ogg' => 'audio/ogg',
-            'mp4' => 'video/mp4',
-            'webm' => 'video/webm',
-            'woff' => 'font/woff',
-            'woff2' => 'font/woff2',
-            'ttf' => 'font/ttf',
-            'otf' => 'font/otf',
-            'eot' => 'application/vnd.ms-fontobject',
-        ];
-
-        if (isset($mimeTypes[$extension])) {
-            return $mimeTypes[$extension];
-        }
-
-        $file = new File($realPath);
-
-        return $file->getMimeType() ?: 'application/octet-stream';
     }
 
     /**
@@ -396,5 +341,103 @@ class Assets extends Core
         }
 
         return json_encode($results, JSON_UNESCAPED_SLASHES);
+    }
+
+    private function _ensureUploadPlaceholder(string $path): ?string
+    {
+        if (! preg_match('#^uploads/([A-Za-z0-9_-]+/)?((thumbs|icons)/)?placeholder\.png$#', $path, $matches)) {
+            return null;
+        }
+
+        $dimension = $matches[3] ?? '';
+        $sourceName = match ($dimension) {
+            'thumbs' => 'placeholder_thumb.png',
+            'icons' => 'placeholder_icon.png',
+            default => 'placeholder.png'
+        };
+
+        $source = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . $sourceName;
+        $target = FCPATH . str_replace('/', DIRECTORY_SEPARATOR, $path);
+
+        if (! is_file($source)) {
+            return null;
+        }
+
+        try {
+            $targetDir = dirname($target);
+
+            if (! is_dir($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+
+            if (! is_file($target)) {
+                copy($source, $target);
+            }
+        } catch (Throwable $e) {
+            return $source;
+        }
+
+        return is_file($target) ? $target : $source;
+    }
+
+    private function _serveAsset(string $realPath): void
+    {
+        $mimeType = $this->_guessMimeType($realPath);
+
+        // Clean output buffer that might have already been sent
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Length: ' . filesize($realPath));
+        header(
+            'Content-Disposition: inline; filename="' .
+            addslashes(basename($realPath)) .
+            '"'
+        );
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: public, max-age=3600');
+
+        readfile($realPath);
+        exit;
+    }
+
+    private function _guessMimeType(string $realPath): string
+    {
+        $extension = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'mjs' => 'application/javascript',
+            'json' => 'application/json',
+            'map' => 'application/json',
+            'svg' => 'image/svg+xml',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'avif' => 'image/avif',
+            'ico' => 'image/x-icon',
+            'mp3' => 'audio/mpeg',
+            'wav' => 'audio/wav',
+            'ogg' => 'audio/ogg',
+            'mp4' => 'video/mp4',
+            'webm' => 'video/webm',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'otf' => 'font/otf',
+            'eot' => 'application/vnd.ms-fontobject',
+        ];
+
+        if (isset($mimeTypes[$extension])) {
+            return $mimeTypes[$extension];
+        }
+
+        $file = new File($realPath);
+
+        return $file->getMimeType() ?: 'application/octet-stream';
     }
 }
