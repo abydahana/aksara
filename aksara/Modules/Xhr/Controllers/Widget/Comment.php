@@ -286,7 +286,7 @@ class Comment extends Core
             $this->formValidation->setRule('comments', phrase('Comments'), 'required');
             $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-            if ($this->formValidation->withRequest(service('request')) === false) {
+            if ($this->formValidation->run($this->request->getPost()) === false) {
                 return throw_exception(400, $this->formValidation->getErrors());
             }
 
@@ -738,7 +738,7 @@ class Comment extends Core
         $this->formValidation->setRule('comments', phrase('Comments'), 'required');
         $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
 
-        if ($this->formValidation->withRequest(service('request')) === false) {
+        if ($this->formValidation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->formValidation->getErrors());
         }
 
