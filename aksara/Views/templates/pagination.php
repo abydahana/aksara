@@ -16,7 +16,7 @@ if (is_numeric(service('request')->getGet('per_page')) && service('request')->ge
 
 <ul class="pagination pagination-sm mb-0">
     <li class="page-item<?= ($current_page <= 1 ? ' disabled' : null); ?>">
-        <a href="<?= ($current_page > 1 ? current_page(null, ['per_page' => 0]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="first" aria-label="<?= phrase('First'); ?>">
+        <a href="<?= ($current_page > 1 ? current_page(null, ['per_page' => 0]) : current_page()); ?>" class="page-link --xhr" id="first" aria-label="<?= phrase('First'); ?>">
             <?= phrase('First'); ?>
         </a>
     </li>
@@ -44,7 +44,7 @@ if (is_numeric(service('request')->getGet('per_page')) && service('request')->ge
     <?php endif; ?>
 
     <li class="page-item<?= ($last_page <= $current_page ? ' disabled' : null); ?>">
-        <a href="<?= ($last_page > $current_page ? current_page(null, ['per_page' => $last_page]) : 'javascript:void(0)'); ?>" class="page-link --xhr" id="last" aria-label="<?= phrase('Last'); ?>">
+        <a href="<?= ($last_page > $current_page ? current_page(null, ['per_page' => $last_page]) : current_page()); ?>" class="page-link --xhr" id="last" aria-label="<?= phrase('Last'); ?>">
             <?= phrase('Last'); ?>
         </a>
     </li>
