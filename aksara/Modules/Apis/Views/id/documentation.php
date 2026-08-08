@@ -6,9 +6,14 @@
  * @var mixed $modules
  */
 $selected = service('request')->getGet('group');
+$response_type = service('request')->getGet('response_type');
 $group_collector = [];
 $access_token = false;
 $method = [];
+
+if (! in_array($response_type, ['simple', 'complete'])) {
+    $response_type = 'simple';
+}
 
 if ($permission->groups) {
     $groups = null;
@@ -41,8 +46,8 @@ if ($permission->groups) {
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-3">
-            <div class="sticky-top">
-                <div class="pretty-scrollbar">
+            <div class="sticky-top --api-documentation-sidebar">
+                <div class="pretty-scrollbar --api-documentation-list">
                     <a href="<?= base_url('apis/documentation'); ?>" class="<?= (! $active ? 'text-primary fw-bold' : null); ?> --xhr">
                         <?= phrase('Getting Started'); ?>
                     </a>
@@ -64,7 +69,7 @@ if ($permission->groups) {
             </div>
         </div>
         <div class="col-md-9">
-            <div class="sticky-top">
+            <div>
                 <?php if ($active): ?>
                     <?php if ($permission->groups): ?>
                         <div class="row">
@@ -93,6 +98,16 @@ if ($permission->groups) {
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="mb-3">
+                            <h5 class="mt-3"><?= phrase('Response Type'); ?></h5>
+                            <div class="btn-group" role="group" aria-label="<?= phrase('Response Type'); ?>">
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-simple" value="simple" autocomplete="off"<?= ('simple' == $response_type ? ' checked' : null); ?> />
+                                <label class="btn btn-outline-primary btn-sm" for="--response-type-simple"><?= phrase('Simple'); ?></label>
+
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-complete" value="complete" autocomplete="off"<?= ('complete' == $response_type ? ' checked' : null); ?> />
+                                <label class="btn btn-outline-primary btn-sm" for="--response-type-complete"><?= phrase('Complete'); ?></label>
+                            </div>
                         </div>
 
                         <h5 class="mt-3"><?= phrase('Request Method'); ?></h5>
@@ -374,22 +389,89 @@ if ($permission->groups) {
     </div>
 </div>
 
+<style type="text/css">
+    .--api-documentation-sidebar {
+        top: 1rem;
+    }
+
+    .--api-documentation-list {
+        overflow: auto;
+        padding-right: .5rem;
+    }
+</style>
+
 <script type="text/javascript">
     $(document).ready(function() {
-        $.ajax({
-            url: '<?= current_page(); ?>',
-            context: this,
-            method: 'POST',
-            data: {
-                mode: 'fetch',
-                group: '<?= ($selected ? $selected : (isset($group_collector[0]) ? $group_collector[0] : 0)); ?>',
-                method: JSON.parse('<?= json_encode($method); ?>')
-            },
-            beforeSend: function() {
-            }
-        })
-        .done(function(response, status, error) {
-            $('.--spinner').remove();
+        let apiDocumentationScrollbar = [];
+
+        function getApiDocumentationOffset() {
+            return (($('[data-role=header]:visible').outerHeight(true) || 0) + ($('[data-role=breadcrumb]:visible').outerHeight(true) || 0) + ($('[data-role=meta]:visible').outerHeight(true) || 0));
+        }
+
+        function resizeApiDocumentationList() {
+            const offset = getApiDocumentationOffset();
+            const height = Math.max(240, window.innerHeight - offset);
+
+            $('.--api-documentation-sidebar').css({
+                top: offset
+            });
+            $('.--api-documentation-list').css({
+                maxHeight: height
+            });
+
+            $.each(apiDocumentationScrollbar, function(key, instance) {
+                if (instance) {
+                    instance.update();
+                }
+            });
+        }
+
+        if ('undefined' !== typeof require) {
+            require.css([
+                config.base_url + 'assets/overlayscrollbars/overlayscrollbars.min.css'
+            ]);
+            require.js([
+                config.base_url + 'assets/overlayscrollbars/overlayscrollbars.min.js'
+            ], function() {
+                $('.--api-documentation-list').each(function() {
+                    apiDocumentationScrollbar.push(OverlayScrollbarsGlobal.OverlayScrollbars(this, {
+                        scrollbars: {
+                            theme: 'os-theme-dark',
+                            autoHide: 'leave',
+                            autoHideDelay: 500,
+                            clickScroll: true
+                        }
+                    }));
+                });
+
+                resizeApiDocumentationList();
+            });
+        }
+
+        resizeApiDocumentationList();
+        $(window).on('resize.apiDocumentation', resizeApiDocumentationList);
+
+        function fetchApiDocumentationProperties() {
+            $('.--spinner').removeClass('d-none');
+            $('[class*="--query-"] tbody, [class*="--parameter-"] tbody').empty();
+            $('[class*="--query-"], [class*="--parameter-"], [class*="--response-success-"], [class*="--response-error-"]').addClass('d-none');
+            $('[class*="--response-success-"] pre code, [class*="--response-error-"] pre code').text('{}');
+
+            $.ajax({
+                url: '<?= current_page(); ?>',
+                context: this,
+                method: 'POST',
+                data: {
+                    mode: 'fetch',
+                    group: '<?= ($selected ? $selected : (isset($group_collector[0]) ? $group_collector[0] : 0)); ?>',
+                    response_type: $('.--response-type:checked').val(),
+                    method: JSON.parse('<?= json_encode($method); ?>')
+                },
+                beforeSend: function() {
+                }
+            })
+            .done(function(response, status, error) {
+                $('.--spinner').addClass('d-none');
 
             if (response.results) {
                 $.each(response.results, function(key, val) {
@@ -399,17 +481,28 @@ if ($permission->groups) {
                                 $('.--query-' + key).removeClass('d-none')
                             }
 
-                            $('<tr><td><code>' + _key + '</code></td><td>mixed</td><td>-</td><td class="text-center"><span class="badge bg-danger"><?= phrase('Required'); ?></span></td></tr>').appendTo('.--query-' + key + ' tbody')
+                            $('<tr />')
+                            .append($('<td />').append($('<code />').text(_key)))
+                            .append($('<td />').text('mixed'))
+                            .append($('<td />').text('-'))
+                            .append($('<td />').addClass('text-center').append($('<span />').addClass('badge bg-danger').text('<?= phrase('Required'); ?>')))
+                            .appendTo('.--query-' + key + ' tbody')
                         })
                     }
 
-                    if (typeof val.parameter !== 'undefined') {
-                        $.each(val.parameter, function(_key, _val) {
+                    if (typeof val.field_data !== 'undefined') {
+                        $.each(val.field_data, function(_key, _val) {
                             if ($('.--parameter-' + key).hasClass('d-none')) {
                                 $('.--parameter-' + key).removeClass('d-none')
                             }
 
-                            $('<tr><td><code>' + _key + '</code></td><td>' + _val.type + '</td><td>' + _val.maxlength + '</td><td>' + _val.label + '</td><td class="text-center">' + (_val.required ? '<span class="badge bg-danger"><?= phrase('Required'); ?></span>' : '') + '</td></tr>').appendTo('.--parameter-' + key + ' tbody')
+                            $('<tr />')
+                            .append($('<td />').append($('<code />').text(_key)))
+                            .append($('<td />').text(_val.type))
+                            .append($('<td />').text(_val.maxlength))
+                            .append($('<td />').text(_val.label))
+                            .append($('<td />').addClass('text-center').append(_val.required ? $('<span />').addClass('badge bg-danger').text('<?= phrase('Required'); ?>') : ''))
+                            .appendTo('.--parameter-' + key + ' tbody')
                         })
                     }
 
@@ -430,6 +523,10 @@ if ($permission->groups) {
                     }
                 })
             }
-        })
+            })
+        }
+
+        $('.--response-type').on('change', fetchApiDocumentationProperties);
+        fetchApiDocumentationProperties();
     })
 </script>
