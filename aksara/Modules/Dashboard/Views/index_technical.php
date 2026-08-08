@@ -55,7 +55,7 @@ $logs = (isset($logs) ? $logs : []);
                                 <?= phrase('Blogs'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 2 ? phrase('articles') : phrase('article')); ?>
+                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')); ?>
                             </p>
                         </div>
                     </div>
@@ -76,7 +76,7 @@ $logs = (isset($logs) ? $logs : []);
                                 <?= phrase('Pages'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->pages) . ' ' . ($card->pages > 2 ? phrase('pages') : phrase('page')); ?>
+                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')); ?>
                             </p>
                         </div>
                     </div>
@@ -97,7 +97,7 @@ $logs = (isset($logs) ? $logs : []);
                                 <?= phrase('Galleries'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 2 ? phrase('albums') : phrase('album')); ?>
+                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')); ?>
                             </p>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ $logs = (isset($logs) ? $logs : []);
                                 <?= phrase('Videos'); ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->videos) . ' ' . ($card->videos > 2 ? phrase('videos') : phrase('video')); ?>
+                                <?= number_format($card->videos) . ' ' . ($card->videos > 1 ? phrase('videos') : phrase('video')); ?>
                             </p>
                         </div>
                     </div>
