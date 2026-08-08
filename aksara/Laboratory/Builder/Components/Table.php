@@ -526,7 +526,7 @@ class Table
         $component = <<<EOF
         <span class="d-flex align-items-center justify-content-center">
             <a href="{{ content | replace({'/thumbs/': '/'}) }}" class="{{ class }}" target="_blank">
-                <img src="{{ content }}" class="img-fluid rounded" width="22" height="22" alt="{{ label ? label : phrase('Thumbnail') }}">
+                <img src="{{ content }}" class="img-fluid rounded" width="22" height="22" alt="{{ label ? label : phrase('Thumbnail') }}" loading="lazy" decoding="async">
             </a>
         </span>
         EOF;

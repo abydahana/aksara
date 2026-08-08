@@ -177,8 +177,8 @@ class Form
         $component = <<<EOF
         {% for option in content %}
             <div class="form-check me-3">
-                <label class="form-check-label {{ option.class }}">
-                    <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ option.value }}_input" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                <input type="checkbox" name="{{ name }}[]" role="checkbox" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ name }}_{{ loop.index0 }}_input" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                <label class="form-check-label {{ option.class }}" for="{{ name }}_{{ loop.index0 }}_input">
                     {{ option.label | raw }}
                 </label>
             </div>
@@ -203,8 +203,8 @@ class Form
         $component = <<<EOF
         {% for option in content %}
             <div class="form-check me-3">
-                <label class="form-check-label {{ option.class }}">
-                    <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                <input type="radio" name="{{ name }}" role="radio" value="{{ option.value }}" class="form-check-input {{ option.class }}" id="{{ name }}_{{ loop.index0 }}_input" {{ attribution | raw }} {{ option.readonly }} {% if option.checked %} checked {% endif %}>
+                <label class="form-check-label {{ option.class }}" for="{{ name }}_{{ loop.index0 }}_input">
                     {{ option.label | raw }}
                 </label>
             </div>
@@ -504,7 +504,7 @@ class Form
             <span class="btn btn-file d-block">
                 <input type="file" name="{{ name }}" accept="{{ accept }}" data-role="image-upload" id="{{ name }}_input" {{ attribution | raw }} {{ readonly }} />
                 <div class="fileupload-new text-center {% if content and '/thumbs/' not in content %}w-100{% endif %}">
-                    <img class="img-fluid upload_preview" src="{{ content }}" />
+                    <img class="img-fluid upload_preview" src="{{ content }}" alt="{{ phrase('Preview') }}" loading="lazy" decoding="async" />
                 </div>
                 <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '{{ placeholder }}'))">
                     <i class="mdi mdi-delete"></i>

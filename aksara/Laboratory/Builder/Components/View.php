@@ -535,7 +535,7 @@ class View
         $component = <<<EOF
         <div class="text-sm-center">
             <a href="{{ content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                <img src="{{ content }}" alt="{{ label }}" class="rounded img-fluid" />
+                <img src="{{ content }}" alt="{{ label }}" class="rounded img-fluid" loading="lazy" decoding="async" />
             </a>
         </div>
         EOF;

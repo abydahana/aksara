@@ -169,7 +169,7 @@ class Core
                                                     <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
                                                         <a href="{{ carousel_item.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}">
+                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}" loading="lazy" decoding="async">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -185,7 +185,7 @@ class Core
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}">
+                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}" loading="lazy" decoding="async">
                                         </a>
 
                                         {% set break = true %}
@@ -264,7 +264,7 @@ class Core
                                                     <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
                                                         <a href="{{ carousel_item.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}">
+                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}" loading="lazy" decoding="async">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -280,7 +280,7 @@ class Core
                                         {% set break = true %}
                                     {% elseif not break and field.type == 'image' %}
                                         <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}">
+                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}" loading="lazy" decoding="async">
                                         </a>
 
                                         {% set break = true %}
@@ -881,7 +881,7 @@ class Core
         $component = <<<EOF
         <div class="mb-3">
             {% if params.label and params.type != 'geospatial' %}
-                <label class="form-label text-muted mb-0" for="{{ params.name }}_input">
+                <label class="form-label text-muted mb-0" for="{{ params.type in ['checkbox', 'radio'] ? params.name ~ '_0_input' : params.name ~ '_input' }}">
                     {{ params.label }}
                     {% if params.tooltip %}
                         <i class="mdi mdi-information-outline text-info" data-bs-toggle="tooltip" title="{{ params.tooltip }}"></i>

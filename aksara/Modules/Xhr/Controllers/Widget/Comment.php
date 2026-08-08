@@ -328,7 +328,7 @@ class Comment extends Core
 
             return make_json([
                 'element' => '#comment-text-' . $this->request->getGet('id'),
-                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="' . '_blank' . '"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="' . phrase('Attachment') . '" /></a></div>' : null) . nl2br(htmlspecialchars($this->request->getPost('comments')))
+                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="' . '_blank' . '"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="' . phrase('Attachment') . '" loading="lazy" decoding="async" /></a></div>' : null) . nl2br(htmlspecialchars($this->request->getPost('comments')))
             ]);
         }
 
@@ -349,7 +349,7 @@ class Comment extends Core
                         <span class="btn btn-file d-block">
                             <input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" data-role="image-upload" id="attachment_input" />
                             <div class="fileupload-new text-center">
-                                <img class="img-fluid upload_preview" src="' . get_image('comment', $query->attachment, 'thumb'). '" alt="' . phrase('Preview') . '" />
+                                <img class="img-fluid upload_preview" src="' . get_image('comment', $query->attachment, 'thumb'). '" alt="' . phrase('Preview') . '" loading="lazy" decoding="async" />
                             </div>
                             <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.btn-file\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.btn-file\').find(\'img\').attr(\'src\', \'' . get_image('comment', 'placeholder.png', 'icon') . '\'))">
                                 <i class="mdi mdi-window-close"></i>
