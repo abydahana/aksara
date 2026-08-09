@@ -79,11 +79,6 @@ abstract class Core extends Controller
     ];
 
     /**
-     * Columns explicitly selected by the controller.
-     */
-    private array $_explicitSelect = [];
-
-    /**
      * Controller constructor, initializes dependencies and validates request integrity.
      *
      * @return void
@@ -1024,6 +1019,8 @@ abstract class Core extends Controller
             if (! $typeString) {
                 continue;
             }
+
+            $this->_explicitSetField[$fieldName] = true;
 
             $types = [];
 
@@ -6488,7 +6485,7 @@ abstract class Core extends Controller
      */
     private function _isAuditFieldExplicitlyConfigured(string $field): bool
     {
-        return in_array($field, self::AUDIT_COLUMNS, true) && isset($this->_setField[$field]);
+        return in_array($field, self::AUDIT_COLUMNS, true) && isset($this->_explicitSetField[$field]);
     }
 
     /**

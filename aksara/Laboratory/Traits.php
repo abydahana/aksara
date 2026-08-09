@@ -160,6 +160,16 @@ trait Traits
     private $_distinct;
 
     /**
+     * Columns explicitly selected by the controller.
+     */
+    private array $_explicitSelect = [];
+
+    /**
+     * Fields explicitly configured through setField() by the controller.
+     */
+    private array $_explicitSetField = [];
+
+    /**
      * Container for extra dropdown options.
      * @var array
      */
