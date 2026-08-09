@@ -27,19 +27,19 @@
                 </div>
                 <div class="form-group mb-3">
                     <div class="input-group">
-                        <span class="input-group-text rounded-pill rounded-end">
+                        <span class="input-group-text rounded-pill rounded-end-0">
                             <i class="mdi mdi-account" style="width:22px"></i>
                         </span>
-                        <input type="text" name="username" class="form-control rounded-pill rounded-start" id="username_input" placeholder="<?= phrase('Enter your username or email'); ?>" />
+                        <input type="text" name="username" class="form-control rounded-pill rounded-start-0" id="username_input" placeholder="<?= phrase('Enter your username or email'); ?>" />
                     </div>
                 </div>
                 <div class="form-group mb-3">
                     <div class="input-group">
-                        <span class="input-group-text rounded-pill rounded-end">
+                        <span class="input-group-text rounded-pill rounded-end-0">
                             <i class="mdi mdi-fingerprint" style="width:22px"></i>
                         </span>
-                        <input type="password" name="password" class="form-control" id="password_input" placeholder="<?= phrase('Enter password'); ?>" autocomplete="new-password" style="border-right:0" />
-                        <span class="input-group-text bg-white rounded-pill rounded-start" style="border-left:0">
+                        <input type="password" name="password" class="form-control rounded-0" id="password_input" placeholder="<?= phrase('Enter password'); ?>" autocomplete="new-password" style="border-right:0" />
+                        <span class="input-group-text bg-white rounded-pill rounded-start-0" style="border-left:0">
                             <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                         </span>
                     </div>
@@ -56,10 +56,10 @@
                     echo '
                         <div class="form-group mb-3">
                             <div class="input-group">
-                                <span class="input-group-text rounded-pill rounded-end">
+                                <span class="input-group-text rounded-pill rounded-end-0">
                                     <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                 </span>
-                                <select name="year" class="form-control rounded-pill rounded-start" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' . phrase('Choose year') . '" id="year_input">
                                     ' . $option . '
                                 </select>
                             </div>

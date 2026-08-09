@@ -1016,7 +1016,7 @@ class Core
         // Template for Toast Notification
         // Includes: Icon, Message Body, and Color Context
         $component = <<<EOF
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
             <div class="toast align-items-center text-bg-{{ color }} fade show" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
