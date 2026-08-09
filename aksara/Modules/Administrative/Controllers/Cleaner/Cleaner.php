@@ -48,21 +48,14 @@ class Cleaner extends Core
     {
         $this->permission->mustAjax();
 
-        if (DEMO_MODE) {
-            return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../'));
-        }
-
-        $error = false;
-
         /**
          * Clean session garbage
          */
         $session_driver = (config('Session')->driver ? config('Session')->driver : '');
-        $session_name = config('Session')->cookieName;
         $session_expiration = config('Session')->expiration;
         $session_path = config('Session')->savePath;
-        $session_match_ip = config('Session')->matchIP;
         $session_cleaned = 0;
+        $error = false;
 
         if (stripos($session_driver, 'file') !== false) {
             // File session handler
