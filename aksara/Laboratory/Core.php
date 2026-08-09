@@ -369,6 +369,9 @@ abstract class Core extends Controller
     /**
      * Assigns the parent module name.
      *
+     * Call this before setPermission() when the controller should be authorized
+     * using a parent module path instead of its routed controller path.
+     *
      * @param string $module Parent module name.
      *
      * @return static Current object instance (chainable).
@@ -382,6 +385,9 @@ abstract class Core extends Controller
 
     /**
      * Sets module access permission and authorization rules.
+     *
+     * If parentModule() or setMethod() is needed, call them before this method
+     * because the permission check is executed immediately.
      *
      * @param array<int>|string $permissiveGroup Allowed group IDs (array or comma-separated string), 0 allows all.
      * @param string|null       $redirect         Redirect URI on denial (not used if exception is thrown).
