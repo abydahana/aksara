@@ -2250,7 +2250,7 @@ abstract class Core extends Controller
             if ($this->_isAuditFieldHidden($field)) {
                 // Indicates that field should not be shown
                 $hidden = true;
-            } elseif (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unsetField) || array_intersect(['current_timestamp', 'created_at', 'updated_at'], array_keys($this->_setField[$field])))) {
+            } elseif (in_array($this->_method, ['create', 'update']) && (in_array($field, $this->_unsetField) || (! $this->_isAuditFieldExplicitlyConfigured($field) && array_intersect(['current_timestamp', 'created_at', 'updated_at'], array_keys($this->_setField[$field]))))) {
                 // Indicates that field should not be shown
                 $hidden = true;
             } elseif (('read' == $this->_method || (in_array($this->_method, ['print', 'pdf']))) && in_array($field, $this->_unsetView)) {
@@ -6460,6 +6460,10 @@ abstract class Core extends Controller
             return false;
         }
 
+        if ($this->_isAuditFieldExplicitlyConfigured($field)) {
+            return false;
+        }
+
         if (in_array($this->_method, ['create', 'update'], true)) {
             return true;
         }
@@ -6477,6 +6481,14 @@ abstract class Core extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Checks whether an audit column was explicitly configured by the controller.
+     */
+    private function _isAuditFieldExplicitlyConfigured(string $field): bool
+    {
+        return in_array($field, self::AUDIT_COLUMNS, true) && isset($this->_setField[$field]);
     }
 
     /**
