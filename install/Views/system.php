@@ -39,7 +39,7 @@ foreach ($timezone as $key => $val)
                     <?= phrase('Installation Mode'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="installation_mode" class="form-select form-select-sm rounded-pill" id="installation_mode_input">
+                <select name="installation_mode" class="form-select form-select-sm rounded-pill" id="installation_mode_input" aria-label="<?= phrase('Installation Mode'); ?>">
                     <?= $options; ?>
                 </select>
             </div>
@@ -50,7 +50,7 @@ foreach ($timezone as $key => $val)
                     <?= phrase('Timezone'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="timezone" class="form-select form-select-sm rounded-pill" id="timezone_input">
+                <select name="timezone" class="form-select form-select-sm rounded-pill" id="timezone_input" aria-label="<?= phrase('Timezone'); ?>">
                     <?= $timezone_list; ?>
                 </select>
             </div>
@@ -179,7 +179,7 @@ foreach ($timezone as $key => $val)
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('security'); ?>" class="btn btn-light btn-sm rounded-pill --xhr">
+                <a href="<?= site_url('security'); ?>" class="btn btn-light btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back'); ?>
                 </a>
@@ -188,7 +188,7 @@ foreach ($timezone as $key => $val)
         <div class="col-6">
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue'); ?>">
                     <i class="mdi mdi-check"></i>
                     <?= phrase('Continue'); ?>
                 </button>

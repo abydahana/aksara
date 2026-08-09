@@ -25,11 +25,12 @@ $is_rtl = in_array(session()->get('language'), [
         <title><?= phrase('Aksara Installer'); ?></title>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="msapplication-navbutton-color" content="#007bff" />
-        <meta name="theme-color" content="#007bff" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="#007bff" />
+        <meta name="msapplication-navbutton-color" content="#212529" />
+        <meta name="theme-color" content="#212529" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#212529" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="description" content="<?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.'); ?>" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
@@ -54,10 +55,26 @@ $is_rtl = in_array(session()->get('language'), [
                 right: auto !important;
                 left: 0 !important;
             }
+            .theme-toggle {
+                position: fixed;
+                top: 1rem;
+                right: 1rem;
+                z-index: 1050;
+            }
+            [dir="rtl"] .theme-toggle {
+                right: auto;
+                left: 1rem;
+            }
+            [data-bs-theme="dark"] body {
+                background-color: #111827 !important;
+            }
         </style>
     </head>
     <body class="bg-light">
-        <div class="container-fluid h-100">
+        <button type="button" class="btn btn-light btn-sm rounded-pill shadow-sm theme-toggle" data-theme-toggle aria-label="<?= phrase('Toggle theme'); ?>" title="<?= phrase('Toggle theme'); ?>">
+            <i class="mdi mdi-weather-night" aria-hidden="true"></i>
+        </button>
+        <main class="container-fluid h-100" id="installer-main">
             <div class="row h-100 align-items-center">
                 <div class="col-xl-10 col-xxl-8 py-3 mx-auto">
                     <div class="card shadow-sm border-0 border-top border-secondary-subtle rounded-4 overflow-hidden">
@@ -65,7 +82,7 @@ $is_rtl = in_array(session()->get('language'), [
                             <div class="row">
                                 <div class="col-md-4 border-end pt-3 d-none d-md-block position-relative">
                                     <div class="sticky-top mb-3 pb-5" style="top:15px">
-                                        <a href="//www.aksaracms.com" class="text-decoration-none" target="_blank">
+                                        <a href="//www.aksaracms.com" class="text-decoration-none" target="_blank" aria-label="Aksara CMS">
                                             <h4 class="fw-bold mb-3">
                                                 <b>
                                                     Aksara
@@ -79,8 +96,8 @@ $is_rtl = in_array(session()->get('language'), [
                                             <div class="opacity-50">
                                                 <hr class="row" />
                                             </div>
-                                            <a href="//palestinecampaign.org" target="_blank">
-                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAeCAIAAACubtl7AAAACXBIWXMAAAsTAAALEwEAmpwYAAAKHmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmRkOTk1YzNiLTVkODctOTA0Yi04ZTNjLTlkYzE5Njg0Mjg0YyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDplMjUzMjQ0NS02Y2E5LTQxYjQtODJlYS03MTVkNTkyYTM2YTgiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0iIiB0aWZmOkltYWdlV2lkdGg9IjEwMDAiIHRpZmY6SW1hZ2VMZW5ndGg9IjEwMDAiIHRpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj0iMiIgdGlmZjpTYW1wbGVzUGVyUGl4ZWw9IjMiIHRpZmY6WFJlc29sdXRpb249IjEvMSIgdGlmZjpZUmVzb2x1dGlvbj0iMS8xIiB0aWZmOlJlc29sdXRpb25Vbml0PSIxIiBleGlmOkV4aWZWZXJzaW9uPSIwMjMxIiBleGlmOkNvbG9yU3BhY2U9IjY1NTM1IiBleGlmOlBpeGVsWERpbWVuc2lvbj0iMTAwMCIgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEwMDAiIHhtcDpDcmVhdGVEYXRlPSIyMDI0LTA4LTMxVDIyOjQ2OjA1KzA3OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmI1NWQ2NGQ2LTZjNzEtNDQ2NC1hNmRlLTA2ODFhNGYzODI2ZSIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo0OTo1OCswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9qcGVnIHRvIGltYWdlL3BuZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iZGVyaXZlZCIgc3RFdnQ6cGFyYW1ldGVycz0iY29udmVydGVkIGZyb20gaW1hZ2UvanBlZyB0byBpbWFnZS9wbmciLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmIzZWM5MjczLWVkNmYtNDY1YS1iMzE3LWZmZGI1YzZlMDRjYSIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo0OTo1OCswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmUyNTMyNDQ1LTZjYTktNDFiNC04MmVhLTcxNWQ1OTJhMzZhOCIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOmI1NWQ2NGQ2LTZjNzEtNDQ2NC1hNmRlLTA2ODFhNGYzODI2ZSIgc3RSZWY6ZG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiIHN0UmVmOm9yaWdpbmFsRG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiLz4gPHRpZmY6Qml0c1BlclNhbXBsZT4gPHJkZjpTZXE+IDxyZGY6bGk+ODwvcmRmOmxpPiA8cmRmOmxpPjg8L3JkZjpsaT4gPHJkZjpsaT44PC9yZGY6bGk+IDwvcmRmOlNlcT4gPC90aWZmOkJpdHNQZXJTYW1wbGU+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+q9gGPAAAAXlJREFUOBFjqPYyf86gvY/BaBej0R5UtBuJvZcRqMBwF4PhO0aHVlZlBs45bmUBli8ZdA4yGO1kMN7LYLQHhvYiMXaByU+Mju1sqgxMDAxGNY4cc93zQyyeMmgfZjDagaQNjnYyGO5jMH7HaN/EpgzSAwRmlY4m1Y6sc93SI6yeM+gcBtuJqecTk301mwJUDxAA9ZhVOZpUOXLOdUuLsnnCoHmIQW8XgylEz24Gk30MBm8ZLCqQ9UC0QXSaAnXOdktJcTrBILGHQX0vg8VeBrM9DFpnGRQKhFUYGBlQAEQbSGe1k3qBkfrqpEurl+1n4NvJoLEHZC3X/Xmzxd3tGBhwaDOtdlIrNALa+fP//zdbtq5gYFjGwPBkwcL///+ra2nh1VZkbFRh/+7rR6DSG5NnXuro+g8GqioqBLQZVzm+/vDmPypQU1MjrO3Nx7dEaKsZ1UalkKSvtppRRw5J26jhSCOitVU5mVSDkGm1s1qRqXGV05tPhLUBAJ0yfWHLQhIAAAAAAElFTkSuQmCC" class="position-absolute end-0 border border-dark border-top-0" style="top:0" />
+                                            <a href="//palestinecampaign.org" target="_blank" aria-label="Palestine Campaign">
+                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAeCAIAAACubtl7AAAACXBIWXMAAAsTAAALEwEAmpwYAAAKHmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmRkOTk1YzNiLTVkODctOTA0Yi04ZTNjLTlkYzE5Njg0Mjg0YyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDplMjUzMjQ0NS02Y2E5LTQxYjQtODJlYS03MTVkNTkyYTM2YTgiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0iIiB0aWZmOkltYWdlV2lkdGg9IjEwMDAiIHRpZmY6SW1hZ2VMZW5ndGg9IjEwMDAiIHRpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj0iMiIgdGlmZjpTYW1wbGVzUGVyUGl4ZWw9IjMiIHRpZmY6WFJlc29sdXRpb249IjEvMSIgdGlmZjpZUmVzb2x1dGlvbj0iMS8xIiB0aWZmOlJlc29sdXRpb25Vbml0PSIxIiBleGlmOkV4aWZWZXJzaW9uPSIwMjMxIiBleGlmOkNvbG9yU3BhY2U9IjY1NTM1IiBleGlmOlBpeGVsWERpbWVuc2lvbj0iMTAwMCIgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEwMDAiIHhtcDpDcmVhdGVEYXRlPSIyMDI0LTA4LTMxVDIyOjQ2OjA1KzA3OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmI1NWQ2NGQ2LTZjNzEtNDQ2NC1hNmRlLTA2ODFhNGYzODI2ZSIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo0OTo1OCswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9qcGVnIHRvIGltYWdlL3BuZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iZGVyaXZlZCIgc3RFdnQ6cGFyYW1ldGVycz0iY29udmVydGVkIGZyb20gaW1hZ2UvanBlZyB0byBpbWFnZS9wbmciLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmIzZWM5MjczLWVkNmYtNDY1YS1iMzE3LWZmZGI1YzZlMDRjYSIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo0OTo1OCswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmUyNTMyNDQ1LTZjYTktNDFiNC04MmVhLTcxNWQ1OTJhMzZhOCIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0zMVQyMjo1NDoxOSswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjIgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOmI1NWQ2NGQ2LTZjNzEtNDQ2NC1hNmRlLTA2ODFhNGYzODI2ZSIgc3RSZWY6ZG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiIHN0UmVmOm9yaWdpbmFsRG9jdW1lbnRJRD0iNDc4MUEzMTZBOTJFQkE5QUM3MzA2QzFERjU5QzIxNTMiLz4gPHRpZmY6Qml0c1BlclNhbXBsZT4gPHJkZjpTZXE+IDxyZGY6bGk+ODwvcmRmOmxpPiA8cmRmOmxpPjg8L3JkZjpsaT4gPHJkZjpsaT44PC9yZGY6bGk+IDwvcmRmOlNlcT4gPC90aWZmOkJpdHNQZXJTYW1wbGU+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+q9gGPAAAAXlJREFUOBFjqPYyf86gvY/BaBej0R5UtBuJvZcRqMBwF4PhO0aHVlZlBs45bmUBli8ZdA4yGO1kMN7LYLQHhvYiMXaByU+Mju1sqgxMDAxGNY4cc93zQyyeMmgfZjDagaQNjnYyGO5jMH7HaN/EpgzSAwRmlY4m1Y6sc93SI6yeM+gcBtuJqecTk301mwJUDxAA9ZhVOZpUOXLOdUuLsnnCoHmIQW8XgylEz24Gk30MBm8ZLCqQ9UC0QXSaAnXOdktJcTrBILGHQX0vg8VeBrM9DFpnGRQKhFUYGBlQAEQbSGe1k3qBkfrqpEurl+1n4NvJoLEHZC3X/Xmzxd3tGBhwaDOtdlIrNALa+fP//zdbtq5gYFjGwPBkwcL///+ra2nh1VZkbFRh/+7rR6DSG5NnXuro+g8GqioqBLQZVzm+/vDmPypQU1MjrO3Nx7dEaKsZ1UalkKSvtppRRw5J26jhSCOitVU5mVSDkGm1s1qRqXGV05tPhLUBAJ0yfWHLQhIAAAAAAElFTkSuQmCC" alt="Stop War!" class="position-absolute end-0 border border-dark border-top-0" style="top:0" />
                                             </a>
                                         </div>
                                         <p class="step requirement py-1">
@@ -111,23 +128,23 @@ $is_rtl = in_array(session()->get('language'), [
                                     </div>
 
                                     <div class="position-absolute start-0 end-0 bottom-0 w-100 p-3">
-                                        <a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Subscribe to my channel'); ?>">
+                                        <a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Subscribe to my channel'); ?>" aria-label="<?= phrase('Subscribe to my channel'); ?>">
                                             <i class="mdi mdi-youtube"></i>
                                         </a>
-                                        <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend'); ?>">
+                                        <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend'); ?>" aria-label="<?= phrase('Be my friend'); ?>">
                                             <i class="mdi mdi-facebook"></i>
                                         </a>
-                                        <a href="//github.com/abydahana" class="btn btn-dark btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub'); ?>">
+                                        <a href="//github.com/abydahana" class="btn btn-dark btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub'); ?>" aria-label="<?= phrase('Follow my GitHub'); ?>">
                                             <i class="mdi mdi-github-circle"></i>
                                         </a>
-                                        <a href="//trakteer.id/aksaralaboratory" class="btn btn-outline-danger btn-sm rounded-pill float-end" target="_blank" data-bs-toggle="tooltip" title="Trakteer!">
+                                        <a href="//trakteer.id/aksaralaboratory" class="btn btn-outline-danger btn-sm rounded-pill float-end" target="_blank" data-bs-toggle="tooltip" title="Trakteer!" aria-label="Trakteer">
                                             <i class="mdi mdi-square-inc-cash"></i>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-8 pt-3 pb-3">
                                     <div class="d-md-none text-center">
-                                        <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank">
+                                        <a href="//www.aksaracms.com" class="text-primary text-decoration-none" target="_blank" aria-label="Aksara CMS">
                                             <h4 class="fw-bold mb-3">
                                                 Aksara <small class="text-sm text-secondary fw-light">Installer</small>
                                             </h4>
@@ -145,7 +162,7 @@ $is_rtl = in_array(session()->get('language'), [
                                                     </h4>
                                                 </div>
                                                 <div class="col-5">
-                                                    <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>">
+                                                    <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>" aria-label="<?= phrase('Choose language'); ?>">
                                                         <option value="en"<?= ($language == 'en' ? ' selected' : null); ?>>English</option>
                                                         <option value="en-PIR"<?= ($language == 'en-PIR' ? ' selected' : null); ?>>English (Pirate)</option>
                                                         <option value="id"<?= ($language == 'id' ? ' selected' : null); ?>>Indonesia</option>
@@ -212,8 +229,8 @@ $is_rtl = in_array(session()->get('language'), [
                                             <div class="--validation-callback"></div>
                                             <div class="row align-items-center">
                                                 <div class="col-md-6">
-                                                    <label class="mb-3 mb-md-0">
-                                                        <input type="checkbox" name="agree" class="form-check-input" value="1" />
+                                                    <label class="mb-3 mb-md-0" for="agree_input">
+                                                        <input type="checkbox" name="agree" class="form-check-input" id="agree_input" value="1" />
                                                         <?= phrase('Pretend to agree'); ?>
                                                     </label>
                                                 </div>
@@ -221,7 +238,7 @@ $is_rtl = in_array(session()->get('language'), [
                                                     <div class="d-grid">
                                                         <?= (! session()->get('timezone') ? '<input type="hidden" name="timezone" />' : null); ?>
                                                         <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" disabled>
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Start Installation'); ?>" disabled>
                                                             <i class="mdi mdi-check"></i>
                                                             <?= phrase('Start Installation'); ?>
                                                         </button>
@@ -236,12 +253,27 @@ $is_rtl = in_array(session()->get('language'), [
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
         <script type="text/javascript" src="assets/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <script type="text/javascript">
             $(document).ready(function() {
+                function applyTheme(theme) {
+                    var dark = theme === 'dark';
+                    $('html').attr('data-bs-theme', theme);
+                    $('body').toggleClass('bg-light', ! dark).toggleClass('bg-dark', dark);
+                    $('[data-theme-toggle]').toggleClass('btn-light', dark).toggleClass('btn-dark', ! dark).find('i').toggleClass('mdi-weather-night', ! dark).toggleClass('mdi-white-balance-sunny', dark);
+                }
+
+                applyTheme(localStorage.getItem('installer_theme') || 'light');
+
+                $('body').on('click', '[data-theme-toggle]', function() {
+                    var current = $('html').attr('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem('installer_theme', current);
+                    applyTheme(current);
+                });
+
                 if ($('input[name=timezone]').length) {
                     $('input[name=timezone]').val(Intl.DateTimeFormat().resolvedOptions().timeZone)
                 }

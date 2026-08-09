@@ -65,7 +65,7 @@
     </div>
     <div class="col-sm-6">
         <div class="d-grid">
-            <a href="<?= site_url('xhr/boot'); ?>" class="btn btn-outline-success btn-sm rounded-pill fw-bold">
+            <a href="<?= site_url('xhr/boot'); ?>" class="btn btn-outline-success btn-sm rounded-pill fw-bold" aria-label="<?= phrase('Launch Site'); ?>">
                 <i class="mdi mdi-rocket"></i>
                 <?= phrase('Launch Site'); ?>
             </a>

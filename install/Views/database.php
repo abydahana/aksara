@@ -28,7 +28,7 @@ foreach ($driver as $key => $val)
                     <?= phrase('Database Driver'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="database_driver" class="form-select form-select-sm rounded-pill" id="database_driver_input">
+                <select name="database_driver" class="form-select form-select-sm rounded-pill" id="database_driver_input" aria-label="<?= phrase('Database Driver'); ?>">
                     <?= $driver_list; ?>
                 </select>
             </div>
@@ -108,7 +108,7 @@ foreach ($driver as $key => $val)
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('requirement'); ?>" class="btn btn-light btn-sm rounded-pill --xhr">
+                <a href="<?= site_url('requirement'); ?>" class="btn btn-light btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back'); ?>
                 </a>
@@ -117,7 +117,7 @@ foreach ($driver as $key => $val)
         <div class="col-6">
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue'); ?>">
                     <i class="mdi mdi-check"></i>
                     <?= phrase('Continue'); ?>
                 </button>

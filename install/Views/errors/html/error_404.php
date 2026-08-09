@@ -121,7 +121,7 @@
             </div>
             <h1><?= phrase('Aksara is not installed!') ?></h1>
             <p><?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?></p>
-            <a href="<?= base_url(); ?>" class="btn-install">
+            <a href="<?= base_url(); ?>" class="btn-install" aria-label="<?= phrase('Start Installation') ?>">
                 <?= phrase('Start Installation') ?>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M5 12h14"></path>
