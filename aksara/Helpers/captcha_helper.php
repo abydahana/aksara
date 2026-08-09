@@ -173,8 +173,8 @@ if (! function_exists('create_captcha')) {
                 return false;
             }
 
-            imagedestroy($im);
-            imagedestroy($im_tmp);
+            destroy_captcha_image($im);
+            destroy_captcha_image($im_tmp);
 
             return [
                 'word' => $word,
@@ -183,8 +183,20 @@ if (! function_exists('create_captcha')) {
                 'filename' => $img_filename
             ];
         } catch (\Throwable $e) {
+            log_message('error', '[CAPTCHA] ' . $e->getMessage());
+
             return false;
         }
+    }
+}
+
+if (! function_exists('destroy_captcha_image')) {
+    /**
+     * Release CAPTCHA image references without triggering PHP 8.5 imagedestroy deprecation.
+     */
+    function destroy_captcha_image(?GdImage &$image): void
+    {
+        unset($image);
     }
 }
 
@@ -203,7 +215,7 @@ if (! function_exists('generate_captcha')) {
                 try {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha', 0755, true);
                 } catch (\Throwable $e) {
-                    // Safe abstraction
+                    log_message('error', '[CAPTCHA] ' . $e->getMessage());
                 }
             }
 
