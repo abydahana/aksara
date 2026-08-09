@@ -55,8 +55,8 @@
                                     <?= phrase('Password'); ?>
                                 </label>
                                 <div class="input-group">
-                                    <input type="password" name="password" class="form-control rounded-end" id="password_input" placeholder="<?= phrase('Minimum'); ?> 6 <?= phrase('characters'); ?>" maxlength="32" style="border-right:0" />
-                                    <span class="input-group-text bg-white rounded-start" style="border-left:0">
+                                    <input type="password" name="password" class="form-control rounded-end-0" id="password_input" placeholder="<?= phrase('Minimum'); ?> 6 <?= phrase('characters'); ?>" maxlength="32" style="border-right:0" />
+                                    <span class="input-group-text bg-white rounded-start-0" style="border-left:0">
                                         <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                                     </span>
                                 </div>
