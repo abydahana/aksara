@@ -26,7 +26,7 @@
         <br />
         <code><?= ROOTPATH; ?></code>
         <br /><br />
-        <a href="<?= site_url('run'); ?>?download=1" target="_blank" class="btn btn-secondary rounded-pill btn-sm">
+        <a href="<?= site_url('run'); ?>?download=1" target="_blank" class="btn btn-secondary rounded-pill btn-sm" aria-label="<?= phrase('Download Configuration'); ?>">
             <i class="mdi mdi-download"></i>
             <?= phrase('Download Configuration'); ?>
         </a>
@@ -41,7 +41,7 @@
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('system'); ?>" class="btn btn-light btn-sm rounded-pill --xhr">
+                <a href="<?= site_url('system'); ?>" class="btn btn-light btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back'); ?>
                 </a>
@@ -50,7 +50,7 @@
         <div class="col-6 text-right">
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Refresh'); ?>">
                     <i class="mdi mdi-reload"></i>
                     <?= phrase('Refresh'); ?>
                 </button>
