@@ -7,7 +7,10 @@
   --wg-text: #1a1a1a;
   --wg-text-light: #64748b;
   --wg-bg-light: #f8fafc;
-  --wg-border: #e2e8f0
+  --wg-border: #e2e8f0;
+  --range-color: #0d6efd;
+  --range-track-color: #fafafa;
+  --range-track-border: #b4d1ee;
 }
 body {
   color: var(--wg-text);
@@ -146,6 +149,45 @@ h1, h2, h3, h4, .display-4 {
   background-color: #d8e4ff !important;
   color: var(--wg-primary-hover) !important;
 }
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--range-track-color);
+  border: 1px solid var(--range-track-border);
+  border-radius: 999px;
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--range-track-color);
+  border: 1px solid var(--range-track-border);
+  border-radius: 999px;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+
+  border-radius: 50%;
+  background: var(--range-track-color);
+  border: 3px solid var(--range-color);
+  box-sizing: border-box;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+  background: var(--range-track-color);
+  border: 3px solid var(--range-color);
+  box-sizing: border-box;
+}
+
 /* ──────────────────────────────────────────────
    Desktop Dropdown – Fade-in-top + Arrow
    Only ≥ 992px, does NOT affect mobile bottom sheet
