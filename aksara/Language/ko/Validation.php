@@ -99,5 +99,6 @@ return [
     'valid_datetime' => '{field}에는 유효한 날짜와 시간이 포함되어야 합니다.',
     'valid_year' => '{field}에는 유효한 연도가 포함되어야 합니다.',
     'valid_hex' => '{field}에는 16진수 색상 코드만 포함되어야 합니다.',
+    'valid_geojson' => '{field}에는 유효한 GeoJSON이 포함되어야 합니다.',
     'relation_checker' => '{field}의 관계 데이터를 찾을 수 없습니다.'
 ];

@@ -96,5 +96,6 @@ return [
     'valid_datetime' => '{field} ต้องมีวันที่และเวลาที่ถูกต้อง',
     'valid_year' => '{field} ต้องมีปีที่ถูกต้อง',
     'valid_hex' => '{field} ต้องมีเฉพาะรหัสสีฐานสิบหก',
+    'valid_geojson' => '{field} ต้องมี GeoJSON ที่ถูกต้อง',
     'relation_checker' => 'ไม่พบข้อมูลความสัมพันธ์ของ {field}'
 ];

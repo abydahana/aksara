@@ -99,5 +99,6 @@ return [
     'valid_datetime' => '{field} harus berisi tanggal dan waktu yang valid.',
     'valid_year' => '{field} harus berisi tahun yang valid.',
     'valid_hex' => '{field} hanya boleh berisi kode warna hex.',
+    'valid_geojson' => '{field} harus berisi GeoJSON yang valid.',
     'relation_checker' => 'Data relasi dari {field} tidak ditemukan.'
 ];

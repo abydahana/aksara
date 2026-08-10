@@ -266,6 +266,73 @@ class Validation
     }
 
     /**
+     * Check if field is valid GeoJSON string or structure.
+     *
+     * @param mixed|null $value The value to check
+     * @return bool True if valid GeoJSON, false otherwise
+     */
+    public function valid_geojson($value = null): bool
+    {
+        if (null === $value || '' === $value) {
+            return true;
+        }
+
+        if (is_array($value)) {
+            $data = $value;
+        } elseif (is_string($value)) {
+            $data = json_decode($value, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || ! is_array($data)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if (! isset($data['type']) || ! is_string($data['type'])) {
+            return false;
+        }
+
+        $validTypes = [
+            'Point',
+            'MultiPoint',
+            'LineString',
+            'MultiLineString',
+            'Polygon',
+            'MultiPolygon',
+            'GeometryCollection',
+            'Feature',
+            'FeatureCollection'
+        ];
+
+        if (! in_array($data['type'], $validTypes, true)) {
+            return false;
+        }
+
+        if ('FeatureCollection' === $data['type']) {
+            return isset($data['features']) && is_array($data['features']);
+        }
+
+        if ('Feature' === $data['type']) {
+            if (! array_key_exists('geometry', $data)) {
+                return false;
+            }
+
+            if (null === $data['geometry']) {
+                return true;
+            }
+
+            return is_array($data['geometry']) && isset($data['geometry']['type']) && in_array($data['geometry']['type'], $validTypes, true);
+        }
+
+        if ('GeometryCollection' === $data['type']) {
+            return isset($data['geometries']) && is_array($data['geometries']);
+        }
+
+        return isset($data['coordinates']) && is_array($data['coordinates']);
+    }
+
+    /**
      * Check if value exists in related database table.
      *
      * @param mixed $value The value to check

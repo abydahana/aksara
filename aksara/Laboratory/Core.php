@@ -3900,6 +3900,9 @@ abstract class Core extends Controller
                     } elseif (array_intersect(['timestamp', 'datetime', 'datetimepicker'], $type)) {
                         // Full timestamp validation rules
                         $val['validation'][] = 'valid_datetime';
+                    } elseif (array_intersect(['geospatial'], $type)) {
+                        // Geospatial validation rules
+                        $val['validation'][] = 'valid_geojson';
                     }
 
                     if ($val['validation']) {

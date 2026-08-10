@@ -99,5 +99,6 @@ return [
     'valid_datetime' => 'يجب أن يحتوي {field} على تاريخ ووقت صالحين.',
     'valid_year' => 'يجب أن يحتوي {field} على سنة صالحة.',
     'valid_hex' => 'يجب أن يحتوي {field} على رمز لون سداسي عشري فقط.',
+    'valid_geojson' => 'يجب أن يحتوي {field} على GeoJSON صالح.',
     'relation_checker' => 'لم يتم العثور على بيانات العلاقة لـ {field}.'
 ];

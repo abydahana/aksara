@@ -98,5 +98,6 @@ return [
     'valid_datetime' => '{field} phải chứa ngày và giờ hợp lệ.',
     'valid_year' => '{field} phải chứa năm hợp lệ.',
     'valid_hex' => '{field} chỉ được chứa mã màu hex.',
+    'valid_geojson' => '{field} phải chứa GeoJSON hợp lệ.',
     'relation_checker' => 'Không tìm thấy dữ liệu quan hệ của {field}.'
 ];

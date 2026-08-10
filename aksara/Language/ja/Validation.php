@@ -98,5 +98,6 @@ return [
     'valid_datetime' => '{field} には有効な日時が含まれている必要があります。',
     'valid_year' => '{field} には有効な年が含まれている必要があります。',
     'valid_hex' => '{field} には16進数のカラーコードのみを含める必要があります。',
+    'valid_geojson' => '{field} には有効な GeoJSON が含まれている必要があります。',
     'relation_checker' => '{field} のリレーションデータが見つかりません。'
 ];
