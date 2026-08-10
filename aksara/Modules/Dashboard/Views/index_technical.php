@@ -340,7 +340,7 @@ $logs = (isset($logs) ? $logs : []);
                                 <?= phrase('Last Modified'); ?>
                             </span>
                             <p>
-                                <?= aksara('date_modified'); ?>
+                                <?= format_date(aksara('date_modified'), 'long', true); ?>
                             </p>
                         </div>
                         <div class="row">
