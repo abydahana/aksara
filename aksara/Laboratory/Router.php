@@ -67,7 +67,7 @@ class Router
 
             if (class_exists($namespace)) {
                 foreach ($uri_segments as $segment) {
-                    if (strtolower($segment) == strtolower($controller)) {
+                    if ($this->_normalizeRouteKey($segment) == $this->_normalizeRouteKey($controller)) {
                         continue;
                     }
                     if (! $method_found) {
@@ -85,7 +85,8 @@ class Router
             }
 
             if (! $method) {
-                $method = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
+                $last_segment = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
+                $method = ($this->_normalizeRouteKey($last_segment) == $this->_normalizeRouteKey($controller) ? '' : $last_segment);
             }
 
             // Get priority file
@@ -192,19 +193,19 @@ class Router
                     $method = substr($this->_uriString, strrpos($this->_uriString, '/') + 1);
 
                     // Check if module is matched with current slug
-                    if ($module == $this->_uriString) {
+                    if ($this->_normalizeRouteKey($module) == $this->_normalizeRouteKey($this->_uriString)) {
                         // Check if file is exist
                         if (ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
-                            $x = substr_count($namespace . $val, '\\');
+                            $x = $this->_routePriority($namespace . $val, $module, true);
                             $this->_collection[$x] = $namespace . $val;
                         } else {
-                            $x = substr_count($namespace . $val, '\\');
+                            $x = $this->_routePriority($namespace . $val, $module, true);
                             $this->_collection[$x] = $namespace . $val;
                         }
 
                         $this->_found = true;
-                    } elseif ($module. '/' . $method == $this->_uriString && ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
-                        $x = substr_count($namespace . $val, '\\');
+                    } elseif ($this->_normalizeRouteKey($module . '/' . $method) == $this->_normalizeRouteKey($this->_uriString) && ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
+                        $x = $this->_routePriority($namespace . $val, $module . '/' . $method);
                         $this->_collection[$x] = $namespace . $val;
 
                         $this->_found = true;
@@ -242,6 +243,22 @@ class Router
             // Add route to theme asset
             $routes->get($this->_uriString, '\Aksara\Modules\Assets\Controllers\Assets::themes');
         }
+    }
+
+    /**
+     * Normalize controller route slug variants for matching.
+     */
+    private function _normalizeRouteKey(string $route): string
+    {
+        return strtolower(str_replace(['_', '-'], '', trim($route, '/')));
+    }
+
+    /**
+     * Prefer exact controller matches over method fallback matches at the same depth.
+     */
+    private function _routePriority(string $namespace, string $route, bool $exactController = false): int
+    {
+        return (substr_count($namespace, '\\') * 1000) + strlen($this->_normalizeRouteKey($route)) + ($exactController ? 100 : 0);
     }
 
     /**
