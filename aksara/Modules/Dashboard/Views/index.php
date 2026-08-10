@@ -420,7 +420,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 <?= phrase('Last Modified'); ?>
                             </span>
                             <p>
-                                <?= aksara('date_modified'); ?>
+                                <?= format_date(aksara('date_modified'), 'long', true); ?>
                             </p>
                         </div>
                         <div class="row">

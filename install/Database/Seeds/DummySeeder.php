@@ -37,7 +37,7 @@ class DummySeeder extends Seeder
         $timestamp = date('Y-m-d H:i:s');
 
         // Insert default public menu (header navigation)
-        $this->db->table('app_menus')->insert(['menu_placement' => 'header', 'menu_label' => 'Header Menu', 'menu_description' => 'Menu for navigation header (front end)', 'menu_structure' => '[{"id":"1","icon":"mdi mdi-home","label":"Home","slug":"home","newtab":"0","order":1,"children":[]},{"id":"2","icon":"mdi mdi-newspaper","label":"News","slug":"blogs","newtab":"0","order":2,"children":[]},{"id":"3","icon":"mdi mdi-map-clock-outline","label":"Galleries","slug":"galleries","newtab":"0","order":3,"children":[]},{"id":"4","icon":"mdi mdi-youtube","label":"Videos","slug":"videos","newtab":"0","order":4,"children":[]}]', 'group_id' => 0, 'status' => 1, 'created_at' => $timestamp, 'created_by' => $user_id]);
+        $this->db->table('app_menus')->insert(['menu_placement' => 'header', 'menu_label' => 'Header Menu', 'menu_description' => 'Menu for navigation header (front end)', 'menu_structure' => '[{"id":"0","icon":"mdi mdi-home","label":"Home","slug":"home","newtab":"0","order":0,"children":[]},{"id":"1","icon":"mdi mdi-newspaper","label":"News","slug":"blogs","newtab":"0","order":1,"children":[]},{"id":"2","icon":"mdi mdi-map-clock-outline","label":"Galleries","slug":"galleries","newtab":"0","order":2,"children":[]},{"id":"3","icon":"mdi mdi-youtube","label":"Videos","slug":"videos","newtab":"0","order":3,"children":[]}]', 'group_id' => 0, 'status' => 1, 'created_at' => $timestamp, 'created_by' => $user_id]);
 
         // Add countries
         $this->db->table('app_countries')->insertBatch([

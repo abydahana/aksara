@@ -208,6 +208,7 @@ class Settings extends Core
             'office_email' => 'required|valid_email',
             'office_phone' => 'required',
             'office_address' => 'required',
+            'office_map' => 'required|valid_geojson',
 
             /* MEMBERSHIP */
             'username_change' => 'boolean',
