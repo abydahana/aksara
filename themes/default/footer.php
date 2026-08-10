@@ -50,6 +50,12 @@
                         <div class="text-center text-md-start">
                             <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Contact Us'); ?></div>
                             <div class="mb-4">
+                                <?php if (get_setting('office_name')): ?>
+                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-secondary">
+                                        <i class="mdi mdi-home-city-outline me-2 d-none d-md-block"></i>
+                                        <a href="<?= base_url('pages/contact'); ?>" class="text-secondary text-decoration-none --xhr"><?= get_setting('office_name'); ?></a>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (get_setting('office_email')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-secondary">
                                         <i class="mdi mdi-at me-2 d-none d-md-block"></i>
