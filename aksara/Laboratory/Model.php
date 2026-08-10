@@ -2332,6 +2332,12 @@ class Model
             }
         }
 
+        // Check sequence
+        if ('Postgre' == $this->db->DBDriver && $targetTable && $this->db->tableExists($targetTable)) {
+            // Update sequence
+            $this->_syncPostgreInsertSequences($targetTable, $set);
+        }
+
         $this->_prepare[] = [
             'function' => 'insert',
             'arguments' => [$set, $escape],
@@ -3292,6 +3298,71 @@ class Model
     private function _isNumericColumnType(string $type): bool
     {
         return $this->_isIntegerColumnType($type) || in_array($type, ['decimal', 'numeric', 'float', 'double', 'real', 'money'], true);
+    }
+
+    /**
+     * Sync PostgreSQL auto-increment sequences before insert.
+     *
+     * @param string $table Target table name.
+     * @param array<string, mixed> $set Insert payload.
+     */
+    private function _syncPostgreInsertSequences(string $table, array $set): void
+    {
+        $fieldData = $this->db->getFieldData($table);
+        if (! $fieldData) {
+            return;
+        }
+
+        $tableLiteral = $this->db->escape($table);
+        $protectedTable = $this->_protectPostgreIdentifier($table);
+
+        foreach ($fieldData as $field) {
+            if (! isset($field->name) || isset($set[$field->name]) || $this->_preparedFieldExists($field->name)) {
+                continue;
+            }
+
+            $sequence = $this->db
+                ->query('SELECT pg_get_serial_sequence(' . $tableLiteral . ', ' . $this->db->escape($field->name) . ') AS sequence_name')
+                ->getRow('sequence_name');
+
+            if (! $sequence) {
+                continue;
+            }
+
+            $protectedField = $this->_protectPostgreIdentifier($field->name);
+            $sequenceLiteral = $this->db->escape($sequence);
+            $protectedSequence = $this->_protectPostgreIdentifier($sequence);
+
+            $this->db->query("
+                SELECT setval(
+                    {$sequenceLiteral},
+                    GREATEST(
+                        COALESCE((SELECT MAX({$protectedField}) FROM {$protectedTable}), 0) + 1,
+                        COALESCE((SELECT last_value + CASE WHEN is_called THEN 1 ELSE 0 END FROM {$protectedSequence}), 1)
+                    ),
+                    false
+                )
+            ");
+        }
+    }
+
+    private function _preparedFieldExists(string $field): bool
+    {
+        foreach ($this->_prepare as $prep) {
+            if (isset($prep['function'], $prep['arguments'][0]) && 'set' === $prep['function'] && $prep['arguments'][0] === $field) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function _protectPostgreIdentifier(string $identifier): string
+    {
+        return implode('.', array_map(
+            static fn ($part) => '"' . str_replace('"', '""', $part) . '"',
+            explode('.', $identifier)
+        ));
     }
 
     /**
