@@ -96,5 +96,6 @@ return [
     'valid_datetime' => '{field} 必须包含有效的日期和时间。',
     'valid_year' => '{field} 必须包含有效的年份。',
     'valid_hex' => '{field} 必须只包含十六进制颜色代码。',
+    'valid_geojson' => '{field} 必须包含有效的 GeoJSON。',
     'relation_checker' => '未找到 {field} 的关联数据。'
 ];

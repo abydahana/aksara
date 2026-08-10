@@ -87,5 +87,6 @@ return [
     'valid_datetime' => 'The {field} must be contain valid date and time.',
     'valid_year' => 'The {field} must be contain valid year.',
     'valid_hex' => 'The {field} must be contain only hex color code.',
+    'valid_geojson' => 'The {field} must be valid GeoJSON.',
     'relation_checker' => 'The relation data of {field} be not found.'
 ];
