@@ -146,6 +146,94 @@ if (! function_exists('encoding_fixer')) {
     }
 }
 
+if (! function_exists('format_date')) {
+    /**
+     * Format datetime string localized according to user language settings.
+     *
+     * @param   string|null $datetime The datetime string or timestamp to format
+     * @param   string      $format   Format type: 'short' or 'long'
+     * @param   bool        $with_time Whether to include time
+     * @return  string      Formatted localized date string, or '-' if empty
+     */
+    function format_date(?string $datetime = '', string $format = 'long', bool $with_time = false): string
+    {
+        if (! $datetime || empty(trim($datetime))) {
+            return '-';
+        }
+
+        try {
+            $timestamp = is_numeric($datetime) ? (int) $datetime : strtotime($datetime);
+
+            if (! $timestamp) {
+                return '-';
+            }
+
+            $language = get_userdata('language') ?: 'en';
+
+            if (class_exists('IntlDateFormatter')) {
+                if ('full' === strtolower($format)) {
+                    $dateStyle = \IntlDateFormatter::FULL;
+                } elseif ('long' === strtolower($format)) {
+                    $dateStyle = \IntlDateFormatter::LONG;
+                } else {
+                    $dateStyle = \IntlDateFormatter::MEDIUM;
+                }
+
+                $timeStyle = $with_time ? \IntlDateFormatter::SHORT : \IntlDateFormatter::NONE;
+
+                $formatter = new \IntlDateFormatter(
+                    $language,
+                    $dateStyle,
+                    $timeStyle
+                );
+
+                $formatted = $formatter->format($timestamp);
+
+                if ($formatted) {
+                    return $formatted;
+                }
+            }
+
+            // Fallback if IntlDateFormatter is unavailable or failed
+            $date = new \DateTime();
+            $date->setTimestamp($timestamp);
+
+            $dayName = phrase($date->format('l'));
+            $monthShort = phrase($date->format('M'));
+            $monthFull = phrase($date->format('F'));
+            $dayNum = $date->format('d');
+            $yearNum = $date->format('Y');
+            $timeStr = $with_time ? ' ' . $date->format('H:i') : '';
+
+            if ('full' === strtolower($format)) {
+                if ('en' === strtolower(substr($language, 0, 2))) {
+                    return $dayName . ', ' . $monthFull . ' ' . $dayNum . ', ' . $yearNum . $timeStr;
+                }
+
+                return $dayName . ', ' . $dayNum . ' ' . $monthFull . ' ' . $yearNum . $timeStr;
+            }
+
+            if ('long' === strtolower($format)) {
+                if ('en' === strtolower(substr($language, 0, 2))) {
+                    return $monthFull . ' ' . $dayNum . ', ' . $yearNum . $timeStr;
+                }
+
+                return $dayNum . ' ' . $monthFull . ' ' . $yearNum . $timeStr;
+            }
+
+            if ('en' === strtolower(substr($language, 0, 2))) {
+                return $monthShort . ' ' . $dayNum . ', ' . $yearNum . $timeStr;
+            }
+
+            return $dayNum . ' ' . $monthShort . ' ' . $yearNum . $timeStr;
+        } catch (\Throwable $e) {
+            log_message('error', '[FORMAT_DATE] ' . $e->getMessage());
+        }
+
+        return '-';
+    }
+}
+
 if (! function_exists('time_ago')) {
     /**
      * Convert a datetime string into a "time ago" format.

@@ -211,7 +211,7 @@ class Banned extends Core
             return '-';
         }
 
-        return date('d F Y, H:i:s', (int) $timestamp);
+        return format_date($timestamp, 'long', true);
     }
 
     private function _directory()
