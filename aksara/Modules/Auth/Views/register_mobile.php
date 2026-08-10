@@ -56,7 +56,7 @@
                                 </label>
                                 <div class="input-group">
                                     <input type="password" name="password" class="form-control rounded-end-0" id="password_input" placeholder="<?= phrase('Minimum'); ?> 6 <?= phrase('characters'); ?>" maxlength="32" style="border-right:0" />
-                                    <span class="input-group-text bg-white rounded-start-0" style="border-left:0">
+                                    <span class="input-group-text bg-body-tertiary rounded-start-0" style="border-left:0">
                                         <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                                     </span>
                                 </div>
@@ -78,10 +78,10 @@
                                     <?= phrase('Enter shown character'); ?>
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
+                                    <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
                                         <?php
                                         if ($captcha->string) {
-                                            echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                            echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
                                         } else {
                                             echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
                                         }

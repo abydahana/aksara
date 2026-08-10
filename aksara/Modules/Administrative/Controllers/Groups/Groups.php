@@ -135,7 +135,7 @@ class Groups extends Core
                         ';
                     } else {
                         $privilege_output .= '
-                            <div class="col-6 col-md-3 bg-white">
+                            <div class="col-6 col-md-3">
                                 <div class="form-check form-switch mb-0"' . (strlen($label) > 12 ? ' data-bs-toggle="tooltip" title="' . $label . '"' : null) . '>
                                     <input type="checkbox" name="group_privileges[' . $val->path . '][]" value="' . $privilege . '" class="form-check-input checker-children" id="' . $path . '_' . $privilege . '"' . (isset($current[$val->path]) && in_array($privilege, $current[$val->path]) ? ' checked' : '') . ' />
                                     <label class="form-check-label" for="' . $path . '_' . $privilege . '">

@@ -25,7 +25,7 @@ if ($user): ?>
             </div>
         </div>
     </section>
-    <div class="border-fade bg-white py-2">
+    <div class="border-fade bg-body py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -77,7 +77,7 @@ if ($user): ?>
                             if (! $metadata || ! isset($metadata->title)) continue;
                         ?>
                         <div class="activity-item mb-3">
-                            <div class="bg-light rounded-4 mb-4 p-4">
+                            <div class="bg-body-tertiary rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
                                             <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
@@ -91,7 +91,7 @@ if ($user): ?>
                                     </div>
                                     <hr class="border-secondary-subtle" />
                                     <h3 class="h4">
-                                        <a href="<?= base_url($val->post_path); ?>" class="text-dark" target="_blank">
+                                        <a href="<?= base_url($val->post_path); ?>" class="text-body" target="_blank">
                                             <?= $metadata->title; ?>
                                         </a>
                                         <p class="fs-5 text-muted"><?= isset($metadata->description) ? truncate($metadata->description, 160) : ''; ?></p>
@@ -121,7 +121,7 @@ if ($user): ?>
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
                             </a>
                         </p>

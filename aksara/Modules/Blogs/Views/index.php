@@ -124,7 +124,7 @@ if ($articles): ?>
                                                     <span class="text-muted text-sm float-end">
                                                         <i class="mdi mdi-clock-outline"></i> <?= time_ago($_val->updated_at); ?>
                                                     </span>
-                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
                                                         <b>
                                                             <?= $_val->first_name . ' ' . $_val->last_name; ?>
                                                         </b>
@@ -132,13 +132,13 @@ if ($articles): ?>
                                                 </div>
                                             </div>
                                             <h3 class="h5 mb-3">
-                                                <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                                <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
                                                     <?= truncate($_val->post_title, 64); ?>
                                                 </a>
                                             </h3>
                                         </div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr">
-                                            <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
+                                            <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-body-tertiary" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                                         </a>
                                     </div>
                                 </div>
@@ -161,7 +161,7 @@ if ($articles): ?>
                             <?= phrase('No post is available at the moment.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
                             </a>
                         </p>

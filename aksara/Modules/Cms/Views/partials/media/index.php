@@ -11,7 +11,7 @@ $breadcrumbs = null;
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-8 pt-3 pb-3 bg-white border-end">
+        <div class="col-lg-8 pt-3 pb-3 bg-body border-end">
             <?php if (! empty($results->cloud_storage) && ! get_userdata('hideCloudStorageMediaNotice')): ?>
                 <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
                     <?= phrase('Cloud storage is active. File browsing may be slower.'); ?>
@@ -134,7 +134,7 @@ $breadcrumbs = null;
                 </div>
             <?php endif; ?>
         </div>
-        <div class="col-lg-4 pt-3 pb-3 full-height bg-white border-start" style="margin-left:-1px">
+        <div class="col-lg-4 pt-3 pb-3 full-height bg-body border-start" style="margin-left:-1px">
             <div class="sticky-top">
                 <?php if ($results->description): ?>
                     <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>

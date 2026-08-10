@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-4">
                 <div class="d-grid">
-                    <button type="button" data-href="<?= current_page('repute'); ?>" class="btn btn-light btn-sm btn-block rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>" data-post-id="<?= service('request')->getGet('post_id'); ?>">
+                    <button type="button" data-href="<?= current_page('repute'); ?>" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like'); ?>" data-post-id="<?= service('request')->getGet('post_id'); ?>">
                         <i class="mdi mdi-heart<?= ($likes_count ? ' me-2' : null); ?>"></i>
                         <b class="likes-count fw-bold"><?= ($likes_count ? $likes_count : ''); ?></b>
                     </button>
@@ -20,7 +20,7 @@
             </div>
             <div class="col-4">
                 <div class="d-grid">
-                    <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-truncate" data-bs-toggle="tooltip" title="<?= phrase('Comment'); ?>" onclick="jExec($('textarea[name=comments]').first().trigger('focus'))">
+                    <button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate" data-bs-toggle="tooltip" title="<?= phrase('Comment'); ?>" onclick="jExec($('textarea[name=comments]').first().trigger('focus'))">
                         <i class="mdi mdi-comment<?= ($comments_count ? ' me-2' : null); ?>"></i>
                         <b class="replies-count"><?= ($comments_count ? $comments_count : ''); ?></b>
                     </button>
@@ -28,7 +28,7 @@
             </div>
             <div class="col-4">
                 <div class="d-grid">
-                    <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-truncate" data-role="share" data-href="<?= service('request')->getGet('path'); ?>">
+                    <button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate" data-role="share" data-href="<?= service('request')->getGet('path'); ?>">
                         <i class="mdi mdi-share"></i>
                         <?= phrase('Share'); ?>
                     </button>
@@ -48,7 +48,7 @@
                     <div class="position-relative">
                         <textarea name="comments" class="form-control nofocus" placeholder="<?= phrase('Type a comment'); ?>" rows="1"></textarea>
                         <div class="btn-group position-absolute bottom-0 end-0">
-                            <button type="button" class="btn btn-link text-dark" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase('Attach photo'); ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
+                            <button type="button" class="btn btn-link text-body" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase('Attach photo'); ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
                                 <i class="mdi mdi-camera"></i>
                             </button>
                         </div>

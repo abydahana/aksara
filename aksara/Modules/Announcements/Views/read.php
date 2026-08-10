@@ -10,7 +10,7 @@ $field_data = $results->field_data ?? null;
 
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">
-        <h1 class="display-4 fw-bold text-dark">
+        <h1 class="display-4 fw-bold">
             <?= $meta->title; ?>
         </h1>
         <p class="fs-5 text-muted mb-0">
@@ -50,7 +50,7 @@ $field_data = $results->field_data ?? null;
                             <?= phrase('The announcement you requested was not found or its already been removed.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Announcements'); ?>
                             </a>
                         </p>

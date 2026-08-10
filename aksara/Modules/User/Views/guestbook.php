@@ -23,7 +23,7 @@ if ($user): ?>
             </div>
         </div>
     </section>
-    <div class="border-fade bg-white py-2">
+    <div class="border-fade bg-body py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -85,7 +85,7 @@ if ($user): ?>
                             <?= phrase('The user you requested does not exists.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
                             </a>
                         </p>

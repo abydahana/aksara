@@ -8,7 +8,7 @@
 if ($results): ?>
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container position-relative text-center text-md-start fade-in">
-            <h1 class="display-4 fw-bold text-dark">
+            <h1 class="display-4 fw-bold">
                 <?= $meta->title; ?>
             </h1>
             <p class="fs-5 text-muted mb-0">
@@ -58,7 +58,7 @@ if ($results): ?>
                             <?= phrase('No people is available at the moment.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
                             </a>
                         </p>

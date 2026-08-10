@@ -104,7 +104,7 @@ $(document).ready(function() {
               <div class="col-11 ps-3">
                 <div class="position-relative">
                   <div class="dropdown position-absolute end-0">
-                    <button class="btn btn-light btn-sm rounded-pill dropdown-toggle" type="button" id="dropdownMenuButton${ val.comment_id }" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-link text-body btn-sm rounded-pill dropdown-toggle" type="button" id="dropdownMenuButton${ val.comment_id }" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="mdi mdi-format-list-checks"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="dropdownMenuButton${ val.comment_id }">
@@ -132,7 +132,7 @@ $(document).ready(function() {
                     </ul>
                   </div>
                 </div>
-                <div class="bg-light rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
+                <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
                   <a href="${ val.links.profile_url }" class="--xhr">
                     <b id="comment-author-${ val.comment_id }">
                       ${ val.first_name } ${ val.last_name }
@@ -191,7 +191,7 @@ $(document).ready(function() {
                     <div class="load-more-container row g-0">
                       <div class="col-12">
                         <div class="mb-3">
-                          <a href="${ val.links.replies_url || window.location.href }" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-dark fw-bold">
+                          <a href="${ val.links.replies_url || window.location.href }" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
                             <i class="mdi mdi-chevron-down"></i>
                             ${ val.replies } ${ (val.replies ? (val.replies > 1 ? phrase('Replies') : 'Reply') : '') }
                           </a>
@@ -271,7 +271,7 @@ $(document).ready(function() {
                   <textarea name="comments" class="form-control" placeholder="${ phrase('Type a reply') }" rows="1"></textarea>
                   <div class="btn-group position-absolute bottom-0 end-0">
                     <button type="button" class="btn btn-link" data-bs-toggle="tooltip" title="${ phrase('Attach photo') }" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
-                      <i class="mdi mdi-camera text-dark"></i>
+                      <i class="mdi mdi-camera text-body"></i>
                     </button>
                   </div>
                 </div>

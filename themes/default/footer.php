@@ -1,4 +1,4 @@
-<footer id="footer-wrapper" class="bg-white position-relative overflow-hidden">
+<footer id="footer-wrapper" class="bg-body position-relative overflow-hidden">
     <div class="border-fade">
         <section class="section-padding">
             <div class="container">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-6 col-sm-4 col-lg-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Featured'); ?></div>
+                            <div class="h6 fw-bold mb-3 text-body"><?= phrase('Featured'); ?></div>
                             <ul class="list-unstyled">
                                 <li class="mb-2"><a href="<?= base_url('blogs'); ?>" class="text-secondary text-decoration-none --xhr"><?= phrase('News'); ?></a></li>
                                 <li class="mb-2"><a href="<?= base_url('galleries'); ?>" class="text-secondary text-decoration-none --xhr"><?= phrase('Galleries'); ?></a></li>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-6 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Knowledge Center'); ?></div>
+                            <div class="h6 fw-bold mb-3 text-body"><?= phrase('Knowledge Center'); ?></div>
                             <ul class="list-unstyled">
                                 <li class="mb-2"><a href="//www.aksaracms.com/pages/documentation" target="_blank" class="text-secondary text-decoration-none"><?= phrase('Documentation'); ?></a></li>
                                 <li class="mb-2"><a href="//www.aksaracms.com/pages/features" target="_blank" class="text-secondary text-decoration-none"><?= phrase('Features'); ?></a></li>
@@ -48,12 +48,12 @@
                     </div>
                     <div class="col-12 col-sm-4 col-lg-3 mb-3 mb-lg-0">
                         <div class="text-center text-md-start">
-                            <div class="h6 fw-bold mb-3 text-dark"><?= phrase('Contact Us'); ?></div>
+                            <div class="h6 fw-bold mb-3 text-body"><?= phrase('Contact Us'); ?></div>
                             <div class="mb-4">
                                 <?php if (get_setting('office_name')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-secondary">
                                         <i class="mdi mdi-home-city-outline me-2 d-none d-md-block"></i>
-                                        <a href="<?= base_url('pages/contact'); ?>" class="text-secondary text-decoration-none --xhr"><?= get_setting('office_name'); ?></a>
+                                        <a href="<?= base_url('pages/contact'); ?>" class="text-secondary text-decoration-none fw-bolder --xhr"><?= get_setting('office_name'); ?></a>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (get_setting('office_email')): ?>

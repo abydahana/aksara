@@ -361,7 +361,7 @@ class Comment extends Core
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -463,7 +463,7 @@ class Comment extends Core
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -534,7 +534,7 @@ class Comment extends Core
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -852,7 +852,7 @@ class Comment extends Core
                             </ul>
                         </div>
                     </div>
-                    <div class="bg-light rounded-4 py-2 px-3 d-inline-block">
+                    <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
                         <a href="' . base_url('user/' . get_userdata('username')) . '" class="--xhr">
                             <b>
                                 ' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '

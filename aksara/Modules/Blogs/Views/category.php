@@ -88,7 +88,7 @@ if ($results): ?>
                                         <span class="text-muted text-sm float-end">
                                             <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
                                         </span>
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
                                             <b>
                                                 <?= $val->first_name . ' ' . $val->last_name; ?>
                                             </b>
@@ -96,7 +96,7 @@ if ($results): ?>
                                     </div>
                                 </div>
                                 <h2 class="h5" class="mb-3">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
                                         <?= truncate($val->post_title, 120); ?>
                                     </a>
                                 </h2>
@@ -108,7 +108,7 @@ if ($results): ?>
                                 </div>
                             </div>
                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-white rounded-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
+                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-body-tertiary rounded-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                             </a>
                         </div>
                     </div>
@@ -130,7 +130,7 @@ if ($results): ?>
                             <?= phrase('The category of post you requested was not found or it\'s been archived.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to News'); ?>
                             </a>
                         </p>

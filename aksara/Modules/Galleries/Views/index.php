@@ -8,7 +8,7 @@
 if ($results): ?>
     <section class="section-padding fade-in">
         <div class="container text-center text-md-start">
-            <h1 class="display-4 fw-bold text-dark">
+            <h1 class="display-4 fw-bold">
                 <?= $meta->title; ?>
             </h1>
             <p class="fs-5 text-muted mb-0">
@@ -76,7 +76,7 @@ if ($results): ?>
                                     </div>
                                 </div>
                                 <?php if (count($images) > 1): ?>
-                                    <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 3 : 6); ?> bg-light d-flex align-items-center">
+                                    <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 3 : 6); ?> bg-body-tertiary d-flex align-items-center">
                                         <div class="w-100">
                                         <?= $thumbnail; ?>
                                         </div>
@@ -103,7 +103,7 @@ if ($results): ?>
                             <?= phrase('No album is available at the moment.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
                             </a>
                         </p>
