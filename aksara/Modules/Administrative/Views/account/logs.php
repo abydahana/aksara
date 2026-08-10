@@ -33,7 +33,7 @@
                                             </a>
                                         <?php endif; ?>
                                         <b>
-                                            <?= date('d F Y, H:i', strtotime($session->timestamp)); ?>
+                                            <?= format_date($session->timestamp, 'long', true); ?>
                                         </b>
                                         <br />
                                         <?= $session->browser; ?>
