@@ -1897,19 +1897,23 @@ abstract class Core extends Controller
                         . $relationTableClean . '.' . $fkKey
                         . ' = __PRIMARY_TABLE__.' . $val;
 
-                    $this->setValidation(
-                        $val,
-                        'relation_checker[' . $relationTableClean . '.' . $fkKey . ']'
-                    );
+                    if (! isset($this->_setValidation[$val]) || ! in_array('permit_empty', $this->_setValidation[$val], true)) {
+                        $this->setValidation(
+                            $val,
+                            'relation_checker[' . $relationTableClean . '.' . $fkKey . ']'
+                        );
+                    }
                 }
             } else {
                 $condition = $relationTableClean . '.' . $relationKeys
                     . ' = __PRIMARY_TABLE__.' . $fieldLocal;
 
-                $this->setValidation(
-                    $fieldLocal,
-                    'relation_checker[' . $relationTableClean . '.' . $relationKeys . ']'
-                );
+                if (! isset($this->_setValidation[$fieldLocal]) || ! in_array('permit_empty', $this->_setValidation[$fieldLocal], true)) {
+                    $this->setValidation(
+                        $fieldLocal,
+                        'relation_checker[' . $relationTableClean . '.' . $relationKeys . ']'
+                    );
+                }
             }
 
             $this->_compiledTable[] = $relationTable;
@@ -3869,10 +3873,12 @@ abstract class Core extends Controller
                         }
 
                         if ($constrained) {
-                            $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']';
-                            $relationValidation = array_merge(['required'], $val['validation']);
+                            $relationValidation = in_array('permit_empty', $val['validation'], true)
+                                ? $val['validation']
+                                : array_merge(['required'], $val['validation']);
 
-                            if (! in_array($relationChecker, $relationValidation, true)) {
+                            if (! in_array('permit_empty', $relationValidation, true)) {
+                                $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']';
                                 $relationValidation[] = $relationChecker;
                             }
 
@@ -4137,7 +4143,7 @@ abstract class Core extends Controller
                     if (! array_intersect(['slug', 'password', 'encryption', 'image', 'images', 'file', 'files'], $type)) {
                         // Use empty value instead of NULL when no data is submitted
                         if (! isset($prepare[$field])) {
-                            if (stripos($value['default'], 'null') !== false) {
+                            if (isset($value['default']) && stripos($value['default'], 'null') !== false) {
                                 $prepare[$field] = null;
                             } else {
                                 $prepare[$field] = '';
