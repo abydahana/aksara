@@ -9,7 +9,7 @@
 $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 
 ?>
-<header data-role="header" class="navbar navbar-expand-lg navbar-light border-fade-bottom fixed-top" id="header-wrapper" data-hide-on-scroll="true">
+<header data-role="header" class="navbar navbar-expand-lg border-fade-bottom fixed-top bg-body" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url(); ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name'); ?> Icon" loading="lazy" decoding="async" />
@@ -27,6 +27,11 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
         <div class="collapse navbar-collapse d-none d-lg-flex">
             <?= $_menu_html; ?>
             <ul class="navbar-nav ms-auto align-items-lg-center gap-3">
+                <li class="nav-item">
+                    <a href="<?= current_page(); ?>" class="nav-link" data-toggle="theme" aria-label="<?= phrase('Toggle theme'); ?>">
+                        <i class="mdi mdi-weather-night"></i>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
                         <i class="mdi mdi-translate"></i>
@@ -100,6 +105,12 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
                 </ul>
             </li>
             <?php endif; ?>
+            <li class="nav-item">
+                <a href="<?= current_page(); ?>" class="nav-link" data-toggle="theme" aria-label="<?= phrase('Toggle theme'); ?>">
+                    <i class="mdi mdi-weather-night"></i>
+                    <span><?= phrase('Theme'); ?></span>
+                </a>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language">
                     <i class="mdi mdi-translate"></i>

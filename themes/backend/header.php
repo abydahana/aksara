@@ -3,7 +3,7 @@
  * @var object $meta
  */
 ?>
-<header data-role="header" class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top" id="header-wrapper">
+<header data-role="header" class="navbar navbar-expand-lg border-bottom fixed-top bg-body" id="header-wrapper">
     <div class="container-fluid">
         <div class="navbar-brand pt-0 pb-0 d-none d-lg-block">
             <a href="<?= base_url(); ?>" target="_blank">

@@ -333,7 +333,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                                     <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <span class="badge bg-white text-dark rounded-pill border"><?= $log->platform; ?></span>
+                                                    <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform; ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
                                                     <span class="text-sm"><?= $log->browser; ?></span>

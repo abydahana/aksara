@@ -8,7 +8,7 @@
 
 <section class="section-padding fade-in">
     <div class="container position-relative text-center text-md-start">
-        <h1 class="display-4 fw-bold text-dark">
+        <h1 class="display-4 fw-bold">
             <?= $meta->title; ?>
         </h1>
         <p class="fs-5 text-muted mb-0">
@@ -29,10 +29,10 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <span class="input-group-text bg-white p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
+                            <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
                                 <?php
                                 if ($captcha->string) {
-                                    echo '<b class="text-dark pe-3 ps-3">' . $captcha->string . '</b>';
+                                    echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
                                 } else {
                                     echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
                                 }

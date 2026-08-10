@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-        <div class="sticky-top bg-white overflow-x-auto py-1 px-3 mx--3 border-bottom">
+        <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 border-bottom">
             <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                 <li class="nav-item">
                     <a href="#pills-setting" data-bs-toggle="pill" class="nav-link rounded-pill active no-wrap --xhr">

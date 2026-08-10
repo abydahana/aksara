@@ -18,7 +18,14 @@
         background:
             radial-gradient(circle at 15% 20%, rgba(var(--bs-primary-rgb), .18), transparent 28rem),
             radial-gradient(circle at 88% 12%, rgba(25, 135, 84, .16), transparent 24rem),
-            linear-gradient(135deg, #ffffff 0%, #f6f8ff 52%, #eef8f3 100%);
+            linear-gradient(135deg, var(--bs-body-bg) 0%, var(--bs-tertiary-bg) 52%, var(--bs-body-bg) 100%);
+    }
+
+    [data-bs-theme="dark"] .home-hero {
+        background:
+            radial-gradient(circle at 15% 20%, rgba(var(--bs-primary-rgb), .25), transparent 28rem),
+            radial-gradient(circle at 88% 12%, rgba(25, 135, 84, .2), transparent 24rem),
+            linear-gradient(135deg, var(--bs-body-bg) 0%, var(--bs-tertiary-bg) 52%, var(--bs-body-bg) 100%);
     }
 
     .home-hero:before,
@@ -38,6 +45,12 @@
         mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
     }
 
+    [data-bs-theme="dark"] .home-hero:before {
+        background-image:
+            linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+    }
+
     .home-hero:after {
         right: -8rem;
         bottom: -13rem;
@@ -46,6 +59,10 @@
         border: 1px solid rgba(var(--bs-primary-rgb), .18);
         border-radius: 50%;
         box-shadow: inset 0 0 0 4rem rgba(255, 255, 255, .35);
+    }
+
+    [data-bs-theme="dark"] .home-hero:after {
+        box-shadow: inset 0 0 0 4rem rgba(255, 255, 255, .05);
     }
 
     .home-hero .container {
@@ -60,17 +77,17 @@
         padding: .45rem .9rem;
         border: 1px solid rgba(var(--bs-primary-rgb), .16);
         border-radius: 999px;
-        background: rgba(255, 255, 255, .74);
+        background: var(--bs-tertiary-bg, rgba(255, 255, 255, .74));
         color: var(--bs-primary);
         font-size: .875rem;
         font-weight: 700;
-        box-shadow: 0 1rem 3rem rgba(15, 23, 42, .06);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, .06);
     }
 
     .hero-title {
         max-width: 920px;
         margin-inline: auto;
-        color: #111827;
+        color: var(--bs-body-color, #111827);
         font-size: clamp(2.5rem, 7vw, 5rem);
         line-height: .95;
         letter-spacing: 0;
@@ -83,7 +100,7 @@
     .hero-copy {
         max-width: 720px;
         margin-inline: auto;
-        color: #64748b;
+        color: var(--bs-secondary-color, #64748b);
         font-size: clamp(1.05rem, 2vw, 1.35rem);
     }
 
@@ -104,10 +121,10 @@
         align-items: center;
         gap: .5rem;
         padding: .75rem 1rem;
-        border: 1px solid rgba(15, 23, 42, .08);
+        border: 1px solid var(--bs-border-color, rgba(15, 23, 42, .08));
         border-radius: 999px;
-        background: rgba(255, 255, 255, .72);
-        color: #334155;
+        background: var(--bs-surface-bg, rgba(255, 255, 255, .72));
+        color: var(--bs-body-color, #334155);
         font-weight: 600;
         backdrop-filter: blur(10px);
     }
@@ -210,7 +227,7 @@
                                             <span class="text-muted text-sm float-end">
                                                 <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
                                             </span>
-                                            <a href="<?= base_url('user/' . $val->username); ?>" class="text-dark ps-2 text-decoration-none --xhr">
+                                            <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
                                                 <b>
                                                     <?= $val->first_name . ' ' . $val->last_name; ?>
                                                 </b>
@@ -218,13 +235,13 @@
                                         </div>
                                     </div>
                                     <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
-                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-dark text-decoration-none --xhr">
+                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
                                             <?= truncate($val->post_title, 64); ?>
                                         </a>
                                     </h3>
                                 </div>
                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-white" alt="<?= $val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
+                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-body-tertiary" alt="<?= $val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
                                 </a>
                             </div>
                         </div>
@@ -308,7 +325,7 @@
                                     <?= $val->position; ?>
                                 </p>
                                 <div class="d-none d-md-block">
-                                    <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="btn btn-light btn-sm rounded-pill pr-3 pl-3 --xhr">
+                                    <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-3 --xhr">
                                         <?= phrase('Get Closer'); ?> <i class="mdi mdi-arrow-right"></i>
                                     </a>
                                 </div>

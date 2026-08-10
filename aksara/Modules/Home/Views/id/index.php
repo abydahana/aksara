@@ -29,7 +29,7 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
     </div>
 <?php endif; ?>
 
-<div class="py-3 py-md-5 bg-light">
+<div class="py-3 py-md-5 bg-body-tertiary">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">

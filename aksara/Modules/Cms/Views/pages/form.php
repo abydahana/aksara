@@ -16,17 +16,17 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
 <div class="pb-form-wrapper">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <!-- Manually Placed Page Builder Toolbar -->
-        <div class="pb-toolbar px-3 py-2 sticky-top bg-white border-bottom">
-            <div class="pb-toolbar-group bg-light rounded-pill px-1 border">
-                <button type="button" class="btn btn-sm btn-link text-dark pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
+        <div class="pb-toolbar px-3 py-2 sticky-top bg-body border-bottom">
+            <div class="pb-toolbar-group bg-body-tertiary rounded-pill px-1 border">
+                <button type="button" class="btn btn-sm btn-link text-body pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
                     <i class="mdi mdi-undo"></i>
                 </button>
                 <div class="vr my-1"></div>
-                <button type="button" class="btn btn-sm btn-link text-dark pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
+                <button type="button" class="btn btn-sm btn-link text-body pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
                     <i class="mdi mdi-redo"></i>
                 </button>
             </div>
-            <div class="pb-toolbar-group bg-light rounded-pill px-1 border mx-auto">
+            <div class="pb-toolbar-group bg-body-tertiary rounded-pill px-1 border mx-auto">
                 <button type="button" class="btn btn-sm pb-device-btn active rounded-pill" data-device="desktop" data-bs-toggle="tooltip" title="<?= phrase('Desktop'); ?>">
                     <i class="mdi mdi-monitor"></i>
                 </button>
@@ -52,7 +52,7 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
 
         <div class="row g-0">
             <!-- Main: Page Builder Canvas -->
-            <div class="col-12 bg-light">
+            <div class="col-12 bg-body-tertiary">
                 <div id="page-builder"></div>
                 <input type="hidden" name="page_content" id="page_content" value="<?= htmlspecialchars($page_content, ENT_QUOTES); ?>" />
             </div>

@@ -17,7 +17,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="description" content="<?= truncate($meta->description ?: get_setting('app_description')); ?>" />
         <meta name="referrer" content="strict-origin-when-cross-origin">
-        <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
+        <script type="text/javascript">
+            (function() {
+                var savedTheme = localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            })();
+        </script>
 
         <?php
             echo aksara_header();

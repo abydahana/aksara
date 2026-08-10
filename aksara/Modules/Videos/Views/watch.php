@@ -18,7 +18,7 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
 }
 ?>
 
-<div class="row g-0 bg-light">
+<div class="row g-0 bg-body-tertiary">
     <div class="col-lg-8">
         <div class="sticky-top">
             <div class="full-height bg-secondary p-3 d-flex align-items-center">
@@ -28,7 +28,7 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
             </div>
         </div>
     </div>
-    <div class="col-lg-4 p-3 bg-white">
+    <div class="col-lg-4 p-3 bg-body">
         <div class="sticky-top">
             <div class="row align-items-center mb-3">
                 <div class="col-2 pe-0">

@@ -43,7 +43,7 @@ if ($field_data) {
 
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container text-center text-md-start">
-        <h1 class="display-4 fw-bold text-dark">
+        <h1 class="display-4 fw-bold">
             <?= $meta->title; ?>
         </h1>
         <p class="fs-5 text-muted mb-0">
@@ -81,13 +81,13 @@ if ($field_data) {
                             </div>
                             <div class="col-sm-6 col-md-4 mb-3 order-0 order-md-1">
                                 <div class="btn-group btn-group-sm d-flex rounded-pill overflow-hidden">
-                                    <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page(); ?>'" class="btn btn-primary" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook'); ?>" target="_blank">
+                                    <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page(); ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook'); ?>" target="_blank">
                                         <i class="mdi mdi-facebook"></i>
                                     </a>
-                                    <a href="//www.twitter.com/share?url=<?= current_page(); ?>" class="btn btn-info text-light" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter'); ?>" target="_blank">
+                                    <a href="//www.twitter.com/share?url=<?= current_page(); ?>" class="btn btn-info text-white border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter'); ?>" target="_blank">
                                         <i class="mdi mdi-twitter"></i>
                                     </a>
-                                    <a href="//wa.me/?text=<?= current_page(); ?>" class="btn btn-success" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp'); ?>" target="_blank">
+                                    <a href="//wa.me/?text=<?= current_page(); ?>" class="btn btn-success border-0" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp'); ?>" target="_blank">
                                         <i class="mdi mdi-whatsapp"></i>
                                     </a>
                                 </div>
@@ -159,7 +159,7 @@ if ($field_data) {
                                             </div>
                                             <div class="col-10 ps-3">
                                                 <h2 class="h5">
-                                                    <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug); ?>" class="text-dark --xhr">
+                                                    <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug); ?>" class="text-body --xhr">
                                                         <?= $val->post_title; ?>
                                                     </a>
                                                 </h2>
@@ -191,7 +191,7 @@ if ($field_data) {
                                             </div>
                                             <div class="col-10 ps-3">
                                                 <a href="<?= go_to('../' . $val->category_slug); ?>" class="--xhr">
-                                                    <h4 class="text-dark mb-0">
+                                                    <h4 class="text-body mb-0">
                                                         <?= $val->category_title; ?>
                                                     </h4>
                                                     <p class="mb-0 text-muted">

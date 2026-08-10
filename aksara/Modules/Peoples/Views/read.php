@@ -112,7 +112,7 @@ if ($field_data): ?>
                             <?= phrase('The people you are looking for was not found.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Peoples'); ?>
                             </a>
                         </p>

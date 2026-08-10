@@ -30,7 +30,7 @@ if ($images) {
 ?>
 
 <?php if ($field_data): ?>
-    <div class="row g-0 bg-light">
+    <div class="row g-0 bg-body-tertiary">
         <div class="col-lg-8">
             <div class="sticky-top">
                 <div class="photo-view">
@@ -58,7 +58,7 @@ if ($images) {
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 p-3 bg-white">
+        <div class="col-lg-4 p-3 bg-body">
             <div class="sticky-top">
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
@@ -125,7 +125,7 @@ if ($images) {
                             <?= phrase('The album you requested was not found or its already been removed.'); ?>
                         </p>
                         <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-dark rounded-pill px-5 --xhr">
+                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
                                 <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Galleries'); ?>
                             </a>
                         </p>
