@@ -688,7 +688,7 @@ class Comment extends Core
                 }
 
                 // Convert creation time
-                $val->created_at = time_ago($val->created_at);
+                $val->created_at = time_ago($val->created_at, true);
 
                 // Set highlight
                 $val->highlight = $this->request->getGet('comment_highlight') == $val->comment_id;
@@ -838,12 +838,31 @@ class Comment extends Core
                     <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" />
                 </div>
                 <div class="col-11 ps-3">
-                    <div class="position-relative">
-                        <div class="dropdown position-absolute end-0">
-                            <button class="btn btn-link btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-format-list-checks"></i>
+                    <div class="d-flex align-items-center gap-1">
+                        <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
+                            <div class="comment-header">
+                                <a href="' . base_url('user/' . get_userdata('username')) . '" class="text-body --xhr">
+                                    <b>
+                                        ' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '
+                                    </b>
+                                </a>
+                                &middot;
+                                <span class="text-muted">
+                                    ' . phrase('Just now') . '
+                                </span>
+                            </div>
+                            <div id="comment-text-' . $comment_id . '">
+                                ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
+
+                                ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
+                                ' . ($attachment ? '<div class="my-2"><a href="' . get_image('comment', $attachment) . '" class="d-block" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-4" alt="' . phrase('Attachment') . '" /></a></div>' : null) . '
+                            </div>
+                        </div>
+                        <div class="dropdown comment-dropdown flex-shrink-0">
+                            <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton' . $comment_id . '" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="mdi mdi-dots-horizontal fs-5"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton' . $comment_id . '">
                                 <li>
                                     <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
                                         ' . phrase('Update') . '
@@ -852,22 +871,8 @@ class Comment extends Core
                             </ul>
                         </div>
                     </div>
-                    <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
-                        <a href="' . base_url('user/' . get_userdata('username')) . '" class="--xhr">
-                            <b>
-                                ' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '
-                            </b>
-                        </a>
-                        <br />
-                        <div id="comment-text-' . $comment_id . '">
-                            ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
-
-                            ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
-                            ' . ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-5" alt="' . phrase('Attachment') . '" /></a></div>' : null) . '
-                        </div>
-                    </div>
                     <div class="py-1 ps-3">
-                        <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="text-sm --upvote">
+                        <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="small text-body --upvote">
                             <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
                             &nbsp;
                             <b>
@@ -875,15 +880,11 @@ class Comment extends Core
                             </b>
                         </a>
                          &middot;
-                        <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="text-sm --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                        <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="small text-body --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                             <b>
                                 ' . phrase('Reply') . '
                             </b>
                         </a>
-                         &middot;
-                        <span class="text-muted text-sm">
-                            ' . time_ago(date('Y-m-d H:i:s')) . '
-                        </span>
                     </div>
 
                     ' . (! $reply_id ? '<div id="comment-reply"></div>' : null) . '
