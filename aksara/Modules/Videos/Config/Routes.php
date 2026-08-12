@@ -18,8 +18,10 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('videos/(:any)', '\Aksara\Modules\Videos\Controllers\Videos::watch/$1');
+$routes->group(
+    'videos',
+    ['namespace' => 'Aksara\Modules\Videos\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)', 'Videos::watch/$1');
+    }
+);

@@ -18,8 +18,10 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('announcements/(:any)', '\Aksara\Modules\Announcements\Controllers\Read::index/$1');
+$routes->group(
+    'announcements',
+    ['namespace' => 'Aksara\Modules\Announcements\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)', 'Read::index/$1');
+    }
+);

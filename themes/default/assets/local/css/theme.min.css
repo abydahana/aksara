@@ -130,8 +130,8 @@ h1, h2, h3, h4, .display-4 {
   padding: 6rem 0 4rem;
 }
 .section-padding {
-  padding-top: 5rem!important;
-  padding-bottom: 5rem!important;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 .bg-light {
   background-color: var(--wg-bg-light) !important;
@@ -362,8 +362,8 @@ input[type="range"]::-moz-range-thumb {
 }
 @media(max-width:768px) {
   .section-padding {
-    padding-top: 3rem!important;
-    padding-bottom: 3rem!important;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
   footer#footer-wrapper {
     font-size:.8em

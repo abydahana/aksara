@@ -18,8 +18,10 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('peoples/(:any)', '\Aksara\Modules\Peoples\Controllers\Read::index/$1');
+$routes->group(
+    'peoples',
+    ['namespace' => 'Aksara\Modules\Peoples\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)', 'Read::index/$1');
+    }
+);
