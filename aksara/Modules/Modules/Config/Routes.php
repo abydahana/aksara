@@ -18,8 +18,10 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->get('modules/(:any)/assets/(:any)', '\Aksara\Modules\Modules\Controllers\Modules::index');
+$routes->group(
+    'modules',
+    ['namespace' => 'Aksara\Modules\Modules\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)/assets/(:any)', 'Modules::index');
+    }
+);

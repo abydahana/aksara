@@ -18,12 +18,10 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->match(
-    ['GET', 'HEAD'],
-    'themes/(:any)',
-    '\Aksara\Modules\Themes\Controllers\Themes::index/$1'
+$routes->group(
+    'themes',
+    ['namespace' => 'Aksara\Modules\Themes\Controllers'],
+    static function ($routes) {
+        $routes->match(['GET', 'HEAD'], '(:any)', 'Themes::index/$1');
+    }
 );

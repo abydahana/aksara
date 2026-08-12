@@ -18,9 +18,11 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('galleries/(:any)/(:any)', '\Aksara\Modules\Galleries\Controllers\Read::index/$1/$2');
-$routes->add('galleries/(:any)', '\Aksara\Modules\Galleries\Controllers\Category::index/$1');
+$routes->group(
+    'galleries',
+    ['namespace' => 'Aksara\Modules\Galleries\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)/(:segment)', 'Read::index/$1/$2');
+        $routes->add('(:segment)', 'Category::index/$1');
+    }
+);

@@ -18,12 +18,11 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('blogs/search', '\Aksara\Modules\Blogs\Controllers\Search::index');
-$routes->add('blogs/tags', '\Aksara\Modules\Blogs\Controllers\Tags::index');
-$routes->add('blogs/read', '\Aksara\Modules\Blogs\Controllers\Read::index');
-$routes->add('blogs/(:any)/(:any)', '\Aksara\Modules\Blogs\Controllers\Read::index/$1/$2');
-$routes->add('blogs/(:any)', '\Aksara\Modules\Blogs\Controllers\Category::index/$1');
+$routes->group(
+    'blogs',
+    ['namespace' => 'Aksara\Modules\Blogs\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)/(:segment)', 'Read::index/$1/$2');
+        $routes->add('(:segment)', 'Category::index/$1');
+    }
+);

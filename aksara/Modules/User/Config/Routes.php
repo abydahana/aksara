@@ -18,10 +18,12 @@
 /**
  * @var \CodeIgniter\Router\RouteCollection $routes
  */
-if (! isset($routes)) {
-    $routes = \Config\Services::routes(true);
-}
-
-$routes->add('user/(:any)/activities', '\Aksara\Modules\User\Controllers\User::activities/$1');
-$routes->add('user/(:any)/likes', '\Aksara\Modules\User\Controllers\User::likes/$1');
-$routes->add('user/(:any)/guestbook', '\Aksara\Modules\User\Controllers\User::guestbook/$1');
+$routes->group(
+    'user',
+    ['namespace' => 'Aksara\Modules\User\Controllers'],
+    static function ($routes) {
+        $routes->add('(:segment)/activities', 'User::activities/$1');
+        $routes->add('(:segment)/likes', 'User::likes/$1');
+        $routes->add('(:segment)/guestbook', 'User::guestbook/$1');
+    }
+);

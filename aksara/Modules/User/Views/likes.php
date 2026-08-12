@@ -77,7 +77,7 @@ if ($user): ?>
                             if (! $metadata || ! isset($metadata->title)) continue;
                         ?>
                         <div class="activity-item mb-3">
-                            <div class="bg-body-tertiary rounded-4 mb-4 p-4">
+                            <div class="border rounded-4 mb-4 p-4">
                                     <div class="row g-0 align-items-center">
                                         <div class="col-2 col-lg-1 pe-3">
                                             <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
@@ -94,8 +94,8 @@ if ($user): ?>
                                         <a href="<?= base_url($val->post_path); ?>" class="text-body" target="_blank">
                                             <?= $metadata->title; ?>
                                         </a>
-                                        <p class="fs-5 text-muted"><?= isset($metadata->description) ? truncate($metadata->description, 160) : ''; ?></p>
                                     </h3>
+                                    <p class="text-muted"><?= isset($metadata->description) ? truncate($metadata->description, 160) : ''; ?></p>
                                 </div>
                         </div>
                     <?php endforeach; ?>
