@@ -1,4 +1,24 @@
 $(document).ready(function() {
+  if (! $('#comment-dropdown-style').length) {
+    $('head').append(`
+      <style id="comment-dropdown-style">
+        @media (min-width: 992px) {
+          .comment-item .comment-dropdown {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .15s ease-in-out;
+          }
+
+          .comment-item:hover .comment-dropdown,
+          .comment-item:focus-within .comment-dropdown {
+            opacity: 1;
+            pointer-events: auto;
+          }
+        }
+      </style>
+    `);
+  }
+
   /**
    * Trigger submit on enter, except holding the shift key
    */
@@ -102,10 +122,45 @@ $(document).ready(function() {
                 </a>
               </div>
               <div class="col-11 ps-3">
-                <div class="position-relative">
-                  <div class="dropdown position-absolute end-0">
-                    <button class="btn btn-link text-body btn-sm rounded-pill dropdown-toggle" type="button" id="dropdownMenuButton${ val.comment_id }" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="mdi mdi-format-list-checks"></i>
+                <div class="d-flex align-items-center gap-1">
+                  <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
+                    <div class="comment-header">
+                      <a href="${ val.links.profile_url }" class="text-body --xhr">
+                        <b id="comment-author-${ val.comment_id }">
+                          ${ val.first_name } ${ val.last_name }
+                        </b>
+                      </a>
+                      &middot;
+                      <span class="text-muted">
+                        ${ val.created_at }
+                      </span>
+                    </div>
+                    <div id="comment-text-${ val.comment_id }">
+                      ` + (typeof val.mention !== 'undefined' ? `
+                        <div class="alert alert-warning callout p-2 mb-2">
+                          ${ phrase('Replying to') } <b> ${ val.mention.user } </b>
+                          <br />
+                          ${ val.mention.comment }
+                        </div>
+                      ` : ``) +
+
+                      (val.status > 0 ? `
+                        ${ val.comments }
+                        ` + (Object.keys(val.attachment).length ? `
+                          <div class="my-2">
+                            <a href="${ val.attachment.original }" class="d-block" target="_blank">
+                              <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-4" style="max-width:320px" alt="${ phrase('Attachment') }" loading="lazy" decoding="async" />
+                            </a>
+                          </div>
+                        ` : ``) + `
+                      ` : `
+                        <i class="text-muted">${ phrase('Comment is hidden') }</i>
+                      `) + `
+                    </div>
+                  </div>
+                  <div class="dropdown comment-dropdown flex-shrink-0">
+                    <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton${ val.comment_id }" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="mdi mdi-dots-horizontal fs-5"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="dropdownMenuButton${ val.comment_id }">
                       ` + (val.links.update_url ? `
@@ -132,38 +187,8 @@ $(document).ready(function() {
                     </ul>
                   </div>
                 </div>
-                <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
-                  <a href="${ val.links.profile_url }" class="--xhr">
-                    <b id="comment-author-${ val.comment_id }">
-                      ${ val.first_name } ${ val.last_name }
-                    </b>
-                  </a>
-                  <br />
-                  <div id="comment-text-${ val.comment_id }">
-                    ` + (typeof val.mention !== 'undefined' ? `
-                      <div class="alert alert-warning callout p-2 mb-2">
-                        ${ phrase('Replying to') } <b> ${ val.mention.user } </b>
-                        <br />
-                        ${ val.mention.comment }
-                      </div>
-                    ` : ``) +
-
-                    (val.status > 0 ? `
-                      ${ val.comments }
-                      ` + (Object.keys(val.attachment).length ? `
-                        <div class="mt-3">
-                          <a href="${ val.attachment.original }" target="_blank">
-                            <img src="${ val.attachment.thumbnail }" class="img-fluid rounded-5" alt="${ phrase('Attachment') }" loading="lazy" decoding="async" />
-                          </a>
-                        </div>
-                      ` : ``) + `
-                    ` : `
-                      <i class="text-muted">${ phrase('Comment is hidden') }</i>
-                    `) + `
-                  </div>
-                </div>
                 <div class="py-1 ps-3">
-                  <a href="${ val.links.upvote_url || window.location.href }" data-href="${ val.links.upvote_url }" class="text-sm --upvote">
+                  <a href="${ val.links.upvote_url || window.location.href }" data-href="${ val.links.upvote_url }" class="small text-body --upvote">
                     <b class="text-secondary" id="comment-upvote-${ val.comment_id }">
                       ${ (val.upvotes > 0 ? val.upvotes : '') }
                     </b>
@@ -172,15 +197,11 @@ $(document).ready(function() {
                     </b>
                   </a>
                   &middot;
-                  <a href="${ val.links.reply_url || window.location.href }" data-href="${ val.links.reply_url }" class="text-sm --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
+                  <a href="${ val.links.reply_url || window.location.href }" data-href="${ val.links.reply_url }" class="small text-body --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
                     <b>
                       ${ phrase('Reply') }
                     </b>
                   </a>
-                  &middot;
-                  <span class="text-muted text-sm">
-                    ${ val.created_at }
-                  </span>
                 </div>
               </div>
             </div>
