@@ -186,7 +186,7 @@ class Feedback extends Core
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>

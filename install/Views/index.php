@@ -71,7 +71,7 @@ $is_rtl = in_array(session()->get('language'), [
         </style>
     </head>
     <body class="bg-light">
-        <button type="button" class="btn btn-light btn-sm rounded-pill shadow-sm theme-toggle" data-theme-toggle aria-label="<?= phrase('Toggle theme'); ?>" title="<?= phrase('Toggle theme'); ?>">
+        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill shadow-sm theme-toggle" data-theme-toggle aria-label="<?= phrase('Toggle theme'); ?>" title="<?= phrase('Toggle theme'); ?>">
             <i class="mdi mdi-weather-night" aria-hidden="true"></i>
         </button>
         <main class="container-fluid h-100" id="installer-main">

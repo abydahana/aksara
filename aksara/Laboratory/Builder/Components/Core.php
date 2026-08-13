@@ -212,7 +212,7 @@ class Core
                                             </a>
                                         {% endfor %}
                                         {% if row.dropdowns | length > 0 %}
-                                            <a href="{{ current_page() }}" class="btn btn-light --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <a href="{{ current_page() }}" class="btn btn-outline-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
                                                 <i class="mdi mdi-format-list-bulleted"></i>
                                             </a>
                                         {% endif %}
@@ -682,7 +682,7 @@ class Core
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light me-1" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">
                             {{ phrase('Cancel') }}
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
@@ -851,7 +851,7 @@ class Core
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light me-1" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">
                             {{ phrase('Close') }}
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>

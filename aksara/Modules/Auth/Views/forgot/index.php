@@ -45,7 +45,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="d-grid">
-                                    <a href="<?= current_page('../'); ?>" class="btn btn-light --xhr">
+                                    <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary --xhr">
                                         <i class="mdi mdi-arrow-left"></i> <?= phrase('Back'); ?>
                                     </a>
                                 </div>

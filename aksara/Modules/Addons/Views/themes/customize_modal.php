@@ -132,7 +132,7 @@
         <hr class="mx--3" />
         <div class="row">
             <div class="col-md-12 text-end">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     <?= phrase('Close'); ?>
                     <em class="text-sm">(esc)</em>
                 </button>
