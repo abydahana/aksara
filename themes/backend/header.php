@@ -24,11 +24,6 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
-                    <button type="button" role="button" class="nav-link py-0" data-toggle="sidebar" aria-label="Toggle Sidebar">
-                        <i class="mdi mdi-menu-open fs-4" data-sidebar-toggle-icon></i>
-                    </button>
-                </li>
-                <li class="nav-item">
                     <?php if (get_userdata('year')): ?>
                         <div class="dropdown">
                             <button class="btn btn-danger btn-sm border-light fw-bold rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
