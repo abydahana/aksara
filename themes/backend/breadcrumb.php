@@ -3,7 +3,7 @@
  * @var array $breadcrumb
  */
 ?>
-<nav data-role="breadcrumb" class="position-fixed w-100 bg-body border-bottom" id="breadcrumb-wrapper" aria-label="<?= phrase('Breadcrumb'); ?>">
+<nav data-role="breadcrumb" class="position-fixed w-100 border-bottom bg-body" id="breadcrumb-wrapper" aria-label="<?= phrase('Breadcrumb'); ?>">
     <div class="container-fluid">
         <ol class="breadcrumb rounded-0 mb-0">
             <?php foreach ($breadcrumb as $key => $val): ?>

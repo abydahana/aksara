@@ -26,7 +26,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #0c1b33;
     box-shadow: none;
     transition: transform 0.16s ease, background 0.2s ease;
   }
@@ -173,7 +172,7 @@
     max-height: 85vh !important;
     min-height: 240px;
     border-top-left-radius: 1.25rem;
-    border-top-right-radius: 1.25rem;
+    border-top-right-radius: 1.25rem
   }
 
   /* Payment + Inquiry + QRIS + Steps sheet — content-driven height, capped at full screen */
@@ -617,7 +616,10 @@
     touch-action: none;
   }
 
-
+  #offcanvasNavbarDark.offcanvas.offcanvas-bottom,
+  .bottom-sub-sheet {
+    border-top: 1px solid rgba(255,255,255,.25) !important
+  }
 
   /* Override Bootstrap offcanvas for smaller width devices */
   .offcanvas-start,

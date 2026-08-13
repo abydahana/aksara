@@ -3,7 +3,7 @@
  * @var object $meta
  */
 ?>
-<header data-role="header" class="navbar navbar-expand-lg border-bottom fixed-top bg-body" id="header-wrapper">
+<header data-role="header" class="navbar navbar-expand-lg bg-body border-bottom fixed-top" id="header-wrapper">
     <div class="container-fluid">
         <div class="navbar-brand pt-0 pb-0 d-none d-lg-block">
             <a href="<?= base_url(); ?>" target="_blank">
@@ -14,8 +14,12 @@
         <a href="<?= current_page(); ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" data-role="title">
             <?= $meta->title; ?>
         </a>
-        <button class="navbar-toggler border-0" type="button" data-toggle="sidebar" aria-label="<?= phrase('Toggle sidebar'); ?>">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler mobile-menu-toggle border-0" type="button" data-toggle="sidebar" aria-label="<?= phrase('Toggle sidebar'); ?>" aria-expanded="false">
+            <span class="mobile-menu-toggle-lines" aria-hidden="true">
+                <span class="mobile-menu-toggle-line"></span>
+                <span class="mobile-menu-toggle-line"></span>
+                <span class="mobile-menu-toggle-line"></span>
+            </span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto align-items-center">
@@ -84,29 +88,3 @@
         </div>
     </div>
 </header>
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const icons = document.querySelectorAll('[data-sidebar-toggle-icon]');
-
-        if (! icons.length) {
-            return;
-        }
-
-        const updateSidebarIcon = function() {
-            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-
-            icons.forEach(function(icon) {
-                icon.classList.toggle('mdi-menu', isCollapsed);
-                icon.classList.toggle('mdi-menu-open', ! isCollapsed);
-            });
-        };
-
-        document.body.addEventListener('click', function(event) {
-            if (event.target.closest('[data-toggle="sidebar"]')) {
-                setTimeout(updateSidebarIcon, 0);
-            }
-        });
-
-        updateSidebarIcon();
-    });
-</script>
