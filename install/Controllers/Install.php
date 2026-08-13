@@ -371,6 +371,9 @@ class Install extends BaseController
             session()->set('installation_mode', 0);
         }
 
+        // Set max execution time to 5 minutes
+        ini_set('max_execution_time', 300);
+
         // Get config source
         $config_source = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 
