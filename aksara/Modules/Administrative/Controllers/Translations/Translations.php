@@ -86,6 +86,8 @@ class Translations extends Core
             } else {
                 file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $languageCode . '.json', json_encode([]));
             }
+
+            clear_translations_cache($languageCode);
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }
@@ -102,6 +104,13 @@ class Translations extends Core
             if ($oldCode && $newCode && file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $oldCode . '.json')) {
                 rename(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $oldCode . '.json', WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $newCode . '.json');
             }
+
+            foreach (glob(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $oldCode . '.json') ?: [] as $file) {
+                rename($file, dirname($file) . DIRECTORY_SEPARATOR . $newCode . '.json');
+            }
+
+            clear_translations_cache($oldCode);
+            clear_translations_cache($newCode);
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
         }

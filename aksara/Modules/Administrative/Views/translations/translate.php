@@ -5,6 +5,7 @@
  * @var mixed $total_phrases
  * @var mixed $pagination
  * @var mixed $phrases
+ * @var array $phrase_scopes
  */
 $field_data = $results[0];
 ?>
@@ -76,11 +77,13 @@ $field_data = $results[0];
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row">
             <?php foreach ($phrases as $key => $val): ?>
+                <?php $scope = $phrase_scopes->$key ?? 'core'; ?>
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <div class="input-group">
+                            <input type="hidden" name="phrase_scopes[<?= $key; ?>]" value="<?= htmlspecialchars($scope); ?>" />
                             <input type="text" name="phrases[<?= $key; ?>]" class="form-control" value="<?= $val; ?>" placeholder="<?= $key; ?>" data-bs-toggle="tooltip" title="<?= $key; ?>" autocomplete="off" />
-                            <a href="<?= current_page('delete_phrase', ['phrase' => $key]); ?>" class="btn border --open-delete-confirm" data-bs-toggle="tooltip" title="<?= phrase('Delete Phrase'); ?>">
+                            <a href="<?= current_page('delete_phrase', ['phrase' => $key, 'scope' => $scope]); ?>" class="btn border --open-delete-confirm" data-bs-toggle="tooltip" title="<?= phrase('Delete Phrase'); ?>">
                                 <i class="mdi mdi-trash-can-outline"></i>
                             </a>
                         </div>
