@@ -31,7 +31,7 @@ $routes->group(
         $routes->get('svg/polygon.svg', 'Svg::polygon');
         $routes->get('svg/linestring.svg', 'Svg::linestring');
         $routes->get('svg/folder.svg', 'Svg::folder');
-        $routes->get('svg/back_arrow.svg', 'Svg::back_arrow');
+        $routes->get('svg/back_arrow.svg', 'Svg::backArrow');
 
         $routes->get('(:any)', 'Assets::index');
     }
