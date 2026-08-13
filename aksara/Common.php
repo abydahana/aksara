@@ -333,32 +333,13 @@ if (! function_exists('phrase')) {
             }
         }
 
-        // 2. File Handling
-        $translation_file = translation_file($language, translation_scope_from_trace());
-
-        if (! file_exists($translation_file)) {
-            if (! is_dir(dirname($translation_file))) {
-                try {
-                    mkdir(dirname($translation_file), 0755, true);
-                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
-                    log_message('error', '[TRANSLATION] ' . $e->getMessage());
-                }
-            } elseif (is_writable(dirname($translation_file))) {
-                try {
-                    file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
-                    log_message('error', '[TRANSLATION] ' . $e->getMessage());
-                }
-            }
-        }
-
         try {
-            // 3. Process Translation
+            // 2. Process Translation
             $phrases = load_translations($language);
 
             if (! isset($phrases[$phrase]) && ! $checking) {
                 // Only append new phrase if checking is false
+                $translation_file = translation_file($language, translation_scope_from_trace());
                 $scoped_phrases = [];
 
                 if (file_exists($translation_file)) {
@@ -380,7 +361,7 @@ if (! function_exists('phrase')) {
                     mkdir(dirname($translation_file), 0755, true);
                 }
 
-                if (file_exists($translation_file) && is_writable($translation_file)) {
+                if ((! file_exists($translation_file) && is_writable(dirname($translation_file))) || is_writable($translation_file)) {
                     // No translation exists
                     $json_content = json_encode(
                         $scoped_phrases,
