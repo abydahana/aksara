@@ -12,7 +12,7 @@
 </style>
 
 <div class="card-group">
-    <div class="card border-top-0 border-bottom-0 border-start-0">
+    <div class="card border-top-0 border-bottom-0 border-start-0 rounded-top-0">
         <div class="card-body">
             <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                 <div class="mb-3">
@@ -39,7 +39,7 @@
                             <i class="mdi mdi-fingerprint" style="width:22px"></i>
                         </span>
                         <input type="password" name="password" class="form-control rounded-0" id="password_input" placeholder="<?= phrase('Enter password'); ?>" autocomplete="new-password" style="border-right:0" />
-                        <span class="input-group-text bg-body-tertiary rounded-pill rounded-start-0" style="border-left:0">
+                        <span class="input-group-text bg-body rounded-pill rounded-start-0" style="border-left:0">
                             <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                         </span>
                     </div>
@@ -89,7 +89,7 @@
     </div>
 
     <?php if (get_setting('frontend_registration')): ?>
-        <div class="card border-top-0 border-end-0 border-bottom-0">
+        <div class="card border-top-0 border-end-0 border-bottom-0 rounded-top-0">
             <div class="card-body d-flex align-items-center justify-content-center">
                 <div>
                     <p class="fs-5 text-center text-secondary">
