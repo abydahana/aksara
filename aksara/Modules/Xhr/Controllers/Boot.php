@@ -23,7 +23,7 @@ class Boot extends Core
 {
     public function index()
     {
-        $phrases = array_map('trim', explode(',', 'Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, January, February, March, April, May, June, July, August, September, October, November, December, now, second, second_plural, minute, minute_plural, hour, hour_plural, day, day_plural, month, month_plural, year, year_plural'));
+        $phrases = array_map('trim', explode(',', 'Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, January, February, March, April, May, June, July, August, September, October, November, December, now, second, seconds, minute, minutes, hour, hours, day, days, month, months, year, years'));
 
         foreach ($phrases as $key => $val) {
             phrase($val);
