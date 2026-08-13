@@ -54,37 +54,15 @@ class Synchronize extends Core
         if ($languages) {
             foreach ($languages as $language) {
                 $existing_scopes = $this->_translationDocuments($language);
-                $existing_owners = [];
-                $existing_values = [];
-
-                foreach ($existing_scopes as $existing_scope => $existing_phrases) {
-                    foreach ($existing_phrases as $phrase_key => $phrase_value) {
-                        if (! isset($existing_owners[$phrase_key])) {
-                            $existing_owners[$phrase_key] = $existing_scope;
-                            $existing_values[$phrase_key] = $phrase_value;
-                        }
-                    }
-                }
-
-                $generated_owners = [];
-
-                foreach ($generated_scopes as $scope => $generated_phrases) {
-                    foreach ($generated_phrases as $phrase_key => $phrase_value) {
-                        if (! isset($generated_owners[$phrase_key])) {
-                            $generated_owners[$phrase_key] = $existing_owners[$phrase_key] ?? $scope;
-                        }
-                    }
-                }
 
                 foreach ($generated_scopes as $scope => $generated_phrases) {
                     try {
                         $file = $this->_translationFile($language, $scope);
-                        $phrases = [];
+                        $existing_phrases = $existing_scopes[$scope] ?? [];
+                        $phrases = array_combine(array_keys($generated_phrases), array_keys($generated_phrases)) ?: [];
 
-                        foreach ($generated_owners as $phrase_key => $owner_scope) {
-                            if ($owner_scope === $scope) {
-                                $phrases[$phrase_key] = $existing_values[$phrase_key] ?? $phrase_key;
-                            }
+                        if (is_array($existing_phrases)) {
+                            $phrases = array_merge($phrases, array_intersect_key($existing_phrases, $phrases));
                         }
 
                         if (! $phrases) {
