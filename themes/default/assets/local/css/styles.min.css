@@ -244,13 +244,13 @@ a {
     max-height: 200px;
     object-fit: cover;
   }
-  .toast-container.position-fixed.bottom-0.end-0 {
+  .toast-container.position-fixed.bottom-0 {
     width: 100%;
     top: 60px !important;
     left: 0 !important;
     right: 0 !important;
   }
-  .toast-container.position-fixed.bottom-0.end-0 .toast {
+  .toast-container.position-fixed.bottom-0 .toast {
     width: 100%;
     max-width: 575.98px !important;
   }

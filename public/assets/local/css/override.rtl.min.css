@@ -356,7 +356,7 @@
 }
 /* Toast container mobile fix */
 @media (max-width: 575.98px) {
-  [dir="rtl"] .toast-container.position-fixed.bottom-0.end-0 {
+  [dir="rtl"] .toast-container.position-fixed.bottom-0 {
     left: 0 !important;
     right: 0 !important;
   }
