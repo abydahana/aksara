@@ -99,7 +99,7 @@
 
             echo asset_loader([
                 'bootstrap/js/bootstrap.bundle.min.js',
-                'local/js/script.min.js'
+                'local/js/scripts.min.js'
             ]);
         ?>
 
