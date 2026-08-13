@@ -46,6 +46,7 @@ class Synchronize extends Core
         $languages = $this->_languages();
         $error = 0;
         $unique_phrases = [];
+        $existing_documents = [];
 
         foreach ($generated_scopes as $generated_phrases) {
             $unique_phrases += $generated_phrases;
@@ -53,7 +54,22 @@ class Synchronize extends Core
 
         if ($languages) {
             foreach ($languages as $language) {
-                $existing_scopes = $this->_translationDocuments($language);
+                $existing_documents[$language] = $this->_translationDocuments($language);
+
+                foreach ($existing_documents[$language] as $scope => $existing_phrases) {
+                    if (! isset($generated_scopes[$scope])) {
+                        $generated_scopes[$scope] = [];
+                    }
+
+                    foreach (array_keys($existing_phrases) as $phrase) {
+                        $generated_scopes[$scope][$phrase] = $phrase;
+                        $unique_phrases[$phrase] = $phrase;
+                    }
+                }
+            }
+
+            foreach ($languages as $language) {
+                $existing_scopes = $existing_documents[$language] ?? [];
 
                 foreach ($generated_scopes as $scope => $generated_phrases) {
                     try {
