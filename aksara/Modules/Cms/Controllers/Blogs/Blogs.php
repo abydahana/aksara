@@ -73,8 +73,6 @@ class Blogs extends Core
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
-        } else {
-            $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
         $this->setTitle(phrase('Blogs'))
