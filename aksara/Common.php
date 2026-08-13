@@ -163,6 +163,125 @@ if (! function_exists('unset_userdata')) {
     }
 }
 
+if (! function_exists('load_translations')) {
+    /**
+     * Load and merge translations for a language.
+     *
+     * Translations are loaded from the core file and every module-scope file,
+     * then cached per request and under writable/cache/translations.
+     *
+     * @param   string $language Language code
+     * @param   bool   $clear Clear static cache instead of loading translations
+     * @return  array Merged phrase map
+     */
+    function load_translations(string $language, bool $clear = false): array
+    {
+        static $translations = [];
+
+        if ($clear) {
+            if ('*' === $language) {
+                $translations = [];
+            } else {
+                unset($translations[$language]);
+            }
+
+            return [];
+        }
+
+        if (isset($translations[$language])) {
+            return $translations[$language];
+        }
+
+        $phrases = [];
+        $base = WRITEPATH . 'translations';
+        $files = [translation_file($language)];
+
+        foreach (glob($base . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $language . '.json') ?: [] as $file) {
+            $files[] = $file;
+        }
+
+        $cache_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
+        $cache_file = $cache_path . DIRECTORY_SEPARATOR . $language . '.json';
+
+        try {
+            foreach (glob($cache_path . DIRECTORY_SEPARATOR . $language . '-*.json') ?: [] as $file) {
+                @unlink($file);
+            }
+
+            if (file_exists($cache_file) && ! translations_cache_is_stale($cache_file, $files)) {
+                $cached = json_decode(file_get_contents($cache_file) ?: '[]', true);
+
+                if (is_array($cached)) {
+                    return $translations[$language] = $cached;
+                }
+            }
+        } catch (\Throwable $e) {
+            log_message('error', '[TRANSLATION] Unable to load translation cache: ' . $e->getMessage());
+        }
+
+        foreach ($files as $file) {
+            if (! file_exists($file)) {
+                continue;
+            }
+
+            $buffer = file_get_contents($file);
+            $decoded = json_decode($buffer ?: '[]', true);
+
+            if (JSON_ERROR_NONE === json_last_error() && is_array($decoded)) {
+                $phrases += $decoded;
+            }
+        }
+
+        try {
+            if (! is_dir($cache_path)) {
+                mkdir($cache_path, 0755, true);
+            }
+
+            file_put_contents($cache_file, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+        } catch (\Throwable $e) {
+            log_message('error', '[TRANSLATION] Unable to save translation cache: ' . $e->getMessage());
+        }
+
+        return $translations[$language] = $phrases;
+    }
+}
+
+if (! function_exists('clear_translations_cache')) {
+    /**
+     * Clear in-request translation cache.
+     *
+     * Passing a language clears only that language. Passing null clears all
+     * loaded language caches for the current request.
+     *
+     * @param   string|null $language Language code
+     */
+    function clear_translations_cache(?string $language = null): void
+    {
+        load_translations($language ?: '*', true);
+    }
+}
+
+if (! function_exists('translations_cache_is_stale')) {
+    /**
+     * Check whether a translation cache file is older than its source files.
+     *
+     * @param   string $cache_file Cache file path
+     * @param   array  $source_files Translation/source file paths
+     */
+    function translations_cache_is_stale(string $cache_file, array $source_files): bool
+    {
+        $cache_time = filemtime($cache_file);
+
+        foreach ($source_files as $file) {
+            if (file_exists($file) && filemtime($file) > $cache_time) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 if (! function_exists('phrase')) {
     /**
      * Translate a string/phrase.
@@ -215,17 +334,17 @@ if (! function_exists('phrase')) {
         }
 
         // 2. File Handling
-        $translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
+        $translation_file = translation_file($language, translation_scope_from_trace());
 
         if (! file_exists($translation_file)) {
-            if (! is_dir(WRITEPATH . 'translations')) {
+            if (! is_dir(dirname($translation_file))) {
                 try {
-                    mkdir(WRITEPATH . 'translations', 0755, true);
+                    mkdir(dirname($translation_file), 0755, true);
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (\Throwable $e) {
                     log_message('error', '[TRANSLATION] ' . $e->getMessage());
                 }
-            } elseif (is_writable(WRITEPATH . 'translations')) {
+            } elseif (is_writable(dirname($translation_file))) {
                 try {
                     file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 } catch (\Throwable $e) {
@@ -236,28 +355,35 @@ if (! function_exists('phrase')) {
 
         try {
             // 3. Process Translation
-            $phrases = [];
-            $buffer = file_get_contents($translation_file);
-
-            if ($buffer && is_string($buffer)) {
-                $buffer = json_decode($buffer, true);
-
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $phrases = $buffer;
-                }
-            }
+            $phrases = load_translations($language);
 
             if (! isset($phrases[$phrase]) && ! $checking) {
                 // Only append new phrase if checking is false
+                $scoped_phrases = [];
+
+                if (file_exists($translation_file)) {
+                    $scoped_buffer = file_get_contents($translation_file);
+                    $scoped_phrases = json_decode($scoped_buffer ?: '[]', true);
+                }
+
+                if (! is_array($scoped_phrases)) {
+                    $scoped_phrases = [];
+                }
+
+                $scoped_phrases[$phrase] = $phrase;
                 $phrases[$phrase] = $phrase;
 
                 // Sort phrases by key
-                ksort($phrases);
+                ksort($scoped_phrases);
+
+                if (! is_dir(dirname($translation_file))) {
+                    mkdir(dirname($translation_file), 0755, true);
+                }
 
                 if (file_exists($translation_file) && is_writable($translation_file)) {
                     // No translation exists
                     $json_content = json_encode(
-                        $phrases,
+                        $scoped_phrases,
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
@@ -265,6 +391,7 @@ if (! function_exists('phrase')) {
 
                     // Create new translation file
                     file_put_contents($translation_file, $json_content, LOCK_EX);
+                    clear_translations_cache($language);
                 }
             }
 
@@ -388,5 +515,75 @@ if (! function_exists('is_liked')) {
         }
 
         return false;
+    }
+}
+
+if (! function_exists('translation_scope_from_path')) {
+    /**
+     * Resolve translation scope from a source file path.
+     *
+     * Files under modules/{ModuleName} are scoped to the lowercase module name.
+     * All other files are treated as core translations.
+     *
+     * @param   string|null $path Source file path
+     * @return  string Translation scope name
+     */
+    function translation_scope_from_path(?string $path = null): string
+    {
+        $path = $path ?: '';
+        $normalized = str_replace('\\', '/', $path);
+        $root = rtrim(str_replace('\\', '/', ROOTPATH), '/') . '/';
+
+        if ($root && str_starts_with($normalized, $root)) {
+            $normalized = substr($normalized, strlen($root));
+        }
+
+        if (preg_match('#^modules/([^/]+)/#i', $normalized, $match)) {
+            return strtolower($match[1]);
+        }
+
+        return 'core';
+    }
+}
+
+if (! function_exists('translation_scope_from_trace')) {
+    /**
+     * Resolve translation scope from the current call stack.
+     *
+     * This is used by phrase() to append new phrases into the module file
+     * that originally called it.
+     *
+     * @return  string Translation scope name
+     */
+    function translation_scope_from_trace(): string
+    {
+        foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 12) as $trace) {
+            if (! empty($trace['file'])) {
+                $scope = translation_scope_from_path($trace['file']);
+
+                if ('core' !== $scope) {
+                    return $scope;
+                }
+            }
+        }
+
+        return 'core';
+    }
+}
+
+if (! function_exists('translation_file')) {
+    /**
+     * Build writable translation file path for a language and scope.
+     *
+     * Core translations are stored at writable/translations/{language}.json,
+     * while module translations are stored at writable/translations/{scope}/{language}.json.
+     *
+     * @param   string $language Language code
+     * @param   string $scope Translation scope name
+     * @return  string Absolute translation file path
+     */
+    function translation_file(string $language, string $scope = 'core'): string
+    {
+        return WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . ('core' === $scope ? '' : $scope . DIRECTORY_SEPARATOR) . $language . '.json';
     }
 }

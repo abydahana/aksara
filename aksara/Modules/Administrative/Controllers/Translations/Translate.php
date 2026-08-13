@@ -31,6 +31,7 @@ class Translate extends Core
     private ?int $_limit;
     private ?int $_limitBackup = 99;
     private ?int $_offset;
+    private array $_phraseScopes = [];
 
     public function __construct()
     {
@@ -65,6 +66,7 @@ class Translate extends Core
         ->setIcon('mdi mdi-translate')
         ->setOutput([
             'phrases' => $phrases,
+            'phrase_scopes' => $this->_phraseScopes,
             'total_phrases' => $this->_totalPhrases,
             'pagination' => $template->pagination([
                 'limit' => $this->_limitBackup,
@@ -91,34 +93,23 @@ class Translate extends Core
         }
 
         $delete_key = $this->request->getGet('phrase');
-
         helper('filesystem');
 
-        $languages = get_filenames(WRITEPATH . 'translations');
+        $languages = $this->_translationDocuments();
         $error = 0;
 
         if ($languages) {
-            foreach ($languages as $key => $val) {
-                if (strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') {
-                    // Not a translation file
-                    continue;
-                }
-
+            foreach ($languages as $scope => $document) {
                 try {
-                    // Attempt to get the translation source
-                    $translation = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
-                    $phrases = json_decode($translation, true);
+                    $phrases = $document['phrases'];
 
-                    // Delete phrase
                     unset($phrases[$delete_key]);
 
-                    // Sort and humanize the order of phrase
                     ksort($phrases);
 
-                    // Attempt to update the translation file
-                    file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
+                    file_put_contents($document['file'], json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
+                    clear_translations_cache($this->_code);
                 } catch (Throwable $e) {
-                    // Failed to write file, increase error counts
                     $error++;
                 }
             }
@@ -137,25 +128,34 @@ class Translate extends Core
             return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page());
         }
 
-        if (file_exists($this->_translationFile)) {
+        if (file_exists($this->_translationFile) || is_dir(WRITEPATH . 'translations')) {
             try {
                 // Set internal encoding to UTF-8
                 mb_internal_encoding('UTF-8');
 
-                $translation = file_get_contents($this->_translationFile);
-                $phrases = json_decode($translation, true);
                 $phrases_input = $this->request->getPost('phrases');
-
-                if (! is_array($phrases)) {
-                    $phrases = [];
-                }
+                $phrase_scopes = $this->request->getPost('phrase_scopes');
+                $documents = $this->_translationDocuments($this->_code);
 
                 if (! is_array($phrases_input)) {
                     $phrases_input = [];
                 }
 
+                if (! is_array($phrase_scopes)) {
+                    $phrase_scopes = [];
+                }
+
                 foreach ($phrases_input as $key => $val) {
-                    if (isset($phrases[$key])) {
+                    $scope = $phrase_scopes[$key] ?? 'core';
+
+                    if (! isset($documents[$scope])) {
+                        $documents[$scope] = [
+                            'file' => $this->_translationFile($this->_code, $scope),
+                            'phrases' => []
+                        ];
+                    }
+
+                    if (isset($documents[$scope]['phrases'][$key])) {
                         if ($val) {
                             // Sanitize unsafe input - allow safe formatting tags
                             $val = strip_tags($val, '<a><b><i><u><strong><em><small><br><span>');
@@ -242,20 +242,35 @@ class Translate extends Core
                             $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8');
                         }
 
-                        $phrases[$key] = $val;
+                        $documents[$scope]['phrases'][$key] = $val;
+
+                        foreach ($documents as $document_scope => &$document) {
+                            if ($document_scope !== $scope) {
+                                unset($document['phrases'][$key]);
+                            }
+                        }
+                        unset($document);
                     }
                 }
 
-                // Save with proper UTF-8 encoding flags
-                $json_content = json_encode(
-                    $phrases,
-                    JSON_PRETTY_PRINT |
-                    JSON_UNESCAPED_SLASHES |
-                    JSON_UNESCAPED_UNICODE
-                );
+                foreach ($documents as $document) {
+                    if (! is_dir(dirname($document['file']))) {
+                        mkdir(dirname($document['file']), 0755, true);
+                    }
 
-                // Write with file lock to prevent race condition
-                file_put_contents($this->_translationFile, $json_content, LOCK_EX);
+                    ksort($document['phrases']);
+
+                    $json_content = json_encode(
+                        $document['phrases'],
+                        JSON_PRETTY_PRINT |
+                        JSON_UNESCAPED_SLASHES |
+                        JSON_UNESCAPED_UNICODE
+                    );
+
+                    file_put_contents($document['file'], $json_content, LOCK_EX);
+                }
+
+                clear_translations_cache($this->_code);
 
                 return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
             } catch (Throwable $e) {
@@ -269,17 +284,25 @@ class Translate extends Core
     private function _phrases()
     {
         $phrases = [];
+        $scopes = [];
 
         // Check if translation file is exists
-        if (file_exists($this->_translationFile)) {
-            $translation = file_get_contents($this->_translationFile);
-            $phrases = json_decode($translation, true);
+        if (file_exists($this->_translationFile) || is_dir(WRITEPATH . 'translations')) {
+            foreach ($this->_translationDocuments($this->_code) as $scope => $document) {
+                foreach ($document['phrases'] as $key => $val) {
+                    if (! isset($phrases[$key])) {
+                        $phrases[$key] = $val;
+                        $scopes[$key] = $scope;
+                    }
+                }
+            }
 
             if ($phrases) {
                 foreach ($phrases as $key => $val) {
-                    if ($this->request->getGet('q') && stripos($val, $this->request->getGet('q')) === false) {
+                    if ($this->request->getGet('q') && stripos($key . ' ' . $val, $this->request->getGet('q')) === false) {
                         // Unset unmatched phrase
                         unset($phrases[$key]);
+                        unset($scopes[$key]);
                     } else {
                         // Escape translation
                         $phrases[$key] = htmlspecialchars($val);
@@ -306,9 +329,47 @@ class Translate extends Core
             $this->_totalPhrases = sizeof($phrases);
 
             // Slice array
-            $phrases = array_slice($phrases, $this->_offset, $this->_limit);
+            $phrases = array_slice($phrases, $this->_offset, $this->_limit, true);
+            $this->_phraseScopes = array_intersect_key($scopes, $phrases);
         }
 
         return $phrases;
+    }
+
+    private function _translationDocuments(?string $code = null): array
+    {
+        $code = $code ?: $this->_code;
+        $documents = [];
+        $base = WRITEPATH . 'translations';
+        $root = $this->_translationFile($code);
+
+        if (file_exists($root)) {
+            $documents['core'] = [
+                'file' => $root,
+                'phrases' => $this->_readTranslation($root)
+            ];
+        }
+
+        foreach (glob($base . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $code . '.json') ?: [] as $file) {
+            $scope = basename(dirname($file));
+            $documents[$scope] = [
+                'file' => $file,
+                'phrases' => $this->_readTranslation($file)
+            ];
+        }
+
+        return $documents;
+    }
+
+    private function _translationFile(string $code, string $scope = 'core'): string
+    {
+        return WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . ('core' === $scope ? '' : $scope . DIRECTORY_SEPARATOR) . $code . '.json';
+    }
+
+    private function _readTranslation(string $file): array
+    {
+        $phrases = json_decode(file_get_contents($file) ?: '[]', true);
+
+        return is_array($phrases) ? $phrases : [];
     }
 }

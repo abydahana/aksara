@@ -21,6 +21,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
 use Aksara\Laboratory\Core;
+use Aksara\Laboratory\Model;
 
 class Synchronize extends Core
 {
@@ -41,65 +42,74 @@ class Synchronize extends Core
         helper('filesystem');
 
         // Generate phrases from source code
-        $generated_phrases = $this->_generatePhrasesFromSource();
-        $languages = get_filenames(WRITEPATH . 'translations');
-        $populated_phrases = [];
+        $generated_scopes = $this->_generatePhrasesFromSource();
+        $languages = $this->_languages();
         $error = 0;
+        $unique_phrases = [];
+
+        foreach ($generated_scopes as $generated_phrases) {
+            $unique_phrases += $generated_phrases;
+        }
 
         if ($languages) {
-            // First looping, to populate all phrases
-            foreach ($languages as $key => $val) {
-                if (strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') {
-                    // Not a valid translation file
-                    continue;
+            foreach ($languages as $language) {
+                $existing_scopes = $this->_translationDocuments($language);
+                $existing_owners = [];
+                $existing_values = [];
+
+                foreach ($existing_scopes as $existing_scope => $existing_phrases) {
+                    foreach ($existing_phrases as $phrase_key => $phrase_value) {
+                        if (! isset($existing_owners[$phrase_key])) {
+                            $existing_owners[$phrase_key] = $existing_scope;
+                            $existing_values[$phrase_key] = $phrase_value;
+                        }
+                    }
                 }
 
-                try {
-                    // Attempt to get the translation source
-                    $translation = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
+                $generated_owners = [];
 
-                    // Merge phrases
-                    $populated_phrases = array_merge($populated_phrases, json_decode($translation, true));
-                } catch (Throwable $e) {
-                    // Failed to read file
-                    $error++;
-                }
-            }
-
-            // Filter: Keep only phrases that are also found in generated phrases
-            // $populated_phrases = array_intersect_key($populated_phrases, $generated_phrases);
-
-            // Merge with generated phrases from source code
-            $populated_phrases = array_merge($populated_phrases, $generated_phrases);
-
-            // Combine array value using its key
-            $populated_phrases = array_combine(array_keys($populated_phrases), array_keys($populated_phrases));
-
-            // Second looping, to assign populated phrases into translation
-            foreach ($languages as $key => $val) {
-                if (strtolower(pathinfo($val, PATHINFO_EXTENSION)) != 'json') {
-                    // Not a valid translation file
-                    continue;
+                foreach ($generated_scopes as $scope => $generated_phrases) {
+                    foreach ($generated_phrases as $phrase_key => $phrase_value) {
+                        if (! isset($generated_owners[$phrase_key])) {
+                            $generated_owners[$phrase_key] = $existing_owners[$phrase_key] ?? $scope;
+                        }
+                    }
                 }
 
-                try {
-                    // Attempt to get the translation source
-                    $translation = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val);
-                    $phrases = json_decode($translation, true);
+                foreach ($generated_scopes as $scope => $generated_phrases) {
+                    try {
+                        $file = $this->_translationFile($language, $scope);
+                        $phrases = [];
 
-                    // Keep only phrases that are populated
-                    $phrases = array_intersect_key($phrases, $populated_phrases);
+                        foreach ($generated_owners as $phrase_key => $owner_scope) {
+                            if ($owner_scope === $scope) {
+                                $phrases[$phrase_key] = $existing_values[$phrase_key] ?? $phrase_key;
+                            }
+                        }
 
-                    // Merge missing phrases
-                    $phrases = array_merge($populated_phrases, $phrases);
+                        if (! $phrases) {
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
 
-                    // Sort phrases by key
-                    ksort($phrases);
+                            if ('core' !== $scope && is_dir(dirname($file)) && ! (glob(dirname($file) . DIRECTORY_SEPARATOR . '*') ?: [])) {
+                                rmdir(dirname($file));
+                            }
 
-                    file_put_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $val, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                } catch (Throwable $e) {
-                    // Failed to read or write file
-                    $error++;
+                            continue;
+                        }
+
+                        ksort($phrases);
+
+                        if (! is_dir(dirname($file))) {
+                            mkdir(dirname($file), 0755, true);
+                        }
+
+                        file_put_contents($file, json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
+                        clear_translations_cache($language);
+                    } catch (Throwable $e) {
+                        $error++;
+                    }
                 }
             }
         }
@@ -108,7 +118,33 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']), current_page('../'));
         }
 
-        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages) - 1) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($populated_phrases)) . '</b>']), current_page('../'));
+        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($unique_phrases)) . '</b>']), current_page('../'));
+    }
+
+    private function _languages(): array
+    {
+        try {
+            $model = new Model();
+            $languages = $model->select('code')
+            ->getWhere('app_languages')
+            ->result();
+
+            if ($languages) {
+                return array_values(array_filter(array_map(static fn ($language) => $language->code ?? null, $languages)));
+            }
+        } catch (Throwable $e) {
+            log_message('error', '[TRANSLATION] Unable to load language codes: ' . $e->getMessage());
+        }
+
+        $languages = [];
+
+        foreach (get_filenames(WRITEPATH . 'translations') ?: [] as $file) {
+            if ('json' === strtolower(pathinfo($file, PATHINFO_EXTENSION))) {
+                $languages[] = pathinfo($file, PATHINFO_FILENAME);
+            }
+        }
+
+        return array_values(array_unique($languages));
     }
 
     /**
@@ -117,8 +153,8 @@ class Synchronize extends Core
     private function _generatePhrasesFromSource()
     {
         $translations = [];
-        $directories = ['aksara', 'modules', 'themes'];
-        $fileExtensions = ['php', 'twig'];
+        $directories = ['aksara', 'modules', 'themes', 'public/assets/local/js'];
+        $fileExtensions = ['php', 'twig', 'js'];
 
         foreach ($directories as $directory) {
             if (! is_dir(ROOTPATH . $directory)) {
@@ -132,7 +168,7 @@ class Synchronize extends Core
     }
 
     /**
-     * Recursively scan directory for PHP and Twig files
+     * Recursively scan directory for translation-aware source files
      */
     private function _scanDirectory(string $directory, array $fileExtensions, array &$translations)
     {
@@ -202,9 +238,60 @@ class Synchronize extends Core
             return;
         }
 
-        // Add to translations array
-        if (! isset($translations[$key])) {
-            $translations[$key] = $key;
+        $scope = $this->_scopeFromPath($filePath);
+
+        if (! isset($translations[$scope])) {
+            $translations[$scope] = [];
         }
+
+        // Add to translations array
+        if (! isset($translations[$scope][$key])) {
+            $translations[$scope][$key] = $key;
+        }
+    }
+
+    private function _scopeFromPath(string $filePath): string
+    {
+        $normalized = str_replace('\\', '/', $filePath);
+        $root = rtrim(str_replace('\\', '/', ROOTPATH), '/') . '/';
+
+        if (str_starts_with($normalized, $root)) {
+            $normalized = substr($normalized, strlen($root));
+        }
+
+        if (preg_match('#^modules/([^/]+)/#i', $normalized, $match)) {
+            return strtolower($match[1]);
+        }
+
+        return 'core';
+    }
+
+    private function _translationFile(string $language, string $scope = 'core'): string
+    {
+        return WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . ('core' === $scope ? '' : $scope . DIRECTORY_SEPARATOR) . $language . '.json';
+    }
+
+    private function _translationDocuments(string $language): array
+    {
+        $documents = [];
+        $base = WRITEPATH . 'translations';
+        $root = $this->_translationFile($language);
+
+        if (file_exists($root)) {
+            $documents['core'] = $this->_readTranslation($root);
+        }
+
+        foreach (glob($base . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $language . '.json') ?: [] as $file) {
+            $documents[basename(dirname($file))] = $this->_readTranslation($file);
+        }
+
+        return $documents;
+    }
+
+    private function _readTranslation(string $file): array
+    {
+        $phrases = json_decode(file_get_contents($file) ?: '[]', true);
+
+        return is_array($phrases) ? $phrases : [];
     }
 }

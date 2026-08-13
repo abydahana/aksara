@@ -275,15 +275,133 @@ class Assets extends Core
         $phrases = '[]';
 
         try {
-            if (file_exists(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . get_userdata('language') . '.json')) {
-                $phrases = file_get_contents(WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . get_userdata('language') . '.json');
-                $phrases = json_decode($phrases, true);
-            }
+            $phrases = $this->_getScriptTranslations(get_userdata('language'));
         } catch (Throwable $e) {
             log_message('error', '[Aksara] Phrase Loader: ' . $e->getMessage());
         }
 
         return json_encode($phrases, JSON_UNESCAPED_SLASHES);
+    }
+
+    private function _getScriptTranslations(string $language): array
+    {
+        $translations = load_translations($language);
+        $phrase_files = $this->_getScriptPhraseFiles();
+        $translation_files = $this->_getTranslationFiles($language);
+
+        $cache_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
+        $translation_cache_file = $cache_path . DIRECTORY_SEPARATOR . $language . '.json';
+        $cache_file = $cache_path . DIRECTORY_SEPARATOR . 'js-' . $language . '.json';
+        $source_files = array_merge([__FILE__, $translation_cache_file], $phrase_files, $translation_files);
+
+        foreach (glob($cache_path . DIRECTORY_SEPARATOR . 'js-' . $language . '-*.json') ?: [] as $file) {
+            @unlink($file);
+        }
+
+        if (file_exists($cache_file) && ! translations_cache_is_stale($cache_file, $source_files)) {
+            $cached = json_decode(file_get_contents($cache_file) ?: '[]', true);
+
+            if (is_array($cached)) {
+                return $cached;
+            }
+        }
+
+        $script_phrases = $this->_scanScriptPhrases($phrase_files);
+        $phrases = array_merge($script_phrases, array_intersect_key($translations, $script_phrases));
+
+        if (! is_dir($cache_path)) {
+            mkdir($cache_path, 0755, true);
+        }
+
+        file_put_contents($cache_file, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+        return $phrases;
+    }
+
+    private function _getScriptPhraseFiles(): array
+    {
+        $files = [];
+
+        foreach (['aksara', 'modules', 'themes', 'public/assets/local/js'] as $directory) {
+            $path = ROOTPATH . $directory;
+
+            if (! is_dir($path)) {
+                continue;
+            }
+
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+
+            foreach ($iterator as $file) {
+                if ($file->isFile() && in_array(strtolower($file->getExtension()), ['js', 'twig'])) {
+                    $files[] = $file->getPathname();
+                }
+            }
+        }
+
+        sort($files);
+
+        return $files;
+    }
+
+    private function _getTranslationFiles(string $language): array
+    {
+        $base = WRITEPATH . 'translations';
+        $files = [translation_file($language)];
+
+        foreach (glob($base . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $language . '.json') ?: [] as $file) {
+            $files[] = $file;
+        }
+
+        sort($files);
+
+        return $files;
+    }
+
+    private function _scanScriptPhrases(array $files): array
+    {
+        $phrases = [];
+
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+            $content = preg_replace('/\/\*.*?\*\//s', '', $content);
+            $content = preg_replace('/\/\/.*?$/m', '', $content);
+
+            if (preg_match_all("/phrase\s*\(\s*'((?:[^'\\\\]|\\\\.)*)'/", $content, $matches)) {
+                foreach ($matches[1] as $key) {
+                    $this->_addScriptPhrase($key, $phrases);
+                }
+            }
+
+            if (preg_match_all('/phrase\s*\(\s*"((?:[^"\\\\]|\\\\.)*)"/s', $content, $matches)) {
+                foreach ($matches[1] as $key) {
+                    $this->_addScriptPhrase($key, $phrases);
+                }
+            }
+        }
+
+        return $phrases;
+    }
+
+    private function _addScriptPhrase(string $key, array &$phrases): void
+    {
+        $key = str_replace("\\'", "'", $key);
+        $key = str_replace('\\"', '"', $key);
+        $key = trim($key);
+
+        if (empty($key) ||
+            strpos($key, '->') !== false ||
+            strpos($key, "('") !== false ||
+            strlen($key) > 500 ||
+            strpos($key, ';') !== false ||
+            preg_match('/\[.*\]/', $key) ||
+            strpos($key, "\n") !== false ||
+            strpos($key, "\r") !== false) {
+            return;
+        }
+
+        $phrases[$key] = $key;
     }
 
     private function _getComponents(?string $theme = null): string
