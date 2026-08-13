@@ -109,7 +109,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
     <div class="--validation-callback"></div>
     <div class="row">
         <div class="col-md-6">
-            <?= ($error ? '<div class="d-grid"><a href="' . site_url('requirement') . '" class="btn btn-light btn-sm --xhr" aria-label="' . phrase('Refresh') . '"><i class="mdi mdi-reload"></i> ' . phrase('Refresh') . '</a></div>' : '&nbsp;'); ?>
+            <?= ($error ? '<div class="d-grid"><a href="' . site_url('requirement') . '" class="btn btn-outline-secondary btn-sm --xhr" aria-label="' . phrase('Refresh') . '"><i class="mdi mdi-reload"></i> ' . phrase('Refresh') . '</a></div>' : '&nbsp;'); ?>
         </div>
         <div class="col-md-6 text-right">
             <div class="d-grid">

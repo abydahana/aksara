@@ -312,7 +312,7 @@ class Updater extends Core
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
-                                <a href="//www.aksaracms.com/pages/about/donation" class="btn btn-light" target="_blank">
+                                <a href="//www.aksaracms.com/pages/about/donation" class="btn btn-outline-secondary" target="_blank">
                                     <i class="mdi mdi-launch"></i>
                                     ' . phrase('Donate') . '
                                 </a>
@@ -403,7 +403,7 @@ class Updater extends Core
             <div class="row">
                 <div class="col-6">
                     <div class="d-grid">
-                        <a href="javascript:void(0)" class="btn btn-light" data-bs-dismiss="modal">
+                        <a href="javascript:void(0)" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                             <i class="mdi mdi-window-close"></i>
                             ' . phrase('Close') . '
                         </a>

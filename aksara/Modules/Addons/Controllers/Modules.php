@@ -153,7 +153,7 @@ class Modules extends Core
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
-                                <a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light">
+                                <a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-outline-secondary">
                                     <i class="mdi mdi-window-close"></i>
                                     ' . phrase('Cancel') . '
                                 </a>
@@ -518,7 +518,7 @@ class Modules extends Core
                     <div class="row">
                         <div class="col-6">
                             <div class="d-grid">
-                                <a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-light">
+                                <a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-outline-secondary">
                                     <i class="mdi mdi-window-close"></i>
                                     ' . phrase('Cancel') . '
                                 </a>

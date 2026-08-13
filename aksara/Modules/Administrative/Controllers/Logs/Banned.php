@@ -178,7 +178,7 @@ class Banned extends Core
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>

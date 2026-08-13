@@ -179,7 +179,7 @@ foreach ($timezone as $key => $val)
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('security'); ?>" class="btn btn-light btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
+                <a href="<?= site_url('security'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back'); ?>
                 </a>

@@ -111,7 +111,7 @@ class Cleaner extends Core
                     <p>
                         ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
                     </p>
-                    <a href="javascript:void(0)" class="btn btn-light rounded-pill" data-bs-dismiss="modal">
+                    <a href="javascript:void(0)" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>
                         ' . phrase('Close') . '
                         <em class="text-sm">(esc)</em>

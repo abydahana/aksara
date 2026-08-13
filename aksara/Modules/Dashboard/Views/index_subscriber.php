@@ -163,7 +163,7 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                     <p class="small opacity-75 mb-3">
                         <?= phrase('Update your profile or change your security settings here.'); ?>
                     </p>
-                    <a href="<?= base_url('administrative/account'); ?>" class="btn btn-light btn-sm rounded-pill px-4 --xhr">
+                    <a href="<?= base_url('administrative/account'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-4 --xhr">
                         <?= phrase('Manage Account'); ?>
                     </a>
                 </div>
