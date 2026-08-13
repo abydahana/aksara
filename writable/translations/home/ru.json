@@ -7,10 +7,13 @@
     "Collected from all galleries": "Собрано из всех галерей",
     "Collected from submitted comments": "Собрано из отправленных комментариев",
     "Daily Visits": "Посещения за день",
+    "Documentation": "Documentation",
     "Explore Articles": "Изучить статьи",
     "Featured Galleries": "Избранные галереи",
+    "Features": "Возможности",
     "Get Closer": "Узнать нас ближе",
     "Get Started": "Начать",
+    "Home": "Главная",
     "Interactions": "Взаимодействия",
     "Meet Us": "Познакомьтесь с нами",
     "Monthly Visits": "Посещения за месяц",
@@ -26,5 +29,6 @@
     "Weekly Visits": "Посещения за неделю",
     "Welcome": "Добро пожаловать",
     "Yearly Visits": "Посещения за год",
-    "and will continue to grow": "и продолжит расти"
+    "and will continue to grow": "и продолжит расти",
+    "days": "дней"
 }

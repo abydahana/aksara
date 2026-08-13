@@ -7,10 +7,13 @@
     "Collected from all galleries": "すべてのギャラリーから集計",
     "Collected from submitted comments": "投稿されたコメントから集計",
     "Daily Visits": "日別訪問数",
+    "Documentation": "Documentation",
     "Explore Articles": "記事を探す",
     "Featured Galleries": "注目ギャラリー",
+    "Features": "機能",
     "Get Closer": "もっと知る",
     "Get Started": "はじめる",
+    "Home": "ホーム",
     "Interactions": "反応",
     "Meet Us": "私たちについて",
     "Monthly Visits": "月別訪問数",
@@ -26,5 +29,6 @@
     "Weekly Visits": "週別訪問数",
     "Welcome": "ようこそ",
     "Yearly Visits": "年別訪問数",
-    "and will continue to grow": "そしてこれからも成長し続けます"
+    "and will continue to grow": "そしてこれからも成長し続けます",
+    "days": "日"
 }

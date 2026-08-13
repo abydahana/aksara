@@ -7,10 +7,13 @@
     "Collected from all galleries": "모든 갤러리에서 수집됨",
     "Collected from submitted comments": "등록된 댓글에서 수집됨",
     "Daily Visits": "일간 방문",
+    "Documentation": "Documentation",
     "Explore Articles": "아티클 탐색",
     "Featured Galleries": "추천 갤러리",
+    "Features": "기능",
     "Get Closer": "더 알아보기",
     "Get Started": "시작하기",
+    "Home": "홈",
     "Interactions": "상호작용",
     "Meet Us": "소개",
     "Monthly Visits": "월간 방문",
@@ -26,5 +29,6 @@
     "Weekly Visits": "주간 방문",
     "Welcome": "환영합니다",
     "Yearly Visits": "연간 방문",
-    "and will continue to grow": "앞으로도 계속 성장합니다"
+    "and will continue to grow": "앞으로도 계속 성장합니다",
+    "days": "일"
 }

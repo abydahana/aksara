@@ -7,10 +7,13 @@
     "Collected from all galleries": "Collecté depuis toutes les galeries",
     "Collected from submitted comments": "Collecté depuis les commentaires envoyés",
     "Daily Visits": "Visites quotidiennes",
+    "Documentation": "Documentation",
     "Explore Articles": "Explorer les articles",
     "Featured Galleries": "Galeries à la une",
+    "Features": "Fonctionnalités",
     "Get Closer": "Faites connaissance",
     "Get Started": "Commencer",
+    "Home": "Accueil",
     "Interactions": "Interactions",
     "Meet Us": "Rencontrez-nous",
     "Monthly Visits": "Visites mensuelles",
@@ -26,5 +29,6 @@
     "Weekly Visits": "Visites hebdomadaires",
     "Welcome": "Bienvenue",
     "Yearly Visits": "Visites annuelles",
-    "and will continue to grow": "et continuera de grandir"
+    "and will continue to grow": "et continuera de grandir",
+    "days": "jours"
 }

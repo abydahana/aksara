@@ -7,10 +7,13 @@
     "Collected from all galleries": "Gathered from all galleries",
     "Collected from submitted comments": "Gathered from sent-in remarks",
     "Daily Visits": "Daily Visits",
+    "Documentation": "Documentation",
     "Explore Articles": "Explore Articles",
     "Featured Galleries": "Featured Galleries",
+    "Features": "Treasure",
     "Get Closer": "Come Aboard",
     "Get Started": "Set Sail",
+    "Home": "Harbor",
     "Interactions": "Parleys",
     "Meet Us": "Meet the Crew",
     "Monthly Visits": "Monthly Visits",
@@ -26,5 +29,6 @@
     "Weekly Visits": "Weekly Visits",
     "Welcome": "Ahoy",
     "Yearly Visits": "Yearly Visits",
-    "and will continue to grow": "and will keep growing"
+    "and will continue to grow": "and will keep growing",
+    "days": "days"
 }

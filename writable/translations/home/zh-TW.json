@@ -7,10 +7,13 @@
     "Collected from all galleries": "彙整自所有相簿",
     "Collected from submitted comments": "彙整自已提交的留言",
     "Daily Visits": "每日瀏覽量",
+    "Documentation": "Documentation",
     "Explore Articles": "探索文章",
     "Featured Galleries": "精選相簿",
+    "Features": "功能",
     "Get Closer": "進一步了解",
     "Get Started": "開始使用",
+    "Home": "首頁",
     "Interactions": "互動",
     "Meet Us": "認識我們",
     "Monthly Visits": "每月瀏覽量",
@@ -26,5 +29,6 @@
     "Weekly Visits": "每週瀏覽量",
     "Welcome": "歡迎",
     "Yearly Visits": "每年瀏覽量",
-    "and will continue to grow": "並將持續成長"
+    "and will continue to grow": "並將持續成長",
+    "days": "天"
 }
