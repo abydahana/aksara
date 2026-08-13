@@ -45,10 +45,10 @@ if ($articles): ?>
                                         <div class="carousel-caption text-start">
                                             <div class="mb-3">
                                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
-                                                    <h2 class="h3 text-light text-outline-dark">
+                                                    <h2 class="h3 text-outline-body">
                                                         <?= truncate($val->post_title, 80); ?>
                                                     </h2>
-                                                    <p class="fs-5 text-light d-none d-md-inline text-outline-dark">
+                                                    <p class="fs-5 d-none d-md-inline text-outline-body">
                                                         <?= truncate($val->post_excerpt, 90); ?>
                                                     </p>
                                                     <p class="text-muted">
@@ -58,12 +58,12 @@ if ($articles): ?>
                                             </div>
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-1">
-                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary text-outline-dark --xhr">
+                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-outline-body --xhr">
                                                         <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                                     </a>
                                                 </div>
                                                 <div class="col-8">
-                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-white ps-2 text-outline-dark --xhr">
+                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="ps-2 text-outline-body --xhr">
                                                         <b>
                                                             <?= $val->first_name . ' ' . $val->last_name; ?>
                                                         </b>
