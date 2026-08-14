@@ -96,6 +96,8 @@ class Settings extends Core
             $required_google_client_id = 'required';
         }
 
+        $this->_ensureAiSettings();
+
         $storage = $this->_storage();
 
         $this->setTitle(phrase('Application Settings'))
@@ -134,10 +136,28 @@ class Settings extends Core
             'update_check' => 'boolean',
             'smtp_port' => 'integer',
             'smtp_password' => 'encryption',
+            'ai_enabled' => 'boolean',
+            'ai_image_enabled' => 'boolean',
+            'ai_api_key' => 'encryption',
+            'ai_temperature' => 'number_format',
+            'ai_max_tokens' => 'number_format',
             'access_key' => 'encryption',
             'secret_key' => 'encryption',
             'sync_existing_uploads' => 'boolean'
         ])
+        ->setField(
+            'ai_provider',
+            'select',
+            [
+                'openai' => 'OpenAI',
+                'anthropic' => 'Anthropic / Claude',
+                'gemini' => 'Google Gemini',
+                'deepseek' => 'DeepSeek',
+                'openrouter' => 'OpenRouter',
+                'openai_compatible' => phrase('OpenAI Compatible'),
+                'custom' => phrase('Custom Provider')
+            ]
+        )
         ->setField(
             'provider',
             'select',
@@ -165,6 +185,12 @@ class Settings extends Core
         ->setPlaceholder([
             'openlayers_search_key' => phrase('Enter your API Key'),
             'default_map_tile' => 'E.g: https://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+            'ai_api_key' => phrase('Enter your API Key'),
+            'ai_model' => 'gpt-5.6',
+            'ai_image_model' => 'gpt-image-2',
+            'ai_base_url' => phrase('Optional custom base URL'),
+            'ai_temperature' => '0.7',
+            'ai_max_tokens' => '2048',
             'endpoint' => 'https://s3.amazonaws.com',
             'region' => 'us-east-1',
             'bucket' => phrase('Bucket name')
@@ -176,6 +202,15 @@ class Settings extends Core
             'spam_timer' => phrase('How many seconds before user can post another comment.'),
             'openlayers_search_key' => phrase('The API Key is required when you using Google as search provider.'),
             'default_map_tile' => phrase('You can use any XYZ Tile Source as a default map tiles.'),
+            'ai_enabled' => phrase('Enable AI features for content assistance.'),
+            'ai_image_enabled' => phrase('Allow AI to generate images for image upload fields.'),
+            'ai_provider' => phrase('Choose the AI provider used by content tools.'),
+            'ai_api_key' => phrase('Stored encrypted and used by server-side AI requests.'),
+            'ai_model' => phrase('Default model used for AI content generation and translation.'),
+            'ai_image_model' => phrase('Model used for generating images for image upload fields.'),
+            'ai_base_url' => phrase('Optional API base URL for OpenAI-compatible providers.'),
+            'ai_temperature' => phrase('Controls output creativity. Lower values are more deterministic.'),
+            'ai_max_tokens' => phrase('Maximum generated tokens returned by default.'),
             'provider' => phrase('The selected provider will become active after saving.'),
             'endpoint' => phrase('Required for S3-compatible storage such as MinIO, Cloudflare R2, DigitalOcean Spaces, or Wasabi.'),
             'sync_existing_uploads' => phrase('Sync existing uploads after saving. When enabling cloud storage, local files are uploaded to cloud. When disabling cloud storage, cloud files are downloaded to local storage.')
@@ -227,6 +262,17 @@ class Settings extends Core
             'default_map_tile' => $default_map_tile,
             'google_analytics_key' => ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
 
+            /* AI */
+            'ai_enabled' => 'boolean',
+            'ai_image_enabled' => 'boolean',
+            'ai_provider' => 'in_list[openai,anthropic,gemini,deepseek,openrouter,openai_compatible,custom]',
+            'ai_api_key' => 'permit_empty|max_length[512]',
+            'ai_model' => 'permit_empty|string|max_length[128]',
+            'ai_image_model' => 'permit_empty|string|max_length[128]',
+            'ai_base_url' => 'permit_empty|valid_url|max_length[255]',
+            'ai_temperature' => 'permit_empty|decimal',
+            'ai_max_tokens' => 'permit_empty|integer',
+
             /* OAUTH */
             'facebook_app_id' => $required_facebook_app_id,
             'facebook_app_secret' => $required_facebook_app_secret,
@@ -274,6 +320,17 @@ class Settings extends Core
             'default_map_tile' => phrase('Default Map Tile'),
             'google_analytics_key' => phrase('Google Analytics Key'),
 
+            /* AI */
+            'ai_enabled' => phrase('Enable AI'),
+            'ai_image_enabled' => phrase('Generate Images'),
+            'ai_provider' => phrase('AI Provider'),
+            'ai_api_key' => phrase('AI API Key'),
+            'ai_model' => phrase('AI Model'),
+            'ai_image_model' => phrase('AI Image Model'),
+            'ai_base_url' => phrase('AI Base URL'),
+            'ai_temperature' => phrase('Temperature'),
+            'ai_max_tokens' => phrase('Max Tokens'),
+
             /* OATH */
             'facebook_app_id' => phrase('Facebook APP ID'),
             'facebook_app_secret' => phrase('Facebook APP Secret'),
@@ -299,6 +356,49 @@ class Settings extends Core
         ])
 
         ->render($this->_table);
+    }
+
+    private function _ensureAiSettings(): void
+    {
+        if (! $this->model->tableExists($this->_table)) {
+            return;
+        }
+
+        $defaults = [
+            'ai_enabled' => ['type' => 'tinyint', 'value' => '0'],
+            'ai_image_enabled' => ['type' => 'tinyint', 'value' => '0'],
+            'ai_provider' => ['type' => 'varchar', 'value' => 'openai'],
+            'ai_api_key' => ['type' => 'varchar', 'value' => ''],
+            'ai_model' => ['type' => 'varchar', 'value' => 'gpt-5.6'],
+            'ai_image_model' => ['type' => 'varchar', 'value' => 'gpt-image-2'],
+            'ai_base_url' => ['type' => 'varchar', 'value' => 'https://api.openai.com/v1'],
+            'ai_temperature' => ['type' => 'decimal', 'value' => '0.7'],
+            'ai_max_tokens' => ['type' => 'int', 'value' => '2048']
+        ];
+        $db = db_connect();
+
+        $existing = array_column(
+            $db->table($this->_table)->select('key')->whereIn('key', array_keys($defaults))->get()->getResultArray(),
+            'key'
+        );
+        $missing = [];
+
+        foreach ($defaults as $key => $setting) {
+            if (in_array($key, $existing)) {
+                continue;
+            }
+
+            $missing[] = [
+                'key' => $key,
+                'type' => $setting['type'],
+                'value' => $setting['value']
+            ];
+        }
+
+        if ($missing) {
+            $db->table($this->_table)->insertBatch($missing);
+            service('cache')->delete('aksara_app_settings');
+        }
     }
 
     private function _fetchStorageProvider()
