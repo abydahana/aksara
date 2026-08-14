@@ -165,7 +165,12 @@ class Blogs extends Core
             'language_id' => phrase('Language'),
         ])
 
-        ->addSubmitButton('AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation')
+        ->orderBy([
+            'blogs_categories.category_title' => 'ASC',
+            'created_at' => 'DESC'
+        ])
+
+        ->addSubmitButton(null, null, 'AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation')
 
         ->render($this->_table);
     }
