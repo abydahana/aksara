@@ -30,6 +30,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="#pills-ai" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                        <i class="mdi mdi-creation"></i> <?= phrase('AI'); ?>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#pills-oauth" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
                         <i class="mdi mdi-shield-lock-outline"></i> <?= phrase('OAuth'); ?>
                     </a>
@@ -210,6 +215,47 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <?= form_input($results->field_data->google_analytics_key); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-ai">
+                            <h5>
+                                <?= phrase('Artificial Intelligence'); ?>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_enabled); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_provider); ?>
+                                </div>
+                            </div>
+
+                            <?= form_input($results->field_data->ai_base_url); ?>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_api_key); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_model); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_image_enabled); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_image_model); ?>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_temperature); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->ai_max_tokens); ?>
                                 </div>
                             </div>
                         </div>

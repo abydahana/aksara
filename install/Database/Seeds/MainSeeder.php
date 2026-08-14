@@ -246,6 +246,51 @@ class MainSeeder extends Seeder
                 'value' => ''
             ],
             [
+                'key' => 'ai_enabled',
+                'type' => 'tinyint',
+                'value' => '0'
+            ],
+            [
+                'key' => 'ai_provider',
+                'type' => 'varchar',
+                'value' => 'openai'
+            ],
+            [
+                'key' => 'ai_image_enabled',
+                'type' => 'tinyint',
+                'value' => '0'
+            ],
+            [
+                'key' => 'ai_api_key',
+                'type' => 'varchar',
+                'value' => ''
+            ],
+            [
+                'key' => 'ai_model',
+                'type' => 'varchar',
+                'value' => 'gpt-5.6'
+            ],
+            [
+                'key' => 'ai_image_model',
+                'type' => 'varchar',
+                'value' => 'gpt-image-2'
+            ],
+            [
+                'key' => 'ai_base_url',
+                'type' => 'varchar',
+                'value' => 'https://api.openai.com/v1'
+            ],
+            [
+                'key' => 'ai_temperature',
+                'type' => 'decimal',
+                'value' => '0.7'
+            ],
+            [
+                'key' => 'ai_max_tokens',
+                'type' => 'int',
+                'value' => '4096'
+            ],
+            [
                 'key' => 'facebook_app_id',
                 'type' => 'varchar',
                 'value' => ''
