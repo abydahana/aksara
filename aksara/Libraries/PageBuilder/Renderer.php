@@ -152,16 +152,20 @@ class Renderer
     private function renderSection(array $props, array $children, string $id): string
     {
         $class = trim(($this->classes['section'] ?? '') . ' ' . ($props['class'] ?? ''));
-        $style = '';
+        $styles = [];
 
         if (! empty($props['background'])) {
-            $style = "background-image:url('" . htmlspecialchars($props['background']) . "');background-size:cover;background-position:center;";
+            $styles[] = "background-image:url('" . htmlspecialchars($props['background'], ENT_QUOTES) . "')";
+            $styles[] = 'background-size:cover';
+            $styles[] = 'background-position:center';
+            $styles[] = 'background-repeat:no-repeat';
+            $styles[] = 'overflow:hidden';
         }
 
         $attrStr = $this->attrs(array_filter([
             'class' => $class,
             'id' => $props['id'] ?? $id,
-            'style' => $style,
+            'style' => $styles ? implode(';', $styles) : '',
         ]));
 
         return "<section{$attrStr}>\n" . $this->renderChildren($children) . "</section>\n";
@@ -285,7 +289,9 @@ class Renderer
         }
 
         $class = implode(' ', array_filter($classes));
-        $style = ! empty($props['width']) ? " style=\"max-width:{$props['width']}px\"" : '';
+        $style = ! empty($props['width'])
+            ? " style=\"max-width:{$props['width']}px;height:auto\""
+            : ' style="max-width:100%;height:auto;object-fit:contain"';
 
         return "<img src=\"{$src}\" alt=\"{$alt}\" class=\"{$class}\"{$style} loading=\"lazy\" decoding=\"async\" />\n";
     }
