@@ -500,13 +500,12 @@
                     </div>
                     <div class="modal-body">
                         <textarea class="form-control mb-3" data-ai-prompt rows="1" placeholder="${escapeHtml(phrase('Describe what should be filled or improved in this form'))}"></textarea>
-                        <div class="list-group list-group-flush border rounded" data-ai-result></div>
+                        <div class="list-group list-group-flush border rounded" style="border-style:dashed !important" data-ai-result></div>
                     </div>
                     <div class="modal-footer">
                         <span class="small text-muted me-auto" data-ai-status></span>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${escapeHtml(phrase('Close'))}</button>
-                        <button type="button" class="btn btn-primary" data-ai-run><i class="mdi mdi-send"></i> ${escapeHtml(phrase('Run'))}</button>
-                        <button type="button" class="btn btn-success" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
+                        <button type="button" class="btn btn-primary" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
                     </div>
                 </div>
             </div>`;
@@ -517,7 +516,7 @@
 
     function autogrow(textarea) {
         textarea.style.height = 'auto';
-        textarea.style.height = Math.min(textarea.scrollHeight, 240) + 'px';
+        textarea.style.height = Math.min((textarea.scrollHeight ? (textarea.scrollHeight + 2) : 38), 240) + 'px';
     }
 
     function markdownPreview(value) {
@@ -879,26 +878,30 @@
         const prompt = modal.querySelector('[data-ai-prompt]');
         const result = modal.querySelector('[data-ai-result]');
         const status = modal.querySelector('[data-ai-status]');
-        const run = modal.querySelector('[data-ai-run]');
         const use = modal.querySelector('[data-ai-use]');
 
         activeForm = form;
         generatedFields = {};
         generatedLabels = {};
         prompt.value = '';
-        result.innerHTML = '';
+        result.innerHTML = '<p class="text-center text-secondary py-4 mb-0">' + escapeHtml(phrase('Type your instruction in the field above, then press Enter to process.')) + '</p>';
         status.textContent = '';
         use.disabled = true;
         prompt.oninput = () => autogrow(prompt);
+        prompt.onkeydown = function(event) {
+            if (event.key === 'Enter' && ! event.shiftKey) {
+                event.preventDefault();
+                runRequest();
+            }
+        };
         modalApi.show();
         setTimeout(() => {
             prompt.focus();
             autogrow(prompt);
         }, 150);
 
-        run.onclick = function() {
+        function runRequest() {
             startLoading(result, status);
-            run.disabled = true;
             use.disabled = true;
 
             Promise.resolve()
@@ -945,9 +948,8 @@
             })
             .finally(() => {
                 stopLoading();
-                run.disabled = false;
             });
-        };
+        }
 
         use.onclick = function() {
             if (! activeForm || ! generatedFields) {
