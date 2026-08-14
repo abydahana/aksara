@@ -908,12 +908,16 @@ abstract class Core extends Controller
      * @return static Current object instance (chainable).
      */
     public function addSubmitButton(
+        ?string $name,
+        ?string $value,
         string $label,
         ?string $class = null,
         ?string $icon = null,
         ?string $attribution = null
     ): static {
         $this->_submitButton[] = [
+            'name' => $name,
+            'value' => $value,
             'label' => $label,
             'class' => $class ?: 'btn btn-secondary',
             'icon' => $icon,

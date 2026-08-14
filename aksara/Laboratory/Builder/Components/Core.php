@@ -596,7 +596,7 @@ class Core
 
                             <div class="d-flex justify-content-end align-items-center gap-1">
                                 {% for button in results.extra_action.submit %}
-                                    <button type="button" class="{{ button.class }} me-1" {{ button.attribution | raw }}>
+                                    <button type="button" name="{{ button.name }}" class="{{ button.class }} me-1" {{ button.attribution | raw }}>
                                         {% if button.icon %}
                                             <i class="{{ button.icon }}"></i>
                                         {% endif %}
@@ -698,7 +698,7 @@ class Core
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
                         {% for button in results.extra_action.submit %}
-                            <button type="button" class="{{ button.class }}" {{ button.attribution | raw }}>
+                            <button type="button" name="{{ button.name }}" value="{{ button.value }}" class="{{ button.class }}" {{ button.attribution | raw }}>
                                 {% if button.icon %}
                                     <i class="{{ button.icon }}"></i>
                                 {% endif %}
