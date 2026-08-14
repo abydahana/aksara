@@ -35,6 +35,29 @@ class Read extends Core
 
     public function index($category = null, $slug = null)
     {
+        if ($this->request->getGet('post_id')) {
+            $post = $this->model->select('
+                blogs_categories.category_slug,
+                blogs.post_slug
+            ')
+            ->join(
+                'blogs_categories',
+                'blogs_categories.category_id = blogs.post_category'
+            )
+            ->getWhere(
+                $this->_table,
+                [
+                    'blogs.post_id' => $this->request->getGet('post_id')
+                ],
+                1
+            )
+            ->row();
+
+            if ($post) {
+                return throw_exception(301, null, base_url('blogs/' . $post->category_slug . '/' . $post->post_slug, ['post_id' => null]), true);
+            }
+        }
+
         $this->setTitle('{{ post_title }}', phrase('No post were found!'))
         ->setDescription('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
         ->setIcon('mdi mdi-newspaper')
@@ -98,6 +121,8 @@ class Read extends Core
 
     private function _getCategories()
     {
+        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
+
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
             blogs_categories.category_slug,
@@ -109,9 +134,14 @@ class Read extends Core
             'blogs',
             'blogs.post_category = blogs_categories.category_id'
         )
-        ->orderBy('total_data', 'DESC')
-        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
+        ->groupBy('category_id, category_slug, category_title, category_description, category_image')
+
+        // Order by current language first
         ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+
+        // Normal ordering
+        ->orderBy('total_data', 'DESC')
+
         ->getWhere(
             'blogs_categories',
             [
@@ -125,6 +155,14 @@ class Read extends Core
 
     private function _getRelated($category = 0, $slug = '')
     {
+        $keywords = $this->_titleKeywords($slug);
+        $score = [];
+
+        foreach ($keywords as $keyword) {
+            $keyword = strtolower($keyword);
+            $score[] = "CASE WHEN LOWER(blogs.post_title) LIKE " . $this->model->escape('%' . $keyword . '%') . " THEN 1 ELSE 0 END";
+        }
+
         $query = $this->model->select('
             blogs.post_slug,
             blogs.post_title,
@@ -139,9 +177,10 @@ class Read extends Core
             'blogs_categories',
             'blogs_categories.category_id = blogs.post_category'
         )
-        ->orderBy('blogs.updated_at', 'DESC')
+        ->orderBy($score ? '(' . implode(' + ', $score) . ')' : '0', 'DESC', false)
         ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
-        ->limit(10)
+        ->orderBy('blogs.post_title', 'RANDOM')
+        ->limit(5)
         ->getWhere(
             'blogs',
             [
@@ -153,6 +192,25 @@ class Read extends Core
         ->result();
 
         return $query;
+    }
+
+    private function _titleKeywords(string $slug = ''): array
+    {
+        $title = $this->model->select('post_title')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->getWhere('blogs', [
+            'post_slug' => $slug,
+            'blogs.status' => 1
+        ], 1)
+        ->row('post_title');
+
+        $title = strtolower(trim((string) $title));
+        $words = preg_split('/[^\\pL\\pN]+/u', $title) ?: [];
+        $words = array_values(array_unique(array_filter($words, static function ($word): bool {
+            return mb_strlen($word) >= 4;
+        })));
+
+        return array_slice(array_merge([$title], $words), 0, 7);
     }
 
     private function _getRecommendations($category = 0, $slug = '')
