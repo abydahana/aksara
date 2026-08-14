@@ -16,40 +16,54 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
 <div class="pb-form-wrapper">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
         <!-- Manually Placed Page Builder Toolbar -->
-        <div class="pb-toolbar px-3 py-2 sticky-top bg-body border-bottom">
-            <div class="pb-toolbar-group bg-body-tertiary rounded-pill px-1 border">
-                <button type="button" class="btn btn-sm btn-link text-body pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
-                    <i class="mdi mdi-undo"></i>
-                </button>
-                <div class="vr my-1"></div>
-                <button type="button" class="btn btn-sm btn-link text-body pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
-                    <i class="mdi mdi-redo"></i>
-                </button>
-            </div>
-            <div class="pb-toolbar-group bg-body-tertiary rounded-pill px-1 border mx-auto">
-                <button type="button" class="btn btn-sm pb-device-btn active rounded-pill" data-device="desktop" data-bs-toggle="tooltip" title="<?= phrase('Desktop'); ?>">
-                    <i class="mdi mdi-monitor"></i>
-                </button>
-                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="tablet" data-bs-toggle="tooltip" title="<?= phrase('Tablet'); ?>">
-                    <i class="mdi mdi-tablet"></i>
-                </button>
-                <button type="button" class="btn btn-sm pb-device-btn rounded-pill" data-device="mobile" data-bs-toggle="tooltip" title="<?= phrase('Mobile'); ?>">
-                    <i class="mdi mdi-cellphone"></i>
-                </button>
-            </div>
-            <div class="pb-toolbar-group gap-2">
-                <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 --ai-assistant">
-                    <i class="mdi mdi-creation me-1"></i> AI
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
-                    <i class="mdi mdi-cogs me-1"></i><?= phrase('Settings'); ?>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill pb-preview-btn px-3">
-                    <i class="mdi mdi-eye me-1"></i><?= phrase('Preview'); ?>
-                </button>
-                <button type="button" class="btn btn-sm btn-success rounded-pill pb-save-btn px-4">
-                    <i class="mdi mdi-content-save me-1"></i><?= phrase('Save Page'); ?>
-                </button>
+        <div class="pb-toolbar container-fluid py-1 sticky-top bg-body border-bottom">
+            <div class="row">
+                <div class="col-4">
+                    <div class="d-flex gap-2 justify-content-start">
+                        <div class="pb-toolbar-group btn-group btn-group-sm bg-body-tertiary rounded-pill px-1 border">
+                            <button type="button" class="btn btn-link rounded-pill rounded-end-0 pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
+                                <i class="mdi mdi-undo"></i>
+                            </button>
+                            <button type="button" class="btn btn-link border-start rounded-pill rounded-start-0 pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
+                                <i class="mdi mdi-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <div class="pb-toolbar-group btn-group btn-group-sm bg-body-tertiary rounded-pill px-1 border">
+                            <button type="button" class="btn btn-link rounded-pill rounded-end-0 pb-device-btn active" data-device="desktop" data-bs-toggle="tooltip" title="<?= phrase('Desktop'); ?>">
+                                <i class="mdi mdi-monitor"></i>
+                            </button>
+                            <button type="button" class="btn btn-link border-start pb-device-btn" data-device="tablet" data-bs-toggle="tooltip" title="<?= phrase('Tablet'); ?>">
+                                <i class="mdi mdi-tablet"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm pb-device-btn rounded-pill rounded-start-0" data-device="mobile" data-bs-toggle="tooltip" title="<?= phrase('Mobile'); ?>">
+                                <i class="mdi mdi-cellphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <?php if (get_setting('ai_enabled')): ?>
+                        <button type="button" class="btn btn-sm btn-info no-wrap rounded-pill px-3 --ai-assistant">
+                            <i class="mdi mdi-creation me-1"></i> AI
+                        </button>
+                        <?php endif; ?>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary no-wrap rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
+                            <i class="mdi mdi-cogs me-1"></i> <?= phrase('Settings'); ?>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary no-wrap rounded-pill pb-preview-btn px-3">
+                            <i class="mdi mdi-eye me-1"></i> <?= phrase('Preview'); ?>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-success no-wrap rounded-pill pb-save-btn px-4">
+                            <i class="mdi mdi-content-save me-1"></i> <?= phrase('Save'); ?>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 

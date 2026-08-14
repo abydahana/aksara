@@ -72,6 +72,10 @@ class Blogs extends Core
             }
         }
 
+        if (get_setting('ai_enabled')) {
+            $this->addSubmitButton(null, null, 'AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation');
+        }
+
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
         }
@@ -169,8 +173,6 @@ class Blogs extends Core
             'blogs_categories.category_title' => 'ASC',
             'created_at' => 'DESC'
         ])
-
-        ->addSubmitButton(null, null, 'AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation')
 
         ->render($this->_table);
     }
