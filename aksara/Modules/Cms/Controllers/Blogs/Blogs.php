@@ -19,6 +19,7 @@ namespace Aksara\Modules\CMS\Controllers\Blogs;
 
 use Throwable;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\AI\AI;
 
 class Blogs extends Core
 {
@@ -97,7 +98,6 @@ class Blogs extends Core
         ->setField('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['post_id' => 'post_id'])
-        ->addButton('../../blogs/read', phrase('View Post'), 'btn-success', 'mdi mdi-eye', ['post_id' => 'post_id'], true)
 
         ->fieldAppend(
             'post_category',
@@ -165,6 +165,8 @@ class Blogs extends Core
             'language_id' => phrase('Language'),
         ])
 
+        ->addSubmitButton('AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation')
+
         ->render($this->_table);
     }
 
@@ -195,9 +197,14 @@ class Blogs extends Core
             $language_list = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
-                    <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
-                </a>';
+                $language_list .= '<div class="list-group-item list-group-item-action position-relative p-0">
+                    <a href="' . go_to('translate', ['language' => $val->id]) . '" class="d-block px-3 py-3 pe-5 text-body text-decoration-none --modal">
+                        <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
+                    </a>
+                    <a href="' . go_to('translate', ['language' => $val->id, 'ai' => true]) . '" class="btn btn-sm btn-info px-0 rounded-circle float-end position-absolute top-50 end-0 me-3 translate-middle-y --modal" data-bs-toggle="tooltip" title="' . phrase('Translate with AI') . '">
+                        <i class="mdi mdi-creation"></i>
+                    </a>
+                </div>';
             }
 
             $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
@@ -210,6 +217,7 @@ class Blogs extends Core
                     'modal_size' => 'modal-sm'
                 ],
                 'content' => $content,
+                'reactivate' => ['tooltip']
             ]);
         }
 
@@ -247,6 +255,10 @@ class Blogs extends Core
                 // Change language id
                 $data->language_id = $this->request->getGet('language');
 
+                if ($this->_shouldTranslateWithAi()) {
+                    $data = $this->_translateWithAi($data, (int) $data->language_id);
+                }
+
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
 
@@ -282,6 +294,57 @@ class Blogs extends Core
         ])
         ->modalSize('modal-lg')
         ->render($this->_table);
+    }
+
+    private function _translateWithAi(object $data, int $languageId): object
+    {
+        $language = $this->model->getWhere('app_languages', [
+            'id' => $languageId,
+            'status' => 1
+        ], 1)
+        ->row();
+
+        if (! $language) {
+            return $data;
+        }
+
+        $ai = new AI();
+
+        if (! $ai->ready()) {
+            return $data;
+        }
+
+        $target = trim((string) ($language->language ?? ''));
+        $fields = [
+            'post_title' => 'plain title',
+            'post_excerpt' => 'plain excerpt',
+            'post_content' => 'HTML article body',
+            'post_tags' => 'comma separated tags'
+        ];
+
+        foreach ($fields as $field => $context) {
+            if (empty($data->{$field})) {
+                continue;
+            }
+
+	            $response = $ai->translate((string) $data->{$field}, $target, [
+	                'content_type' => 'blog post ' . $context,
+	                'route' => 'cms/blogs',
+	                'language' => $target,
+	                'site_name' => get_setting('app_name')
+	            ]);
+
+            if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
+                $data->{$field} = trim((string) $response['content']);
+            }
+        }
+
+        return $data;
+    }
+
+    private function _shouldTranslateWithAi(): bool
+    {
+        return in_array($this->request->getGet('ai'), ['1', 1, true, 'true'], true);
     }
 
     private function _filter()
