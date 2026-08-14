@@ -31,6 +31,8 @@ class Category extends Core
 
     public function index($slug = null)
     {
+        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
+
         $this->setTitle('{{ category_title }}', phrase('No category were found!'))
         ->setDescription('{{ category_description }}')
         ->setIcon('mdi mdi-sitemap')
@@ -40,7 +42,8 @@ class Category extends Core
             'category' => $this->model->getWhere(
                 'blogs_categories',
                 [
-                    'category_slug' => $slug
+                    'category_slug' => $slug,
+                    'language_id' => $language_id
                 ],
                 1
             )
@@ -76,11 +79,19 @@ class Category extends Core
             'app_users',
             'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('blogs.updated_at', 'DESC')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+
         ->where([
             'blogs_categories.category_slug' => $slug,
             'blogs.status' => 1
+        ])
+
+        // Order by current language first
+        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+
+        // Normal ordering
+        ->orderBy([
+            'blogs.updated_at' => 'DESC',
+            'blogs.created_at' => 'DESC'
         ])
 
         ->render('blogs');
@@ -88,6 +99,8 @@ class Category extends Core
 
     private function _getCategories($slug = null)
     {
+        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
+
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
             blogs_categories.category_slug,
@@ -102,11 +115,12 @@ class Category extends Core
         ->where([
             'blogs_categories.category_slug !=' => $slug,
             'blogs_categories.status' => 1,
-            'blogs.status' => 1
+            'blogs_categories.language_id' => $language_id,
+            'blogs.status' => 1,
+            'blogs.language_id' => $language_id
         ])
         ->orderBy('category_title', 'RANDOM')
-        ->groupBy('blogs.language_id, category_id, category_slug, category_title, category_description, category_image')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->groupBy('blogs_categories.category_id, blogs_categories.category_slug, blogs_categories.category_title, blogs_categories.category_description, blogs_categories.category_image')
         ->get('blogs_categories')
         ->result();
 

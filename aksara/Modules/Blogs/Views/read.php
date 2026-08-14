@@ -22,7 +22,7 @@ if ($field_data) {
             if (! $label) continue; // empty label
 
             $post_tags .= '
-                <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="--xhr">
+                <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="me-2 --xhr">
                     <span class="badge bg-secondary">
                         ' . trim($label) . '
                     </span>
@@ -51,13 +51,13 @@ if ($field_data) {
         </p>
     </div>
 </section>
-<section class="section-padding fade-in">
+<section class="section-padding">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <div class="sticky-top">
+                <main class="sticky-top">
                     <?php if ($article): ?>
-                        <div class="row align-items-center mb-3">
+                        <div class="row align-items-center mb-3 fade-in">
                             <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
                                 <div class="row align-items-center">
                                     <div class="col-2 pe-0">
@@ -94,43 +94,48 @@ if ($field_data) {
                             </div>
                         </div>
 
-                        <?php if ($featured_image): ?>
-                            <div class="mb-3">
-                                <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="w-100 rounded" /></a>
+                        <article>
+                            <?php if ($featured_image): ?>
+                                <div class="mb-3 fade-in">
+                                    <a href="<?= get_image('blogs', $featured_image); ?>" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featured_image); ?>" class="w-100 rounded" /></a>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($toc): ?>
+                                <div class="fade-in">
+                                    <div class="fs-5">
+                                        <p class="text-lg-justify article text-break">
+                                            <?= $meta->description; ?>
+                                        </p>
+                                    </div>
+                                    <div class="toc">
+                                        <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
+                                            <legend><?= phrase('Table of Contents'); ?></legend>
+                                            <?= $toc; ?>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="fs-5 fade-in">
+                                <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations); ?>
                             </div>
-                        <?php endif; ?>
 
-                        <?php if ($toc): ?>
-                            <div class="fs-5">
-                                <p class="text-lg-justify article text-break">
-                                    <?= $meta->description; ?>
-                                </p>
+                            <div class="fade-in">
+                                <div class="my-3">
+                                    <?= $post_tags; ?>
+                                </div>
+
+                                <i class="text-muted text-sm"><?= ($field_data->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($field_data->updated_at->value))) . ', ' . $field_data->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($field_data->created_at->value))) . ', ' . $field_data->created_at->value); ?></i>
                             </div>
-                            <div class="toc">
-                                <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
-                                    <legend><?= phrase('Table of Contents'); ?></legend>
-                                    <?= $toc; ?>
-                                </fieldset>
+                            <div class="fade-in">
+                                <?= comment_widget(['post_id' => $field_data->post_id->value, 'path' => service('uri')->getRoutePath()]); ?>
                             </div>
-                        <?php endif; ?>
 
-                        <div class="fs-5">
-                            <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations); ?>
-                        </div>
-
-                        <div class="tags">
-                            <?= $post_tags; ?>
-                        </div>
-
-                        <div>
-                            <i class="text-muted text-sm"><?= ($field_data->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($field_data->updated_at->value))) . ', ' . $field_data->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($field_data->created_at->value))) . ', ' . $field_data->created_at->value); ?></i>
-                        </div>
-
-                        <?= comment_widget(['post_id' => $field_data->post_id->value, 'path' => service('uri')->getRoutePath()]); ?>
-
-                        <div class="d-md-none py-3">&nbsp;</div>
+                            <div class="d-md-none py-3">&nbsp;</div>
+                        </article>
                     <?php else: ?>
-                        <div class="alert alert-warning callout mb-5">
+                        <div class="alert alert-warning callout mb-5 fade-in">
                             <h3 class="mb-0"><?= phrase('No post found!'); ?></h3>
                             <hr />
                             <p class="fs-5 mb-0">
@@ -138,10 +143,10 @@ if ($field_data) {
                             </p>
                         </div>
                     <?php endif; ?>
-                </div>
+                </main>
             </div>
             <div class="col-lg-4">
-                <div class="sticky-top">
+                <aside class="sticky-top fade-in">
                     <div class="mb-5">
                         <h4 class="mb-3">
                             <?= phrase('Related Articles'); ?>
@@ -205,7 +210,7 @@ if ($field_data) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </aside>
             </div>
         </div>
     </div>
