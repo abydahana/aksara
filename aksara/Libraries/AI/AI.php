@@ -769,7 +769,7 @@ class AI
                 ]
             );
 
-            if (($image['status'] ?? 500) === 200 && ! empty($image['image'])) {
+            if (200 === ($image['status'] ?? 500) && ! empty($image['image'])) {
                 $response['fields'][$name] = $image['image'];
                 $response['labels'][$name] = $field['label'] ?? $name;
             } else {

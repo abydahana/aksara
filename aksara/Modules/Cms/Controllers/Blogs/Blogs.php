@@ -334,12 +334,12 @@ class Blogs extends Core
                 continue;
             }
 
-	            $response = $ai->translate((string) $data->{$field}, $target, [
-	                'content_type' => 'blog post ' . $context,
-	                'route' => 'cms/blogs',
-	                'language' => $target,
-	                'site_name' => get_setting('app_name')
-	            ]);
+            $response = $ai->translate((string) $data->{$field}, $target, [
+                'content_type' => 'blog post ' . $context,
+                'route' => 'cms/blogs',
+                'language' => $target,
+                'site_name' => get_setting('app_name')
+            ]);
 
             if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
                 $data->{$field} = trim((string) $response['content']);

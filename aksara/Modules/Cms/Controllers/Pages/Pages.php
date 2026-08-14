@@ -437,12 +437,12 @@ class Pages extends Core
                 continue;
             }
 
-	            $response = $ai->translate((string) $data->{$field}, $target, [
-	                'content_type' => 'page ' . $context,
-	                'route' => 'cms/pages',
-	                'language' => $target,
-	                'site_name' => get_setting('app_name')
-	            ]);
+            $response = $ai->translate((string) $data->{$field}, $target, [
+                'content_type' => 'page ' . $context,
+                'route' => 'cms/pages',
+                'language' => $target,
+                'site_name' => get_setting('app_name')
+            ]);
 
             if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
                 $data->{$field} = trim((string) $response['content']);
@@ -466,12 +466,12 @@ class Pages extends Core
         $layout = json_decode($content, true);
 
         if (! is_array($layout) || empty($layout['components']) || ! is_array($layout['components'])) {
-	            $response = $ai->translate($content, $target, [
-	                'content_type' => 'page content',
-	                'route' => 'cms/pages',
-	                'language' => $target,
-	                'site_name' => get_setting('app_name')
-	            ]);
+            $response = $ai->translate($content, $target, [
+                'content_type' => 'page content',
+                'route' => 'cms/pages',
+                'language' => $target,
+                'site_name' => get_setting('app_name')
+            ]);
 
             return (($response['status'] ?? 500) < 400 && ! empty($response['content']))
                 ? trim((string) $response['content'])
@@ -536,12 +536,12 @@ class Pages extends Core
                 continue;
             }
 
-	            $response = $ai->translate($value, $target, [
-	                'content_type' => 'page builder prop ' . $key,
-	                'route' => 'cms/pages',
-	                'language' => $target,
-	                'site_name' => get_setting('app_name')
-	            ]);
+            $response = $ai->translate($value, $target, [
+                'content_type' => 'page builder prop ' . $key,
+                'route' => 'cms/pages',
+                'language' => $target,
+                'site_name' => get_setting('app_name')
+            ]);
 
             if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
                 $value = trim((string) $response['content']);
