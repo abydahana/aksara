@@ -19,6 +19,7 @@ namespace Aksara\Modules\CMS\Controllers\Pages;
 
 use Throwable;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\AI\AI;
 use Aksara\Libraries\PageBuilder\PageBuilder;
 
 class Pages extends Core
@@ -44,8 +45,6 @@ class Pages extends Core
 
         if ($this->request->getGet('language')) {
             $this->where('language_id', $this->request->getGet('language'));
-        } else {
-            $this->where('language_id', get_setting('app_language') ?? 0);
         }
 
         // Load page builder library
@@ -65,10 +64,9 @@ class Pages extends Core
             'status' => 'boolean'
         ])
         ->setField('page_slug', 'slug', 'page_title')
-        ->setField('page_title', 'hyperlink', 'pages', ['page_id' => 'page_id'], true)
+        ->setField('page_title', 'hyperlink', 'pages/{{page_slug}}', [], true)
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
-        ->addButton('../../pages', phrase('View Page'), 'btn-success', 'mdi mdi-eye', ['page_id' => 'page_id'], true)
         ->setRelation(
             'language_id',
             'app_languages.id',
@@ -136,9 +134,14 @@ class Pages extends Core
             $language_list = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<a href="' . go_to('translate', ['language' => $val->id]) . '" class="list-group-item list-group-item-action --modal">
-                    <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
-                </a>';
+                $language_list .= '<div class="list-group-item list-group-item-action position-relative p-0">
+                    <a href="' . go_to('translate', ['language' => $val->id]) . '" class="d-block px-3 py-3 pe-5 text-body text-decoration-none --modal">
+                        <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
+                    </a>
+                    <a href="' . go_to('translate', ['language' => $val->id, 'ai' => true]) . '" class="btn btn-sm btn-info float-end position-absolute top-50 end-0 translate-middle-y me-3 --modal" data-bs-toggle="tooltip" title="' . phrase('Translate with AI') . '">
+                        <i class="mdi mdi-creation"></i>
+                    </a>
+                </div>';
             }
 
             $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
@@ -187,6 +190,10 @@ class Pages extends Core
 
                 // Change language id
                 $data->language_id = $this->request->getGet('language');
+
+                if ($this->_shouldTranslateWithAi()) {
+                    $data = $this->_translateWithAi($data, (int) $data->language_id);
+                }
 
                 // Insert new data
                 $this->model->insert($this->_table, (array) $data);
@@ -399,6 +406,151 @@ class Pages extends Core
     public function afterUpdate()
     {
         return throw_exception(301, phrase('The page was successfully updated.'), current_page());
+    }
+
+    private function _translateWithAi(object $data, int $languageId): object
+    {
+        $language = $this->model->getWhere('app_languages', [
+            'id' => $languageId,
+            'status' => 1
+        ], 1)
+        ->row();
+
+        if (! $language) {
+            return $data;
+        }
+
+        $ai = new AI();
+
+        if (! $ai->ready()) {
+            return $data;
+        }
+
+        $target = trim((string) ($language->language ?? ''));
+        $fields = [
+            'page_title' => 'plain title',
+            'page_description' => 'plain SEO description'
+        ];
+
+        foreach ($fields as $field => $context) {
+            if (empty($data->{$field})) {
+                continue;
+            }
+
+	            $response = $ai->translate((string) $data->{$field}, $target, [
+	                'content_type' => 'page ' . $context,
+	                'route' => 'cms/pages',
+	                'language' => $target,
+	                'site_name' => get_setting('app_name')
+	            ]);
+
+            if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
+                $data->{$field} = trim((string) $response['content']);
+            }
+        }
+
+        if (! empty($data->page_content)) {
+            $data->page_content = $this->_translatePageBuilderContent((string) $data->page_content, $target, $ai);
+        }
+
+        return $data;
+    }
+
+    private function _shouldTranslateWithAi(): bool
+    {
+        return in_array($this->request->getGet('ai'), ['1', 1, true, 'true'], true);
+    }
+
+    private function _translatePageBuilderContent(string $content, string $target, AI $ai): string
+    {
+        $layout = json_decode($content, true);
+
+        if (! is_array($layout) || empty($layout['components']) || ! is_array($layout['components'])) {
+	            $response = $ai->translate($content, $target, [
+	                'content_type' => 'page content',
+	                'route' => 'cms/pages',
+	                'language' => $target,
+	                'site_name' => get_setting('app_name')
+	            ]);
+
+            return (($response['status'] ?? 500) < 400 && ! empty($response['content']))
+                ? trim((string) $response['content'])
+                : $content;
+        }
+
+        $layout['components'] = $this->_translatePageBuilderComponents($layout['components'], $target, $ai);
+
+        return json_encode($layout, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: $content;
+    }
+
+    private function _translatePageBuilderComponents(array $components, string $target, AI $ai): array
+    {
+        $textKeys = [
+            'title',
+            'subtitle',
+            'text',
+            'body',
+            'content',
+            'quote',
+            'author',
+            'role',
+            'name',
+            'bio',
+            'features',
+            'button_text',
+            'btn_text',
+            'alt'
+        ];
+
+        foreach ($components as &$component) {
+            if (! is_array($component)) {
+                continue;
+            }
+
+            if (! empty($component['props']) && is_array($component['props'])) {
+                $component['props'] = $this->_translatePageBuilderProps($component['props'], $textKeys, $target, $ai);
+            }
+
+            if (! empty($component['children']) && is_array($component['children'])) {
+                $component['children'] = $this->_translatePageBuilderComponents($component['children'], $target, $ai);
+            }
+        }
+
+        unset($component);
+
+        return $components;
+    }
+
+    private function _translatePageBuilderProps(array $props, array $textKeys, string $target, AI $ai): array
+    {
+        foreach ($props as $key => &$value) {
+            if (is_array($value)) {
+                $value = isset($value[0]) && is_array($value[0])
+                    ? array_map(fn ($item) => is_array($item) ? $this->_translatePageBuilderProps($item, $textKeys, $target, $ai) : $item, $value)
+                    : $this->_translatePageBuilderProps($value, $textKeys, $target, $ai);
+
+                continue;
+            }
+
+            if (! is_string($value) || '' === trim($value) || ! in_array((string) $key, $textKeys, true)) {
+                continue;
+            }
+
+	            $response = $ai->translate($value, $target, [
+	                'content_type' => 'page builder prop ' . $key,
+	                'route' => 'cms/pages',
+	                'language' => $target,
+	                'site_name' => get_setting('app_name')
+	            ]);
+
+            if (($response['status'] ?? 500) < 400 && ! empty($response['content'])) {
+                $value = trim((string) $response['content']);
+            }
+        }
+
+        unset($value);
+
+        return $props;
     }
 
     private function _filter()

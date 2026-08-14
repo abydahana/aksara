@@ -38,6 +38,9 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
                 </button>
             </div>
             <div class="pb-toolbar-group gap-2">
+                <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 --ai-assistant">
+                    <i class="mdi mdi-creation me-1"></i> AI
+                </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
                     <i class="mdi mdi-cogs me-1"></i><?= phrase('Settings'); ?>
                 </button>
