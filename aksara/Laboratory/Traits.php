@@ -182,12 +182,6 @@ trait Traits
     private $_extraOption = [];
 
     /**
-     * Container for extra submit buttons.
-     * @var array
-     */
-    private $_extraSubmit = [];
-
-    /**
      * Container for extra toolbar items.
      * @var array
      */
@@ -583,6 +577,11 @@ trait Traits
      * @var array|null
      */
     private $_sortable;
+
+    /**
+     * Container for custom buttons rendered before the form submit button.
+     */
+    private array $_submitButton = [];
 
     /**
      * Primary table name.

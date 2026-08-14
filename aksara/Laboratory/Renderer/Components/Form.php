@@ -251,7 +251,7 @@ class Form
             'column_size' => $this->_columnSize,
             'column_total' => $highestColumn,
             'extra_action' => [
-                'submit' => $this->_extraSubmit
+                'submit' => $this->_submitButton
             ],
             'form_size' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
             'field_size' => $this->_fieldSize,

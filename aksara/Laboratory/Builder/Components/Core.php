@@ -588,17 +588,28 @@ class Core
                     </div>
                     <div class="opt-btn-overlap-fix"></div>
                     <div class="row opt-btn">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
                             <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back') }}
                             </a>
 
-                            <button type="submit" class="btn btn-primary float-end">
-                                <i class="mdi mdi-check"></i>
-                                {{ phrase('Submit') }}
-                                <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
-                            </button>
+                            <div class="d-flex justify-content-end align-items-center gap-1">
+                                {% for button in results.extra_action.submit %}
+                                    <button type="button" class="{{ button.class }} me-1" {{ button.attribution | raw }}>
+                                        {% if button.icon %}
+                                            <i class="{{ button.icon }}"></i>
+                                        {% endif %}
+                                        {{ button.label }}
+                                    </button>
+                                {% endfor %}
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-check"></i>
+                                    {{ phrase('Submit') }}
+                                    <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -686,6 +697,14 @@ class Core
                             {{ phrase('Cancel') }}
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
+                        {% for button in results.extra_action.submit %}
+                            <button type="button" class="{{ button.class }}" {{ button.attribution | raw }}>
+                                {% if button.icon %}
+                                    <i class="{{ button.icon }}"></i>
+                                {% endif %}
+                                {{ button.label }}
+                            </button>
+                        {% endfor %}
                         <button type="submit" class="btn btn-primary">
                             <i class="mdi mdi-check"></i>
                             {{ phrase('Submit') }}

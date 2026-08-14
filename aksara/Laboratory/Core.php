@@ -895,6 +895,35 @@ abstract class Core extends Controller
     }
 
     /**
+     * Adds a custom button before the form submit button.
+     *
+     * This button is rendered only on create/update forms and does not belong
+     * to the CRUD table row actions handled by addButton().
+     *
+     * @param string $label Button label.
+     * @param string|null $class CSS class(es).
+     * @param string|null $icon Icon class.
+     * @param string|null $attribution Custom HTML attributes.
+     *
+     * @return static Current object instance (chainable).
+     */
+    public function addSubmitButton(
+        string $label,
+        ?string $class = null,
+        ?string $icon = null,
+        ?string $attribution = null
+    ): static {
+        $this->_submitButton[] = [
+            'label' => $label,
+            'class' => $class ?: 'btn btn-secondary',
+            'icon' => $icon,
+            'attribution' => $attribution
+        ];
+
+        return $this;
+    }
+
+    /**
      * Adds a dropdown action button to each row of the CRUD table.
      *
      * @param array<int, array>|string $url URL(s) for the action, or an array of dropdown item definitions.
@@ -3604,6 +3633,8 @@ abstract class Core extends Controller
      */
     public function renderForm(array|object $data): array
     {
+        $this->_clearAiContextCache();
+
         // --- Initial Validation ---
         // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
         if (! $data && ! $this->_permitUpsert && 'autocomplete' != $this->request->getPost('method')) {
@@ -3620,11 +3651,11 @@ abstract class Core extends Controller
 
             $whitelistedProperties = [
                 '_addClass', '_columnOrder', '_columnSize', '_defaultValue', '_dbDriver',
-                '_fieldAppend', '_fieldPrepend', '_fieldOrder', '_viewOrder', '_extraSubmit',
+                '_fieldAppend', '_fieldPrepend', '_fieldOrder', '_viewOrder',
                 '_fieldPosition', '_fieldSize', '_groupField', '_mergeField', '_mergeLabel',
                 '_method', '_modalSize', '_mockFields', '_setAlias', '_setAttribute', '_setAutocomplete',
                 '_setField', '_setHeading', '_setPlaceholder', '_setRelation', '_setTooltip',
-                '_setUploadPath', '_table', 'apiClient', 'model'
+                '_setUploadPath', '_submitButton', '_table', 'apiClient', 'model'
             ];
 
             // Create an array containing only the whitelisted properties from the current object.
@@ -3670,7 +3701,7 @@ abstract class Core extends Controller
                 'column_size' => [],
                 'column_total' => 1,
                 'extra_action' => [
-                    'submit' => []
+                    'submit' => $this->_submitButton
                 ],
                 'form_size' => '',
                 'field_size' => [],
@@ -3696,7 +3727,7 @@ abstract class Core extends Controller
                 '_viewOrder', '_fieldPosition', '_fieldSize', '_groupField', '_mergeContent',
                 '_mergeField', '_mergeLabel', '_method', '_modalSize', '_setAlias',
                 '_setAttribute', '_setField', '_setHeading', '_setRelation', '_setUploadPath',
-                '_table', 'apiClient'
+                '_submitButton', '_table', 'apiClient'
             ];
 
             // Create an array containing only the whitelisted properties from the current object.
@@ -3715,6 +3746,30 @@ abstract class Core extends Controller
         }
 
         return $fieldData;
+    }
+
+    private function _clearAiContextCache(): void
+    {
+        if (! function_exists('get_userdata')) {
+            return;
+        }
+
+        $cache = service('cache');
+        $indexKey = 'aksara_ai_context_index_' . md5(implode('|', [
+            get_userdata('user_id') ?: service('request')->getIPAddress(),
+            trim((string) uri_string(), '/')
+        ]));
+        $index = $cache->get($indexKey);
+
+        if (! is_array($index)) {
+            return;
+        }
+
+        foreach (array_keys($index) as $key) {
+            $cache->delete((string) $key);
+        }
+
+        $cache->delete($indexKey);
     }
 
     /**
@@ -4362,6 +4417,7 @@ abstract class Core extends Controller
                 $this->_insertId = $autoIncrement ? $this->model->insertId() : 0;
 
                 Validation::$uploadedFiles = [];
+                $this->_clearAiContextCache();
 
                 // --- 5. After Insert Hook ---
                 if (method_exists($this, 'afterInsert')) {
@@ -4485,6 +4541,7 @@ abstract class Core extends Controller
             }
 
             Validation::$uploadedFiles = [];
+            $this->_clearAiContextCache();
 
             if (method_exists($this, 'afterUpdate')) {
                 $this->_deferTokenInvalidation();
@@ -4556,6 +4613,7 @@ abstract class Core extends Controller
                 // Attempt to update data
                 if ($this->model->update($table, $data, $where)) {
                     Validation::$uploadedFiles = [];
+                    $this->_clearAiContextCache();
 
                     // Success: Cleanup and Hooks
                     $this->_unlinkFiles($oldFiles);
