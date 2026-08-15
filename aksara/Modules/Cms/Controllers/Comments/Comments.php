@@ -37,25 +37,39 @@ class Comments extends Core
     {
         $this->setTitle(phrase('Comments'))
         ->setIcon('mdi mdi-comment-multiple-outline')
+
         ->unsetColumn('post_id, post_type, reply_id, mention_id, edited, attachment')
         ->unsetView('post_id, post_type, reply_id, mention_id, edited, attachment')
 
-        ->columnOrder('first_name, post_id, post_path, comments, status')
+        ->columnOrder('post_id, post_path, comments, status')
 
         ->addButton('hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => 'comment_id'])
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
 
         ->setField([
             'comments' => 'textarea',
             'status' => 'boolean'
         ])
-        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-        ->setField('post_path', 'hyperlink', '{{ post_path }}', ['user_id' => 'user_id'], true)
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'created_by'], true)
+        ->setField('post_path', 'hyperlink', '{{ post_path }}', ['post_id' => 'post_id', 'comment_id' => 'comment_id'], true)
 
-        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->mergeContent('{{ comment_id }}', phrase('Feedback'), 'callback_getFeedback')
 
         ->setAlias([
+            'post_path' => phrase('Path'),
+            'comments' => phrase('Comments'),
+            'status' => phrase('Status'),
+            'feedback' => phrase('Feedback'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Created By')
         ])
+
+        ->orderBy('created_at', 'DESC')
 
         ->render($this->_table);
     }

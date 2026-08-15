@@ -59,7 +59,7 @@ if ($user): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="alert alert-info callout mb-0">
+                    <div class="alert alert-info callout rounded-4 mb-0">
                         <p class="fs-5 mb-0">
                             <i class="mdi mdi-information-outline"></i> <?= phrase('Please be respectful to each other and be sure to follow our community standard.'); ?>
                         </p>

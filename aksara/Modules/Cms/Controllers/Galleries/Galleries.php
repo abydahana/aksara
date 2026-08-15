@@ -42,11 +42,18 @@ class Galleries extends Core
         $this->setTitle(phrase('Galleries'))
         ->setIcon('mdi mdi-folder-multiple-image')
         ->unsetColumn('gallery_id, gallery_slug, gallery_tags, gallery_attributes, featured')
-        ->unsetField('gallery_id')
-        ->unsetView('gallery_id, first_name')
-        ->columnOrder('gallery_images, gallery_title, gallery_description, first_name, featured, status')
+        ->unsetField('gallery_id, created_by')
+        ->unsetView('gallery_id')
+        ->columnOrder('gallery_images, gallery_title, gallery_description, featured, status')
         ->fieldOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, status')
         ->viewOrder('gallery_images, gallery_title, gallery_slug, gallery_description, gallery_attributes, gallery_tags, featured, status')
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
+
         ->setField([
             'gallery_images' => 'images',
             'gallery_description' => 'textarea',
@@ -56,11 +63,11 @@ class Galleries extends Core
         ])
         ->setField('gallery_slug', 'slug', 'gallery_title')
         ->setField('gallery_title', 'hyperlink', 'galleries', ['gallery_slug' => 'gallery_slug'], true)
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
 
         ->addButton('../../galleries', phrase('View Album'), 'btn-success', 'mdi mdi-eye', ['gallery_slug' => 'gallery_slug'], true)
 
         ->addClass('gallery_description', 'minimal')
-        ->mergeContent('{{ first_name }} {{ last_name }}', 'Author')
         ->setValidation([
             'gallery_title' => 'required|max_length[64]|unique[' . $this->_table . '.gallery_title.gallery_id.' . $this->request->getGet('gallery_id') . ']',
             'gallery_slug' => 'max_length[64]|unique[' . $this->_table . '.gallery_slug.gallery_id.' . $this->request->getGet('gallery_id') . ']',
@@ -73,6 +80,8 @@ class Galleries extends Core
             'gallery_tags' => 2,
             'featured' => 2,
             'status' => 2,
+            'created_at' => 2,
+            'created_by' => 2
         ])
         ->columnSize([
             1 => 'col-md-7',
@@ -87,6 +96,8 @@ class Galleries extends Core
             'gallery_tags' => phrase('Tags'),
             'featured' => phrase('Featured'),
             'status' => phrase('Status'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Author')
         ])
         ->setPlaceholder([
             'gallery_description' => phrase('Page summary to improve SEO'),

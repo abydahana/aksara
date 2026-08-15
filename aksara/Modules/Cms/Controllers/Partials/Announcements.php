@@ -48,10 +48,25 @@ class Announcements extends Core
 
         $this->setTitle(phrase('Announcements'))
         ->setIcon('mdi mdi-bullhorn-outline')
-        ->unsetColumn('announcement_id, content, announcement_slug, language')
-        ->unsetField('announcement_id')
+        ->unsetColumn('announcement_id, content, announcement_slug, language, created_at, created_by')
+        ->unsetField('announcement_id, created_by')
         ->unsetView('announcement_id')
         ->columnOrder('cover')
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
+        ->setRelation(
+            'language_id',
+            'app_languages.id',
+            '{{ app_languages.language }}',
+            [
+                'app_languages.status' => 1
+            ]
+        )
+
         ->setField([
             'content' => 'wysiwyg',
             'cover' => 'image',
@@ -69,26 +84,18 @@ class Announcements extends Core
         )
         ->setField('announcement_slug', 'slug', 'title')
         ->setField('announcement_title', 'hyperlink', 'announcements', ['announcement_slug' => 'announcement_slug'], true)
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
 
         ->addButton('../../../announcements/get', phrase('View Announcement'), 'btn-success', 'mdi mdi-eye', ['announcement_slug' => 'announcement_slug'], true)
 
         ->addClass('content', 'minimal')
         ->mergeField('start_date, end_date')
-        ->setRelation(
-            'language_id',
-            'app_languages.id',
-            '{{ app_languages.language }}',
-            [
-                'app_languages.status' => 1
-            ]
-        )
         ->fieldPosition([
-            'placement' => 2,
-            'start_date' => 2,
-            'end_date' => 2,
             'cover' => 2,
             'language_id' => 2,
             'status' => 2,
+            'created_at' => 2,
+            'created_by' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
@@ -111,6 +118,8 @@ class Announcements extends Core
             'end_date' => phrase('End Date'),
             'language_id' => phrase('Language'),
             'status' => phrase('Status'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Author')
         ])
 
         ->defaultValue([

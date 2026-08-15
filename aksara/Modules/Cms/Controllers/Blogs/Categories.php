@@ -82,7 +82,6 @@ class Categories extends Core
             'category_title' => phrase('Title'),
             'category_slug' => phrase('Slug'),
             'category_description' => phrase('Description'),
-            'language' => phrase('Language'),
             'language_id' => phrase('Language'),
         ])
         ->setPlaceholder([

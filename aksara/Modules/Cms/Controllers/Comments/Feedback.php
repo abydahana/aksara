@@ -38,37 +38,9 @@ class Feedback extends Core
 
     public function index()
     {
-        $query = $this->model->getWhere(
-            'post_comments',
-            [
-                'comment_id' => $this->_primary
-            ],
-            1
-        )
-        ->row();
-
-        if ($query) {
-            // Blogs type comment
-            if ('blog' == $query->post_type) {
-                $this->model->select('
-                    blogs.post_slug,
-                    blogs.post_title,
-
-                    blogs_categories.category_slug
-                ')
-                ->join(
-                    'blogs',
-                    'blogs.post_id = post_comments.post_id'
-                )
-                ->join(
-                    'blogs_categories',
-                    'blogs_categories.category_id = blogs.post_category'
-                );
-            }
-        }
-
         $query = $this->model->select('
             post_comments.comment_id,
+            post_comments.post_path,
 
             app_users.user_id,
             app_users.first_name,
@@ -88,6 +60,8 @@ class Feedback extends Core
         ->row();
 
         if ($query) {
+            $metadata = fetch_metadata($query->post_path);
+            
             $this->setDescription('
                 <div class="row border-bottom">
                     <div class="col-sm-4 col-md-2">
@@ -95,10 +69,7 @@ class Feedback extends Core
                     </div>
                     <div class="col-sm-8 col-md-10">
                         <a href="' . base_url('user', ['user_id' => $query->user_id]) . '" target="_blank">
-                            <b>
-                                ' . $query->first_name . ' ' . $query->last_name . '
-                                <i class="mdi mdi-launch"></i>
-                            </b>
+                            <b>' . $query->first_name . ' ' . $query->last_name . ' <i class="mdi mdi-launch"></i></b>
                         </a>
                     </div>
                 </div>
@@ -107,11 +78,8 @@ class Feedback extends Core
                         ' . phrase('Post') . '
                     </div>
                     <div class="col-sm-8 col-md-10">
-                        <a href="' . base_url('blogs/' . $query->category_slug . '/' . $query->post_slug, ['comment_highlight' => $query->comment_id]) . '" target="_blank">
-                            <b>
-                                ' . $query->post_title . '
-                                <i class="mdi mdi-launch"></i>
-                            </b>
+                        <a href="' . base_url($query->post_path, ['comment_highlight' => $query->comment_id]) . '" target="_blank">
+                            <b>' . ($metadata->title ?? base_url($query->post_path)) . ' <i class="mdi mdi-launch"></i></b>
                         </a>
                     </div>
                 </div>
@@ -123,23 +91,29 @@ class Feedback extends Core
         ->unsetColumn('comment_id, post_id, reply_id, edited')
         ->unsetView('comment_id, post_id, reply_id, edited')
 
-        ->columnOrder('first_name, message')
-
         ->addToolbar('../hide', phrase('Review'), 'btn btn-danger --modal', 'mdi mdi-toggle-switch', ['id' => $this->_primary])
 
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
+
         ->setField([
-            'comments' => 'textarea',
+            'message' => 'textarea',
             'status' => 'boolean'
         ])
-        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
-
-        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
 
         ->where([
             'comment_id' => $this->_primary
         ])
 
         ->setAlias([
+            'message' => phrase('Message'),
+            'status' => phrase('Status'),
+            'created_at' => phrase('Reported At'),
+            'created_by' => phrase('Reported By')
         ])
 
         ->render($this->_table);

@@ -39,9 +39,22 @@ class Peoples extends Core
     {
         $this->setTitle(phrase('Peoples'))
         ->setIcon('mdi mdi-account-group-outline')
-        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter')
-        ->unsetField('people_id')
+
+        ->addButton('../../peoples/user', phrase('View People'), 'btn-success', 'mdi mdi-eye', ['people_slug' => 'people_slug'], true)
+
+        ->unsetColumn('people_id, people_slug, biography, instagram, facebook, twitter, created_at, created_by')
+        ->unsetField('people_id, created_by')
         ->unsetView('people_id')
+
+        ->columnOrder('photo, full_name')
+        ->fieldOrder('photo')
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name AS created_by_first_name}} {{app_users.last_name AS created_by_last_name}}'
+        )
+
         ->setField([
             'biography' => 'textarea',
             'email' => 'email',
@@ -50,27 +63,28 @@ class Peoples extends Core
         ])
         ->setField('people_slug', 'slug', 'full_name')
         ->setField('full_name', 'hyperlink', 'peoples', ['people_slug' => 'people_slug'], true)
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
 
-        ->addButton('../../peoples/user', phrase('View People'), 'btn-success', 'mdi mdi-eye', ['people_slug' => 'people_slug'], true)
-
-        ->columnOrder('photo, full_name')
-        ->fieldOrder('photo')
-        ->setValidation([
-            'first_name' => 'required|string',
-            'last_name' => 'string',
-            'people_slug' => 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . $this->request->getGet('people_id') . ']',
-            'status' => 'boolean'
-        ])
         ->mergeField('first_name, last_name')
         ->mergeField('mobile, instagram')
         ->mergeField('facebook, twitter')
+
         ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
+
         ->fieldSize([
             'mobile' => 'col-md-6',
             'instagram' => 'col-md-6',
             'facebook' => 'col-md-6',
             'twitter' => 'col-md-6'
         ])
+
+        ->setValidation([
+            'first_name' => 'required|string',
+            'last_name' => 'string',
+            'people_slug' => 'max_length[64]|unique[' . $this->_table . '.people_slug.people_id.' . $this->request->getGet('people_id') . ']',
+            'status' => 'boolean'
+        ])
+
         ->setAlias([
             'photo' => phrase('Photo'),
             'first_name' => phrase('First Name'),
