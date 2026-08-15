@@ -1,7 +1,7 @@
 {
     "name": "abydahana/aksara",
     "type": "project",
-    "description": "Aksara is a CodeIgniter based CRUD Toolkit you can use to build complex applications become shorter, secure and more reliable just in a few lines of code. Serving both CMS or Framework, produce both HEADLESS (RESTful API) or TRADITIONAL (Browser Based), just by writing single controller. Yet it's reusable, scalable and ready to use!",
+    "description": "Aksara is a modern, developer-friendly framework and CMS built on CodeIgniter 4, featuring rapid CRUD development, modular architecture, smart routing, flexible access control, API integration, and an AI assistant to make content management faster and smarter.",
     "homepage": "https://www.aksaracms.com",
     "license": "MIT",
     "authors": [
