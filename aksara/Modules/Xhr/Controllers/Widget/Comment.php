@@ -29,7 +29,9 @@ class Comment extends Core
     {
         parent::__construct();
 
+        $this->setPermission();
         $this->permission->mustAjax();
+
         $this->limit(null);
 
         if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
@@ -76,6 +78,134 @@ class Comment extends Core
         ])
 
         ->render();
+    }
+
+    public function update()
+    {
+        if (! get_userdata('is_logged')) {
+            return throw_exception(403, phrase('Please sign in to update the comment.'));
+        }
+
+        $query = $this->model->getWhere(
+            $this->_table,
+            [
+                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
+            ],
+            1
+        )
+        ->row();
+
+        if (! $query) {
+            return throw_exception(404, phrase('The comment you want to update was not found.'));
+        }
+
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
+            $this->formValidation->setRule('comments', phrase('Comments'), 'required');
+            $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
+
+            if ($this->formValidation->run($this->request->getPost()) === false) {
+                return throw_exception(400, $this->formValidation->getErrors());
+            }
+
+            $attachment = '';
+            $uploaded_files = Validation::$uploadedFiles;
+
+            // Check if the uploaded file is valid
+            if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
+                // Loop to get source from unknown array key
+                foreach ($uploaded_files['attachment'] as $key => $src) {
+                    // Set new source
+                    $attachment = $src;
+                }
+            }
+
+            // Insert to update history
+            $this->model->insert(
+                'post_comments_history',
+                [
+                    'comment_id' => $query->comment_id,
+                    'comments' => $query->comments,
+                    'attachment' => $query->attachment,
+                    'created_at' => $query->created_at
+                ]
+            );
+
+            // Update comment
+            $this->model->update(
+                $this->_table,
+                [
+                    'comments' => htmlspecialchars($this->request->getPost('comments')),
+                    'attachment' => $attachment,
+                    'edited' => 1
+                ],
+                [
+                    'comment_id' => $this->request->getGet('id')
+                ]
+            );
+
+            return make_json([
+                'element' => '#comment-text-' . $this->request->getGet('id'),
+                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="' . '_blank' . '"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="' . phrase('Attachment') . '" loading="lazy" decoding="async" /></a></div>' : null) . nl2br(htmlspecialchars($this->request->getPost('comments')))
+            ]);
+        }
+
+        $html = '
+            <form action="' . current_page() . '" method="POST" class="--validate-form" enctype="multipart/form-data">
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
+                <div class="form-group mb-3">
+                    <label class="d-block text-muted" for="comments_input">
+                        '. phrase('Comments') . '
+                    </label>
+                    <textarea name="comments" class="form-control" id="comments_input" placeholder="' . phrase('Type a comment') . '" rows="1">' . (isset($query->comments) ? $query->comments : null) . '</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="d-block text-muted" for="comments_input">
+                        '. phrase('Attachment') . '
+                    </label>
+                    <div data-provides="fileupload" class="fileupload fileupload-new">
+                        <span class="btn btn-file d-block">
+                            <input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" data-role="image-upload" id="attachment_input" />
+                            <div class="fileupload-new text-center">
+                                <img class="img-fluid upload_preview" src="' . get_image('comment', $query->attachment, 'thumb'). '" alt="' . phrase('Preview') . '" loading="lazy" decoding="async" />
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.btn-file\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.btn-file\').find(\'img\').attr(\'src\', \'' . get_image('comment', 'placeholder.png', 'icon') . '\'))">
+                                <i class="mdi mdi-window-close"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <hr class="mx--3" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="mdi mdi-window-close"></i>
+                                ' . phrase('Cancel') . '
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="mdi mdi-check"></i>
+                                ' . phrase('Update') . '
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        ';
+
+        return make_json([
+            'status' => 200,
+            'meta' => [
+                'title' => phrase('Update Comment'),
+                'icon' => 'mdi mdi-square-edit-outline',
+                'popup' => true
+            ],
+            'content' => $html,
+            'reactivate' => true
+        ]);
     }
 
     public function repute()
@@ -263,12 +393,8 @@ class Comment extends Core
         ]);
     }
 
-    public function update()
+    public function hide()
     {
-        if (! get_userdata('is_logged')) {
-            return throw_exception(403, phrase('Please sign in to update the comment.'));
-        }
-
         $query = $this->model->getWhere(
             $this->_table,
             [
@@ -279,47 +405,14 @@ class Comment extends Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The comment you want to update was not found.'));
+            return throw_exception(404, phrase('The comment you want to hide was not found.'));
         }
 
         if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
-            $this->formValidation->setRule('comments', phrase('Comments'), 'required');
-            $this->formValidation->setRule('attachment', phrase('Attachment'), 'validate_upload[attachment.image]');
-
-            if ($this->formValidation->run($this->request->getPost()) === false) {
-                return throw_exception(400, $this->formValidation->getErrors());
-            }
-
-            $attachment = '';
-            $uploaded_files = Validation::$uploadedFiles;
-
-            // Check if the uploaded file is valid
-            if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
-                // Loop to get source from unknown array key
-                foreach ($uploaded_files['attachment'] as $key => $src) {
-                    // Set new source
-                    $attachment = $src;
-                }
-            }
-
-            // Insert to update history
-            $this->model->insert(
-                'post_comments_history',
-                [
-                    'comment_id' => $query->comment_id,
-                    'comments' => $query->comments,
-                    'attachment' => $query->attachment,
-                    'created_at' => $query->created_at
-                ]
-            );
-
-            // Update comment
             $this->model->update(
                 $this->_table,
                 [
-                    'comments' => htmlspecialchars($this->request->getPost('comments')),
-                    'attachment' => $attachment,
-                    'edited' => 1
+                    'status' => ($query->status ? 0 : 1)
                 ],
                 [
                     'comment_id' => $this->request->getGet('id')
@@ -328,40 +421,21 @@ class Comment extends Core
 
             return make_json([
                 'element' => '#comment-text-' . $this->request->getGet('id'),
-                'content' => ($attachment ? '<div><a href="' . get_image('comment', $attachment) . '" target="' . '_blank' . '"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded mb-3" alt="' . phrase('Attachment') . '" loading="lazy" decoding="async" /></a></div>' : null) . nl2br(htmlspecialchars($this->request->getPost('comments')))
+                'content' => ($query->status ? '<i class="text-muted">' . phrase('Comment hidden') . '</i>' : $query->comments)
             ]);
         }
 
         $html = '
-            <form action="' . current_page() . '" method="POST" class="--validate-form" enctype="multipart/form-data">
+            <form action="' . current_page() . '" method="POST" class="--validate-form">
                 <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
-                <div class="form-group mb-3">
-                    <label class="d-block text-muted" for="comments_input">
-                        '. phrase('Comments') . '
-                    </label>
-                    <textarea name="comments" class="form-control" id="comments_input" placeholder="' . phrase('Type a comment') . '" rows="1">' . (isset($query->comments) ? $query->comments : null) . '</textarea>
+                <div class="text-center pt-3 pb-3 mb-3">
+                    ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
                 </div>
-                <div class="form-group">
-                    <label class="d-block text-muted" for="comments_input">
-                        '. phrase('Attachment') . '
-                    </label>
-                    <div data-provides="fileupload" class="fileupload fileupload-new">
-                        <span class="btn btn-file d-block">
-                            <input type="file" name="attachment" accept="' . implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED)))) . '" data-role="image-upload" id="attachment_input" />
-                            <div class="fileupload-new text-center">
-                                <img class="img-fluid upload_preview" src="' . get_image('comment', $query->attachment, 'thumb'). '" alt="' . phrase('Preview') . '" loading="lazy" decoding="async" />
-                            </div>
-                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.btn-file\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.btn-file\').find(\'img\').attr(\'src\', \'' . get_image('comment', 'placeholder.png', 'icon') . '\'))">
-                                <i class="mdi mdi-window-close"></i>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-                <hr class="mx--3" />
+                <hr class="mx--3 border-secondary-subtle" />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-dismiss="modal">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -369,9 +443,9 @@ class Comment extends Core
                     </div>
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill">
                                 <i class="mdi mdi-check"></i>
-                                ' . phrase('Update') . '
+                                ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
                             </button>
                         </div>
                     </div>
@@ -382,12 +456,10 @@ class Comment extends Core
         return make_json([
             'status' => 200,
             'meta' => [
-                'title' => phrase('Update Comment'),
-                'icon' => 'mdi mdi-square-edit-outline',
-                'popup' => true
+                'popup' => true,
+                'modal_size' => 'modal-sm'
             ],
-            'content' => $html,
-            'reactivate' => true
+            'content' => $html
         ]);
     }
 
@@ -487,76 +559,6 @@ class Comment extends Core
                 'title' => phrase('Report Comment'),
                 'icon' => 'mdi mdi-alert-outline',
                 'popup' => true
-            ],
-            'content' => $html
-        ]);
-    }
-
-    public function hide()
-    {
-        $query = $this->model->getWhere(
-            $this->_table,
-            [
-                'comment_id' => ($this->request->getGet('id') ? $this->request->getGet('id') : 0)
-            ],
-            1
-        )
-        ->row();
-
-        if (! $query) {
-            return throw_exception(404, phrase('The comment you want to hide was not found.'));
-        }
-
-        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY)) {
-            $this->model->update(
-                $this->_table,
-                [
-                    'status' => ($query->status ? 0 : 1)
-                ],
-                [
-                    'comment_id' => $this->request->getGet('id')
-                ]
-            );
-
-            return make_json([
-                'element' => '#comment-text-' . $this->request->getGet('id'),
-                'content' => ($query->status ? '<i class="text-muted">' . phrase('Comment hidden') . '</i>' : $query->comments)
-            ]);
-        }
-
-        $html = '
-            <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
-                <div class="text-center pt-3 pb-3 mb-3">
-                    ' . ($query->status ? phrase('Are you sure want to hide this comment?') : phrase('Are you sure want to republish this comment?')) . '
-                </div>
-                <hr class="mx--3 border-secondary-subtle" />
-                <div class="row">
-                    <div class="col-6">
-                        <div class="d-grid">
-                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-dismiss="modal">
-                                <i class="mdi mdi-window-close"></i>
-                                ' . phrase('Cancel') . '
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-dark btn-sm rounded-pill">
-                                <i class="mdi mdi-check"></i>
-                                ' . ($query->status ? phrase('Hide') : phrase('Publish')) . '
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        ';
-
-        return make_json([
-            'status' => 200,
-            'meta' => [
-                'popup' => true,
-                'modal_size' => 'modal-sm'
             ],
             'content' => $html
         ]);

@@ -25,10 +25,11 @@ class Account extends Core
     {
         parent::__construct();
 
+        $this->setPermission();
+        $this->permission->mustAjax();
+
         if ('modal' != $this->request->getPost('prefer')) {
             return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
-        } elseif (! get_userdata('user_id')) {
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access the requested page.'), base_url());
         }
     }
 

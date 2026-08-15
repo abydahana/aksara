@@ -27,11 +27,13 @@ class Summernote extends Core
     {
         parent::__construct();
 
-        if (! get_userdata('is_logged')) {
-            return throw_exception(403, phrase('Access denied'), base_url());
-        }
+        $this->setPermission();
+        $this->permission->mustAjax();
+    }
 
-        $this->permission->mustAjax(base_url());
+    public function index()
+    {
+        return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
     }
 
     public function upload()
