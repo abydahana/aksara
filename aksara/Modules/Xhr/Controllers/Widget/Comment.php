@@ -30,7 +30,6 @@ class Comment extends Core
     {
         parent::__construct();
 
-        $this->setPermission();
         $this->permission->mustAjax();
 
         $this->limit(null);
