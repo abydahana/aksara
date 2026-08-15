@@ -194,7 +194,7 @@ class Read extends Core
         return $query;
     }
 
-    private function _titleKeywords(string $slug = ''): array
+    private function _titleKeywords(?string $slug = ''): array
     {
         $title = $this->model->select('post_title')
         ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
@@ -234,7 +234,7 @@ class Read extends Core
         )
         ->row('post_tags');
 
-        $post_tags = array_map('trim', explode(',', $post_tags));
+        $post_tags = array_map('trim', explode(',', $post_tags ?? ''));
 
         if (! empty(array_filter($post_tags))) {
             $this->model->groupStart();

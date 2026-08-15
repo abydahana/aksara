@@ -37,9 +37,15 @@ class Videos extends Core
     {
         $this->setTitle(phrase('Videos'))
         ->setIcon('mdi mdi-youtube')
-        ->unsetColumn('id, slug, video_url')
-        ->unsetField('id')
+        ->unsetColumn('id, slug, description, video_url')
+        ->unsetField('id, created_by')
         ->unsetView('id')
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
 
         ->setField([
             'cover' => 'image',
@@ -48,6 +54,7 @@ class Videos extends Core
             'status' => 'boolean'
         ])
         ->setField('slug', 'slug', 'title')
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
 
         ->setValidation([
             'title' => 'required|unique[' . $this->_table . '.title.id.' . $this->request->getGet('id') . ']',
@@ -63,6 +70,8 @@ class Videos extends Core
             'video_url' => phrase('Video URL'),
             'featured' => phrase('Featured'),
             'status' => phrase('Status'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Author')
         ])
 
         ->setPlaceholder([

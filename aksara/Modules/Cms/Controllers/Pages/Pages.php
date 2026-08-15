@@ -52,21 +52,24 @@ class Pages extends Core
 
         $this->setTitle(phrase('Pages'))
         ->setIcon('mdi mdi-file-document-outline')
-        ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
-        ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
-        ->unsetColumn('page_id, page_slug, page_content, language')
-        ->unsetField('page_id')
-        ->unsetView('page_id, page_content')
-        ->columnOrder('page_title, page_description, updated, status')
-        ->fieldOrder('page_title, page_description, language_id, status')
-        ->setField([
-            'page_description' => 'textarea',
-            'status' => 'boolean'
+
+        ->setOutput([
+            'builder_components' => $pageBuilder->getComponentsFlat(),
+            'builder_categories' => $pageBuilder->getCategories()
         ])
-        ->setField('page_slug', 'slug', 'page_title')
-        ->setField('page_title', 'hyperlink', 'pages/{{page_slug}}', [], true)
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
+
+        ->setButton('create', 'create', phrase('Create'), 'btn-primary --xhr', 'mdi mdi-plus')
+        ->setButton('update', 'update', phrase('Update'), 'btn-secondary --xhr', 'mdi mdi-square-edit-outline', ['page_id' => 'page_id'])
+
+        ->unsetColumn('page_id, page_slug, page_description, page_content, language')
+        ->unsetField('page_id, created_by')
+        ->unsetView('page_id, page_content')
+
+        ->columnOrder('page_title, page_description, updated, status')
+        ->fieldOrder('page_title, page_description, language_id, status')
+
         ->setRelation(
             'language_id',
             'app_languages.id',
@@ -75,6 +78,34 @@ class Pages extends Core
                 'app_languages.status' => 1
             ]
         )
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
+
+        ->setField([
+            'page_description' => 'textarea',
+            'status' => 'boolean'
+        ])
+        ->setField('page_slug', 'slug', 'page_title')
+        ->setField('page_title', 'hyperlink', 'pages/{{page_slug}}', [], true)
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+
+        ->setPlaceholder([
+            'page_description' => phrase('Page summary to improve SEO')
+        ])
+        ->fieldPosition([
+            'status' => 2,
+            'language_id' => 2,
+            'created_by' => 2,
+            'created_at' => 2
+        ])
+        ->columnSize([
+            1 => 'col-md-8',
+            2 => 'col-md-4'
+        ])
+
         ->setValidation([
             'page_title' => 'required|max_length[255]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
             'page_slug' => 'max_length[255]|unique[' . $this->_table . '.page_slug.page_id.' . $this->request->getGet('page_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
@@ -85,24 +116,9 @@ class Pages extends Core
             'page_title' => phrase('Title'),
             'page_description' => phrase('Description'),
             'page_slug' => phrase('Slug'),
-            'language' => phrase('Language'),
             'language_id' => phrase('Language'),
-        ])
-        ->setPlaceholder([
-            'page_description' => phrase('Page summary to improve SEO')
-        ])
-        ->fieldPosition([
-            'status' => 2,
-            'language_id' => 2,
-            'language' => 2,
-        ])
-        ->columnSize([
-            1 => 'col-md-8',
-            2 => 'col-md-4'
-        ])
-        ->setOutput([
-            'builder_components' => $pageBuilder->getComponentsFlat(),
-            'builder_categories' => $pageBuilder->getCategories()
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Author')
         ])
         ->render($this->_table);
     }

@@ -94,31 +94,20 @@ class Blogs extends Core
 
         $this->setTitle(phrase('Blogs'))
         ->setIcon('mdi mdi-newspaper')
-        ->setPrimary('post_id')
+
         ->unsetColumn('post_id, post_excerpt, post_slug, post_content, post_tags, headline, language')
-        ->unsetField('post_id')
+        ->unsetField('post_id, created_by')
         ->unsetView('post_id')
-        ->columnOrder('featured_image, post_title, category_title, first_name, headline, status')
+
+        ->columnOrder('featured_image, post_title, category_title, headline, status')
         ->fieldOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, language_id, headline, status')
         ->viewOrder('post_title, post_slug, post_excerpt, post_content, featured_image, post_category, post_tags, headline, status')
-        ->setField([
-            'post_excerpt' => 'textarea',
-            'post_content' => 'wysiwyg',
-            'post_tags' => 'tagsinput',
-            'headline' => 'boolean',
-            'featured_image' => 'image',
-            'status' => 'boolean'
-        ])
-        ->setField('post_slug', 'slug', 'post_title')
-        ->setField('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
-        ->setField('category_title', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
+
+        // Group rows by post category
+        ->itemReference('post_category')
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['post_id' => 'post_id'])
 
-        ->fieldAppend(
-            'post_category',
-            '<a href="' . go_to('categories/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
-        )
         ->setRelation(
             'post_category',
             'blogs_categories.category_id',
@@ -132,8 +121,29 @@ class Blogs extends Core
                 'app_languages.status' => 1
             ]
         )
-        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Author'))
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{ app_users.first_name }} {{ app_users.last_name }}'
+        )
 
+        ->setField([
+            'post_excerpt' => 'textarea',
+            'post_content' => 'wysiwyg',
+            'post_tags' => 'tagsinput',
+            'headline' => 'boolean',
+            'featured_image' => 'image',
+            'status' => 'boolean'
+        ])
+        ->setField('post_slug', 'slug', 'post_title')
+        ->setField('post_title', 'hyperlink', 'blogs/read', ['post_id' => 'post_id'], true)
+        ->setField('post_category', 'hyperlink', 'cms/blogs', ['category' => 'post_category'])
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'created_by'], true)
+
+        ->fieldAppend(
+            'post_category',
+            '<a href="' . go_to('categories/create') . '" class="--modal"><i class="mdi mdi-plus-circle-outline me-1"></i>' . phrase('Add') . '</a>'
+        )
         ->setPlaceholder([
             'post_excerpt' => phrase('Article summary to improve SEO'),
             'post_tags' => phrase('Separate with commas')
@@ -147,15 +157,15 @@ class Blogs extends Core
             'featured_image' => 2,
             'language_id' => 2,
             'language' => 2,
+            'created_at' => 2,
+            'created_by' => 2
         ])
         ->columnSize([
             1 => 'col-md-8',
             2 => 'col-md-4'
         ])
         ->modalSize('modal-xl')
-        ->itemReference([
-            'category_title'
-        ])
+
         ->setValidation([
             'post_title' => 'required|max_length[255]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
             'post_slug' => 'max_length[255]|unique[' . $this->_table . '.post_slug.post_id.' . $this->request->getGet('post_id') . '.language_id.' . ($this->request->getPost('language_id') ?? $this->request->getGet('language') ?? 0) . ']',
@@ -177,8 +187,9 @@ class Blogs extends Core
             'category_title' => phrase('Category'),
             'headline' => phrase('Headline'),
             'status' => phrase('Status'),
-            'language' => phrase('Language'),
             'language_id' => phrase('Language'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Author')
         ])
 
         ->orderBy([
@@ -317,6 +328,9 @@ class Blogs extends Core
 
     private function _translateWithAi(object $data, int $languageId): object
     {
+        // Increase max_execution_time to 5 minutes
+        ini_set('max_execution_time', 300);
+
         $language = $this->model->getWhere('app_languages', [
             'id' => $languageId,
             'status' => 1

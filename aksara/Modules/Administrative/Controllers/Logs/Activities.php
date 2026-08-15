@@ -41,18 +41,24 @@ class Activities extends Core
     {
         $this->setTitle(phrase('Log Activities'))
         ->setIcon('mdi mdi-information-outline')
-        ->setPrimary('id')
-        ->unsetColumn('id, user_id, browser, session_id, query')
-        ->unsetView('id, user_id, session_id, query')
+
         ->addToolbar('truncate', phrase('Clear Logs'), 'btn-primary --open-delete-confirm', 'mdi mdi-delete-empty')
+
+        ->unsetColumn('id, browser, session_id, query')
+        ->unsetView('id, session_id, query')
+
+        ->setRelation(
+            'user_id',
+            'app_users.user_id',
+            '{{ first_name }} {{ last_name }}'
+        )
+
         ->setField('timestamp', 'current_timestamp')
-        ->setField('first_name', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
         ->setField('path', 'hyperlink', '{{ path }}/{{ method }}', '{{ query }}')
-        ->columnOrder('first_name')
-        ->viewOrder('first_name')
-        ->select('app_users.first_name')
-        ->join('app_users', 'app_users.user_id = ' . $this->_table . '.user_id')
+        ->setField('user_id', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+
         ->orderBy('id', 'desc')
+
         ->setAlias([
             'path' => phrase('Path'),
             'method' => phrase('Method'),
@@ -61,7 +67,6 @@ class Activities extends Core
             'ip_address' => phrase('IP Address'),
             'timestamp' => phrase('Access Time')
         ])
-        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
         ->render($this->_table);
     }
 

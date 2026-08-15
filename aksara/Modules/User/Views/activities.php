@@ -62,7 +62,7 @@ if ($user): ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <?php if (! $results): ?>
-                        <div class="alert alert-warning callout">
+                        <div class="alert alert-warning callout rounded-4">
                             <h3 class="mb-0"><?= phrase('No Activities'); ?></h3>
                             <hr />
                             <p class="fs-5 mb-0">
@@ -77,33 +77,38 @@ if ($user): ?>
                             if (! $metadata || ! isset($metadata->title)) continue;
                         ?>
                         <div class="activity-item mb-3">
-                            <div class="bg-body-tertiary rounded-4 mb-4 p-4">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2 col-lg-1 pe-3">
-                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
-                                        </div>
-                                        <div class="col-10 col-lg-9">
-                                            <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h4>
-                                            <p class="text-muted mb-0">
-                                                <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" target="_blank"> <?= phrase('Commented'); ?> </a>
-                                            </p>
-                                        </div>
+                            <div class="border rounded-4 mb-4 p-4">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col-2 col-lg-1 pe-3">
+                                        <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
                                     </div>
-                                    <p class="fs-5 mb-0"><?= truncate($val->comments, 160); ?></p>
+                                    <div class="col-10 col-lg-9">
+                                        <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h4>
+                                        <p class="text-muted mb-0">
+                                            <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" target="_blank"> <?= phrase('Commented'); ?> </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr class="border-secondary-subtle" />
+                                <blockquote class="blockquote">
+                                    <p><?= truncate($val->comments, 160); ?></p>
                                     <?php if ($val->attachment): ?>
                                         <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
                                             <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="Attachment" />
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (isset($metadata->title)): ?>
-                                        <hr class="border-secondary-subtle" />
-                                        <h3 class="h4">
-                                            <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="text-body" target="_blank">
-                                                <?= $metadata->title; ?>
-                                            </a>
-                                        </h3>
-                                    <?php endif; ?>
+                                </blockquote>
+                                <?php if (isset($metadata->title)): ?>
+                                <div class="rounded-4 border p-3">
+                                    <h5>
+                                        <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="text-body" target="_blank">
+                                            <?= $metadata->title; ?>
+                                        </a>
+                                    </h5>
+                                    <p><?= $metadata->description; ?></p>
                                 </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     <?php endforeach; ?>
 

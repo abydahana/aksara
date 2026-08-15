@@ -51,13 +51,14 @@ class Testimonials extends Core
         $this->setTitle(phrase('Testimonials'))
         ->setIcon('mdi mdi-comment-account-outline')
         ->unsetColumn('testimonial_id, testimonial_content, language')
-        ->unsetField('testimonial_id')
+        ->unsetField('testimonial_id, created_by')
         ->unsetView('testimonial_id')
-        ->setField([
-            'photo' => 'image',
-            'testimonial_content' => 'textarea',
-            'status' => 'boolean'
-        ])
+
+        ->setRelation(
+            'created_by',
+            'app_users.user_id',
+            '{{app_users.first_name}} {{app_users.last_name}}'
+        )
         ->setRelation(
             'language_id',
             'app_languages.id',
@@ -66,6 +67,14 @@ class Testimonials extends Core
                 'app_languages.status' => 1
             ]
         )
+
+        ->setField([
+            'photo' => 'image',
+            'testimonial_content' => 'textarea',
+            'status' => 'boolean'
+        ])
+        ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+
         ->setValidation([
             'first_name' => 'required|string',
             'last_name' => 'string',
@@ -81,9 +90,9 @@ class Testimonials extends Core
             'testimonial_content' => phrase('Testimony'),
             'language_id' => phrase('Language'),
             'status' => phrase('Status'),
+            'created_at' => phrase('Created At'),
+            'created_by' => phrase('Created By')
         ])
-        ->mergeField('first_name, last_name')
-        ->mergeContent('{{ first_name }} {{ last_name }}', phrase('Full Name'))
 
         ->render($this->_table);
     }

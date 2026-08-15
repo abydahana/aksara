@@ -62,7 +62,7 @@ if ($user): ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <?php if (! $results): ?>
-                        <div class="alert alert-warning callout">
+                        <div class="alert alert-warning callout rounded-4">
                             <h3 class="mb-0"><?= phrase('No Favorites'); ?></h3>
                             <hr />
                             <p class="fs-5 mb-0">
@@ -78,25 +78,25 @@ if ($user): ?>
                         ?>
                         <div class="activity-item mb-3">
                             <div class="border rounded-4 mb-4 p-4">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2 col-lg-1 pe-3">
-                                            <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
-                                        </div>
-                                        <div class="col-10 col-lg-9">
-                                            <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
-                                            <p class="text-muted mb-0">
-                                                <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path); ?>" target="_blank"> <?= phrase('Liked'); ?> </a>
-                                            </p>
-                                        </div>
+                                <div class="row g-0 align-items-center">
+                                    <div class="col-2 col-lg-1 pe-3">
+                                        <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" loading="lazy" decoding="async" />
                                     </div>
-                                    <hr class="border-secondary-subtle" />
-                                    <h3 class="h4">
-                                        <a href="<?= base_url($val->post_path); ?>" class="text-body" target="_blank">
-                                            <?= $metadata->title; ?>
-                                        </a>
-                                    </h3>
-                                    <p class="text-muted"><?= isset($metadata->description) ? truncate($metadata->description, 160) : ''; ?></p>
+                                    <div class="col-10 col-lg-9">
+                                        <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name; ?> </h5>
+                                        <p class="text-muted mb-0">
+                                            <?= time_ago($val->created_at); ?> &middot; <a href="<?= base_url($val->post_path); ?>" target="_blank"> <?= phrase('Liked'); ?> </a>
+                                        </p>
+                                    </div>
                                 </div>
+                                <hr class="border-secondary-subtle" />
+                                <h4>
+                                    <a href="<?= base_url($val->post_path); ?>" class="text-body" target="_blank">
+                                        <?= $metadata->title; ?>
+                                    </a>
+                                </h4>
+                                <p class="text-muted"><?= isset($metadata->description) ? truncate($metadata->description, 160) : ''; ?></p>
+                            </div>
                         </div>
                     <?php endforeach; ?>
 
