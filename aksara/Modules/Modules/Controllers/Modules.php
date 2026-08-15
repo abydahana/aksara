@@ -38,11 +38,46 @@ class Modules extends Core
             return $this->_error404();
         }
 
-        // Define search locations (Priority: ROOT then APPPATH)
+        // Extract relative module path (e.g. "XHR/assets/js/purify.min.js")
+        $relativeModulePath = preg_replace('#^.*modules/#i', '', $uriString);
+
+        // Parse module name and subpath
+        $parts = explode('/', str_replace('\\', '/', $relativeModulePath), 2);
+        $moduleName = $parts[0] ?? '';
+        $subPath = $parts[1] ?? '';
+
+        // Define search locations (Priority: custom modules, core Aksara Modules, APPPATH Modules)
         $locations = [
             ROOTPATH . $uriString,
-            APPPATH . 'Modules' . DIRECTORY_SEPARATOR . preg_replace('#^.*modules/#', '', $uriString)
+            ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeModulePath),
+            ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeModulePath),
+            APPPATH . 'Modules' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeModulePath)
         ];
+
+        // Case-insensitive directory lookup for Linux VPS
+        if ($moduleName) {
+            $baseDirs = [
+                ROOTPATH . 'modules',
+                ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules',
+                APPPATH . 'Modules'
+            ];
+
+            foreach ($baseDirs as $baseDir) {
+                if (! is_dir($baseDir)) {
+                    continue;
+                }
+
+                if ($dh = @opendir($baseDir)) {
+                    while (false !== ($dir = readdir($dh))) {
+                        if ('.' !== $dir && '..' !== $dir && strcasecmp($dir, $moduleName) === 0) {
+                            $locations[] = $baseDir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $subPath);
+                            break;
+                        }
+                    }
+                    closedir($dh);
+                }
+            }
+        }
 
         foreach ($locations as $path) {
             // Resolve real path to prevent directory traversal attacks (e.g. ../../)
@@ -50,7 +85,10 @@ class Modules extends Core
 
             if ($realPath && is_file($realPath)) {
                 // Ensure the file is actually inside ROOTPATH or APPPATH for safety
-                if (strpos($realPath, realpath(ROOTPATH)) === 0 || strpos($realPath, realpath(APPPATH)) === 0) {
+                $rootReal = realpath(ROOTPATH);
+                $appReal = realpath(APPPATH);
+
+                if (($rootReal && strpos($realPath, $rootReal) === 0) || ($appReal && strpos($realPath, $appReal) === 0)) {
                     $this->_serveAsset($realPath);
                 }
             }
