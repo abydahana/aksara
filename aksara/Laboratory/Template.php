@@ -38,10 +38,12 @@ class Template
      */
     public string $theme;
 
+    // ──────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Template constructor.
-     *
-     * @param string $theme The theme context or directory name to use, defaults to 'frontend'.
      */
     public function __construct(string $theme = 'frontend')
     {
@@ -49,10 +51,12 @@ class Template
         self::$activeTheme = $this->theme;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Theme Properties & Resolution
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Getting active theme name.
-     *
-     * @return string The active theme directory name.
      */
     public function getTheme(): string
     {
@@ -62,7 +66,6 @@ class Template
     /**
      * Getting the theme property from theme.json file.
      *
-     * @param string|null $parameter The specific property key to retrieve (e.g., 'type').
      * @return mixed|false The property value or false if the theme.json or property doesn't exist.
      */
     public function getThemeProperty(?string $parameter = null): mixed
@@ -89,9 +92,6 @@ class Template
      * Scan the view file location both camelized string and lowercase.
      *
      * Finds the most appropriate view file based on theme, module, language, and request type.
-     *
-     * @param string $view The base view file name, defaults to 'index'.
-     * @return string The normalized path to the found view file (relative to ROOTPATH using '../../').
      */
     public function getView(string $view = 'index'): string
     {
@@ -355,13 +355,15 @@ class Template
         return $view;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Page Building & Rendering
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Build output view or object.
      *
      * Processes the view, applies templates, minifies output, and sends the response.
      *
-     * @param string|null $view The view file name to render (without extension).
-     * @param array $data Data to be passed to the view.
      * @return \CodeIgniter\HTTP\Response|object The HTTP Response object for non-AJAX requests or a JSON object for AJAX requests.
      */
     public function build(?string $view = null, array $data = []): \CodeIgniter\HTTP\Response|string
@@ -487,12 +489,13 @@ class Template
         }
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Navigation & Pagination
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Generate breadcrumb array structure.
      *
-     * @param array $data An associative array of slug => label for breadcrumb segments.
-     * @param string|null $title The title for the current page (last segment label).
-     * @param array $primary Array of primary key names to be preserved in query parameters.
      * @return array<int, array{url: string, label: string, icon: string}> The array of breadcrumb items.
      */
     public function breadcrumb(array $data = [], ?string $title = null, array $primary = []): array
@@ -588,7 +591,6 @@ class Template
     /**
      * Generate pagination data structure.
      *
-     * @param array $data Array containing pagination details (total, per_page, offset).
      * @return array<string, mixed> The array of pagination data.
      */
     public function pagination(array $data = []): array
@@ -755,6 +757,10 @@ class Template
         return $output;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Theme Resolution & Processing
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Resolve a theme context (frontend/backend) or explicit theme folder.
      */
@@ -774,7 +780,6 @@ class Template
     /**
      * Function to minify HTML.
      *
-     * @param string|null $buffer The HTML content to minify.
      * @return string|null The minified HTML content.
      */
     private function _minify(?string $buffer = null): ?string
@@ -816,9 +821,6 @@ class Template
 
     /**
      * Default core menus structure.
-     *
-     * @param array $menus Base menu array (usually empty or pre-loaded).
-     * @return array The complete menu structure for the current user group and theme.
      */
     private function _coreMenus(array $menus = []): array
     {

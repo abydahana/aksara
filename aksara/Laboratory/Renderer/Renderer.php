@@ -44,8 +44,6 @@ class Renderer
 
     /**
      * Set dynamic properties inherited from the controller (hydration).
-     *
-     * @param   array $properties Associative array of properties to inject
      */
     public function setProperty(array $properties): self
     {
@@ -62,8 +60,6 @@ class Renderer
 
     /**
      * Set the rendering path/context.
-     *
-     * @param   string $path The context identifier ('table', 'form', 'view', etc.)
      */
     public function setPath(string $path): self
     {
@@ -74,10 +70,6 @@ class Renderer
 
     /**
      * Delegates the rendering task to the appropriate Component class.
-     *
-     * @param   array $serialized Data from the model
-     * @param   int   $length     Length of data
-     * @return  mixed Returns the processed component data array
      */
     public function render(array $serialized = [], int $length = 0): mixed
     {

@@ -45,8 +45,6 @@ class Formatter
 
     /**
      * Constructor
-     *
-     * @param   array $properties Associative array of properties to inject (context)
      */
     public function __construct(array $properties = [])
     {
@@ -60,12 +58,6 @@ class Formatter
 
     /**
      * Format the field value based on its type definition.
-     *
-     * @param   string $field       The field name
-     * @param   mixed  $value       The raw value
-     * @param   array  $type        The type definition array (e.g. ['select' => [...]])
-     * @param   array  $replacement Data for dynamic replacements (e.g. for hyperlinks)
-     * @return  mixed  The formatted value
      */
     public function format(string $field, mixed $value = null, array $type = [], array $replacement = []): mixed
     {

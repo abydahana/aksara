@@ -79,8 +79,6 @@ class Table
 
     /**
      * Constructor
-     *
-     * @param   array $properties Associative array of properties to inject
      */
     public function __construct(array $properties = [])
     {
@@ -99,10 +97,6 @@ class Table
 
     /**
      * Render the Table Component.
-     *
-     * @param   array $serialized Data from the model
-     * @param   int   $length     Length of data
-     * @return  array Returns the processed table configuration
      */
     public function render(array $serialized = [], int $length = 0): array
     {

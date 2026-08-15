@@ -30,8 +30,6 @@ class Table
     /**
      * Generate Text Column.
      * Renders plain text with optional HTML escaping.
-     *
-     * @return  array Returns component configuration array
      */
     public function text(): array
     {
@@ -51,8 +49,6 @@ class Table
     /**
      * Generate Textarea/Long Text Column.
      * Renders text truncated to 64 characters to prevent table bloating.
-     *
-     * @return  array Returns component configuration array
      */
     public function textarea(): array
     {
@@ -70,8 +66,6 @@ class Table
     /**
      * Generate WYSIWYG Content Column.
      * Renders rich text content (HTML allowed).
-     *
-     * @return  array Returns component configuration array
      */
     public function wysiwyg(): array
     {
@@ -91,8 +85,6 @@ class Table
     /**
      * Generate Number Column.
      * Renders integer/numeric values.
-     *
-     * @return  array Returns component configuration array
      */
     public function number(): array
     {
@@ -112,8 +104,6 @@ class Table
     /**
      * Generate Money Column.
      * Renders currency values, right-aligned (float-end).
-     *
-     * @return  array Returns component configuration array
      */
     public function money(): array
     {
@@ -133,8 +123,6 @@ class Table
     /**
      * Generate Percent Column.
      * Renders a percentage formatted number.
-     *
-     * @return  array Returns component configuration array
      */
     public function percent(): array
     {
@@ -154,8 +142,6 @@ class Table
     /**
      * Generate Select/Dropdown Column.
      * Renders the label associated with the selected option value.
-     *
-     * @return  array Returns component configuration array
      */
     public function select(): array
     {
@@ -175,8 +161,6 @@ class Table
     /**
      * Generate Checkbox Column.
      * Renders the values of selected checkboxes.
-     *
-     * @return  array Returns component configuration array
      */
     public function checkbox(): array
     {
@@ -196,8 +180,6 @@ class Table
     /**
      * Generate Radio Column.
      * Renders the value of the selected radio button.
-     *
-     * @return  array Returns component configuration array
      */
     public function radio(): array
     {
@@ -217,8 +199,6 @@ class Table
     /**
      * Generate Boolean Column.
      * Renders a badge (Green/Red) indicating Active/Inactive status.
-     *
-     * @return  array Returns component configuration array
      */
     public function boolean(): array
     {
@@ -242,8 +222,6 @@ class Table
     /**
      * Generate Range Column.
      * Renders a disabled slider input to visualize the value.
-     *
-     * @return  array Returns component configuration array
      */
     public function range(): array
     {
@@ -263,8 +241,6 @@ class Table
     /**
      * Generate Color Column.
      * Renders a disabled color input to visualize the selected color.
-     *
-     * @return  array Returns component configuration array
      */
     public function color(): array
     {
@@ -284,8 +260,6 @@ class Table
     /**
      * Generate Date Column.
      * Renders a date string.
-     *
-     * @return  array Returns component configuration array
      */
     public function date(): array
     {
@@ -305,8 +279,6 @@ class Table
     /**
      * Generate DateTime Column.
      * Renders a date and time string.
-     *
-     * @return  array Returns component configuration array
      */
     public function datetime(): array
     {
@@ -326,8 +298,6 @@ class Table
     /**
      * Generate Time Column.
      * Renders a time string.
-     *
-     * @return  array Returns component configuration array
      */
     public function time(): array
     {
@@ -347,8 +317,6 @@ class Table
     /**
      * Generate Week Column.
      * Renders a week number/string.
-     *
-     * @return  array Returns component configuration array
      */
     public function week(): array
     {
@@ -368,8 +336,6 @@ class Table
     /**
      * Generate Month Column.
      * Renders a month string.
-     *
-     * @return  array Returns component configuration array
      */
     public function month(): array
     {
@@ -389,8 +355,6 @@ class Table
     /**
      * Generate Hidden Column.
      * Renders a placeholder text "Hidden" for obscured fields.
-     *
-     * @return  array Returns component configuration array
      */
     public function hidden(): array
     {
@@ -410,8 +374,6 @@ class Table
     /**
      * Generate Email Column.
      * Renders an email address.
-     *
-     * @return  array Returns component configuration array
      */
     public function email(): array
     {
@@ -431,8 +393,6 @@ class Table
     /**
      * Generate Password Column.
      * Renders asterisks to mask the password value.
-     *
-     * @return  array Returns component configuration array
      */
     public function password(): array
     {
@@ -452,8 +412,6 @@ class Table
     /**
      * Generate Encryption Column.
      * Renders an encrypted string (typically masked or raw hash).
-     *
-     * @return  array Returns component configuration array
      */
     public function encryption(): array
     {
@@ -473,8 +431,6 @@ class Table
     /**
      * Generate File Link Column.
      * Renders a clickable link to download/view a file, with truncated text.
-     *
-     * @return  array Returns component configuration array
      */
     public function file(): array
     {
@@ -496,8 +452,6 @@ class Table
     /**
      * Generate File Count Column.
      * Renders the count of files for multi-file fields.
-     *
-     * @return  array Returns component configuration array
      */
     public function files(): array
     {
@@ -517,8 +471,6 @@ class Table
     /**
      * Generate Image Thumbnail Column.
      * Renders a small thumbnail image linked to the full version.
-     *
-     * @return  array Returns component configuration array
      */
     public function image(): array
     {
@@ -540,8 +492,6 @@ class Table
     /**
      * Generate Image Count Column.
      * Renders the count of images for multi-image fields.
-     *
-     * @return  array Returns component configuration array
      */
     public function images(): array
     {
@@ -561,8 +511,6 @@ class Table
     /**
      * Generate Hyperlink Column.
      * Renders a custom URL link with an external icon.
-     *
-     * @return  array Returns component configuration array
      */
     public function hyperlink(): array
     {
@@ -584,8 +532,6 @@ class Table
     /**
      * Generate Geospatial Placeholder Column.
      * Renders a placeholder text indicating geospatial data exists.
-     *
-     * @return  array Returns component configuration array
      */
     public function geospatial(): array
     {
@@ -605,8 +551,6 @@ class Table
     /**
      * Generate Attribution Count Column.
      * Renders a badge showing the number of attributes.
-     *
-     * @return  array Returns component configuration array
      */
     public function attribution(): array
     {
@@ -626,8 +570,6 @@ class Table
     /**
      * Generate Custom Format Column.
      * Passthrough component for raw content rendering.
-     *
-     * @return  array Returns component configuration array
      */
     public function custom(): array
     {

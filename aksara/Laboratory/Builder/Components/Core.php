@@ -29,8 +29,6 @@ class Core
      * Generate Table View Component.
      * Renders a standard data grid (table) with checkboxes, column sorting,
      * action buttons, and dynamic data rows.
-     *
-     * @return  array Returns component configuration array
      */
     public function index(): array
     {
@@ -140,8 +138,6 @@ class Core
     /**
      * Generate Grid View Component.
      * Renders a card-based layout, useful for galleries or blogs.
-     *
-     * @return  array Returns component configuration array
      */
     public function index_grid(): array
     {
@@ -241,8 +237,6 @@ class Core
     /**
      * Generate Mobile View Component.
      * Renders a simplified card-based layout optimized for mobile screens.
-     *
-     * @return  array Returns component configuration array
      */
     public function index_mobile(): array
     {
@@ -343,8 +337,6 @@ class Core
      * Generate Toolbar Component.
      * Renders the top action buttons (Create, Export, Print) and the
      * search/filter inputs (Text search, Dropdowns).
-     *
-     * @return  array Returns component configuration array
      */
     public function toolbar(): array
     {
@@ -394,8 +386,6 @@ class Core
     /**
      * Generate Mobile Toolbar Component.
      * Renders a sticky action bar and a modal for searching/filtering data.
-     *
-     * @return  array Returns component configuration array
      */
     public function toolbar_mobile(): array
     {
@@ -467,8 +457,6 @@ class Core
     /**
      * Generate Pagination Component.
      * Renders page links, "results info", and per-page limits selector.
-     *
-     * @return  array Returns component configuration array
      */
     public function pagination(): array
     {
@@ -529,8 +517,6 @@ class Core
      * Generate Form View Component.
      * Renders the Create/Update form structure, including field grouping,
      * merging, layout positioning, and form validation attributes.
-     *
-     * @return  array Returns component configuration array
      */
     public function form(): array
     {
@@ -626,8 +612,6 @@ class Core
     /**
      * Generate Modal Form Component.
      * Renders the Create/Update form structure inside a modal dialog.
-     *
-     * @return  array Returns component configuration array
      */
     public function form_modal(): array
     {
@@ -726,8 +710,6 @@ class Core
      * Generate Read View Component.
      * Renders a read-only detail view of a record, using field layout logic
      * similar to the form view but with static text/displays.
-     *
-     * @return  array Returns component configuration array
      */
     public function read(): array
     {
@@ -803,8 +785,6 @@ class Core
     /**
      * Generate Modal Read Component.
      * Renders the read-only detail view inside a modal dialog.
-     *
-     * @return  array Returns component configuration array
      */
     public function read_modal(): array
     {
@@ -890,8 +870,6 @@ class Core
      * Generate Form Input Wrapper.
      * Renders a single form input container, including label, tooltip,
      * prepend/append addons, and the actual input field template.
-     *
-     * @return  array Returns component configuration array
      */
     public function form_input(): array
     {
@@ -935,8 +913,6 @@ class Core
      * Generate Read Field Wrapper.
      * Renders a single read-only field container, similar to form_input
      * but optimized for data display (view mode).
-     *
-     * @return  array Returns component configuration array
      */
     public function form_read(): array
     {
@@ -980,8 +956,6 @@ class Core
      * Generate Generic Modal Component.
      * Renders a blank modal container, typically used for loading states
      * or dynamic content injection via AJAX.
-     *
-     * @return  array Returns component configuration array
      */
     public function modal(): array
     {
@@ -1027,8 +1001,6 @@ class Core
     /**
      * Generate Exception Toast Component.
      * Renders a floating toast notification for alerts or error messages.
-     *
-     * @return  array Returns component configuration array
      */
     public function exception(): array
     {
@@ -1063,8 +1035,6 @@ class Core
     /**
      * Generate Full Screen Error Component.
      * Renders a CLI-style error screen for critical failures or debugging.
-     *
-     * @return  array Returns component configuration array
      */
     public function error(): array
     {
@@ -1110,8 +1080,6 @@ class Core
 
     /**
      * Generate not found component.
-     *
-     * @return  array Returns component configuration array
      */
     public function page404(): array
     {

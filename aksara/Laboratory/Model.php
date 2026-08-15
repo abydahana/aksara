@@ -19,6 +19,7 @@ namespace Aksara\Laboratory;
 
 use DateTime;
 use Throwable;
+use Config\Database;
 use Config\Services;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\Database\Query;
@@ -134,15 +135,17 @@ class Model
      */
     private BaseConnection $db;
 
+    // ──────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Class constructor.
      * Initializes the default database connection.
-     *
-     * @return void
      */
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
+        $this->db = Database::connect();
 
         // Auto-load SpatiaLite extension if using SQLite3
         if ('SQLite3' === $this->db->DBDriver) {
@@ -164,23 +167,27 @@ class Model
         }
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Database Connection & Config
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Use third party database on the fly or connect to a configured connection.
      *
      * @param string|int|array<string, mixed>|null $driver The connection name (string or int for database ID) or an array of connection settings. Null for default connection reset.
-     * @param string|null $hostname Database hostname.
-     * @param int|null $port Database port.
-     * @param string|null $username Database username.
-     * @param string|null $password Database password.
-     * @param string|null $database Database name.
-     * @return $this|false Returns the current object instance on success, or false on reset failure.
      * @throws Throwable
      */
-    public function databaseConfig(string|int|array|null $driver = null, ?string $hostname = null, ?int $port = null, ?string $username = null, ?string $password = null, ?string $database = null): static|false
-    {
+    public function databaseConfig(
+        string|int|array|null $driver = null,
+        ?string $hostname = null,
+        ?int $port = null,
+        ?string $username = null,
+        ?string $password = null,
+        ?string $database = null
+    ): static|false {
         if (! $driver) {
             // No config provided, use default connection instead
-            $this->db = \Config\Database::connect();
+            $this->db = Database::connect();
 
             // Unset environment variables
             unset($_ENV['DBDriver'], $_ENV['hostname'], $_ENV['port'], $_ENV['username'], $_ENV['password'], $_ENV['database'], $_ENV['DBDebug']);
@@ -232,7 +239,7 @@ class Model
                 ];
 
                 // Initialize parameter to new connection
-                $this->db = \Config\Database::connect($config);
+                $this->db = Database::connect($config);
 
                 // Try to initialize the connection
                 $this->db->initialize();
@@ -256,7 +263,7 @@ class Model
         } elseif (is_array($driver) && isset($driver['DBDriver']) && isset($driver['hostname']) && isset($driver['username']) && isset($driver['database'])) {
             try {
                 // Initialize parameter to new connection
-                $this->db = \Config\Database::connect($driver);
+                $this->db = Database::connect($driver);
 
                 // Try to initialize the connection
                 $this->db->initialize();
@@ -277,7 +284,7 @@ class Model
 
             try {
                 // Initialize parameter to new connection
-                $this->db = \Config\Database::connect($config);
+                $this->db = Database::connect($config);
 
                 // Try to initialize the connection
                 $this->db->initialize();
@@ -330,13 +337,9 @@ class Model
         return $this->db->escape($string);
     }
 
-    /**
-     * Disable foreign key check for truncating the table.
-     */
-    public function disableForeignKey(): void
-    {
-        $this->db->disableForeignKeyChecks();
-    }
+    // ──────────────────────────────────────────────────────────────
+    // Schema & Metadata
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Enable foreign key check for truncating the table.
@@ -344,6 +347,14 @@ class Model
     public function enableForeignKey(): void
     {
         $this->db->enableForeignKeyChecks();
+    }
+
+    /**
+     * Disable foreign key check for truncating the table.
+     */
+    public function disableForeignKey(): void
+    {
+        $this->db->disableForeignKeyChecks();
     }
 
     /**
@@ -358,8 +369,6 @@ class Model
 
     /**
      * Check the existence of a table on the current active database.
-     *
-     * @param string $table The table name.
      */
     public function tableExists(string $table): bool
     {
@@ -378,9 +387,6 @@ class Model
 
     /**
      * Check the field existence of a selected table.
-     *
-     * @param string $field The field name.
-     * @param string $table The table name (can include an alias).
      */
     public function fieldExists(string $field, string $table): bool
     {
@@ -409,7 +415,6 @@ class Model
     /**
      * List the fields of a selected table.
      *
-     * @param string $table The table name.
      * @return array<int, string>|false Array of field names on success, false otherwise.
      */
     public function listFields(string $table): array|false
@@ -443,7 +448,6 @@ class Model
     /**
      * Get the table metadata and field info of a selected table.
      *
-     * @param string $table The table name.
      * @return array<int, \stdClass>|false Array of field data objects on success, false otherwise.
      */
     public function fieldData(string $table): array|false
@@ -486,7 +490,6 @@ class Model
     /**
      * Get the table index data of a selected table.
      *
-     * @param string $table The table name.
      * @return array<string, \stdClass>|false Array of index data objects on success, false otherwise.
      */
     public function indexData(string $table): array|false
@@ -503,7 +506,6 @@ class Model
     /**
      * Get the table foreign key data of a selected table.
      *
-     * @param string $table The table name.
      * @return array<string, \stdClass>|false Array of foreign key data objects on success, false otherwise.
      */
     public function foreignData(string $table): array|false
@@ -516,6 +518,10 @@ class Model
 
         return false;
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Mock Fields
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Add a mock field on-the-fly.
@@ -544,6 +550,10 @@ class Model
         return $this->_mockFields[$table] ?? [];
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Metadata
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Get the number of affected rows by the last query.
      */
@@ -568,12 +578,14 @@ class Model
         return $this->db->getLastQuery();
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Raw Query & Subquery
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Run the SQL command string.
      *
-     * @param string $query The raw SQL query string.
      * @param array<int|string, mixed> $params Array of parameters to bind to the query.
-     * @param bool $return If true, the query result object is returned immediately.
      * @return $this|ResultInterface
      */
     public function query(string $query, array $params = [], bool $return = false)
@@ -610,8 +622,6 @@ class Model
     /**
      * Create a new subquery builder instance.
      * Creates a new instance for subquery so it does not conflict with the main query.
-     *
-     * @param string|null $table Optional table name.
      */
     public function subquery(?string $table = null): static
     {
@@ -629,11 +639,12 @@ class Model
         return $subquery;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Selection & Joins
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Enables or disables the DISTINCT clause.
-     *
-     * @param bool $flag Whether to use DISTINCT (true) or not (false).
-     * @return $this
      */
     public function distinct(bool $flag = true): static
     {
@@ -649,8 +660,6 @@ class Model
      * Select field(s). Possible to use comma separated or an array.
      *
      * @param string|array<int|string, string> $column The column(s) to select.
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function select(string|array $column, bool $escape = true): static
     {
@@ -674,10 +683,6 @@ class Model
 
     /**
      * Select and count a column.
-     *
-     * @param string $column The column to count.
-     * @param string|null $alias Optional alias for the counted column.
-     * @return $this
      */
     public function selectCount(string $column, ?string $alias = null): static
     {
@@ -693,10 +698,6 @@ class Model
 
     /**
      * Select and sum a column.
-     *
-     * @param string $column The column to sum.
-     * @param string|null $alias Optional alias for the summed column.
-     * @return $this
      */
     public function selectSum(string $column, ?string $alias = null): static
     {
@@ -716,10 +717,6 @@ class Model
 
     /**
      * Select minimum value of a column.
-     *
-     * @param string $column The column to find the minimum value of.
-     * @param string|null $alias Optional alias for the resulting column.
-     * @return $this
      */
     public function selectMin(string $column, ?string $alias = null): static
     {
@@ -739,10 +736,6 @@ class Model
 
     /**
      * Select maximum value of a column.
-     *
-     * @param string $column The column to find the maximum value of.
-     * @param string|null $alias Optional alias for the resulting column.
-     * @return $this
      */
     public function selectMax(string $column, ?string $alias = null): static
     {
@@ -762,10 +755,6 @@ class Model
 
     /**
      * Select the average value of a field.
-     *
-     * @param string $column The column to average.
-     * @param string|null $alias Optional alias for the resulting column.
-     * @return $this
      */
     public function selectAvg(string $column, ?string $alias = null): static
     {
@@ -785,10 +774,6 @@ class Model
 
     /**
      * Select subqueries.
-     *
-     * @param self $subquery The subquery object.
-     * @param string $alias The alias for the subquery result.
-     * @return $this
      */
     public function selectSubquery(self $subquery, string $alias): static
     {
@@ -804,9 +789,6 @@ class Model
 
     /**
      * Set the primary table for the query.
-     *
-     * @param string $table The table name.
-     * @return $this
      */
     public function from(string $table): static
     {
@@ -819,10 +801,6 @@ class Model
 
     /**
      * Use a subquery as the primary table.
-     *
-     * @param self $subquery The subquery object.
-     * @param string $alias The alias for the subquery table.
-     * @return $this
      */
     public function fromSubquery(self $subquery, string $alias): static
     {
@@ -836,8 +814,6 @@ class Model
 
     /**
      * Starts a new query, resetting all existing WHERE, JOIN, and SELECT clauses.
-     *
-     * @return $this
      */
     public function newQuery(): static
     {
@@ -852,9 +828,6 @@ class Model
     /**
      * Set the primary table.
      * It's aliased to from() method.
-     *
-     * @param string $table The table name.
-     * @return $this
      */
     public function table(string $table): static
     {
@@ -865,12 +838,6 @@ class Model
 
     /**
      * Adds a JOIN clause to the query.
-     *
-     * @param string $table The table to join.
-     * @param string $condition The join condition (e.g., 'table1.id = table2.table1_id').
-     * @param string $type The type of join ('LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', etc.).
-     * @param bool $escape Whether to escape table/column names.
-     * @return $this
      */
     public function join(string $table, string $condition, string $type = '', bool $escape = true): static
     {
@@ -882,13 +849,14 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Filtering Clauses
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Generates a WHERE clause in the query.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $value The field value (if $field is a string).
-     * @param bool $escape Whether to escape the field and value.
-     * @return $this
      */
     public function where(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
@@ -920,9 +888,6 @@ class Model
      * Generates an OR WHERE clause in the query.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $value The field value (if $field is a string).
-     * @param bool $escape Whether to escape the field and value.
-     * @return $this
      */
     public function orWhere(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
@@ -955,8 +920,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to check against (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function whereIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -982,8 +945,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to check against (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function orWhereIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1009,8 +970,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to exclude (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function whereNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1036,8 +995,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to exclude (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function orWhereNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1058,15 +1015,14 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Like Clauses
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Generates a LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function like(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1117,11 +1073,6 @@ class Model
      * Generates an OR LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function orLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1172,11 +1123,6 @@ class Model
      * Generates a NOT LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function notLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1227,11 +1173,6 @@ class Model
      * Generates an OR NOT LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function orNotLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1278,13 +1219,14 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Having Clauses
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Generates a HAVING clause in the query.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $value The field value (if $field is a string).
-     * @param bool $escape Whether to escape the field and value.
-     * @return $this
      */
     public function having(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
@@ -1321,9 +1263,6 @@ class Model
      * Generates an OR HAVING clause in the query.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $value The field value (if $field is a string).
-     * @param bool $escape Whether to escape the field and value.
-     * @return $this
      */
     public function orHaving(string|array $field = '', mixed $value = '', bool $escape = true): static
     {
@@ -1361,8 +1300,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to check against (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function havingIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1393,8 +1330,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to check against (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function orHavingIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1425,8 +1360,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to exclude (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function havingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1457,8 +1390,6 @@ class Model
      *
      * @param string|array<string, array<int, mixed>> $field The field name or an associative array of conditions.
      * @param array<int, mixed>|null $value An array of values to exclude (if $field is a string).
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function orHavingNotIn(string|array $field = '', ?array $value = null, bool $escape = true): static
     {
@@ -1488,11 +1419,6 @@ class Model
      * Generates a HAVING LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function havingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1543,11 +1469,6 @@ class Model
      * Generates an OR HAVING LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function orHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1598,11 +1519,6 @@ class Model
      * Generates a NOT HAVING LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function notHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1653,11 +1569,6 @@ class Model
      * Generates an OR NOT HAVING LIKE clause.
      *
      * @param string|array<string, mixed> $field The field name or an associative array of conditions.
-     * @param mixed $match The value to match (if $field is a string). Can be string or array with 'match', 'side', 'escape', 'case_insensitive'.
-     * @param string $side The placement of the wildcards ('before', 'after', 'both').
-     * @param bool $escape Whether to escape the wildcard characters.
-     * @param bool $caseInsensitive Whether the search is case-insensitive.
-     * @return $this
      */
     public function orNotHavingLike(string|array $field = '', mixed $match = '', string $side = 'both', bool $escape = true, bool $caseInsensitive = false): static
     {
@@ -1704,11 +1615,14 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Grouping & Ordering
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Adds a GROUP BY clause to the query.
      *
      * @param string|array<int, string>|null $column The column(s) to group by. Can be a string of comma-separated column names or an array.
-     * @return $this
      */
     public function groupBy(string|array|null $column = null): static
     {
@@ -1745,9 +1659,6 @@ class Model
      * Adds an ORDER BY clause to the query.
      *
      * @param string|array<string, string>|null $column The column(s) to order by. Can be a string, or an associative array with column => direction.
-     * @param string $direction The ordering direction ('ASC' or 'DESC') if $column is a string.
-     * @param bool $escape Whether to escape identifiers.
-     * @return $this
      */
     public function orderBy(string|array|null $column = null, string $direction = '', bool $escape = true): static
     {
@@ -1792,10 +1703,6 @@ class Model
 
     /**
      * Sets the LIMIT clause in the query.
-     *
-     * @param int $limit The maximum number of rows to return.
-     * @param int|null $offset The offset from where to start fetching rows.
-     * @return $this
      */
     public function limit(int $limit = 0, ?int $offset = null): static
     {
@@ -1809,9 +1716,6 @@ class Model
 
     /**
      * Sets the OFFSET clause in the query.
-     *
-     * @param int|null $offset The offset from where to start fetching rows.
-     * @return $this
      */
     public function offset(?int $offset = null): static
     {
@@ -1823,10 +1727,12 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Builder: Group Brackets
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Starts a bracketed WHERE condition group (AND).
-     *
-     * @return $this
      */
     public function groupStart(): static
     {
@@ -1840,8 +1746,6 @@ class Model
 
     /**
      * Starts a bracketed WHERE condition group (OR).
-     *
-     * @return $this
      */
     public function orGroupStart(): static
     {
@@ -1855,8 +1759,6 @@ class Model
 
     /**
      * Starts a bracketed WHERE NOT condition group (AND NOT).
-     *
-     * @return $this
      */
     public function notGroupStart(): static
     {
@@ -1870,8 +1772,6 @@ class Model
 
     /**
      * Starts a bracketed WHERE NOT condition group (OR NOT).
-     *
-     * @return $this
      */
     public function orNotGroupStart(): static
     {
@@ -1885,8 +1785,6 @@ class Model
 
     /**
      * Ends a bracketed WHERE condition group.
-     *
-     * @return $this
      */
     public function groupEnd(): static
     {
@@ -1900,8 +1798,6 @@ class Model
 
     /**
      * Starts a bracketed HAVING condition group (AND).
-     *
-     * @return $this
      */
     public function havingGroupStart(): static
     {
@@ -1915,8 +1811,6 @@ class Model
 
     /**
      * Starts a bracketed HAVING condition group (OR).
-     *
-     * @return $this
      */
     public function orHavingGroupStart(): static
     {
@@ -1930,8 +1824,6 @@ class Model
 
     /**
      * Starts a bracketed HAVING NOT condition group (AND NOT).
-     *
-     * @return $this
      */
     public function notHavingGroupStart(): static
     {
@@ -1945,8 +1837,6 @@ class Model
 
     /**
      * Starts a bracketed HAVING NOT condition group (OR NOT).
-     *
-     * @return $this
      */
     public function orNotHavingGroupStart(): static
     {
@@ -1960,8 +1850,6 @@ class Model
 
     /**
      * Ends a bracketed HAVING condition group.
-     *
-     * @return $this
      */
     public function havingGroupEnd(): static
     {
@@ -1973,13 +1861,12 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Query Execution & Results
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Compiles and runs a SELECT query.
-     *
-     * @param string $table The table name.
-     * @param int $limit The maximum number of rows to return.
-     * @param int $offset The offset from where to start fetching rows.
-     * @return $this
      */
     public function get(string $table = '', int $limit = 0, int $offset = 0): static
     {
@@ -2007,12 +1894,7 @@ class Model
     /**
      * Compiles and runs a SELECT query with a WHERE clause.
      *
-     * @param string $table The table name.
      * @param array<string, mixed> $where An associative array of WHERE conditions.
-     * @param int|null $limit The maximum number of rows to return.
-     * @param int|null $offset The offset from where to start fetching rows.
-     * @param bool $reset Whether to reset the query parameters after execution.
-     * @return $this
      */
     public function getWhere(string $table = '', array $where = [], ?int $limit = null, ?int $offset = null, bool $reset = true): static
     {
@@ -2051,9 +1933,6 @@ class Model
 
     /**
      * Compiles the SELECT statement without executing it, returning the SQL string.
-     *
-     * @param bool $reset Whether to reset the query parameters after compiling.
-     * @return string The compiled SQL query.
      */
     public function getCompiledSelect(bool $reset = true): string
     {
@@ -2068,8 +1947,6 @@ class Model
     /**
      * Resets the query builder properties without running an execution command.
      * Useful for running a chain of commands and immediately resetting state without implicitly calling a result method.
-     *
-     * @return $this
      */
     public function resetQuery(): static
     {
@@ -2115,7 +1992,6 @@ class Model
     /**
      * Executes the query and returns a single row as an object.
      *
-     * @param int|string $field The row number to retrieve, or the field name to return directly.
      * @return object<string, mixed>|string|int|float|bool|null
      */
     public function row(int|string $field = 0)
@@ -2139,7 +2015,6 @@ class Model
     /**
      * Executes the query and returns a single row as an array.
      *
-     * @param int|string $field The row number to retrieve, or the field name to return directly.
      * @return array<string, mixed>|string|int|float|bool|null
      */
     public function rowArray(int|string $field = 1)
@@ -2162,8 +2037,6 @@ class Model
     /**
      * Get the number of rows from a query.
      *
-     * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
-     * @param bool $reset Whether to reset the query parameters after execution.
      * @return int
      */
     public function numRows(string $table = '', bool $reset = true)
@@ -2184,8 +2057,6 @@ class Model
     /**
      * Counts all rows in the specified table.
      *
-     * @param string $table The table name.
-     * @param bool $reset Whether to reset the query parameters after execution.
      * @return int
      */
     public function countAll(string $table = '', bool $reset = true)
@@ -2206,8 +2077,6 @@ class Model
     /**
      * Counts the rows of the last executed query result, respecting WHERE and other clauses.
      *
-     * @param string $table The table name (optional, only used if not set via `from()`/`table()`).
-     * @param bool $reset Whether to reset the query parameters after execution.
      * @return int
      */
     public function countAllResults(string $table = '', bool $reset = true)
@@ -2225,13 +2094,14 @@ class Model
         return $this->_runQuery();
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Data Mutation (DML)
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Implement set preparation to insert or update data
      *
      * @param string|array<string, mixed> $column The column name or an associative array of column => value pairs.
-     * @param mixed $value The value for the column (if $column is a string).
-     * @param bool $escape Whether to escape the value.
-     * @return $this
      */
     public function set(string|array $column, mixed $value = null, bool $escape = true): static
     {
@@ -2255,9 +2125,7 @@ class Model
     /**
      * Inserts data into the database.
      *
-     * @param string|null $table The table name (optional).
      * @param array<string, mixed> $set An associative array of data to insert.
-     * @param bool $escape Whether to escape the data.
      */
     public function insert(?string $table = null, array $set = [], bool $escape = true)
     {
@@ -2350,10 +2218,7 @@ class Model
     /**
      * Inserts an array of data as a batch into the database.
      *
-     * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to insert.
-     * @param int $batchSize The number of rows to insert per batch. 0 for all at once.
-     * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
     public function insertBatch(string $table = '', array $set = [], int $batchSize = 0, bool $escape = true)
@@ -2406,10 +2271,8 @@ class Model
     /**
      * Updates data in the database.
      *
-     * @param string $table The table name.
      * @param array<string, mixed> $set An associative array of data to update.
      * @param array<string, mixed> $where An associative array of WHERE conditions.
-     * @param int|null $limit The maximum number of rows to update.
      */
     public function update(string $table = '', array $set = [], array $where = [], ?int $limit = null)
     {
@@ -2477,11 +2340,8 @@ class Model
     /**
      * Updates an array of data as a batch in the database.
      *
-     * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to update.
      * @param array<int, string>|string $constraint The column(s) to use for the WHERE clause (e.g., primary key).
-     * @param int $batchSize The number of rows to update per batch. 0 for all at once.
-     * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
     public function updateBatch(string $table = '', array $set = [], array|string $constraint = [], int $batchSize = 0, bool $escape = true)
@@ -2506,9 +2366,7 @@ class Model
     /**
      * Update data or insert if record is not exists (UPSERT operation).
      *
-     * @param string $table The table name.
      * @param array<string, mixed> $set An associative array of data to insert/update.
-     * @param bool $escape Whether to escape the data.
      */
     public function upsert(string $table = '', array $set = [], bool $escape = true)
     {
@@ -2552,10 +2410,7 @@ class Model
     /**
      * Batch update data or insert if record is not exists (UPSERT BATCH operation).
      *
-     * @param string $table The table name.
      * @param array<int, array<string, mixed>> $set An array of associative arrays of data to insert/update.
-     * @param int $batchSize The number of rows to process per batch. 0 for all at once.
-     * @param bool $escape Whether to escape the data.
      * @return int The number of affected rows.
      */
     public function upsertBatch(string $table = '', array $set = [], int $batchSize = 0, bool $escape = true)
@@ -2623,7 +2478,6 @@ class Model
     /**
      * Executes a REPLACE statement (delete and insert).
      *
-     * @param string $table The table name.
      * @param array<string, mixed> $set An associative array of data to replace.
      */
     public function replace(string $table = '', array $set = [])
@@ -2644,10 +2498,7 @@ class Model
     /**
      * Executes a DELETE statement.
      *
-     * @param string $table The table name.
      * @param array<string, mixed> $where An associative array of WHERE conditions.
-     * @param int|null $limit The maximum number of rows to delete.
-     * @param bool $resetData Whether to reset the query data after deletion (defaults to true).
      */
     public function delete(string $table = '', array $where = [], ?int $limit = null, bool $resetData = true)
     {
@@ -2674,8 +2525,6 @@ class Model
 
     /**
      * Executes a TRUNCATE statement to quickly empty a table.
-     *
-     * @param string $table The table name.
      */
     public function truncate(string $table = '')
     {
@@ -2694,8 +2543,6 @@ class Model
 
     /**
      * Executes an EMPTY TABLE statement (usually DELETE FROM table).
-     *
-     * @param string $table The table name.
      */
     public function emptyTable(string $table = '')
     {
@@ -2712,10 +2559,12 @@ class Model
         return $this->_runQuery();
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Transactions
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Starts a manual database transaction.
-     *
-     * @return $this
      */
     public function transBegin(): static
     {
@@ -2726,8 +2575,6 @@ class Model
 
     /**
      * Starts a transaction, committing or rolling back automatically when complete.
-     *
-     * @return $this
      */
     public function transStart(): static
     {
@@ -2781,6 +2628,10 @@ class Model
         return $this;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Error Handling
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Your contribution is needed to write complete hint about this method
      *
@@ -2790,6 +2641,10 @@ class Model
     {
         return $this->db->error();
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Private: Query Execution & Reset
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Run the query of collected property.
@@ -3056,6 +2911,10 @@ class Model
         $this->_selection = false;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Database Compatibility Adapters
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Execute get/getWhere for Oracle (OCI8) using ROWNUM to support versions below 12c
      * that do not support FETCH NEXT n ROWS ONLY syntax.
@@ -3097,11 +2956,13 @@ class Model
         return $this->db->query($sql);
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Column Casting & Schema Helpers
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Casting the column for PostgreSQL and SQLSRV to handle type-specific queries.
      *
-     * @param string|null $column The column name, potentially including an operator.
-     * @param mixed $value The value for comparison.
      * @return array{column: string, value: mixed, escape: bool}
      */
     private function _castColumn(?string $column = null, mixed $value = '', bool $escape = true): array
@@ -3300,10 +3161,13 @@ class Model
         return $this->_isIntegerColumnType($type) || in_array($type, ['decimal', 'numeric', 'float', 'double', 'real', 'money'], true);
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Database Identifiers & Sequences
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Sync PostgreSQL auto-increment sequences before insert.
      *
-     * @param string $table Target table name.
      * @param array<string, mixed> $set Insert payload.
      */
     private function _syncPostgreInsertSequences(string $table, array $set): void
@@ -3365,11 +3229,13 @@ class Model
         ));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Subquery & Clause Utilities
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Extract builder from subquery object.
      * Extracts CodeIgniter Query Builder from the custom Model subquery object.
-     *
-     * @param self $subqueryObject The subquery object instance.
      */
     private function _extractBuilder(self $subqueryObject): ?BaseBuilder
     {
