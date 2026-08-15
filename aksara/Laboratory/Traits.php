@@ -83,6 +83,11 @@ trait Traits
     private bool $_allowPublicFormSubmission = false;
 
     /**
+     * Container for allowed token origin URIs.
+     */
+    private array $_allowTokenFrom = [];
+
+    /**
      * Flag indicating if the submitted API token is valid.
      */
     private bool $_apiToken = false;

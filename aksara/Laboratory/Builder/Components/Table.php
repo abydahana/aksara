@@ -228,7 +228,7 @@ class Table
         // Template for Range Visualization
         $component = <<<EOF
         <span>
-            <input type="range" value="{{ value }}" min="0" max="100" disabled>
+            <input type="range" value="{{ value }}" {{ attribution | raw }} disabled>
         </span>
         EOF;
 
@@ -518,7 +518,7 @@ class Table
         $component = <<<EOF
         <span>
             <a href="{{ content }}" class="--xhr" target="{{ target }}">
-                <b>{{ truncate ? truncate(value, 32) : value }}<i class="mdi mdi-launch"></i></b>
+                <b>{{ truncate ? truncate(value, 32) : value }}{{ value ? '<i class="mdi mdi-launch"></i>' : '' }}</b>
             </a>
         </span>
         EOF;

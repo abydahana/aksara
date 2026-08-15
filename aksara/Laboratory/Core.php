@@ -469,14 +469,19 @@ abstract class Core extends Controller
                 return true;
             }
 
-            if ($allowedUris) {
-                // Normalize allowed URIs to an array.
-                if (is_string($allowedUris)) {
-                    $allowedUris = [$allowedUris];
-                }
+            if (is_string($allowedUris)) {
+                $allowedUris = [$allowedUris];
+            }
 
+            if (! empty($this->_allowTokenFrom)) {
+                $allowedUris = array_merge($allowedUris, $this->_allowTokenFrom);
+            }
+
+            if ($allowedUris) {
                 // Check if the token matches any of the allowed URIs.
                 foreach ($allowedUris as $allowedUri) {
+                    $allowedUri = trim($allowedUri, '/');
+
                     if ($token && (
                         hash_equals((string) get_userdata(sha1($allowedUri)), $token) ||
                         hash_equals(generate_csrf_token($allowedUri), $token)
@@ -495,6 +500,23 @@ abstract class Core extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Specify allowed referer/origin URIs for CSRF token validation.
+     *
+     * Useful when a form is rendered on page A (e.g., 'testimonials')
+     * but submitted to page B (e.g., 'testimonials/create').
+     */
+    protected function allowTokenFrom(string|array $uris = []): static
+    {
+        if (is_string($uris)) {
+            $uris = array_map('trim', explode(',', $uris));
+        }
+
+        $this->_allowTokenFrom = array_merge($this->_allowTokenFrom, $uris);
+
+        return $this;
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -3258,7 +3280,7 @@ abstract class Core extends Controller
             $whitelistedProperties = [
                 '_addButton', '_addDropdown', '_addToolbar', '_addFilter', '_columnOrder', '_gridView',
                 '_itemReference', '_mergeContent', '_mergeLabel', '_method', '_parameter', '_select',
-                '_setAlias', '_setAutocomplete', '_setButton', '_setField', '_setRelation',
+                '_setAlias', '_setAttribute', '_setAutocomplete', '_setButton', '_setField', '_setRelation',
                 '_setUploadPath', '_sortable', '_table', '_unsetColumn', '_unsetClone', '_unsetDelete',
                 '_unsetMethod', '_unsetRead', '_unsetTruncate', '_unsetUpdate', '_unsetToolbar',
                 'apiClient', 'model'

@@ -227,7 +227,7 @@ class Form
     {
         // Template for Range Slider
         $component = <<<EOF
-        <input type="range" name="{{ name }}" role="range" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" min="0" max="100" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
+        <input type="range" name="{{ name }}" role="range" value="{{ value }}" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" {{ attribution | raw }} {{ readonly }}>
         EOF;
 
         return [
