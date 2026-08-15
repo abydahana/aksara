@@ -56,21 +56,33 @@ config-*.php
 # Temporary Files
 #-------------------------
 public/uploads/*
+public/uploads/**/*
 !public/uploads/.htaccess
 !public/uploads/index.html
 !public/uploads/placeholder.png
 !public/uploads/placeholder_icon.png
 !public/uploads/placeholder_thumb.png
+
+!public/uploads/settings/
+!public/uploads/settings/*/
 !public/uploads/settings/placeholder.png
 !public/uploads/settings/thumbs/placeholder.png
 !public/uploads/settings/icons/placeholder.png
+
+!public/uploads/users/
+!public/uploads/users/*/
 !public/uploads/users/placeholder.png
 !public/uploads/users/thumbs/placeholder.png
 !public/uploads/users/icons/placeholder.png
+
+!public/uploads/peoples/
+!public/uploads/peoples/*/
 !public/uploads/peoples/placeholder.png
 !public/uploads/peoples/thumbs/placeholder.png
 !public/uploads/peoples/icons/placeholder.png
-!public/uploads/_extension
+
+!public/uploads/_extension/
+!public/uploads/_extension/**
 
 themes/**/components/*
 !themes/**/components/README
