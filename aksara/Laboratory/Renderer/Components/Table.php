@@ -232,6 +232,11 @@ class Table
                     $content = '*****';
                 }
 
+                $relationDisplayLabel = null;
+                if (isset($this->_setRelation[$field])) {
+                    $relationDisplayLabel = $content;
+                }
+
                 // Merged Content Logic
                 if (isset($this->_mergeContent[$field])) {
                     if ($this->_mergeContent[$field]['callback']) {
@@ -262,7 +267,7 @@ class Table
                 $field_data[$field] = [
                     'name' => $field,
                     'label' => $label,
-                    'value' => $value,
+                    'value' => (isset($this->_setRelation[$field]) ? $relationDisplayLabel : $value),
                     'content' => $content,
                     'type' => $final_type,
                     'primary' => $primary,

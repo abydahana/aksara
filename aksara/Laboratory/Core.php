@@ -1204,7 +1204,6 @@ abstract class Core extends Controller
 
             if ($field !== $relationKeys && ! in_array($field, self::AUDIT_COLUMNS, true)) {
                 $this->_unsetColumn[] = $field;
-                $this->_unsetView[] = $field;
             }
         }
 
@@ -2068,6 +2067,8 @@ abstract class Core extends Controller
             if (! $this->model->tableExists($this->_table)) {
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
+
+            $this->_processRelationMerge();
 
             // Check before action
             if ('create' == $this->_method && method_exists($this, 'beforeInsert')) {
@@ -3452,11 +3453,15 @@ abstract class Core extends Controller
                 $type = 'text';
             }
 
-            if (! isset($this->_setField[$field])) {
-                if (isset($this->_setRelation[$field])) {
-                    $type = 'select';
-                }
-
+            if (isset($this->_setRelation[$field])) {
+                $this->_setField[$field]['select'] = [
+                    'parameter' => null,
+                    'alpha' => null,
+                    'beta' => null,
+                    'charlie' => null,
+                    'delta' => null
+                ];
+            } elseif (! isset($this->_setField[$field])) {
                 // Add new field type
                 $this->_setField[$field][$type] = [
                     'parameter' => null,
@@ -6201,6 +6206,53 @@ abstract class Core extends Controller
         }
 
         return $output;
+    }
+
+    /**
+     * Process merge content for relation.
+     */
+    private function _processRelationMerge(): void
+    {
+        if (empty($this->_setRelation)) {
+            return;
+        }
+
+        // Ensure fields used in itemReference are preserved in column data
+        if (! empty($this->_itemReference)) {
+            foreach ($this->_itemReference as $refField) {
+                $this->_unsetColumn = array_values(array_diff($this->_unsetColumn, [$refField]));
+            }
+        }
+
+        foreach ($this->_setRelation as $field => $relation) {
+            $output = $relation['output'] ?? '';
+
+            if (strpos($output, '{{') !== false && strpos($output, '}}') !== false) {
+                preg_match_all('/\{\{(.*?)\}\}/', $output, $matches);
+
+                foreach ($matches[1] as $match) {
+                    $val = trim($match);
+
+                    if (preg_match('/\s+AS\s+/i', $val)) {
+                        $parts = preg_split('/\s+AS\s+/i', $val);
+                        $helper = trim(end($parts));
+                    } elseif (strpos($val, '.') !== false) {
+                        $helper = substr(strstr($val, '.'), 1);
+                    } else {
+                        $helper = $val;
+                    }
+
+                    if ($helper && $helper !== $field) {
+                        if (! in_array($helper, $this->_unsetColumn, true) && ! in_array($helper, $this->_itemReference ?? [], true)) {
+                            $this->_unsetColumn[] = $helper;
+                        }
+                        if (! in_array($helper, $this->_unsetView, true)) {
+                            $this->_unsetView[] = $helper;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

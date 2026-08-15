@@ -158,6 +158,11 @@ class View
                 $content = '*****';
             }
 
+            $relationDisplayLabel = null;
+            if (isset($this->_setRelation[$field])) {
+                $relationDisplayLabel = $content;
+            }
+
             // Handle Merged Content (Callbacks or Parsing)
             if (isset($this->_mergeContent[$field])) {
                 $content = $this->_mergeContent($field, $replacement);
@@ -171,15 +176,15 @@ class View
             $field_data[$field] = [
                 'name' => $field,
                 'label' => $label,
-                'value' => $value,
+                'value' => (isset($this->_setRelation[$field]) ? $relationDisplayLabel : $value),
                 'content' => $content,
                 'type' => $final_type,
                 'primary' => $primary,
                 'tooltip' => $this->_setTooltip[$field] ?? null,
                 'attribution' => $this->_setAttribute[$field] ?? null,
                 'position' => $this->_fieldPosition[$field] ?? 1,
-                'prepend' => $this->_fieldPrepend[$field] ?? null,
-                'append' => $this->_fieldAppend[$field] ?? null,
+                'prepend' => null,
+                'append' => null,
                 'merged' => in_array($field, $merged_fields),
                 'escape' => ! isset($this->_mergeContent[$field])
             ];
