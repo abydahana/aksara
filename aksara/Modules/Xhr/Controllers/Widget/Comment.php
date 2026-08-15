@@ -24,6 +24,7 @@ use DateTime;
 class Comment extends Core
 {
     private string $_table = 'post_comments';
+    private int $_maxDepth = 3;
 
     public function __construct()
     {
@@ -519,23 +520,36 @@ class Comment extends Core
                 );
             }
 
-            return throw_exception(200, phrase('Comment was successfully reported and queued for review.'));
+            $content = '
+                <div class="text-center">
+                    <i class="mdi mdi-check-circle-outline mdi-5x text-success d-block"></i>
+                    <p class="fs-5">' . phrase('Comment has been successfully reported and queued for review.') . '</p>
+                    <button type="button" class="btn btn-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal" aria-label="' . phrase('Close') . '">' . phrase('Close') . '</button>
+                </div>
+            ';
+
+            return make_json([
+                'status' => 200,
+                'meta' => [
+                    'popup' => true
+                ],
+                'content' => $content
+            ]);
         }
 
-        $html = '
+        $content = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
                 <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $this->request->getGet('id') . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
-                <div class="text-center pt-3 pb-3 border-bottom">
+                <div class="text-center py-3">
                     ' . phrase('Are you sure want to report this comment?') . '
                 </div>
-                <div class="form-group">
-                    <textarea name="message" class="form-control" id="message_input" placeholder="' . phrase('Write a feedback') . '" rows="1"></textarea>
+                <div class="form-group mb-3">
+                    <textarea name="message" class="form-control" id="message_input" placeholder="' . phrase('Write a feedback') . '" rows="3"></textarea>
                 </div>
-                <hr />
                 <div class="row">
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-dismiss="modal" aria-label="' . phrase('Cancel') . '">
                                 <i class="mdi mdi-window-close"></i>
                                 ' . phrase('Cancel') . '
                             </button>
@@ -543,7 +557,7 @@ class Comment extends Core
                     </div>
                     <div class="col-6">
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="btn btn-danger btn-sm rounded-pill" aria-label="' . phrase('Report') . '">
                                 <i class="mdi mdi-check"></i>
                                 ' . phrase('Report') . '
                             </button>
@@ -556,11 +570,9 @@ class Comment extends Core
         return make_json([
             'status' => 200,
             'meta' => [
-                'title' => phrase('Report Comment'),
-                'icon' => 'mdi mdi-alert-outline',
                 'popup' => true
             ],
-            'content' => $html
+            'content' => $content
         ]);
     }
 
@@ -692,6 +704,9 @@ class Comment extends Core
                 // Convert creation time
                 $val->created_at = time_ago($val->created_at, true);
 
+                // Calculate comment depth level
+                $val->depth = $this->_getCommentDepth((int) $val->comment_id);
+
                 // Set highlight
                 $val->highlight = $this->request->getGet('comment_highlight') == $val->comment_id;
 
@@ -756,8 +771,28 @@ class Comment extends Core
             }
         }
 
-        $reply_id = ($this->request->getGet('reply') ? $this->request->getGet('reply') : 0);
-        $mention_id = ($this->request->getGet('mention') ? $this->request->getGet('mention') : 0);
+        $target_reply_id = ($this->request->getGet('reply') ? (int) $this->request->getGet('reply') : 0);
+        $target_mention_id = ($this->request->getGet('mention') ? (int) $this->request->getGet('mention') : 0);
+
+        $max_depth = $this->_maxDepth;
+
+        $reply_id = 0;
+        $mention_id = 0;
+
+        if ($target_reply_id) {
+            $target_depth = $this->_getCommentDepth($target_reply_id);
+
+            if ($target_depth < $max_depth) {
+                // Within allowed depth: attach as direct child
+                $reply_id = $target_reply_id;
+                $mention_id = ($target_mention_id ?: $target_reply_id);
+            } else {
+                // At or exceeds max depth limit: cap reply_id to target's parent reply_id
+                $target_comment = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $target_reply_id], 1)->row();
+                $reply_id = ($target_comment && $target_comment->reply_id) ? (int) $target_comment->reply_id : $target_reply_id;
+                $mention_id = $target_reply_id;
+            }
+        }
 
         $this->model->insert(
             $this->_table,
@@ -835,61 +870,60 @@ class Comment extends Core
         ->row();
 
         $html = '
-            <div class="row g-0 mb-2 ' . (! $reply_id ? 'comment-item' : null) . '">
-                <div class="col-1 pt-1">
-                    <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" />
-                </div>
-                <div class="col-11 ps-3">
-                    <div class="d-flex align-items-center gap-1">
-                        <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
-                            <div class="comment-header">
-                                <a href="' . base_url('user/' . get_userdata('username')) . '" class="text-body --xhr">
-                                    <b>
-                                        ' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '
-                                    </b>
-                                </a>
-                                &middot;
-                                <span class="text-muted">
-                                    ' . phrase('Just now') . '
-                                </span>
-                            </div>
-                            <div id="comment-text-' . $comment_id . '">
-                                ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
-
-                                ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
-                                ' . ($attachment ? '<div class="my-2"><a href="' . get_image('comment', $attachment) . '" class="d-block" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-4" alt="' . phrase('Attachment') . '" /></a></div>' : null) . '
-                            </div>
-                        </div>
-                        <div class="dropdown comment-dropdown flex-shrink-0">
-                            <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton' . $comment_id . '" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-dots-horizontal fs-5"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton' . $comment_id . '">
-                                <li>
-                                    <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
-                                        ' . phrase('Update') . '
+            <div class="comment-item">
+                <div class="row g-0 mb-2">
+                    <div class="col-1 pt-1">
+                        <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" />
+                    </div>
+                    <div class="col-11 ps-3">
+                        <div class="d-flex align-items-center gap-1 comment-bubble">
+                            <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
+                                <div class="comment-header">
+                                    <a href="' . base_url('user/' . get_userdata('username')) . '" class="text-body --xhr">
+                                        <b>
+                                            ' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '
+                                        </b>
                                     </a>
-                                </li>
-                            </ul>
+                                    &middot;
+                                    <span class="text-muted">
+                                        ' . phrase('Just now') . '
+                                    </span>
+                                </div>
+                                <div id="comment-text-' . $comment_id . '">
+                                    ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2 mb-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
+
+                                    ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
+                                    ' . ($attachment ? '<div class="my-2"><a href="' . get_image('comment', $attachment) . '" class="d-block" target="_blank"><img src="' . get_image('comment', $attachment, 'thumb') . '" class="img-fluid rounded-4" alt="' . phrase('Attachment') . '" /></a></div>' : null) . '
+                                </div>
+                            </div>
+                            <div class="dropdown comment-dropdown flex-shrink-0">
+                                <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton' . $comment_id . '" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="mdi mdi-dots-horizontal fs-5"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton' . $comment_id . '">
+                                    <li>
+                                        <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
+                                            ' . phrase('Update') . '
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="py-1 ps-3">
+                            <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="small text-body --upvote">
+                                <b><span id="comment-upvote-' . $comment_id . '"></span> ' . phrase('Upvote') . '</b>
+                            </a>
+                             &middot;
+                            <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => $comment_id, 'mention' => $comment_id]) . '" class="small text-body --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                                <b>' . phrase('Reply') . '</b>
+                            </a>
                         </div>
                     </div>
-                    <div class="py-1 ps-3">
-                        <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="small text-body --upvote">
-                            <b class="text-secondary" id="comment-upvote-' . $comment_id . '"></b>
-                            &nbsp;
-                            <b>
-                                ' . phrase('Upvote') . '
-                            </b>
-                        </a>
-                         &middot;
-                        <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => ($reply_id ? $reply_id : $comment_id), 'mention' => ($reply_id ? $comment_id : null)]) . '" class="small text-body --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
-                            <b>
-                                ' . phrase('Reply') . '
-                            </b>
-                        </a>
+                </div>
+                <div class="row g-0">
+                    <div class="col-11 offset-1 ps-3">
+                        <div id="comment-reply"></div>
                     </div>
-
-                    ' . (! $reply_id ? '<div id="comment-reply"></div>' : null) . '
                 </div>
             </div>
         ';
@@ -945,5 +979,25 @@ class Comment extends Core
         ];
 
         $this->model->insert('app_log_activities', $prepare);
+    }
+
+    /**
+     * Calculates the depth level of a comment recursively up to MAX_COMMENT_DEPTH.
+     */
+    private function _getCommentDepth(int $comment_id): int
+    {
+        $depth = 1;
+        $current_id = $comment_id;
+
+        while ($current_id > 0 && $depth < 10) {
+            $row = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $current_id], 1)->row();
+            if (! $row || ! $row->reply_id) {
+                break;
+            }
+            $depth++;
+            $current_id = (int) $row->reply_id;
+        }
+
+        return $depth;
     }
 }
