@@ -20,7 +20,7 @@ namespace Aksara\Modules\XHR\Controllers;
 use Aksara\Laboratory\Core;
 use Aksara\Libraries\AI\AI as AksaraAI;
 
-class Ai extends Core
+class AI extends Core
 {
     private array $_actions = [
         'form_fill'
@@ -30,11 +30,8 @@ class Ai extends Core
     {
         parent::__construct();
 
-        if (! get_userdata('is_logged')) {
-            return throw_exception(403, phrase('Access denied'), base_url());
-        }
-
-        $this->permission->mustAjax(base_url());
+        $this->setPermission();
+        $this->permission->mustAjax();
     }
 
     public function index()
@@ -43,10 +40,6 @@ class Ai extends Core
 
         if ('post' !== strtolower($this->request->getMethod())) {
             return $this->_error(405, phrase('The method you requested is not acceptable.'));
-        }
-
-        if (! $this->validToken($this->request->getPost('_token'), $this->_allowedTokenUris())) {
-            return $this->_error(403, phrase('Invalid token.'));
         }
 
         if (! $this->_rateLimit()) {
@@ -74,8 +67,6 @@ class Ai extends Core
             'tone' => trim((string) $this->request->getPost('tone')),
             'audience' => trim((string) $this->request->getPost('audience')),
             'keywords' => $this->_keywords($this->request->getPost('keywords')),
-            'languages' => $this->_languages(),
-            'categories' => str_contains(strtolower($route), 'cms/blogs') ? $this->_blogCategories() : [],
             'limit' => (int) ($this->request->getPost('limit') ?: 160)
         ];
         $title = trim((string) $this->request->getPost('title'));
@@ -100,6 +91,21 @@ class Ai extends Core
             $options['context_ready'] = ! empty($context['schema_signature']);
             $options['context_summary'] = $context['schema_summary'] ?? [];
             $fields = $this->_compactContextFields($fields, $context);
+        }
+
+        // Merge custom context set by the controller module via setAiContext().
+        $customContext = $this->_customContext($route);
+
+        if ($customContext) {
+            $options['custom_context'] = $customContext;
+
+            // Allow custom context to supply top-level tone/audience overrides
+            // when the form request itself did not carry them.
+            foreach (['tone', 'audience'] as $key) {
+                if (empty($options[$key]) && ! empty($customContext[$key])) {
+                    $options[$key] = $customContext[$key];
+                }
+            }
         }
 
         $response = $ai->fillForm($instruction, $fields, $options);
@@ -138,37 +144,7 @@ class Ai extends Core
         return is_array($decoded) ? $decoded : [];
     }
 
-    private function _languages(): array
-    {
-        if (! $this->model->tableExists('app_languages')) {
-            return [];
-        }
 
-        return array_map(static function ($language) {
-            return [
-                'id' => (int) $language->id,
-                'language' => (string) $language->language,
-                'code' => (string) $language->code,
-                'locale' => (string) $language->locale
-            ];
-        }, $this->model->getWhere('app_languages', ['status' => 1])->result());
-    }
-
-    private function _blogCategories(): array
-    {
-        if (! $this->model->tableExists('blogs_categories')) {
-            return [];
-        }
-
-        return array_map(static function ($category) {
-            return [
-                'id' => (int) $category->category_id,
-                'title' => (string) $category->category_title,
-                'slug' => (string) ($category->category_slug ?? ''),
-                'description' => (string) ($category->category_description ?? '')
-            ];
-        }, $this->model->getWhere('blogs_categories')->result());
-    }
 
     private function _keywords(mixed $keywords): array|string
     {
@@ -211,6 +187,21 @@ class Ai extends Core
     private function _context(string $key): array
     {
         $context = service('cache')->get($key);
+
+        return is_array($context) ? $context : [];
+    }
+
+    /**
+     * Reads the custom AI context set by the controller module via Core::setAiContext().
+     *
+     * Keyed per route path — one cache entry per controller, shared across users.
+     *
+     * @param string $route The resolved referer route.
+     */
+    private function _customContext(string $route): array
+    {
+        $cacheKey = 'aksara_ai_custom_context_' . md5($route);
+        $context = service('cache')->get($cacheKey);
 
         return is_array($context) ? $context : [];
     }
@@ -350,24 +341,6 @@ class Ai extends Core
         if (function_exists('set_time_limit')) {
             set_time_limit(180);
         }
-    }
-
-    private function _allowedTokenUris(): array
-    {
-        $uris = ['xhr/ai'];
-        $referer = (string) $this->request->getServer('HTTP_REFERER');
-        $path = trim((string) parse_url($referer, PHP_URL_PATH), '/');
-        $basePath = trim((string) parse_url(base_url(), PHP_URL_PATH), '/');
-
-        if ($path) {
-            if ($basePath && str_starts_with($path, $basePath)) {
-                $path = trim(substr($path, strlen($basePath)), '/');
-            }
-
-            $uris[] = $path;
-        }
-
-        return array_values(array_unique(array_filter($uris)));
     }
 
     private function _logUsage(string $action, array $response): void

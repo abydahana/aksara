@@ -20,6 +20,7 @@ namespace Aksara\Libraries\AI;
 use AksaraAI\AIManager;
 use AksaraAI\ValueObjects\AIResponse;
 use Aksara\Libraries\PageBuilder\PageBuilder;
+use Aksara\Laboratory\Model;
 use Config\Services;
 use Throwable;
 
@@ -75,7 +76,11 @@ class AI
             ];
         }
 
-        $context = new Context($options, $schema);
+        if (empty($options['languages'])) {
+            $options['languages'] = $this->_languages();
+        }
+
+        $context = new Context($options, $schema, (array) ($options['custom_context'] ?? []));
         $prompt = $context->fillFormPrompt($instruction);
         $response = $this->_complete($prompt, array_merge($options, [
             'max_tokens' => max((int) ($options['max_tokens'] ?? 0), $context->maxTokens()),
@@ -292,21 +297,32 @@ class AI
     {
         $labels = [];
 
-        if (isset($fields['language_id'])) {
-            $language = $this->_matchLanguage($fields['language_id'], $options['languages'] ?? []);
+        $referenceData = $options['custom_context']['data'] ?? [];
 
-            if ($language) {
-                $fields['language_id'] = (string) $language['id'];
-                $labels['language_id'] = $language['language'];
-            }
+        if (! isset($referenceData['language_id'])) {
+            $referenceData['language_id'] = ! empty($options['languages']) ? $options['languages'] : $this->_languages();
         }
 
-        if (isset($fields['post_category'])) {
-            $category = $this->_matchCategory($fields['post_category'], $options['categories'] ?? []);
+        foreach ($fields as $fieldName => $value) {
+            $dataset = $referenceData[$fieldName] ?? null;
 
-            if ($category) {
-                $fields['post_category'] = (string) $category['id'];
-                $labels['post_category'] = $category['title'];
+            if (! is_array($dataset) || ! $dataset) {
+                continue;
+            }
+
+            $item = $this->_matchDatasetItem($value, $dataset);
+
+            if ($item) {
+                $id = $item['id'] ?? $item['key'] ?? $item['value'] ?? null;
+                $label = $item['title'] ?? $item['label'] ?? $item['name'] ?? $item['language'] ?? null;
+
+                if (null !== $id) {
+                    $fields[$fieldName] = (string) $id;
+                }
+
+                if (null !== $label) {
+                    $labels[$fieldName] = (string) $label;
+                }
             }
         }
 
@@ -631,53 +647,40 @@ class AI
         return (bool) preg_match('/(^|_)(password|passwd|secret|token|api[_-]?key|private[_-]?key|client[_-]?secret|access[_-]?key|auth|credential)(_|$)/i', $name);
     }
 
-    private function _matchLanguage(mixed $value, array $languages): ?array
+    private function _matchDatasetItem(mixed $value, array $items): ?array
     {
         $value = strtolower(trim((string) $value));
 
-        if ('' === $value || ! $languages) {
+        if ('' === $value || ! $items) {
             return null;
         }
 
-        foreach ($languages as $language) {
-            $id = strtolower((string) ($language['id'] ?? ''));
-            $name = strtolower((string) ($language['language'] ?? ''));
-            $code = strtolower((string) ($language['code'] ?? ''));
-            $locale = strtolower((string) ($language['locale'] ?? ''));
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
 
-            if ($value === $id || $value === $name || $value === $code || str_contains($locale, $value)) {
-                return $language;
+            $id = strtolower((string) ($item['id'] ?? $item['key'] ?? $item['value'] ?? ''));
+            $title = strtolower((string) ($item['title'] ?? $item['label'] ?? $item['name'] ?? $item['language'] ?? ''));
+            $slug = strtolower((string) ($item['slug'] ?? $item['code'] ?? ''));
+            $locale = strtolower((string) ($item['locale'] ?? ''));
+
+            if ($value === $id || ($title && $value === $title) || ($slug && $value === $slug) || ($locale && str_contains($locale, $value))) {
+                return $item;
             }
         }
 
-        return null;
-    }
-
-    private function _matchCategory(mixed $value, array $categories): ?array
-    {
-        $value = strtolower(trim((string) $value));
-
-        if ('' === $value || ! $categories) {
-            return null;
-        }
-
-        foreach ($categories as $category) {
-            $id = strtolower((string) ($category['id'] ?? ''));
-            $title = strtolower((string) ($category['title'] ?? ''));
-            $slug = strtolower((string) ($category['slug'] ?? ''));
-
-            if ($value === $id || $value === $title || $value === $slug) {
-                return $category;
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
             }
-        }
 
-        foreach ($categories as $category) {
-            $title = strtolower((string) ($category['title'] ?? ''));
-            $slug = strtolower((string) ($category['slug'] ?? ''));
-            $description = strtolower((string) ($category['description'] ?? ''));
+            $title = strtolower((string) ($item['title'] ?? $item['label'] ?? $item['name'] ?? $item['language'] ?? ''));
+            $slug = strtolower((string) ($item['slug'] ?? $item['code'] ?? ''));
+            $description = strtolower((string) ($item['description'] ?? ''));
 
             if (($title && str_contains($value, $title)) || ($slug && str_contains($value, $slug)) || ($description && str_contains($description, $value))) {
-                return $category;
+                return $item;
             }
         }
 
@@ -814,5 +817,23 @@ class AI
         } catch (Throwable $e) {
             return $value;
         }
+    }
+
+    private function _languages(): array
+    {
+        $model = new Model();
+
+        if (! $model->tableExists('app_languages')) {
+            return [];
+        }
+
+        return array_map(static function ($language) {
+            return [
+                'id' => (int) $language->id,
+                'language' => (string) $language->language,
+                'code' => (string) $language->code,
+                'locale' => (string) $language->locale
+            ];
+        }, $model->getWhere('app_languages', ['status' => 1])->result());
     }
 }

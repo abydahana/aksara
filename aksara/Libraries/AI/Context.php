@@ -23,10 +23,32 @@ class Context
     private array $_schema = [];
     private string $_scope = 'general';
 
-    public function __construct(array $options = [], array $schema = [])
+    /**
+     * Custom context injected by the controller module via Core::setAiContext().
+     *
+     * Supported keys:
+     *   - 'scope'        (string) Explicit scope override ('blog', 'pagebuilder', 'general', or custom).
+     *   - 'instructions' (string) Extra system instructions appended after built-in scope instructions.
+     *   - 'max_tokens'   (int)    Token limit override.
+     *   - 'data'         (array)  Extra reference data available to the AI.
+     *   - 'tone'         (string) Writing tone (forwarded to options).
+     *   - 'audience'     (string) Target audience (forwarded to options).
+     */
+    private array $_customContext = [];
+
+    public function __construct(array $options = [], array $schema = [], array $customContext = [])
     {
         $this->_options = $options;
         $this->_schema = $schema;
+        $this->_customContext = $customContext;
+
+        // Forward custom tone/audience into options so _metadata() picks them up.
+        foreach (['tone', 'audience'] as $key) {
+            if (! empty($customContext[$key]) && empty($this->_options[$key])) {
+                $this->_options[$key] = $customContext[$key];
+            }
+        }
+
         $this->_scope = $this->_detectScope();
     }
 
@@ -37,9 +59,13 @@ class Context
 
     public function maxTokens(): int
     {
+        // Custom override from controller takes priority.
+        if (! empty($this->_customContext['max_tokens'])) {
+            return (int) $this->_customContext['max_tokens'];
+        }
+
         return match ($this->_scope) {
             'pagebuilder' => 12000,
-            'blog' => 4096,
             default => 3072
         };
     }
@@ -64,14 +90,15 @@ class Context
 
     private function _detectScope(): string
     {
+        // Explicit scope set by controller module skips auto-detection.
+        if (! empty($this->_customContext['scope'])) {
+            return strtolower(trim((string) $this->_customContext['scope']));
+        }
+
         $slug = strtolower(trim((string) ($this->_options['slug'] ?? $this->_options['route'] ?? $this->_options['content_type'] ?? ''), '/'));
 
         if (str_contains($slug, 'cms/pages')) {
             return 'pagebuilder';
-        }
-
-        if (str_contains($slug, 'cms/blogs')) {
-            return 'blog';
         }
 
         foreach ($this->_schema as $field) {
@@ -80,10 +107,6 @@ class Context
 
             if ('pagebuilder' === $type || 'page_content' === $name) {
                 return 'pagebuilder';
-            }
-
-            if (str_starts_with($name, 'post_')) {
-                return 'blog';
             }
         }
 
@@ -124,21 +147,24 @@ class Context
 
     private function _scopeInstructions(): string
     {
-        return match ($this->_scope) {
-            'blog' => $this->_blogInstructions(),
+        $built_in = match ($this->_scope) {
             'pagebuilder' => $this->_pageBuilderInstructions(),
             default => $this->_generalInstructions()
         };
-    }
 
-    private function _blogInstructions(): string
-    {
-        return "Blog context:\n"
-            . "Generate editorial blog content only for the supplied blog fields.\n"
-            . "For textarea and wysiwyg fields, write complete, useful article content instead of short placeholders.\n"
-            . "For wysiwyg post content, use clean semantic HTML paragraphs, headings, and lists only when they help readability.\n"
-            . "If a language_id field exists, infer the final content language from the instruction and generated content, then use an available language id.\n"
-            . "If a post_category field exists, infer the best matching blog category from the instruction and generated content, then use an available category id.\n\n";
+        // Append custom instructions from controller module.
+        if (! empty($this->_customContext['instructions'])) {
+            $instructions = $this->_customContext['instructions'];
+
+            if (is_array($instructions)) {
+                $instructions = implode("\n", array_map('trim', array_filter($instructions)));
+            }
+
+            $built_in .= "Module-specific instructions:\n"
+                . trim((string) $instructions) . "\n\n";
+        }
+
+        return $built_in;
     }
 
     private function _pageBuilderInstructions(): string
@@ -173,12 +199,13 @@ class Context
             "Available languages:\n" . json_encode($this->_options['languages'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ];
 
-        if ('blog' === $this->_scope) {
-            $blocks[] = "Available blog categories:\n" . json_encode($this->_options['categories'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        }
-
         if ('pagebuilder' === $this->_scope && ! empty($this->_options['context_summary'])) {
             $blocks[] = "Cached PageBuilder context summary:\n" . json_encode($this->_options['context_summary'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        // Extra reference data from controller module.
+        if (! empty($this->_customContext['data']) && is_array($this->_customContext['data'])) {
+            $blocks[] = "Field reference options:\n" . json_encode($this->_customContext['data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         $blocks[] = "Field schema:\n" . json_encode($this->_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
