@@ -23,9 +23,8 @@ use Aksara\Laboratory\Model;
 if (! function_exists('get_file')) {
     /**
      * Get URL of uploaded file
-     *
-     * @param mixed|null $path
-     * @param mixed|null $file
+     * @param null|mixed $path
+     * @param null|mixed $file
      */
     function get_file($path = null, $file = null)
     {
@@ -42,10 +41,9 @@ if (! function_exists('get_file')) {
 if (! function_exists('get_image')) {
     /**
      * Get URL of uploaded image
-     *
-     * @param mixed|null $type
-     * @param mixed|null $name
-     * @param mixed|null $dimension
+     * @param null|mixed $type
+     * @param null|mixed $name
+     * @param null|mixed $dimension
      */
     function get_image($type = null, $name = null, $dimension = null)
     {
@@ -137,7 +135,6 @@ if (! function_exists('get_image')) {
 if (! function_exists('resize_image')) {
     /**
      * Image resize
-     *
      * @param null|mixed $source
      */
     function resize_image($source = null)
@@ -206,9 +203,8 @@ if (! function_exists('resize_image')) {
 if (! function_exists('get_filesize')) {
     /**
      * Get file size
-     *
-     * @param mixed|null $path
-     * @param mixed|null $file
+     * @param null|mixed $path
+     * @param null|mixed $file
      */
     function get_filesize($path = null, $file = null)
     {

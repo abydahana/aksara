@@ -18,11 +18,6 @@
 if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
-     *
-     * @param array|string $data      Data for the CAPTCHA or word
-     * @param string       $img_path  Path to create the image in
-     * @param string       $img_url   URL to the CAPTCHA image folder
-     * @param string       $font_path Server path to font
      */
     function create_captcha(array|string $data = [], string $img_path = '', string $img_url = '', string $font_path = ''): array|bool
     {
