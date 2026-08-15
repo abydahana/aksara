@@ -7,7 +7,7 @@
     "Collected from all galleries": "Aus allen Galerien gesammelt",
     "Collected from submitted comments": "Aus eingereichten Kommentaren gesammelt",
     "Daily Visits": "Tägliche Besuche",
-    "Documentation": "Documentation",
+    "Documentation": "Dokumentation",
     "Explore Articles": "Artikel entdecken",
     "Featured Galleries": "Ausgewählte Galerien",
     "Features": "Funktionen",
@@ -30,5 +30,6 @@
     "Welcome": "Willkommen",
     "Yearly Visits": "Jährliche Besuche",
     "and will continue to grow": "und wird weiter wachsen",
-    "days": "Tage"
+    "days": "Tage",
+    "week": "Woche"
 }

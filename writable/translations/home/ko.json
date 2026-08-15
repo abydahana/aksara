@@ -7,7 +7,7 @@
     "Collected from all galleries": "모든 갤러리에서 수집됨",
     "Collected from submitted comments": "등록된 댓글에서 수집됨",
     "Daily Visits": "일간 방문",
-    "Documentation": "Documentation",
+    "Documentation": "문서",
     "Explore Articles": "아티클 탐색",
     "Featured Galleries": "추천 갤러리",
     "Features": "기능",
@@ -30,5 +30,6 @@
     "Welcome": "환영합니다",
     "Yearly Visits": "연간 방문",
     "and will continue to grow": "앞으로도 계속 성장합니다",
-    "days": "일"
+    "days": "일",
+    "week": "주"
 }

@@ -7,7 +7,7 @@
     "Collected from all galleries": "مجمعة من جميع المعارض",
     "Collected from submitted comments": "مجمعة من التعليقات المرسلة",
     "Daily Visits": "الزيارات اليومية",
-    "Documentation": "Documentation",
+    "Documentation": "التوثيق",
     "Explore Articles": "استكشف المقالات",
     "Featured Galleries": "معارض مميزة",
     "Features": "الميزات",
@@ -30,5 +30,6 @@
     "Welcome": "مرحبًا",
     "Yearly Visits": "الزيارات السنوية",
     "and will continue to grow": "وستستمر في النمو",
-    "days": "أيام"
+    "days": "أيام",
+    "week": "أسبوع"
 }

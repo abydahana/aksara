@@ -7,13 +7,13 @@
     "Collected from all galleries": "Verzameld uit alle galerijen",
     "Collected from submitted comments": "Verzameld uit ingezonden reacties",
     "Daily Visits": "Dagelijkse bezoeken",
-    "Documentation": "Documentation",
+    "Documentation": "Documentatie",
     "Explore Articles": "Artikelen ontdekken",
     "Featured Galleries": "Uitgelichte galerijen",
     "Features": "Functies",
     "Get Closer": "Leer ons kennen",
     "Get Started": "Aan de slag",
-    "Home": "Home",
+    "Home": "Startpagina",
     "Interactions": "Interacties",
     "Meet Us": "Ontmoet ons",
     "Monthly Visits": "Maandelijkse bezoeken",
@@ -30,5 +30,6 @@
     "Welcome": "Welkom",
     "Yearly Visits": "Jaarlijkse bezoeken",
     "and will continue to grow": "en blijft groeien",
-    "days": "dagen"
+    "days": "dagen",
+    "week": "week"
 }
