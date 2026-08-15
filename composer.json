@@ -12,7 +12,7 @@
             "role": "Developer"
         }
     ],
-    "keywords": ["aksara", "aksaracms", "aksara cms", "headless cms","restful", "api", "codeigniter", "framework", "crud", "crud generator"],
+    "keywords": ["aksara","aksaracms","aksara cms","headless cms","restful","api","codeigniter","framework","crud","crud generator","ai cms","ai-powered cms","ai","ai assistant","aksara ai","aksara ai assistant"],
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
