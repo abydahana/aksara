@@ -895,39 +895,6 @@ abstract class Core extends Controller
     }
 
     /**
-     * Adds a custom button before the form submit button.
-     *
-     * This button is rendered only on create/update forms and does not belong
-     * to the CRUD table row actions handled by addButton().
-     *
-     * @param string $label Button label.
-     * @param string|null $class CSS class(es).
-     * @param string|null $icon Icon class.
-     * @param string|null $attribution Custom HTML attributes.
-     *
-     * @return static Current object instance (chainable).
-     */
-    public function addSubmitButton(
-        ?string $name,
-        ?string $value,
-        string $label,
-        ?string $class = null,
-        ?string $icon = null,
-        ?string $attribution = null
-    ): static {
-        $this->_submitButton[] = [
-            'name' => $name,
-            'value' => $value,
-            'label' => $label,
-            'class' => $class ?: 'btn btn-secondary',
-            'icon' => $icon,
-            'attribution' => $attribution
-        ];
-
-        return $this;
-    }
-
-    /**
      * Adds a dropdown action button to each row of the CRUD table.
      *
      * @param array<int, array>|string $url URL(s) for the action, or an array of dropdown item definitions.
@@ -983,6 +950,39 @@ abstract class Core extends Controller
     }
 
     /**
+     * Adds a custom button before the form submit button.
+     *
+     * This button is rendered only on create/update forms and does not belong
+     * to the CRUD table row actions handled by addButton().
+     *
+     * @param string $label Button label.
+     * @param string|null $class CSS class(es).
+     * @param string|null $icon Icon class.
+     * @param string|null $attribution Custom HTML attributes.
+     *
+     * @return static Current object instance (chainable).
+     */
+    public function addSubmitButton(
+        ?string $name,
+        ?string $value,
+        string $label,
+        ?string $class = null,
+        ?string $icon = null,
+        ?string $attribution = null
+    ): static {
+        $this->_submitButton[] = [
+            'name' => $name,
+            'value' => $value,
+            'label' => $label,
+            'class' => $class ?: 'btn btn-secondary',
+            'icon' => $icon,
+            'attribution' => $attribution
+        ];
+
+        return $this;
+    }
+
+    /**
      * Adds CSS classes to the rendered form field(s).
      *
      * Supports adding classes via an array ([field => class]) or a key-value pair.
@@ -1007,6 +1007,31 @@ abstract class Core extends Controller
 
         // Merge array and store to property
         $this->_addClass = array_merge($this->_addClass ?? [], $params);
+
+        return $this;
+    }
+
+    /**
+     * Add a mock field on-the-fly.
+     *
+     * @param string|array $name The field name or associative array of field names and types.
+     * @param string $type The field type (varchar, text, select, etc.).
+     */
+    public function addField(string|array $name, string $type = 'varchar'): static
+    {
+        if (! is_array($name)) {
+            $name = [
+                $name => $type
+            ];
+        }
+
+        foreach ($name as $field => $fieldType) {
+            $this->_mockFields[$field] = $fieldType;
+
+            if ($this->_table) {
+                $this->model->addMockField($this->_table, $field, $fieldType);
+            }
+        }
 
         return $this;
     }
@@ -1088,50 +1113,6 @@ abstract class Core extends Controller
     }
 
     /**
-     * Add the tooltip on field label when hovered
-     *
-     * @param string|array $params The field name or an associative array [field_name => tooltip_text].
-     * @param string|null $value The tooltip text (if $params is a field name).
-     */
-    public function setTooltip(string|array $params = [], ?string $value = null): static
-    {
-        if (! is_array($params)) {
-            $params = [
-                $params => $value
-            ];
-        }
-
-        $this->_setTooltip = array_merge($this->_setTooltip ?? [], $params);
-
-        return $this;
-    }
-
-    /**
-     * Add a mock field on-the-fly.
-     *
-     * @param string|array $name The field name or associative array of field names and types.
-     * @param string $type The field type (varchar, text, select, etc.).
-     */
-    public function addField(string|array $name, string $type = 'varchar'): static
-    {
-        if (! is_array($name)) {
-            $name = [
-                $name => $type
-            ];
-        }
-
-        foreach ($name as $field => $fieldType) {
-            $this->_mockFields[$field] = $fieldType;
-
-            if ($this->_table) {
-                $this->model->addMockField($this->_table, $field, $fieldType);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * The function to unset the field from form/update (CREATE/UPDATE methods).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
@@ -1180,6 +1161,92 @@ abstract class Core extends Controller
     }
 
     /**
+     * Sets custom AI context that will be passed to the AI assistant for this module.
+     *
+     * Call this in index(), create(), or update() to provide the AI with
+     * domain-specific scope, instructions, reference data, and token limits
+     * without modifying the core AI library.
+     *
+     * Supported keys:
+     *   - 'scope'        (string) Override detected scope: 'blog', 'pagebuilder', 'general', or any custom string.
+     *   - 'instructions' (string) Extra system instructions appended after built-in scope instructions.
+     *   - 'max_tokens'   (int)    Override the default token limit for this context.
+     *   - 'data'         (array)  Extra reference data provided to the AI (e.g. list of products, tags, brands).
+     *   - 'tone'         (string) Writing tone (e.g. 'formal', 'casual', 'technical').
+     *   - 'audience'     (string) Target audience description.
+     *
+     * Example:
+     *   $this->setAiContext([
+     *       'scope'        => 'product',
+     *       'instructions' => 'Always fill price in IDR format without currency symbol.',
+     *       'max_tokens'   => 2048,
+     *       'data'         => ['brands' => $brands, 'tags' => $tags],
+     *   ]);
+     *
+     * @param array $context Custom context definition.
+     *
+     * @return static Current object instance (chainable).
+     */
+    public function setAiContext(array $context): static
+    {
+        // Cache per path so XHR handler can pick it up — one entry per route, shared across users.
+        if ($context) {
+            if (! isset($context['scope'])) {
+                // If the scope is not set, use the current URI
+                $context['scope'] = uri_string();
+            }
+
+            if (! isset($context['max_tokens'])) {
+                // If the max_tokens is not set, use the default value from get_setting()
+                $context['max_tokens'] = (int) get_setting('ai_max_tokens', 4096);
+            }
+
+            $cacheKey = 'aksara_ai_custom_context_' . md5(trim((string) uri_string(), '/'));
+
+            service('cache')->save($cacheKey, $context, 86400);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add the tooltip on field label when hovered
+     *
+     * @param string|array $params The field name or an associative array [field_name => tooltip_text].
+     * @param string|null $value The tooltip text (if $params is a field name).
+     */
+    public function setTooltip(string|array $params = [], ?string $value = null): static
+    {
+        if (! is_array($params)) {
+            $params = [
+                $params => $value
+            ];
+        }
+
+        $this->_setTooltip = array_merge($this->_setTooltip ?? [], $params);
+
+        return $this;
+    }
+
+    /**
+     * Configure vertical (EAV) schema mode for this controller/table.
+     *
+     * @param string $keyColumn Name of the database column storing setting keys (e.g. 'key').
+     * @param string $valueColumn Name of the database column storing setting values (e.g. 'value').
+     * @param string|null $typeColumn Optional name of the database column storing value data types (e.g. 'type').
+     */
+    public function verticalSchema(string $keyColumn, string $valueColumn, ?string $typeColumn = 'type'): static
+    {
+        $this->_verticalSchema = [
+            'key' => $keyColumn,
+            'value' => $valueColumn,
+            'type' => $typeColumn
+        ];
+
+        return $this;
+    }
+
+    /**
      * The function to rearrange the columns in the table view.
      *
      * @param string|array $params Comma-separated column names or an array of column names.
@@ -1196,22 +1263,6 @@ abstract class Core extends Controller
     }
 
     /**
-     * The function to rearrange the field on view data (READ method).
-     *
-     * @param string|array $params Comma-separated field names or an array of field names.
-     */
-    public function viewOrder(string|array $params = []): static
-    {
-        if (! is_array($params)) {
-            $params = array_map('trim', explode(',', $params));
-        }
-
-        $this->_viewOrder = array_merge($this->_viewOrder ?? [], $params);
-
-        return $this;
-    }
-
-    /**
      * The function to rearrange the field in form (CREATE/UPDATE methods).
      *
      * @param string|array $params Comma-separated field names or an array of field names.
@@ -1223,6 +1274,22 @@ abstract class Core extends Controller
         }
 
         $this->_fieldOrder = array_merge($this->_fieldOrder ?? [], $params);
+
+        return $this;
+    }
+
+    /**
+     * The function to rearrange the field on view data (READ method).
+     *
+     * @param string|array $params Comma-separated field names or an array of field names.
+     */
+    public function viewOrder(string|array $params = []): static
+    {
+        if (! is_array($params)) {
+            $params = array_map('trim', explode(',', $params));
+        }
+
+        $this->_viewOrder = array_merge($this->_viewOrder ?? [], $params);
 
         return $this;
     }
@@ -2146,8 +2213,24 @@ abstract class Core extends Controller
     public function serializeRow(array|object $data, bool $return = true, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|string
     {
         $fieldData ??= $this->_compiledFieldData();
+
+        if ($this->_isVerticalSchema()) {
+            $tableColumns = array_keys(array_flip($this->model->listFields($this->_table)));
+
+            foreach ($tableColumns as $col) {
+                unset($fieldData[$col]);
+
+                if (is_array($data)) {
+                    unset($data[$col]);
+                } elseif (is_object($data)) {
+                    unset($data->{$col});
+                }
+            }
+        }
+
         $fieldNames ??= array_keys($fieldData);
         $mockFields ??= $this->model->getMockFields($this->_table);
+
         if ($mockFields) {
             $rawDetails = is_object($data) ? ($data->details ?? null) : ($data['details'] ?? null);
             $details = is_string($rawDetails) ? json_decode($rawDetails, true) : (is_array($rawDetails) ? $rawDetails : []);
@@ -2165,20 +2248,22 @@ abstract class Core extends Controller
             }
         }
 
+        $allFields = array_unique(array_merge($fieldNames, array_keys($mockFields)));
+
         if (! $data) {
-            $data = array_map(fn ($v) => '', array_flip($fieldNames));
+            $data = array_map(fn ($v) => '', array_flip($allFields));
         }
 
         if (is_object($data)) {
-            foreach ($fieldNames as $field) {
+            foreach ($allFields as $field) {
                 if (! property_exists($data, $field)) {
-                    $data->{$field} = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
+                    $data->{$field} = $this->_setDefault[$field] ?? $this->_defaultValue[$field] ?? '';
                 }
             }
         } elseif (is_array($data)) {
-            foreach ($fieldNames as $field) {
+            foreach ($allFields as $field) {
                 if (! isset($data[$field])) {
-                    $data[$field] = (isset($this->_setDefault[$field]) ? $this->_setDefault[$field] : '');
+                    $data[$field] = $this->_setDefault[$field] ?? $this->_defaultValue[$field] ?? '';
                 }
             }
         }
@@ -2188,8 +2273,14 @@ abstract class Core extends Controller
         foreach ($data as $field => $value) {
             $hidden = false;
 
+            $mockType = null;
+
+            if (isset($mockFields[$field])) {
+                $mockType = is_array($mockFields[$field]) ? ($mockFields[$field]['type'] ?? null) : $mockFields[$field];
+            }
+
             // Attempt to get the type
-            $type = strtolower((isset($fieldData[$field]->type) ? $fieldData[$field]->type : gettype($value)));
+            $type = strtolower((string) ($mockType ?: (isset($fieldData[$field]->type) ? $fieldData[$field]->type : gettype($value))));
 
             // Reformat type
             if (in_array($type, ['tinyint', 'smallint', 'int', 'mediumint', 'bigint', 'year'])) {
@@ -2691,9 +2782,11 @@ abstract class Core extends Controller
                         return $this->$_callback();
                     } else {
                         // Serialize table data
-                        $fields = array_keys(array_flip($this->model->listFields($this->_table)));
-                        if (in_array('key', $fields) && in_array('value', $fields) && ! in_array('app_name', $fields)) {
-                            $fields = array_merge($fields, array_keys($this->request->getPost()), array_keys($_FILES));
+                        $tableColumns = array_keys(array_flip($this->model->listFields($this->_table)));
+                        if ($this->_isVerticalSchema()) {
+                            $fields = array_diff(array_merge(array_keys($this->request->getPost()), array_keys($_FILES)), $tableColumns);
+                        } else {
+                            $fields = $tableColumns;
                         }
                         $fieldData = array_fill_keys($fields, '');
 
@@ -2713,10 +2806,14 @@ abstract class Core extends Controller
                     return $this->$_callback();
                 } else {
                     // Serialize table data
-                    $fields = array_keys(array_flip($this->model->listFields($this->_table)));
-                    if (in_array('key', $fields) && in_array('value', $fields) && ! in_array('app_name', $fields)) {
-                        $fields = array_merge($fields, array_keys($this->request->getPost()), array_keys($_FILES));
+                    $tableColumns = array_keys(array_flip($this->model->listFields($this->_table)));
+
+                    if ($this->_isVerticalSchema()) {
+                        $fields = array_diff(array_merge(array_keys($this->request->getPost()), array_keys($_FILES)), $tableColumns);
+                    } else {
+                        $fields = $tableColumns;
                     }
+
                     $fieldData = array_fill_keys($fields, '');
 
                     // Or use the master validation instead
@@ -3793,7 +3890,7 @@ abstract class Core extends Controller
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), $this->_redirectBack);
         }
 
-        $verticalSchema = $this->_table && $this->model->fieldExists('key', $this->_table) && $this->model->fieldExists('value', $this->_table) && ! $this->model->fieldExists('app_name', $this->_table);
+        $verticalSchema = $this->_isVerticalSchema();
 
         // Check if method is update
         if ('update' == $this->_method && ! $this->_where && ! $this->_permitUpsert && ! $verticalSchema) {
@@ -4497,13 +4594,16 @@ abstract class Core extends Controller
         }
 
         // --- 2. MAGIC INTERCEPTOR FOR VERTICAL EAV TABLES ---
-        if ($table && $this->model->fieldExists('key', $table) && $this->model->fieldExists('value', $table) && ! $this->model->fieldExists('app_name', $table)) {
+        if ($this->_isVerticalSchema($table)) {
             if (method_exists($this, 'beforeUpdate')) {
                 $this->beforeUpdate();
             }
 
             // Iteratively upsert vertical schema
-            $hasType = $this->model->fieldExists('type', $table);
+            $keyCol = $this->_verticalSchema['key'] ?? 'key';
+            $valCol = $this->_verticalSchema['value'] ?? 'value';
+            $typeCol = $this->_verticalSchema['type'] ?? 'type';
+            $hasType = $typeCol && $this->model->fieldExists($typeCol, $table);
 
             // Ensure unchecked boolean fields are saved as 0
             foreach ($this->_setField as $field => $config) {
@@ -4524,22 +4624,22 @@ abstract class Core extends Controller
                     continue;
                 }
 
-                $upsertData = ['value' => $val];
+                $upsertData = [$valCol => $val];
                 if ($hasType) {
-                    $upsertData['type'] = (isset($this->_setField[$key]['field_type']) ? (is_array($this->_setField[$key]['field_type']) ? 'varchar' : $this->_setField[$key]['field_type']) : 'varchar');
+                    $upsertData[$typeCol] = (isset($this->_setField[$key]['field_type']) ? (is_array($this->_setField[$key]['field_type']) ? 'varchar' : $this->_setField[$key]['field_type']) : 'varchar');
                 }
 
-                if ($this->model->getWhere($table, ['key' => $key], 1)->row()) {
-                    $this->model->update($table, $upsertData, ['key' => $key]);
+                if ($this->model->getWhere($table, [$keyCol => $key], 1)->row()) {
+                    $this->model->update($table, $upsertData, [$keyCol => $key]);
                 } else {
-                    $upsertData['key'] = $key;
+                    $upsertData[$keyCol] = $key;
 
                     try {
                         $this->model->insert($table, $upsertData);
                     } catch (Throwable $e) {
                         // Fallback to update if concurrent request inserted the key in parallel
-                        unset($upsertData['key']);
-                        $this->model->update($table, $upsertData, ['key' => $key]);
+                        unset($upsertData[$keyCol]);
+                        $this->model->update($table, $upsertData, [$keyCol => $key]);
                     }
                 }
             }
@@ -5655,15 +5755,21 @@ abstract class Core extends Controller
         }
 
         // --- 1. MAGIC INTERCEPTOR FOR VERTICAL EAV TABLES ---
-        if ($this->model->fieldExists('key', $table ?: $this->_table) && $this->model->fieldExists('value', $table ?: $this->_table) && ! $this->model->fieldExists('app_name', $table ?: $this->_table)) {
+        if ($this->_isVerticalSchema($table)) {
+            $keyCol = $this->_verticalSchema['key'] ?? 'key';
+            $valCol = $this->_verticalSchema['value'] ?? 'value';
             $verticalKeys = $this->model->get($table ?: $this->_table)->result();
 
             // Transpose vertical to horizontal
             $horizontalRow = new \stdClass();
             $allKeys = [];
             foreach ($verticalKeys as $vk) {
-                $horizontalRow->{$vk->key} = $vk->value;
-                $allKeys[] = $vk->key;
+                $k = $vk->{$keyCol} ?? null;
+                $v = $vk->{$valCol} ?? null;
+                if (null !== $k) {
+                    $horizontalRow->{$k} = $v;
+                    $allKeys[] = $k;
+                }
             }
 
             // Ensure all fields explicitly defined in the controller exist in the object
@@ -7138,10 +7244,23 @@ abstract class Core extends Controller
      * Note: This method implements a basic sanitization logic. For robust security,
      * it is recommended to use the framework's built-in XSS filter service or a dedicated HTML Purifier library.
      *
-     * @param string $input The raw input string to be sanitized.
      *
      * @return string The sanitized string with harmful elements removed.
      */
+    /**
+     * Check if a table is designated as a vertical (EAV) schema.
+     */
+    private function _isVerticalSchema(?string $table = null): bool
+    {
+        $targetTable = $table ?: $this->_table;
+
+        if (! $targetTable) {
+            return false;
+        }
+
+        return ! empty($this->_verticalSchema);
+    }
+
     private function _sanitizeInput(string $input = ''): string
     {
         // Define an array of tags considered highly dangerous (often block-level or script-related).
