@@ -85,7 +85,7 @@ class Formatter
                 $value = get_image($this->_setUploadPath, $value, $thumb_mode);
             }
             // Hyperlink
-            elseif ('hyperlink' === $key) {
+            elseif ('hyperlink' === $key && ! in_array($this->_method, ['create', 'update'], true)) {
                 $value = $this->_formatHyperlink($val, $replacement);
             }
             // Attribution
