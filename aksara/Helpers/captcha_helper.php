@@ -19,13 +19,13 @@ if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
      */
-    function create_captcha(array|string $data = [], string $img_path = '', string $img_url = '', string $font_path = ''): array|bool
+    function create_captcha(array|string $data = [], string $img_path = '', string $imgUrl = '', string $fontPath = ''): array|bool
     {
         $defaults = [
             'word' => '',
             'img_path' => $img_path,
-            'img_url' => $img_url,
-            'font_path' => $font_path,
+            'img_url' => $imgUrl,
+            'font_path' => $fontPath,
             'img_width' => 150,
             'img_height' => 35,
             'font_size' => 16,
@@ -55,12 +55,12 @@ if (! function_exists('create_captcha')) {
         $word = $config['word'];
         if (empty($word)) {
             $word = '';
-            $pool_length = strlen($config['pool']);
+            $poolLength = strlen($config['pool']);
             for ($i = 0; $i < $config['word_length']; $i++) {
                 try {
-                    $word .= $config['pool'][random_int(0, $pool_length - 1)];
+                    $word .= $config['pool'][random_int(0, $poolLength - 1)];
                 } catch (\Throwable $e) {
-                    $word .= $config['pool'][mt_rand(0, $pool_length - 1)];
+                    $word .= $config['pool'][mt_rand(0, $poolLength - 1)];
                 }
             }
         }
@@ -74,23 +74,23 @@ if (! function_exists('create_captcha')) {
             $height = (int) $config['img_height'];
 
             // Temporary image for text before distortion
-            $im_tmp = imagecreatetruecolor($width, $height);
+            $imTmp = imagecreatetruecolor($width, $height);
             $im = imagecreatetruecolor($width, $height);
 
-            if (! $im_tmp instanceof \GdImage || ! $im instanceof \GdImage) {
+            if (! $imTmp instanceof \GdImage || ! $im instanceof \GdImage) {
                 return false;
             }
 
             // Assign colors
             $colors = [];
-            $colors_tmp = [];
+            $colorsTmp = [];
             foreach ($config['colors'] as $key => $rgb) {
                 $colors[$key] = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
-                $colors_tmp[$key] = imagecolorallocate($im_tmp, $rgb[0], $rgb[1], $rgb[2]);
+                $colorsTmp[$key] = imagecolorallocate($imTmp, $rgb[0], $rgb[1], $rgb[2]);
             }
 
             // Background for both
-            imagefilledrectangle($im_tmp, 0, 0, $width, $height, $colors_tmp['background']);
+            imagefilledrectangle($imTmp, 0, 0, $width, $height, $colorsTmp['background']);
             imagefilledrectangle($im, 0, 0, $width, $height, $colors['background']);
 
             // -----------------------------------
@@ -102,15 +102,19 @@ if (! function_exists('create_captcha')) {
 
             for ($i = 0; $i < $length; $i++) {
                 // Random color for each character
-                $char_color = imagecolorallocate($im_tmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
+                $char_color = imagecolorallocate($imTmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
+
+                if ('dark' == get_userdata('app_theme')) {
+                    $char_color = $colorsTmp['text'];
+                }
 
                 if ($use_font) {
                     $angle = mt_rand(-15, 15);
                     $y = mt_rand((int) ($height / 1.4), $height - 5);
-                    imagettftext($im_tmp, (int) $config['font_size'], $angle, (int) $x, (int) $y, $char_color, $config['font_path'], $word[$i]);
+                    imagettftext($imTmp, (int) $config['font_size'], $angle, (int) $x, (int) $y, $char_color, $config['font_path'], $word[$i]);
                 } else {
                     $y = mt_rand(2, (int) ($height / 4));
-                    imagestring($im_tmp, 5, (int) $x, (int) $y, $word[$i], $char_color);
+                    imagestring($imTmp, 5, (int) $x, (int) $y, $word[$i], $char_color);
                 }
                 $x += ($width - 20) / $length;
             }
@@ -124,7 +128,7 @@ if (! function_exists('create_captcha')) {
 
             for ($i = 0; $i < $width; $i++) {
                 $offset = (int) (sin($i * $freq + $phase) * $amp);
-                imagecopy($im, $im_tmp, $i, $offset, $i, 0, 1, $height);
+                imagecopy($im, $imTmp, $i, $offset, $i, 0, 1, $height);
             }
 
             // -----------------------------------
@@ -138,15 +142,17 @@ if (! function_exists('create_captcha')) {
                 imageline($im, 0, $i, $width, $i, $colors['grid']);
             }
 
+            imagesetthickness($im, 1);
+
             // Lighter crossing lines (only 2)
             for ($i = 0; $i < 2; $i++) {
-                $line_color = imagecolorallocate($im, mt_rand(180, 220), mt_rand(180, 220), mt_rand(180, 220));
+                $line_color = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
                 imageline($im, 0, mt_rand(0, $height), $width, mt_rand(0, $height), $line_color);
             }
 
             // Random arcs (only 2, lighter)
             for ($i = 0; $i < 2; $i++) {
-                $arc_color = imagecolorallocate($im, mt_rand(180, 220), mt_rand(180, 220), mt_rand(180, 220));
+                $arc_color = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
                 imagearc($im, mt_rand(0, $width), mt_rand(0, $height), mt_rand(50, 150), mt_rand(30, 100), mt_rand(0, 360), mt_rand(0, 360), $arc_color);
             }
 
@@ -161,21 +167,21 @@ if (! function_exists('create_captcha')) {
             // -----------------------------------
             // 6. Output & Cleanup
             // -----------------------------------
-            $img_filename = $now . '.png';
-            $img_url = rtrim($config['img_url'], '/') . '/';
+            $imgFilename = $now . '.png';
+            $imgUrl = rtrim($config['img_url'], '/') . '/';
 
-            if (! imagepng($im, $config['img_path'] . $img_filename)) {
+            if (! imagepng($im, $config['img_path'] . $imgFilename)) {
                 return false;
             }
 
             destroy_captcha_image($im);
-            destroy_captcha_image($im_tmp);
+            destroy_captcha_image($imTmp);
 
             return [
                 'word' => $word,
                 'time' => $now,
-                'image' => '<img id="' . $config['img_id'] . '" src="' . $img_url . $img_filename . '" style="width: ' . $width . 'px; height: ' . $height . 'px; border: 0;" alt="CAPTCHA" />',
-                'filename' => $img_filename
+                'image' => '<img id="' . $config['img_id'] . '" src="' . $imgUrl . $imgFilename . '" style="width: ' . $width . 'px; height: ' . $height . 'px; border: 0;" alt="CAPTCHA" />',
+                'filename' => $imgFilename
             ];
         } catch (\Throwable $e) {
             log_message('error', '[CAPTCHA] ' . $e->getMessage());
@@ -216,24 +222,31 @@ if (! function_exists('generate_captcha')) {
 
             if (is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha') && is_writable(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha')) {
                 // Try to use a smoother TTF font from vendor if available
-                $font_path = ROOTPATH . 'vendor' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'ttfonts' . DIRECTORY_SEPARATOR . 'DejaVuSans.ttf';
+                $fontPath = ROOTPATH . 'vendor' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'ttfonts' . DIRECTORY_SEPARATOR . 'DejaVuSans.ttf';
+
+                $colorScheme = ('dark' === get_userdata('app_theme') ? [
+                    'background' => [15, 15, 15],
+                    'border' => [15, 15, 15],
+                    'grid' => [50, 50, 50],
+                    'text' => [255, 255, 255]
+                ] : [
+                    'background' => [255, 255, 255],
+                    'border' => [255, 255, 255],
+                    'grid' => [200, 200, 200],
+                    'text' => [0, 0, 0]
+                ]);
 
                 $captcha = create_captcha([
                     'img_path' => UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR,
                     'img_url' => base_url(UPLOAD_PATH . '/captcha'),
                     'img_width' => 120,
                     'img_height' => 35,
-                    'font_path' => (file_exists($font_path) ? $font_path : ''),
-                    'font_size' => 14,
+                    'font_path' => (file_exists($fontPath) ? $fontPath : ''),
+                    'font_size' => 16,
                     'expiration' => 3600,
                     'word_length' => $length,
                     'pool' => $string,
-                    'colors' => [
-                        'background' => [255, 255, 255],
-                        'border' => [255, 255, 255],
-                        'grid' => [200, 200, 200],
-                        'text' => [0, 0, 0]
-                    ]
+                    'colors' => $colorScheme
                 ]);
             }
         }
