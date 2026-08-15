@@ -161,8 +161,6 @@ if (! function_exists('aksara_header')) {
      * This function generates a security CSRF token meta tag, loads the primary
      * theme-specific stylesheet, inclusion of Material Design Icons, and a
      * jQuery deferred execution script.
-     *
-     * @return string The rendered HTML tags for the head section.
      */
     function aksara_header(): string
     {
@@ -188,8 +186,6 @@ if (! function_exists('aksara_footer')) {
      *
      * This function includes flash messages (toasts), the main theme-specific
      * JavaScript file, and the completion script for the jQuery deferred execution queue.
-     *
-     * @return string The rendered HTML tags for the end of the template.
      */
     function aksara_footer(): string
     {
@@ -216,11 +212,6 @@ if (! function_exists('throw_exception')) {
      * This function handles both AJAX and standard HTTP requests. For AJAX, it returns
      * a JSON response with appropriate status codes. For standard requests, it sets
      * flashdata and performs a redirect.
-     *
-     * @param int $code             HTTP status code (e.g., 200, 301, 400, 403, 404, 500)
-     * @param string|array $data    Message string or array of error messages
-     * @param string|null $target   The redirect target URL
-     * @param mixed $redirect       Redirection mode ('soft', 'full', or boolean)
      */
     function throw_exception(int $code = 500, string|array|null $data = [], ?string $target = null, mixed $redirect = false)
     {
@@ -293,8 +284,6 @@ if (! function_exists('show_flashdata')) {
      * This function checks for the existence of success, warning, or error flashdata
      * and generates the corresponding HTML markup using Bootstrap classes and
      * Material Design Icons.
-     *
-     * @return string|false Returns the rendered HTML toast container or false if no flashdata exists.
      */
     function show_flashdata(): string
     {
@@ -341,38 +330,73 @@ if (! function_exists('fetch_metadata')) {
      *
      * This function performs a GET request to the local application path with
      * security headers to retrieve page metadata like title, description, and icon.
-     *
-     * @param string $path  The internal URL path to fetch metadata from.
-     * @return object|array|\Throwable Returns a decoded JSON object on success, an empty array, or a Throwable exception on failure.
      */
     function fetch_metadata(string $path): object
     {
+        static $cache = [];
+
+        // Clean & sanitize path to prevent SSRF and path traversal
+        $path = trim($path, '/');
+
+        // Remove scheme or domain if prepended
+        if (preg_match('#^https?://#i', $path)) {
+            $parsed = parse_url($path);
+            $path = ltrim($parsed['path'] ?? '', '/');
+        }
+
+        // Return cached result if already fetched during this request lifecycle
+        if (isset($cache[$path])) {
+            return $cache[$path];
+        }
+
+        $fallback = new \stdClass();
+
         try {
-            // Initialize the CURL request service
-            $client = service('curlrequest');
+            // Build safe local URL
+            $targetUrl = base_url($path);
+
+            // Initialize the CURL request service with security timeouts
+            $client = service('curlrequest', [
+                'timeout' => 5,
+                'connect_timeout' => 3,
+                'http_errors' => false,
+                'allow_redirects' => [
+                    'max' => 2,
+                    'strict' => true,
+                    'protocols' => ['http', 'https']
+                ]
+            ]);
 
             // Perform internal API handshake to fetch metadata
-            $response = $client->request('GET', base_url($path), [
+            $response = $client->request('GET', $targetUrl, [
                 'headers' => [
                     'X-API-KEY' => ENCRYPTION_KEY,
-                    'X-ACCESS-TOKEN' => session_id()
+                    'X-ACCESS-TOKEN' => session_id(),
+                    'User-Agent' => 'Aksara-Internal-Fetcher/1.0'
                 ],
                 'query' => [
                     '__fetch_metadata' => true
                 ]
             ]);
 
-            $decoded = json_decode($response->getBody());
+            // Ensure response is HTTP 200 OK before decoding
+            if (200 === $response->getStatusCode()) {
+                $decoded = json_decode((string) $response->getBody());
 
-            if (is_object($decoded)) {
-                return $decoded;
+                if (is_object($decoded)) {
+                    $cache[$path] = $decoded;
+
+                    return $decoded;
+                }
             }
         } catch (\Throwable $e) {
-            // Log the exception object for further handling
-            log_message('error', $e->getMessage());
+            // Log the exception message for debugging
+            log_message('error', 'fetch_metadata error [' . $path . ']: ' . $e->getMessage());
         }
 
-        return new \stdClass();
+        $cache[$path] = $fallback;
+
+        return $fallback;
     }
 }
 
@@ -382,9 +406,6 @@ if (! function_exists('array_sort')) {
      *
      * This helper creates a closure to be used with usort() for multi-column
      * sorting on both arrays of objects and associative arrays.
-     *
-     * @param array $data   An associative array of [column => direction].
-     * @return \Closure     The comparison function.
      */
     function make_cmp(array $data = []): \Closure
     {
@@ -412,11 +433,6 @@ if (! function_exists('array_sort')) {
      * Sort an array of objects or arrays by one or more columns.
      *
      * Supports multi-column sorting by passing an associative array to $order_by.
-     *
-     * @param array|null $data      The collection to be sorted.
-     * @param array|string $order_by The column name or an array of [column => direction].
-     * @param string $sort          Default sort direction if $order_by is a string.
-     * @return array                The sorted array.
      */
     function array_sort(?array $data = [], array|string $order_by = [], string $sort = 'asc'): array
     {
@@ -440,9 +456,6 @@ if (! function_exists('reset_sort')) {
      *
      * This function uses array_values() to re-index numeric keys while
      * preserving associative (string) keys.
-     *
-     * @param array $resource   The array to be re-indexed.
-     * @return array            The re-indexed array.
      */
     function reset_sort(array $resource = []): array
     {
@@ -471,9 +484,6 @@ if (! function_exists('form_input')) {
      *
      * This function initializes the Twig parser based on the active theme
      * and processes the 'core/form_input.twig' template with the provided parameters.
-     *
-     * @param array|object $params  The configuration and data for the form input.
-     * @return string               The rendered HTML content of the form input.
      */
     function form_input(array|object $params = []): string
     {
@@ -491,9 +501,6 @@ if (! function_exists('form_read')) {
      *
      * Similar to form_input, but specifically for rendering data in a
      * non-editable (read-only) format using the 'core/form_read.twig' template.
-     *
-     * @param array|object $params  The data to be displayed in the read view.
-     * @return string               The rendered HTML content of the read-only form.
      */
     function form_read(array|object $params = []): string
     {
@@ -512,9 +519,6 @@ if (! function_exists('pagination')) {
      * This function generates the HTML for pagination by parsing a Twig template.
      * It will return false if the total number of rows is less than or equal to
      * the items per page, unless a specific limit is requested via GET.
-     *
-     * @param object $params    An object containing pagination data (total, per_page, offset, etc.).
-     * @return string|false     The rendered pagination HTML or false if pagination is not required.
      */
     function pagination(object $params)
     {

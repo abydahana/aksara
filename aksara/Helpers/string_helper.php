@@ -53,8 +53,6 @@ if (! function_exists('custom_nl2br')) {
 if (! function_exists('is_json')) {
     /**
      * Check if JSON is valid
-     *
-     * @param   mixed|null $string
      */
     function is_json(string $string = ''): bool
     {
@@ -124,8 +122,6 @@ if (! function_exists('encoding_fixer')) {
     /**
      * Fix malformed UTF-8 characters, possibly incorrectly encoded
      * json return
-     *
-     * @param   array|string $data
      */
     function encoding_fixer(mixed $data = [])
     {
@@ -149,11 +145,6 @@ if (! function_exists('encoding_fixer')) {
 if (! function_exists('format_date')) {
     /**
      * Format datetime string localized according to user language settings.
-     *
-     * @param   string|null $datetime The datetime string or timestamp to format
-     * @param   string      $format   Format type: 'short' or 'long'
-     * @param   bool        $with_time Whether to include time
-     * @return  string      Formatted localized date string, or '-' if empty
      */
     function format_date(?string $datetime = '', string $format = 'long', bool $with_time = false): string
     {
@@ -241,11 +232,6 @@ if (! function_exists('time_ago')) {
      * This function calculates the difference between the provided datetime
      * and the current time, returning a human-readable string (e.g., "2 hours ago").
      * If the input is null or empty, it returns a default phrase.
-     *
-     * @param string|null $datetime The datetime string to be converted.
-     * @param bool $short           Whether to use short format (e.g., "2h" instead of "2 hours").
-     * @param bool $full            Whether to return a full detailed string (for complex diffs).
-     * @return string               The human-readable time difference or a default message.
      */
     function time_ago(?string $datetime = '', bool $short = false, bool $full = true): string
     {
@@ -312,8 +298,6 @@ if (! function_exists('time_ago')) {
 if (! function_exists('format_slug')) {
     /**
      * Generate slug from given string
-     *
-     * @param   mixed|null $string
      */
     function format_slug(string $string = ''): string
     {
@@ -333,9 +317,6 @@ if (! function_exists('valid_hex')) {
      *
      * This function checks for both 3-character and 6-character hex formats
      * starting with a hash (#) symbol.
-     *
-     * @param string|null $string The hex color string to validate.
-     * @return bool               Returns true if valid, false otherwise.
      */
     function valid_hex(string $string = ''): bool
     {
@@ -352,10 +333,6 @@ if (! function_exists('number2alpha')) {
      * Convert an integer to a string of uppercase letters (A-Z, AA-ZZ, etc.).
      *
      * Useful for generating spreadsheet-like column headers or alphabetical indexing.
-     *
-     * @param int|null $number    The integer to convert (starting from 0).
-     * @param string|null $suffix An optional string to append to the result.
-     * @return string|null        The resulting alphabetical string with suffix.
      */
     function number2alpha(int $number = 0, string $suffix = ''): string
     {
@@ -372,10 +349,6 @@ if (! function_exists('alpha2number')) {
      * Convert a string of uppercase letters back to an integer.
      *
      * Reverses the transformation performed by number2alpha.
-     *
-     * @param string|null $alpha  The alphabetical string to convert.
-     * @param string|null $suffix An optional string to append to the result.
-     * @return string             The resulting integer as a string with suffix.
      */
     function alpha2number(string $alpha = '', string $suffix = ''): string
     {
@@ -393,9 +366,6 @@ if (! function_exists('alpha2number')) {
 if (! function_exists('encrypt')) {
     /**
      * Encrypt a string and encode the result to base64.
-     *
-     * @param string $passphrase The raw string to be encrypted.
-     * @return string            The base64 encoded encrypted string, or empty string if input is empty.
      */
     function encrypt(string $passphrase = ''): string
     {
@@ -412,9 +382,6 @@ if (! function_exists('encrypt')) {
 if (! function_exists('decrypt')) {
     /**
      * Decode a base64 string and decrypt the result.
-     *
-     * @param string $source The base64 encoded encrypted string.
-     * @return string        The decrypted raw string, or empty string if input is empty.
      */
     function decrypt(string $source = ''): string
     {

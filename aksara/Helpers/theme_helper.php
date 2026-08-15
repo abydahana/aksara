@@ -19,7 +19,6 @@ if (! function_exists('asset_loader')) {
     /**
      * Load additional CSS or JS files efficiently.
      * * @param array|string $assets Array or comma-separated string of file paths
-     * @return string|false HTML tags for loading assets
      */
     function asset_loader(string|array $assets = []): string
     {
@@ -77,9 +76,6 @@ if (! function_exists('get_theme_asset')) {
     /**
      * Load theme asset.
      * The file location is directed to a folder named "assets" within the active theme.
-     *
-     * @param string|null $data The relative path to the asset file
-     * @return string The asset URL or '#' if not found
      */
     function get_theme_asset(string $data): string
     {
@@ -109,9 +105,6 @@ if (! function_exists('get_module_asset')) {
      * This function identifies the active module by parsing the current controller's
      * namespace via the router service. It checks for the file's existence within
      * the 'assets' directory of both user-defined modules and core modules.
-     *
-     * @param string|null $data The relative path to the asset file (e.g., 'assets/css/style.css').
-     * @return string           Returns the full URL to the asset if found; otherwise, returns '#'.
      */
     function get_module_asset(?string $data = null): string
     {

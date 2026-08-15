@@ -24,8 +24,6 @@ if (! function_exists('base_url')) {
      * Create a local URL based on your basepath.
      * Segments can be passed in as a string or an array, same as site_url
      * or a URL to a file can be passed in, e.g. to an image file.
-     *
-     * @param   string $path
      */
     function base_url(string|array|null $path = null, ?array $params = []): string
     {
@@ -107,8 +105,6 @@ if (! function_exists('current_page')) {
      *
      * Get the current page URL and add the add extra parameter
      * on it.
-     *
-     * @param   string $method
      */
     function current_page(string|array|null $method = null, ?array $params = [], ?string $unset = null): string
     {
@@ -162,8 +158,6 @@ if (! function_exists('go_to')) {
      *
      * Generate the next page from the current page and add
      * extra parameter on it.
-     *
-     * @param   string $method
      */
     function go_to(string|array|null $method = null, array $params = []): string
     {
