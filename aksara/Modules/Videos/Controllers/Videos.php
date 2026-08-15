@@ -30,6 +30,15 @@ class Videos extends Core
 
     public function index()
     {
+        $query = htmlspecialchars((string) ($this->request->getGet('q') ?? $this->request->getGet('keyword') ?? $this->request->getGet('keywords') ?? ''));
+
+        if ($query) {
+            $this->groupStart()
+                ->like('videos.title', $query)
+                ->orLike('videos.description', $query)
+                ->groupEnd();
+        }
+
         $this->setTitle(phrase('Videos'))
         ->setDescription(phrase('Watch our latest videos'))
         ->setIcon('mdi mdi-youtube')
@@ -48,6 +57,7 @@ class Videos extends Core
             'app_users',
             'app_users.user_id = videos.created_by'
         )
+        ->where('videos.status', 1)
         ->render($this->_table);
     }
 

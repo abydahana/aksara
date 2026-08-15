@@ -37,6 +37,15 @@ class Galleries extends Core
 
     public function index()
     {
+        $query = htmlspecialchars((string) ($this->request->getGet('q') ?? $this->request->getGet('keyword') ?? $this->request->getGet('keywords') ?? ''));
+
+        if ($query) {
+            $this->groupStart()
+                ->like('galleries.gallery_title', $query)
+                ->orLike('galleries.gallery_description', $query)
+                ->groupEnd();
+        }
+
         $this->setTitle(phrase('Galleries'))
         ->setDescription(phrase('Our gallery activities'))
         ->setIcon('mdi mdi-folder-multiple-image')

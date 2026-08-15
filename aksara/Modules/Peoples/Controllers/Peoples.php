@@ -34,7 +34,7 @@ class Peoples extends Core
     public function index()
     {
         $this->setTitle(phrase('The Peoples Behind Us'))
-        ->setDescription(phrase('Meet the peoples behind us'))
+        ->setDescription(phrase('Meet the peoples behind us.'))
         ->setIcon('mdi mdi-account-group-outline')
         ->where('status', 1)
 

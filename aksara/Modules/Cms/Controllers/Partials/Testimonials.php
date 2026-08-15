@@ -71,23 +71,25 @@ class Testimonials extends Core
         ->setField([
             'photo' => 'image',
             'testimonial_content' => 'textarea',
+            'rating' => 'range',
             'status' => 'boolean'
         ])
         ->setField('created_by', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setAttribute('rating', 'min="0" max="5" step="1"')
 
         ->setValidation([
             'first_name' => 'required|string',
             'last_name' => 'string',
-            'testimonial_title' => 'required|string',
             'testimonial_content' => 'required|string',
+            'rating' => 'numeric|greater_than_equal_to[0]|less_than_equal_to[5]',
             'language_id' => 'required',
             'status' => 'boolean'
         ])
         ->setAlias([
             'first_name' => phrase('First Name'),
             'last_name' => phrase('Last Name'),
-            'testimonial_title' => phrase('Title'),
             'testimonial_content' => phrase('Testimony'),
+            'rating' => phrase('Rating'),
             'language_id' => phrase('Language'),
             'status' => phrase('Status'),
             'created_at' => phrase('Created At'),

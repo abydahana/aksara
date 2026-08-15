@@ -6,19 +6,36 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-    <section class="section-padding fade-in">
+    <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
-            <h1 class="display-4 fw-bold">
-                <?= $meta->title; ?>
-            </h1>
-            <p class="fs-5 text-muted mb-0">
-                <?= truncate($meta->description, 256); ?>
-            </p>
+            <div class="row align-items-end">
+                <div class="col-lg-7">
+                    <h1 class="display-4 fw-bold">
+                        <?= $meta->title; ?>
+                    </h1>
+                    <p class="fs-5 text-muted mb-0">
+                        <?= truncate($meta->description, 256); ?>
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
+                        <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                            <div class="input-group ps-4">
+                                <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search albums...'); ?>" required>
+                                <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                    <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 <?php endif; ?>
 
-<section class="pb-5">
+<section class="section-padding">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">
@@ -47,10 +64,10 @@ if ($results): ?>
                     }
                     ?>
                     <div class="col-lg-6">
-                        <div class="rounded-4 overflow-hidden mb-3 fade-in">
+                        <div class="rounded-4 overflow-hidden mb-4 fade-in">
                             <div class="row g-0">
-                                <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-center" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:320px">
-                                    <div class="p-3 w-100" style="background:rgba(0, 0, 0, .5)">
+                                <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-end" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
+                                    <div class="p-3 m-3 rounded-4 w-100" style="background:rgba(0, 0, 0, .5)">
                                         <h2 class="h4 text-light">
                                             <span class="badge bg-primary float-end">
                                                 <?= count($images); ?>
@@ -67,7 +84,7 @@ if ($results): ?>
                                                     <?= phrase('Show all'); ?>
                                                 </a>
                                             <?php else: ?>
-                                                <a href="<?= go_to([$val->gallery_slug, $cover]); ?>" class="btn btn-outline-light rounded-pill --xhr">
+                                                <a href="<?= go_to([$val->gallery_slug, $cover]); ?>" class="btn btn-outline-light rounded-pill px-4 --xhr">
                                                     <i class="mdi mdi-magnify-plus"></i>
                                                     <?= phrase('Show'); ?>
                                                 </a>
@@ -91,22 +108,28 @@ if ($results): ?>
             <?= pagination($pagination); ?>
         <?php else: ?>
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
+                <div class="col-lg-6 offset-lg-3">
                     <div class="py-5 fade-in">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        <div class="text-center mb-3">
+                            <img src="<?= get_module_asset('images/404.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
                             <?= phrase('No album is found!'); ?>
                         </h2>
                         <p class="fs-5 text-center">
-                            <?= phrase('No album is available at the moment.'); ?>
+                            <?= (service('request')->getGet('q') ? phrase('No album is found related to your keywords.') : phrase('No album is available at the moment.')); ?>
                         </p>
-                        <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
-                            </a>
-                        </p>
+                        <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
+                            <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                                <div class="input-group ps-4">
+                                    <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                    <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search albums...'); ?>" required>
+                                    <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                        <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

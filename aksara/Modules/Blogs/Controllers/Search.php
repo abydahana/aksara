@@ -44,7 +44,7 @@ class Search extends Core
                 ->groupEnd();
         }
 
-        $this->setTitle(phrase('Search'))
+        $this->setTitle(phrase('Search Posts'))
         ->setDescription(phrase('Search results for') . ' ' . ($this->_keywords ? $this->_keywords : ($this->request->getGet('category') ? '{{ category_title }}' : phrase('all'))))
         ->setIcon('mdi mdi-magnify')
 
@@ -64,6 +64,7 @@ class Search extends Core
             blogs.post_excerpt,
             blogs.post_tags,
             blogs.featured_image,
+            blogs.created_at,
             blogs.updated_at,
             blogs_categories.category_slug,
             blogs_categories.category_title,
@@ -136,6 +137,7 @@ class Search extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
+            blogs.created_at,
             blogs.updated_at,
             blogs_categories.category_title,
             blogs_categories.category_slug,

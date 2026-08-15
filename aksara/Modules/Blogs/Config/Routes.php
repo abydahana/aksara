@@ -23,6 +23,8 @@ $routes->group(
     ['namespace' => 'Aksara\Modules\Blogs\Controllers'],
     static function ($routes) {
         $routes->add('read', 'Read::index/$1');
+        $routes->add('search', 'Search::index');
+        $routes->add('tags', 'Tags::index');
         $routes->add('(:segment)/(:segment)', 'Read::index/$1/$2');
         $routes->add('(:segment)', 'Category::index/$1');
     }
