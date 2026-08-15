@@ -72,6 +72,12 @@ trait Traits
     private $_afterUpdate;
 
     /**
+     * Custom AI context set by the controller via setAiContext().
+     * Emitted as a hidden form field and sent with the XHR AI request.
+     */
+    private array $_aiContext = [];
+
+    /**
      * Form submission permission status.
      */
     private bool $_allowPublicFormSubmission = false;
@@ -683,6 +689,11 @@ trait Traits
      * @var array
      */
     private $_unsetView = [];
+
+    /**
+     * Vertical schema (EAV) configuration.
+     */
+    private array $_verticalSchema = [];
 
     /**
      * Current view file name.
