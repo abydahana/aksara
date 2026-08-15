@@ -28,7 +28,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '6.2.5';
+        $version = '6.3.0';
 
         if ('version' == $parameter) {
             return $version;
@@ -50,9 +50,9 @@ if (! function_exists('get_setting')) {
      * Fetches a specific field from the 'app_settings' table.
      *
      * @param   string $parameter The column name to retrieve
-     * @return  mixed Returns the setting value or null if not found
+     * @param   mixed  $default   The default value to return if the setting is not found
      */
-    function get_setting(string $parameter): string
+    function get_setting(string $parameter, $default = null): mixed
     {
         static $settings = null;
 
@@ -80,7 +80,7 @@ if (! function_exists('get_setting')) {
             }
         }
 
-        return $settings[$parameter] ?? '';
+        return $settings[$parameter] ?? $default;
     }
 }
 

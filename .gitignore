@@ -11,9 +11,6 @@ __MACOSX
 # OS X Thumbnails
 ._*
 
-# Agents
-.agent
-
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
