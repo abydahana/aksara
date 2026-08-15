@@ -73,7 +73,19 @@ class Blogs extends Core
         }
 
         if (get_setting('ai_enabled')) {
-            $this->addSubmitButton(null, null, 'AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation');
+            $this->addSubmitButton(null, null, 'AI', 'btn btn-info --ai-assistant', 'mdi mdi-creation')
+            ->setAiContext([
+                'instructions' => [
+                    'Generate editorial blog content only for the supplied blog fields.',
+                    'For textarea and wysiwyg fields, write complete, useful article content instead of short placeholders.',
+                    'For wysiwyg post content, use clean semantic HTML paragraphs, headings, and lists only when they help readability.',
+                    'If a language_id field exists, infer the final content language from the instruction and generated content, then use an available language id.',
+                    'If a post_category field exists, infer the best matching blog category from the instruction and generated content, then use an available category id.'
+                ],
+                'data' => [
+                    'post_category' => $this->_categories()
+                ]
+            ]);
         }
 
         if ($this->request->getGet('language')) {
@@ -424,5 +436,21 @@ class Blogs extends Core
                 'values' => $languages
             ]
         ];
+    }
+
+    private function _categories(): array
+    {
+        if (! $this->model->tableExists('blogs_categories')) {
+            return [];
+        }
+
+        return array_map(static function ($category) {
+            return [
+                'id' => (int) $category->category_id,
+                'title' => (string) $category->category_title,
+                'slug' => (string) ($category->category_slug ?? ''),
+                'description' => (string) ($category->category_description ?? '')
+            ];
+        }, $this->model->getWhere('blogs_categories')->result());
     }
 }
