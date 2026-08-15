@@ -112,8 +112,8 @@
                 image: <?= (get_setting('ai_image_enabled') ? 'true' : 'false'); ?>
             };
         </script>
-        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/vendor/dompurify/purify.min.js'); ?>"></script>
-        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/vendor/marked/marked.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/purify.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/marked.min.js'); ?>"></script>
         <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/ai.js'); ?>"></script>
         <?php endif; ?>
 
