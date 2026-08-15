@@ -1,11 +1,12 @@
 <?php
 
 /**
- * @var mixed $categories
- * @var mixed $articles
- * @var mixed $galleries
- * @var mixed $peoples
- * @var mixed $statistics
+ * @var array<int, object> $categories
+ * @var array<int, object> $articles
+ * @var array<int, object> $galleries
+ * @var array<int, object> $peoples
+ * @var array<int, object> $testimonials
+ * @var object $statistics
  */
 ?>
 
@@ -178,7 +179,7 @@
                         <div class="card rounded-4 border-0 overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-secondary' : 'bg-dark') : (($key + 1) % 2 == 0 ? 'bg-dark' : 'bg-secondary')); ?>">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                                 <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
+                                    <img src="<?= get_image('blogs', $val->category_image, 'thumn'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" width="128" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
                                 </a>
                                 <br />
                                 <h3 class="h4 mb-3 text-truncate">
@@ -217,21 +218,21 @@
                         <div class="swiper-slide h-auto">
                             <div class="h-100 d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
-                                    <div class="row g-0 align-items-center mb-3">
-                                        <div class="col-1">
+                                    <div class="d-flex g-0 align-items-center mb-3">
+                                        <div class="pe-3">
                                             <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" loading="lazy" decoding="async" />
+                                                <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" loading="lazy" decoding="async" />
                                             </a>
                                         </div>
-                                        <div class="col-11 overflow-hidden">
-                                            <span class="text-muted text-sm float-end">
-                                                <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
-                                            </span>
-                                            <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
-                                                <b>
-                                                    <?= $val->first_name . ' ' . $val->last_name; ?>
-                                                </b>
-                                            </a>
+                                        <div class="flex-grow-1 d-flex flex-column justify-content-center overflow-hidden gap-0">
+                                            <div class="lh-1">
+                                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-body text-decoration-none --xhr">
+                                                    <b><?= $val->first_name . ' ' . $val->last_name; ?></b>
+                                                </a>
+                                            </div>
+                                            <div class="lh-1">
+                                                <span class="text-muted text-sm"><i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at); ?></span>
+                                            </div>
                                         </div>
                                     </div>
                                     <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
@@ -338,7 +339,55 @@
     </section>
 <?php endif; ?>
 
-<section class="section-padding fade-in">
+<!-- Testimonials Swiper -->
+<?php if ($testimonials): ?>
+    <section class="section-padding fade-in">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold m-0 display-6"><?= phrase('What have people said about us?'); ?></h2>
+            </div>
+            <div class="swiper mb-4" data-slide-count-sm="1" data-slide-count-md="2" data-slide-count-lg="2" data-slide-count-xl="2" data-autoplay="1" data-auto-height="1" data-loop="1">
+                <div class="swiper-wrapper py-3 align-items-center">
+                    <?php foreach ($testimonials as $key => $val): ?>
+                        <div class="swiper-slide h-auto">
+                            <div class="border rounded-4 p-3">
+                                <div class="d-flex align-items-end">
+                                    <div>
+                                        <img src="<?= get_image('testimonials', $val->photo, 'icon'); ?>" class="rounded-circle me-3 border p-1" width="80" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" style="object-fit: cover;" loading="lazy" decoding="async" />
+                                    </div>
+                                    <div>
+                                        <?php if (isset($val->rating) && $val->rating > 0): ?>
+                                            <div class="mb-3">
+                                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                    <i class="mdi mdi-star<?= ($i <= $val->rating ? '' : '-outline'); ?> text-warning fs-4"></i>
+                                                <?php endfor; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="fs-5 text-body">
+                                            <?= $val->testimonial_content; ?>
+                                        </div>
+                                        <div class="py-3">
+                                            <?php if ($val->username): ?>
+                                            <a href="<?= base_url('user/' . $val->username); ?>" class="--xhr">
+                                                <b class="d-block fs-5 text-primary"><?= $val->first_name . ' ' . $val->last_name; ?></b>
+                                            </a>
+                                            <?php else: ?>
+                                                <b class="d-block fs-5 text-danger"><?= $val->first_name . ' ' . $val->last_name; ?></b>
+                                            <?php endif; ?>
+                                            <small class="text-muted"><?= format_date($val->created_at, 'long', true); ?></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
+<section class="section-padding pt-0 fade-in">
     <div class="container py-lg-5">
         <div class="row align-items-center">
             <div class="col-md-6">
