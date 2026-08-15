@@ -3,7 +3,6 @@
     const endpoint = (window.AksaraAI && window.AksaraAI.endpoint)
         ? window.AksaraAI.endpoint
         : (baseUrl() + 'xhr/ai');
-    const token = () => document.querySelector('meta[name="_token"]')?.getAttribute('content') || '';
     const phrase = window.phrase || ((value) => value);
     let activeForm = null;
     let generatedFields = {};
@@ -270,7 +269,7 @@
         form.querySelectorAll('input[name], textarea[name], select[name]').forEach((field) => {
             const isPageBuilderContent = field.name === 'page_content' && window._pageBuilder;
 
-            if (field.name === '_token' || (! isPageBuilderContent && field.type === 'hidden') || field.type === 'password' || field.disabled || field.readOnly) {
+            if ((! isPageBuilderContent && field.type === 'hidden') || field.type === 'password' || field.disabled || field.readOnly) {
                 return;
             }
 
@@ -499,13 +498,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${escapeHtml(phrase('Close'))}"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea class="form-control mb-3" data-ai-prompt rows="1" placeholder="${escapeHtml(phrase('Describe what should be filled or improved in this form'))}"></textarea>
-                        <div class="list-group list-group-flush border rounded" style="border-style:dashed !important" data-ai-result></div>
+                        <textarea class="form-control" data-ai-prompt rows="1" placeholder="${escapeHtml(phrase('Describe what should be filled or improved in this form...'))}"></textarea>
+                        <div class="list-group list-group-flush" data-ai-result></div>
                     </div>
                     <div class="modal-footer">
-                        <span class="small text-muted me-auto" data-ai-status></span>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${escapeHtml(phrase('Close'))}</button>
-                        <button type="button" class="btn btn-primary" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
+                        <span class="small text-secondary me-auto" data-ai-status></span>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${escapeHtml(phrase('Close'))} <em class="text-sm d-none d-lg-inline">(esc)</em></button>
+                        <button type="button" class="btn btn-primary d-none" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
                     </div>
                 </div>
             </div>`;
@@ -721,6 +720,7 @@
                 item.querySelector('[data-ai-field-preview]').textContent = preview;
             }
 
+            result.classList.add('border', 'rounded', 'mt-3');
             result.appendChild(item);
         });
     }
@@ -884,8 +884,10 @@
         generatedFields = {};
         generatedLabels = {};
         prompt.value = '';
-        result.innerHTML = '<p class="text-center text-secondary py-4 mb-0">' + escapeHtml(phrase('Type your instruction in the field above, then press Enter to process.')) + '</p>';
-        status.textContent = '';
+        result.innerHTML = '';
+        result.classList.remove('border', 'rounded', 'mt-3');
+        status.textContent = phrase('Type your instruction in the field above, then press Enter to process.');
+        use.classList.add('d-none');
         use.disabled = true;
         prompt.oninput = () => autogrow(prompt);
         prompt.onkeydown = function(event) {
@@ -902,6 +904,7 @@
 
         function runRequest() {
             startLoading(result, status);
+            use.classList.add('d-none');
             use.disabled = true;
 
             Promise.resolve()
@@ -909,7 +912,6 @@
                 const fields = collectFields(form);
                 const formData = new FormData();
 
-                formData.append('_token', token());
                 formData.append('action', 'form_fill');
                 formData.append('instruction', prompt.value || '');
                 formData.append('title', formTitle(form));
@@ -941,10 +943,18 @@
                 } else {
                     status.textContent = Object.keys(generatedFields).length ? phrase('Ready') : phrase('AI returned no field values.');
                 }
-                use.disabled = ! Object.keys(generatedFields).length;
+
+                if (Object.keys(generatedFields).length) {
+                    use.classList.remove('d-none');
+                    use.disabled = false;
+                } else {
+                    use.classList.add('d-none');
+                    use.disabled = true;
+                }
             })
             .catch((error) => {
                 status.textContent = error.message;
+                use.classList.add('d-none');
             })
             .finally(() => {
                 stopLoading();
