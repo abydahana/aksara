@@ -276,6 +276,10 @@ class Table
                     'truncate' => ! isset($unset_truncate[$field])
                 ];
 
+                if (in_array($final_type, ['range'])) {
+                    $field_data[$field]['attribution'] = $this->_setAttribute[$field] ?? null;
+                }
+
                 // Special handling for specific types
                 if (in_array($final_type, ['image', 'images'])) {
                     $field_data[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');

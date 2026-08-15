@@ -231,7 +231,7 @@ class View
         // Template for Range Visualization
         $component = <<<EOF
         <div>
-            <input type="range" value="{{ value }}" min="0" max="100" disabled>
+            <input type="range" value="{{ value }}" {{ attribution | raw }} disabled>
         </div>
         EOF;
 
