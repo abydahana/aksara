@@ -56,6 +56,9 @@ class Settings extends Core
 
         $this->setMethod('update');
         $this->setUploadPath('settings');
+
+        // Use vertical schema (EAV table structure)
+        $this->verticalSchema('key', 'value', 'type');
     }
 
     public function index()
@@ -64,45 +67,47 @@ class Settings extends Core
             return $this->_fetchStorageProvider();
         }
 
-        $default_map_tile = null;
-        $required_api_key = null;
-        $required_analytic_key = null;
-        $required_facebook_app_id = null;
-        $required_facebook_app_secret = null;
-        $required_google_client_id = null;
-        $required_google_client_secret = null;
+        $defaultMapTile = null;
+        $requiredApiKey = null;
+        $requiredAnalyticKey = null;
+        $requiredFacebookAppId = null;
+        $requiredFacebookAppSecret = null;
+        $requiredGoogleClientId = null;
+        $requiredGoogleClientSecret = null;
+        $requiredStorageEndpoint = null;
+
+        if ($this->request->getPost('provider') && 'disabled' !== $this->request->getPost('provider')) {
+            $requiredStorageEndpoint = 'required|';
+        }
 
         if ($this->request->getPost('openlayers_search_provider') && in_array($this->request->getPost('openlayers_search_provider'), ['google', 'osm'])) {
-            $required_api_key = 'required|';
+            $requiredApiKey = 'required|';
         }
 
         if ($this->request->getPost('default_map_tile')) {
-            $default_map_tile = 'valid_url';
+            $defaultMapTile = 'valid_url';
         }
 
         if ($this->request->getPost('google_analytics_key')) {
-            $required_analytic_key = 'required|';
+            $requiredAnalyticKey = 'required|';
         }
 
         if ($this->request->getPost('facebook_app_id')) {
-            $required_facebook_app_secret = 'required';
+            $requiredFacebookAppSecret = 'required';
         } elseif ($this->request->getPost('facebook_app_secret')) {
-            $required_facebook_app_id = 'required';
+            $requiredFacebookAppId = 'required';
         }
 
         if ($this->request->getPost('google_client_id')) {
-            $required_google_client_secret = 'required';
+            $requiredGoogleClientSecret = 'required';
         } elseif ($this->request->getPost('google_client_secret')) {
-            $required_google_client_id = 'required';
+            $requiredGoogleClientId = 'required';
         }
-
-        $this->_ensureAiSettings();
 
         $storage = $this->_storage();
 
         $this->setTitle(phrase('Application Settings'))
         ->setIcon('mdi mdi-wrench-outline')
-        ->setPrimary('id')
         ->addField([
             'provider' => 'varchar',
             'endpoint' => 'varchar',
@@ -235,14 +240,14 @@ class Settings extends Core
             ]
         )
         ->setValidation([
-            'app_name' => 'required|string|max_length[60]',
-            'app_description' => 'string',
+            'app_name' => 'required|string|max_length[64]',
+            'app_description' => 'string|max_length[255]',
             'app_language' => 'required',
             'force_system_language' => 'boolean',
-            'office_name' => 'required',
-            'office_email' => 'required|valid_email',
-            'office_phone' => 'required',
-            'office_address' => 'required',
+            'office_name' => 'required|max_length[255]',
+            'office_email' => 'required|valid_email|max_length[255]',
+            'office_phone' => 'required|max_length[16]',
+            'office_address' => 'required|max_length[255]',
             'office_map' => 'required|valid_geojson',
 
             /* MEMBERSHIP */
@@ -255,12 +260,17 @@ class Settings extends Core
             'account_age_restriction' => 'numeric|max_length[3]',
             'spam_timer' => 'numeric|max_length[5]',
 
+            /* STORAGE */
+            'provider' => 'in_list[disabled,s3,r2,spaces,minio,wasabi]',
+            'endpoint' => ($requiredStorageEndpoint ? $requiredStorageEndpoint . 'valid_url|max_length[255]' : 'permit_empty|valid_url|max_length[255]'),
+            'sync_existing_uploads' => 'boolean',
+
             /* APIS */
             'openlayers_search_provider' => 'in_list[openlayers,google,osm]',
-            'openlayers_search_key' => ($required_api_key ? $required_api_key . 'alpha_dash|max_length[128]' : null),
+            'openlayers_search_key' => ($requiredApiKey ? $requiredApiKey . 'alpha_dash|max_length[128]' : null),
             'maps_provider' => 'in_list[disabled,google,openlayers]',
-            'default_map_tile' => $default_map_tile,
-            'google_analytics_key' => ($required_analytic_key ? $required_analytic_key . 'alpha_dash|max_length[32]' : null),
+            'default_map_tile' => $defaultMapTile,
+            'google_analytics_key' => ($requiredAnalyticKey ? $requiredAnalyticKey . 'alpha_dash|max_length[32]' : null),
 
             /* AI */
             'ai_enabled' => 'boolean',
@@ -274,15 +284,15 @@ class Settings extends Core
             'ai_max_tokens' => 'permit_empty|integer',
 
             /* OAUTH */
-            'facebook_app_id' => $required_facebook_app_id,
-            'facebook_app_secret' => $required_facebook_app_secret,
-            'google_client_id' => $required_google_client_id,
-            'google_client_secret' => $required_google_client_secret,
+            'facebook_app_id' => $requiredFacebookAppId,
+            'facebook_app_secret' => $requiredFacebookAppSecret,
+            'google_client_id' => $requiredGoogleClientId,
+            'google_client_secret' => $requiredGoogleClientSecret,
 
             /* NOTIFIER */
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
-            'smtp_port' => 'integer'
+            'smtp_port' => 'integer|max_length[5]'
         ])
         ->setAlias([
             'app_name' => phrase('Application Name'),
@@ -331,7 +341,7 @@ class Settings extends Core
             'ai_temperature' => phrase('Temperature'),
             'ai_max_tokens' => phrase('Max Tokens'),
 
-            /* OATH */
+            /* OAUTH */
             'facebook_app_id' => phrase('Facebook APP ID'),
             'facebook_app_secret' => phrase('Facebook APP Secret'),
             'google_client_id' => phrase('Google Client ID'),
@@ -358,80 +368,6 @@ class Settings extends Core
         ->render($this->_table);
     }
 
-    private function _ensureAiSettings(): void
-    {
-        if (! $this->model->tableExists($this->_table)) {
-            return;
-        }
-
-        $defaults = [
-            'ai_enabled' => ['type' => 'tinyint', 'value' => '0'],
-            'ai_image_enabled' => ['type' => 'tinyint', 'value' => '0'],
-            'ai_provider' => ['type' => 'varchar', 'value' => 'openai'],
-            'ai_api_key' => ['type' => 'varchar', 'value' => ''],
-            'ai_model' => ['type' => 'varchar', 'value' => 'gpt-5.6'],
-            'ai_image_model' => ['type' => 'varchar', 'value' => 'gpt-image-2'],
-            'ai_base_url' => ['type' => 'varchar', 'value' => 'https://api.openai.com/v1'],
-            'ai_temperature' => ['type' => 'decimal', 'value' => '0.7'],
-            'ai_max_tokens' => ['type' => 'int', 'value' => '2048']
-        ];
-        $db = db_connect();
-
-        $existing = array_column(
-            $db->table($this->_table)->select('key')->whereIn('key', array_keys($defaults))->get()->getResultArray(),
-            'key'
-        );
-        $missing = [];
-
-        foreach ($defaults as $key => $setting) {
-            if (in_array($key, $existing)) {
-                continue;
-            }
-
-            $missing[] = [
-                'key' => $key,
-                'type' => $setting['type'],
-                'value' => $setting['value']
-            ];
-        }
-
-        if ($missing) {
-            $db->table($this->_table)->insertBatch($missing);
-            service('cache')->delete('aksara_app_settings');
-        }
-    }
-
-    private function _fetchStorageProvider()
-    {
-        $provider = $this->request->getPost('provider');
-
-        if (! isset($this->_storageProviders[$provider])) {
-            return make_json([
-                'status' => 400,
-                'message' => phrase('The selected provider is not valid.')
-            ]);
-        }
-
-        $storage = $this->_storage($provider);
-
-        if ($this->_decryptStorageSecret($storage['access_key'] ?? '')) {
-            $storage['access_key'] = '*****';
-        } else {
-            $storage['access_key'] = '';
-        }
-
-        if ($this->_decryptStorageSecret($storage['secret_key'] ?? '')) {
-            $storage['secret_key'] = '*****';
-        } else {
-            $storage['secret_key'] = '';
-        }
-
-        return make_json([
-            'status' => 200,
-            'results' => $storage
-        ]);
-    }
-
     public function beforeUpdate()
     {
         $post = $this->request->getPost();
@@ -455,9 +391,7 @@ class Settings extends Core
     {
         service('cache')->delete('aksara_app_settings');
 
-        $db = db_connect();
-
-        if (! $this->_storageData || ! $db->tableExists($this->_storageTable)) {
+        if (! $this->_storageData || ! $this->model->tableExists($this->_storageTable)) {
             return;
         }
 
@@ -468,21 +402,35 @@ class Settings extends Core
         }
 
         if ('disabled' === $provider) {
-            $activeStorage = $db->table($this->_storageTable)->where('status', 1)->limit(1)->get()->getRow();
+            $activeStorage = $this->model->getWhere(
+                $this->_storageTable,
+                [
+                    'status' => 1
+                ],
+                1
+            )
+            ->row();
 
             if (! empty($this->_storageData['sync_existing_uploads'])) {
                 $this->_extendStorageSyncExecutionTime();
                 $this->_syncExistingUploadsFromCloud($activeStorage);
             }
 
-            $db->table($this->_storageTable)->update(['status' => 0]);
-            $db->table($this->_storageTable)->where('provider', 'disabled')->delete();
+            $this->model->update($this->_storageTable, ['status' => 0]);
+            $this->model->delete($this->_storageTable, ['provider' => 'disabled']);
             $this->_refreshStorageCache();
 
             return;
         }
 
-        $storage = $db->table($this->_storageTable)->where('provider', $provider)->limit(1)->get()->getRowArray() ?? [];
+        $storage = $this->model->getWhere(
+            $this->_storageTable,
+            [
+                'provider' => $provider
+            ],
+            1
+        )
+        ->row();
         $encrypter = service('encrypter');
         $accessKey = trim($this->_storageData['access_key'] ?? '');
         $secretKey = trim($this->_storageData['secret_key'] ?? '');
@@ -492,33 +440,54 @@ class Settings extends Core
             'endpoint' => trim($this->_storageData['endpoint'] ?? ''),
             'region' => trim($this->_storageData['region'] ?? ''),
             'bucket' => trim($this->_storageData['bucket'] ?? ''),
-            'access_key' => ('' === $accessKey || '*****' === $accessKey ? ($storage['access_key'] ?? '') : base64_encode($encrypter->encrypt($accessKey))),
-            'secret_key' => ('' === $secretKey || '*****' === $secretKey ? ($storage['secret_key'] ?? '') : base64_encode($encrypter->encrypt($secretKey))),
+            'access_key' => ('' === $accessKey || '*****' === $accessKey ? ($storage->access_key ?? '') : base64_encode($encrypter->encrypt($accessKey))),
+            'secret_key' => ('' === $secretKey || '*****' === $secretKey ? ($storage->secret_key ?? '') : base64_encode($encrypter->encrypt($secretKey))),
             'status' => 1,
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => get_userdata('user_id') ?: 1
         ];
 
-        if ($db->fieldExists('name', $this->_storageTable)) {
-            $data['name'] = $storage['name'] ?? 'A';
+        if ($this->model->fieldExists('name', $this->_storageTable)) {
+            $data['name'] = $storage->name ?? ($this->_storageProviders[$provider] ?? 'A');
         }
 
-        $db->table($this->_storageTable)->update(['status' => 0]);
+        $this->model->update($this->_storageTable, ['status' => 0]);
 
         if ($storage) {
-            $db->table($this->_storageTable)->where('provider', $provider)->update($data);
+            $this->model->update($this->_storageTable, $data, ['provider' => $provider]);
         } else {
             $data['created_at'] = date('Y-m-d H:i:s');
+            $data['created_by'] = get_userdata('user_id') ?: 1;
 
-            $db->table($this->_storageTable)->insert($data);
+            $this->model->insert($this->_storageTable, $data);
         }
 
         $this->_refreshStorageCache();
 
         if (! empty($this->_storageData['sync_existing_uploads'])) {
             $this->_extendStorageSyncExecutionTime();
-            $storage = $db->table($this->_storageTable)->where('provider', $provider)->limit(1)->get()->getRow();
+            $storage = $this->model->getWhere($this->_storageTable, ['provider' => $provider])->row();
             $this->_syncExistingUploads($storage);
         }
+    }
+
+    private function _fetchStorageProvider()
+    {
+        $provider = $this->request->getPost('provider');
+
+        if (! isset($this->_storageProviders[$provider])) {
+            return make_json([
+                'status' => 400,
+                'message' => phrase('The selected provider is not valid.')
+            ]);
+        }
+
+        $storage = $this->_storage($provider);
+
+        return make_json([
+            'status' => 200,
+            'results' => $storage
+        ]);
     }
 
     private function _refreshStorageCache(): void
@@ -702,7 +671,7 @@ class Settings extends Core
             $activeStorage = $this->model->getWhere($this->_storageTable, ['status' => 1], 1)->rowArray();
 
             if (! $provider && $activeStorage) {
-                $provider = $activeStorage['provider'];
+                $provider = $activeStorage['provider'] ?? 'disabled';
             }
         }
 
@@ -716,9 +685,9 @@ class Settings extends Core
             return $default;
         }
 
-        $storage = ($activeStorage && $activeStorage['provider'] == $provider)
+        $storage = ($activeStorage && ($activeStorage['provider'] ?? null) == $provider)
             ? $activeStorage
-            : $this->model->getWhere($this->_storageTable, ['provider' => $provider], 1)->rowArray() ?? [];
+            : ($this->model->getWhere($this->_storageTable, ['provider' => $provider], 1)->rowArray() ?? []);
 
         unset($storage['access_key'], $storage['secret_key']);
 
