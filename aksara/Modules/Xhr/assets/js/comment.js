@@ -1,16 +1,18 @@
+const MAX_COMMENT_DEPTH = 3;
+
 $(document).ready(function() {
   if (! $('#comment-dropdown-style').length) {
     $('head').append(`
       <style id="comment-dropdown-style">
         @media (min-width: 992px) {
-          .comment-item .comment-dropdown {
+          .comment-bubble .comment-dropdown {
             opacity: 0;
             pointer-events: none;
             transition: opacity .15s ease-in-out;
           }
 
-          .comment-item:hover .comment-dropdown,
-          .comment-item:focus-within .comment-dropdown {
+          .comment-bubble:hover .comment-dropdown,
+          .comment-bubble:focus-within .comment-dropdown {
             opacity: 1;
             pointer-events: auto;
           }
@@ -122,7 +124,7 @@ $(document).ready(function() {
                 </a>
               </div>
               <div class="col-11 ps-3">
-                <div class="d-flex align-items-center gap-1">
+                <div class="d-flex align-items-center gap-1 comment-bubble">
                   <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
                     <div class="comment-header">
                       <a href="${ val.links.profile_url }" class="text-body --xhr">
@@ -189,18 +191,11 @@ $(document).ready(function() {
                 </div>
                 <div class="py-1 ps-3">
                   <a href="${ val.links.upvote_url || window.location.href }" data-href="${ val.links.upvote_url }" class="small text-body --upvote">
-                    <b class="text-secondary" id="comment-upvote-${ val.comment_id }">
-                      ${ (val.upvotes > 0 ? val.upvotes : '') }
-                    </b>
-                    <b>
-                      ${ phrase('Upvote') }
-                    </b>
+                    <b><span id="comment-upvote-${ val.comment_id }">${ (val.upvotes > 0 ? val.upvotes : '') }</span> ${ phrase('Upvote') }</b>
                   </a>
                   &middot;
-                  <a href="${ val.links.reply_url || window.location.href }" data-href="${ val.links.reply_url }" class="small text-body --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
-                    <b>
-                      ${ phrase('Reply') }
-                    </b>
+                  <a href="${ val.links.reply_url }" class="small text-body --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
+                    <b>${ phrase('Reply') }</b>
                   </a>
                 </div>
               </div>
@@ -260,7 +255,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     xhr = $.ajax({
-      url: $(this).data('href'),
+      url: $(this).attr('href'),
       method: 'POST',
       context: this,
       data: {
@@ -275,8 +270,19 @@ $(document).ready(function() {
       }
     })
     .done(function(response) {
+      let parents = $(this).parents('.comment-item');
+      let currentDepth = parents.length;
+      let targetContainer;
+
+      if (currentDepth < MAX_COMMENT_DEPTH) {
+        targetContainer = $(this).closest('.comment-item').find('#comment-reply').first();
+      } else {
+        let maxIndex = currentDepth - (MAX_COMMENT_DEPTH - 1);
+        targetContainer = parents.eq(maxIndex > 0 ? maxIndex : 0).find('#comment-reply').first();
+      }
+
       $(`
-        <form action="${ htmlspecialchars($(this).data('href')) }" method="POST" enctype="multipart/form-data" class="--validate-form">
+        <form action="${ htmlspecialchars($(this).attr('href')) }" method="POST" enctype="multipart/form-data" class="--validate-form">
           <div class="row g-0">
             <div class="col-11 offset-1 ps-3 text-sm">
               ${ phrase('Replying to') } <b> ${ htmlspecialchars($(this).attr('data-mention')) }</b>
@@ -318,13 +324,9 @@ $(document).ready(function() {
           <input type="hidden" name="_token" value="${ response.token }" />
         </form>
       `)
-      .appendTo($(this).parents('.comment-item').find('#comment-reply').first());
+      .appendTo(targetContainer);
 
-      if($(this).closest('#comment-reply').length) {
-        $(this).closest('#comment-reply').find('form').find('textarea').trigger('focus')
-      } else {
-        $(this).closest('.comment-item').find('#comment-reply').find('form').find('textarea').trigger('focus')
-      }
+      targetContainer.find('form').find('textarea').trigger('focus');
 
       $('[data-bs-toggle=tooltip]').tooltip();
 

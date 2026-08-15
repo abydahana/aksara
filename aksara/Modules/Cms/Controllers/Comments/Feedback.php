@@ -61,7 +61,7 @@ class Feedback extends Core
 
         if ($query) {
             $metadata = fetch_metadata($query->post_path);
-            
+
             $this->setDescription('
                 <div class="row border-bottom">
                     <div class="col-sm-4 col-md-2">

@@ -90,4 +90,4 @@
     </div>
 </div>
 
-<script type="text/javascript" src="<?= get_module_asset('js/scripts.js'); ?>"></script>
+<script type="text/javascript" src="<?= get_module_asset('js/comment.js'); ?>"></script>
