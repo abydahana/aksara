@@ -7,7 +7,7 @@
     "Collected from all galleries": "Được tổng hợp từ tất cả thư viện ảnh",
     "Collected from submitted comments": "Được tổng hợp từ các bình luận đã gửi",
     "Daily Visits": "Lượt truy cập hằng ngày",
-    "Documentation": "Documentation",
+    "Documentation": "Tài liệu",
     "Explore Articles": "Khám phá bài viết",
     "Featured Galleries": "Thư viện nổi bật",
     "Features": "Tính năng",
@@ -30,5 +30,6 @@
     "Welcome": "Chào mừng",
     "Yearly Visits": "Lượt truy cập hằng năm",
     "and will continue to grow": "và sẽ tiếp tục phát triển",
-    "days": "ngày"
+    "days": "ngày",
+    "week": "tuần"
 }

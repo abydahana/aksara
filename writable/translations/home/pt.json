@@ -7,7 +7,7 @@
     "Collected from all galleries": "Reunido de todas as galerias",
     "Collected from submitted comments": "Reunido dos comentários enviados",
     "Daily Visits": "Visitas diárias",
-    "Documentation": "Documentation",
+    "Documentation": "Documentação",
     "Explore Articles": "Descobrir artigos",
     "Featured Galleries": "Galerias em destaque",
     "Features": "Recursos",
@@ -18,7 +18,7 @@
     "Meet Us": "Conheça-nos",
     "Monthly Visits": "Visitas mensais",
     "Post Categories": "Categorias de posts",
-    "Posts": "Posts",
+    "Posts": "Publicações",
     "Read our newest articles": "Leia nossos artigos mais recentes",
     "Recent Articles": "Artigos recentes",
     "See all galleries": "Ver todas as galerias",
@@ -30,5 +30,6 @@
     "Welcome": "Bem-vindo",
     "Yearly Visits": "Visitas anuais",
     "and will continue to grow": "e continuará crescendo",
-    "days": "dias"
+    "days": "dias",
+    "week": "semana"
 }

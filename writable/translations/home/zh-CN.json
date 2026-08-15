@@ -7,7 +7,7 @@
     "Collected from all galleries": "汇总自所有相册",
     "Collected from submitted comments": "汇总自已提交的评论",
     "Daily Visits": "每日访问量",
-    "Documentation": "Documentation",
+    "Documentation": "文档",
     "Explore Articles": "探索文章",
     "Featured Galleries": "精选相册",
     "Features": "功能",
@@ -30,5 +30,6 @@
     "Welcome": "欢迎",
     "Yearly Visits": "每年访问量",
     "and will continue to grow": "并将持续增长",
-    "days": "天"
+    "days": "天",
+    "week": "周"
 }

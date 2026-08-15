@@ -7,7 +7,7 @@
     "Collected from all galleries": "รวบรวมจากทุกแกลเลอรี",
     "Collected from submitted comments": "รวบรวมจากความคิดเห็นที่ส่งเข้ามา",
     "Daily Visits": "การเข้าชมรายวัน",
-    "Documentation": "Documentation",
+    "Documentation": "เอกสารคู่มือ",
     "Explore Articles": "สำรวจบทความ",
     "Featured Galleries": "แกลเลอรีแนะนำ",
     "Features": "ฟีเจอร์",
@@ -30,5 +30,6 @@
     "Welcome": "ยินดีต้อนรับ",
     "Yearly Visits": "การเข้าชมรายปี",
     "and will continue to grow": "และจะเติบโตต่อไป",
-    "days": "วัน"
+    "days": "วัน",
+    "week": "สัปดาห์"
 }

@@ -7,7 +7,7 @@
     "Collected from all galleries": "Собрано из всех галерей",
     "Collected from submitted comments": "Собрано из отправленных комментариев",
     "Daily Visits": "Посещения за день",
-    "Documentation": "Documentation",
+    "Documentation": "Документация",
     "Explore Articles": "Изучить статьи",
     "Featured Galleries": "Избранные галереи",
     "Features": "Возможности",
@@ -30,5 +30,6 @@
     "Welcome": "Добро пожаловать",
     "Yearly Visits": "Посещения за год",
     "and will continue to grow": "и продолжит расти",
-    "days": "дней"
+    "days": "дней",
+    "week": "неделя"
 }

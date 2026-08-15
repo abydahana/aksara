@@ -7,7 +7,7 @@
     "Collected from all galleries": "Dikumpulkan dari semua galeri",
     "Collected from submitted comments": "Dikumpulkan dari komentar yang masuk",
     "Daily Visits": "Kunjungan Harian",
-    "Documentation": "Documentation",
+    "Documentation": "Dokumentasi",
     "Explore Articles": "Telusuri Artikel",
     "Featured Galleries": "Galeri Pilihan",
     "Features": "Fitur",
@@ -30,5 +30,6 @@
     "Welcome": "Selamat Datang",
     "Yearly Visits": "Kunjungan Tahunan",
     "and will continue to grow": "dan akan terus bertumbuh",
-    "days": "hari"
+    "days": "hari",
+    "week": "minggu"
 }
