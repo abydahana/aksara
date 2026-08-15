@@ -1,4 +1,6 @@
-const MAX_COMMENT_DEPTH = 3;
+if (typeof MAX_COMMENT_DEPTH === 'undefined') {
+  var MAX_COMMENT_DEPTH = 3;
+}
 
 $(document).ready(function() {
   if (! $('#comment-dropdown-style').length) {
