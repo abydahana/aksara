@@ -46,13 +46,15 @@ class Testimonials extends Migration
                 'constraint' => 32,
                 'null' => false
             ],
-            'testimonial_title' => [
+            'testimonial_content' => [
                 'type' => 'varchar',
                 'constraint' => 255,
                 'null' => false
             ],
-            'testimonial_content' => [
-                'type' => 'text',
+            'rating' => [
+                'type' => 'tinyint',
+                'unsigned' => true,
+                'default' => 5,
                 'null' => false
             ],
             'language_id' => [
@@ -72,7 +74,7 @@ class Testimonials extends Migration
             'created_by' => [
                 'type' => 'int',
                 'unsigned' => true,
-                'null' => false
+                'null' => true
             ],
             'updated_at' => [
                 'type' => 'datetime',
@@ -96,7 +98,7 @@ class Testimonials extends Migration
         $this->forge->addKey('created_by');
         $this->forge->addKey('updated_by');
 
-        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('created_by', 'app_users', 'user_id', 'CASCADE', 'SET NULL');
         $this->forge->addForeignKey('updated_by', 'app_users', 'user_id', 'CASCADE', 'SET NULL');
 
         $this->forge->createTable('testimonials');
