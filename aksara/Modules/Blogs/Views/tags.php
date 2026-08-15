@@ -19,7 +19,7 @@
                 </p>
             </div>
             <div class="col-md-6">
-                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET" class="my-5">
+                <form action="<?= base_url('blogs/tags', ['per_page' => null]); ?>" method="GET" class="my-5">
                     <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                         <div class="input-group ps-4">
                             <i class="mdi mdi-magnify mdi-2x text-muted"></i>
@@ -66,21 +66,17 @@
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column fade-in">
                             <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
-                                <div class="row g-0 align-items-center mb-3">
-                                    <div class="col-1">
+                                <div class="d-flex g-0 align-items-center mb-3">
+                                    <div class="pe-3">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
-                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
+                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" />
                                         </a>
                                     </div>
-                                    <div class="col-11 overflow-hidden">
-                                        <span class="text-muted text-sm float-end">
-                                            <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
-                                        </span>
+                                    <div class="flex-grow-1 d-flex justify-content-between align-items-center overflow-hidden gap-0">
                                         <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
-                                            <b>
-                                                <?= $val->first_name . ' ' . $val->last_name; ?>
-                                            </b>
+                                            <b class="fs-5"><?= $val->first_name . ' ' . $val->last_name; ?></b>
                                         </a>
+                                        <span class="text-muted small"><i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at); ?></span>
                                     </div>
                                 </div>
                                 <h2 class="h5" class="mb-3">
@@ -88,7 +84,7 @@
                                         <?= truncate($val->post_title, 120); ?>
                                     </a>
                                 </h2>
-                                <p class="text-muted small">
+                                <p class="text-muted">
                                     <?= truncate($val->post_excerpt, 120); ?>
                                 </p>
                                 <div style="z-index:1">

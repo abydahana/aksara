@@ -52,7 +52,7 @@ if ($articles): ?>
                                                         <?= truncate($val->post_excerpt, 90); ?>
                                                     </p>
                                                     <p class="text-muted">
-                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at); ?>
+                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at); ?>
                                                     </p>
                                                 </a>
                                             </div>
@@ -114,21 +114,21 @@ if ($articles): ?>
                                 <div class="swiper-slide h-auto">
                                     <div class="h-100 d-flex flex-column">
                                         <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
-                                            <div class="row g-0 align-items-center mb-3">
-                                                <div class="col-1">
+                                            <div class="d-flex g-0 align-items-center mb-3">
+                                                <div class="pe-3">
                                                     <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary --xhr">
-                                                        <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $_val->first_name . ' ' . $_val->last_name; ?>" />
+                                                        <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $_val->first_name . ' ' . $_val->last_name; ?>" width="48" loading="lazy" decoding="async" />
                                                     </a>
                                                 </div>
-                                                <div class="col-11 overflow-hidden">
-                                                    <span class="text-muted text-sm float-end">
-                                                        <i class="mdi mdi-clock-outline"></i> <?= time_ago($_val->updated_at); ?>
-                                                    </span>
-                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
-                                                        <b>
-                                                            <?= $_val->first_name . ' ' . $_val->last_name; ?>
-                                                        </b>
-                                                    </a>
+                                                <div class="flex-grow-1 d-flex flex-column justify-content-center overflow-hidden gap-0">
+                                                    <div class="lh-1">
+                                                        <a href="<?= base_url('user/' . $_val->username); ?>" class="text-body text-decoration-none --xhr">
+                                                            <b><?= $_val->first_name . ' ' . $_val->last_name; ?></b>
+                                                        </a>
+                                                    </div>
+                                                    <div class="lh-1">
+                                                        <span class="text-muted text-sm"><i class="mdi mdi-clock-outline"></i> <?= time_ago($_val->updated_at ?? $_val->created_at); ?></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <h3 class="h5 mb-3">

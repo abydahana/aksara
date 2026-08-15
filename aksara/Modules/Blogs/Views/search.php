@@ -35,12 +35,12 @@
     </div>
 </section>
 
-<section class="section-padding">
+<section class="section-padding pt-3">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <?php if ($keywords): ?>
-                    <div class="alert alert-info rounded-4 border-0 lead fade-in">
+                    <div class="border p-3 rounded-4 fs-5 mb-3 fade-in">
                         <?php if ($pagination->total): ?>
                             <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($pagination->total)]); ?>
                         <?php else: ?>
@@ -51,8 +51,8 @@
 
                 <?php if ($results): ?>
                     <?php foreach ($results as $key => $val): ?>
-                        <div class="row g-0 g-md-3 align-items-center mb-5 fade-in">
-                            <div class="col-9 col-md-10">
+                        <div class="d-flex g-0 g-md-3 align-items-center mb-5 fade-in">
+                            <div class="flex-grow-1">
                                 <a href="<?= base_url(['blogs', $val->category_slug]); ?>" class="text-muted --xhr">
                                     <span class="badge bg-dark">
                                         <?= $val->category_title; ?>
@@ -66,10 +66,23 @@
                                 <div class="fs-5 text-muted">
                                     <?= ($keywords ? preg_replace('/' . $keywords . '/i', '<b>$0</b>', truncate($val->post_excerpt, 160)) : truncate($val->post_excerpt, 160)); ?>
                                 </div>
+                                <div class="d-flex g-0 align-items-center mb-3">
+                                    <div class="pe-3">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                                            <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" />
+                                        </a>
+                                    </div>
+                                    <div class="flex-grow-1 d-flex justify-content-between align-items-center overflow-hidden gap-0">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
+                                            <b class="fs-5"><?= $val->first_name . ' ' . $val->last_name; ?></b>
+                                        </a>
+                                        <span class="text-muted small"><i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at); ?></span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-3 col-md-2">
+                            <div class="ps-3">
                                 <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="card-img rounded-4" alt="<?= $val->post_title; ?>" />
+                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5" alt="<?= $val->post_title; ?>" />
                                 </a>
                             </div>
                         </div>

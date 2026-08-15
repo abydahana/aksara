@@ -18,10 +18,10 @@ if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
 }
 ?>
 
-<div class="row g-0 bg-body-tertiary">
+<div class="row g-0">
     <div class="col-lg-8">
         <div class="sticky-top">
-            <div class="full-height bg-secondary p-3 d-flex align-items-center">
+            <div class="full-height bg-body-tertiary p-3 d-flex align-items-center">
                 <video data-role="videoplayer" id="video" class="rounded-4">
                     <source src="<?= $results->field_data->video_url->value; ?>" type="<?= $video_type; ?>">
                 </video>

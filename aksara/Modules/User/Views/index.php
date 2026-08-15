@@ -83,25 +83,31 @@ if ($user): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 fade-in">
+    <div class="section-padding fade-in">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
+                <div class="col-lg-6 offset-lg-3">
                     <div class="py-5">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
+                        <div class="text-center mb-3">
+                            <img src="<?= get_module_asset('images/404.png'); ?>" width="128" alt="404" />
                         </div>
                         <h2 class="text-center">
                             <?= phrase('User not found!'); ?>
                         </h2>
                         <p class="fs-5 text-center">
-                            <?= phrase('The user you requested does not exists.'); ?>
+                            <?= (service('request')->getGet('q') ? phrase('No user is found related to your keywords.') : phrase('The user you requested does not exists.')); ?>
                         </p>
-                        <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
-                            </a>
-                        </p>
+                        <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
+                            <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                                <div class="input-group ps-4">
+                                    <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                    <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search users...'); ?>" required>
+                                    <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                        <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

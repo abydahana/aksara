@@ -168,6 +168,7 @@ class Read extends Core
             blogs.post_title,
             blogs.post_excerpt,
             blogs.featured_image,
+            blogs.created_at,
             blogs.updated_at,
             blogs_categories.category_slug,
             blogs_categories.category_title,
