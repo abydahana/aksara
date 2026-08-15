@@ -29,8 +29,6 @@ class View
     /**
      * Generate Text Component.
      * Renders standard text content wrapped in a div with word-break styling.
-     *
-     * @return  array Returns component configuration array
      */
     public function text(): array
     {
@@ -50,8 +48,6 @@ class View
     /**
      * Generate Textarea Component.
      * Renders long text content, ensuring it breaks correctly within the container.
-     *
-     * @return  array Returns component configuration array
      */
     public function textarea(): array
     {
@@ -71,8 +67,6 @@ class View
     /**
      * Generate WYSIWYG Component.
      * Renders rich HTML content.
-     *
-     * @return  array Returns component configuration array
      */
     public function wysiwyg(): array
     {
@@ -92,8 +86,6 @@ class View
     /**
      * Generate Number Component.
      * Renders numeric content.
-     *
-     * @return  array Returns component configuration array
      */
     public function number(): array
     {
@@ -113,8 +105,6 @@ class View
     /**
      * Generate Money Component.
      * Renders currency content.
-     *
-     * @return  array Returns component configuration array
      */
     public function money(): array
     {
@@ -134,8 +124,6 @@ class View
     /**
      * Generate Percent Component.
      * Renders percentage formatted number.
-     *
-     * @return  array Returns component configuration array
      */
     public function percent(): array
     {
@@ -155,8 +143,6 @@ class View
     /**
      * Generate Select Component.
      * Renders the label of the selected option.
-     *
-     * @return  array Returns component configuration array
      */
     public function select(): array
     {
@@ -176,8 +162,6 @@ class View
     /**
      * Generate Checkbox Component.
      * Renders the selected checkbox values.
-     *
-     * @return  array Returns component configuration array
      */
     public function checkbox(): array
     {
@@ -197,8 +181,6 @@ class View
     /**
      * Generate Radio Component.
      * Renders the selected radio button value.
-     *
-     * @return  array Returns component configuration array
      */
     public function radio(): array
     {
@@ -218,8 +200,6 @@ class View
     /**
      * Generate Boolean Component.
      * Renders a badge indicating Active/Inactive status.
-     *
-     * @return  array Returns component configuration array
      */
     public function boolean(): array
     {
@@ -245,8 +225,6 @@ class View
     /**
      * Generate Range Component.
      * Renders a disabled range input to visualize value.
-     *
-     * @return  array Returns component configuration array
      */
     public function range(): array
     {
@@ -266,8 +244,6 @@ class View
     /**
      * Generate Color Component.
      * Renders a disabled color input to visualize color.
-     *
-     * @return  array Returns component configuration array
      */
     public function color(): array
     {
@@ -287,8 +263,6 @@ class View
     /**
      * Generate Date Component.
      * Renders a date string.
-     *
-     * @return  array Returns component configuration array
      */
     public function date(): array
     {
@@ -308,8 +282,6 @@ class View
     /**
      * Generate DateTime Component.
      * Renders a datetime string.
-     *
-     * @return  array Returns component configuration array
      */
     public function datetime(): array
     {
@@ -329,8 +301,6 @@ class View
     /**
      * Generate Time Component.
      * Renders a time string.
-     *
-     * @return  array Returns component configuration array
      */
     public function time(): array
     {
@@ -350,8 +320,6 @@ class View
     /**
      * Generate Week Component.
      * Renders a week string.
-     *
-     * @return  array Returns component configuration array
      */
     public function week(): array
     {
@@ -371,8 +339,6 @@ class View
     /**
      * Generate Month Component.
      * Renders a month string.
-     *
-     * @return  array Returns component configuration array
      */
     public function month(): array
     {
@@ -392,8 +358,6 @@ class View
     /**
      * Generate Hidden Component.
      * Renders a placeholder text indicating hidden content.
-     *
-     * @return  array Returns component configuration array
      */
     public function hidden(): array
     {
@@ -413,8 +377,6 @@ class View
     /**
      * Generate Email Component.
      * Renders an email address with word-break styling.
-     *
-     * @return  array Returns component configuration array
      */
     public function email(): array
     {
@@ -434,8 +396,6 @@ class View
     /**
      * Generate Password Component.
      * Renders masked characters.
-     *
-     * @return  array Returns component configuration array
      */
     public function password(): array
     {
@@ -455,8 +415,6 @@ class View
     /**
      * Generate Encryption Component.
      * Renders masked characters for encrypted fields.
-     *
-     * @return  array Returns component configuration array
      */
     public function encryption(): array
     {
@@ -476,8 +434,6 @@ class View
     /**
      * Generate File Component.
      * Renders text representing a file (usually a link generated elsewhere).
-     *
-     * @return  array Returns component configuration array
      */
     public function file(): array
     {
@@ -497,8 +453,6 @@ class View
     /**
      * Generate Files List Component.
      * Renders an unordered list of file links.
-     *
-     * @return  array Returns component configuration array
      */
     public function files(): array
     {
@@ -526,8 +480,6 @@ class View
     /**
      * Generate Image Component.
      * Renders a single image with a link to the full version.
-     *
-     * @return  array Returns component configuration array
      */
     public function image(): array
     {
@@ -549,8 +501,6 @@ class View
     /**
      * Generate Images List Component.
      * Renders a list of links to multiple images.
-     *
-     * @return  array Returns component configuration array
      */
     public function images(): array
     {
@@ -578,8 +528,6 @@ class View
     /**
      * Generate Hyperlink Component.
      * Renders a custom link with an icon.
-     *
-     * @return  array Returns component configuration array
      */
     public function hyperlink(): array
     {
@@ -601,8 +549,6 @@ class View
     /**
      * Generate Geospatial Component.
      * Renders a map visualization for geo-coordinates.
-     *
-     * @return  array Returns component configuration array
      */
     public function geospatial(): array
     {
@@ -622,8 +568,6 @@ class View
     /**
      * Generate Attribution Component.
      * Renders a list of key-value pairs (attributes).
-     *
-     * @return  array Returns component configuration array
      */
     public function attribution(): array
     {
@@ -652,8 +596,6 @@ class View
     /**
      * Generate Custom Format Component.
      * Passthrough for raw content rendering.
-     *
-     * @return  array Returns component configuration array
      */
     public function custom(): array
     {

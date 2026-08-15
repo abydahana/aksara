@@ -29,8 +29,6 @@ class Form
     /**
      * Generate Text Input Component.
      * Renders a standard single-line text input field.
-     *
-     * @return  array Returns component configuration array
      */
     public function text(): array
     {
@@ -48,8 +46,6 @@ class Form
     /**
      * Generate Textarea Component.
      * Renders a multi-line text input field.
-     *
-     * @return  array Returns component configuration array
      */
     public function textarea(): array
     {
@@ -67,8 +63,6 @@ class Form
     /**
      * Generate WYSIWYG Editor Component.
      * Renders a textarea initialized with a rich text editor role.
-     *
-     * @return  array Returns component configuration array
      */
     public function wysiwyg(): array
     {
@@ -88,8 +82,6 @@ class Form
     /**
      * Generate Number Input Component.
      * Renders an input field that accepts integers.
-     *
-     * @return  array Returns component configuration array
      */
     public function number(): array
     {
@@ -107,8 +99,6 @@ class Form
     /**
      * Generate Money/Currency Input Component.
      * Renders an input field optimized for currency values (allows decimals).
-     *
-     * @return  array Returns component configuration array
      */
     public function money(): array
     {
@@ -126,8 +116,6 @@ class Form
     /**
      * Generate Percent Input Component.
      * Renders an input field for percentage values.
-     *
-     * @return  array Returns component configuration array
      */
     public function percent(): array
     {
@@ -145,8 +133,6 @@ class Form
     /**
      * Generate Select Dropdown Component.
      * Renders a dropdown list populated with options from the content array.
-     *
-     * @return  array Returns component configuration array
      */
     public function select(): array
     {
@@ -168,8 +154,6 @@ class Form
     /**
      * Generate Checkbox Group Component.
      * Renders a list of checkboxes for multiple selections.
-     *
-     * @return  array Returns component configuration array
      */
     public function checkbox(): array
     {
@@ -194,8 +178,6 @@ class Form
     /**
      * Generate Radio Button Group Component.
      * Renders a list of radio buttons for single selection.
-     *
-     * @return  array Returns component configuration array
      */
     public function radio(): array
     {
@@ -220,8 +202,6 @@ class Form
     /**
      * Generate Boolean Switch Component.
      * Renders a toggle switch (styled checkbox) for binary values (1/0).
-     *
-     * @return  array Returns component configuration array
      */
     public function boolean(): array
     {
@@ -242,8 +222,6 @@ class Form
     /**
      * Generate Range Slider Component.
      * Renders a slider input for selecting a value within a range (0-100).
-     *
-     * @return  array Returns component configuration array
      */
     public function range(): array
     {
@@ -261,8 +239,6 @@ class Form
     /**
      * Generate Color Picker Component.
      * Renders a color selection input.
-     *
-     * @return  array Returns component configuration array
      */
     public function color(): array
     {
@@ -280,8 +256,6 @@ class Form
     /**
      * Generate Date Input Component.
      * Renders an input for selecting a date (YYYY-MM-DD).
-     *
-     * @return  array Returns component configuration array
      */
     public function date(): array
     {
@@ -299,8 +273,6 @@ class Form
     /**
      * Generate DateTime Input Component.
      * Renders an input for selecting both date and time.
-     *
-     * @return  array Returns component configuration array
      */
     public function datetime(): array
     {
@@ -318,8 +290,6 @@ class Form
     /**
      * Generate Time Input Component.
      * Renders an input for selecting time.
-     *
-     * @return  array Returns component configuration array
      */
     public function time(): array
     {
@@ -337,8 +307,6 @@ class Form
     /**
      * Generate Week Input Component.
      * Renders an input for selecting a specific week number in a year.
-     *
-     * @return  array Returns component configuration array
      */
     public function week(): array
     {
@@ -356,8 +324,6 @@ class Form
     /**
      * Generate Month Input Component.
      * Renders an input for selecting a specific month in a year.
-     *
-     * @return  array Returns component configuration array
      */
     public function month(): array
     {
@@ -375,8 +341,6 @@ class Form
     /**
      * Generate Hidden Input Component.
      * Renders a hidden input field for passing data silently.
-     *
-     * @return  array Returns component configuration array
      */
     public function hidden(): array
     {
@@ -394,8 +358,6 @@ class Form
     /**
      * Generate Email Input Component.
      * Renders an input field validated for email addresses.
-     *
-     * @return  array Returns component configuration array
      */
     public function email(): array
     {
@@ -413,8 +375,6 @@ class Form
     /**
      * Generate Password Input Component.
      * Renders a dual password field (input + confirmation) for setting passwords.
-     *
-     * @return  array Returns component configuration array
      */
     public function password(): array
     {
@@ -433,8 +393,6 @@ class Form
     /**
      * Generate Encryption Input Component.
      * Renders a single password field, typically used for encrypted values/tokens.
-     *
-     * @return  array Returns component configuration array
      */
     public function encryption(): array
     {
@@ -452,8 +410,6 @@ class Form
     /**
      * Generate File Input Component.
      * Renders a standard single file upload input.
-     *
-     * @return  array Returns component configuration array
      */
     public function file(): array
     {
@@ -471,8 +427,6 @@ class Form
     /**
      * Generate Multi-File Uploader Component.
      * Renders a custom file uploader supporting multiple files.
-     *
-     * @return  array Returns component configuration array
      */
     public function files(): array
     {
@@ -493,8 +447,6 @@ class Form
     /**
      * Generate Image Uploader Component.
      * Renders a single image uploader with preview functionality.
-     *
-     * @return  array Returns component configuration array
      */
     public function image(): array
     {
@@ -522,8 +474,6 @@ class Form
     /**
      * Generate Multi-Image Uploader Component.
      * Renders a custom uploader specifically optimized for multiple images.
-     *
-     * @return  array Returns component configuration array
      */
     public function images(): array
     {
@@ -544,8 +494,6 @@ class Form
     /**
      * Generate Geospatial/Map Component.
      * Renders a map interface for selecting coordinates or drawing geo-shapes.
-     *
-     * @return  array Returns component configuration array
      */
     public function geospatial(): array
     {
@@ -566,8 +514,6 @@ class Form
     /**
      * Generate Attribution Input Component.
      * Renders a dynamic repeater field for Key-Value pair attributes.
-     *
-     * @return  array Returns component configuration array
      */
     public function attribution(): array
     {
@@ -622,8 +568,6 @@ class Form
     /**
      * Generate Custom Format Component.
      * Passthrough component to render raw content without standard wrappers.
-     *
-     * @return  array Returns component configuration array
      */
     public function custom(): array
     {

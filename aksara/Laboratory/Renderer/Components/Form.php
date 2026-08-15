@@ -69,8 +69,6 @@ class Form
 
     /**
      * Constructor
-     *
-     * @param   array $properties Associative array of properties to inject
      */
     public function __construct(array $properties = [])
     {
@@ -91,9 +89,6 @@ class Form
      *
      * Processes serialized data, determines input types, handles values,
      * and prepares the structure for the view.
-     *
-     * @param   array $serialized Data from the model
-     * @return  array Returns the processed form configuration
      */
     public function render(array $serialized = []): array
     {

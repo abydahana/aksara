@@ -42,19 +42,25 @@ class Validation
      */
     private string $_uploadError = '';
 
+    // ──────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ──────────────────────────────────────────────────────────────
+
     public function __construct()
     {
         // No initialization needed
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Validation Rules
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Check if data is already exist in the database table.
      * Similar to is_unique but more advanced with additional conditions.
      *
      * @param mixed|null $value The field value to check
-     * @param string|null $params Database table and field parameters (format: table.field,where_field,where_value,...)
      * @param array<string, mixed> $data Complete data array being validated
-     * @return bool True if unique, false if exists
      */
     public function unique($value = null, ?string $params = null, array $data = []): bool
     {
@@ -125,7 +131,6 @@ class Validation
      * Check if field is valid boolean (0 or 1).
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid boolean, false otherwise
      */
     public function boolean($value = null): bool
     {
@@ -140,7 +145,6 @@ class Validation
      * Check if field is valid currency format.
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid currency, false otherwise
      */
     public function currency($value = null): bool
     {
@@ -159,7 +163,6 @@ class Validation
      * Check if field is valid date.
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid date, false otherwise
      */
     public function valid_date($value = null): bool
     {
@@ -183,7 +186,6 @@ class Validation
      * Check if field is valid time (HH:MM format).
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid time, false otherwise
      */
     public function valid_time($value = null): bool
     {
@@ -205,7 +207,6 @@ class Validation
      * Check if field is valid date and time.
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid datetime, false otherwise
      */
     public function valid_datetime($value = null): bool
     {
@@ -229,7 +230,6 @@ class Validation
      * Check if field is valid year (between 1970 and 2100).
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid year, false otherwise
      */
     public function valid_year($value = null): bool
     {
@@ -250,7 +250,6 @@ class Validation
      * Check if field is valid hex color code.
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid hex color, false otherwise
      */
     public function valid_hex($value = null): bool
     {
@@ -269,7 +268,6 @@ class Validation
      * Check if field is valid GeoJSON string or structure.
      *
      * @param mixed|null $value The value to check
-     * @return bool True if valid GeoJSON, false otherwise
      */
     public function valid_geojson($value = null): bool
     {
@@ -336,8 +334,6 @@ class Validation
      * Check if value exists in related database table.
      *
      * @param mixed $value The value to check
-     * @param string|null $params Table and field parameters (format: table.field)
-     * @return bool True if relation exists, false otherwise
      */
     public function relation_checker($value = 0, ?string $params = null): bool
     {
@@ -370,8 +366,6 @@ class Validation
      * Handles single and multiple file uploads with image processing.
      *
      * @param mixed|null $value Not used, required for validation callback
-     * @param string|null $params Field name and file type (format: field.type)
-     * @return bool Always returns true, sets validation errors if needed
      */
     public function validate_upload($value = null, ?string $params = null): bool
     {
@@ -415,15 +409,15 @@ class Validation
         return true;
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Private: Upload & Storage Handlers
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Execute the file upload process.
      *
-     * @param string|null $filename The file input name
-     * @param string|null $field The form field name
-     * @param string|null $type The file type (image/document)
      * @param int|string|null $index Array index for multiple files
      * @param int|string|null $_index Nested array index
-     * @return bool True if upload successful, false otherwise
      */
     private function _doUpload(?string $filename = null, ?string $field = null, ?string $type = null, $index = 0, $_index = null): bool
     {
@@ -663,9 +657,6 @@ class Validation
 
     /**
      * Convert PHP upload error code into localized message.
-     *
-     * @param int $error Upload error constant from PHP
-     * @return string Localized error message
      */
     private function _getUploadErrorMessage(int $error): string
     {
@@ -688,13 +679,6 @@ class Validation
 
     /**
      * Resize image to create thumbnail or icon.
-     *
-     * @param string $path The upload path
-     * @param string $filename The original filename
-     * @param string $type The image type (thumbs/icons)
-     * @param int $width The target width
-     * @param int $height The target height
-     * @return bool True if resize successful, false otherwise
      */
     private function _resizeImage(string $path, string $filename, string $type, int $width, int $height): bool
     {

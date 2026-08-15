@@ -44,8 +44,6 @@ class Core
      *
      * Hydrates the class properties dynamically based on the provided array.
      * This allows the renderer to inherit the state of the Controller/Core class.
-     *
-     * @param   array $properties Associative array of properties to inject
      */
     public function __construct(array $properties = [])
     {
@@ -66,8 +64,6 @@ class Core
      *
      * Retrieves the appropriate core template (e.g., index table wrapper)
      * based on the active theme.
-     *
-     * @return  mixed Returns the rendered component string or void
      */
     public function render(): mixed
     {

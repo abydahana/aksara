@@ -35,6 +35,10 @@ class Permission
      */
     private $_model;
 
+    // ──────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Constructor
      */
@@ -42,6 +46,10 @@ class Permission
     {
         $this->_model = new Model();
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Authentication
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Authenticate user credentials and establish session.
@@ -212,6 +220,10 @@ class Permission
         }
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // Access Control
+    // ──────────────────────────────────────────────────────────────
+
     /**
      * Check if the user is allowed to access the requested path and method.
      * Also handles automatic privilege registration for unknown paths.
@@ -359,6 +371,10 @@ class Permission
             return throw_exception(403, phrase('You cannot perform the requested action.'), ($redirect ? $redirect : base_url()));
         }
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Private: Privilege & Audit Logging
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Register a new path or method to the privileges table.

@@ -74,8 +74,6 @@ class View
 
     /**
      * Constructor
-     *
-     * @param   array $properties Associative array of properties to inject
      */
     public function __construct(array $properties = [])
     {
@@ -94,9 +92,6 @@ class View
 
     /**
      * Render the View Component.
-     *
-     * @param   array $serialized Data from the model
-     * @return  array Returns the processed view configuration
      */
     public function render(array $serialized = []): array
     {

@@ -56,11 +56,6 @@ class Builder
      * This method checks if a specific Twig template exists in the theme directory.
      * If not, it instantiates the relevant Component class, generates the raw HTML/Twig,
      * and writes it to the file system (Auto-Discovery/Auto-Creation).
-     *
-     * @param   string      $theme The active theme folder name
-     * @param   string      $path  The component category ('core', 'table', 'form', 'view')
-     * @param   string|null $type  The specific component method name (e.g., 'text', 'index')
-     * @return  string|bool Returns the file content string or false on failure
      */
     public function getComponent(string $theme, string $path, ?string $type = null): string|bool
     {
