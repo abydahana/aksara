@@ -138,17 +138,17 @@ class MainSeeder extends Seeder
             [
                 'key' => 'app_logo',
                 'type' => 'image',
-                'value' => 'logo.png'
+                'value' => 'placeholder.png'
             ],
             [
                 'key' => 'app_icon',
                 'type' => 'image',
-                'value' => 'logo.png'
+                'value' => 'placeholder.png'
             ],
             [
                 'key' => 'reports_icon',
                 'type' => 'image',
-                'value' => 'logo.png'
+                'value' => 'placeholder.png'
             ],
             [
                 'key' => 'frontend_theme',
