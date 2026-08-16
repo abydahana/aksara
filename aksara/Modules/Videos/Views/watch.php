@@ -7,7 +7,7 @@
 $videoType = null;
 
 if ($results && $results->field_data) {
-    if (stripos($results->field_data->video_url->value, '/youtube.com') !== false) {
+    if (stripos($results->field_data->video_url->value, 'youtube.com') !== false) {
         $videoType = 'video/x-youtube';
     } else if (stripos($results->field_data->video_url->value, 'facebook.com') !== false) {
         $videoType = 'video/facebook';
