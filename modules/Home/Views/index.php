@@ -179,7 +179,7 @@
                         <div class="card rounded-5 border-hover overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-body-tertiary' : 'bg-body-secondary') : (($key + 1) % 2 == 0 ? 'bg-body-secondary' : 'bg-body-tertiary')); ?>">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                                 <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="d-block --xhr">
-                                    <img src="<?= get_image('blogs', $val->category_image, 'thumn'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" width="128" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
+                                    <img src="<?= get_image('blogs', $val->category_image, 'thumb'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" width="128" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
                                 </a>
                                 <br />
                                 <h3 class="h4 mb-3 text-truncate">
