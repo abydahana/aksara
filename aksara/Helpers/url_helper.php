@@ -63,26 +63,26 @@ if (! function_exists('base_url')) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
                 if (null === $val || '' === $val) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token($path, $query_params);
+            $token = generate_token($path, $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
+            $queryString = ($queryParams ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($queryParams)) : '');
         } else {
-            $query_string = '';
+            $queryString = '';
         }
 
         $currentURI = service('request')->getUri();
@@ -90,12 +90,12 @@ if (! function_exists('base_url')) {
         assert($currentURI instanceof SiteURI);
 
         if ((service('request')->getServer('HTTP_MOD_REWRITE') && strtolower(service('request')->getServer('HTTP_MOD_REWRITE')) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || ($path && file_exists(FCPATH . $path))) {
-            $final_url = $currentURI->baseUrl(($path ? rtrim($path, '/') : '')) . $query_string;
+            $finalUrl = $currentURI->baseUrl(($path ? rtrim($path, '/') : '')) . $queryString;
         } else {
-            $final_url = $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : null) . ($path ? rtrim($path, '/') : '')) . $query_string;
+            $finalUrl = $currentURI->baseUrl((config('App')->indexPage ? config('App')->indexPage . '/' : null) . ($path ? rtrim($path, '/') : '')) . $queryString;
         }
 
-        return str_replace(['%7B', '%7D'], ['{', '}'], $final_url);
+        return str_replace(['%7B', '%7D'], ['{', '}'], $finalUrl);
     }
 }
 
@@ -125,30 +125,30 @@ if (! function_exists('current_page')) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
                 if (null === $val || '' === $val) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $query_params);
+            $token = generate_token(uri_string() . ($method ? '/' . $method : null), $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
-            $final_url = base_url(uri_string()) . ($method ? '/' . $method : null) . $query_string;
+            $queryString = ($queryParams ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($queryParams)) : '');
+            $finalUrl = base_url(uri_string()) . ($method ? '/' . $method : null) . $queryString;
         } else {
-            $final_url = base_url(uri_string()) . ($method ? '/' . $method : null);
+            $finalUrl = base_url(uri_string()) . ($method ? '/' . $method : null);
         }
 
-        return str_replace(['%7B', '%7D'], ['{', '}'], $final_url);
+        return str_replace(['%7B', '%7D'], ['{', '}'], $finalUrl);
     }
 }
 
@@ -178,50 +178,49 @@ if (! function_exists('go_to')) {
 
         $destructure = explode('/', $slug ?? '');
 
-        $final_slug = [];
-        $previous_segment = null;
+        $finalSlug = [];
+        $previousSegment = null;
 
         foreach ($destructure as $key => $val) {
-            if ($val != $previous_segment) {
-                $final_slug[] = $val;
+            if ($val != $previousSegment) {
+                $finalSlug[] = $val;
             }
 
-            $previous_segment = $val;
+            $previousSegment = $val;
         }
 
-        $final_slug = implode('/', $final_slug);
-
+        $finalSlug = implode('/', $finalSlug);
         $params = array_merge(service('request')->getGet(), $params);
 
         if (! empty($params)) {
             // Unset old token
             unset($params['aksara']);
 
-            $query_params = [];
+            $queryParams = [];
 
             foreach ($params as $key => $val) {
                 if (null === $val || '' === $val) {
                     continue;
                 }
 
-                $query_params[$key] = $val;
+                $queryParams[$key] = $val;
             }
 
             // Generate token
-            $token = generate_token($final_slug . ($method ? '/' . $method : null), $query_params);
+            $token = generate_token($finalSlug . ($method ? '/' . $method : null), $queryParams);
 
-            if ($query_params && $token) {
-                $query_params = array_merge(['aksara' => $token], $query_params);
+            if ($queryParams && $token) {
+                $queryParams = array_merge(['aksara' => $token], $queryParams);
             }
 
-            $query_string = ($query_params ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($query_params)) : '');
-            $uri = $final_slug . ($method ? '/' . $method : null);
+            $queryString = ($queryParams ? '?' . str_replace(['%7B', '%7D'], ['{', '}'], http_build_query($queryParams)) : '');
+            $uri = $finalSlug . ($method ? '/' . $method : null);
         } else {
-            $query_string = '';
-            $uri = $final_slug . ($method ? '/' . $method : null);
+            $queryString = '';
+            $uri = $finalSlug . ($method ? '/' . $method : null);
         }
 
-        return str_replace(['%7B', '%7D'], ['{', '}'], base_url($uri) . $query_string);
+        return str_replace(['%7B', '%7D'], ['{', '}'], base_url($uri) . $queryString);
     }
 }
 

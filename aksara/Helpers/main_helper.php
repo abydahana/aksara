@@ -21,7 +21,7 @@ if (! function_exists('generate_token')) {
     /**
      * Generate security token to validate the query string values
      */
-    function generate_token(?string $path = null, array $query_params = []): string|RuntimeException
+    function generate_token(?string $path = null, array $queryParams = []): string|RuntimeException
     {
         // Validate encryption key
         if (! defined('ENCRYPTION_KEY') || empty(ENCRYPTION_KEY)) {
@@ -29,39 +29,39 @@ if (! function_exists('generate_token')) {
         }
 
         // Get ignored query string from userdata
-        $user_ignored = get_userdata('__ignored_query_string');
+        $userIgnored = get_userdata('__ignored_query_string');
 
         // Default ignored params
-        $default_ignored = ['aksara', 'q', 'per_page', 'limit', 'order', 'column', 'sort'];
+        $defaultIgnored = ['aksara', 'q', 'per_page', 'limit', 'order', 'column', 'sort'];
 
         // Merge: split user ignored (if exists) with defaults
-        $ignored_query_string = array_merge(
-            $user_ignored ? array_map('trim', explode(',', $user_ignored)) : [],
-            $default_ignored
+        $ignoredQueryString = array_merge(
+            $userIgnored ? array_map('trim', explode(',', $userIgnored)) : [],
+            $defaultIgnored
         );
 
         // Trim whitespace and filter empty values
-        $ignored_query_string = array_filter(array_map('trim', $ignored_query_string));
+        $ignoredQueryString = array_filter(array_map('trim', $ignoredQueryString));
 
         // Remove duplicates
-        $ignored_query_string = array_unique($ignored_query_string);
+        $ignoredQueryString = array_unique($ignoredQueryString);
 
         // Exclude ignored params from query params
-        $query_params = array_diff_key($query_params, array_flip($ignored_query_string));
+        $queryParams = array_diff_key($queryParams, array_flip($ignoredQueryString));
 
         // No query params, empty return
-        if (! $query_params) {
+        if (! $queryParams) {
             return '';
         }
 
         // Normalize query param order
-        ksort($query_params);
+        ksort($queryParams);
 
         // Normalize data to query string format
         $queryString = '';
 
-        if (! empty($query_params)) {
-            $queryString = http_build_query(array_filter($query_params, function ($value) {
+        if (! empty($queryParams)) {
+            $queryString = http_build_query(array_filter($queryParams, function ($value) {
                 return null !== $value && '' !== $value;
             }));
         }
@@ -416,15 +416,15 @@ if (! function_exists('array_sort')) {
                 }
 
                 // Get values based on whether the element is an object or an array
-                $val_a = (is_object($a) ? $a->$column : $a[$column]);
-                $val_b = (is_object($b) ? $b->$column : $b[$column]);
-
-                $diff = strcmp((string) $val_a, (string) $val_b);
+                $valA = (is_object($a) ? $a->$column : $a[$column]);
+                $valB = (is_object($b) ? $b->$column : $b[$column]);
+                $diff = strcmp((string) $valA, (string) $valB);
 
                 if (0 !== $diff) {
                     return (strtolower($sort) === 'asc') ? $diff : ($diff * -1);
                 }
             }
+
             return 0;
         };
     }
@@ -432,19 +432,19 @@ if (! function_exists('array_sort')) {
     /**
      * Sort an array of objects or arrays by one or more columns.
      *
-     * Supports multi-column sorting by passing an associative array to $order_by.
+     * Supports multi-column sorting by passing an associative array to $orderBy.
      */
-    function array_sort(?array $data = [], array|string $order_by = [], string $sort = 'asc'): array
+    function array_sort(?array $data = [], array|string $orderBy = [], string $sort = 'asc'): array
     {
         if (! is_array($data)) {
             return [];
         }
 
-        if (! is_array($order_by) && is_string($order_by)) {
-            $order_by = [$order_by => $sort];
+        if (! is_array($orderBy) && is_string($orderBy)) {
+            $orderBy = [$orderBy => $sort];
         }
 
-        usort($data, make_cmp($order_by));
+        usort($data, make_cmp($orderBy));
 
         return $data;
     }
@@ -459,7 +459,7 @@ if (! function_exists('reset_sort')) {
      */
     function reset_sort(array $resource = []): array
     {
-        $is_numeric = false;
+        $isNumeric = false;
 
         foreach ($resource as $key => $val) {
             // Recursively process nested arrays
@@ -469,12 +469,12 @@ if (! function_exists('reset_sort')) {
 
             // Detect if the current level has at least one numeric key
             if (is_numeric($key)) {
-                $is_numeric = true;
+                $isNumeric = true;
             }
         }
 
         // Re-index only if numeric keys are found, otherwise preserve associative keys
-        return $is_numeric ? array_values($resource) : $resource;
+        return $isNumeric ? array_values($resource) : $resource;
     }
 }
 
