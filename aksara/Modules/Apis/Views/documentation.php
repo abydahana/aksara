@@ -6,13 +6,13 @@
  * @var mixed $modules
  */
 $selected = service('request')->getGet('group');
-$response_type = service('request')->getGet('response_type');
-$group_collector = [];
-$access_token = false;
+$responseType = service('request')->getGet('response_type');
+$groupCollector = [];
+$accessToken = false;
 $method = [];
 
-if (! in_array($response_type, ['simple', 'complete'])) {
-    $response_type = 'simple';
+if (! in_array($responseType, ['simple', 'complete'])) {
+    $responseType = 'simple';
 }
 
 if ($permission->groups) {
@@ -21,19 +21,19 @@ if ($permission->groups) {
 
     foreach ($permission->groups as $key => $val)
     {
-        $group_collector[] = $val->group_id;
+        $groupCollector[] = $val->group_id;
         $actions = null;
-        $extract_privileges = json_decode($val->group_privileges);
+        $extractPrivileges = json_decode($val->group_privileges);
 
-        if (isset($extract_privileges->$active)) {
-            foreach ($extract_privileges->$active as $_key => $_val)
+        if (isset($extractPrivileges->$active)) {
+            foreach ($extractPrivileges->$active as $_key => $_val)
             {
                 $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
             }
         }
 
         if ($val->group_id) {
-            $access_token = true;
+            $accessToken = true;
         }
 
         $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
@@ -102,10 +102,10 @@ if ($permission->groups) {
                         <div class="mb-3">
                             <h5 class="mt-3"><?= phrase('Response Type'); ?></h5>
                             <div class="btn-group" role="group" aria-label="<?= phrase('Response Type'); ?>">
-                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-simple" value="simple" autocomplete="off"<?= ('simple' == $response_type ? ' checked' : null); ?> />
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-simple" value="simple" autocomplete="off"<?= ('simple' == $responseType ? ' checked' : null); ?> />
                                 <label class="btn btn-outline-primary btn-sm" for="--response-type-simple"><?= phrase('Simple'); ?></label>
 
-                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-complete" value="complete" autocomplete="off"<?= ('complete' == $response_type ? ' checked' : null); ?> />
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-complete" value="complete" autocomplete="off"<?= ('complete' == $responseType ? ' checked' : null); ?> />
                                 <label class="btn btn-outline-primary btn-sm" for="--response-type-complete"><?= phrase('Complete'); ?></label>
                             </div>
                         </div>
@@ -151,19 +151,19 @@ if ($permission->groups) {
                                                 </span>
                                             </td>
                                         </tr>
-                                        <?php if ($access_token): ?>
-                                        <tr>
-                                            <td>
-                                                <code>
-                                                    Authorization
-                                                </code>
-                                            </td>
-                                            <td>String</td>
-                                            <td>Filled with base64 encoded <code>username:password</code></td>
-                                            <td class="text-center">
-                                                <span class="badge bg-danger"><?= phrase('Required'); ?></span>
-                                            </td>
-                                        </tr>
+                                        <?php if ($accessToken): ?>
+                                            <tr>
+                                                <td>
+                                                    <code>
+                                                        Authorization
+                                                    </code>
+                                                </td>
+                                                <td>String</td>
+                                                <td>Filled with base64 encoded <code>username:password</code></td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-danger"><?= phrase('Required'); ?></span>
+                                                </td>
+                                            </tr>
                                         <?php endif; ?>
                                     </tbody>
                                 </table>
@@ -463,7 +463,7 @@ if ($permission->groups) {
                 method: 'POST',
                 data: {
                     mode: 'fetch',
-                    group: '<?= ($selected ? $selected : (isset($group_collector[0]) ? $group_collector[0] : 0)); ?>',
+                    group: '<?= ($selected ? $selected : (isset($groupCollector[0]) ? $groupCollector[0] : 0)); ?>',
                     response_type: $('.--response-type:checked').val(),
                     method: JSON.parse('<?= json_encode($method); ?>')
                 },
