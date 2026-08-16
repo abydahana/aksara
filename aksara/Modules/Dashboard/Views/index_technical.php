@@ -3,15 +3,14 @@
 /**
  * @var mixed $card
  * @var mixed $visitors
- * @var mixed $recent_signed
+ * @var mixed $recentSigned
  * @var mixed $announcements
- * @var mixed $system_language
- * @var mixed $group_name
+ * @var mixed $systemLanguage
+ * @var mixed $groupName
  * @var mixed $logs
  */
 $logs = (isset($logs) ? $logs : []);
 ?>
-
 <div class="container-fluid py-3">
     <div class="row mb-3">
         <div class="col-lg-8">
@@ -21,7 +20,7 @@ $logs = (isset($logs) ? $logs : []);
                         <?= phrase('Welcome back'); ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>!
                     </h5>
                     <p class="text-muted mb-0">
-                        <?= phrase('You are signed in as {{ group_name }}.', ['group_name' => '<b>' . $group_name . '</b>']); ?>
+                        <?= phrase('You are signed in as {{ group_name }}.', ['group_name' => '<b>' . $groupName . '</b>']); ?>
                     </p>
                 </div>
             </div>
@@ -178,7 +177,7 @@ $logs = (isset($logs) ? $logs : []);
                             </div>
                             <div class="card-body p-3">
                                 <?php
-                                foreach ($recent_signed as $key => $val) {
+                                foreach ($recentSigned as $key => $val) {
                                     echo '
                                         ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
                                         <div class="row no-gutters align-items-center">
@@ -350,7 +349,7 @@ $logs = (isset($logs) ? $logs : []);
                                         <?= phrase('System Language'); ?>
                                     </span>
                                     <p>
-                                        <?= (isset($system_language) ? $system_language : null); ?>
+                                        <?= (isset($systemLanguage) ? $systemLanguage : null); ?>
                                     </p>
                                 </div>
                             </div>

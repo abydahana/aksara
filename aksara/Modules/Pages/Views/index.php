@@ -5,23 +5,22 @@
  * @var mixed $meta
  * @var iterable|null $suggestions
  */
-$field_data = $results->field_data ?? null;
+$fieldData = $results->fieldData ?? null;
 
-if ($field_data): ?>
+if ($fieldData): ?>
     <?php
     $builder = new \Aksara\Libraries\PageBuilder\PageBuilder();
-    $pageContent = $field_data->page_content->value ?? '';
+    $pageContent = $fieldData->page_content->value ?? '';
     $decoded = json_decode($pageContent, true);
 
-    $updatedAt = $field_data->updated_at->value ?? null;
-    $createdAt = $field_data->created_at->value ?? null;
+    $updatedAt = $fieldData->updated_at->value ?? null;
+    $createdAt = $fieldData->created_at->value ?? null;
     $timestamp = $updatedAt ?: $createdAt;
     $timestampLabel = $updatedAt
         ? phrase('Updated at')
         : phrase('Created at');
-    ?>
-
-    <?php if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): ?>
+        
+    if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): ?>
         <div class="fade-in">
             <?= $builder->render($decoded); ?>
         </div>

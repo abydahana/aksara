@@ -1,5 +1,5 @@
 (function() {
-    const baseUrl = () => (typeof config !== 'undefined' && config.base_url ? config.base_url : ((window.config && window.config.base_url) ? window.config.base_url : '/'));
+    const baseUrl = () => (typeof config !== 'undefined' && config.baseUrl ? config.baseUrl : ((window.config && window.config.baseUrl) ? window.config.baseUrl : '/'));
     const endpoint = (window.AksaraAI && window.AksaraAI.endpoint)
         ? window.AksaraAI.endpoint
         : (baseUrl() + 'xhr/ai');

@@ -147,7 +147,7 @@ class Context
 
     private function _scopeInstructions(): string
     {
-        $built_in = match ($this->_scope) {
+        $builtIn = match ($this->_scope) {
             'pagebuilder' => $this->_pageBuilderInstructions(),
             default => $this->_generalInstructions()
         };
@@ -160,11 +160,11 @@ class Context
                 $instructions = implode("\n", array_map('trim', array_filter($instructions)));
             }
 
-            $built_in .= "Module-specific instructions:\n"
+            $builtIn .= "Module-specific instructions:\n"
                 . trim((string) $instructions) . "\n\n";
         }
 
-        return $built_in;
+        return $builtIn;
     }
 
     private function _pageBuilderInstructions(): string

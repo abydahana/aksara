@@ -54,8 +54,8 @@ class Pages extends Core
         ->setIcon('mdi mdi-file-document-outline')
 
         ->setOutput([
-            'builder_components' => $pageBuilder->getComponentsFlat(),
-            'builder_categories' => $pageBuilder->getCategories()
+            'builderComponents' => $pageBuilder->getComponentsFlat(),
+            'builderCategories' => $pageBuilder->getCategories()
         ])
 
         ->addButton('translate', phrase('Translate'), 'btn-dark --modal', 'mdi mdi-translate', ['page_id' => 'page_id'])
@@ -128,7 +128,7 @@ class Pages extends Core
         $this->setMethod('update');
 
         if (! $this->request->getGet('language')) {
-            $current_language = $this->model->getWhere(
+            $currentLanguage = $this->model->getWhere(
                 $this->_table,
                 [
                     'page_id' => $this->request->getGet('page_id') ?? 0
@@ -140,17 +140,17 @@ class Pages extends Core
             $languages = $this->model->getWhere(
                 'app_languages',
                 [
-                    'id !=' => $current_language,
+                    'id !=' => $currentLanguage,
                     'status' => 1
                 ]
             )
             ->result();
 
             // Build language list
-            $language_list = '';
+            $languageList = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<div class="list-group-item list-group-item-action position-relative p-0">
+                $languageList .= '<div class="list-group-item list-group-item-action position-relative p-0">
                     <a href="' . go_to('translate', ['language' => $val->id]) . '" class="d-block px-3 py-3 pe-5 text-body text-decoration-none --modal">
                         <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
                     </a>
@@ -160,21 +160,21 @@ class Pages extends Core
                 </div>';
             }
 
-            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+            $content = '<div class="list-group list-group-flush">' . $languageList . '</div>';
 
             return make_json([
                 'meta' => [
                     'title' => phrase('Choose Language'),
                     'icon' => 'mdi mdi-translate',
                     'popup' => true,
-                    'modal_size' => 'modal-sm'
+                    'modalSize' => 'modal-sm'
                 ],
                 'content' => $content,
             ]);
         }
 
         // Initialize page id
-        $page_id = 0;
+        $pageId = 0;
 
         try {
             // Get current data
@@ -198,7 +198,7 @@ class Pages extends Core
             )
             ->row();
 
-            $page_id = $checker->page_id ?? 0;
+            $pageId = $checker->page_id ?? 0;
 
             if (! $checker) {
                 // Noop, modify data and create new translation
@@ -215,7 +215,7 @@ class Pages extends Core
                 $this->model->insert($this->_table, (array) $data);
 
                 // Set new page id
-                $page_id = $this->model->insertId();
+                $pageId = $this->model->insertId();
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
@@ -230,7 +230,7 @@ class Pages extends Core
             'status' => 'boolean'
         ])
         ->where([
-            'page_id' => $page_id
+            'page_id' => $pageId
         ])
         ->setValidation([
             'page_title' => 'required|max_length[256]|unique[' . $this->_table . '.page_title.page_id.' . $this->request->getGet('page_id') . ']',
@@ -288,34 +288,59 @@ class Pages extends Core
         $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages';
         $query = $this->request->getGet('q');
         $sort = $this->request->getGet('sort') ?? 'newest';
-        $page = (int) ($this->request->getGet('page') ?? 1);
-        $per_page = 12;
+        $page = (int) ($this->request->getGet('pageNo') ?? 1);
+        $perPage = 12;
 
         if (! is_dir($path)) {
             mkdir($path, 0755, true);
         }
 
         $files = array_diff(scandir($path), ['.', '..', 'index.html', '.htaccess', 'thumbs', 'icons', 'placeholder.png']);
+        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+
         $images = [];
 
         foreach ($files as $file) {
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
-            if (is_file($filePath) && @is_array(getimagesize($filePath))) {
-                // Search filter
-                if ($query && stripos($file, $query) === false) {
-                    continue;
-                }
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-                $images[] = [
-                    'name' => $file,
-                    'url' => get_image('pages', $file),
-                    'thumb' => get_image('pages', $file, 'thumb'),
-                    'size' => filesize($filePath),
-                    'time' => filemtime($filePath),
-                    'formatted_size' => number_format(filesize($filePath) / 1024, 2) . ' KB',
-                    'formatted_time' => date('Y-m-d H:i', filemtime($filePath))
-                ];
+            if (! is_file($filePath) || ! in_array($ext, $validExtensions)) {
+                continue;
             }
+
+            try {
+                if ('svg' === $ext) {
+                    $fileContent = file_get_contents($filePath);
+                    // SVG is XML text: ensure it doesn't contain PHP tags or executable scripts
+                    if (preg_match('/<\?(?:php\s|=\s)|<script\b/i', $fileContent)) {
+                        continue;
+                    }
+                } else {
+                    // Raster images: verify MIME type and binary image structure & dimensions
+                    $mime = function_exists('mime_content_type') ? mime_content_type($filePath) : '';
+                    if (($mime && ! str_starts_with($mime, 'image/')) || ! getimagesize($filePath)) {
+                        continue;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Skip unreadable or corrupted files
+                continue;
+            }
+
+            // Search filter
+            if ($query && stripos($file, $query) === false) {
+                continue;
+            }
+
+            $images[] = [
+                'name' => $file,
+                'url' => get_image('pages', $file),
+                'thumb' => get_image('pages', $file, 'thumb'),
+                'size' => filesize($filePath),
+                'time' => filemtime($filePath),
+                'formattedSize' => number_format(filesize($filePath) / 1024, 2) . ' KB',
+                'formattedTime' => date('Y-m-d H:i', filemtime($filePath))
+            ];
         }
 
         // Sorting
@@ -336,14 +361,13 @@ class Pages extends Core
         });
 
         $total = count($images);
-        $images = array_slice($images, ($page - 1) * $per_page, $per_page);
+        $images = array_slice($images, ($page - 1) * $perPage, $perPage);
 
         return make_json([
             'images' => $images,
-            'total' => $total,
-            'page' => $page,
-            'per_page' => $per_page,
-            'total_pages' => ceil($total / $per_page)
+            'pageNo' => $page,
+            'pageSize' => $perPage,
+            'totalPages' => ceil($total / $perPage)
         ]);
     }
 
@@ -409,7 +433,7 @@ class Pages extends Core
 
         $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR;
 
-        $files_to_delete = [
+        $filesToDelete = [
             $path . $filename,
             $path . 'thumbs' . DIRECTORY_SEPARATOR . $filename,
             $path . 'icons' . DIRECTORY_SEPARATOR . $filename
@@ -417,9 +441,9 @@ class Pages extends Core
 
         $deleted = false;
 
-        foreach ($files_to_delete as $file_path) {
-            if (is_file($file_path)) {
-                if (unlink($file_path)) {
+        foreach ($filesToDelete as $filePath) {
+            if (is_file($filePath)) {
+                if (unlink($filePath)) {
                     $deleted = true;
                 }
             }
@@ -591,7 +615,7 @@ class Pages extends Core
             ]
         ];
 
-        $languages_query = $this->model->select('
+        $languagesQuery = $this->model->select('
             id,
             language AS label
         ')
@@ -603,8 +627,8 @@ class Pages extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->label,

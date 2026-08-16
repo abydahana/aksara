@@ -72,16 +72,16 @@ class Core
                     </thead>
                     <tbody {{ results.sortable ? 'data-role="sortable" data-url="' ~ results.sortable.sort_url ~ '"' : 'data-role="tbody"' }}>
                         {% set references = [] %}
-                        {% for key, row in results.table_data %}
+                        {% for key, row in results.tableData %}
                             {% set unique_reference = '' %}
-                            {% for reference in results.item_reference %}
-                                {% if row.field_data[reference].value is not null %}
-                                    {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
+                            {% for reference in results.itemReference %}
+                                {% if row.fieldData[reference].value is not null %}
+                                    {% set unique_reference = unique_reference ~ row.fieldData[reference].value %}
                                     {% if unique_reference not in references %}
                                         <tr>
                                             <td colspan="2">&nbsp;</td>
                                             <td colspan="{{ colspan }}">
-                                                <b class="text-primary">{{ row.field_data[reference].value }}</b>
+                                                <b class="text-primary">{{ row.fieldData[reference].value }}</b>
                                             </td>
                                         </tr>
 
@@ -100,7 +100,7 @@ class Core
                                 <td>
                                     <div class="btn-group btn-group-xs">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.newTab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
@@ -111,7 +111,7 @@ class Core
                                         {% endif %}
                                     </div>
                                 </td>
-                                {% for field in row.field_data %}
+                                {% for field in row.fieldData %}
                                     <td colspan="{{ field.colspan }}">
                                         {# Include table component #}
                                         {% include 'table/' ~ field.type ~ '.twig' with field %}
@@ -153,19 +153,19 @@ class Core
         <div data-role="grid" class="pt-3">
             <div class="container-fluid">
                 <div class="row">
-                    {% for key, row in results.table_data %}
+                    {% for key, row in results.tableData %}
                         <div class="col-sm-6 col-md-4 col-xl-3">
                             <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
                                 {% set break = false %}
-                                {% for field in row.field_data %}
+                                {% for field in row.fieldData %}
                                     {% if not break and field.type == 'images' %}
                                         <div id="slideshow_{{ key }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
-                                                {% for carousel_key, carousel_item in field.content %}
-                                                    <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
-                                                        <a href="{{ carousel_item.url }}" target="_blank">
+                                                {% for carouselKey, carouselItem in field.content %}
+                                                    <div class="carousel-item position-relative rounded-4 {% if carouselKey is same as(0) %} active {% endif %}">
+                                                        <a href="{{ carouselItem.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}" loading="lazy" decoding="async">
+                                                            <img src="{{ carouselItem.thumbnail }}" class="d-block rounded w-100" alt="{{ carouselItem.label ? carouselItem.label : phrase('Image') }}" loading="lazy" decoding="async">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -189,7 +189,7 @@ class Core
                                 {% endfor %}
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
-                                        {% for field in row.field_data %}
+                                        {% for field in row.fieldData %}
                                             {% if field.type != 'image' and field.type != 'images' %}
                                                 <li class="list-group-item px-0">
                                                     <span class="text-sm text-muted d-block">{{ field.label }}</span>
@@ -203,7 +203,7 @@ class Core
                                 <div class="card-footer">
                                     <div class="btn-group btn-group-sm d-flex">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-light" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-light" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.newTab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
@@ -246,19 +246,19 @@ class Core
         <div data-role="grid" class="pt-3">
             <div class="container-fluid">
                 <div class="row">
-                    {% for key, row in results.table_data %}
+                    {% for key, row in results.tableData %}
                         <div class="col-sm-6 col-md-4 col-xl-3">
                             <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
                                 {% set break = false %}
-                                {% for field in row.field_data %}
+                                {% for field in row.fieldData %}
                                     {% if not break and field.type == 'images' %}
                                         <div id="slideshow_{{ key }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
-                                                {% for carousel_key, carousel_item in field.content %}
-                                                    <div class="carousel-item position-relative rounded-4 {% if carousel_key is same as(0) %} active {% endif %}">
-                                                        <a href="{{ carousel_item.url }}" target="_blank">
+                                                {% for carouselKey, carouselItem in field.content %}
+                                                    <div class="carousel-item position-relative rounded-4 {% if carouselKey is same as(0) %} active {% endif %}">
+                                                        <a href="{{ carouselItem.url }}" target="_blank">
                                                             <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carousel_item.thumbnail }}" class="d-block rounded w-100" alt="{{ carousel_item.label ? carousel_item.label : phrase('Image') }}" loading="lazy" decoding="async">
+                                                            <img src="{{ carouselItem.thumbnail }}" class="d-block rounded w-100" alt="{{ carouselItem.label ? carouselItem.label : phrase('Image') }}" loading="lazy" decoding="async">
                                                         </a>
                                                     </div>
                                                 {% endfor %}
@@ -282,7 +282,7 @@ class Core
                                 {% endfor %}
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
-                                        {% for field in row.field_data %}
+                                        {% for field in row.fieldData %}
                                             {% if field.type != 'image' and field.type != 'images' %}
                                                 <li class="list-group-item px-0">
                                                     <span class="text-sm text-muted d-block">{{ field.label }}</span>
@@ -296,7 +296,7 @@ class Core
                                 <div class="card-footer">
                                     <div class="btn-group btn-group-sm d-flex">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.newTab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
@@ -347,7 +347,7 @@ class Core
             <div class="col">
                 <div class="btn-group btn-group-sm">
                     {% for key, button in buttons %}
-                        <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.path == 'delete' %} data-bulk-delete="true" {% endif %} {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                        <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.path == 'delete' %} data-bulk-delete="true" {% endif %} {% if button.newTab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                             <i class="{{ button.icon }}"></i>
                             {% if button.path != 'delete' %} {{ button.label }} {% endif %}
                         </a>
@@ -396,7 +396,7 @@ class Core
         <div class="btn-group btn-group-sm rounded-0 opt-btn">
             {% for key, button in buttons %}
                 {% if key <= 2 %}
-                    <a href="{{ button.url }}" class="btn {{ button.class }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                    <a href="{{ button.url }}" class="btn {{ button.class }}" {% if button.newTab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                         <i class="{{ button.icon }}"></i>
                         {{ button.label }}
                     </a>
@@ -525,37 +525,37 @@ class Core
         $component = <<<EOF
         <div class="py-3">
             <div class="container-fluid">
-                <form action="{{ links.current_page }}" method="POST" class="--validate-form" enctype="multipart/form-data">
-                    {% for name, params in results.field_data %}
+                <form action="{{ links.currentPage }}" method="POST" class="--validate-form" enctype="multipart/form-data">
+                    {% for name, params in results.fieldData %}
                         {% if params.type == 'geospatial' %}
                             {# Include form input component #}
                             {% include 'core/form_input.twig' with params %}
                         {% endif %}
                     {% endfor %}
                     <div class="row">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <div class="{% if results.columnTotal > 2 or results.formSize == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.columnTotal == 2 or results.formSize == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                             <div class="row">
                                 {# Find index within column total #}
-                                {% for index in 1..results.column_total %}
-                                    <div class="col {{ results.column_size[index] }}">
+                                {% for index in 1..results.columnTotal %}
+                                    <div class="col {{ results.columnSize[index] }}">
                                         {# Loop field data for matching column position by index #}
-                                        {% for name, params in results.field_data %}
+                                        {% for name, params in results.fieldData %}
                                             {% if index == params.position and params.type != 'geospatial' %}
-                                                {% if results.set_heading[name] %}
-                                                    <h5> {{ results.set_heading[name] }} </h5>
+                                                {% if results.setHeading[name] %}
+                                                    <h5> {{ results.setHeading[name] }} </h5>
                                                 {% endif %}
-                                                {% if results.merged_field[name] %}
+                                                {% if results.mergedField[name] %}
                                                     <div class="row">
-                                                        <div class="col {{ results.field_size[name] }}">
+                                                        <div class="col {{ results.fieldSize[name] }}">
                                                             {# Include form input component #}
                                                             {% include 'core/form_input.twig' with params %}
                                                         </div>
 
-                                                        {% for merged_field in results.merged_field[name] %}
-                                                            {% if results.field_data[merged_field] %}
-                                                                <div class="col {{ results.field_size[merged_field] }}">
+                                                        {% for mergedField in results.mergedField[name] %}
+                                                            {% if results.fieldData[mergedField] %}
+                                                                <div class="col {{ results.fieldSize[mergedField] }}">
                                                                     {# Include form input component #}
-                                                                    {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                                    {% include 'core/form_input.twig' with {params: results.fieldData[mergedField]} %}
                                                                 </div>
                                                             {% endif %}
                                                         {% endfor %}
@@ -574,14 +574,14 @@ class Core
                     </div>
                     <div class="opt-btn-overlap-fix"></div>
                     <div class="row opt-btn">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
-                            <a href="{{ links.current_module }}" class="btn btn-link --xhr">
+                        <div class="{% if results.columnTotal > 2 or results.formSize == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.columnTotal == 2 or results.formSize == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
+                            <a href="{{ links.currentModule }}" class="btn btn-link --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back') }}
                             </a>
 
                             <div class="d-flex justify-content-end align-items-center gap-1">
-                                {% for button in results.extra_action.submit %}
+                                {% for button in results.extraAction.submit %}
                                     <button type="button" name="{{ button.name }}" class="{{ button.class }} me-1" {{ button.attribution | raw }}>
                                         {% if button.icon %}
                                             <i class="{{ button.icon }}"></i>
@@ -619,8 +619,8 @@ class Core
         // Includes: Modal Wrapper, Form Body with field logic, and Modal Footer Actions
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
-                <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
+            <div class="modal-dialog modal-dialog-centered {{ meta.modalSize }}" role="document">
+                <form action="{{ links.currentPage }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                             <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
@@ -634,7 +634,7 @@ class Core
                                 {{ meta.description }}
                             </div>
                         {% endif %}
-                        {% for name, params in results.field_data %}
+                        {% for name, params in results.fieldData %}
                             {% if params.type == 'geospatial' %}
                                 {# Include form input component #}
                                 {% include 'core/form_input.twig' with params %}
@@ -642,26 +642,26 @@ class Core
                         {% endfor %}
                         <div class="row">
                             {# Find index within column total #}
-                            {% for index in 1..results.column_total %}
-                                <div class="col {{ results.column_size[index] }}">
+                            {% for index in 1..results.columnTotal %}
+                                <div class="col {{ results.columnSize[index] }}">
                                     {# Loop field data for matching column position by index #}
-                                    {% for name, params in results.field_data %}
+                                    {% for name, params in results.fieldData %}
                                         {% if index == params.position and params.type != 'geospatial' %}
-                                            {% if results.set_heading[name] %}
-                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% if results.setHeading[name] %}
+                                                <h5> {{ results.setHeading[name] }} </h5>
                                             {% endif %}
-                                            {% if results.merged_field[name] %}
+                                            {% if results.mergedField[name] %}
                                                 <div class="row">
-                                                    <div class="col {{ results.field_size[name] }}">
+                                                    <div class="col {{ results.fieldSize[name] }}">
                                                         {# Include form input component #}
                                                         {% include 'core/form_input.twig' with params %}
                                                     </div>
 
-                                                    {% for merged_field in results.merged_field[name] %}
-                                                        {% if results.field_data[merged_field] %}
-                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                    {% for mergedField in results.mergedField[name] %}
+                                                        {% if results.fieldData[mergedField] %}
+                                                            <div class="col {{ results.fieldSize[mergedField] }}">
                                                                 {# Include form input component #}
-                                                                {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
+                                                                {% include 'core/form_input.twig' with {params: results.fieldData[mergedField]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -681,7 +681,7 @@ class Core
                             {{ phrase('Cancel') }}
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
-                        {% for button in results.extra_action.submit %}
+                        {% for button in results.extraAction.submit %}
                             <button type="button" name="{{ button.name }}" value="{{ button.value }}" class="{{ button.class }}" {{ button.attribution | raw }}>
                                 {% if button.icon %}
                                     <i class="{{ button.icon }}"></i>
@@ -718,36 +718,36 @@ class Core
         $component = <<<EOF
         <div class="py-3">
             <div class="container-fluid">
-                {% for name, params in results.field_data %}
+                {% for name, params in results.fieldData %}
                     {% if params.type == 'geospatial' %}
                         {# Include form read component #}
                         {% include 'core/form_read.twig' with params %}
                     {% endif %}
                 {% endfor %}
                 <div class="row">
-                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="{% if results.columnTotal > 2 or results.formSize == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.columnTotal == 2 or results.formSize == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
                         <div class="row">
                             {# Find index within column total #}
-                            {% for index in 1..results.column_total %}
-                                <div class="col {{ results.column_size[index] }}">
+                            {% for index in 1..results.columnTotal %}
+                                <div class="col {{ results.columnSize[index] }}">
                                     {# Loop field data for matching column position by index #}
-                                    {% for name, params in results.field_data %}
+                                    {% for name, params in results.fieldData %}
                                         {% if index == params.position and params.type != 'geospatial' %}
-                                            {% if results.set_heading[name] %}
-                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% if results.setHeading[name] %}
+                                                <h5> {{ results.setHeading[name] }} </h5>
                                             {% endif %}
-                                            {% if results.merged_field[name] %}
+                                            {% if results.mergedField[name] %}
                                                 <div class="row">
-                                                    <div class="col {{ results.field_size[name] }}">
+                                                    <div class="col {{ results.fieldSize[name] }}">
                                                         {# Include form read component #}
                                                         {% include 'core/form_read.twig' with params %}
                                                     </div>
 
-                                                    {% for merged_field in results.merged_field[name] %}
-                                                        {% if results.field_data[merged_field] %}
-                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                    {% for mergedField in results.mergedField[name] %}
+                                                        {% if results.fieldData[mergedField] %}
+                                                            <div class="col {{ results.fieldSize[mergedField] }}">
                                                                 {# Include form read component #}
-                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
+                                                                {% include 'core/form_read.twig' with {params: results.fieldData[mergedField]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -765,8 +765,8 @@ class Core
                 </div>
                 <div class="opt-btn-overlap-fix"></div>
                 <div class="row opt-btn">
-                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
-                        <a href="{{ links.current_module }}" class="btn btn-link --xhr">
+                    <div class="{% if results.columnTotal > 2 or results.formSize == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.columnTotal == 2 or results.formSize == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                        <a href="{{ links.currentModule }}" class="btn btn-link --xhr">
                             <i class="mdi mdi-arrow-left"></i>
                             {{ phrase('Back') }}
                         </a>
@@ -792,7 +792,7 @@ class Core
         // Includes: Modal Wrapper and Read-Only Field Loop
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
+            <div class="modal-dialog modal-dialog-centered {{ meta.modalSize }}" role="document">
                 <div class="modal-content {% if modal %} border shadow {% endif %}">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
@@ -807,7 +807,7 @@ class Core
                                 {{ meta.description }}
                             </div>
                         {% endif %}
-                        {% for name, params in results.field_data %}
+                        {% for name, params in results.fieldData %}
                             {% if params.type == 'geospatial' %}
                                 {# Include form read component #}
                                 {% include 'core/form_read.twig' with params %}
@@ -815,26 +815,26 @@ class Core
                         {% endfor %}
                         <div class="row">
                             {# Find index within column total #}
-                            {% for index in 1..results.column_total %}
-                                <div class="col {{ results.column_size[index] }}">
+                            {% for index in 1..results.columnTotal %}
+                                <div class="col {{ results.columnSize[index] }}">
                                     {# Loop field data for matching column position by index #}
-                                    {% for name, params in results.field_data %}
+                                    {% for name, params in results.fieldData %}
                                         {% if index == params.position and params.type != 'geospatial' %}
-                                            {% if results.set_heading[name] %}
-                                                <h5> {{ results.set_heading[name] }} </h5>
+                                            {% if results.setHeading[name] %}
+                                                <h5> {{ results.setHeading[name] }} </h5>
                                             {% endif %}
-                                            {% if results.merged_field[name] %}
+                                            {% if results.mergedField[name] %}
                                                 <div class="row">
-                                                    <div class="col {{ results.field_size[name] }}">
+                                                    <div class="col {{ results.fieldSize[name] }}">
                                                         {# Include form read component #}
                                                         {% include 'core/form_read.twig' with params %}
                                                     </div>
 
-                                                    {% for merged_field in results.merged_field[name] %}
-                                                        {% if results.field_data[merged_field] %}
-                                                            <div class="col {{ results.field_size[merged_field] }}">
+                                                    {% for mergedField in results.mergedField[name] %}
+                                                        {% if results.fieldData[mergedField] %}
+                                                            <div class="col {{ results.fieldSize[mergedField] }}">
                                                                 {# Include form read component #}
-                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
+                                                                {% include 'core/form_read.twig' with {params: results.fieldData[mergedField]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -963,7 +963,7 @@ class Core
         // Includes: Title with Icon, Close Button, and Spinner (Loader)
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
+            <div class="modal-dialog modal-dialog-centered {{ meta.modalSize }}" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
@@ -1121,7 +1121,7 @@ class Core
                         <div class="col-md-8 offset-md-2">
                             {% for index, page in suggestions %}
                                 {% if index %} &middot; {% endif %}
-                                <a href="{{ links.base_url }}pages/{{ page.page_slug }}" class="fs-5 --xhr">
+                                <a href="{{ links.baseUrl }}pages/{{ page.page_slug }}" class="fs-5 --xhr">
                                     {{ page.page_title }}
                                 </a>
                             {% endfor %}

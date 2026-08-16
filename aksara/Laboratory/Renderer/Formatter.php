@@ -81,8 +81,8 @@ class Formatter
             }
             // Single Image
             elseif ('image' === $key) {
-                $thumb_mode = ! array_key_exists('original_thumbnail', $type) ? 'thumb' : null;
-                $value = get_image($this->_setUploadPath, $value, $thumb_mode);
+                $thumbMode = ! array_key_exists('original_thumbnail', $type) ? 'thumb' : null;
+                $value = get_image($this->_setUploadPath, $value, $thumbMode);
             }
             // Hyperlink
             elseif ('hyperlink' === $key && ! in_array($this->_method, ['create', 'update'], true)) {
@@ -221,33 +221,33 @@ class Formatter
     {
         // Edit Mode (Create/Update): Return Array of Options with 'checked' state
         if (in_array($this->_method, ['create', 'update'])) {
-            $checked_values = $value;
+            $checkedValues = $value;
 
             if ('checkbox' === $type && is_string($value) && is_json($value)) {
-                $checked_values = json_decode($value, true);
+                $checkedValues = json_decode($value, true);
             }
 
-            $formatted_options = [];
+            $formattedOptions = [];
 
-            foreach ($options as $opt_key => $opt_label) {
-                $is_checked = false;
+            foreach ($options as $optKey => $optLabel) {
+                $isChecked = false;
 
                 // Determine checked state
-                if (is_array($checked_values) && in_array($opt_key, $checked_values)) {
-                    $is_checked = true;
-                } elseif (! is_array($checked_values) && (string)$opt_key === (string)$checked_values) {
-                    $is_checked = true;
-                } elseif ('create' === $this->_method && isset($this->_defaultValue[$field]) && $this->_defaultValue[$field] == $opt_key) {
-                    $is_checked = true;
+                if (is_array($checkedValues) && in_array($optKey, $checkedValues)) {
+                    $isChecked = true;
+                } elseif (! is_array($checkedValues) && (string)$optKey === (string)$checkedValues) {
+                    $isChecked = true;
+                } elseif ('create' === $this->_method && isset($this->_defaultValue[$field]) && $this->_defaultValue[$field] == $optKey) {
+                    $isChecked = true;
                 }
 
-                $formatted_options[] = [
-                    'value' => $opt_key,
-                    'label' => $opt_label,
-                    'checked' => $is_checked
+                $formattedOptions[] = [
+                    'value' => $optKey,
+                    'label' => $optLabel,
+                    'checked' => $isChecked
                 ];
             }
-            return $formatted_options;
+            return $formattedOptions;
         }
 
         if ('checkbox' === $type && is_string($value) && is_json($value)) {
@@ -278,15 +278,15 @@ class Formatter
     {
         // Edit Mode
         if (in_array($this->_method, ['create', 'update'])) {
-            $formatted_options = [];
-            foreach ($options as $opt_key => $opt_label) {
-                $formatted_options[] = [
-                    'value' => $opt_key,
-                    'label' => $opt_label,
-                    'selected' => ((string)$opt_key === (string)$value)
+            $formattedOptions = [];
+            foreach ($options as $optKey => $optLabel) {
+                $formattedOptions[] = [
+                    'value' => $optKey,
+                    'label' => $optLabel,
+                    'selected' => ((string)$optKey === (string)$value)
                 ];
             }
-            return $formatted_options;
+            return $formattedOptions;
         }
 
         // Read Mode
@@ -299,23 +299,23 @@ class Formatter
     private function _formatMultipleFiles(mixed $value): mixed
     {
         if (is_string($value) && is_json($value)) {
-            $files_data = json_decode($value);
-            $files_list = [];
+            $filesData = json_decode($value);
+            $filesList = [];
 
-            if (is_object($files_data) || is_array($files_data)) {
-                foreach ($files_data as $src => $alt) {
+            if (is_object($filesData) || is_array($filesData)) {
+                foreach ($filesData as $src => $alt) {
                     $ext = strtolower(pathinfo($src, PATHINFO_EXTENSION));
-                    $is_image = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                    $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
-                    $icon = $is_image ? get_image($this->_setUploadPath, $src, 'icon') : null;
-                    $thumbnail = $is_image ? get_image($this->_setUploadPath, $src, 'thumb') : null;
+                    $icon = $isImage ? get_image($this->_setUploadPath, $src, 'icon') : null;
+                    $thumbnail = $isImage ? get_image($this->_setUploadPath, $src, 'thumb') : null;
                     $url = get_file($this->_setUploadPath, $src);
 
                     // Format file size
                     $filesize = get_filesize($this->_setUploadPath, $src);
                     $filesize = str_replace(['kb', 'mb', 'gb', 'b', '.'], '', strtolower((string)$filesize));
 
-                    $files_list[] = [
+                    $filesList[] = [
                         'name' => $alt,
                         'file' => $src,
                         'size' => $filesize,
@@ -325,7 +325,7 @@ class Formatter
                     ];
                 }
             }
-            return $files_list;
+            return $filesList;
         }
         return $value;
     }
@@ -375,8 +375,8 @@ class Formatter
     {
         $parameter = $config['parameter'] ?? '';
         $alpha = $config['alpha'] ?? [];
-        $query_params = [
-            'per_page' => null,
+        $queryParams = [
+            'page' => null,
             'limit' => null,
             'column' => null,
             'order' => null,
@@ -415,16 +415,16 @@ class Formatter
         }
 
         if (is_array($alpha)) {
-            foreach ($alpha as $q_key => $q_val) {
+            foreach ($alpha as $qKey => $qVal) {
                 // Determine value from replacement array
-                if (isset($replacement[$q_val])) {
-                    $query_params[$q_key] = $replacement[$q_val];
-                } elseif ($q_val && isset($replacement[$q_key])) {
+                if (isset($replacement[$qVal])) {
+                    $queryParams[$qKey] = $replacement[$qVal];
+                } elseif ($qVal && isset($replacement[$qKey])) {
                     // Backup check
-                    $query_params[$q_key] = $replacement[$q_key];
+                    $queryParams[$qKey] = $replacement[$qKey];
                 } else {
                     // Raw value
-                    $query_params[$q_key] = $q_val;
+                    $queryParams[$qKey] = $qVal;
                 }
             }
         }
@@ -432,10 +432,10 @@ class Formatter
         // Build Final URL
         // Check for external link
         if (preg_match('/^(http|https):\/\//', $parameter)) {
-            return $parameter . '?' . http_build_query($query_params);
+            return $parameter . '?' . http_build_query($queryParams);
         }
 
-        return base_url($parameter, $query_params);
+        return base_url($parameter, $queryParams);
     }
 
     /**
@@ -447,13 +447,13 @@ class Formatter
         $format = $config['alpha'] ?? '%04d';
 
         // Apply sprintf format
-        $formatted_value = sprintf(($format ?: '%04d'), $value);
+        $formattedValue = sprintf(($format ?: '%04d'), $value);
 
         // Replace placeholder {1} if exists
         if ($parameter && is_string($parameter)) {
-            return str_replace('{1}', $formatted_value, $parameter);
+            return str_replace('{1}', $formattedValue, $parameter);
         }
 
-        return $formatted_value;
+        return $formattedValue;
     }
 }

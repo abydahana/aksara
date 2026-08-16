@@ -108,7 +108,7 @@ class Testimonials extends Core
             ]
         ];
 
-        $languages_query = $this->model->select('
+        $languagesQuery = $this->model->select('
             id,
             language AS label
         ')
@@ -120,8 +120,8 @@ class Testimonials extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->label,

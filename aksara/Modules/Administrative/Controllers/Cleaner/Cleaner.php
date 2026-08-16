@@ -51,30 +51,30 @@ class Cleaner extends Core
         /**
          * Clean session garbage
          */
-        $session_driver = (config('Session')->driver ? config('Session')->driver : '');
-        $session_expiration = config('Session')->expiration;
-        $session_path = config('Session')->savePath;
-        $session_cleaned = 0;
+        $sessionDriver = (config('Session')->driver ? config('Session')->driver : '');
+        $sessionExpiration = config('Session')->expiration;
+        $sessionPath = config('Session')->savePath;
+        $sessionCleaned = 0;
         $error = false;
 
-        if (stripos($session_driver, 'file') !== false) {
+        if (stripos($sessionDriver, 'file') !== false) {
             // File session handler
-            if (is_writable($session_path)) {
+            if (is_writable($sessionPath)) {
                 helper('filesystem');
 
-                $session = directory_map($session_path);
+                $session = directory_map($sessionPath);
 
                 if ($session) {
                     foreach ($session as $key => $val) {
-                        $modified_time = filemtime($session_path . DIRECTORY_SEPARATOR . $val);
+                        $modifiedTime = filemtime($sessionPath . DIRECTORY_SEPARATOR . $val);
 
-                        if ('index.html' == $val || ! is_file($session_path . DIRECTORY_SEPARATOR . $val) || ! $modified_time || $modified_time > (time() - $session_expiration)) {
+                        if ('index.html' == $val || ! is_file($sessionPath . DIRECTORY_SEPARATOR . $val) || ! $modifiedTime || $modifiedTime > (time() - $sessionExpiration)) {
                             continue;
                         }
 
                         try {
-                            if (unlink($session_path . DIRECTORY_SEPARATOR . $val)) {
-                                $session_cleaned++;
+                            if (unlink($sessionPath . DIRECTORY_SEPARATOR . $val)) {
+                                $sessionCleaned++;
                             }
                         } catch (Throwable $e) {
                             // Safe abstraction
@@ -84,23 +84,23 @@ class Cleaner extends Core
             } else {
                 $error = phrase('The session save path is not writable!');
             }
-        } elseif (stripos($session_driver, 'database') !== false) {
+        } elseif (stripos($sessionDriver, 'database') !== false) {
             // Database session handler
             if ('Postgre' == DB_DRIVER) {
-                $this->model->where('extract(epoch from timestamp) < ', (time() - $session_expiration));
+                $this->model->where('extract(epoch from timestamp) < ', (time() - $sessionExpiration));
             } else {
-                $this->model->where('timestamp < ', (time() - $session_expiration));
+                $this->model->where('timestamp < ', (time() - $sessionExpiration));
             }
 
-            $this->model->delete($session_path);
+            $this->model->delete($sessionPath);
 
-            $session_cleaned = $this->model->affectedRows();
+            $sessionCleaned = $this->model->affectedRows();
         }
 
         if ($error) {
             // Throw with error
             return throw_exception(403, $error, go_to());
-        } elseif ($session_cleaned > 0) {
+        } elseif ($sessionCleaned > 0) {
             // Throw with amount of cleaned garbage
             $html = '
                 <div class="text-center">
@@ -109,7 +109,7 @@ class Cleaner extends Core
                         ' . phrase('Garbage Cleaned!') . '
                     </h5>
                     <p>
-                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($session_cleaned)]) . '
+                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($sessionCleaned)]) . '
                     </p>
                     <a href="javascript:void(0)" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>
@@ -123,7 +123,7 @@ class Cleaner extends Core
                 'status' => 200,
                 'meta' => [
                     'popup' => true,
-                    'modal_size' => 'modal-sm'
+                    'modalSize' => 'modal-sm'
                 ],
                 'content' => $html
             ]);

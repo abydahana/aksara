@@ -153,21 +153,21 @@ class Sso extends Core
                 $photo = $params->photoURL;
                 $extension = getimagesize($photo);
                 $extension = image_type_to_extension($extension[2]);
-                $upload_name = sha1(time()) . $extension;
+                $uploadName = sha1(time()) . $extension;
 
-                if (copy($photo, UPLOAD_PATH . '/users/' . $upload_name)) {
-                    $photo = $upload_name;
-                    $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-                    $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+                if (copy($photo, UPLOAD_PATH . '/users/' . $uploadName)) {
+                    $photo = $uploadName;
+                    $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+                    $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
-                    $this->_resizeImage('users', $upload_name, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-                    $this->_resizeImage('users', $upload_name, 'icons', $icon_dimension, $icon_dimension);
+                    $this->_resizeImage('users', $uploadName, 'thumbs', $thumbnailDimension, $thumbnailDimension);
+                    $this->_resizeImage('users', $uploadName, 'icons', $iconDimension, $iconDimension);
                 } else {
                     $photo = 'placeholder.png';
                 }
 
-                $language_id = (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
-                $default_membership = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
+                $languageId = (get_userdata('language_id') ? get_userdata('language_id') : (get_setting('app_language') > 0 ? get_setting('app_language') : 1));
+                $defaultMembership = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
 
                 $this->model->insert(
                     'app_users',
@@ -180,8 +180,8 @@ class Sso extends Core
                         'photo' => $photo,
                         'phone' => '',
                         'postal_code' => '',
-                        'language_id' => $language_id,
-                        'group_id' => $default_membership,
+                        'language_id' => $languageId,
+                        'group_id' => $defaultMembership,
                         'created_at' => date('Y-m-d H:i:s'),
                         'last_login' => date('Y-m-d H:i:s'),
                         'status' => 1
@@ -189,22 +189,22 @@ class Sso extends Core
                 );
 
                 if ($this->model->affectedRows() > 0) {
-                    $insert_id = $this->model->insertId();
+                    $insertId = $this->model->insertId();
 
                     $this->model->update(
                         'app_users',
                         [
-                            'created_by' => $insert_id
+                            'created_by' => $insertId
                         ],
                         [
-                            'user_id' => $insert_id
+                            'user_id' => $insertId
                         ]
                     );
 
                     $this->model->insert(
                         'app_users_oauth',
                         [
-                            'user_id' => $insert_id,
+                            'user_id' => $insertId,
                             'service_provider' => $provider,
                             'access_token' => $params->identifier,
                             'status' => 1
@@ -280,13 +280,13 @@ class Sso extends Core
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
 
         $imageinfo = getimagesize($source);
-        $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 
         // Load image manipulation library
         $image = Services::image('gd');
 
         // Resize image
-        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+        if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save($target)) {
             // Crop image after resized
             $image->withFile($target)->fit($width, $height, 'center')->save($target);
         }

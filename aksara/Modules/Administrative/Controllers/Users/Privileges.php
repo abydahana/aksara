@@ -80,8 +80,8 @@ class Privileges extends Core
         ->setOutput([
             'userdata' => $this->_user,
             'year' => $this->_year(),
-            'sub_level_1' => $this->_subLevel1(),
-            'visible_menu' => $this->_visibleMenu()
+            'subLevel' => $this->_subLevel(),
+            'visibleMenu' => $this->_visibleMenu()
         ])
         ->setDefault([
             'user_id' => $this->_primary,
@@ -104,7 +104,7 @@ class Privileges extends Core
                 'status' => 1
             ]
         )
-        ->result();
+            ->result();
 
         return $query;
     }
@@ -116,7 +116,7 @@ class Privileges extends Core
      * for the sub level relation to your own table that will be used to
      * separate users based on their level
      */
-    private function _subLevel1()
+    private function _subLevel()
     {
         /**
          * Replace below line with query builder.
@@ -131,54 +131,57 @@ class Privileges extends Core
      */
     private function _visibleMenu()
     {
-        /* get existing user menu if any */
-        $existing_menu = $this->model->select('visible_menu')->getWhere($this->_table, ['user_id' => $this->_primary], 1)->row('visible_menu');
-        $existing_menu = json_decode($existing_menu);
+        // Get existing user menu if any
+        $existingMenu = $this->model->select('visible_menu')->getWhere($this->_table, ['user_id' => $this->_primary], 1)->row('visible_menu');
+        $existingMenu = json_decode($existingMenu);
 
-        /* get sidebar menu by user group from the database */
-        $visible_menu = $this->model->select('
-            app_menus.menu_structure
-        ')
-        ->join(
-            'app_groups',
-            'app_groups.group_id = app_users.group_id'
-        )
-        ->join(
-            'app_menus',
-            'app_menus.group_id = app_groups.group_id'
-        )
-        ->getWhere(
-            'app_users',
-            [
-                'app_users.user_id' => $this->_primary,
-                'app_menus.menu_placement' => 'sidebar'
-            ],
-            1
-        )
-        ->row('menu_structure');
+        // Get sidebar menu by user group from the database
+        $visibleMenu = $this->model->select('
+                app_menus.menu_structure
+            ')
+            ->join(
+                'app_groups',
+                'app_groups.group_id = app_users.group_id'
+            )
+            ->join(
+                'app_menus',
+                'app_menus.group_id = app_groups.group_id'
+            )
+            ->getWhere(
+                'app_users',
+                [
+                    'app_users.user_id' => $this->_primary,
+                    'app_menus.menu_placement' => 'sidebar'
+                ],
+                1
+            )
+            ->row('menu_structure');
 
-        /* decode serialized menu */
-        $visible_menu = json_decode($visible_menu);
+        // Decode serialized menu
+        $visibleMenu = json_decode($visibleMenu);
 
-        /* set default item */
+        // Set default item
         $items = null;
-        if ($visible_menu) {
-            foreach ($visible_menu as $menu => $item) {
+
+        if ($visibleMenu) {
+            foreach ($visibleMenu as $menu => $item) {
                 if (! isset($item->id) || ! isset($item->slug) || ! isset($item->label)) {
                     continue;
                 }
+
                 $items .= '
                     <li' . (isset($item->children) && $item->children ? ' class="check-group"' : null) . '>
                         <label class="big-label">
-                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
+                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existingMenu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '
                         </label>
-                        ' . (isset($item->children) ? $this->_childrenMenu($item->children, $existing_menu) : null) . '
+                        ' . (isset($item->children) ? $this->_childrenMenu($item->children, $existingMenu) : null) . '
                     </li>
                 ';
             }
+
             $items = '
                 <ul class="list-unstyled">
                     ' . $items . '
@@ -192,18 +195,20 @@ class Privileges extends Core
     /**
      * Re-loop the available menu to find the children
      */
-    private function _childrenMenu($children = [], $existing_menu = [])
+    private function _childrenMenu($children = [], $existingMenu = [])
     {
         $items = null;
+
         if ($children) {
             foreach ($children as $menu => $item) {
                 if (! isset($item->id) || ! isset($item->slug) || ! isset($item->label)) {
                     continue;
                 }
+
                 $items .= '
                     <li' . (isset($item->children) && $item->children ? ' class="check-group"' : null) . '>
                         <label class="big-label">
-                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input checker-children"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existing_menu->$item->id) ? ' checked' : null) . ' />
+                            <input type="checkbox"name="menus[]" value="' . $item->id . '" class="form-check-input checker-children"' . (isset($item->children) && $item->children ? ' data-role="checker" data-parent=".check-group"' : null) . (isset($existingMenu->$item->id) ? ' checked' : null) . ' />
                             &nbsp;
                             <i class="' . (isset($item->icon) ? $item->icon : 'mdi mdi-circle-outline') . '"></i>
                             ' . phrase($item->label, [], true) . '
@@ -212,6 +217,7 @@ class Privileges extends Core
                     </li>
                 ';
             }
+
             $items = '
                 <ul class="list-unstyled ms-3">
                     ' . $items . '

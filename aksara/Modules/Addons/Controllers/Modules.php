@@ -207,45 +207,45 @@ class Modules extends Core
 
             $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
-            $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+            $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
             $package = new stdClass();
 
             if (true === $unzip) {
-                if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
+                if (! is_dir($tmpPath) && ! mkdir($tmpPath, 0755, true)) {
                     return throw_exception(400, ['file' => phrase('Unable to extract your module package.')]);
                 }
 
                 // Validate the zip contents and extract safely
-                if (! $this->_extractZipArchive($zip, $tmp_path)) {
+                if (! $this->_extractZipArchive($zip, $tmpPath)) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('Unable to extract your module package.')]);
                 }
 
-                $files = directory_map($tmp_path);
+                $files = directory_map($tmpPath);
 
                 if (! $files) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('Unable to extract your module package.')]);
                 }
 
                 $package = [];
-                $valid_package = false;
-                $package_path = null;
+                $validPackage = false;
+                $packagePath = null;
                 $extract = false;
 
                 foreach ($files as $key => $val) {
-                    if (! $package_path && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
-                        $package_path = basename(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($key, '/\\')));
+                    if (! $packagePath && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
+                        $packagePath = basename(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($key, '/\\')));
                     }
 
                     if (! is_array($val)) {
@@ -255,15 +255,24 @@ class Modules extends Core
                     foreach ($val as $_key => $_val) {
                         if (strpos($_key, ' ') !== false) {
                             break;
-                        } elseif ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
-                            $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+                        } elseif ('theme.json' == $_val && file_exists($tmpPath . DIRECTORY_SEPARATOR . $key . $_val)) {
+                            $package = json_decode(file_get_contents($tmpPath . DIRECTORY_SEPARATOR . $key . $_val));
 
-                            if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['module'])) {
+                            if (
+                                ! $package ||
+                                ! isset($package->name) ||
+                                ! isset($package->description) ||
+                                ! isset($package->version) ||
+                                ! isset($package->author) ||
+                                ! isset($package->compatibility) ||
+                                ! isset($package->type) ||
+                                ! in_array($package->type, ['module'])
+                            ) {
                                 // Close the opened zip
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('The package manifest was invalid.')]);
                             } elseif (! in_array(aksara('version'), $package->compatibility)) {
@@ -271,32 +280,32 @@ class Modules extends Core
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('The package is not compatible with your current Aksara version.')]);
                             }
 
-                            $valid_package = true;
+                            $validPackage = true;
                         }
                     }
                 }
 
-                if (! $valid_package) {
+                if (! $validPackage) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('No package manifest found on your module package.')]);
                 }
 
-                if (is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path) && ! $this->request->getPost('upgrade')) {
+                if (is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath) && ! $this->request->getPost('upgrade')) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['module' => phrase('This module package with same structure is already installed.')]);
                 }
@@ -309,13 +318,15 @@ class Modules extends Core
                     $zip->close();
                 }
 
-                if ($extract && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path)) {
+                if ($extract && is_dir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath)) {
                     try {
+                        $autoloader = Services::autoloader();
+
                         // Push module namespace to filelocator
-                        $loader = Services::autoloader()->addNamespace('Modules\\' . $package_path, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                        $autoloader->addNamespace('Modules\\' . $packagePath, ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath);
 
                         // Run install migration
-                        $migration = Services::migrations()->setNamespace('Modules\\' . $package_path);
+                        $migration = Services::migrations()->setNamespace('Modules\\' . $packagePath);
 
                         // Trying to run the migration
                         if ($migration->latest()) {
@@ -323,7 +334,7 @@ class Modules extends Core
                         }
                     } catch (Throwable $e) {
                         // Migration error, delete module
-                        $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $package_path);
+                        $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $packagePath);
 
                         return throw_exception(400, ['file' => $e->getMessage()]);
                     }
@@ -344,7 +355,7 @@ class Modules extends Core
                             }
 
                             // Populate given links as array with adding the unique id
-                            $links = str_replace('"label":"', '"id":"' . sha1($package_path) . '","label":"', json_encode($val->link));
+                            $links = str_replace('"label":"', '"id":"' . sha1($packagePath) . '","label":"', json_encode($val->link));
                             $links = json_decode($links, true);
 
                             // Check if links is available or continue
@@ -372,7 +383,7 @@ class Modules extends Core
                                 // Check if obtained links is populated
                                 if ($serialized) {
                                     // Make links unique
-                                    $serialized = $this->_arrayUnique($serialized, 'slug', $package_path);
+                                    $serialized = $this->_arrayUnique($serialized, 'slug', $packagePath);
 
                                     // Merge the old link with new one
                                     $links = array_merge($serialized, $links);
@@ -453,7 +464,7 @@ class Modules extends Core
                             }
 
                             // Get the existing group privileges
-                            $group_privileges = $this->model->getWhere(
+                            $groupPrivileges = $this->model->getWhere(
                                 'app_groups',
                                 [
                                     'group_id' => $key
@@ -463,12 +474,12 @@ class Modules extends Core
                             ->row('group_privileges');
 
                             // Check if group privileges has result
-                            if ($group_privileges) {
+                            if ($groupPrivileges) {
                                 // Update the group privileges obtained
                                 $this->model->update(
                                     'app_groups',
                                     [
-                                        'group_privileges' => json_encode(array_merge(json_decode($group_privileges, true), json_decode(json_encode($val), true)))
+                                        'group_privileges' => json_encode(array_merge(json_decode($groupPrivileges, true), json_decode(json_encode($val), true)))
                                     ],
                                     [
                                         'group_id' => $key
@@ -479,7 +490,7 @@ class Modules extends Core
                     }
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(301, phrase('Your module package was successfully imported.'), current_page('../'));
                 } else {

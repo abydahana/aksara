@@ -21,18 +21,20 @@ use Aksara\Laboratory\Core;
 
 class Category extends Core
 {
+    private int $_languageId;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->searchable(false);
         $this->limit(24);
+
+        $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
     }
 
     public function index($slug = null)
     {
-        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
-
         $this->setTitle('{{ category_title }}', phrase('No category is found!'))
         ->setDescription('{{ category_description }}', phrase('The category of post you requested was not found or it\'s been archived.'))
         ->setIcon('mdi mdi-sitemap')
@@ -43,7 +45,7 @@ class Category extends Core
                 'blogs_categories',
                 [
                     'category_slug' => $slug,
-                    'language_id' => $language_id
+                    'language_id' => $this->_languageId
                 ],
                 1
             )
@@ -87,7 +89,7 @@ class Category extends Core
         ])
 
         // Order by current language first
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
 
         // Normal ordering
         ->orderBy([
@@ -100,8 +102,6 @@ class Category extends Core
 
     private function _getCategories($slug = null)
     {
-        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
-
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
             blogs_categories.category_slug,
@@ -116,9 +116,8 @@ class Category extends Core
         ->where([
             'blogs_categories.category_slug !=' => $slug,
             'blogs_categories.status' => 1,
-            'blogs_categories.language_id' => $language_id,
             'blogs.status' => 1,
-            'blogs.language_id' => $language_id
+            'blogs.language_id' => $this->_languageId
         ])
         ->orderBy('category_title', 'RANDOM')
         ->groupBy('blogs_categories.category_id, blogs_categories.category_slug, blogs_categories.category_title, blogs_categories.category_description, blogs_categories.category_image')

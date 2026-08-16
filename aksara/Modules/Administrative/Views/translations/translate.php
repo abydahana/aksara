@@ -2,14 +2,13 @@
 
 /**
  * @var mixed $results
- * @var mixed $total_phrases
+ * @var mixed $totalPhrases
  * @var mixed $pagination
  * @var mixed $phrases
- * @var array $phrase_scopes
+ * @var array $phraseScopes
  */
-$field_data = $results[0];
+$fieldData = $results[0];
 ?>
-
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-lg-6">
@@ -18,7 +17,7 @@ $field_data = $results[0];
                     <span class="text-muted"><?= phrase('Language'); ?></span>
                 </div>
                 <div class="col">
-                    <span><?= (isset($field_data->language) ? $field_data->language : null); ?></span>
+                    <span><?= (isset($fieldData->language) ? $fieldData->language : null); ?></span>
                 </div>
             </div>
             <div class="row">
@@ -26,7 +25,7 @@ $field_data = $results[0];
                     <span class="text-muted"><?= phrase('Alias'); ?></span>
                 </div>
                 <div class="col">
-                    <span><?= (isset($field_data->description) ? $field_data->description : null); ?></span>
+                    <span><?= (isset($fieldData->description) ? $fieldData->description : null); ?></span>
                 </div>
             </div>
             <div class="row">
@@ -34,7 +33,7 @@ $field_data = $results[0];
                     <span class="text-muted"><?= phrase('Code'); ?></span>
                 </div>
                 <div class="col">
-                    <span><?= (isset($field_data->code) ? $field_data->code : null); ?></span>
+                    <span><?= (isset($fieldData->code) ? $fieldData->code : null); ?></span>
                 </div>
             </div>
             <div class="row">
@@ -42,7 +41,7 @@ $field_data = $results[0];
                     <span class="text-muted"><?= phrase('Locale'); ?></span>
                 </div>
                 <div class="col">
-                    <span><?= (isset($field_data->locale) ? $field_data->locale : null); ?></span>
+                    <span><?= (isset($fieldData->locale) ? $fieldData->locale : null); ?></span>
                 </div>
             </div>
             <div class="row">
@@ -50,12 +49,12 @@ $field_data = $results[0];
                     <span class="text-muted"><?= phrase('Total Phrases'); ?></span>
                 </div>
                 <div class="col">
-                    <span><?= number_format($total_phrases); ?></span>
+                    <span><?= number_format($totalPhrases); ?></span>
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
-            <form action="<?= current_page(null, ['per_page' => null]); ?>" method="GET">
+            <form action="<?= current_page(null, ['page' => null]); ?>" method="GET">
                 <div class="form-group mb-3">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" placeholder="<?= phrase('Search phrase'); ?>" value="<?= (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" />
@@ -77,7 +76,7 @@ $field_data = $results[0];
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row">
             <?php foreach ($phrases as $key => $val): ?>
-                <?php $scope = $phrase_scopes->$key ?? 'core'; ?>
+                <?php $scope = $phraseScopes->$key ?? 'core'; ?>
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <div class="input-group">
@@ -94,7 +93,7 @@ $field_data = $results[0];
         <div class="opt-btn-overlap-fix"></div>
         <div class="row opt-btn">
             <div class="col-md-12">
-                <a href="<?= current_page('../', ['id' => null, 'code' => null, 'per_page' => null, 'q' => null]); ?>" class="btn btn-link --xhr">
+                <a href="<?= current_page('../', ['id' => null, 'code' => null, 'page' => null, 'q' => null]); ?>" class="btn btn-link --xhr">
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back'); ?>
                 </a>

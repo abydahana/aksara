@@ -60,7 +60,7 @@ $(document).ready(function() {
       },
       statusCode: {
         403: function(response, status, error) {
-          if (config.action_sound) {
+          if (config.actionSound) {
             warningBuzzer.play()
           }
 
@@ -230,7 +230,7 @@ $(document).ready(function() {
             <div class="col-12">
               <div class="mb-3">
                 <p class="text-${ (is_reply ? 'start' : 'center') }">
-                  <a href="${ response.next_page || window.location.href }" data-href="${ response.next_page }" data-is-reply="${ is_reply }" class="load-more --fetch-comments">
+                  <a href="${ response.nextPage || window.location.href }" data-href="${ response.nextPage }" data-is-reply="${ is_reply }" class="load-more --fetch-comments">
                     <b>${ (is_reply ? phrase('Load more replies') : phrase('Load more comments')) }</b>
                   </a>
                 </p>
@@ -308,9 +308,9 @@ $(document).ready(function() {
                   <span class="btn btn-file" style="width:80px">
                     <input type="file" name="attachment" accept=".jpg,.png,.gif" data-role="image-upload" id="attachment_input" />
                     <div class="fileupload-new text-center">
-                      <img class="img-fluid upload_preview" src="${ config.base_url + 'uploads/placeholder_icon.png' }" alt="${ phrase('Preview') }" />
+                      <img class="img-fluid upload_preview" src="${ config.baseUrl + 'uploads/placeholder_icon.png' }" alt="${ phrase('Preview') }" />
                     </div>
-                    <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', config.base_url + 'uploads/placeholder_icon.png'), $(this).closest('.fileupload').addClass('d-none'))">
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', config.baseUrl + 'uploads/placeholder_icon.png'), $(this).closest('.fileupload').addClass('d-none'))">
                       <i class="mdi mdi-window-close"></i>
                     </button>
                   </span>

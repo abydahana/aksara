@@ -2,15 +2,15 @@
 
 $thead = null;
 $tbody = null;
-$single_print = false;
+$singlePrint = false;
 $method = (isset($method) ? $method : null);
 $pagination = (isset($pagination) ? $pagination : new stdClass());
 
-if (isset($results->table_data)) {
-    foreach($results->table_data as $key => $row) {
+if (isset($results->tableData)) {
+    foreach($results->tableData as $key => $row) {
         $rows = null;
 
-        foreach($row->field_data as $fields => $params) {
+        foreach($row->fieldData as $fields => $params) {
             if($params->hidden) continue;
 
             $label = $params->label; // Backup label
@@ -25,10 +25,10 @@ if (isset($results->table_data)) {
 
         $tbody .= '<tr>' . $rows . '</tr>';
     }
-} else if(isset($results->field_data)) {
-    $single_print = true;
+} else if(isset($results->fieldData)) {
+    $singlePrint = true;
 
-    foreach($results->field_data as $field => $params) {
+    foreach($results->fieldData as $field => $params) {
         $label = $params->label; // Backup label
         $params->label = null; // Remove label
 
@@ -48,7 +48,6 @@ if (isset($results->table_data)) {
     exit(phrase('No result could be rendered!'));
 }
 ?>
-
 <html>
     <head>
         <title><?= (isset($meta->title) ? $meta->title : get_setting('app_name')); ?></title>
@@ -66,7 +65,7 @@ if (isset($results->table_data)) {
                 }
             }
             @page {
-                sheet-size: <?= ($single_print ? '8.5in 13.5in' : '13.5in 8.5in'); ?>;;
+                sheet-size: <?= ($singlePrint ? '8.5in 13.5in' : '13.5in 8.5in'); ?>;;
                 footer: html_footer
             }
             * {

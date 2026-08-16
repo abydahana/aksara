@@ -85,7 +85,7 @@ class Permission
             return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
         } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
             // Security: Check for brute force blocking (based on IP)
-            $blocking_check = $this->_model->getWhere(
+            $blockingCheck = $this->_model->getWhere(
                 'app_users_blocked',
                 [
                     'ip_address' => $request->getIPAddress()
@@ -94,9 +94,9 @@ class Permission
             )
             ->row();
 
-            if ($blocking_check) {
+            if ($blockingCheck) {
                 // Check if blocking time is still active
-                if (strtotime($blocking_check->blocked_until) >= time()) {
+                if (strtotime($blockingCheck->blocked_until) >= time()) {
                     return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
                 } else {
                     // Release the block if time passed
@@ -172,7 +172,7 @@ class Permission
             }
 
             // Manage Session Table (Prevent duplication)
-            $session_exists = $this->_model->getWhere(
+            $sessionExists = $this->_model->getWhere(
                 'app_sessions',
                 [
                     'id' => get_userdata('access_token')
@@ -180,7 +180,7 @@ class Permission
             )
             ->row();
 
-            if ($session_exists) {
+            if ($sessionExists) {
                 $this->_model->delete(
                     'app_sessions',
                     [
@@ -227,14 +227,8 @@ class Permission
     /**
      * Check if the user is allowed to access the requested path and method.
      * Also handles automatic privilege registration for unknown paths.
-     *
-     * @param   string|null $path
-     * @param   string|null $method
-     * @param   int         $user_id
-     * @param   string|null $redirect
-     * @return  bool
      */
-    public function allow($path = null, $method = null, $user_id = 0, $redirect = null)
+    public function allow(?string $path, ?string $method, ?int $userId = 0, ?string $redirect = null): bool
     {
         $router = Services::router();
 
@@ -255,7 +249,7 @@ class Permission
         ->getWhere(
             'app_users',
             [
-                'user_id' => ($user_id ? $user_id : get_userdata('user_id')),
+                'user_id' => ($userId ? $userId : get_userdata('user_id')),
                 'status' => 1
             ],
             1
@@ -470,13 +464,13 @@ class Permission
         $agent = $request->getUserAgent();
 
         if ($agent->isBrowser()) {
-            $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
+            $userAgent = $agent->getBrowser() . ' ' . $agent->getVersion();
         } elseif ($agent->isRobot()) {
-            $user_agent = $agent->getRobot();
+            $userAgent = $agent->getRobot();
         } elseif ($agent->isMobile()) {
-            $user_agent = $agent->getMobile();
+            $userAgent = $agent->getMobile();
         } else {
-            $user_agent = phrase('Unknown');
+            $userAgent = phrase('Unknown');
         }
 
         // Prepare Log Data
@@ -487,7 +481,7 @@ class Permission
             'method' => $method,
             'query' => json_encode($query),
             'ip_address' => $request->getIPAddress(),
-            'browser' => $user_agent,
+            'browser' => $userAgent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];
@@ -530,21 +524,21 @@ class Permission
             }
 
             if ($final) {
-                $controller_path = implode('/', $final);
+                $controllerPath = implode('/', $final);
                 $path = ($path ? trim($path, '/') : null);
 
-                if (! $path || $path == $controller_path || strpos($path, $controller_path . '/') === 0) {
-                    return $controller_path;
+                if (! $path || $path == $controllerPath || strpos($path, $controllerPath . '/') === 0) {
+                    return $controllerPath;
                 }
             }
         }
 
         if ($path && $method && 'index' != $method) {
             $segments = explode('/', trim($path, '/'));
-            $method_index = array_search(strtolower($method), array_map('strtolower', $segments), true);
+            $methodIndex = array_search(strtolower($method), array_map('strtolower', $segments), true);
 
-            if (false !== $method_index) {
-                return implode('/', array_slice($segments, 0, $method_index));
+            if (false !== $methodIndex) {
+                return implode('/', array_slice($segments, 0, $methodIndex));
             }
         }
 

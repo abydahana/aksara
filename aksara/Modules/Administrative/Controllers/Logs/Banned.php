@@ -89,7 +89,7 @@ class Banned extends Core
 
             $expiresAt = $payload['expires_at'] ?? null;
 
-            $banned[] = [
+            $banned[] = (object) [
                 'file' => $file->getFilename(),
                 'ip' => $payload['ip'] ?? '-',
                 'uri' => $payload['uri'] ?? '-',
@@ -104,7 +104,7 @@ class Banned extends Core
         }
 
         usort($banned, function ($a, $b) {
-            return ($b['banned_at'] ?? 0) <=> ($a['banned_at'] ?? 0);
+            return ($b->banned_at ?? 0) <=> ($a->banned_at ?? 0);
         });
 
         return $banned;

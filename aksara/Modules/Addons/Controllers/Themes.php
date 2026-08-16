@@ -340,43 +340,43 @@ class Themes extends Core
 
             $zip = new ZipArchive();
             $unzip = $zip->open($_FILES['file']['tmp_name']);
-            $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
+            $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . sha1($_FILES['file']['tmp_name']);
 
             if (true === $unzip) {
-                if (! is_dir($tmp_path) && ! mkdir($tmp_path, 0755, true)) {
+                if (! is_dir($tmpPath) && ! mkdir($tmpPath, 0755, true)) {
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
                 // Validate the zip contents and extract safely
-                if (! $this->_extractZipArchive($zip, $tmp_path)) {
+                if (! $this->_extractZipArchive($zip, $tmpPath)) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
-                $files = directory_map($tmp_path);
+                $files = directory_map($tmpPath);
 
                 if (! $files) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('Unable to extract your theme package.')]);
                 }
 
-                $valid_package = false;
-                $package_path = null;
+                $validPackage = false;
+                $packagePath = null;
                 $extract = false;
 
                 foreach ($files as $key => $val) {
-                    if (! $package_path && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
-                        $package_path = basename(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($key, '/\\')));
+                    if (! $packagePath && ! in_array($key, ['__MACOSX' . DIRECTORY_SEPARATOR])) {
+                        $packagePath = basename(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($key, '/\\')));
                     }
 
                     if (! is_array($val)) {
@@ -386,15 +386,24 @@ class Themes extends Core
                     foreach ($val as $_key => $_val) {
                         if (strpos($_key, ' ') !== false) {
                             break;
-                        } elseif ('theme.json' == $_val && file_exists($tmp_path . DIRECTORY_SEPARATOR . $key . $_val)) {
-                            $package = json_decode(file_get_contents($tmp_path . DIRECTORY_SEPARATOR . $key . $_val));
+                        } elseif ('theme.json' == $_val && file_exists($tmpPath . DIRECTORY_SEPARATOR . $key . $_val)) {
+                            $package = json_decode(file_get_contents($tmpPath . DIRECTORY_SEPARATOR . $key . $_val));
 
-                            if (! $package || ! isset($package->name) || ! isset($package->description) || ! isset($package->version) || ! isset($package->author) || ! isset($package->compatibility) || ! isset($package->type) || ! in_array($package->type, ['backend', 'frontend'])) {
+                            if (
+                                ! $package ||
+                                ! isset($package->name) ||
+                                ! isset($package->description) ||
+                                ! isset($package->version) ||
+                                ! isset($package->author) ||
+                                ! isset($package->compatibility) ||
+                                ! isset($package->type) ||
+                                ! in_array($package->type, ['backend', 'frontend'])
+                            ) {
                                 // Close the opened zip
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('The package manifest was invalid.')]);
                             } elseif (! in_array(aksara('version'), $package->compatibility)) {
@@ -402,32 +411,32 @@ class Themes extends Core
                                 $zip->close();
 
                                 // Remove temporary directory
-                                $this->_rmdir($tmp_path);
+                                $this->_rmdir($tmpPath);
 
                                 return throw_exception(400, ['file' => phrase('This theme package is not compatible with your current Aksara version.')]);
                             }
 
-                            $valid_package = true;
+                            $validPackage = true;
                         }
                     }
                 }
 
-                if (! $valid_package) {
+                if (! $validPackage) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['file' => phrase('No package manifest found on your theme package.')]);
                 }
 
-                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path) && ! $this->request->getPost('upgrade')) {
+                if (is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $packagePath) && ! $this->request->getPost('upgrade')) {
                     // Close the opened zip
                     $zip->close();
 
                     // Remove temporary directory
-                    $this->_rmdir($tmp_path);
+                    $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['theme' => phrase('The theme package with same structure is already installed.')]);
                 }
@@ -441,9 +450,9 @@ class Themes extends Core
                 }
 
                 // Remove temporary directory
-                $this->_rmdir($tmp_path);
+                $this->_rmdir($tmpPath);
 
-                if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package_path)) {
+                if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $packagePath)) {
                     return throw_exception(301, phrase('Your theme package was successfully imported.'), current_page('../'));
                 } else {
                     return throw_exception(400, ['file' => phrase('Your theme folder seems cannot be writable.')]);

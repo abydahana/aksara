@@ -1011,8 +1011,8 @@ class Parsedown
 
                 # cause the new element to 'inherit' our non nestables
 
-                foreach ($nonNestables as $non_nestable) {
-                    $Inline['element']['nonNestables'][] = $non_nestable;
+                foreach ($nonNestables as $nonNestable) {
+                    $Inline['element']['nonNestables'][] = $nonNestable;
                 }
 
                 # the text that comes before the inline
