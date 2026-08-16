@@ -124,7 +124,7 @@ class MainSeeder extends Seeder
         ]);
 
         // Insert the main configuration to app_settings (Vertical Schema)
-        $settings_data = [
+        $settingsData = [
             [
                 'key' => 'app_name',
                 'type' => 'varchar',
@@ -377,7 +377,7 @@ class MainSeeder extends Seeder
             ]
         ];
 
-        $this->db->table('app_settings')->insertBatch($settings_data);
+        $this->db->table('app_settings')->insertBatch($settingsData);
 
         // Add core group privileges
         $this->db->table('app_groups_privileges')->insertBatch([
@@ -668,13 +668,13 @@ class MainSeeder extends Seeder
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
-        $user_id = $this->db->insertID();
+        $userId = $this->db->insertID();
 
-        if ($user_id) {
+        if ($userId) {
             $this->db->table('app_users')
-                ->where('user_id', $user_id)
+                ->where('user_id', $userId)
                 ->update([
-                    'created_by' => $user_id
+                    'created_by' => $userId
                 ]);
         }
     }
