@@ -92,27 +92,48 @@ class Translate extends Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
-        $delete_key = $this->request->getGet('phrase');
+        $deleteKey = $this->request->getGet('phrase');
+
+        if (! $deleteKey) {
+            return throw_exception(404, phrase('No phrase specified.'), current_page('../', ['phrase' => null]));
+        }
+
         helper('filesystem');
 
-        $languages = $this->_translationDocuments();
+        $base = WRITEPATH . 'translations';
         $error = 0;
 
-        if ($languages) {
-            foreach ($languages as $scope => $document) {
+        // Find all translation files across all languages and scopes (*.json and */*.json)
+        $files = array_merge(
+            glob($base . DIRECTORY_SEPARATOR . '*.json') ?: [],
+            glob($base . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . '*.json') ?: []
+        );
+
+        if ($files) {
+            foreach ($files as $file) {
                 try {
-                    $phrases = $document['phrases'];
+                    $phrases = json_decode(file_get_contents($file) ?: '[]', true);
 
-                    unset($phrases[$delete_key]);
+                    if (is_array($phrases) && isset($phrases[$deleteKey])) {
+                        unset($phrases[$deleteKey]);
+                        ksort($phrases);
 
-                    ksort($phrases);
+                        $jsonContent = json_encode(
+                            $phrases,
+                            JSON_PRETTY_PRINT |
+                            JSON_UNESCAPED_SLASHES |
+                            JSON_INVALID_UTF8_SUBSTITUTE |
+                            JSON_UNESCAPED_UNICODE
+                        );
 
-                    file_put_contents($document['file'], json_encode($phrases, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE));
-                    clear_translations_cache($this->_code);
+                        file_put_contents($file, $jsonContent, LOCK_EX);
+                    }
                 } catch (Throwable $e) {
                     $error++;
                 }
             }
+
+            clear_translations_cache();
         }
 
         if ($error) {
