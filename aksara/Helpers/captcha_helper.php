@@ -19,11 +19,11 @@ if (! function_exists('create_captcha')) {
     /**
      * Create CAPTCHA
      */
-    function create_captcha(array|string $data = [], string $img_path = '', string $imgUrl = '', string $fontPath = ''): array|bool
+    function create_captcha(array|string $data = [], string $imgPath = '', string $imgUrl = '', string $fontPath = ''): array|bool
     {
         $defaults = [
             'word' => '',
-            'img_path' => $img_path,
+            'img_path' => $imgPath,
             'img_url' => $imgUrl,
             'font_path' => $fontPath,
             'img_width' => 150,
@@ -96,25 +96,25 @@ if (! function_exists('create_captcha')) {
             // -----------------------------------
             // 3. Write Text to Temp Image
             // -----------------------------------
-            $use_font = (! empty($config['font_path']) && file_exists($config['font_path']));
+            $useFont = (! empty($config['font_path']) && file_exists($config['font_path']));
             $x = 10;
             $length = strlen($word);
 
             for ($i = 0; $i < $length; $i++) {
                 // Random color for each character
-                $char_color = imagecolorallocate($imTmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
+                $charColor = imagecolorallocate($imTmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
 
                 if ('dark' == get_userdata('app_theme')) {
-                    $char_color = $colorsTmp['text'];
+                    $charColor = $colorsTmp['text'];
                 }
 
-                if ($use_font) {
+                if ($useFont) {
                     $angle = mt_rand(-15, 15);
                     $y = mt_rand((int) ($height / 1.4), $height - 5);
-                    imagettftext($imTmp, (int) $config['font_size'], $angle, (int) $x, (int) $y, $char_color, $config['font_path'], $word[$i]);
+                    imagettftext($imTmp, (int) $config['font_size'], $angle, (int) $x, (int) $y, $charColor, $config['font_path'], $word[$i]);
                 } else {
                     $y = mt_rand(2, (int) ($height / 4));
-                    imagestring($imTmp, 5, (int) $x, (int) $y, $word[$i], $char_color);
+                    imagestring($imTmp, 5, (int) $x, (int) $y, $word[$i], $charColor);
                 }
                 $x += ($width - 20) / $length;
             }
@@ -146,14 +146,14 @@ if (! function_exists('create_captcha')) {
 
             // Lighter crossing lines (only 2)
             for ($i = 0; $i < 2; $i++) {
-                $line_color = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
-                imageline($im, 0, mt_rand(0, $height), $width, mt_rand(0, $height), $line_color);
+                $lineColor = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
+                imageline($im, 0, mt_rand(0, $height), $width, mt_rand(0, $height), $lineColor);
             }
 
             // Random arcs (only 2, lighter)
             for ($i = 0; $i < 2; $i++) {
-                $arc_color = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
-                imagearc($im, mt_rand(0, $width), mt_rand(0, $height), mt_rand(50, 150), mt_rand(30, 100), mt_rand(0, 360), mt_rand(0, 360), $arc_color);
+                $arcColor = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
+                imagearc($im, mt_rand(0, $width), mt_rand(0, $height), mt_rand(50, 150), mt_rand(30, 100), mt_rand(0, 360), mt_rand(0, 360), $arcColor);
             }
 
             // Random noise pixels (back to 50)

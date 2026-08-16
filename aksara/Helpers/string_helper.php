@@ -83,13 +83,13 @@ if (! function_exists('make_json')) {
 
         $data = encoding_fixer($data);
 
-        $minify_pattern = [
+        $minifyPattern = [
             '/\>[^\S ]+/s' => '>',      // Strip whitespaces after tags, except space
             '/[^\S ]+\</s' => '<',      // Strip whitespaces before tags, except space
             '/<!--(.|\s)*?-->/' => ''   // Remove HTML comments
         ];
 
-        $output = preg_replace(array_keys($minify_pattern), array_values($minify_pattern), json_encode($data));
+        $output = preg_replace(array_keys($minifyPattern), array_values($minifyPattern), json_encode($data));
 
         http_response_code(200);
 
@@ -146,14 +146,14 @@ if (! function_exists('format_date')) {
     /**
      * Format datetime string localized according to user language settings.
      */
-    function format_date(?string $datetime = '', string $format = 'long', bool $with_time = false): string
+    function format_date(?string $dateTime = '', string $format = 'long', bool $withTime = false): string
     {
-        if (! $datetime || empty(trim($datetime))) {
+        if (! $dateTime || empty(trim($dateTime))) {
             return '-';
         }
 
         try {
-            $timestamp = is_numeric($datetime) ? (int) $datetime : strtotime($datetime);
+            $timestamp = is_numeric($dateTime) ? (int) $dateTime : strtotime($dateTime);
 
             if (! $timestamp) {
                 return '-';
@@ -170,7 +170,7 @@ if (! function_exists('format_date')) {
                     $dateStyle = \IntlDateFormatter::MEDIUM;
                 }
 
-                $timeStyle = $with_time ? \IntlDateFormatter::SHORT : \IntlDateFormatter::NONE;
+                $timeStyle = $withTime ? \IntlDateFormatter::SHORT : \IntlDateFormatter::NONE;
 
                 $formatter = new \IntlDateFormatter(
                     $language,
@@ -194,7 +194,7 @@ if (! function_exists('format_date')) {
             $monthFull = phrase($date->format('F'));
             $dayNum = $date->format('d');
             $yearNum = $date->format('Y');
-            $timeStr = $with_time ? ' ' . $date->format('H:i') : '';
+            $timeStr = ($withTime || 'full' === strtolower($format)) ? ' ' . $date->format('H:i') : '';
 
             if ('full' === strtolower($format)) {
                 if ('en' === strtolower(substr($language, 0, 2))) {
@@ -233,20 +233,21 @@ if (! function_exists('time_ago')) {
      * and the current time, returning a human-readable string (e.g., "2 hours ago").
      * If the input is null or empty, it returns a default phrase.
      */
-    function time_ago(?string $datetime = '', bool $short = false, bool $full = true): string
+    function time_ago(?string $dateTime = '', bool $short = false, bool $full = true): string
     {
         // Handle null or empty string input
-        if (! $datetime || empty(trim($datetime))) {
+        if (! $dateTime || empty(trim($dateTime))) {
             return phrase('Just now');
         }
 
-        $time_difference = time() - strtotime($datetime);
+        $timeDifference = time() - strtotime($dateTime);
 
-        if ($time_difference < 30) {
+        if ($timeDifference < 30) {
             return phrase('Just now');
         }
 
         static $conditions = null;
+        
         if (null === $conditions) {
             $conditions = [
                 31536000 => ['full' => 'year', 'short' => 'yr'],
@@ -260,9 +261,9 @@ if (! function_exists('time_ago')) {
         }
 
         foreach ($conditions as $seconds => $labels) {
-            if ($time_difference >= $seconds) {
-                $time = (int)($time_difference / $seconds);
-                $label_key = $full ? 'full' : 'short';
+            if ($timeDifference >= $seconds) {
+                $time = (int)($timeDifference / $seconds);
+                $labelKey = $full ? 'full' : 'short';
 
                 // Handle "Yesterday" special case
                 if ($full && 86400 === $seconds && 1 === $time) {
@@ -273,14 +274,14 @@ if (! function_exists('time_ago')) {
                     return phrase('Yesterday');
                 }
 
-                $phrase_key = $labels[$label_key];
+                $phraseKey = $labels[$labelKey];
 
                 if ($time > 1) {
                     // Plural
-                    $phrase_key .= 's';
+                    $phraseKey .= 's';
                 }
 
-                $label = phrase($phrase_key);
+                $label = phrase($phraseKey);
                 $result = $time . ' ' . $label;
 
                 if (! $short) {

@@ -161,36 +161,36 @@ if (! function_exists('resize_image')) {
                 }
 
                 // Uploaded file is image format, prepare image manipulation
-                $imageinfo = getimagesize($source);
+                $imageInfo = getimagesize($source);
                 $source = new File($source);
-                $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-                $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-                $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-                $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+                $masterDimension = ($imageInfo[0] > $imageInfo[1] ? 'width' : 'height');
+                $originalDimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+                $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+                $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
                 // Load image manipulation library
                 $image = Services::image('gd');
 
-                if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+                if ($source->getMimeType() != 'image/gif' && $imageInfo[0] > $originalDimension) {
                     // Resize image and move to upload directory
                     $image->withFile($source)
-                        ->resize($original_dimension, $original_dimension, true, $master_dimension)
+                        ->resize($originalDimension, $originalDimension, true, $masterDimension)
                         ->save($path . '/' . $filename);
                 }
 
                 // Create thumbnail
-                if ($image->withFile($source)->resize($thumbnail_dimension, $thumbnail_dimension, true, $master_dimension)->save($path . '/thumbs/' . $filename)) {
+                if ($image->withFile($source)->resize($thumbnailDimension, $thumbnailDimension, true, $masterDimension)->save($path . '/thumbs/' . $filename)) {
                     // Crop image after resized
                     $image->withFile($path . '/thumbs/' . $filename)
-                        ->fit($thumbnail_dimension, $thumbnail_dimension, 'center')
+                        ->fit($thumbnailDimension, $thumbnailDimension, 'center')
                         ->save($path . '/thumbs/' . $filename);
                 }
 
                 // Create icon
-                if ($image->withFile($source)->resize($icon_dimension, $icon_dimension, true, $master_dimension)->save($path . '/icons/' . $filename)) {
+                if ($image->withFile($source)->resize($iconDimension, $iconDimension, true, $masterDimension)->save($path . '/icons/' . $filename)) {
                     // Crop image after resized
                     $image->withFile($path . '/icons/' . $filename)
-                        ->fit($icon_dimension, $icon_dimension, 'center')
+                        ->fit($iconDimension, $iconDimension, 'center')
                         ->save($path . '/icons/' . $filename);
                 }
             } catch (\Throwable $e) {
