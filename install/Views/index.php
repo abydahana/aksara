@@ -1,7 +1,7 @@
 <?php
 
 $language = session()->get('language') ?? 'en';
-$is_rtl = in_array(session()->get('language'), [
+$isRtl = in_array(session()->get('language'), [
     'ar',  // Arabic
     'arc', // Aramaic
     'dv',  // Dhivehi/Maldivian
@@ -18,9 +18,8 @@ $is_rtl = in_array(session()->get('language'), [
     'ug',  // Uyghur
 ]);
 ?>
-
 <!DOCTYPE html>
-<html lang="<?= $language ?? 'en'; ?>"<?= ($is_rtl ? ' dir="rtl"' : null); ?>>
+<html lang="<?= $language ?? 'en'; ?>"<?= ($isRtl ? ' dir="rtl"' : null); ?>>
     <head>
         <title><?= phrase('Aksara Installer'); ?></title>
         <meta charset="UTF-8" />

@@ -1,11 +1,10 @@
 <?php
 
 /**
- * @var mixed $encryption_key
- * @var mixed $cookie_name
+ * @var mixed $encryptionKey
+ * @var mixed $cookieName
  */
 ?>
-
 <form action="<?= site_url('system'); ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Security Configuration'); ?>
@@ -21,7 +20,7 @@
             <?= phrase('Encryption Key'); ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" id="encryption_input" placeholder="<?= phrase('Your encryption key'); ?>" value="<?= $encryption_key; ?>" />
+        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" id="encryption_input" placeholder="<?= phrase('Your encryption key'); ?>" value="<?= $encryptionKey; ?>" />
     </div>
     <div class="row">
         <div class="col-sm-6">
@@ -30,7 +29,7 @@
                     <?= phrase('Cookie Name'); ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" id="cookie_name_input" placeholder="<?= phrase('Unique cookie name to prevent session conflict'); ?>" value="<?= $cookie_name; ?>" />
+                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" id="cookie_name_input" placeholder="<?= phrase('Unique cookie name to prevent session conflict'); ?>" value="<?= $cookieName; ?>" />
             </div>
         </div>
         <div class="col-sm-6">

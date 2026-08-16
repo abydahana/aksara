@@ -2,16 +2,16 @@
 
 /**
  * @var mixed $extension
- * @var mixed $mod_rewrite
+ * @var mixed $modRewrite
  */
 $error = false;
+$required = ['mbstring', 'intl', 'gd', 'json', 'xml'];
+$missing  = array_diff($required, $extension);
 
-if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl', $extension) || ! in_array('gd', $extension) || ! in_array('json', $extension) || ! in_array('xml', $extension))
-{
+if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     $error = true;
 }
 ?>
-
 <form action="<?= site_url('database'); ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Awesome!'); ?>
@@ -43,7 +43,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
             <div class="form-group">
                 <span class="d-block mb-0"><?= phrase('Rewrite Module'); ?></span>
                 <p>
-                    <?= (! $mod_rewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= (! $modRewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
                 </p>
             </div>
         </div>
@@ -102,7 +102,7 @@ if (phpversion() < 8.2 || ! in_array('mbstring', $extension) || ! in_array('intl
             </div>
         </div>
     </div>
-    <?= ($error ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>' : (! $mod_rewrite ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>' : null)); ?>
+    <?= ($error ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>' : (! $modRewrite ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>' : null)); ?>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>
