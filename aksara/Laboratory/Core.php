@@ -545,10 +545,6 @@ abstract class Core extends Controller
     protected function setTitle(array|string $params = [], ?string $fallback = null): static
     {
         if (! is_array($params)) {
-            if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                $fallback = $params;
-            }
-
             $params = [
                 'index' => $params
             ];
@@ -566,10 +562,6 @@ abstract class Core extends Controller
     protected function setDescription(array|string $params = [], ?string $fallback = null): static
     {
         if (! is_array($params)) {
-            if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                $fallback = $params;
-            }
-
             $params = [
                 'index' => $params
             ];
@@ -587,10 +579,6 @@ abstract class Core extends Controller
     protected function setIcon(array|string $params = [], ?string $fallback = null): static
     {
         if (! is_array($params)) {
-            if (! $fallback && strpos($params, '{{') === false && strpos($params, '}}') === false) {
-                $fallback = $params;
-            }
-
             $params = [
                 'index' => $params
             ];
@@ -2819,20 +2807,17 @@ abstract class Core extends Controller
                     }
                 }
             } else {
-                // No result found
-                if (preg_match_all('/\{\{(.*?)\}\}/', $title ?? '')) {
-                    // Use fallback title when magic string cannot be resolved.
-                    $title = $this->_setTitleFallback ?? null;
+                // No result found (result count = 0)
+                if (null !== $this->_setTitleFallback) {
+                    $title = $this->_setTitleFallback;
                 }
 
-                if (preg_match_all('/\{\{(.*?)\}\}/', $description ?? '')) {
-                    // Use fallback description when magic string cannot be resolved.
-                    $description = $this->_setDescriptionFallback ?? null;
+                if (null !== $this->_setDescriptionFallback) {
+                    $description = $this->_setDescriptionFallback;
                 }
 
-                if (preg_match_all('/\{\{(.*?)\}\}/', $icon ?? '')) {
-                    // Use fallback icon when magic string cannot be resolved.
-                    $icon = $this->_setIconFallback ?? null;
+                if (null !== $this->_setIconFallback) {
+                    $icon = $this->_setIconFallback;
                 }
             }
 
@@ -2930,7 +2915,7 @@ abstract class Core extends Controller
                 $results = ($singlePrint ? $this->renderRead($results) : $this->renderTable($results));
 
                 // Set icon property
-                $this->_setIcon = ($icon ? $icon : ($this->_setTitleFallback ?? 'mdi mdi-table'));
+                $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
 
                 // Set title property
                 $this->_setTitle = ($title ? $title : ($this->_setTitleFallback ?? phrase('Page not found!')));
@@ -2953,7 +2938,7 @@ abstract class Core extends Controller
                 $results = (! $viewExist ? $this->renderTable($results) : $results);
 
                 // Set icon property
-                $this->_setIcon = ($icon ? $icon : ($this->_setTitleFallback ?? 'mdi mdi-table'));
+                $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
 
                 // Set title property
                 $this->_setTitle = ($title ? $title : ($this->_setTitleFallback ?? phrase('Page not found!')));
