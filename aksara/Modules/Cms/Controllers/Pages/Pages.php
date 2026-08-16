@@ -262,12 +262,20 @@ class Pages extends Core
         $theme = (get_userdata('app_theme') === 'dark' ? 'dark' : 'light');
 
         echo '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
-        echo '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
+        echo '<meta charset="UTF-8" />';
+        echo '<meta http-equiv="X-UA-Compatible" content="IE=edge" />';
+        echo '<meta name="msapplication-navbutton-color" content="#212529" />';
+        echo '<meta name="theme-color" content="#212529" />';
+        echo '<meta name="apple-mobile-web-app-status-bar-style" content="#212529" />';
+        echo '<meta name="mobile-web-app-capable" content="yes" />';
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />';
         echo '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
         echo '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
         echo '<link rel="stylesheet" href="' . get_theme_asset('css/styles.min.css') . '">';
         echo '<link rel="stylesheet" href="' . get_theme_asset('css/theme.min.css') . '">';
+        echo '<link rel="icon" type="image/x-icon" href="' . get_image('settings', get_setting('app_icon'), 'icon') . '" />';
         echo '<style>.section-padding{padding:80px 0}</style>';
+        echo '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
         echo '</head><body>' . $html;
         echo '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
         echo '<script src="' . get_theme_asset('js/scripts.min.js') . '"></script>';
