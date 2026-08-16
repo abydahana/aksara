@@ -328,6 +328,21 @@ a {
 .be-hidden {
   display: none
 }
+.border-transparent {
+  border-color: transparent
+}
+.blink {
+  animation: blink 0.5s infinite;
+}
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+
+  51%, 100% {
+    opacity: 0;
+  }
+}
 @media (min-width: 576px) {
   .text-sm-justify {
     text-align: justify;

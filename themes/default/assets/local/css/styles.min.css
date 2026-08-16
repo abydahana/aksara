@@ -3,7 +3,7 @@ html.dark-mode img {
   filter: invert(100%);
 }
 #content-wrapper {
-  margin-top: 56px;
+  margin-top: 74px;
   word-wrap: break-word;
 }
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
@@ -421,6 +421,21 @@ a:hover {
   background-size: 100% 1px, 100% 1px;
   background-position: top, bottom;
   background-repeat: no-repeat, no-repeat;
+}
+.border-transparent {
+  border-color: transparent
+}
+.blink {
+  animation: blink 0.5s infinite;
+}
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+
+  51%, 100% {
+    opacity: 0;
+  }
 }
 @media (min-width: 992px) {
   @keyframes dropdownFadeInTop {
