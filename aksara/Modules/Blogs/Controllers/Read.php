@@ -58,7 +58,7 @@ class Read extends Core
             }
         }
 
-        $this->setTitle('{{ post_title }}', phrase('No post were found!'))
+        $this->setTitle('{{ post_title }}', phrase('No post is found!'))
         ->setDescription('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
         ->setIcon('mdi mdi-newspaper')
         ->setOutput([
@@ -254,6 +254,7 @@ class Read extends Core
         $query = $this->model->select('
             blogs.post_title,
             blogs.post_slug,
+            blogs.featured_image,
             blogs_categories.category_slug
         ')
         ->join(
@@ -278,7 +279,8 @@ class Read extends Core
             foreach ($query as $key => $val) {
                 $output[] = [
                     'link' => base_url('blogs/' . $val->category_slug . '/' . $val->post_slug),
-                    'title' => $val->post_title
+                    'title' => $val->post_title,
+                    'image' => get_image('blogs', $val->featured_image, 'icon')
                 ];
             }
         }

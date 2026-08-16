@@ -176,18 +176,18 @@
             <div class="row align-items-center">
                 <?php foreach ($categories as $key => $val): ?>
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card rounded-4 border-0 overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-secondary' : 'bg-dark') : (($key + 1) % 2 == 0 ? 'bg-dark' : 'bg-secondary')); ?>">
+                        <div class="card rounded-5 border-hover overflow-hidden mb-3 <?= ($key < 4 ? (($key + 1) % 2 == 0 ? 'bg-body-tertiary' : 'bg-body-secondary') : (($key + 1) % 2 == 0 ? 'bg-body-secondary' : 'bg-body-tertiary')); ?>">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
-                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="--xhr">
+                                <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="d-block --xhr">
                                     <img src="<?= get_image('blogs', $val->category_image, 'thumn'); ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" width="128" alt="<?= $val->category_title; ?>" loading="lazy" decoding="async" />
                                 </a>
                                 <br />
                                 <h3 class="h4 mb-3 text-truncate">
-                                    <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="text-white text-decoration-none --xhr">
+                                    <a href="<?= base_url('blogs/' . $val->category_slug); ?>" class="text-body text-decoration-none --xhr">
                                         <?= $val->category_title; ?>
                                     </a>
                                 </h3>
-                                <p class="fs-5 mb-0 mb-md-3 text-white">
+                                <p class="fs-5 mb-0 mb-md-3 text-body">
                                     <?= number_format($val->post_total) . ' ' . phrase('Articles'); ?>
                                 </p>
                                 <div class="d-none d-md-block">
@@ -217,10 +217,10 @@
                     <?php foreach ($articles as $key => $val): ?>
                         <div class="swiper-slide h-auto">
                             <div class="h-100 d-flex flex-column">
-                                <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
+                                <div class="d-flex flex-column flex-grow-1 border border-hover p-3 pb-0 rounded-5">
                                     <div class="d-flex g-0 align-items-center mb-3">
-                                        <div class="pe-3">
-                                            <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                                        <div class="pe-2">
+                                            <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary d-block --xhr">
                                                 <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" loading="lazy" decoding="async" />
                                             </a>
                                         </div>
@@ -235,15 +235,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
-                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
-                                            <?= truncate($val->post_title, 64); ?>
-                                        </a>
-                                    </h3>
+                                    <div class="d-flex flex-grow-1 flex-column justify-content-between gap-3">
+                                        <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
+                                                <?= truncate($val->post_title, 64); ?>
+                                            </a>
+                                        </h3>
+                                        <div style="margin-inline:-1rem">
+                                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
+                                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5 w-100 bg-body-tertiary" alt="<?= $val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                    <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-body-tertiary" alt="<?= $val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
-                                </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -276,7 +280,7 @@
                         ?>
                         <?php foreach ($images as $src => $alt): ?>
                             <div class="swiper-slide">
-                                <div class="card border-0 rounded-4 overflow-hidden">
+                                <div class="card border-hover rounded-5 overflow-hidden">
                                     <a href="<?= base_url(['galleries', $val->gallery_slug]); ?>" class="--xhr d-block">
                                         <div class="card-body" style="background:url(<?= get_image('galleries', $src, 'thumb'); ?>) center center no-repeat; background-size: cover; height: 256px">
                                             <div class="clip gradient-top"></div>
@@ -310,10 +314,10 @@
             <div class="row align-items-center">
                 <?php foreach ($peoples as $key => $val): ?>
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card rounded-4 mb-3 border-0">
+                        <div class="card rounded-5 mb-3 bg-body border-hover">
                             <div class="card-body text-center py-lg-5">
                                 <p>
-                                    <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="--xhr">
+                                    <a href="<?= base_url('peoples/' . $val->people_slug); ?>" class="d-block --xhr">
                                         <img src="<?= get_image('peoples', $val->photo, 'thumb'); ?>" class="img-fluid rounded-circle px-lg-4 mb-3" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" loading="lazy" decoding="async" />
                                     </a>
                                 </p>
@@ -350,7 +354,7 @@
                 <div class="swiper-wrapper py-3 align-items-center">
                     <?php foreach ($testimonials as $key => $val): ?>
                         <div class="swiper-slide h-auto">
-                            <div class="border rounded-4 p-3">
+                            <div class="border border-hover rounded-5 p-3">
                                 <div class="d-flex align-items-end">
                                     <div>
                                         <img src="<?= get_image('testimonials', $val->photo, 'icon'); ?>" class="rounded-circle me-3 border p-1" width="80" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" style="object-fit: cover;" loading="lazy" decoding="async" />
@@ -433,7 +437,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="row">
                     <div class="col-6 col-md-12">
-                        <div class="card border-light-subtle rounded-4 mb-md-4 overflow-hidden">
+                        <div class="card border-light-subtle border-hover rounded-5 mb-md-4 overflow-hidden">
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-6 offset-3 text-center">
@@ -452,7 +456,7 @@
                         </div>
                     </div>
                     <div class="col-6 col-md-12">
-                        <div class="card border-light-subtle rounded-4 overflow-hidden">
+                        <div class="card border-light-subtle border-hover rounded-5 overflow-hidden">
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-6 offset-3 text-center">
@@ -473,7 +477,7 @@
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mt-3 mt-sm-0">
-                <div class="card border-light-subtle rounded-4 overflow-hidden">
+                <div class="card border-light-subtle border-hover rounded-5 overflow-hidden">
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-6 offset-3 text-center">

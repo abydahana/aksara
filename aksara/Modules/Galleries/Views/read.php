@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var object $meta
  * @var mixed $results
  */
 $field_data = $results->field_data ?? null;
@@ -62,7 +63,7 @@ if ($images) {
             <div class="sticky-top">
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
-                        <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="--xhr">
+                        <a href="<?= base_url('user/' . $field_data->username->value); ?>" class="d-block --xhr">
                             <img src="<?= get_image('users', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" loading="lazy" decoding="async" />
                         </a>
                     </div>
@@ -110,26 +111,11 @@ if ($images) {
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="section-padding fade-iin">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('Album not found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center mb-5">
-                            <?= phrase('The album you requested was not found or its already been removed.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Galleries'); ?>
-                            </a>
-                        </p>
-                    </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search albums...')]); ?>
                 </div>
             </div>
         </div>

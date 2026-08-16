@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var object $meta
  * @var mixed $user
  */
 if ($user): ?>
@@ -74,22 +75,7 @@ if ($user): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('User not found'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('The user you requested does not exists.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
-                            </a>
-                        </p>
-                    </div>
+                    <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search user...')]); ?>
                 </div>
             </div>
         </div>

@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="d-flex g-0 align-items-center mb-3">
                                     <div class="pe-3">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary d-block --xhr">
                                             <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" />
                                         </a>
                                     </div>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="ps-3">
-                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
+                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
                                     <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5" alt="<?= $val->post_title; ?>" />
                                 </a>
                             </div>

@@ -34,7 +34,7 @@ class Announcements extends Core
     public function index()
     {
         $this->setTitle(phrase('Announcements'))
-        ->setDescription(phrase('Announcements'))
+        ->setDescription(phrase('Stay updated with our latest announcements.'), (service('request')->getGet('q') ? phrase('No announcement is found related to your keywords.') : phrase('No announcement is available at the moment.')))
         ->setIcon('mdi mdi-bullhorn-outline')
         ->setPrimary('announcements_slug')
 

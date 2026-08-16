@@ -59,7 +59,8 @@ class User extends Core
             $this->where('user_id', get_userdata('user_id'));
         }
 
-        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('User not found'))
+        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('User not found!'))
+        ->setDescription('...', phrase('The user you requested does not exists.'))
         ->setIcon('mdi mdi-account')
 
         ->setOutput([
@@ -111,7 +112,8 @@ class User extends Core
             $title = phrase('Activities');
         }
 
-        $this->setTitle($title)
+        $this->setTitle($title, phrase('User not found!'))
+        ->setDescription('...', phrase('The user you requested does not exists.'))
         ->setIcon('mdi mdi-account-clock-outline')
         ->setOutput([
             'user' => $user
@@ -154,7 +156,8 @@ class User extends Core
             $title = phrase('Likes');
         }
 
-        $this->setTitle($title)
+        $this->setTitle($title, phrase('User not found!'))
+        ->setDescription('...', phrase('The user you requested does not exists.'))
         ->setIcon('mdi mdi-heart')
         ->setOutput([
             'user' => $user
@@ -196,7 +199,8 @@ class User extends Core
             $title = phrase('Guest Book');
         }
 
-        $this->setTitle($title)
+        $this->setTitle($title, phrase('User not found!'))
+        ->setDescription('...', phrase('The user you requested does not exists.'))
         ->setIcon('mdi mdi-book')
         ->setOutput([
             'user' => $user

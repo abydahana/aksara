@@ -39,22 +39,7 @@ $field_data = $results->field_data ?? null;
                         <?= phrase('Back'); ?>
                     </a>
                 <?php else: ?>
-                    <div class="py-5 fade-in">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('No announcement is found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('The announcement you requested was not found or its already been removed.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Announcements'); ?>
-                            </a>
-                        </p>
-                    </div>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search announcements...')]); ?>
                 <?php endif; ?>
             </div>
         </div>

@@ -35,16 +35,16 @@ if ($articles): ?>
                 <div class="col-lg-6">
                     <?php if ($spotlight): ?>
                         <div class="carousel slide" id="carouselExampleCaptions" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded-5 overflow-hidden">
+                            <div class="carousel-inner rounded-5 border-hover overflow-hidden">
                                 <?php foreach ($spotlight as $key => $val): ?>
                                     <div class="carousel-item<?= (! $key ? ' active' : null); ?>">
                                         <div class="clip gradient-top"></div>
-                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
+                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
                                             <img src="<?= get_image('blogs', $val->featured_image); ?>" class="d-block w-100 carousel-headline" alt="<?= $val->post_title; ?>">
                                         </a>
                                         <div class="carousel-caption text-start">
                                             <div class="mb-3">
-                                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr d-block">
+                                                <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
                                                     <h2 class="h3 text-outline-body">
                                                         <?= truncate($val->post_title, 80); ?>
                                                     </h2>
@@ -58,7 +58,7 @@ if ($articles): ?>
                                             </div>
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-1">
-                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-outline-body --xhr">
+                                                    <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-outline-body d-block --xhr">
                                                         <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" />
                                                     </a>
                                                 </div>
@@ -113,10 +113,10 @@ if ($articles): ?>
                             <?php foreach ($val->posts as $_key => $_val): ?>
                                 <div class="swiper-slide h-auto">
                                     <div class="h-100 d-flex flex-column">
-                                        <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
+                                        <div class="d-flex flex-column flex-grow-1 border border-hover p-3 pb-0 rounded-5">
                                             <div class="d-flex g-0 align-items-center mb-3">
-                                                <div class="pe-3">
-                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary --xhr">
+                                                <div class="pe-2">
+                                                    <a href="<?= base_url('user/' . $_val->username); ?>" class="text-sm text-secondary d-block --xhr">
                                                         <img src="<?= get_image('users', $_val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $_val->first_name . ' ' . $_val->last_name; ?>" width="48" loading="lazy" decoding="async" />
                                                     </a>
                                                 </div>
@@ -131,15 +131,19 @@ if ($articles): ?>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h3 class="h5 mb-3">
-                                                <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
-                                                    <?= truncate($_val->post_title, 64); ?>
-                                                </a>
-                                            </h3>
+                                            <div class="d-flex flex-grow-1 flex-column justify-content-between gap-3">
+                                                <h3 class="h5 fw-bold mb-2" style="letter-spacing: -0.01em;">
+                                                    <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
+                                                        <?= truncate($_val->post_title, 64); ?>
+                                                    </a>
+                                                </h3>
+                                                <div style="margin-inline:-1rem">
+                                                    <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="d-block --xhr">
+                                                        <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-5 w-100 bg-body-tertiary" alt="<?= $_val->post_title; ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover">
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]); ?>" class="--xhr">
-                                            <img src="<?= get_image('blogs', $_val->featured_image, 'thumb'); ?>" class="img-fluid rounded-4 w-100 bg-body-tertiary" alt="<?= $_val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
-                                        </a>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -150,22 +154,7 @@ if ($articles): ?>
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5 fade-in">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('No post is found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('No post is available at the moment.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
-                            </a>
-                        </p>
-                    </div>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['per_page' => null]), 'searchLabel' => phrase('Search posts...')]); ?>
                 </div>
             </div>
         <?php endif; ?>
