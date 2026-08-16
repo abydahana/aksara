@@ -1,14 +1,12 @@
 <?php
 
 /**
- * @var array $driver
+ * @var array $drivers
  */
-// Database driver options
-$driver_list = null;
+$driverList = null;
 
-foreach ($driver as $key => $val)
-{
-    $driver_list .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+foreach ($drivers as $key => $val) {
+    $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
 }
 ?>
 <form action="<?= site_url('security'); ?>" method="POST" class="--validate-form">
@@ -29,7 +27,7 @@ foreach ($driver as $key => $val)
                     <b class="text-danger">*</b>
                 </label>
                 <select name="database_driver" class="form-select form-select-sm rounded-pill" id="database_driver_input" aria-label="<?= phrase('Database Driver'); ?>">
-                    <?= $driver_list; ?>
+                    <?= $driverList; ?>
                 </select>
             </div>
         </div>

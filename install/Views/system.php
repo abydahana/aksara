@@ -1,26 +1,22 @@
 <?php
 
 /**
- * @var mixed $installation_mode
- * @var mixed $timezone
+ * @var mixed $installationMode
+ * @var mixed $timeZone
  */
-// Get installation mode options
 $options = null;
 
-foreach($installation_mode as $key => $val)
-{
+foreach($installationMode as $key => $val) {
     $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
 }
 
 // Get timezone options
-$timezone_list = null;
+$timeZoneList = null;
 
-foreach ($timezone as $key => $val)
-{
-    $timezone_list .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
+foreach ($timeZone as $key => $val) {
+    $timeZoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
 }
 ?>
-
 <form action="<?= site_url('finalizing'); ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('System Configuration'); ?>
@@ -51,7 +47,7 @@ foreach ($timezone as $key => $val)
                     <b class="text-danger">*</b>
                 </label>
                 <select name="timezone" class="form-select form-select-sm rounded-pill" id="timezone_input" aria-label="<?= phrase('Timezone'); ?>">
-                    <?= $timezone_list; ?>
+                    <?= $timeZoneList; ?>
                 </select>
             </div>
         </div>

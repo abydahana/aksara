@@ -80,11 +80,11 @@ class Install extends BaseController
         $extension = array_map('strtolower', get_loaded_extensions());
 
         // Check rewrite module status
-        $mod_rewrite = ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi');
+        $modRewrite = ((isset($_SERVER['HTTP_MOD_REWRITE']) && strtolower($_SERVER['HTTP_MOD_REWRITE']) == 'on') || (function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) || php_sapi_name() == 'fpm-fcgi');
 
         $output = [
             'extension' => $extension,
-            'mod_rewrite' => $mod_rewrite
+            'modRewrite' => $modRewrite
         ];
 
         return $this->response->setJSON([
@@ -104,7 +104,7 @@ class Install extends BaseController
 
         // Database driver's options
         $output = [
-            'driver' => [
+            'drivers' => [
                 'MySQLi' => 'MySQLi',
                 'SQLSRV' => 'Microsoft SQL Server',
                 'Postgre' => 'PostgreSQL',
@@ -229,8 +229,8 @@ class Install extends BaseController
         }
 
         $output = [
-            'encryption_key' => $this->_random_string(64, true),
-            'cookie_name' => $this->_random_string(16)
+            'encryptionKey' => $this->_random_string(64, true),
+            'cookieName' => $this->_random_string(16)
         ];
 
         return $this->response->setJSON([
@@ -283,7 +283,7 @@ class Install extends BaseController
 
         // Installation mode's options
         $output = [
-            'installation_mode' => [
+            'installationMode' => [
                 [
                     'id' => 0,
                     'label' => phrase('Developer (without sample)'),
@@ -295,7 +295,7 @@ class Install extends BaseController
                     'selected' => true
                 ]
             ],
-            'timezone' => DateTimeZone::listIdentifiers(DateTimeZone::ALL)
+            'timeZone' => DateTimeZone::listIdentifiers(DateTimeZone::ALL)
         ];
 
         return $this->response->setJSON([
@@ -314,7 +314,7 @@ class Install extends BaseController
         }
 
         // Get max bytes upload filesize from server
-        $max_filesize_unit = strtolower(preg_replace('/[^A-Za-z]+/', '', ini_get('upload_max_filesize')));
+        $maxFilesizeUnit = strtolower(preg_replace('/[^A-Za-z]+/', '', ini_get('upload_max_filesize')));
 
         // Set validation rules
         service('validation')->setRule('installation_mode', phrase('Installation Mode'), 'is_natural');
@@ -323,7 +323,7 @@ class Install extends BaseController
         service('validation')->setRule('site_description', phrase('Site Description'), 'required');
         service('validation')->setRule('file_extension', phrase('File Extension'), 'required');
         service('validation')->setRule('image_extension', phrase('Image Extension'), 'required');
-        service('validation')->setRule('max_upload_size', phrase('Max Upload Size'), 'required|integer|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ('g' == $max_filesize_unit ? 1024 : ('t' == $max_filesize_unit ? 131072 : 1)) . ']');
+        service('validation')->setRule('max_upload_size', phrase('Max Upload Size'), 'required|integer|greater_than_equal_to[1]|less_than_equal_to[' . (int) ini_get('upload_max_filesize') * ('g' == $maxFilesizeUnit ? 1024 : ('t' == $maxFilesizeUnit ? 131072 : 1)) . ']');
         service('validation')->setRule('image_dimension', phrase('Image Dimension'), 'required|integer|greater_than_equal_to[1024]|less_than_equal_to[2560]');
         service('validation')->setRule('thumbnail_dimension', phrase('Thumbnail Dimension'), 'required|integer|greater_than_equal_to[256]|less_than_equal_to[640]');
         service('validation')->setRule('icon_dimension', phrase('Icon Dimension'), 'required|integer|greater_than_equal_to[80]|less_than_equal_to[128]');
@@ -371,14 +371,14 @@ class Install extends BaseController
             session()->set('installation_mode', 0);
         }
 
-        // Set max execution time to 5 minutes
-        ini_set('max_execution_time', 300);
+        // Set max execution time to 3 minutes
+        ini_set('max_execution_time', 180);
 
         // Get config source
-        $config_source = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
+        $configSource = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'config-sample.txt');
 
         // Replace string in config source
-        $config_source = str_replace(
+        $configSource = str_replace(
             [
                 '%OPENTAG%',
                 '%ENCRYPTION_KEY%',
@@ -419,7 +419,7 @@ class Install extends BaseController
                 (int) session()->get('thumbnail_dimension'),
                 (int) session()->get('icon_dimension')
             ],
-            $config_source
+            $configSource
         );
 
         // Validate token
@@ -536,7 +536,7 @@ class Install extends BaseController
             if (! file_exists(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php')) {
                 try {
                     // Try to writing configuration file
-                    file_put_contents(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php', $config_source, 1);
+                    file_put_contents(ROOTPATH . DIRECTORY_SEPARATOR . 'config.php', $configSource, 1);
                 } catch (Throwable $e) {
                     return $this->response->setJSON([
                         'status' => 200,
@@ -551,7 +551,7 @@ class Install extends BaseController
             session()->destroy();
         } elseif (1 == service('request')->getGet('download')) {
             // Download config
-            return service('response')->download('config.php', $config_source);
+            return service('response')->download('config.php', $configSource);
         }
 
         return $this->response->setJSON([
@@ -574,11 +574,11 @@ class Install extends BaseController
             $characters .= '~`!@#%^&*()_-+|}]{[?/.,';
         }
 
-        $char_length = strlen($characters);
+        $charLength = strlen($characters);
         $output = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $output .= $characters[rand(0, $char_length - 1)];
+            $output .= $characters[rand(0, $charLength - 1)];
         }
 
         return $output;
