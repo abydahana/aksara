@@ -4,7 +4,7 @@
  * @var mixed $results
  * @var mixed $forms
  */
-$page_content = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
+$pageContent = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
 ?>
 
 <style type="text/css">
@@ -21,7 +21,10 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
                 <div class="col-4">
                     <div class="d-flex gap-2 justify-content-start">
                         <div class="pb-toolbar-group btn-group btn-group-sm bg-body-tertiary rounded-pill px-1 border">
-                            <button type="button" class="btn btn-link rounded-pill rounded-end-0 pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
+                            <a href="<?= go_to() ?>" class="btn btn-link rounded-pill rounded-end-0 --xhr" data-bs-toggle="tooltip" title="<?= phrase('Back'); ?>">
+                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back'); ?>
+                            </a>
+                            <button type="button" class="btn btn-link border-start pb-undo" data-bs-toggle="tooltip" title="<?= phrase('Undo'); ?>">
                                 <i class="mdi mdi-undo"></i>
                             </button>
                             <button type="button" class="btn btn-link border-start rounded-pill rounded-start-0 pb-redo" data-bs-toggle="tooltip" title="<?= phrase('Redo'); ?>">
@@ -48,9 +51,9 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
                 <div class="col-6 text-end">
                     <div class="d-flex gap-2 justify-content-end">
                         <?php if (get_setting('ai_enabled')): ?>
-                        <button type="button" class="btn btn-sm btn-info no-wrap rounded-pill px-3 --ai-assistant">
-                            <i class="mdi mdi-creation me-1"></i> AI
-                        </button>
+                            <button type="button" class="btn btn-sm btn-info no-wrap rounded-pill px-3 --ai-assistant">
+                                <i class="mdi mdi-creation me-1"></i> AI
+                            </button>
                         <?php endif; ?>
 
                         <button type="button" class="btn btn-sm btn-outline-secondary no-wrap rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
@@ -71,7 +74,7 @@ $page_content = (isset($results->field_data->page_content->value) ? $results->fi
             <!-- Main: Page Builder Canvas -->
             <div class="col-12 bg-body-tertiary">
                 <div id="page-builder"></div>
-                <input type="hidden" name="page_content" id="page_content" value="<?= htmlspecialchars($page_content, ENT_QUOTES); ?>" />
+                <input type="hidden" name="page_content" id="page_content" value="<?= htmlspecialchars($pageContent, ENT_QUOTES); ?>" />
             </div>
         </div>
 

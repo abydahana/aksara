@@ -259,13 +259,18 @@ class Pages extends Core
         $decoded = json_decode($layout, true);
         $pb = new PageBuilder();
         $html = $pb->render($decoded);
+        $theme = (get_userdata('app_theme') === 'dark' ? 'dark' : 'light');
 
-        echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preview</title>';
+        echo '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
+        echo '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
         echo '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
         echo '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
-        echo '<style>body{background:#f8f9fa}.section-padding{padding:80px 0}</style>';
+        echo '<link rel="stylesheet" href="' . get_theme_asset('css/styles.min.css') . '">';
+        echo '<link rel="stylesheet" href="' . get_theme_asset('css/theme.min.css') . '">';
+        echo '<style>.section-padding{padding:80px 0}</style>';
         echo '</head><body>' . $html;
         echo '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
+        echo '<script src="' . get_theme_asset('js/scripts.min.js') . '"></script>';
         echo '</body></html>';
         exit;
     }
