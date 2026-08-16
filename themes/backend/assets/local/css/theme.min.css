@@ -124,8 +124,8 @@
   --bs-body-bg: #101010;
   --bs-body-color: #c7c7c7;
   --bs-body-color-rgb: 199, 199, 199;
-  --bs-tertiary-bg: #212121;
-  --bs-tertiary-bg-rgb: 33, 33, 33;
+  --bs-tertiary-bg: #181818;
+  --bs-tertiary-bg-rgb: 24, 24, 24;
   --bs-secondary-bg: #212121;
   --bs-secondary-bg-rgb: 33, 33, 33;
   --bs-emphasis-color: #ececec;
@@ -570,6 +570,49 @@
 .form-control.is-valid:focus, .was-validated .form-control:valid:focus { border-color: var(--bs-success) !important; box-shadow: 0 0 0 .25rem rgba(var(--bs-success-rgb), .25) !important; }
 .invalid-feedback, .invalid-tooltip { color: var(--bs-danger) !important; }
 .form-control.is-invalid:focus, .was-validated .form-control:invalid:focus { border-color: var(--bs-danger) !important; box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25) !important; }
+
+.border-hover {
+  position: relative;
+  border-color: transparent;
+}
+.border-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    120deg,
+    var(--bs-primary) 0%,
+    var(--bs-primary) 55%,
+    var(--bs-primary) 65%,
+    var(--bs-light) 70%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 300% 300%;
+  background-position: 100% 100%;
+  mask:
+    linear-gradient(var(--bs-primary) 0 0) content-box,
+    linear-gradient(var(--bs-primary) 0 0);
+  -webkit-mask:
+    linear-gradient(var(--bs-primary) 0 0) content-box,
+    linear-gradient(var(--bs-primary) 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition:
+    background-position .8s cubic-bezier(.4, 0, .2, 1),
+    opacity 0s linear .6s;
+}
+.border-hover:hover::after {
+  opacity: 1;
+  background-position: 0 0;
+  transition:
+    background-position .8s cubic-bezier(.4, 0, .2, 1),
+    opacity 0s linear;
+}
 
 /* Dark mode keeps semantic utilities colored while the backend chrome stays neutral. */
 [data-bs-theme="dark"] .bg-primary,
