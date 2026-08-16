@@ -291,8 +291,8 @@ class Comment extends Core
         return make_json([
             'element' => '.likes-count',
             'content' => ($upvotes ? $upvotes : null),
-            'class_add' => ($upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove')),
-            'class_remove' => (! $upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove'))
+            'classAdd' => ($upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove')),
+            'classRemove' => (! $upvotes ? $this->request->getPost('classAdd') : $this->request->getPost('classRemove'))
         ]);
     }
 
@@ -645,20 +645,20 @@ class Comment extends Core
         if ($query) {
             foreach ($query as $key => $val) {
                 // Get user photo
-                $val->user_photo = get_image('users', get_userdata('photo'), 'icon');
+                $val->userPhoto = get_image('users', get_userdata('photo'), 'icon');
 
                 // Get commenter photo
                 $val->photo = get_image('users', $val->photo, 'icon');
 
                 // Create links
                 $val->links = [
-                    'profile_url' => base_url('user/' . $val->username),
-                    'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'pageNo' => null]),
-                    'reply_url' => current_page(null, ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'reply' => $this->request->getGet('reply') ?? $val->comment_id]),
-                    'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
-                    'report_url' => (get_userdata('user_id') !== $val->created_by ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
-                    'update_url' => (get_userdata('user_id') === $val->created_by ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
-                    'hide_url' => (get_userdata('user_id') === $val->created_by || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
+                    'profileUrl' => base_url('user/' . $val->username),
+                    'repliesUrl' => current_page(null, ['parent_id' => $val->comment_id, 'pageNo' => null]),
+                    'replyUrl' => current_page(null, ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'reply' => $this->request->getGet('reply') ?? $val->comment_id]),
+                    'upvoteUrl' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
+                    'reportUrl' => (get_userdata('user_id') !== $val->created_by ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'updateUrl' => (get_userdata('user_id') === $val->created_by ? current_page('update', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
+                    'hideUrl' => (get_userdata('user_id') === $val->created_by || in_array(get_userdata('group_id'), [1, 2]) ? current_page('hide', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null)
                 ];
 
                 if ($val->attachment) {

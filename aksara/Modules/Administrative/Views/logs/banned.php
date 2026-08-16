@@ -41,7 +41,7 @@
                                         <?= phrase('Banned At'); ?>
                                     </div>
                                     <div class="fw-bold">
-                                        <?= htmlspecialchars($val->banned_at_label); ?>
+                                        <?= htmlspecialchars($val->bannedAtLabel); ?>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -49,7 +49,7 @@
                                         <?= phrase('Release At'); ?>
                                     </div>
                                     <div class="fw-bold">
-                                        <?= htmlspecialchars($val->expires_at_label); ?>
+                                        <?= htmlspecialchars($val->expiresAtLabel); ?>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-secondary-subtle">
-                            <?php if ($val->is_banned) { ?>
+                            <?php if ($val->isBanned) { ?>
                                 <a href="<?= go_to('unban', ['file' => $val->file]); ?>" class="btn btn-success btn-sm rounded-pill --modal">
                                     <i class="mdi mdi-shield-check-outline"></i>
                                     <?= phrase('Unban'); ?>

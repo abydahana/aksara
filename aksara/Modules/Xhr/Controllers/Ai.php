@@ -86,10 +86,10 @@ class AI extends Core
         }
 
         if ($context) {
-            $options['previous_instruction'] = $context['instruction'] ?? '';
-            $options['previous_fields'] = $context['fields'] ?? [];
-            $options['context_ready'] = ! empty($context['schema_signature']);
-            $options['context_summary'] = $context['schema_summary'] ?? [];
+            $options['previousInstruction'] = $context['instruction'] ?? '';
+            $options['previousFields'] = $context['fields'] ?? [];
+            $options['contextReady'] = ! empty($context['schemaSignature']);
+            $options['contextSummary'] = $context['schemaSummary'] ?? [];
             $fields = $this->_compactContextFields($fields, $context);
         }
 
@@ -97,7 +97,7 @@ class AI extends Core
         $customContext = $this->_customContext($route);
 
         if ($customContext) {
-            $options['custom_context'] = $customContext;
+            $options['customContext'] = $customContext;
 
             // Allow custom context to supply top-level tone/audience overrides
             // when the form request itself did not carry them.
@@ -122,7 +122,7 @@ class AI extends Core
             'content' => $response['content'] ?? '',
             'fields' => $response['fields'] ?? null,
             'labels' => $response['labels'] ?? null,
-            'image_errors' => $response['image_errors'] ?? null,
+            'imageErrors' => $response['imageErrors'] ?? null,
             'refined' => (bool) $context,
             'usage' => $response['usage'] ?? null
         ]);
@@ -213,9 +213,9 @@ class AI extends Core
             'instruction' => $instruction,
             'fields' => $response['fields'] ?? [],
             'labels' => $response['labels'] ?? [],
-            'schema_signature' => $this->_schemaSignature($fields),
-            'schema_summary' => $this->_schemaSummary($fields),
-            'created_at' => time()
+            'schemaSignature' => $this->_schemaSignature($fields),
+            'schemaSummary' => $this->_schemaSummary($fields),
+            'createdAt' => time()
         ];
 
         $cache->save($key, $context, 7200);
@@ -243,8 +243,8 @@ class AI extends Core
             }
 
             $field['options'] = [
-                'context_ready' => true,
-                'summary' => $context['schema_summary']['pagebuilder'] ?? []
+                'contextReady' => true,
+                'summary' => $context['schemaSummary']['pagebuilder'] ?? []
             ];
 
             return $field;
@@ -275,10 +275,10 @@ class AI extends Core
             $components = $field['options']['components'] ?? [];
             $cachedSummary = $field['options']['summary'] ?? [];
             $summary['pagebuilder'] = [
-                'component_types' => is_array($components) && $components ? array_keys($components) : ($cachedSummary['component_types'] ?? []),
-                'asset_samples' => $field['options']['asset_samples'] ?? ($cachedSummary['asset_samples'] ?? []),
-                'layout_shape' => $field['options']['layout_shape'] ?? ($cachedSummary['layout_shape'] ?? []),
-                'known_context' => 'Aksara CMS PageBuilder schema was already prepared for this form session.'
+                'componentTypes' => is_array($components) && $components ? array_keys($components) : ($cachedSummary['componentTypes'] ?? []),
+                'assetSamples' => $field['options']['assetSamples'] ?? ($cachedSummary['assetSamples'] ?? []),
+                'layoutShape' => $field['options']['layoutShape'] ?? ($cachedSummary['layoutShape'] ?? []),
+                'knownContext' => 'Aksara CMS PageBuilder schema was already prepared for this form session.'
             ];
         }
 

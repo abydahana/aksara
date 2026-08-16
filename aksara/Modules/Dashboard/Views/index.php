@@ -545,7 +545,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             }
         })
         .done(function(response) {
-            if (response.update_available) {
+            if (response.updateAvailable) {
                 $('.updater-placeholder').html(`
                     <div class="alert alert-info rounded-0 border-0 p-3 mb-0">
                         <h4 class="h5">

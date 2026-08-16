@@ -211,7 +211,7 @@ class Dashboard extends Core
 
         return make_json(
             [
-                'update_available' => $updater
+                'updateAvailable' => $updater
             ]
         );
     }
