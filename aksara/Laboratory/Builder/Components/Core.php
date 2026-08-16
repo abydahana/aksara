@@ -1041,8 +1041,8 @@ class Core
         // Template for Critical Error Screen
         // Includes: Console-like output with troubleshooting steps
         $component = <<<EOF
-        <div class="container-fluid">
-            <div class="row bg-dark full-height">
+        <div class="container-fluid bg-dark">
+            <div class="row full-height">
                 <div class="py-3 font-monospace">
                     <p class="mb-0 text-success">
                         [info@localhost ~]# aksara trace -exception
@@ -1084,49 +1084,51 @@ class Core
     public function page404(): array
     {
         $component = <<<EOF
-        <div class="container pt-5 pb-5">
-            <div class="text-center pt-5 pb-5">
-                <h1 class="text-muted">
-                    404
-                </h1>
-                <i class="mdi mdi-dropbox mdi-5x text-muted"></i>
-            </div>
-            <div class="row mb-5">
-                <div class="col-md-6 offset-md-3">
-                    <h2 class="text-center">
-                        {{ phrase('Page not found!') }}
-                    </h2>
-                    <p class="fs-5 text-center mb-5">
-                        {{ phrase('The page you requested does not exist or already been archived.') }}
-                    </p>
-                    <div class="text-center mt-5">
-                        <a href="{{ base_url() }}" class="btn btn-outline-primary rounded-pill">
-                            <i class="mdi mdi-arrow-left"></i>
-                            {{ phrase('Back to Homepage') }}
-                        </a>
-                    </div>
+        <div class="section-padding">
+            <div class="container fade-in">
+                <div class="text-center">
+                    <h1 class="display-1 lh-1 text-muted">
+                        404
+                    </h1>
+                    <i class="mdi mdi-dropbox display-1 text-muted"></i>
                 </div>
-            </div>
-            {% if suggestions %}
-                <div class="row mb-2">
-                    <div class="col-md-10 offset-md-1">
-                        <h5>
-                            {{ phrase('Our suggestions') }}
-                            <blink>_</blink>
-                        </h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5 offset-md-1">
-                        {% for index, page in suggestions %}
-                            {% if index %} &middot; {% endif %}
-                            <a href="{{ links.base_url }}pages/{{ page.page_slug }}" class="--xhr">
-                                {{ page.page_title }}
+                <div class="row mb-5">
+                    <div class="col-md-6 offset-md-3">
+                        <h2 class="text-center">
+                            {{ phrase('Page not found!') }}
+                        </h2>
+                        <p class="fs-5 text-center">
+                            {{ phrase('The page you requested does not exist or already been archived.') }}
+                        </p>
+                        <div class="text-center">
+                            <a href="{{ base_url() }}" class="btn btn-outline-primary rounded-pill px-4">
+                                <i class="mdi mdi-arrow-left"></i>
+                                {{ phrase('Back to Homepage') }}
                             </a>
-                        {% endfor %}
+                        </div>
                     </div>
                 </div>
-            {% endif %}
+                {% if suggestions %}
+                    <div class="row mb-3">
+                        <div class="col-md-8 offset-md-2">
+                            <h5>
+                                {{ phrase('Our suggestions') }}
+                                <span class="blink">_</span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            {% for index, page in suggestions %}
+                                {% if index %} &middot; {% endif %}
+                                <a href="{{ links.base_url }}pages/{{ page.page_slug }}" class="fs-5 --xhr">
+                                    {{ page.page_title }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
         EOF;
 
