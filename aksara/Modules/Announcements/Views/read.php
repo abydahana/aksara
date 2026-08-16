@@ -5,9 +5,8 @@
  * @var mixed $meta
  */
 
-$field_data = $results->field_data ?? null;
+$fieldData = $results->fieldData;
 ?>
-
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold">
@@ -22,16 +21,16 @@ $field_data = $results->field_data ?? null;
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <?php if ($field_data): ?>
-                    <?php if ($field_data->cover->value && 'placeholder.png' != $field_data->cover->value): ?>
-                        <img src="<?= get_image('announcements', $field_data->cover->value); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="<?= $field_data->title->value ?? phrase('Announcement'); ?>" />
+                <?php if ($fieldData): ?>
+                    <?php if ($fieldData->cover->value && 'placeholder.png' != $fieldData->cover->value): ?>
+                        <img src="<?= get_image('announcements', $fieldData->cover->value); ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="<?= $fieldData->title->value ?? phrase('Announcement'); ?>" />
                     <?php endif; ?>
                     <div class="fs-5 fade-in">
-                        <?= $field_data->content->value; ?>
+                        <?= $fieldData->content->value; ?>
                     </div>
                     <p class="text-muted fade-in">
                         <em>
-                            <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $field_data->end_date->value]); ?>
+                            <?= phrase('This announcement will be effective until {{end_date}}.', ['end_date' => $fieldData->end_date->value]); ?>
                         </em>
                     </p>
                     <a href="<?= current_page('../'); ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
@@ -39,7 +38,7 @@ $field_data = $results->field_data ?? null;
                         <?= phrase('Back'); ?>
                     </a>
                 <?php else: ?>
-                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search announcements...')]); ?>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['page' => null]), 'searchLabel' => phrase('Search announcements...')]); ?>
                 <?php endif; ?>
             </div>
         </div>

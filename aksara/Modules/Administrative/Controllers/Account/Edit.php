@@ -42,12 +42,12 @@ class Edit extends Core
     public function index()
     {
         if (get_setting('username_changes') || ! get_userdata('username')) {
-            $username_required = 'required|';
+            $usernameRequired = 'required|';
 
             $this->fieldOrder('photo, first_name, last_name, email, username, password, phone, address, postal_code, country_id, language_id');
             $this->mergeField('email, username');
         } else {
-            $username_required = null;
+            $usernameRequired = null;
 
             $this->unsetField('username');
             $this->fieldOrder('photo, first_name, last_name, email, phone, password, address, postal_code, country_id, language_id');
@@ -94,7 +94,7 @@ class Edit extends Core
             'first_name' => 'required|max_length[32]',
             'last_name' => 'max_length[32]',
             'email' => 'required|valid_email|unique[app_users.email.user_id.' . get_userdata('user_id') . ']',
-            'username' => $username_required . 'alpha_dash|unique[app_users.username.user_id.' . get_userdata('user_id') . ']',
+            'username' => $usernameRequired . 'alpha_dash|unique[app_users.username.user_id.' . get_userdata('user_id') . ']',
             'bio' => 'string',
             'address' => 'string',
             'language_id' => 'required'

@@ -99,10 +99,10 @@ class Menus extends Core
         $output = null;
         $menus = null;
 
-        $serialized_menus = ($data['menu_structure'] ? json_decode($data['menu_structure']) : []);
+        $serializedMenus = ($data['menu_structure'] ? json_decode($data['menu_structure']) : []);
 
-        if ($serialized_menus) {
-            foreach ($serialized_menus as $key => $val) {
+        if ($serializedMenus) {
+            foreach ($serializedMenus as $key => $val) {
                 if (! isset($val->id) || ! isset($val->label) || ! isset($val->slug)) {
                     continue;
                 }
@@ -174,11 +174,12 @@ class Menus extends Core
         $output = null;
         $menus = null;
 
-        if ($serialized_menus) {
-            foreach ($serialized_menus as $key => $val) {
+        if ($serializedMenus) {
+            foreach ($serializedMenus as $key => $val) {
                 if (! isset($val->id) || ! isset($val->label) || ! isset($val->slug)) {
                     continue;
                 }
+
                 $menus .= '
                     <li>
                         <a href="' . base_url($val->slug) . '" target="_blank">

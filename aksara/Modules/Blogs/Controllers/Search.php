@@ -22,12 +22,14 @@ use Aksara\Laboratory\Core;
 class Search extends Core
 {
     private string $_table = 'blogs';
+    private int $_languageId;
     private ?string $_keywords;
 
     public function __construct()
     {
         parent::__construct();
 
+        $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
         $this->_keywords = htmlspecialchars($this->request->getGet('q') ?? $this->request->getPost('q') ?? '');
     }
 
@@ -89,7 +91,7 @@ class Search extends Core
         ])
 
         // Order by current language first
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
 
         // Normal ordering
         ->orderBy([
@@ -102,8 +104,6 @@ class Search extends Core
 
     private function _getCategories()
     {
-        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
-
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
             blogs_categories.category_slug,
@@ -117,9 +117,8 @@ class Search extends Core
         )
         ->where([
             'blogs_categories.status' => 1,
-            'blogs_categories.language_id' => $language_id,
             'blogs.status' => 1,
-            'blogs.language_id' => $language_id
+            'blogs.language_id' => $this->_languageId
         ])
         ->orderBy('category_title', 'RANDOM')
         ->groupBy('blogs_categories.category_id, blogs_categories.category_slug, blogs_categories.category_title, blogs_categories.category_description, blogs_categories.category_image')
@@ -155,7 +154,7 @@ class Search extends Core
             'app_users.user_id = blogs.created_by'
         )
         ->orderBy('blogs.post_id', 'DESC')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->getWhere(
             'blogs',
             [

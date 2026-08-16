@@ -3,13 +3,13 @@ Metode `gridView` digunakan untuk membuat tampilan halaman CRUD ke dalam format 
 Contoh untuk tampilan table yang telah diformat dalam tampilan grid dapat ditemukan di bawah modul CMS > Galeri.
 
 ### Referensi
-`gridView($thumbnail, $hyperlink, $parameter, $new_tab)`
+`gridView($thumbnail, $hyperlink, $parameter, $newTab)`
 
 **Parameter**
 * **$thumbnail** [`string`] *kolom dari table yang digunakan sebagai string penyimpan gambar;*
 * **$hyperlink** [`string`] *target halaman (slug) yang dituju saat grid diklik;*
 * **$parameter** [`array`] *kunci query string yang akan digunakan sebagai primary key;*
-* **$new_tab** [`boolean`] *pilihan untuk membuka link pada jendela baru.*
+* **$newTab** [`boolean`] *pilihan untuk membuka link pada jendela baru.*
 
 &nbsp;
 

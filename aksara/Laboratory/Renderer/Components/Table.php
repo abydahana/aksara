@@ -107,42 +107,42 @@ class Table
         $request = Services::request();
 
         // Retrieve query string & clean token
-        $query_params = $request->getGet();
-        unset($query_params['aksara']);
+        $queryParams = $request->getGet();
+        unset($queryParams['aksara']);
 
         $output = [];
         $columns = [];
-        $search_columns_rendered = false;
+        $searchColumnsRendered = false;
 
         // Default search column option
-        $search_columns = [
+        $searchColumns = [
             [
                 'id' => null,
                 'label' => phrase('All columns')
             ]
         ];
-        $callback_instances = [];
-        $component_checked = [];
-        $base_labels = [];
-        $known_fields = array_fill_keys($this->fields, true);
-        $unset_columns = array_fill_keys($this->_unsetColumn, true);
-        $unset_truncate = array_fill_keys($this->_unsetTruncate, true);
+        $callbackInstances = [];
+        $componentChecked = [];
+        $baseLabels = [];
+        $knownFields = array_fill_keys($this->fields, true);
+        $unsetColumns = array_fill_keys($this->_unsetColumn, true);
+        $unsetTruncate = array_fill_keys($this->_unsetTruncate, true);
 
         // Loop through data rows
         foreach ($serialized as $key => $val) {
             // 1. Reorder Columns
             if (! empty($this->_columnOrder)) {
-                $column_order = [];
-                foreach ($this->_columnOrder as $order_val) {
-                    if (array_key_exists($order_val, $val)) {
-                        $column_order[] = $order_val;
+                $columnOrder = [];
+                foreach ($this->_columnOrder as $orderVal) {
+                    if (array_key_exists($orderVal, $val)) {
+                        $columnOrder[] = $orderVal;
                     }
                 }
-                $val = array_replace(array_flip($column_order), $val);
+                $val = array_replace(array_flip($columnOrder), $val);
             }
 
-            $field_data = [];
-            $primary_key = [];
+            $fieldData = [];
+            $primaryKey = [];
             $replacement = [];
 
             // 2. Extract replacements for Twig parsing later
@@ -159,26 +159,26 @@ class Table
                 $content = $params['content'];
                 $hidden = $params['hidden'];
 
-                if (! isset($base_labels[$field])) {
-                    $base_labels[$field] = ucwords(str_replace('_', ' ', $field));
+                if (! isset($baseLabels[$field])) {
+                    $baseLabels[$field] = ucwords(str_replace('_', ' ', $field));
                 }
 
-                $label = $base_labels[$field];
+                $label = $baseLabels[$field];
 
                 // Collection unique fields
-                if (! isset($known_fields[$field])) {
+                if (! isset($knownFields[$field])) {
                     $this->fields[] = $field;
-                    $known_fields[$field] = true;
+                    $knownFields[$field] = true;
                 }
 
                 // Store primary key
                 if ($primary) {
-                    $primary_key[$field] = $value;
+                    $primaryKey[$field] = $value;
                 }
 
                 // Skip hidden fields (Logic: Hide if hidden=true, UNLESS it's primary key AND we are in API mode)
                 // If API client is active, we might need primary key even if hidden.
-                if (($hidden || isset($unset_columns[$field])) && (! $this->apiClient || ($this->apiClient && ! $primary))) {
+                if (($hidden || isset($unsetColumns[$field])) && (! $this->apiClient || ($this->apiClient && ! $primary))) {
                     continue;
                 }
 
@@ -190,29 +190,29 @@ class Table
                 }
 
                 // Determine Field Type
-                $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
-                if (empty($field_type)) {
-                    $field_type = ['text'];
+                $fieldType = array_intersect(array_keys($type), self::VALID_TYPES);
+                if (empty($fieldType)) {
+                    $fieldType = ['text'];
                 }
-                if (count($field_type) > 1) {
-                    array_pop($field_type);
+                if (count($fieldType) > 1) {
+                    array_pop($fieldType);
                 }
-                $final_type = end($field_type);
+                $finalType = end($fieldType);
 
                 // Build Table Column Header (Run once per field)
                 if (! isset($columns[$field])) {
                     $columns[$field] = [
                         'field' => $field,
                         'label' => $label,
-                        'url' => go_to(null, array_merge($query_params, ['order' => $field, 'sort' => ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'desc' : 'asc')])),
+                        'url' => go_to(null, array_merge($queryParams, ['order' => $field, 'sort' => ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'desc' : 'asc')])),
                         'icon' => 'mdi mdi-sort-' . ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'ascending' : 'descending'),
-                        'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $field_type) ? 'right' : 'left')
+                        'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $fieldType) ? 'right' : 'left')
                     ];
                 }
 
                 // Build Searchable Columns List (Run once)
-                if (! $search_columns_rendered) {
-                    $search_columns[] = [
+                if (! $searchColumnsRendered) {
+                    $searchColumns[] = [
                         'id' => $field,
                         'label' => $label,
                         'selected' => $request->getGet('column') === $field
@@ -244,10 +244,10 @@ class Table
 
                         // Callback execution
                         $namespace = $router->controllerName();
-                        if (! isset($callback_instances[$namespace])) {
-                            $callback_instances[$namespace] = new $namespace();
+                        if (! isset($callbackInstances[$namespace])) {
+                            $callbackInstances[$namespace] = new $namespace();
                         }
-                        $class = $callback_instances[$namespace];
+                        $class = $callbackInstances[$namespace];
                         $callback = $this->_mergeContent[$field]['callback'];
 
                         if (method_exists($class, $callback)) {
@@ -264,53 +264,53 @@ class Table
                 $content = $this->formatter->format($field, $content, $type, $replacement);
 
                 // Field Data Construction
-                $field_data[$field] = [
+                $fieldData[$field] = [
                     'name' => $field,
                     'label' => $label,
                     'value' => (isset($this->_setRelation[$field]) ? $relationDisplayLabel : $value),
                     'content' => $content,
-                    'type' => $final_type,
+                    'type' => $finalType,
                     'primary' => $primary,
                     'hidden' => $hidden,
                     'escape' => ! isset($this->_mergeContent[$field]),
-                    'truncate' => ! isset($unset_truncate[$field])
+                    'truncate' => ! isset($unsetTruncate[$field])
                 ];
 
-                if (in_array($final_type, ['range'])) {
-                    $field_data[$field]['attribution'] = $this->_setAttribute[$field] ?? null;
+                if (in_array($finalType, ['range'])) {
+                    $fieldData[$field]['attribution'] = $this->_setAttribute[$field] ?? null;
                 }
 
                 // Special handling for specific types
-                if (in_array($final_type, ['image', 'images'])) {
-                    $field_data[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
-                } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
-                    $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
-                } elseif (in_array($final_type, ['text', 'mediumtext', 'longtext', 'textarea', 'wysiwyg']) && ! isset($unset_truncate[$field]) && ! isset($this->_mergeContent[$field])) {
-                    $field_data[$field]['content'] = truncate($field_data[$field]['content'], 64);
+                if (in_array($finalType, ['image', 'images'])) {
+                    $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
+                } elseif ('hyperlink' === $finalType && isset($type['hyperlink']['beta'])) {
+                    $fieldData[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
+                } elseif (in_array($finalType, ['text', 'mediumtext', 'longtext', 'textarea', 'wysiwyg']) && ! isset($unsetTruncate[$field]) && ! isset($this->_mergeContent[$field])) {
+                    $fieldData[$field]['content'] = truncate($fieldData[$field]['content'], 64);
                 }
 
                 // Parse Twig in content if exists
-                if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false) {
-                    $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
+                if (is_string($fieldData[$field]['content']) && strpos($fieldData[$field]['content'], '{{') !== false) {
+                    $fieldData[$field]['content'] = $this->parser->parse($fieldData[$field]['content'], $replacement);
                 }
 
                 // Grid View URL Logic
                 if ($this->_gridView && isset($this->_gridView['hyperlink']) && strpos($this->_gridView['hyperlink'], '://') === false && isset($this->_gridView['parameter']) && ! isset($this->_gridView['url'][$key])) {
-                    $grid_query = [];
+                    $gridQuery = [];
                     foreach ($this->_gridView['parameter'] as $_key => $_val) {
-                        $grid_query[$_key] = $val[$_val]['value'] ?? $_val;
+                        $gridQuery[$_key] = $val[$_val]['value'] ?? $_val;
                     }
-                    $this->_gridView['url'][$key] = base_url($this->_gridView['hyperlink'], $grid_query);
+                    $this->_gridView['url'][$key] = base_url($this->_gridView['hyperlink'], $gridQuery);
                 }
 
                 // Scaffolding: Create component template if missing
-                if (! $request->isAJAX() && ! $this->apiClient && $final_type && ! isset($component_checked[$final_type])) {
-                    $this->builder->getComponent($this->_setTheme, 'table', $final_type);
-                    $component_checked[$final_type] = true;
+                if (! $request->isAJAX() && ! $this->apiClient && $finalType && ! isset($componentChecked[$finalType])) {
+                    $this->builder->getComponent($this->_setTheme, 'table', $finalType);
+                    $componentChecked[$finalType] = true;
                 }
             }
 
-            $search_columns_rendered = true;
+            $searchColumnsRendered = true;
 
             if (! $length) {
                 break;
@@ -318,23 +318,23 @@ class Table
 
             // Determine Deletion Permission for this row
             $deleting = ! in_array('delete', $this->_unsetMethod);
-            foreach ($primary_key as $field => $value) {
+            foreach ($primaryKey as $field => $value) {
                 if (isset($this->_unsetDelete[$field]) && in_array($value, $this->_unsetDelete[$field])) {
                     $deleting = false;
                 }
             }
 
             $output[] = [
-                'primary' => $primary_key,
-                'buttons' => $this->_getButtons($primary_key, $replacement),
-                'dropdowns' => $this->_getDropdowns($primary_key, $replacement),
-                'field_data' => $field_data,
+                'primary' => $primaryKey,
+                'buttons' => $this->_getButtons($primaryKey, $replacement),
+                'dropdowns' => $this->_getDropdowns($primaryKey, $replacement),
+                'fieldData' => $fieldData,
                 'deleting' => $deleting
             ];
         }
 
         // --- Toolbar Buttons Construction ---
-        $buttons = $this->_buildToolbarButtons($query_params);
+        $buttons = $this->_buildToolbarButtons($queryParams);
 
         // --- Filters Construction ---
         $filters = [
@@ -346,7 +346,7 @@ class Table
             'column' => [
                 'type' => 'select',
                 'label' => phrase('Column'),
-                'values' => $search_columns,
+                'values' => $searchColumns,
             ]
         ];
 
@@ -355,13 +355,13 @@ class Table
         }
 
         // Final Output Structure
-        $final_output = [
+        $finalOutput = [
             'columns' => $columns,
-            'table_data' => $output,
-            'item_reference' => $this->_itemReference,
-            'query_params' => $query_params,
+            'tableData' => $output,
+            'itemReference' => $this->_itemReference,
+            'queryParams' => $queryParams,
             'toolbar' => [
-                'action' => current_page(null, ['per_page' => null]),
+                'action' => current_page(null, ['page' => null]),
                 'buttons' => $buttons,
                 'filters' => $filters
             ],
@@ -369,22 +369,22 @@ class Table
         ];
 
         if ($this->_gridView) {
-            $final_output['grid'] = $this->_gridView;
-            $final_output['grid']['path'] = $this->_setUploadPath;
+            $finalOutput['grid'] = $this->_gridView;
+            $finalOutput['grid']['path'] = $this->_setUploadPath;
         }
 
-        return $final_output;
+        return $finalOutput;
     }
 
     /**
      * Build top toolbar buttons (Create, Export, Print, etc.)
      */
-    private function _buildToolbarButtons(array $query_params): array
+    private function _buildToolbarButtons(array $queryParams): array
     {
         $buttons = [];
 
         if (! in_array('create', $this->_unsetMethod) && ! in_array('create', $this->_unsetToolbar)) {
-            $buttons[] = $this->_setLink('create', phrase('Create'), 'btn-primary --modal', 'mdi mdi-plus', $query_params);
+            $buttons[] = $this->_setLink('create', phrase('Create'), 'btn-primary --modal', 'mdi mdi-plus', $queryParams);
         }
 
         if ($this->_addToolbar) {
@@ -393,7 +393,7 @@ class Table
                     continue;
                 }
 
-                $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['new_tab']);
+                $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['newTab']);
             }
         }
 
@@ -401,27 +401,27 @@ class Table
         $agent = $request->getUserAgent();
 
         if (! $agent->isMobile()) {
-            $export_params = array_merge($query_params, ['keep_query' => true]);
+            $exportParams = array_merge($queryParams, ['keep_query' => true]);
 
             if (! in_array('read', $this->_unsetMethod)) {
                 if (! in_array('export', $this->_unsetMethod) && ! in_array('export', $this->_unsetToolbar)) {
-                    $buttons[] = $this->_setLink('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $export_params, true);
+                    $buttons[] = $this->_setLink('export', phrase('Export'), 'btn-success', 'mdi mdi-file-excel', $exportParams, true);
                 }
                 if (! in_array('print', $this->_unsetMethod) && ! in_array('print', $this->_unsetToolbar)) {
-                    $buttons[] = $this->_setLink('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $export_params, true);
+                    $buttons[] = $this->_setLink('print', phrase('Print'), 'btn-warning', 'mdi mdi-printer', $exportParams, true);
                 }
                 if (! in_array('pdf', $this->_unsetMethod) && ! in_array('pdf', $this->_unsetToolbar)) {
-                    $buttons[] = $this->_setLink('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $export_params, true);
+                    $buttons[] = $this->_setLink('pdf', phrase('PDF'), 'btn-info', 'mdi mdi-file-pdf', $exportParams, true);
                 }
             }
 
             if (! in_array('delete', $this->_unsetMethod) && ! in_array('delete', $this->_unsetToolbar)) {
-                $buttons[] = $this->_setLink('delete', phrase('Batch Delete'), 'btn-danger d-none disabled --open-delete-confirm', 'mdi mdi-delete', $query_params);
+                $buttons[] = $this->_setLink('delete', phrase('Batch Delete'), 'btn-danger d-none disabled --open-delete-confirm', 'mdi mdi-delete', $queryParams);
             }
         } else {
             // Mobile Specific Buttons
-            $buttons[] = $this->_setLink(null, phrase('Search'), 'btn-dark', 'mdi mdi-magnify', $query_params, false, 'data-bs-toggle="modal" data-bs-target="#searchModal"');
-            $buttons[] = $this->_setLink(null, phrase('Refresh'), 'btn-secondary --xhr', 'mdi mdi-refresh', $query_params);
+            $buttons[] = $this->_setLink(null, phrase('Search'), 'btn-dark', 'mdi mdi-magnify', $queryParams, false, 'data-bs-toggle="modal" data-bs-target="#searchModal"');
+            $buttons[] = $this->_setLink(null, phrase('Refresh'), 'btn-secondary --xhr', 'mdi mdi-refresh', $queryParams);
         }
 
         // Apply Button Overrides
@@ -440,7 +440,7 @@ class Table
                     $override['class'],
                     $override['icon'],
                     $override['parameter'],
-                    $override['new_tab']
+                    $override['newTab']
                 );
             }
         }
@@ -451,7 +451,7 @@ class Table
     /**
      * Get Row Action Buttons (Read, Update, Delete, Custom).
      */
-    private function _getButtons(array $query_params = [], array $replacement = []): array
+    private function _getButtons(array $queryParams = [], array $replacement = []): array
     {
         $buttons = [];
 
@@ -461,8 +461,8 @@ class Table
                 'label' => phrase('Read'),
                 'class' => 'btn-primary --modal',
                 'icon' => 'mdi mdi-magnify',
-                'parameter' => $query_params,
-                'new_tab' => false
+                'parameter' => $queryParams,
+                'newTab' => false
             ];
         }
 
@@ -472,8 +472,8 @@ class Table
                 'label' => phrase('Update'),
                 'class' => 'btn-info --modal',
                 'icon' => 'mdi mdi-square-edit-outline',
-                'parameter' => $query_params,
-                'new_tab' => false
+                'parameter' => $queryParams,
+                'newTab' => false
             ];
         }
 
@@ -487,8 +487,8 @@ class Table
                 'label' => phrase('Delete'),
                 'class' => 'btn-danger --open-delete-confirm',
                 'icon' => 'mdi mdi-delete',
-                'parameter' => $query_params,
-                'new_tab' => false
+                'parameter' => $queryParams,
+                'newTab' => false
             ];
         }
 
@@ -498,7 +498,7 @@ class Table
     /**
      * Get Row Dropdown Actions.
      */
-    private function _getDropdowns(array $query_params = [], array $replacement = []): array
+    private function _getDropdowns(array $queryParams = [], array $replacement = []): array
     {
         $dropdowns = [];
 
@@ -509,8 +509,8 @@ class Table
                     'label' => phrase('Print'),
                     'class' => '',
                     'icon' => 'mdi mdi-printer',
-                    'parameter' => $query_params,
-                    'new_tab' => true
+                    'parameter' => $queryParams,
+                    'newTab' => true
                 ];
             }
             if (! in_array('pdf', $this->_unsetMethod)) {
@@ -519,8 +519,8 @@ class Table
                     'label' => phrase('PDF'),
                     'class' => '',
                     'icon' => 'mdi mdi-file-pdf',
-                    'parameter' => $query_params,
-                    'new_tab' => true
+                    'parameter' => $queryParams,
+                    'newTab' => true
                 ];
             }
         }
@@ -559,7 +559,7 @@ class Table
                 $val['class'],
                 $val['icon'],
                 $val['parameter'],
-                $val['new_tab'],
+                $val['newTab'],
                 $val['attribution'] ?? null
             );
 
@@ -574,35 +574,35 @@ class Table
     /**
      * Helper to generate a standardized link array or null if restricted.
      */
-    private function _setLink(?string $path, ?string $label, ?string $class, ?string $icon, array $query_params = [], bool $new_tab = false, ?string $attribution = null): ?array
+    private function _setLink(?string $path, ?string $label, ?string $class, ?string $icon, array $queryParams = [], bool $newTab = false, ?string $attribution = null): ?array
     {
-        if (! isset($query_params['limit'])) {
+        if (! isset($queryParams['limit'])) {
             // Unset limit from query params
-            $query_params['limit'] = null;
+            $queryParams['limit'] = null;
         }
-        if (! isset($query_params['offset'])) {
+        if (! isset($queryParams['offset'])) {
             // Unset offset from query params
-            $query_params['offset'] = null;
+            $queryParams['offset'] = null;
         }
-        if (! isset($query_params['per_page'])) {
+        if (! isset($queryParams['page'])) {
             // Unset page from query params
-            $query_params['per_page'] = null;
+            $queryParams['page'] = null;
         }
-        if (! isset($query_params['order'])) {
+        if (! isset($queryParams['order'])) {
             // Unset order from query params
-            $query_params['order'] = null;
+            $queryParams['order'] = null;
         }
-        if (! isset($query_params['sort'])) {
+        if (! isset($queryParams['sort'])) {
             // Unset sort from query params
-            $query_params['sort'] = null;
+            $queryParams['sort'] = null;
         }
-        if (! isset($query_params['q'])) {
+        if (! isset($queryParams['q'])) {
             // Unset search keyword from query params
-            $query_params['q'] = null;
+            $queryParams['q'] = null;
         }
 
         // Check Restrictions (Unset Read/Update/Delete based on specific conditions)
-        foreach ($query_params as $keyword => $value) {
+        foreach ($queryParams as $keyword => $value) {
             if (in_array($path, $this->_unsetMethod)) {
                 return null;
             } elseif ('read' == $path && isset($this->_unsetRead[$keyword]) && in_array($value, $this->_unsetRead[$keyword])) {
@@ -616,10 +616,10 @@ class Table
 
         // URL Generation
         if (! $path || strpos($path, '://') === false) {
-            $url = go_to($path, $query_params);
+            $url = go_to($path, $queryParams);
         } else {
             $url = $path;
-            $new_tab = true;
+            $newTab = true;
         }
 
         return [
@@ -628,7 +628,7 @@ class Table
             'label' => $label,
             'class' => $class,
             'icon' => $icon,
-            'new_tab' => $new_tab,
+            'newTab' => $newTab,
             'attribution' => $attribution
         ];
     }

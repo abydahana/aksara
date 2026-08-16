@@ -773,7 +773,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'new_tab' => $newTab,
+                'newTab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -788,7 +788,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
+                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -820,7 +820,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'new_tab' => $newTab,
+                'newTab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -835,7 +835,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
+                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -867,7 +867,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'new_tab' => $newTab,
+                'newTab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -882,7 +882,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
+                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -937,7 +937,7 @@ abstract class Core extends Controller
             'icon' => $icon,
             'class' => $class,
             'parameter' => $parameter,
-            'new_tab' => $newTab
+            'newTab' => $newTab
         ];
 
         return $this;
@@ -1006,7 +1006,7 @@ abstract class Core extends Controller
             'thumbnail' => $thumbnail,
             'hyperlink' => $hyperlink,
             'parameter' => $parameter,
-            'new_tab' => $newTab
+            'newTab' => $newTab
         ];
 
         return $this;
@@ -1320,8 +1320,8 @@ abstract class Core extends Controller
         $finalLimit = is_numeric($limit) && $limit > 0 ? $limit : $this->_limit;
 
         $offset = (
-            is_numeric(Services::request()->getPost('page'))
-                ? Services::request()->getPost('page') - 1
+            is_numeric(Services::request()->getPost('pageNo'))
+                ? Services::request()->getPost('pageNo') - 1
                 : 0
         ) * $finalLimit;
 
@@ -2294,8 +2294,8 @@ abstract class Core extends Controller
                 }
             } else {
                 // Get offset if not set
-                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && is_numeric($this->request->getGet('per_page')) && $this->request->getGet('per_page') > 1 && (! $this->_offsetCalled || (! $this->_offset && gettype($this->_offset) !== 'integer'))) {
-                    $this->_offset = ($this->request->getGet('per_page') - 1) * ($this->_limit ?? $this->_limitBackup);
+                if (! in_array($this->_method, ['create', 'read', 'update', 'delete']) && is_numeric($this->request->getGet('page')) && $this->request->getGet('page') > 1 && (! $this->_offsetCalled || (! $this->_offset && gettype($this->_offset) !== 'integer'))) {
+                    $this->_offset = ($this->request->getGet('page') - 1) * ($this->_limit ?? $this->_limitBackup);
                 }
 
                 if ($this->_offset) {
@@ -2665,7 +2665,7 @@ abstract class Core extends Controller
                                 $autocompleteItem = [
                                     'value' => truncate($value['content'], 32),
                                     'label' => truncate($value['content'], 32),
-                                    'target' => current_page(null, ['per_page' => null, 'q' => truncate($value['content'], 32)])
+                                    'target' => current_page(null, ['page' => null, 'q' => truncate($value['content'], 32)])
                                 ];
                             }
                         }
@@ -2994,7 +2994,7 @@ abstract class Core extends Controller
             }
         }
 
-        if ($this->apiClient && 'complete' === $this->request->getGet('format_result')) {
+        if ($this->apiClient && 'complete' === $this->request->getGet('formatResult')) {
             // Requested from API Client in formatted result
             return make_json($results);
         }
@@ -3007,12 +3007,12 @@ abstract class Core extends Controller
             }
         }
 
-        if (! $this->_modalSize && isset($results['column_total'])) {
-            if ($results['column_total'] > 3) {
+        if (! $this->_modalSize && isset($results['columnTotal'])) {
+            if ($results['columnTotal'] > 3) {
                 $this->_modalSize = 'modal-xxl';
-            } elseif ($results['column_total'] > 2) {
+            } elseif ($results['columnTotal'] > 2) {
                 $this->_modalSize = 'modal-xl';
-            } elseif ($results['column_total'] > 1) {
+            } elseif ($results['columnTotal'] > 1) {
                 $this->_modalSize = 'modal-lg';
             }
         }
@@ -3029,18 +3029,18 @@ abstract class Core extends Controller
                 'description' => preg_replace('/[^\S ]+/', '', $this->_setDescription ?? ''),
                 'icon' => $this->_setIcon,
                 'title' => $this->_setTitle,
-                'modal_size' => ($this->_modalSize ? $this->_modalSize : ''),
+                'modalSize' => ($this->_modalSize ? $this->_modalSize : ''),
                 'segmentation' => array_map(function ($segment = null) {
                     return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));
                 }, $uri->getSegments())
             ],
             'breadcrumb' => $this->template->breadcrumb($this->_setBreadcrumb, $this->_setTitle, $this->_setPrimary),
             'links' => [
-                'base_url' => base_url(),
-                'current_module' => go_to(null, $queryParams),
-                'current_page' => current_page()
+                'baseUrl' => base_url(),
+                'currentModule' => go_to(null, $queryParams),
+                'currentPage' => current_page()
             ],
-            'query_params' => $this->request->getGet(),
+            'queryParams' => $this->request->getGet(),
             'results' => $results,
             '_token' => $this->_token
         ];
@@ -3051,10 +3051,10 @@ abstract class Core extends Controller
             // Add pagination
             $output['pagination'] = $this->template->pagination([
                 'total' => $total,
-                'per_page' => $this->_limit,
-                'limit' => $this->_limitBackup,
+                'limit' => $this->_limit,
+                'limitBackup' => $this->_limitBackup,
                 'offset' => $this->_offset,
-                'url' => current_page(null, ['per_page' => null])
+                'url' => current_page(null, ['page' => null])
             ]);
         }
 
@@ -3064,7 +3064,7 @@ abstract class Core extends Controller
         }
 
         // Elapsed time
-        $output['elapsed_time'] = (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00;
+        $output['elapsedTime'] = (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00;
 
         // Generate the output
         if (in_array($this->_method, ['print', 'export', 'pdf'])) {
@@ -3094,7 +3094,7 @@ abstract class Core extends Controller
                 $output['pagination']['filters'],
                 $output['pagination']['information'],
                 $output['pagination']['links'],
-                $output['query_params'],
+                $output['queryParams'],
                 $output['total'],
                 $output['_token']
             );
@@ -3191,19 +3191,19 @@ abstract class Core extends Controller
             }
 
             return [
-                'column_size' => [],
-                'column_total' => 1,
-                'extra_action' => [
+                'columnSize' => [],
+                'columnTotal' => 1,
+                'extraAction' => [
                     'submit' => $this->_submitButton
                 ],
-                'form_size' => '',
-                'field_size' => [],
-                'field_data' => [],
-                'merged_content' => [],
-                'merged_field' => [],
-                'set_heading' => [],
-                'grouped_field' => [],
-                'query_params' => $queryParams
+                'formSize' => '',
+                'fieldSize' => [],
+                'fieldData' => [],
+                'mergedContent' => [],
+                'mergedField' => [],
+                'setHeading' => [],
+                'groupedField' => [],
+                'queryParams' => $queryParams
             ];
         }
 
@@ -3301,7 +3301,7 @@ abstract class Core extends Controller
             $data = [array_fill_keys($this->model->listFields($this->_table), '')];
         }
 
-        if ($this->apiClient && (! $this->request->getGet('format_result') || ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full']))) {
+        if ($this->apiClient && (! $this->request->getGet('formatResult') || ! in_array($this->request->getGet('formatResult'), ['fieldData', 'complete', 'full']))) {
             // Requested from API Client in unformatted result
             return make_json($data);
         }
@@ -3316,7 +3316,7 @@ abstract class Core extends Controller
             $output[$row] = $this->serializeRow($array, false, $fieldData, $mockFields, $fieldNames);
         }
 
-        if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
+        if ($this->apiClient && 'fieldData' === $this->request->getGet('formatResult')) {
             // Requested from API Client with field data information
             return make_json($output);
         }
@@ -5512,10 +5512,10 @@ abstract class Core extends Controller
             $mockFields = $this->model->getMockFields($table);
 
             if ($mockFields) {
-                foreach ($select as $s_key => $s_val) {
-                    $col = (strpos($s_val, '.') !== false) ? explode('.', $s_val)[1] : $s_val;
+                foreach ($select as $key => $val) {
+                    $col = (strpos($val, '.') !== false) ? explode('.', $val)[1] : $val;
                     if (isset($mockFields[$col])) {
-                        unset($select[$s_key]);
+                        unset($select[$key]);
                     }
                 }
             }
@@ -6055,7 +6055,7 @@ abstract class Core extends Controller
         // --- 3.5 Capture Depends Payload (AJAX) ---
         if ($ajax) {
             $relationTable = (strpos($params['relationTable'], ' ') !== false) ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1) : $params['relationTable'];
-            $reserved = ['aksara', 'method', 'source', 'selected_list', 'search', 'page'];
+            $reserved = ['aksara', 'method', 'source', 'selectedList', 'search', 'pageNo'];
 
             foreach ($this->request->getPost() as $key => $val) {
                 if (! in_array($key, $reserved) && '' !== $val && null !== $val) {
@@ -6119,7 +6119,7 @@ abstract class Core extends Controller
         if (! $selected) {
             if ($ajax) {
                 // AJAX (Select2): add "None" option if it's the first page
-                if ($this->request->getPost('page') <= 1) {
+                if ($this->request->getPost('pageNo') <= 1) {
                     $output[] = ['id' => 0, 'text' => phrase('None')];
                 }
             } else {

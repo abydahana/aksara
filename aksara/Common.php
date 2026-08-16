@@ -98,14 +98,14 @@ if (! function_exists('get_userdata')) {
         if (! service('session')->get($field) && service('session')->get('user_id')) {
             try {
                 $model = new Model();
-                $user_id = service('session')->get('user_id');
+                $userId = service('session')->get('user_id');
 
                 // Attempt to fetch from privileges table first
                 if ($model->fieldExists($field, 'app_users_privileges')) {
                     return $model->select($field)->getWhere(
                         'app_users_privileges',
                         [
-                            'user_id' => $user_id
+                            'user_id' => $userId
                         ],
                         1
                     )
@@ -116,7 +116,7 @@ if (! function_exists('get_userdata')) {
                     return $model->select($field)->getWhere(
                         'app_users',
                         [
-                            'user_id' => $user_id
+                            'user_id' => $userId
                         ],
                         1
                     )
@@ -200,16 +200,16 @@ if (! function_exists('load_translations')) {
             $files[] = $file;
         }
 
-        $cache_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
-        $cache_file = $cache_path . DIRECTORY_SEPARATOR . $language . '.json';
+        $cachePath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
+        $cacheFile = $cachePath . DIRECTORY_SEPARATOR . $language . '.json';
 
         try {
-            foreach (glob($cache_path . DIRECTORY_SEPARATOR . $language . '-*.json') ?: [] as $file) {
+            foreach (glob($cachePath . DIRECTORY_SEPARATOR . $language . '-*.json') ?: [] as $file) {
                 @unlink($file);
             }
 
-            if (file_exists($cache_file) && ! translations_cache_is_stale($cache_file, $files)) {
-                $cached = json_decode(file_get_contents($cache_file) ?: '[]', true);
+            if (file_exists($cacheFile) && ! translations_cache_is_stale($cacheFile, $files)) {
+                $cached = json_decode(file_get_contents($cacheFile) ?: '[]', true);
 
                 if (is_array($cached)) {
                     return $translations[$language] = $cached;
@@ -233,11 +233,11 @@ if (! function_exists('load_translations')) {
         }
 
         try {
-            if (! is_dir($cache_path)) {
-                mkdir($cache_path, 0755, true);
+            if (! is_dir($cachePath)) {
+                mkdir($cachePath, 0755, true);
             }
 
-            file_put_contents($cache_file, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+            file_put_contents($cacheFile, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
         } catch (\Throwable $e) {
             log_message('error', '[TRANSLATION] Unable to save translation cache: ' . $e->getMessage());
         }
@@ -265,15 +265,15 @@ if (! function_exists('translations_cache_is_stale')) {
     /**
      * Check whether a translation cache file is older than its source files.
      *
-     * @param   string $cache_file Cache file path
-     * @param   array  $source_files Translation/source file paths
+     * @param   string $cacheFile Cache file path
+     * @param   array  $sourceFiles Translation/source file paths
      */
-    function translations_cache_is_stale(string $cache_file, array $source_files): bool
+    function translations_cache_is_stale(string $cacheFile, array $sourceFiles): bool
     {
-        $cache_time = filemtime($cache_file);
+        $cacheTime = filemtime($cacheFile);
 
-        foreach ($source_files as $file) {
-            if (file_exists($file) && filemtime($file) > $cache_time) {
+        foreach ($sourceFiles as $file) {
+            if (file_exists($file) && filemtime($file) > $cacheTime) {
                 return true;
             }
         }
@@ -317,14 +317,14 @@ if (! function_exists('phrase')) {
         if (! $language) {
             try {
                 $model = new Model();
-                $app_language = get_setting('app_language');
-                $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
+                $appLanguage = get_setting('app_language');
+                $languageId = (get_userdata('language_id') ? get_userdata('language_id') : ($appLanguage > 0 ? $appLanguage : 1));
 
                 $language = $model->select('code')
                 ->getWhere(
                     'app_languages',
                     [
-                        'id' => $language_id
+                        'id' => $languageId
                     ]
                 )
                 ->row('code');
@@ -339,59 +339,59 @@ if (! function_exists('phrase')) {
 
             if (! isset($phrases[$phrase]) && ! $checking) {
                 // Only append new phrase if checking is false
-                $translation_file = translation_file($language, translation_scope_from_trace());
-                $scoped_phrases = [];
+                $translationFile = translation_file($language, translation_scope_from_trace());
+                $scopedPhrases = [];
 
-                if (file_exists($translation_file)) {
-                    $scoped_buffer = file_get_contents($translation_file);
-                    $scoped_phrases = json_decode($scoped_buffer ?: '[]', true);
+                if (file_exists($translationFile)) {
+                    $scopedBuffer = file_get_contents($translationFile);
+                    $scopedPhrases = json_decode($scopedBuffer ?: '[]', true);
                 }
 
-                if (! is_array($scoped_phrases)) {
-                    $scoped_phrases = [];
+                if (! is_array($scopedPhrases)) {
+                    $scopedPhrases = [];
                 }
 
-                $scoped_phrases[$phrase] = $phrase;
+                $scopedPhrases[$phrase] = $phrase;
                 $phrases[$phrase] = $phrase;
 
                 // Sort phrases by key
-                ksort($scoped_phrases);
+                ksort($scopedPhrases);
 
-                if (! is_dir(dirname($translation_file))) {
-                    mkdir(dirname($translation_file), 0755, true);
+                if (! is_dir(dirname($translationFile))) {
+                    mkdir(dirname($translationFile), 0755, true);
                 }
 
-                if ((! file_exists($translation_file) && is_writable(dirname($translation_file))) || is_writable($translation_file)) {
+                if ((! file_exists($translationFile) && is_writable(dirname($translationFile))) || is_writable($translationFile)) {
                     // No translation exists
-                    $json_content = json_encode(
-                        $scoped_phrases,
+                    $jsonContent = json_encode(
+                        $scopedPhrases,
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
                     );
 
                     // Create new translation file
-                    file_put_contents($translation_file, $json_content, LOCK_EX);
+                    file_put_contents($translationFile, $jsonContent, LOCK_EX);
                     clear_translations_cache($language);
                 }
             }
 
             if ($checking) {
                 // Only check, use existing translation
-                $phrases_reversed = array_reverse($phrases, true);
-                $phrases_upper = array_change_key_case($phrases_reversed, CASE_UPPER);
-                $upper_phrase = strtoupper($phrase);
-                $translated_phrase = (isset($phrases_upper[$upper_phrase]) ? $phrases_upper[$upper_phrase] : $phrase);
+                $phrasesReversed = array_reverse($phrases, true);
+                $phrasesUpper = array_change_key_case($phrasesReversed, CASE_UPPER);
+                $upperPhrase = strtoupper($phrase);
+                $translatedPhrase = (isset($phrasesUpper[$upperPhrase]) ? $phrasesUpper[$upperPhrase] : $phrase);
             } else {
                 // Try to using existing or appended phrase
-                $translated_phrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
+                $translatedPhrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
             }
 
             // Typographical beautification
-            $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
-            $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
+            $translatedPhrase = preg_replace('/"([^"]+)"/', '“$1”', $translatedPhrase);
+            $translatedPhrase = str_replace(['`', "'"], '’', $translatedPhrase);
 
-            $phrase = $translated_phrase;
+            $phrase = $translatedPhrase;
         } catch (\Throwable $e) {
             log_message('error', '[TRANSLATION] ' . $e->getMessage());
         }
@@ -473,10 +473,10 @@ if (! function_exists('is_liked')) {
     /**
      * Check if a post has been liked by the current user.
      *
-     * @param   int         $post_id The ID of the post (Required)
-     * @param   string|null $post_path The path/type of the post
+     * @param   int         $postId The ID of the post (Required)
+     * @param   string|null $postPath The path/type of the post
      */
-    function is_liked(int $post_id, ?string $post_path = null): bool
+    function is_liked(int $postId, ?string $postPath = null): bool
     {
         try {
             $model = new Model();
@@ -485,8 +485,8 @@ if (! function_exists('is_liked')) {
                 'post_likes',
                 [
                     'created_by' => get_userdata('user_id'),
-                    'post_id' => $post_id,
-                    'post_path' => $post_path
+                    'post_id' => $postId,
+                    'post_path' => $postPath
                 ],
                 1
             )

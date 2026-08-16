@@ -21,7 +21,7 @@ if (! function_exists('article_with_recommendation')) {
      *
      * @param   string $content
      */
-    function article_with_recommendation($content = null, array|object $recommendations = [], int $per_paragraph = 5)
+    function article_with_recommendation($content = null, array|object $recommendations = [], int $perParagraph = 5)
     {
         // Reformat recommendation object into array
         $recommendations = json_decode(json_encode($recommendations), true);
@@ -31,9 +31,9 @@ if (! function_exists('article_with_recommendation')) {
         $updatedContent = '';
         $applied = false;
 
-        if (sizeof($paragraphs) < $per_paragraph) {
+        if (sizeof($paragraphs) < $perParagraph) {
             // Paragraph is lower than minimum, change default minimum setting
-            $per_paragraph = sizeof($paragraphs);
+            $perParagraph = sizeof($paragraphs);
         }
 
         foreach ($paragraphs as $index => $paragraph) {
@@ -46,9 +46,9 @@ if (! function_exists('article_with_recommendation')) {
             $updatedContent .= $paragraph;
 
             // Add additional content after every 5th paragraph
-            if (0 == ($index + 1) % $per_paragraph && ! empty(trim($paragraph)) && isset($recommendations[(int) ($index / $per_paragraph)])) {
+            if (0 == ($index + 1) % $perParagraph && ! empty(trim($paragraph)) && isset($recommendations[(int) ($index / $perParagraph)])) {
                 $applied = true;
-                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[(int) ($index / $per_paragraph)]['link'] . '" class="--xhr"><b>' . $recommendations[(int) ($index / $per_paragraph)]['title'] . '</b></a></div>';
+                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[(int) ($index / $perParagraph)]['link'] . '" class="--xhr"><b>' . $recommendations[(int) ($index / $perParagraph)]['title'] . '</b></a></div>';
             }
         }
 

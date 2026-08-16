@@ -3,13 +3,12 @@
 /**
  * @var mixed $userdata
  * @var mixed $year
- * @var mixed $field_data
- * @var mixed $visible_menu
- * @var mixed $sub_level_1
+ * @var mixed $fieldData
+ * @var mixed $visibleMenu
+ * @var mixed $subLevel
  * @var mixed $links
  */
 ?>
-
 <div class="container-fluid py-3">
     <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">
@@ -54,7 +53,7 @@
                                 $options = null;
 
                                 foreach ($year as $key => $val) {
-                                    $options .= '<option value="' . $val->year . '"' . (isset($field_data->access_year) && $field_data->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
+                                    $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
                                 }
                             ?>
                             <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose'); ?>">
@@ -72,8 +71,8 @@
                     <label class="text-muted d-block" for="menus_input">
                         <?= phrase('Accessible Menus'); ?>
                     </label>
-                    <?php if ($visible_menu): ?>
-                        <?= $visible_menu; ?>
+                    <?php if ($visibleMenu): ?>
+                        <?= $visibleMenu; ?>
                     <?php else: ?>
                         <div class="alert alert-warning">
                             <?= phrase('No menu is available right now.'); ?>
@@ -86,10 +85,10 @@
                     <label class="text-muted d-block" for="sub_level_1_input">
                         <?= phrase('The sub level can be accessed.'); ?>
                     </label>
-                    <?php if ($sub_level_1): ?>
+                    <?php if ($subLevel): ?>
                         <?php
                             $option = null;
-                            foreach($sub_level_1 as $key => $val) {
+                            foreach($subLevel as $key => $val) {
                                 if (! isset($val->id) || ! isset($val->label)) continue;
 
                                 $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
@@ -109,7 +108,7 @@
         <div class="opt-btn-overlap-fix"></div>
         <div class="row opt-btn">
             <div class="col-md-10">
-                <a href="<?= $links->current_module; ?>" class="btn btn-link --xhr">
+                <a href="<?= $links->currentModule; ?>" class="btn btn-link --xhr">
                     <i class="mdi mdi-arrow-left"></i>
                     &nbsp;
                     <?= phrase('Back'); ?>

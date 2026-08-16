@@ -42,43 +42,43 @@ class Synchronize extends Core
         helper('filesystem');
 
         // Generate phrases from source code
-        $generated_scopes = $this->_generatePhrasesFromSource();
+        $generatedScopes = $this->_generatePhrasesFromSource();
         $languages = $this->_languages();
         $error = 0;
-        $unique_phrases = [];
-        $existing_documents = [];
+        $uniquePhrases = [];
+        $existingDocuments = [];
 
-        foreach ($generated_scopes as $generated_phrases) {
-            $unique_phrases += $generated_phrases;
+        foreach ($generatedScopes as $generatedPhrases) {
+            $uniquePhrases += $generatedPhrases;
         }
 
         if ($languages) {
             foreach ($languages as $language) {
-                $existing_documents[$language] = $this->_translationDocuments($language);
+                $existingDocuments[$language] = $this->_translationDocuments($language);
 
-                foreach ($existing_documents[$language] as $scope => $existing_phrases) {
-                    if (! isset($generated_scopes[$scope])) {
-                        $generated_scopes[$scope] = [];
+                foreach ($existingDocuments[$language] as $scope => $existingPhrases) {
+                    if (! isset($generatedScopes[$scope])) {
+                        $generatedScopes[$scope] = [];
                     }
 
-                    foreach (array_keys($existing_phrases) as $phrase) {
-                        $generated_scopes[$scope][$phrase] = $phrase;
-                        $unique_phrases[$phrase] = $phrase;
+                    foreach (array_keys($existingPhrases) as $phrase) {
+                        $generatedScopes[$scope][$phrase] = $phrase;
+                        $uniquePhrases[$phrase] = $phrase;
                     }
                 }
             }
 
             foreach ($languages as $language) {
-                $existing_scopes = $existing_documents[$language] ?? [];
+                $existingScopes = $existingDocuments[$language] ?? [];
 
-                foreach ($generated_scopes as $scope => $generated_phrases) {
+                foreach ($generatedScopes as $scope => $generatedPhrases) {
                     try {
                         $file = $this->_translationFile($language, $scope);
-                        $existing_phrases = $existing_scopes[$scope] ?? [];
-                        $phrases = array_combine(array_keys($generated_phrases), array_keys($generated_phrases)) ?: [];
+                        $existingPhrases = $existingScopes[$scope] ?? [];
+                        $phrases = array_combine(array_keys($generatedPhrases), array_keys($generatedPhrases)) ?: [];
 
-                        if (is_array($existing_phrases)) {
-                            $phrases = array_merge($phrases, array_intersect_key($existing_phrases, $phrases));
+                        if (is_array($existingPhrases)) {
+                            $phrases = array_merge($phrases, array_intersect_key($existingPhrases, $phrases));
                         }
 
                         if (! $phrases) {
@@ -112,7 +112,7 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']), current_page('../'));
         }
 
-        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($unique_phrases)) . '</b>']), current_page('../'));
+        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($uniquePhrases)) . '</b>']), current_page('../'));
     }
 
     private function _languages(): array

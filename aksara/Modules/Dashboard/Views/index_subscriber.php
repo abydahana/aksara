@@ -2,7 +2,7 @@
 
 $logs = (isset($logs) ? $logs : []);
 $announcements = (isset($announcements) ? $announcements : []);
-$group_name = (isset($group_name) ? $group_name : phrase('Unknown'));
+$groupName = (isset($groupName) ? $groupName : phrase('Unknown'));
 
 if (! get_userdata('username') || ! get_userdata('password')): ?>
     <div class="alert alert-danger border-0 rounded-0 mb-0">
@@ -60,7 +60,7 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                                 <?= phrase('Account Group'); ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= $group_name; ?>
+                                <?= $groupName; ?>
                             </div>
                         </div>
                     </div>

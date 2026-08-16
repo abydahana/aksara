@@ -44,7 +44,7 @@ class Privileges extends Core
         ->setDescription('
             <div class="row">
                 <div class="col-12">
-                    ' . phrase('You may review {{group_privileges}} after modifying this adjustment to sets new roles.', ['group_privileges' => '<a href="' . go_to('../', ['q' => null, 'per_page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr"><i class="mdi mdi-arrow-right"></i> ' . phrase('Group Privileges') . '</a>']) . '
+                    ' . phrase('You may review {{group_privileges}} after modifying this adjustment to sets new roles.', ['group_privileges' => '<a href="' . go_to('../', ['q' => null, 'page' => null, 'group_id' => null, 'path' => null]) . '" class="badge bg-secondary --xhr"><i class="mdi mdi-arrow-right"></i> ' . phrase('Group Privileges') . '</a>']) . '
                 </div>
             </div>
         ')

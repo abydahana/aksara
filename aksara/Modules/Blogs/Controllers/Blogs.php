@@ -21,11 +21,15 @@ use Aksara\Laboratory\Core;
 
 class Blogs extends Core
 {
+    private int $_languageId;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->searchable(false);
+
+        $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
     }
 
     public function index()
@@ -73,7 +77,7 @@ class Blogs extends Core
             'app_users.user_id = blogs.created_by'
         )
         ->orderBy('updated_at', 'DESC')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->getWhere(
             'blogs',
             [
@@ -119,7 +123,7 @@ class Blogs extends Core
                     'app_users.user_id = blogs.created_by'
                 )
                 ->orderBy('updated_at', 'DESC')
-                ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+                ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
                 ->getWhere(
                     'blogs',
                     [
@@ -138,7 +142,7 @@ class Blogs extends Core
                     }
                 }
 
-                $output[] = [
+                $output[] = (object) [
                     'category_id' => $val->category_id,
                     'category_title' => $val->category_title,
                     'category_slug' => $val->category_slug,

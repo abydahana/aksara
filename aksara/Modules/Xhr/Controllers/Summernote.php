@@ -19,6 +19,7 @@ namespace Aksara\Modules\XHR\Controllers;
 
 use Config\Mimes;
 use Config\Services;
+use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Core;
 
 class Summernote extends Core
@@ -50,16 +51,16 @@ class Summernote extends Core
             return false;
         }
 
-        $mime_type = new Mimes();
-        $valid_mime = [];
+        $mimeType = new Mimes();
+        $validMime = [];
 
         $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
 
         foreach ($filetype as $key => $val) {
-            $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+            $validMime[] = $mimeType->guessTypeFromExtension($val);
         }
 
-        if (! $source->getName() || $source->getSizeByMetricUnit(\CodeIgniter\Files\FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source->getName() || $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             return make_json([
                 'status' => 'error',
                 'messages' => phrase('Upload Error!')
@@ -69,7 +70,7 @@ class Summernote extends Core
         $extension = strtolower($source->getClientExtension() ?: pathinfo($source->getName(), PATHINFO_EXTENSION));
         $mimeType = strtolower($source->getMimeType());
         $validExtensions = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
-        $validMimeTypes = array_filter($valid_mime);
+        $validMimeTypes = array_filter($validMime);
 
         if (! in_array($extension, $validExtensions, true) || ! in_array($mimeType, $validMimeTypes, true)) {
             return make_json([
@@ -101,10 +102,10 @@ class Summernote extends Core
 
         $width = ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
         $height = ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
-        $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
         $image = Services::image('gd');
 
-        if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/summernote/' . $filename)) {
+        if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/summernote/' . $filename)) {
             return make_json([
                 'status' => 'success',
                 'source' => get_image('summernote', $filename),

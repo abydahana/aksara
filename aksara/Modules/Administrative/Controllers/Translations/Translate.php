@@ -54,7 +54,7 @@ class Translate extends Core
         $this->_totalPhrases = 0;
         $this->_limitBackup = 99;
         $this->_limit = ($this->request->getGet('limit') ? $this->request->getGet('limit') : $this->_limitBackup);
-        $this->_offset = ($this->request->getGet('per_page') > 1 ? ($this->request->getGet('per_page') * $this->_limit) - $this->_limit : 0);
+        $this->_offset = ($this->request->getGet('page') > 1 ? ($this->request->getGet('page') * $this->_limit) - $this->_limit : 0);
     }
 
     public function index()
@@ -66,14 +66,14 @@ class Translate extends Core
         ->setIcon('mdi mdi-translate')
         ->setOutput([
             'phrases' => $phrases,
-            'phrase_scopes' => $this->_phraseScopes,
-            'total_phrases' => $this->_totalPhrases,
+            'phraseScopes' => $this->_phraseScopes,
+            'totalPhrases' => $this->_totalPhrases,
             'pagination' => $template->pagination([
                 'limit' => $this->_limitBackup,
                 'offset' => $this->_offset,
-                'per_page' => $this->_limit,
+                'page' => $this->_limit,
                 'total' => $this->_totalPhrases,
-                'url' => current_page(null, ['per_page' => null])
+                'url' => current_page(null, ['page' => null])
             ])
         ])
         ->formCallback('validateTranslation')
@@ -154,19 +154,19 @@ class Translate extends Core
                 // Set internal encoding to UTF-8
                 mb_internal_encoding('UTF-8');
 
-                $phrases_input = $this->request->getPost('phrases');
-                $phrase_scopes = $this->request->getPost('phrase_scopes');
+                $phrasesInput = $this->request->getPost('phrases');
+                $phraseScopes = $this->request->getPost('phrase_scopes');
                 $documents = $this->_translationDocuments($this->_code);
 
-                if (! is_array($phrases_input)) {
-                    $phrases_input = [];
+                if (! is_array($phrasesInput)) {
+                    $phrasesInput = [];
                 }
 
-                if (! is_array($phrase_scopes)) {
-                    $phrase_scopes = [];
+                if (! is_array($phraseScopes)) {
+                    $phraseScopes = [];
                 }
 
-                foreach ($phrases_input as $key => $val) {
+                foreach ($phrasesInput as $key => $val) {
                     if ($val) {
                         // Sanitize unsafe input - allow safe formatting tags
                         $val = strip_tags($val, '<a><b><i><u><strong><em><small><br><span>');
@@ -179,32 +179,34 @@ class Translate extends Core
                             '/<a\s+([^>]+)>/i',
                             function ($matches) {
                                 $attrs = $matches[1];
-                                $allowed_attrs = [];
+                                $allowedAttrs = [];
 
                                 // Extract href
-                                if (preg_match('/href=["\']([^"\']*)["\']/', $attrs, $href_match)) {
-                                    $href = $href_match[1];
+                                if (preg_match('/href=["\']([^"\']*)["\']/', $attrs, $hrefMatch)) {
+                                    $href = $hrefMatch[1];
+
                                     // Only allow http, https, mailto, and relative URLs
                                     if (preg_match('/^(https?:\/\/|mailto:|\/|#)/i', $href)) {
-                                        $allowed_attrs[] = 'href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"';
+                                        $allowedAttrs[] = 'href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"';
                                     }
                                 }
 
                                 // Extract title
-                                if (preg_match('/title=["\']([^"\']*)["\']/', $attrs, $title_match)) {
-                                    $allowed_attrs[] = 'title="' . htmlspecialchars($title_match[1], ENT_QUOTES, 'UTF-8') . '"';
+                                if (preg_match('/title=["\']([^"\']*)["\']/', $attrs, $titleMatch)) {
+                                    $allowedAttrs[] = 'title="' . htmlspecialchars($titleMatch[1], ENT_QUOTES, 'UTF-8') . '"';
                                 }
 
                                 // Extract target (only _blank or _self)
-                                if (preg_match('/target=["\'](_blank|_self)["\']/', $attrs, $target_match)) {
-                                    $allowed_attrs[] = 'target="' . $target_match[1] . '"';
+                                if (preg_match('/target=["\'](_blank|_self)["\']/', $attrs, $targetMatch)) {
+                                    $allowedAttrs[] = 'target="' . $targetMatch[1] . '"';
+
                                     // Add rel="noopener noreferrer" for security if target is _blank
-                                    if ('_blank' === $target_match[1]) {
-                                        $allowed_attrs[] = 'rel="noopener noreferrer"';
+                                    if ('_blank' === $targetMatch[1]) {
+                                        $allowedAttrs[] = 'rel="noopener noreferrer"';
                                     }
                                 }
 
-                                return '<a ' . implode(' ', $allowed_attrs) . '>';
+                                return '<a ' . implode(' ', $allowedAttrs) . '>';
                             },
                             $val
                         );
@@ -214,34 +216,34 @@ class Translate extends Core
                             '/<span\s+([^>]+)>/i',
                             function ($matches) {
                                 $attrs = $matches[1];
-                                $allowed_attrs = [];
+                                $allowedAttrs = [];
 
                                 // Extract class (alphanumeric, dash, underscore only)
-                                if (preg_match('/class=["\']([a-zA-Z0-9\s_-]+)["\']/', $attrs, $class_match)) {
-                                    $allowed_attrs[] = 'class="' . htmlspecialchars($class_match[1], ENT_QUOTES, 'UTF-8') . '"';
+                                if (preg_match('/class=["\']([a-zA-Z0-9\s_-]+)["\']/', $attrs, $classMatch)) {
+                                    $allowedAttrs[] = 'class="' . htmlspecialchars($classMatch[1], ENT_QUOTES, 'UTF-8') . '"';
                                 }
 
                                 // Extract style (only color and font-weight)
-                                if (preg_match('/style=["\']([^"\']*)["\']/', $attrs, $style_match)) {
-                                    $style = $style_match[1];
-                                    $safe_styles = [];
+                                if (preg_match('/style=["\']([^"\']*)["\']/', $attrs, $styleMatch)) {
+                                    $style = $styleMatch[1];
+                                    $safeStyles = [];
 
                                     // Allow color
-                                    if (preg_match('/color:\s*([#a-zA-Z0-9]+)/', $style, $color_match)) {
-                                        $safe_styles[] = 'color: ' . $color_match[1];
+                                    if (preg_match('/color:\s*([#a-zA-Z0-9]+)/', $style, $colorMatch)) {
+                                        $safeStyles[] = 'color: ' . $colorMatch[1];
                                     }
 
                                     // Allow font-weight
-                                    if (preg_match('/font-weight:\s*(bold|normal|[1-9]00)/', $style, $weight_match)) {
-                                        $safe_styles[] = 'font-weight: ' . $weight_match[1];
+                                    if (preg_match('/font-weight:\s*(bold|normal|[1-9]00)/', $style, $weightMatch)) {
+                                        $safeStyles[] = 'font-weight: ' . $weightMatch[1];
                                     }
 
-                                    if ($safe_styles) {
-                                        $allowed_attrs[] = 'style="' . implode('; ', $safe_styles) . '"';
+                                    if ($safeStyles) {
+                                        $allowedAttrs[] = 'style="' . implode('; ', $safeStyles) . '"';
                                     }
                                 }
 
-                                return $allowed_attrs ? '<span ' . implode(' ', $allowed_attrs) . '>' : '<span>';
+                                return $allowedAttrs ? '<span ' . implode(' ', $allowedAttrs) . '>' : '<span>';
                             },
                             $val
                         );
@@ -268,14 +270,14 @@ class Translate extends Core
 
                     ksort($document['phrases']);
 
-                    $json_content = json_encode(
+                    $jsonContent = json_encode(
                         $document['phrases'],
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
                     );
 
-                    file_put_contents($document['file'], $json_content, LOCK_EX);
+                    file_put_contents($document['file'], $jsonContent, LOCK_EX);
                 }
 
                 clear_translations_cache($this->_code);
@@ -318,19 +320,19 @@ class Translate extends Core
                 }
 
                 // Separate identical and non-identical key-value pairs
-                $identical_pairs = [];
-                $non_identical_pairs = [];
+                $identicalPairs = [];
+                $nonIdenticalPairs = [];
 
                 foreach ($phrases as $key => $val) {
                     if ($key === $val) {
-                        $identical_pairs[$key] = $val;
+                        $identicalPairs[$key] = $val;
                     } else {
-                        $non_identical_pairs[$key] = $val;
+                        $nonIdenticalPairs[$key] = $val;
                     }
                 }
 
                 // Sort by untranslated first
-                $phrases = array_merge($identical_pairs, $non_identical_pairs);
+                $phrases = array_merge($identicalPairs, $nonIdenticalPairs);
             }
 
             // Update phrase total

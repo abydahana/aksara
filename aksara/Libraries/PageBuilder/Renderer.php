@@ -321,7 +321,7 @@ class Renderer
         $target = $props['target'] ?? '_self';
         $rounded = $props['rounded'] ?? true;
         $icon = $props['icon'] ?? '';
-        $icon_placement = $props['icon_placement'] ?? 'prefix';
+        $iconPlacement = $props['icon_placement'] ?? 'prefix';
 
         $classes = [$this->classes['btn']];
 
@@ -352,11 +352,11 @@ class Renderer
         $iconHtml = '';
 
         if ($icon) {
-            $marginClass = ($text ? ('suffix' === $icon_placement ? ' ms-2' : ' me-2') : '');
+            $marginClass = ($text ? ('suffix' === $iconPlacement ? ' ms-2' : ' me-2') : '');
             $iconHtml = "<i class=\"{$icon}{$marginClass}\"></i>";
         }
 
-        $content = ('suffix' === $icon_placement ? $text . $iconHtml : $iconHtml . $text);
+        $content = ('suffix' === $iconPlacement ? $text . $iconHtml : $iconHtml . $text);
 
         return "<a href=\"{$url}\" class=\"{$class}\"{$targetAttr}>{$content}</a>\n";
     }
@@ -657,7 +657,7 @@ class Renderer
 
         $html = "<div class=\"card border-0 bg-body-tertiary rounded-4 " . ($props['class'] ?? '') . "\">\n"
                . "  <div class=\"card-body p-4\">\n"
-               . "    <div class=\"mb-3 text-primary\"><i class=\"mdi mdi-format-quote-open mdi-3x opacity-25\"></i></div>\n"
+               . "    <div class=\"text-primary\"><i class=\"mdi mdi-format-quote-open display-3 opacity-25\"></i></div>\n"
                . "    <div class=\"fs-5 mb-4\">{$quote}</div>\n"
                . "    <div class=\"d-flex align-items-center\">\n";
 

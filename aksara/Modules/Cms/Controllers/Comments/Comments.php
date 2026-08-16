@@ -78,12 +78,12 @@ class Comments extends Core
     {
         $this->permission->mustAjax(current_page('../'));
 
-        $comment_id = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
+        $commentId = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
 
         $query = $this->model->getWhere(
             $this->_table,
             [
-                'comment_id' => $comment_id
+                'comment_id' => $commentId
             ],
             1
         )
@@ -93,7 +93,7 @@ class Comments extends Core
             return throw_exception(404, phrase('The comment you want to hide is not found'), current_page('../'));
         }
 
-        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $comment_id . get_userdata('session_generated'), ENCRYPTION_KEY)) {
+        if ($this->request->getPost('comment_id') == hash_hmac('sha256', $commentId . get_userdata('session_generated'), ENCRYPTION_KEY)) {
             if (DEMO_MODE) {
                 // Demo mode
                 return throw_exception(403, phrase('This feature is disabled in demo mode.'), go_to(null, ['id' => null]));
@@ -105,7 +105,7 @@ class Comments extends Core
                     'status' => ($query->status ? 0 : 1)
                 ],
                 [
-                    'comment_id' => $comment_id
+                    'comment_id' => $commentId
                 ]
             );
 
@@ -114,7 +114,7 @@ class Comments extends Core
 
         $html = '
             <form action="' . current_page() . '" method="POST" class="--validate-form">
-                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $comment_id . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
+                <input type="hidden" name="comment_id" value="' . hash_hmac('sha256', $commentId . get_userdata('session_generated'), ENCRYPTION_KEY) . '" />
                 <div class="text-center pt-3 pb-3 mb-3">
                     ' . phrase('Are you sure want to ' . ($query->status ? 'hide' : 'publish') . ' this comment?').  '
                 </div>
@@ -164,7 +164,7 @@ class Comments extends Core
         ->numRows();
 
         if ($query) {
-            return '<a href="' . current_page('feedback', ['id' => $params['comment_id'], 'column' => null, 'q' => null, 'per_page' => null, 'order' => null, 'sort' => null]) . '" class="badge bg-danger --xhr">' . number_format($query) . ' ' . ($query > 1 ? phrase('reports') : phrase('report')) . '</a>';
+            return '<a href="' . current_page('feedback', ['id' => $params['comment_id'], 'column' => null, 'q' => null, 'page' => null, 'order' => null, 'sort' => null]) . '" class="badge bg-danger --xhr">' . number_format($query) . ' ' . ($query > 1 ? phrase('reports') : phrase('report')) . '</a>';
         }
 
         return false;

@@ -100,15 +100,14 @@ class View
         }
 
         $request = Services::request();
-
-        $primary_key = [];
-        $field_data = [];
-        $merged_fields = [];
+        $primaryKey = [];
+        $fieldData = [];
+        $mergedFields = [];
 
         // Flatten merged fields
         if ($this->_mergeField) {
             foreach ($this->_mergeField as $val) {
-                $merged_fields = array_merge($merged_fields, $val);
+                $mergedFields = array_merge($mergedFields, $val);
             }
         }
 
@@ -117,6 +116,7 @@ class View
 
         // Prepare Replacements (for Mustache/Twig parsing)
         $replacement = [];
+
         foreach ($serialized as $field => $params) {
             $replacement[$field] = $params['value'];
         }
@@ -128,12 +128,11 @@ class View
             $value = $params['value'];
             $content = $params['content'];
             $hidden = $params['hidden'];
-
             $label = ucwords(str_replace('_', ' ', $field));
 
             // Store primary key
             if ($primary) {
-                $primary_key[$field] = $value;
+                $primaryKey[$field] = $value;
             }
 
             // Skip hidden fields
@@ -149,8 +148,8 @@ class View
             }
 
             // Determine Input Type
-            $field_type = $this->_getInputType($type);
-            $final_type = end($field_type);
+            $fieldType = $this->_getInputType($type);
+            $finalType = end($fieldType);
 
             // Masking (Password/Encryption)
             if (array_intersect(['password', 'encryption'], array_keys($type))) {
@@ -173,66 +172,67 @@ class View
             $content = $this->formatter->format($field, $content, $type, $replacement);
 
             // Construct Field Data
-            $field_data[$field] = [
+            $fieldData[$field] = [
                 'name' => $field,
                 'label' => $label,
                 'value' => (isset($this->_setRelation[$field]) ? $relationDisplayLabel : $value),
                 'content' => $content,
-                'type' => $final_type,
+                'type' => $finalType,
                 'primary' => $primary,
                 'tooltip' => $this->_setTooltip[$field] ?? null,
                 'attribution' => $this->_setAttribute[$field] ?? null,
                 'position' => $this->_fieldPosition[$field] ?? 1,
                 'prepend' => null,
                 'append' => null,
-                'merged' => in_array($field, $merged_fields),
+                'merged' => in_array($field, $mergedFields),
                 'escape' => ! isset($this->_mergeContent[$field])
             ];
 
             // Type-specific adjustments
-            if (in_array($final_type, ['image', 'images'])) {
-                $field_data[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
-            } elseif ('hyperlink' === $final_type && isset($type['hyperlink']['beta'])) {
-                $field_data[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
+            if (in_array($finalType, ['image', 'images'])) {
+                $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');
+            } elseif ('hyperlink' === $finalType && isset($type['hyperlink']['beta'])) {
+                $fieldData[$field]['target'] = ($type['hyperlink']['beta'] ? '_blank' : null);
             }
 
             // Parse Twig within content (Double Parsing check)
-            if (is_string($field_data[$field]['content']) && strpos($field_data[$field]['content'], '{{') !== false) {
-                $field_data[$field]['content'] = $this->parser->parse($field_data[$field]['content'], $replacement);
+            if (is_string($fieldData[$field]['content']) && strpos($fieldData[$field]['content'], '{{') !== false) {
+                $fieldData[$field]['content'] = $this->parser->parse($fieldData[$field]['content'], $replacement);
             }
 
             // Scaffolding: Create template if missing
-            if (! $request->isAJAX() && ! $this->apiClient && $final_type) {
-                $this->builder->getComponent($this->_setTheme, 'view', $final_type);
+            if (! $request->isAJAX() && ! $this->apiClient && $finalType) {
+                $this->builder->getComponent($this->_setTheme, 'view', $finalType);
             }
         }
 
         // Final Output Preparation
-        $highest_column = 1;
+        $highestColumn = 1;
+
         if (! empty($this->_fieldPosition)) {
-            $highest_column = max($this->_fieldPosition);
+            $highestColumn = max($this->_fieldPosition);
         }
 
-        $query_params = array_replace($request->getGet(), $primary_key);
+        $queryParams = array_replace($request->getGet(), $primaryKey);
 
         if ($this->apiClient) {
-            unset($query_params['aksara'], $query_params['limit']);
+            unset($queryParams['aksara'], $queryParams['limit']);
         }
 
         return [
-            'column_size' => $this->_columnSize,
-            'column_total' => $highest_column,
-            'extra_action' => [
+            'columnSize' => $this->_columnSize,
+            'columnTotal' => $highestColumn,
+            'extraAction' => [
                 'submit' => $this->_submitButton
             ],
-            'form_size' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
-            'field_size' => $this->_fieldSize,
-            'field_data' => $field_data,
-            'merged_content' => $this->_mergeContent,
-            'merged_field' => $this->_mergeField,
-            'set_heading' => $this->_setHeading,
-            'grouped_field' => $this->_groupField,
-            'query_params' => $query_params
+            'formSize' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
+            'fieldSize' => $this->_fieldSize,
+            'fieldData' => $fieldData,
+            'mergedContent' => $this->_mergeContent,
+            'mergedField' => $this->_mergeField,
+            'setHeading' => $this->_setHeading,
+            'groupedField' => $this->_groupField,
+            'queryParams' => $queryParams
         ];
     }
 
@@ -241,19 +241,19 @@ class View
      */
     private function _sortFields(array $serialized): array
     {
-        $order_source = [];
+        $orderSource = [];
 
         if (! empty($this->_viewOrder)) {
-            $order_source = $this->_viewOrder;
+            $orderSource = $this->_viewOrder;
         } elseif (! empty($this->_fieldOrder)) {
-            $order_source = $this->_fieldOrder;
+            $orderSource = $this->_fieldOrder;
         } elseif (! empty($this->_columnOrder)) {
-            $order_source = $this->_columnOrder;
+            $orderSource = $this->_columnOrder;
         }
 
-        if (! empty($order_source)) {
+        if (! empty($orderSource)) {
             $sorted = [];
-            foreach ($order_source as $val) {
+            foreach ($orderSource as $val) {
                 if (array_key_exists($val, $serialized)) {
                     $sorted[] = $val;
                 }
@@ -269,17 +269,17 @@ class View
      */
     private function _getInputType(array $type): array
     {
-        $field_type = array_intersect(array_keys($type), self::VALID_TYPES);
+        $fieldType = array_intersect(array_keys($type), self::VALID_TYPES);
 
-        if (empty($field_type)) {
-            $field_type = ['text'];
+        if (empty($fieldType)) {
+            $fieldType = ['text'];
         }
 
-        if (count($field_type) > 1) {
-            array_pop($field_type);
+        if (count($fieldType) > 1) {
+            array_pop($fieldType);
         }
 
-        return $field_type;
+        return $fieldType;
     }
 
     /**
@@ -287,15 +287,15 @@ class View
      */
     private function _mergeContent(string $field, array $replacement): mixed
     {
-        $merge_config = $this->_mergeContent[$field];
+        $mergeConfig = $this->_mergeContent[$field];
 
-        if (! empty($merge_config['callback'])) {
+        if (! empty($mergeConfig['callback'])) {
             $router = Services::router();
 
             // Execute Controller Callback
             $namespace = $router->controllerName();
             $class = new $namespace();
-            $callback = $merge_config['callback'];
+            $callback = $mergeConfig['callback'];
 
             if (method_exists($class, $callback)) {
                 return $class->$callback($replacement);
@@ -303,6 +303,6 @@ class View
         }
 
         // Execute String Parsing
-        return $this->parser->parse($merge_config['parameter'], $replacement);
+        return $this->parser->parse($mergeConfig['parameter'], $replacement);
     }
 }

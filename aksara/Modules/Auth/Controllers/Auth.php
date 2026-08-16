@@ -103,7 +103,7 @@ class Auth extends Core
                     return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
                 } elseif ($execute && password_verify($password . ENCRYPTION_KEY, $execute->password)) {
                     // Check if login attempts failed from the previous session
-                    $blocking_check = $this->model->getWhere(
+                    $blockingCheck = $this->model->getWhere(
                         'app_users_blocked',
                         [
                             'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
@@ -112,9 +112,9 @@ class Auth extends Core
                     )
                     ->row();
 
-                    if ($blocking_check) {
+                    if ($blockingCheck) {
                         // Check if blocking time is still available
-                        if (strtotime($blocking_check->blocked_until) >= time()) {
+                        if (strtotime($blockingCheck->blocked_until) >= time()) {
                             // Throw the blocking messages
                             return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
                         } else {
@@ -364,17 +364,17 @@ class Auth extends Core
             return false;
         }
 
-        $user_id = 0;
+        $userId = 0;
 
         try {
             $encrypter = Services::encrypter();
 
-            $user_id = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
+            $userId = $encrypter->decrypt(base64_decode($this->request->getGet('activation')));
         } catch (Throwable $e) {
             // Safe abstraction
         }
 
-        if ($this->model->getWhere('app_users_hashes', ['user_id' => $user_id], 1)->row()) {
+        if ($this->model->getWhere('app_users_hashes', ['user_id' => $userId], 1)->row()) {
             return true;
         }
 
@@ -384,12 +384,12 @@ class Auth extends Core
     /**
      * Send notification
      */
-    private function _sendNotification($user_id = 0)
+    private function _sendNotification($userId = 0)
     {
         $query = $this->model->getWhere(
             'app_users',
             [
-                'user_id' => $user_id
+                'user_id' => $userId
             ],
             1
         )

@@ -99,43 +99,56 @@ class Template
         $router = Services::router();
 
         // Get current controller namespace
-        $view_path = preg_replace(['/\\\\aksara\\\\/i', '/\\\\modules\\\\/i', '/\\\\controllers\\\\/i'], ['\\', '\\', '\Views\\'], $router->controllerName(), 1);
+        $viewPath = preg_replace(
+            [
+                '/\\\\aksara\\\\/i',
+                '/\\\\modules\\\\/i',
+                '/\\\\controllers\\\\/i'
+            ],
+            [
+                '\\',
+                '\\',
+                '\Views\\'
+            ],
+            $router->controllerName(),
+            1
+        );
 
         // Get parent module classname
-        $parent_module = strtok($view_path, '\\');
+        $parentModule = strtok($viewPath, '\\');
 
         // Get current module classname
-        $current_module = substr($view_path, strrpos($view_path, '\\') + 1);
+        $currentModule = substr($viewPath, strrpos($viewPath, '\\') + 1);
 
-        if (strtolower($parent_module) === strtolower($current_module)) {
+        if (strtolower($parentModule) === strtolower($currentModule)) {
             // Slice out the module path when the parent module has same name
-            $view_path = substr($view_path, 0, strrpos($view_path, '\\'));
+            $viewPath = substr($viewPath, 0, strrpos($viewPath, '\\'));
         }
 
         // Replace backslash to match with directory separator
-        $view_path = str_replace([$current_module . '\\' . $current_module, '\\'], [strtolower($current_module), '/'], $view_path);
+        $viewPath = str_replace([$currentModule . '\\' . $currentModule, '\\'], [strtolower($currentModule), '/'], $viewPath);
 
         // List module and view path
-        list($modules, $views) = array_pad(explode('/Views', $view_path), 2, null);
+        list($modules, $views) = array_pad(explode('/Views', $viewPath), 2, null);
 
         // Convert view path as lowercase
-        $view_path = $modules . '/Views' . ($views ? strtolower($views) : null);
+        $viewPath = $modules . '/Views' . ($views ? strtolower($views) : null);
 
         // Theme based viewfinder
-        $theme_viewfinder = ROOTPATH . 'themes/' . $this->theme . '/views/' . strtolower(preg_replace('/\/views/i', '', $view_path, 1));
+        $themeViewfinder = ROOTPATH . 'themes/' . $this->theme . '/views/' . strtolower(preg_replace('/\/views/i', '', $viewPath, 1));
 
         // Theme based viewfinder fallback
-        $fallback_theme_viewfinder = ROOTPATH . 'themes/' . $this->theme . '/components/core';
+        $fallbackThemeViewfinder = ROOTPATH . 'themes/' . $this->theme . '/components/core';
 
         // Module based viewfinder
-        $module_viewfinder = ROOTPATH . 'modules' . $view_path;
+        $moduleViewfinder = ROOTPATH . 'modules' . $viewPath;
 
         // Core module based viewfinder
-        $core_viewfinder = APPPATH . 'Modules' . $view_path;
+        $coreViewfinder = APPPATH . 'Modules' . $viewPath;
 
         // Fallback theme based viewfinder
-        $fallback_theme = ('backend' == $this->getThemeProperty('type') ? (get_setting('backend_theme') ?: 'backend') : (get_setting('frontend_theme') ?: 'default'));
-        $fallback_viewfinder = ROOTPATH . 'themes/' . $fallback_theme . '/components/core';
+        $fallbackTheme = ('backend' == $this->getThemeProperty('type') ? (get_setting('backend_theme') ?: 'backend') : (get_setting('frontend_theme') ?: 'default'));
+        $fallbackViewfinder = ROOTPATH . 'themes/' . $fallbackTheme . '/components/core';
 
         // View suffix
         $suffix = (! is_cli() && $request->getUserAgent()->isMobile() ? '_mobile' : ('modal' == $request->getPost('prefer') ? '_modal' : (isset($_ENV['GRID_VIEW']) && $_ENV['GRID_VIEW'] ? '_grid' : null)));
@@ -154,11 +167,11 @@ class Template
 
             // Traverse up the directory tree based on the number of "../" segments.
             while ($levels--) {
-                $theme_viewfinder = dirname($theme_viewfinder);
-                $fallback_theme_viewfinder = dirname($fallback_theme_viewfinder);
-                $module_viewfinder = dirname($module_viewfinder);
-                $core_viewfinder = dirname($core_viewfinder);
-                $fallback_viewfinder = dirname($fallback_viewfinder);
+                $themeViewfinder = dirname($themeViewfinder);
+                $fallbackThemeViewfinder = dirname($fallbackThemeViewfinder);
+                $moduleViewfinder = dirname($moduleViewfinder);
+                $coreViewfinder = dirname($coreViewfinder);
+                $fallbackViewfinder = dirname($fallbackViewfinder);
             }
 
             // Strip leading "../" segments since the base view directories
@@ -171,175 +184,175 @@ class Template
          * Find view from theme
          * ---------------------------------------------------------------------
          */
-        if (file_exists($theme_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+        if (file_exists($themeViewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($themeViewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method . $suffix);
-        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($themeViewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($themeViewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view . $suffix);
-        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($themeViewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($themeViewfinder . '/' . $language . '/' . $method . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $method);
-        } elseif (file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($theme_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($themeViewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($themeViewfinder . '/' . $language . '/' . $view . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $language . '/' . $view);
-        } elseif (file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.twig') || file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder) . $suffix . '.twig') || file_exists(dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder) . $suffix . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . $suffix);
-        } elseif (file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . '.twig') || file_exists(dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder) . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder) . $suffix);
+        } elseif (file_exists(dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder) . '.twig') || file_exists(dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder) . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/' . $language . '/' . basename($theme_viewfinder));
-        } elseif (file_exists($theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $method . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($themeViewfinder) . '/' . $language . '/' . basename($themeViewfinder));
+        } elseif (file_exists($themeViewfinder . '/' . $method . $suffix . '.twig') || file_exists($themeViewfinder . '/' . $method . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $method . $suffix);
-        } elseif (file_exists($theme_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($theme_viewfinder . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($themeViewfinder . '/' . $view . $suffix . '.twig') || file_exists($themeViewfinder . '/' . $view . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $view . $suffix);
-        } elseif (file_exists($theme_viewfinder . '/' . $method . '.twig') || file_exists($theme_viewfinder . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($themeViewfinder . '/' . $method . '.twig') || file_exists($themeViewfinder . '/' . $method . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $method);
-        } elseif (file_exists($theme_viewfinder . '/' . $view . '.twig') || file_exists($theme_viewfinder . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $method);
+        } elseif (file_exists($themeViewfinder . '/' . $view . '.twig') || file_exists($themeViewfinder . '/' . $view . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . '/' . $view);
-        } elseif (file_exists($theme_viewfinder . $suffix . '.twig') || file_exists($theme_viewfinder . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . '/' . $view);
+        } elseif (file_exists($themeViewfinder . $suffix . '.twig') || file_exists($themeViewfinder . $suffix . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder . $suffix);
-        } elseif (file_exists($theme_viewfinder . '.twig') || file_exists($theme_viewfinder . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder . $suffix);
+        } elseif (file_exists($themeViewfinder . '.twig') || file_exists($themeViewfinder . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $theme_viewfinder);
+            $view = str_replace(ROOTPATH, '../../', $themeViewfinder);
         }
 
         /**
          * ---------------------------------------------------------------------
          * Find view from user modules
          * ---------------------------------------------------------------------
-         */ elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($moduleViewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($moduleViewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $method . $suffix);
-        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($moduleViewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($moduleViewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $view . $suffix);
-        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($moduleViewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($moduleViewfinder . '/' . $language . '/' . $method . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $method);
-        } elseif (file_exists($module_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($module_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($moduleViewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($moduleViewfinder . '/' . $language . '/' . $view . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $language . '/' . $view);
-        } elseif (file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix . '.twig') || file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder) . $suffix . '.twig') || file_exists(dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder) . $suffix . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . $suffix);
-        } elseif (file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . '.twig') || file_exists(dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder) . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder) . $suffix);
+        } elseif (file_exists(dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder) . '.twig') || file_exists(dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder) . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($module_viewfinder) . '/' . $language . '/' . basename($module_viewfinder));
-        } elseif (file_exists($module_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $method . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($moduleViewfinder) . '/' . $language . '/' . basename($moduleViewfinder));
+        } elseif (file_exists($moduleViewfinder . '/' . $method . $suffix . '.twig') || file_exists($moduleViewfinder . '/' . $method . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $method . $suffix);
-        } elseif (file_exists($module_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($module_viewfinder . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($moduleViewfinder . '/' . $view . $suffix . '.twig') || file_exists($moduleViewfinder . '/' . $view . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $view . $suffix);
-        } elseif (file_exists($module_viewfinder . '/' . $method . '.twig') || file_exists($module_viewfinder . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($moduleViewfinder . '/' . $method . '.twig') || file_exists($moduleViewfinder . '/' . $method . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $method);
-        } elseif (file_exists($module_viewfinder . '/' . $view . '.twig') || file_exists($module_viewfinder . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $method);
+        } elseif (file_exists($moduleViewfinder . '/' . $view . '.twig') || file_exists($moduleViewfinder . '/' . $view . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . '/' . $view);
-        } elseif (file_exists($module_viewfinder . $suffix . '.twig') || file_exists($module_viewfinder . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . '/' . $view);
+        } elseif (file_exists($moduleViewfinder . $suffix . '.twig') || file_exists($moduleViewfinder . $suffix . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder . $suffix);
-        } elseif (file_exists($module_viewfinder . '.twig') || file_exists($module_viewfinder . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder . $suffix);
+        } elseif (file_exists($moduleViewfinder . '.twig') || file_exists($moduleViewfinder . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $module_viewfinder);
+            $view = str_replace(ROOTPATH, '../../', $moduleViewfinder);
         }
 
         /**
          * ---------------------------------------------------------------------
          * Find view from core modules
          * ---------------------------------------------------------------------
-         */ elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($coreViewfinder . '/' . $language . '/' . $method . $suffix . '.twig') || file_exists($coreViewfinder . '/' . $language . '/' . $method . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $method . $suffix);
-        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $language . '/' . $method . $suffix);
+        } elseif (file_exists($coreViewfinder . '/' . $language . '/' . $view . $suffix . '.twig') || file_exists($coreViewfinder . '/' . $language . '/' . $view . $suffix . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $view . $suffix);
-        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $language . '/' . $view . $suffix);
+        } elseif (file_exists($coreViewfinder . '/' . $language . '/' . $method . '.twig') || file_exists($coreViewfinder . '/' . $language . '/' . $method . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $method);
-        } elseif (file_exists($core_viewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($core_viewfinder . '/' . $language . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $language . '/' . $method);
+        } elseif (file_exists($coreViewfinder . '/' . $language . '/' . $view . '.twig') || file_exists($coreViewfinder . '/' . $language . '/' . $view . '.php')) {
             // View is found under i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $language . '/' . $view);
-        } elseif (file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix . '.twig') || file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $language . '/' . $view);
+        } elseif (file_exists(dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder) . $suffix . '.twig') || file_exists(dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder) . $suffix . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . $suffix);
-        } elseif (file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . '.twig') || file_exists(dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder) . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder) . $suffix);
+        } elseif (file_exists(dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder) . '.twig') || file_exists(dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder) . '.php')) {
             // View is found under i18n path of current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', dirname($core_viewfinder) . '/' . $language . '/' . basename($core_viewfinder));
-        } elseif (file_exists($core_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($core_viewfinder . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', dirname($coreViewfinder) . '/' . $language . '/' . basename($coreViewfinder));
+        } elseif (file_exists($coreViewfinder . '/' . $view . $suffix . '.twig') || file_exists($coreViewfinder . '/' . $view . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $view . $suffix);
-        } elseif (file_exists($core_viewfinder . '/' . $method . '.twig') || file_exists($core_viewfinder . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($coreViewfinder . '/' . $method . '.twig') || file_exists($coreViewfinder . '/' . $method . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $method);
-        } elseif (file_exists($core_viewfinder . '/' . $view . '.twig') || file_exists($core_viewfinder . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $method);
+        } elseif (file_exists($coreViewfinder . '/' . $view . '.twig') || file_exists($coreViewfinder . '/' . $view . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . '/' . $view);
-        } elseif (file_exists($core_viewfinder . $suffix . '.twig') || file_exists($core_viewfinder . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . '/' . $view);
+        } elseif (file_exists($coreViewfinder . $suffix . '.twig') || file_exists($coreViewfinder . $suffix . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder . $suffix);
-        } elseif (file_exists($core_viewfinder . '.twig') || file_exists($core_viewfinder . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder . $suffix);
+        } elseif (file_exists($coreViewfinder . '.twig') || file_exists($coreViewfinder . '.php')) {
             // View is found and same as current classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $core_viewfinder);
+            $view = str_replace(ROOTPATH, '../../', $coreViewfinder);
         }
 
         /**
          * ---------------------------------------------------------------------
          * Find fallback view if doesn't match anything from above occurrence
          * ---------------------------------------------------------------------
-         */ elseif (file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . $suffix . '.php')) {
+         */ elseif (file_exists($fallbackThemeViewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallbackThemeViewfinder . '/' . $method . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $method . $suffix);
-        } elseif (file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackThemeViewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($fallbackThemeViewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallbackThemeViewfinder . '/' . $view . $suffix . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $view . $suffix);
-        } elseif (file_exists($fallback_theme_viewfinder . '/' . $method . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackThemeViewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($fallbackThemeViewfinder . '/' . $method . '.twig') || file_exists($fallbackThemeViewfinder . '/' . $method . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $method);
-        } elseif (file_exists($fallback_theme_viewfinder . '/' . $view . '.twig') || file_exists($fallback_theme_viewfinder . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackThemeViewfinder . '/' . $method);
+        } elseif (file_exists($fallbackThemeViewfinder . '/' . $view . '.twig') || file_exists($fallbackThemeViewfinder . '/' . $view . '.php')) {
             // View is found without i18n path
-            $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/' . $view);
-        } elseif (file_exists($fallback_viewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallback_viewfinder . '/' . $method . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackThemeViewfinder . '/' . $view);
+        } elseif (file_exists($fallbackViewfinder . '/' . $method . $suffix . '.twig') || file_exists($fallbackViewfinder . '/' . $method . $suffix . '.php')) {
             // View fallback is found
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $method . $suffix);
-        } elseif (file_exists($fallback_viewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallback_viewfinder . '/' . $view . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/' . $method . $suffix);
+        } elseif (file_exists($fallbackViewfinder . '/' . $view . $suffix . '.twig') || file_exists($fallbackViewfinder . '/' . $view . $suffix . '.php')) {
             // View fallback is found
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $view . $suffix);
-        } elseif (file_exists($fallback_viewfinder . '/' . $method . '.twig') || file_exists($fallback_viewfinder . '/' . $method . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/' . $view . $suffix);
+        } elseif (file_exists($fallbackViewfinder . '/' . $method . '.twig') || file_exists($fallbackViewfinder . '/' . $method . '.php')) {
             // View fallback is found
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $method);
-        } elseif (file_exists($fallback_viewfinder . '/' . $view . '.twig') || file_exists($fallback_viewfinder . '/' . $view . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/' . $method);
+        } elseif (file_exists($fallbackViewfinder . '/' . $view . '.twig') || file_exists($fallbackViewfinder . '/' . $view . '.php')) {
             // View fallback is found
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/' . $view);
-        } elseif (file_exists($fallback_viewfinder . $suffix . '.twig') || file_exists($fallback_viewfinder . $suffix . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/' . $view);
+        } elseif (file_exists($fallbackViewfinder . $suffix . '.twig') || file_exists($fallbackViewfinder . $suffix . '.php')) {
             // View fallback is found and same as classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . $suffix);
-        } elseif (file_exists($fallback_viewfinder . '.twig') || file_exists($fallback_viewfinder . '.php')) {
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . $suffix);
+        } elseif (file_exists($fallbackViewfinder . '.twig') || file_exists($fallbackViewfinder . '.php')) {
             // View fallback is found and same as classname (lowercase)
-            $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder);
+            $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder);
         } else {
             // No matches view, check fallback
             if ($router->getMatchedRoute()) {
                 // No mode
-                $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/error');
+                $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/error');
             } else {
                 // No router found
-                if (file_exists(dirname($theme_viewfinder) . '/404.twig') || file_exists(dirname($theme_viewfinder) . '/404.php')) {
+                if (file_exists(dirname($themeViewfinder) . '/404.twig') || file_exists(dirname($themeViewfinder) . '/404.php')) {
                     // Use theme view
-                    $view = str_replace(ROOTPATH, '../../', dirname($theme_viewfinder) . '/404');
-                } elseif (file_exists($fallback_theme_viewfinder . '/404.twig') || file_exists($fallback_theme_viewfinder . '/404.php')) {
+                    $view = str_replace(ROOTPATH, '../../', dirname($themeViewfinder) . '/404');
+                } elseif (file_exists($fallbackThemeViewfinder . '/404.twig') || file_exists($fallbackThemeViewfinder . '/404.php')) {
                     // Use theme component
-                    $view = str_replace(ROOTPATH, '../../', $fallback_theme_viewfinder . '/404');
+                    $view = str_replace(ROOTPATH, '../../', $fallbackThemeViewfinder . '/404');
                 } else {
                     // Use core view
-                    $view = str_replace(ROOTPATH, '../../', $fallback_viewfinder . '/404');
+                    $view = str_replace(ROOTPATH, '../../', $fallbackViewfinder . '/404');
                 }
             }
         }
@@ -402,7 +415,7 @@ class Template
         $relativePrefix = $this->_getRelativePrefix();
 
         // Main templates definition
-        $main_templates = [
+        $mainTemplates = [
             $relativePrefix . 'aksara/Views/core/index',
             $relativePrefix . 'themes/' . $this->theme . '/components/core/index',
             $relativePrefix . 'aksara/Views/core/index_grid',
@@ -424,26 +437,26 @@ class Template
         // Set view to response
         $data->view = basename($view);
 
-        $view_path_twig = str_replace($relativePrefix, ROOTPATH, $view . '.twig');
-        $view_path_php = str_replace($relativePrefix, ROOTPATH, $view . '.php');
+        $viewPathTwig = str_replace($relativePrefix, ROOTPATH, $view . '.twig');
+        $viewPathPhp = str_replace($relativePrefix, ROOTPATH, $view . '.php');
 
-        if ((file_exists($view_path_twig) || file_exists($view_path_php)) && (! in_array($view, $main_templates) || (in_array($view, $main_templates) && (is_cli() || ! $request->isAJAX())))) {
-            if (file_exists($view_path_twig)) {
+        if ((file_exists($viewPathTwig) || file_exists($viewPathPhp)) && (! in_array($view, $mainTemplates) || (in_array($view, $mainTemplates) && (is_cli() || ! $request->isAJAX())))) {
+            if (file_exists($viewPathTwig)) {
                 // Load Twig template parser
                 $parser = new Parser();
 
                 // Build html from result object
-                $data->content = $parser->parse($view_path_twig, (array) $data);
+                $data->content = $parser->parse($viewPathTwig, (array) $data);
             } else {
                 // Build html from result object
                 $data->content = view($view, (array) $data);
             }
 
             // Intersection key to keep property from unset
-            $intersection_key = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'current_page', 'current_module', 'query_params', 'elapsed_time', 'content', '_token'];
+            $intersectionKey = ['code', 'method', 'prefer', 'meta', 'breadcrumb', 'limit', 'links', 'total', 'currentPage', 'currentModule', 'queryParams', 'elapsed_time', 'content', '_token'];
 
             foreach ($data as $key => $val) {
-                if (! in_array($key, $intersection_key)) {
+                if (! in_array($key, $intersectionKey)) {
                     // Unset rendered object
                     unset($data->$key);
                 }
@@ -465,14 +478,14 @@ class Template
                 $parser = new Parser();
 
                 // Build html from result object
-                $parsed_view = $parser->parse(ROOTPATH . 'themes/' . $this->theme . '/layout.twig', (array) $data);
+                $parsedView = $parser->parse(ROOTPATH . 'themes/' . $this->theme . '/layout.twig', (array) $data);
             } else {
                 // Build html from result object
-                $parsed_view = view($relativePrefix . 'themes/' . $this->theme . '/layout', (array) $data);
+                $parsedView = view($relativePrefix . 'themes/' . $this->theme . '/layout', (array) $data);
             }
 
             // Minify output
-            $output = $this->_minify(str_replace('</body>', '<div class="' . implode('', ['ak', 'sa', 'ra', '-', 'fo', 'ot', 'er']) . '"></div></body>', $parsed_view));
+            $output = $this->_minify(str_replace('</body>', '<div class="' . implode('', ['ak', 'sa', 'ra', '-', 'fo', 'ot', 'er']) . '"></div></body>', $parsedView));
 
             $response = Services::response();
 
@@ -506,8 +519,8 @@ class Template
 
         $slug = null;
         $checker = $uri->getSegments();
-        $matched_route = $router->getMatchedRoute();
-        $matched_route = (isset($matched_route[0]) ? explode('/', $matched_route[0]) : []);
+        $matchedRoute = $router->getMatchedRoute();
+        $matchedRoute = (isset($matchedRoute[0]) ? explode('/', $matchedRoute[0]) : []);
 
         if (! $data) {
             $data = [];
@@ -539,13 +552,13 @@ class Template
         $params = $request->getGet();
 
         foreach ($params as $key => $val) {
-            if (in_array($key, array_merge($primary, ['per_page', 'q', 'order', 'sort', 'limit', 'offset']))) {
+            if (in_array($key, array_merge($primary, ['page', 'q', 'order', 'sort', 'limit', 'offset']))) {
                 $params[$key] = null;
             }
         }
 
         // Get last breadcrumb
-        $current_page = end($data);
+        $currentPage = end($data);
 
         // Remove last breadcrumb
         array_pop($data);
@@ -559,20 +572,20 @@ class Template
             }
 
             if ($key && $val) {
-                $breadcrumb_params = $params;
+                $breadcrumbParams = $params;
 
                 if (is_array($val) && isset($val['label'])) {
                     $label = $val['label'];
 
                     if (isset($val['parameter']) && is_array($val['parameter'])) {
-                        $breadcrumb_params = array_merge($params, $val['parameter']);
+                        $breadcrumbParams = array_merge($params, $val['parameter']);
                     }
                 } else {
                     $label = $val;
                 }
 
                 $output[] = [
-                    'url' => $external ?? base_url($slug, $breadcrumb_params),
+                    'url' => $external ?? base_url($slug, $breadcrumbParams),
                     'label' => phrase($label, [], true), // Use phrase only if exist in translation
                     'icon' => ''
                 ];
@@ -581,7 +594,7 @@ class Template
 
         $output[] = [
             'url' => '',
-            'label' => $title ?? $current_page,
+            'label' => $title ?? $currentPage,
             'icon' => ''
         ];
 
@@ -608,9 +621,9 @@ class Template
             $data->total = 0;
         }
 
-        if (! isset($data->per_page)) {
-            // If no per_page setting, set default
-            $data->per_page = 25;
+        if (! isset($data->limit)) {
+            // If no limit setting, set default
+            $data->limit = 25;
         }
 
         if (! isset($data->offset)) {
@@ -619,15 +632,15 @@ class Template
         }
 
         $output = [];
-        $query_params = [];
+        $queryParams = [];
         $request = Services::request();
         $pager = Services::pager();
 
         // Make pagination links
-        $pagination = $pager->makeLinks(1, $data->per_page, $data->total, 'pagination');
+        $pagination = $pager->makeLinks(1, $data->limit, $data->total, 'pagination');
 
         // Get last page
-        $last_page = ($data->total > $data->per_page ? (int) ceil($data->total / $data->per_page) : 1);
+        $lastPage = ($data->total > $data->limit ? (int) ceil($data->total / $data->limit) : 1);
 
         foreach ($request->getGet() as $key => $val) {
             if (is_array($val)) {
@@ -638,11 +651,11 @@ class Template
 
                     $_key = preg_replace('/[^\w-]/', '', $_key);
 
-                    if (! $_key || in_array($_key, ['q', 'per_page'])) {
+                    if (! $_key || in_array($_key, ['q', 'page'])) {
                         continue;
                     }
 
-                    $query_params[] = [
+                    $queryParams[] = [
                         'name' => $_key,
                         'value' => htmlspecialchars($_val)
                     ];
@@ -653,11 +666,11 @@ class Template
 
             $key = preg_replace('/[^\w-]/', '', $key);
 
-            if (! $key || in_array($key, ['q', 'per_page'])) {
+            if (! $key || in_array($key, ['q', 'page'])) {
                 continue;
             }
 
-            $query_params[] = [
+            $queryParams[] = [
                 'name' => $key,
                 'value' => htmlspecialchars($val)
             ];
@@ -665,79 +678,80 @@ class Template
 
         $output = [
             'total' => (int) $data->total,
-            'per_page' => (int) $data->per_page,
-            'action' => current_page(null, ['per_page' => null]),
+            'limit' => (int) $data->limit,
+            'page' => (is_numeric($request->getGet('page')) && $request->getGet('page') ? (int) $request->getGet('page') : 1),
+            'action' => current_page(null, ['page' => null]),
             'filters' => [
-                'hidden' => $query_params,
+                'hidden' => $queryParams,
                 'select' => [
                     [
                         'name' => 'limit',
                         'values' => [
                             [
-                                'value' => (int) $data->per_page,
-                                'label' => (int) $data->per_page,
+                                'value' => (int) $data->limit,
+                                'label' => (int) $data->limit,
                                 'selected' => true
                             ],
                             [
-                                'value' => (int) ($data->per_page * 2),
-                                'label' => (int) ($data->per_page * 2),
-                                'selected' => (int) $data->per_page === ($data->per_page * 2)
+                                'value' => (int) ($data->limit * 2),
+                                'label' => (int) ($data->limit * 2),
+                                'selected' => (int) $data->limit === ($data->limit * 2)
                             ],
                             [
-                                'value' => (int) ($data->per_page * 4),
-                                'label' => (int) ($data->per_page * 4),
-                                'selected' => (int) $data->per_page === ($data->per_page * 4)
+                                'value' => (int) ($data->limit * 4),
+                                'label' => (int) ($data->limit * 4),
+                                'selected' => (int) $data->limit === ($data->limit * 4)
                             ],
                             [
-                                'value' => (int) ($data->per_page * 8),
-                                'label' => (int) ($data->per_page * 8),
-                                'selected' => (int) $data->per_page === ($data->per_page * 8)
+                                'value' => (int) ($data->limit * 8),
+                                'label' => (int) ($data->limit * 8),
+                                'selected' => (int) $data->limit === ($data->limit * 8)
                             ],
                             [
-                                'value' => (int) ($data->per_page * 20),
-                                'label' => (int) ($data->per_page * 20),
-                                'selected' => (int) $data->per_page === ($data->per_page * 20)
+                                'value' => (int) ($data->limit * 20),
+                                'label' => (int) ($data->limit * 20),
+                                'selected' => (int) $data->limit === ($data->limit * 20)
                             ]
                         ]
                     ]
                 ],
                 'number' => [
                     [
-                        'name' => 'per_page',
-                        'value' => (is_numeric($request->getGet('per_page')) && $request->getGet('per_page') ? (int) $request->getGet('per_page') : 1),
+                        'name' => 'page',
+                        'value' => (is_numeric($request->getGet('page')) && $request->getGet('page') ? (int) $request->getGet('page') : 1),
                         'min' => 1,
-                        'max' => $last_page
+                        'max' => $lastPage
                     ]
                 ]
             ],
             'information' => phrase('Showing {{start}} - {{end}} of {{total}} entries found.', [
                 'start' => ($data->offset ? number_format($data->offset) : ($data->total ? 1 : 0)),
-                'end' => ((($data->offset + $data->per_page) < $data->total ? number_format(($data->offset + $data->per_page)) : number_format($data->total))),
+                'end' => ((($data->offset + $data->limit) < $data->total ? number_format(($data->offset + $data->limit)) : number_format($data->total))),
                 'total' => number_format($data->total)
             ])
         ];
 
-        if (25 != $data->per_page) {
-            $default_limit = [
+        if (25 != $data->limit) {
+            $defaultLimit = [
                 [
                     'value' => 25,
                     'label' => 25,
-                    'selected' => 25 === (int) $data->per_page
+                    'selected' => 25 === (int) $data->limit
                 ]
             ];
 
-            $output['filters']['select'][0]['values'] = array_merge($default_limit, $output['filters']['select'][0]['values']);
+            $output['filters']['select'][0]['values'] = array_merge($defaultLimit, $output['filters']['select'][0]['values']);
         }
 
         $output['links'] = [];
 
         $dom = new \DOMDocument();
-        $internal_errors = libxml_use_internal_errors(true);
+        $internalErrors = libxml_use_internal_errors(true);
 
         $dom->loadHTML('<?xml encoding="UTF-8">' . $pagination, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
         libxml_clear_errors();
-        libxml_use_internal_errors($internal_errors);
+        libxml_use_internal_errors($internalErrors);
 
         foreach ($dom->getElementsByTagName('li') as $li) {
             /** @var \DOMElement $li */
@@ -825,7 +839,7 @@ class Template
     private function _coreMenus(array $menus = []): array
     {
         if (! $menus) {
-            $group_id = get_userdata('group_id');
+            $groupId = get_userdata('group_id');
 
             // Load model
             $model = new Model();
@@ -835,7 +849,7 @@ class Template
                 menu_structure
             ')
             ->groupStart()
-            ->where('group_id', $group_id)
+            ->where('group_id', $groupId)
             ->orWhere('group_id', 0)
             ->groupEnd()
             ->getWhere(
@@ -848,7 +862,7 @@ class Template
             ->row('menu_structure');
 
             $menus = ($serializedMenu ? json_decode($serializedMenu, true) : []);
-            $cms_menus = [
+            $cmsMenus = [
                 [
                     'id' => 0,
                     'label' => 'Blogs',
@@ -935,7 +949,7 @@ class Template
 
             if (get_userdata('group_id') == 1 && $this->getThemeProperty('type') == 'backend') {
                 // Core menus for global administrator
-                $core_menus = [
+                $coreMenus = [
                     [
                         'id' => 0,
                         'label' => '',
@@ -946,7 +960,7 @@ class Template
                         'label' => 'CMS',
                         'slug' => 'cms',
                         'icon' => 'mdi mdi-dropbox',
-                        'children' => $cms_menus
+                        'children' => $cmsMenus
                     ],
                     [
                         'id' => 0,
@@ -1108,10 +1122,10 @@ class Template
                     ]
                 ];
 
-                $menus = array_merge($menus, $core_menus);
+                $menus = array_merge($menus, $coreMenus);
             } elseif (get_userdata('group_id') == 2 && $this->getThemeProperty('type') == 'backend') {
                 // CMS menus for technical
-                $menus = array_merge($menus, $cms_menus);
+                $menus = array_merge($menus, $cmsMenus);
             }
         }
 

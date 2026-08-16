@@ -173,9 +173,9 @@ class Validation
         // Convert value to standardzitation
         $value = date('Y-m-d', strtotime((string) $value));
 
-        $valid_date = DateTime::createFromFormat('Y-m-d', $value);
+        $validDate = DateTime::createFromFormat('Y-m-d', $value);
 
-        if (! $valid_date || ($valid_date && $valid_date->format('Y-m-d') !== $value)) {
+        if (! $validDate || ($validDate && $validDate->format('Y-m-d') !== $value)) {
             return false;
         }
 
@@ -217,9 +217,9 @@ class Validation
         // Convert value to standardzitation
         $value = date('Y-m-d H:i:s', strtotime((string) $value));
 
-        $valid_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
+        $validDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
 
-        if (! $valid_datetime || ($valid_datetime && $valid_datetime->format('Y-m-d H:i:s') !== $value)) {
+        if (! $validDateTime || ($validDateTime && $validDateTime->format('Y-m-d H:i:s') !== $value)) {
             return false;
         }
 
@@ -237,9 +237,9 @@ class Validation
             return true;
         }
 
-        $valid_year = range(1970, 2100);
+        $validYear = range(1970, 2100);
 
-        if (! in_array($value, $valid_year)) {
+        if (! in_array($value, $validYear)) {
             return false;
         }
 
@@ -423,17 +423,17 @@ class Validation
     {
         $request = Services::request();
         $router = Services::router();
-        $upload_path = self::$uploadPath;
+        $uploadPath = self::$uploadPath;
 
-        if (! $upload_path) {
-            $upload_path = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
-            $upload_path = array_pad(explode('\\', $upload_path), 2, null);
-            $upload_path = $upload_path[1] ?? $upload_path[0];
+        if (! $uploadPath) {
+            $uploadPath = strtolower(substr(strstr($router->controllerName(), '\Controllers\\'), strlen('\Controllers\\')));
+            $uploadPath = array_pad(explode('\\', $uploadPath), 2, null);
+            $uploadPath = $uploadPath[1] ?? $uploadPath[0];
         }
 
         $source = $request->getFile($filename);
-        $mime_type = new Mimes();
-        $valid_mime = [];
+        $mimeType = new Mimes();
+        $validMime = [];
 
         if (! $source || ! $source->getName() || ! $source->isValid()) {
             if (is_object($source) && method_exists($source, 'getError') && $source->getError() && $source->getError() !== UPLOAD_ERR_NO_FILE) {
@@ -448,18 +448,18 @@ class Validation
             $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
 
             foreach ($filetype as $key => $val) {
-                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+                $validMime[] = $mimeType->guessTypeFromExtension($val);
             }
         } else {
             // The selected file is non-image format
             $filetype = array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED));
 
             foreach ($filetype as $key => $val) {
-                $valid_mime[] = $mime_type->guessTypeFromExtension($val);
+                $validMime[] = $mimeType->guessTypeFromExtension($val);
             }
         }
 
-        if (! in_array($source->getMimeType(), $valid_mime)) {
+        if (! in_array($source->getMimeType(), $validMime)) {
             // Mime is invalid
             $this->_uploadError = phrase('The selected file format is not allowed to upload');
 
@@ -481,12 +481,12 @@ class Validation
             return false;
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path)) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath)) {
             // Attempt to create new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path, 0755, true);
+                mkdir(UPLOAD_PATH . '/' . $uploadPath, 0755, true);
                 if (is_file(UPLOAD_PATH . '/placeholder.png')) {
-                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $upload_path . '/placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $uploadPath . '/placeholder.png');
                 }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
@@ -495,12 +495,12 @@ class Validation
             }
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/thumbs')) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs')) {
             // Attempt to create new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path . '/thumbs', 0755, true);
+                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs', 0755, true);
                 if (is_file(UPLOAD_PATH . '/placeholder_thumb.png')) {
-                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $upload_path . '/thumbs/placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $uploadPath . '/thumbs/placeholder.png');
                 }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
@@ -509,12 +509,12 @@ class Validation
             }
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $upload_path . '/icons')) {
+        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/icons')) {
             // Attempt to create new directory
             try {
-                mkdir(UPLOAD_PATH . '/' . $upload_path . '/icons', 0755, true);
+                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/icons', 0755, true);
                 if (is_file(UPLOAD_PATH . '/placeholder_icon.png')) {
-                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $upload_path . '/icons/placeholder.png');
+                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $uploadPath . '/icons/placeholder.png');
                 }
             } catch (Throwable $e) {
                 $this->_uploadError = $e->getMessage();
@@ -536,7 +536,7 @@ class Validation
             return false;
         }
 
-        if (in_array($source->getMimeType(), ['image/gif', 'image/jpeg', 'image/png'])) {
+        if (str_starts_with($source->getMimeType(), 'image/')) {
             // Uploaded file is image format, prepare image manipulation
             $imageinfo = getimagesize($source);
 
@@ -546,22 +546,22 @@ class Validation
                 return false;
             }
 
-            $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-            $original_dimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-            $thumbnail_dimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-            $icon_dimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
+            $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+            $originalDimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
+            $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
+            $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
 
-            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $original_dimension) {
+            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $originalDimension) {
                 // Resize image for non-gif format
-                $width = $original_dimension;
-                $height = $original_dimension;
+                $width = $originalDimension;
+                $height = $originalDimension;
 
                 // Load image manipulation library
                 $image = Services::image('gd');
 
                 try {
                     // Resize image and move to upload directory
-                    $image->withFile($source)->resize($width, $height, true, $master_dimension)->save(UPLOAD_PATH . '/' . $upload_path . '/' . $filename);
+                    $image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/' . $uploadPath . '/' . $filename);
                 } catch (Throwable $e) {
                     $this->_uploadError = phrase('Unable to process the uploaded image');
 
@@ -569,18 +569,18 @@ class Validation
                 }
             } else {
                 // Move file to upload directory
-                $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+                $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
             }
 
             // Create thumbnail and icon of image
-            $this->_resizeImage($upload_path, $filename, 'thumbs', $thumbnail_dimension, $thumbnail_dimension);
-            $this->_resizeImage($upload_path, $filename, 'icons', $icon_dimension, $icon_dimension);
+            $this->_resizeImage($uploadPath, $filename, 'thumbs', $thumbnailDimension, $thumbnailDimension);
+            $this->_resizeImage($uploadPath, $filename, 'icons', $iconDimension, $iconDimension);
         } else {
             // Non-image format, move directly to upload directory
-            $source->move(UPLOAD_PATH . '/' . $upload_path, $filename);
+            $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
         }
 
-        if (! $this->_syncToCloudStorage($upload_path, $filename, 'image' == $type)) {
+        if (! $this->_syncToCloudStorage($uploadPath, $filename, 'image' == $type)) {
             return false;
         }
 
@@ -686,14 +686,14 @@ class Validation
         $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
 
         $imageinfo = getimagesize($source);
-        $master_dimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
+        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
 
         try {
             // Load image manipulation library
             $image = Services::image('gd');
 
             // Resize image
-            if ($image->withFile($source)->resize($width, $height, true, $master_dimension)->save($target)) {
+            if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save($target)) {
                 // Crop image after resized
                 $image->withFile($target)
                     ->fit($width, $height, 'center')

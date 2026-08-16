@@ -57,7 +57,7 @@ class Comment extends Core
         ->setIcon('mdi mdi-comment-multiple')
 
         ->setOutput([
-            'likes_count' => $this->model->getWhere(
+            'likesCount' => $this->model->getWhere(
                 'post_likes',
                 [
                     'post_id' => $this->request->getGet('post_id'),
@@ -66,7 +66,7 @@ class Comment extends Core
             )
             ->numRows(),
 
-            'comments_count' => $this->model->getWhere(
+            'commentsCount' => $this->model->getWhere(
                 'post_comments',
                 [
                     'post_id' => $this->request->getGet('post_id'),
@@ -108,12 +108,12 @@ class Comment extends Core
             }
 
             $attachment = '';
-            $uploaded_files = Validation::$uploadedFiles;
+            $uploadedFiles = Validation::$uploadedFiles;
 
             // Check if the uploaded file is valid
-            if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
+            if (isset($uploadedFiles['attachment']) && is_array($uploadedFiles['attachment'])) {
                 // Loop to get source from unknown array key
-                foreach ($uploaded_files['attachment'] as $key => $src) {
+                foreach ($uploadedFiles['attachment'] as $key => $src) {
                     // Set new source
                     $attachment = $src;
                 }
@@ -457,7 +457,7 @@ class Comment extends Core
             'status' => 200,
             'meta' => [
                 'popup' => true,
-                'modal_size' => 'modal-sm'
+                'modalSize' => 'modal-sm'
             ],
             'content' => $html
         ]);
@@ -579,17 +579,17 @@ class Comment extends Core
     {
         $limit = 10;
         $order = 'DESC';
-        $page = (is_numeric($this->request->getGet('page')) ? $this->request->getGet('page') : 0);
-        $parent_id = $this->request->getGet('parent_id');
+        $page = (is_numeric($this->request->getGet('pageNo')) ? $this->request->getGet('pageNo') : 0);
+        $parentId = $this->request->getGet('parent_id');
 
         if ($page) {
             $this->model->offset($limit * $page);
         }
 
-        if ($parent_id) {
+        if ($parentId) {
             $order = 'ASC';
 
-            $this->model->where('post_comments.reply_id', $parent_id);
+            $this->model->where('post_comments.reply_id', $parentId);
         } else {
             $this->model->where([
                 'post_comments.post_id' => $this->request->getGet('post_id'),
@@ -653,7 +653,7 @@ class Comment extends Core
                 // Create links
                 $val->links = [
                     'profile_url' => base_url('user/' . $val->username),
-                    'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'page' => null]),
+                    'replies_url' => current_page(null, ['parent_id' => $val->comment_id, 'pageNo' => null]),
                     'reply_url' => current_page(null, ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'reply' => $this->request->getGet('reply') ?? $val->comment_id]),
                     'upvote_url' => current_page('upvote', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]),
                     'report_url' => (get_userdata('user_id') !== $val->created_by ? current_page('report', ['id' => $val->comment_id, 'path' => $this->request->getGet('path'), 'parent_id' => null]) : null),
@@ -714,10 +714,10 @@ class Comment extends Core
         }
 
         return make_json([
-            'page' => ($page + 1),
+            'pageNo' => ($page + 1),
             'limit' => $limit,
             'total' => sizeof($output),
-            'next_page' => current_page(null, ['page' => ($page + 1)]),
+            'nextPage' => current_page(null, ['pageNo' => ($page + 1)]),
             'comments' => $output
         ]);
     }
@@ -739,9 +739,9 @@ class Comment extends Core
         $later = new DateTime(date('Y-m-d'));
         $difference = $earlier->diff($later);
         $interval = $difference->days;
-        $day_minimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
+        $dayMinimum = (is_numeric(get_setting('account_age_restriction')) ? get_setting('account_age_restriction') : 0);
 
-        if (get_userdata('group_id') > 2 && $day_minimum && $interval <= $day_minimum) {
+        if (get_userdata('group_id') > 2 && $dayMinimum && $interval <= $dayMinimum) {
             // Minimize spam
             return throw_exception(403, phrase('Your account is not yet permitted to post a comment. Please try again after {{interval}} days.', ['interval' => ($interval > 0 ? $interval : 1)]));
         }
@@ -759,37 +759,37 @@ class Comment extends Core
         }
 
         $attachment = '';
-        $uploaded_files = Validation::$uploadedFiles;
+        $uploadedFiles = Validation::$uploadedFiles;
 
         // Check if the uploaded file is valid
-        if (isset($uploaded_files['attachment']) && is_array($uploaded_files['attachment'])) {
+        if (isset($uploadedFiles['attachment']) && is_array($uploadedFiles['attachment'])) {
             // Loop to get source from unknown array key
-            foreach ($uploaded_files['attachment'] as $key => $src) {
+            foreach ($uploadedFiles['attachment'] as $key => $src) {
                 // Set new source
                 $attachment = $src;
             }
         }
 
-        $target_reply_id = ($this->request->getGet('reply') ? (int) $this->request->getGet('reply') : 0);
-        $target_mention_id = ($this->request->getGet('mention') ? (int) $this->request->getGet('mention') : 0);
+        $targetReplyId = ($this->request->getGet('reply') ? (int) $this->request->getGet('reply') : 0);
+        $targetMentionId = ($this->request->getGet('mention') ? (int) $this->request->getGet('mention') : 0);
 
-        $max_depth = $this->_maxDepth;
+        $maxDepth = $this->_maxDepth;
 
-        $reply_id = 0;
-        $mention_id = 0;
+        $replyId = 0;
+        $mentionId = 0;
 
-        if ($target_reply_id) {
-            $target_depth = $this->_getCommentDepth($target_reply_id);
+        if ($targetReplyId) {
+            $targetDepth = $this->_getCommentDepth($targetReplyId);
 
-            if ($target_depth < $max_depth) {
+            if ($targetDepth < $maxDepth) {
                 // Within allowed depth: attach as direct child
-                $reply_id = $target_reply_id;
-                $mention_id = ($target_mention_id ?: $target_reply_id);
+                $replyId = $targetReplyId;
+                $mentionId = ($targetMentionId ?: $targetReplyId);
             } else {
                 // At or exceeds max depth limit: cap reply_id to target's parent reply_id
-                $target_comment = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $target_reply_id], 1)->row();
-                $reply_id = ($target_comment && $target_comment->reply_id) ? (int) $target_comment->reply_id : $target_reply_id;
-                $mention_id = $target_reply_id;
+                $targetComment = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $targetReplyId], 1)->row();
+                $replyId = ($targetComment && $targetComment->reply_id) ? (int) $targetComment->reply_id : $targetReplyId;
+                $mentionId = $targetReplyId;
             }
         }
 
@@ -799,8 +799,8 @@ class Comment extends Core
                 'created_by' => get_userdata('user_id'),
                 'post_id' => $this->request->getGet('post_id'),
                 'post_path' => $this->request->getGet('path'),
-                'reply_id' => $reply_id,
-                'mention_id' => $mention_id,
+                'reply_id' => $replyId,
+                'mention_id' => $mentionId,
                 'comments' => htmlspecialchars($this->request->getPost('comments')),
                 'attachment' => $attachment,
                 'created_at' => date('Y-m-d H:i:s'),
@@ -808,14 +808,14 @@ class Comment extends Core
             ]
         );
 
-        $comment_id = $this->model->insertId();
+        $commentId = $this->model->insertId();
 
-        if ($reply_id) {
+        if ($replyId) {
             // Get interaction
             $interaction = $this->model->getWhere(
                 'post_comments',
                 [
-                    'comment_id' => $reply_id
+                    'comment_id' => $replyId
                 ],
                 1
             )
@@ -829,7 +829,7 @@ class Comment extends Core
                         'from_user' => get_userdata('user_id'),
                         'to_user' => $interaction->created_by,
                         'type' => 'reply',
-                        'interaction_id' => $comment_id,
+                        'interaction_id' => $commentId,
                         'path' => $this->request->getGet('path'),
                         'created_at' => date('Y-m-d H:i:s'),
                     ]
@@ -861,7 +861,7 @@ class Comment extends Core
         ->getWhere(
             'post_comments',
             [
-                'post_comments.comment_id' => $mention_id,
+                'post_comments.comment_id' => $mentionId,
                 'post_comments.status' => 1
             ],
             1
@@ -888,7 +888,7 @@ class Comment extends Core
                                         ' . phrase('Just now') . '
                                     </span>
                                 </div>
-                                <div id="comment-text-' . $comment_id . '">
+                                <div id="comment-text-' . $commentId . '">
                                     ' . ($query ? '<div class="alert alert-warning border-0 border-start border-3 p-2 mb-2">' . phrase('Replying to') . ' <b>' . $query->first_name . ' '. $query->last_name . '</b><br />' . truncate($query->comments, 50) . '</div>' : null) . '
 
                                     ' . nl2br(htmlspecialchars($this->request->getPost('comments'))) . '
@@ -896,12 +896,12 @@ class Comment extends Core
                                 </div>
                             </div>
                             <div class="dropdown comment-dropdown flex-shrink-0">
-                                <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton' . $comment_id . '" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton' . $commentId . '" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-dots-horizontal fs-5"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton' . $comment_id . '">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton' . $commentId . '">
                                     <li>
-                                        <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $comment_id, 'path' => null]) . '">
+                                        <a class="dropdown-item --modal" href="' . current_page('update', ['id' => $commentId, 'path' => null]) . '">
                                             ' . phrase('Update') . '
                                         </a>
                                     </li>
@@ -909,11 +909,11 @@ class Comment extends Core
                             </div>
                         </div>
                         <div class="py-1 ps-3">
-                            <a href="' . current_page('upvote', ['id' => $comment_id, 'path' => $this->request->getGet('path')]) . '" class="small text-body --upvote">
-                                <b><span id="comment-upvote-' . $comment_id . '"></span> ' . phrase('Upvote') . '</b>
+                            <a href="' . current_page('upvote', ['id' => $commentId, 'path' => $this->request->getGet('path')]) . '" class="small text-body --upvote">
+                                <b><span id="comment-upvote-' . $commentId . '"></span> ' . phrase('Upvote') . '</b>
                             </a>
                              &middot;
-                            <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => $comment_id, 'mention' => $comment_id]) . '" class="small text-body --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
+                            <a href="' . current_page(null, ['path' => $this->request->getGet('path'), 'reply' => $commentId, 'mention' => $commentId]) . '" class="small text-body --reply" data-profile-photo="' . get_image('users', get_userdata('photo'), 'icon') . '" data-mention="' . get_userdata('first_name') . ' ' . get_userdata('last_name') . '">
                                 <b>' . phrase('Reply') . '</b>
                             </a>
                         </div>
@@ -927,17 +927,17 @@ class Comment extends Core
             </div>
         ';
 
-        if ($reply_id) {
-            $insert_method = 'insert_before';
+        if ($replyId) {
+            $insertMethod = 'insert_before';
         } else {
-            $insert_method = 'prepend_to';
+            $insertMethod = 'prepend_to';
         }
 
         return make_json([
             'content' => $html,
-            $insert_method => ($reply_id ? '#comment-container #comment-reply form' : '#comment-container'),
+            $insertMethod => ($replyId ? '#comment-container #comment-reply form' : '#comment-container'),
             'remove_element' => '.empty-comment-message',
-            'in_context' => ($reply_id ? true : false)
+            'in_context' => ($replyId ? true : false)
         ]);
     }
 
@@ -956,13 +956,13 @@ class Comment extends Core
         $agent = $this->request->getUserAgent();
 
         if ($agent->isBrowser()) {
-            $user_agent = $agent->getBrowser() . ' ' . $agent->getVersion();
+            $userAgent = $agent->getBrowser() . ' ' . $agent->getVersion();
         } elseif ($agent->isRobot()) {
-            $user_agent = $agent->getRobot();
+            $userAgent = $agent->getRobot();
         } elseif ($agent->isMobile()) {
-            $user_agent = $agent->getMobile();
+            $userAgent = $agent->getMobile();
         } else {
-            $user_agent = phrase('Unknown');
+            $userAgent = phrase('Unknown');
         }
 
         $prepare = [
@@ -972,7 +972,7 @@ class Comment extends Core
             'method' => $method,
             'query' => json_encode($query),
             'ip_address' => $this->request->getIPAddress(),
-            'browser' => $user_agent,
+            'browser' => $userAgent,
             'platform' => $agent->getPlatform(),
             'timestamp' => date('Y-m-d H:i:s')
         ];
@@ -983,18 +983,18 @@ class Comment extends Core
     /**
      * Calculates the depth level of a comment recursively up to MAX_COMMENT_DEPTH.
      */
-    private function _getCommentDepth(int $comment_id): int
+    private function _getCommentDepth(int $commentId): int
     {
         $depth = 1;
-        $current_id = $comment_id;
+        $currentId = $commentId;
 
-        while ($current_id > 0 && $depth < 10) {
-            $row = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $current_id], 1)->row();
+        while ($currentId > 0 && $depth < 10) {
+            $row = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $currentId], 1)->row();
             if (! $row || ! $row->reply_id) {
                 break;
             }
             $depth++;
-            $current_id = (int) $row->reply_id;
+            $currentId = (int) $row->reply_id;
         }
 
         return $depth;

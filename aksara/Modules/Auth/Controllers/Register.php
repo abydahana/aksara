@@ -17,7 +17,6 @@
 
 namespace Aksara\Modules\Auth\Controllers;
 
-use Throwable;
 use Config\Services;
 use Aksara\Libraries\Messaging;
 use Aksara\Laboratory\Core;
@@ -120,12 +119,12 @@ class Register extends Core
             unset_userdata(['captcha', 'captcha_file']);
 
             if (get_setting('auto_active_registration')) {
-                $default_membership_group = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
+                $defaultMembershipGroup = (get_setting('default_membership_group') ? get_setting('default_membership_group') : 3);
 
                 // Set the user credential into session
                 set_userdata([
                     'user_id' => $prepare['user_id'],
-                    'group_id' => $default_membership_group,
+                    'group_id' => $defaultMembershipGroup,
                     'language_id' => $prepare['language_id'],
                     'is_logged' => true
                 ]);

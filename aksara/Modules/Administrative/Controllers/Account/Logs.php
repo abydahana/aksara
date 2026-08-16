@@ -93,30 +93,30 @@ class Logs extends Core
         ->result();
 
         $output = [];
-        $ip_addresses = [];
+        $ipAddresses = [];
 
         foreach ($query as $key => $val) {
             // Unique by IP Address
-            if (in_array($val->ip_address, $ip_addresses)) {
+            if (in_array($val->ip_address, $ipAddresses)) {
                 continue;
             }
 
             $output[$val->platform][] = $val;
 
             // Add IP Address into collections
-            $ip_addresses[] = $val->ip_address;
+            $ipAddresses[] = $val->ip_address;
         }
 
         return $output;
     }
 
-    private function _getIpInfo($ip_address = null, $key = null)
+    private function _getIpInfo($ipAddress = null, $key = null)
     {
-        if (! $ip_address || '::1' === $ip_address) {
+        if (! $ipAddress || '::1' === $ipAddress) {
             return false;
         }
 
-        $information = file_get_contents('https://www.aksaracms.com/ip/' . $ip_address);
+        $information = file_get_contents('https://www.aksaracms.com/ip/' . $ipAddress);
 
         return make_json(json_decode($information));
     }

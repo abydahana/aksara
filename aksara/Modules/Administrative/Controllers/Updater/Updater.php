@@ -130,23 +130,23 @@ class Updater extends Core
      */
     private function _runUpdater(object $response)
     {
-        $updater_path = sha1($response->version);
+        $updaterPath = sha1($response->version);
         $updated = false;
-        $tmp_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updater_path;
-        $old_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
-        $dependency_updated = [];
-        $backup_name = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
+        $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updaterPath;
+        $oldDependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
+        $dependencyUpdated = [];
+        $backupName = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
         $zip = new ZipArchive();
 
         /**
          * Create backup file
          */
         try {
-            if (! is_dir($tmp_path)) {
-                mkdir($tmp_path, 0755, true);
+            if (! is_dir($tmpPath)) {
+                mkdir($tmpPath, 0755, true);
             }
 
-            $zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zip->open($tmpPath . DIRECTORY_SEPARATOR . $backupName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
             $zip->addFile(ROOTPATH . 'composer.json', 'composer.json');
             $zip->addFile(ROOTPATH . 'composer.lock', 'composer.lock');
 
@@ -170,38 +170,38 @@ class Updater extends Core
             $zip->close();
 
             // Remove temporary path
-            $this->_rmdir($tmp_path);
+            $this->_rmdir($tmpPath);
 
             return throw_exception(400, ['package' => phrase('Update canceled due inability to write the backup file!') . ': ' . $e->getMessage()]);
         }
 
         try {
             // Get update package from the remote server
-            copy($response->updater, $tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip');
+            copy($response->updater, $tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip');
 
             /**
              * STEP 1
              * Open and extract the updater file to the temporary directory to get the updater files
              */
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, $tmp_path . DIRECTORY_SEPARATOR)) {
+            if ($zip->open($tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, $tmpPath . DIRECTORY_SEPARATOR)) {
                 // Close zip
                 $zip->close();
 
                 // Set the updater name
-                $updater_name = 'aksara-' . $response->version;
+                $updaterName = 'aksara-' . $response->version;
 
                 // Create recursive directory iterator
-                $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tmp_path . DIRECTORY_SEPARATOR . $updater_name), RecursiveIteratorIterator::LEAVES_ONLY);
+                $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tmpPath . DIRECTORY_SEPARATOR . $updaterName), RecursiveIteratorIterator::LEAVES_ONLY);
 
                 // Create updater package
-                $zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+                $zip->open($tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
                 // Initialize updater file collections
                 foreach ($files as $name => $file) {
                     // Skip empty directory
                     if (! $file->isDir()) {
                         // Add current file to archive
-                        $zip->addFile($file->getRealPath(), substr($file->getRealPath(), strlen($tmp_path . DIRECTORY_SEPARATOR . $updater_name) + 1));
+                        $zip->addFile($file->getRealPath(), substr($file->getRealPath(), strlen($tmpPath . DIRECTORY_SEPARATOR . $updaterName) + 1));
                     }
                 }
 
@@ -213,7 +213,7 @@ class Updater extends Core
              * STEP 2
              * Extract created updater file to root of the Aksara installation
              */
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, ROOTPATH)) {
+            if ($zip->open($tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip') === true && $this->_extractZipArchive($zip, ROOTPATH)) {
                 // Updater success, change the state
                 $updated = true;
 
@@ -226,23 +226,23 @@ class Updater extends Core
 
         if ($updated) {
             // Extract the dependencies
-            $new_dependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
+            $newDependencies = json_decode(file_get_contents(ROOTPATH . 'composer.json'), true);
 
-            if (isset($old_dependencies['require']) && isset($new_dependencies['require'])) {
+            if (isset($oldDependencies['require']) && isset($newDependencies['require'])) {
                 // Find the dependencies difference
-                $dependency_updated = array_diff($old_dependencies['require'], $new_dependencies['require']);
+                $dependencyUpdated = array_diff($oldDependencies['require'], $newDependencies['require']);
 
                 // Merge dependencies
-                $new_dependencies['require'] = array_unique(array_merge($old_dependencies['require'], $new_dependencies['require']));
+                $newDependencies['require'] = array_unique(array_merge($oldDependencies['require'], $newDependencies['require']));
             }
 
             // Database migrations and seeder
             try {
                 // Remove temporary path
-                $this->_rmdir($tmp_path);
+                $this->_rmdir($tmpPath);
 
                 // Update and merge the dependencies
-                file_put_contents(ROOTPATH . 'composer.json', json_encode($new_dependencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                file_put_contents(ROOTPATH . 'composer.json', json_encode($newDependencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
                 // Run the updater migration
                 $migration = Services::migrations()->setNamespace('Aksara');
@@ -264,7 +264,7 @@ class Updater extends Core
                             ' . phrase('Your core system has been successfully updated!') . '
                         </h5>
                     </div>
-                    ' . ($dependency_updated ? '
+                    ' . ($dependencyUpdated ? '
                     <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
                             ' . phrase('You may need to run the composer update from the directory below to update the dependencies:') . '
@@ -273,12 +273,12 @@ class Updater extends Core
                         </div>
                     </div>
                     ' : null) . '
-                    ' . (is_dir($tmp_path) ? '
+                    ' . (is_dir($tmpPath) ? '
                     <div class="mx--3 alert alert-warning text-sm border-0 rounded-0">
                         <div class="text-center">
                             ' . phrase('Unable to remove the updater junk files from the cache directory:') . '
                             <br />
-                            <code>' . $tmp_path . '</code>
+                            <code>' . $tmpPath . '</code>
                         </div>
                     </div>
                     ' : null) . '
@@ -346,12 +346,12 @@ class Updater extends Core
 
         try {
             // Update failed, restore the backup file
-            if ($zip->open($tmp_path . DIRECTORY_SEPARATOR . $backup_name) === true && $this->_extractZipArchive($zip, ROOTPATH)) {
+            if ($zip->open($tmpPath . DIRECTORY_SEPARATOR . $backupName) === true && $this->_extractZipArchive($zip, ROOTPATH)) {
                 // Close the opened zip
                 $zip->close();
 
                 // Remove temporary path
-                $this->_rmdir($tmp_path);
+                $this->_rmdir($tmpPath);
             }
         } catch (Throwable $e) {
             // Backup file restore failed

@@ -4,10 +4,10 @@
  * @var mixed $permission
  * @var mixed $card
  * @var mixed $visitors
- * @var mixed $recent_signed
+ * @var mixed $recentSigned
  * @var mixed $announcements
  * @var mixed $logs
- * @var mixed $system_language
+ * @var mixed $systemLanguage
  */
 if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
@@ -281,7 +281,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="card-body">
                                 <?php
-                                foreach ($recent_signed as $key => $val) {
+                                foreach ($recentSigned as $key => $val) {
                                     echo '
                                         ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
                                         <div class="row no-gutters align-items-center">
@@ -430,7 +430,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         <?= phrase('System Language'); ?>
                                     </span>
                                     <p>
-                                        <?= (isset($system_language) ? $system_language : null); ?>
+                                        <?= (isset($systemLanguage) ? $systemLanguage : null); ?>
                                     </p>
                                 </div>
                             </div>

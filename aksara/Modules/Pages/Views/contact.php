@@ -6,7 +6,6 @@
  * @var mixed $captcha
  */
 ?>
-
 <div class="position-relative">
     <div data-role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')); ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
@@ -104,17 +103,17 @@
                                 <?= phrase('Direct Inquiry'); ?>
                             </h2>
                             <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
-                                <?= form_input($results->field_data->sender_full_name); ?>
+                                <?= form_input($results->fieldData->sender_full_name); ?>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <?= form_input($results->field_data->sender_phone); ?>
+                                        <?= form_input($results->fieldData->sender_phone); ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= form_input($results->field_data->sender_email); ?>
+                                        <?= form_input($results->fieldData->sender_email); ?>
                                     </div>
                                 </div>
-                                <?= form_input($results->field_data->subject); ?>
-                                <?= form_input($results->field_data->messages); ?>
+                                <?= form_input($results->fieldData->subject); ?>
+                                <?= form_input($results->fieldData->messages); ?>
                                 <div class="form-group mb-4">
                                     <div class="input-group">
                                         <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
@@ -131,7 +130,7 @@
                                 </div>
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
-                                        <?= form_input($results->field_data->copy); ?>
+                                        <?= form_input($results->fieldData->copy); ?>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="d-grid">

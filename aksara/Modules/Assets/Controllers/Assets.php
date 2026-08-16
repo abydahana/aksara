@@ -76,29 +76,29 @@ class Assets extends Core
         $output = '';
 
         // Define local CSS files to load
-        $local_css = [
+        $localCss = [
             'assets/local/css/override.min.css',
             'assets/local/css/ie.fix.min.css'
         ];
 
         if (is_rtl()) {
-            $local_css[] = 'assets/local/css/override.rtl.min.css';
+            $localCss[] = 'assets/local/css/override.rtl.min.css';
         }
 
         // Load local CSS content with safety checks
-        foreach ($local_css as $file) {
+        foreach ($localCss as $file) {
             if (is_file(FCPATH . $file)) {
                 $output .= file_get_contents(FCPATH . $file) . "\n";
             }
         }
 
         try {
-            $theme_config_path = ROOTPATH . 'themes/' . $theme . '/theme.json';
+            $themeConfigPath = ROOTPATH . 'themes/' . $theme . '/theme.json';
 
-            if (is_file($theme_config_path)) {
-                $theme_package = json_decode(file_get_contents($theme_config_path));
-                $configs = $theme_package->configs ?? null;
-                $colors = $theme_package->colorscheme ?? null;
+            if (is_file($themeConfigPath)) {
+                $themePackage = json_decode(file_get_contents($themeConfigPath));
+                $configs = $themePackage->configs ?? null;
+                $colors = $themePackage->colorscheme ?? null;
 
                 if (isset($configs->wrapper) && $colors) {
                     // Map JSON keys to CSS selectors to eliminate redundant if-else blocks
@@ -238,29 +238,29 @@ class Assets extends Core
         $uri = Services::uri();
 
         $configs = [
-            'base_url' => preg_replace('/\?.*/', '', base_url()),
-            'current_slug' => str_replace('.', '-', $uri->getPath()),
-            'document_extension_allowed' => (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : []),
-            'image_extension_allowed' => (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : []),
-            'max_upload_size' => (MAX_UPLOAD_SIZE ? (MAX_UPLOAD_SIZE * 1024) : 0),
-            'app_name' => get_setting('app_name'),
-            'app_logo' => get_image('settings', get_setting('app_logo')),
-            'app_icon' => get_image('settings', get_setting('app_icon'), 'icon'),
+            'baseUrl' => preg_replace('/\?.*/', '', base_url()),
+            'currentSlug' => str_replace('.', '-', $uri->getPath()),
+            'documentExtensionAllowed' => (json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) ? json_encode(explode(',', DOCUMENT_FORMAT_ALLOWED)) : []),
+            'imageExtensionAllowed' => (json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) ? json_encode(explode(',', IMAGE_FORMAT_ALLOWED)) : []),
+            'maxUploadSize' => (MAX_UPLOAD_SIZE ? (MAX_UPLOAD_SIZE * 1024) : 0),
+            'appName' => get_setting('app_name'),
+            'appLogo' => get_image('settings', get_setting('app_logo')),
+            'appIcon' => get_image('settings', get_setting('app_icon'), 'icon'),
             'language' => get_userdata('language'),
             'timezone' => TIMEZONE,
-            'openlayers_search_provider' => get_setting('openlayers_search_provider'),
-            'openlayers_search_key' => get_setting('openlayers_search_key'),
-            'default_map_tile' => get_setting('default_map_tile'),
-            'action_sound' => (get_setting('action_sound') ? true : false)
+            'openlayersSearchProvider' => get_setting('openlayers_search_provider'),
+            'openlayersSearchKey' => get_setting('openlayers_search_key'),
+            'defaultMapTile' => get_setting('default_map_tile'),
+            'actionSound' => (get_setting('action_sound') ? true : false)
         ];
 
         if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {
             try {
-                $theme_package = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
-                $theme_package = json_decode($theme_package, true);
-                if (isset($theme_package['configs'])) {
+                $themePackage = file_get_contents(ROOTPATH . 'themes/' . $theme . '/theme.json');
+                $themePackage = json_decode($themePackage, true);
+                if (isset($themePackage['configs'])) {
                     // Merge main configs and theme package
-                    $configs = array_merge($configs, $theme_package['configs']);
+                    $configs = array_merge($configs, $themePackage['configs']);
                 }
             } catch (Throwable $e) {
                 log_message('error', '[Aksara] JavaScript Config: ' . $e->getMessage());
@@ -286,34 +286,34 @@ class Assets extends Core
     private function _getScriptTranslations(string $language): array
     {
         $translations = load_translations($language);
-        $phrase_files = $this->_getScriptPhraseFiles();
-        $translation_files = $this->_getTranslationFiles($language);
+        $phraseFiles = $this->_getScriptPhraseFiles();
+        $translationFiles = $this->_getTranslationFiles($language);
 
-        $cache_path = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
-        $translation_cache_file = $cache_path . DIRECTORY_SEPARATOR . $language . '.json';
-        $cache_file = $cache_path . DIRECTORY_SEPARATOR . 'js-' . $language . '.json';
-        $source_files = array_merge([__FILE__, $translation_cache_file], $phrase_files, $translation_files);
+        $cachePath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'translations';
+        $translationCacheFile = $cachePath . DIRECTORY_SEPARATOR . $language . '.json';
+        $cacheFile = $cachePath . DIRECTORY_SEPARATOR . 'js-' . $language . '.json';
+        $sourceFiles = array_merge([__FILE__, $translationCacheFile], $phraseFiles, $translationFiles);
 
-        foreach (glob($cache_path . DIRECTORY_SEPARATOR . 'js-' . $language . '-*.json') ?: [] as $file) {
+        foreach (glob($cachePath . DIRECTORY_SEPARATOR . 'js-' . $language . '-*.json') ?: [] as $file) {
             @unlink($file);
         }
 
-        if (file_exists($cache_file) && ! translations_cache_is_stale($cache_file, $source_files)) {
-            $cached = json_decode(file_get_contents($cache_file) ?: '[]', true);
+        if (file_exists($cacheFile) && ! translations_cache_is_stale($cacheFile, $sourceFiles)) {
+            $cached = json_decode(file_get_contents($cacheFile) ?: '[]', true);
 
             if (is_array($cached)) {
                 return $cached;
             }
         }
 
-        $script_phrases = $this->_scanScriptPhrases($phrase_files);
-        $phrases = array_merge($script_phrases, array_intersect_key($translations, $script_phrases));
+        $scriptPhrases = $this->_scanScriptPhrases($phraseFiles);
+        $phrases = array_merge($scriptPhrases, array_intersect_key($translations, $scriptPhrases));
 
-        if (! is_dir($cache_path)) {
-            mkdir($cache_path, 0755, true);
+        if (! is_dir($cachePath)) {
+            mkdir($cachePath, 0755, true);
         }
 
-        file_put_contents($cache_file, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+        file_put_contents($cacheFile, json_encode($phrases, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
 
         return $phrases;
     }
@@ -408,30 +408,30 @@ class Assets extends Core
     {
         $results = [];
         $theme = $theme ?: (get_setting('frontend_theme') ?? 'default');
-        $base_path = ROOTPATH . 'themes/' . $theme . '/components' . DIRECTORY_SEPARATOR;
+        $basePath = ROOTPATH . 'themes/' . $theme . '/components' . DIRECTORY_SEPARATOR;
 
         // Allowed component types/directories
-        $allowed_types = ['core', 'table', 'form', 'view'];
+        $allowedTypes = ['core', 'table', 'form', 'view'];
 
         try {
             helper('filesystem');
 
             $builder = new Builder();
 
-            foreach ($allowed_types as $type) {
+            foreach ($allowedTypes as $type) {
                 $builder->getComponent($theme, $type);
             }
 
-            if (is_dir($base_path)) {
+            if (is_dir($basePath)) {
                 // Map the directory with a depth of 2
-                $map = directory_map($base_path, 2);
+                $map = directory_map($basePath, 2);
 
                 if (is_array($map)) {
                     foreach ($map as $folder => $files) {
                         // Clean folder name from Directory Separator (e.g., "core/" -> "core")
                         $type = strtolower(rtrim($folder, DIRECTORY_SEPARATOR));
 
-                        if (! is_array($files) || ! in_array($type, $allowed_types)) {
+                        if (! is_array($files) || ! in_array($type, $allowedTypes)) {
                             continue;
                         }
 
@@ -441,10 +441,10 @@ class Assets extends Core
                                 continue;
                             }
 
-                            $full_path = $base_path . $type . DIRECTORY_SEPARATOR . $file;
+                            $fullPath = $basePath . $type . DIRECTORY_SEPARATOR . $file;
 
-                            if (is_file($full_path)) {
-                                $content = file_get_contents($full_path);
+                            if (is_file($fullPath)) {
+                                $content = file_get_contents($fullPath);
 
                                 // Minify the Twig template string (remove extra whitespace/newlines)
                                 // and store it with the key "type/filename.twig"

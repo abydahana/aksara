@@ -101,8 +101,8 @@ class Builder
                 $type = ('core' === $path ? 'index' : 'text');
             }
 
-            $target_dir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
-            $requested_file = ($type ? $target_dir . DIRECTORY_SEPARATOR . $type . '.twig' : null);
+            $targetDir = $directory . ($path ? DIRECTORY_SEPARATOR . $path : '');
+            $requestedFile = ($type ? $targetDir . DIRECTORY_SEPARATOR . $type . '.twig' : null);
 
             // Scaffold components README if missing
             if ($theme && ! file_exists($directory . DIRECTORY_SEPARATOR . 'README')) {
@@ -127,25 +127,25 @@ class Builder
                     }
 
                     // Generate component data
-                    $component_data = $builder->$template();
-                    $file_to_check = $target_dir . DIRECTORY_SEPARATOR . $component_data['type'] . '.twig';
+                    $componentData = $builder->$template();
+                    $fileToCheck = $targetDir . DIRECTORY_SEPARATOR . $componentData['type'] . '.twig';
 
                     // Check if file exists
-                    if (! file_exists($file_to_check)) {
+                    if (! file_exists($fileToCheck)) {
                         // Create directory if it doesn't exist
-                        if (! is_dir($target_dir)) {
-                            mkdir($target_dir, 0755, true);
+                        if (! is_dir($targetDir)) {
+                            mkdir($targetDir, 0755, true);
                         }
 
                         // Write the raw component content to the Twig file
-                        file_put_contents($file_to_check, $component_data['component']);
+                        file_put_contents($fileToCheck, $componentData['component']);
                     }
                 }
             }
 
             // Return the requested component content
-            if ($requested_file && file_exists($requested_file)) {
-                $component = file_get_contents($requested_file);
+            if ($requestedFile && file_exists($requestedFile)) {
+                $component = file_get_contents($requestedFile);
             }
         } catch (Throwable $e) {
             // Log error or handle gracefully instead of exiting

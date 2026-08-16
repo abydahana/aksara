@@ -42,7 +42,6 @@ if ($permission->groups) {
     }
 }
 ?>
-
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-3">
@@ -314,7 +313,7 @@ if ($permission->groups) {
                         Pengambilan Data
                     </h4>
                     <p>
-                        Saat Anda meminta data, anda akan turut mendapatkan properti <i>query string</i> (properti bernama "<code>query_params</code>") yang akan membantu Anda mengambil data untuk dicocokkan dengan kata kunci. Selain itu, terdapat juga parameter <i>query string</i> untuk mengambil hasil dengan <i>filter</i>.
+                        Saat Anda meminta data, anda akan turut mendapatkan properti <i>query string</i> (properti bernama "<code>queryParams</code>") yang akan membantu Anda mengambil data untuk dicocokkan dengan kata kunci. Selain itu, terdapat juga parameter <i>query string</i> untuk mengambil hasil dengan <i>filter</i>.
                     </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm">
@@ -428,10 +427,10 @@ if ($permission->groups) {
 
         if ('undefined' !== typeof require) {
             require.css([
-                config.base_url + 'assets/overlayscrollbars/overlayscrollbars.min.css'
+                config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.css'
             ]);
             require.js([
-                config.base_url + 'assets/overlayscrollbars/overlayscrollbars.min.js'
+                config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.js'
             ], function() {
                 $('.--api-documentation-list').each(function() {
                     apiDocumentationScrollbar.push(OverlayScrollbarsGlobal.OverlayScrollbars(this, {
@@ -475,8 +474,8 @@ if ($permission->groups) {
 
             if (response.results) {
                 $.each(response.results, function(key, val) {
-                    if (typeof val.query_params !== 'undefined') {
-                        $.each(val.query_params, function(_key, _val) {
+                    if (typeof val.queryParams !== 'undefined') {
+                        $.each(val.queryParams, function(_key, _val) {
                             if ($('.--query-' + key).hasClass('d-none')) {
                                 $('.--query-' + key).removeClass('d-none')
                             }
@@ -490,8 +489,8 @@ if ($permission->groups) {
                         })
                     }
 
-                    if (typeof val.field_data !== 'undefined') {
-                        $.each(val.field_data, function(_key, _val) {
+                    if (typeof val.fieldData !== 'undefined') {
+                        $.each(val.fieldData, function(_key, _val) {
                             if ($('.--parameter-' + key).hasClass('d-none')) {
                                 $('.--parameter-' + key).removeClass('d-none')
                             }

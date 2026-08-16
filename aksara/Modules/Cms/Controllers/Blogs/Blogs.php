@@ -205,7 +205,7 @@ class Blogs extends Core
         $this->setMethod('update');
 
         if (! $this->request->getGet('language')) {
-            $current_language = $this->model->getWhere(
+            $currentLanguage = $this->model->getWhere(
                 $this->_table,
                 [
                     'post_id' => $this->request->getGet('post_id') ?? 0
@@ -217,17 +217,17 @@ class Blogs extends Core
             $languages = $this->model->getWhere(
                 'app_languages',
                 [
-                    'id !=' => $current_language,
+                    'id !=' => $currentLanguage,
                     'status' => 1
                 ]
             )
             ->result();
 
             // Build language list
-            $language_list = '';
+            $languageList = '';
 
             foreach ($languages as $key => $val) {
-                $language_list .= '<div class="list-group-item list-group-item-action position-relative p-0">
+                $languageList .= '<div class="list-group-item list-group-item-action position-relative p-0">
                     <a href="' . go_to('translate', ['language' => $val->id]) . '" class="d-block px-3 py-3 pe-5 text-body text-decoration-none --modal">
                         <i class="mdi mdi-translate me-2"></i> ' . $val->language . '
                     </a>
@@ -237,14 +237,14 @@ class Blogs extends Core
                 </div>';
             }
 
-            $content = '<div class="list-group list-group-flush">' . $language_list . '</div>';
+            $content = '<div class="list-group list-group-flush">' . $languageList . '</div>';
 
             return make_json([
                 'meta' => [
                     'title' => phrase('Choose Language'),
                     'icon' => 'mdi mdi-translate',
                     'popup' => true,
-                    'modal_size' => 'modal-sm'
+                    'modalSize' => 'modal-sm'
                 ],
                 'content' => $content,
                 'reactivate' => ['tooltip']
@@ -252,7 +252,7 @@ class Blogs extends Core
         }
 
         // Initialize post id
-        $post_id = 0;
+        $postId = 0;
 
         try {
             // Get current data
@@ -276,7 +276,7 @@ class Blogs extends Core
             )
             ->row();
 
-            $post_id = $checker->post_id ?? 0;
+            $postId = $checker->post_id ?? 0;
 
             if (! $checker) {
                 // Noop, modify data and create new translation
@@ -293,7 +293,7 @@ class Blogs extends Core
                 $this->model->insert($this->_table, (array) $data);
 
                 // Set new post id
-                $post_id = $this->model->insertId();
+                $postId = $this->model->insertId();
             }
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage());
@@ -309,7 +309,7 @@ class Blogs extends Core
             'status' => 'boolean'
         ])
         ->where([
-            'post_id' => $post_id
+            'post_id' => $postId
         ])
         ->setValidation([
             'post_title' => 'required|max_length[256]|unique[' . $this->_table . '.post_title.post_id.' . $this->request->getGet('post_id') . ']',
@@ -389,7 +389,7 @@ class Blogs extends Core
             ]
         ];
 
-        $categories_query = $this->model->select('
+        $categoriesQuery = $this->model->select('
             category_id AS id,
             category_title AS label
         ')
@@ -401,8 +401,8 @@ class Blogs extends Core
         )
         ->result();
 
-        if ($categories_query) {
-            foreach ($categories_query as $key => $val) {
+        if ($categoriesQuery) {
+            foreach ($categoriesQuery as $key => $val) {
                 $categories[] = [
                     'id' => $val->id,
                     'label' => $val->label,
@@ -418,7 +418,7 @@ class Blogs extends Core
             ]
         ];
 
-        $languages_query = $this->model->select('
+        $languagesQuery = $this->model->select('
             id,
             language AS label
         ')
@@ -430,8 +430,8 @@ class Blogs extends Core
         )
         ->result();
 
-        if ($languages_query) {
-            foreach ($languages_query as $key => $val) {
+        if ($languagesQuery) {
+            foreach ($languagesQuery as $key => $val) {
                 $languages[] = [
                     'id' => $val->id,
                     'label' => $val->label,

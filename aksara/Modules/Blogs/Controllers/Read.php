@@ -22,6 +22,7 @@ use Aksara\Laboratory\Core;
 class Read extends Core
 {
     private string $_table = 'blogs';
+    private int $_languageId;
 
     public function __construct()
     {
@@ -31,6 +32,8 @@ class Read extends Core
         $this->setMethod('read');
 
         helper('Aksara\Modules\Blogs\Helpers\blog');
+
+        $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
     }
 
     public function index($category = null, $slug = null)
@@ -113,7 +116,7 @@ class Read extends Core
         ->orWhere('blogs.post_id', $this->request->getGet('post_id') ?? 0)
         ->groupEnd()
         ->where('status', 1)
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(1)
 
         ->render($this->_table);
@@ -121,8 +124,6 @@ class Read extends Core
 
     private function _getCategories()
     {
-        $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
-
         $query = $this->model->select('
             COUNT(blogs.post_id) AS total_data,
             blogs_categories.category_slug,
@@ -137,7 +138,7 @@ class Read extends Core
         ->groupBy('category_id, category_slug, category_title, category_description, category_image')
 
         // Order by current language first
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
 
         // Normal ordering
         ->orderBy('total_data', 'DESC')
@@ -179,7 +180,7 @@ class Read extends Core
             'blogs_categories.category_id = blogs.post_category'
         )
         ->orderBy($score ? '(' . implode(' + ', $score) . ')' : '0', 'DESC', false)
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->orderBy('blogs.post_title', 'RANDOM')
         ->limit(5)
         ->getWhere(
@@ -198,7 +199,7 @@ class Read extends Core
     private function _titleKeywords(?string $slug = ''): array
     {
         $title = $this->model->select('post_title')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->getWhere('blogs', [
             'post_slug' => $slug,
             'blogs.status' => 1
@@ -216,14 +217,14 @@ class Read extends Core
 
     private function _getRecommendations($category = 0, $slug = '')
     {
-        $post_tags = $this->model->select('
+        $postTags = $this->model->select('
             blogs.post_tags
         ')
         ->join(
             'blogs_categories',
             'blogs_categories.category_id = blogs.post_category'
         )
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->getWhere(
             'blogs',
             [
@@ -235,12 +236,12 @@ class Read extends Core
         )
         ->row('post_tags');
 
-        $post_tags = array_map('trim', explode(',', $post_tags ?? ''));
+        $postTags = array_map('trim', explode(',', $postTags ?? ''));
 
-        if (! empty(array_filter($post_tags))) {
+        if (! empty(array_filter($postTags))) {
             $this->model->groupStart();
 
-            foreach ($post_tags as $key => $tag) {
+            foreach ($postTags as $key => $tag) {
                 if ($key) {
                     $this->model->orLike('post_tags', $tag);
                 } else {
@@ -262,7 +263,7 @@ class Read extends Core
             'blogs_categories.category_id = blogs.post_category'
         )
         ->orderBy('blogs.post_title', 'RANDOM')
-        ->orderBy('(CASE WHEN blogs.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
         ->limit(5)
         ->getWhere(
             'blogs',

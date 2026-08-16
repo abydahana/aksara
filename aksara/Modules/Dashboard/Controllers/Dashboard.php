@@ -44,7 +44,7 @@ class Dashboard extends Core
             $this->setTemplate('index', 'index_subscriber');
 
             $this->setOutput([
-                'group_name' => $this->model->select('group_name')->getWhere('app_groups', ['group_id' => get_userdata('group_id')], 1)->row('group_name'),
+                'groupName' => $this->model->select('group_name')->getWhere('app_groups', ['group_id' => get_userdata('group_id')], 1)->row('group_name'),
                 'logs' => $this->_userLogs(),
                 'announcements' => $this->_announcements()
             ]);
@@ -52,12 +52,12 @@ class Dashboard extends Core
             $this->setTemplate('index', 'index_technical');
 
             $this->setOutput([
-                'group_name' => $this->model->select('group_name')->getWhere('app_groups', ['group_id' => get_userdata('group_id')], 1)->row('group_name'),
+                'groupName' => $this->model->select('group_name')->getWhere('app_groups', ['group_id' => get_userdata('group_id')], 1)->row('group_name'),
                 'logs' => $this->_userLogs(),
                 'card' => $this->_card(),
                 'visitors' => $this->_visitors(),
-                'recent_signed' => $this->_recentSigned(),
-                'system_language' => $this->_systemLanguage(),
+                'recentSigned' => $this->_recentSigned(),
+                'systemLanguage' => $this->_systemLanguage(),
                 'announcements' => $this->_announcements()
             ]);
         } else {
@@ -69,8 +69,8 @@ class Dashboard extends Core
                 ],
                 'logs' => $this->_userLogs(),
                 'visitors' => $this->_visitors(),
-                'recent_signed' => $this->_recentSigned(),
-                'system_language' => $this->_systemLanguage(),
+                'recentSigned' => $this->_recentSigned(),
+                'systemLanguage' => $this->_systemLanguage(),
                 'announcements' => $this->_announcements()
             ]);
         }
@@ -218,12 +218,12 @@ class Dashboard extends Core
 
     private function _systemLanguage()
     {
-        $language_id = get_setting('app_language');
+        $languageId = get_setting('app_language');
 
         $query = $this->model->select('language')->getWhere(
             'app_languages',
             [
-                'id' => $language_id
+                'id' => $languageId
             ]
         )
         ->row('language');

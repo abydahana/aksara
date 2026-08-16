@@ -87,11 +87,11 @@ class Services extends Core
     {
         $characters = '0123456789ABCDEF';
 
-        $char_length = strlen($characters);
+        $charLength = strlen($characters);
         $output = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $output .= $characters[rand(0, $char_length - 1)];
+            $output .= $characters[rand(0, $charLength - 1)];
         }
 
         $exist = $this->model->select('
