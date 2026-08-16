@@ -44,24 +44,24 @@
                     </div>
                 </div>
                 <?php if ($year): ?>
-                <hr class="my-2" />
-                <div class="row">
-                    <label class="col-sm-4 col-md-3 text-muted" for="access_year_input">
-                        <?= phrase('Access Year'); ?>
-                    </label>
-                    <div class="col-sm-8 col-md-4">
-                        <?php
-                            $options = null;
+                    <hr class="my-2" />
+                    <div class="row">
+                        <label class="col-sm-4 col-md-3 text-muted" for="access_year_input">
+                            <?= phrase('Access Year'); ?>
+                        </label>
+                        <div class="col-sm-8 col-md-4">
+                            <?php
+                                $options = null;
 
-                            foreach ($year as $key => $val) {
-                                $options .= '<option value="' . $val->year . '"' . (isset($field_data->access_year) && $field_data->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
-                            }
-                        ?>
-                        <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose'); ?>">
-                            <?= $options; ?>
-                        </select>
+                                foreach ($year as $key => $val) {
+                                    $options .= '<option value="' . $val->year . '"' . (isset($field_data->access_year) && $field_data->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
+                                }
+                            ?>
+                            <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose'); ?>">
+                                <?= $options; ?>
+                            </select>
+                        </div>
                     </div>
-                </div>
                 <?php endif; ?>
             </div>
         </div>
