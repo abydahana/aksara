@@ -78,6 +78,7 @@ body{overscroll-behavior:none}
 
 /* Canvas */
 .pb-canvas{max-width:1200px;margin:0 auto;background:var(--pb-bg-canvas);padding:1rem;transition:max-width .3s;min-height:100%;color:var(--pb-text)}
+.pb-canvas .fade-in,.pb-canvas [class*="fade-in"]{opacity:1!important;transform:none!important;transition:none!important}
 .pb-drop-root{min-height:calc(100vh - 190px);position:relative;z-index:1}
 .pb-canvas.pb-tablet{max-width:768px}
 .pb-canvas.pb-mobile{max-width:375px}

@@ -813,7 +813,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'sec_team',
-                    'props' => ['class' => 'section-padding bg-light'],
+                    'props' => ['class' => 'section-padding'],
                     'children' => [
                         [
                             'type' => 'container',

@@ -155,7 +155,7 @@ class Renderer
         $styles = [];
 
         if (! empty($props['background'])) {
-            $styles[] = "background-image:url('" . htmlspecialchars($props['background'], ENT_QUOTES) . "')";
+            $styles[] = "background-image:url('" . $this->sanitizeUrl($props['background']) . "')";
             $styles[] = 'background-size:cover';
             $styles[] = 'background-position:center';
             $styles[] = 'background-repeat:no-repeat';
@@ -280,7 +280,7 @@ class Renderer
 
     private function renderImage(array $props, string $id): string
     {
-        $src = htmlspecialchars($props['src'] ?? '', ENT_QUOTES);
+        $src = $this->sanitizeUrl($props['src'] ?? '');
         $alt = htmlspecialchars($props['alt'] ?? '', ENT_QUOTES);
         $classes = [$this->classes['img_fluid'], $this->classes['rounded']];
 
@@ -315,7 +315,7 @@ class Renderer
     private function renderButton(array $props, string $id): string
     {
         $text = htmlspecialchars($props['text'] ?? 'Button', ENT_QUOTES);
-        $url = htmlspecialchars($props['url'] ?? '#', ENT_QUOTES);
+        $url = $this->sanitizeUrl($props['url'] ?? '#');
         $style = $props['style'] ?? 'primary';
         $size = $props['size'] ?? '';
         $target = $props['target'] ?? '_self';
@@ -440,10 +440,10 @@ class Renderer
     {
         $title = $this->sanitizeHtml($props['title'] ?? 'Hero Title');
         $subtitle = $this->sanitizeHtml($props['subtitle'] ?? '');
-        $btnText = htmlspecialchars($props['button_text'] ?? '', ENT_QUOTES);
-        $btnUrl = htmlspecialchars($props['button_url'] ?? '#', ENT_QUOTES);
+        $btnText = htmlspecialchars($props['button_text'] ?? 'Learn More', ENT_QUOTES);
+        $btnUrl = $this->sanitizeUrl($props['button_url'] ?? '#');
         $alignment = $props['alignment'] ?? 'center';
-        $background = $props['background'] ?? '';
+        $background = $this->sanitizeUrl($props['background'] ?? '');
         $overlay = $props['overlay'] ?? true;
 
         $sectionStyle = '';
@@ -486,8 +486,8 @@ class Renderer
         $class = $props['class'] ?? '';
 
         return "<div class=\"text-center {$this->classes['mb_4']} {$class}\">\n"
-             . "  <div class=\"d-inline-flex align-items-center justify-content-center rounded-circle {$this->classes['mb_3']}\" style=\"width:80px;height:80px;background-color:rgba(43,102,255,0.05)\">\n"
-             . "    <i class=\"{$icon} mdi-3x\"></i>\n"
+             . "  <div class=\"d-inline-flex align-items-center justify-content-center rounded-circle {$this->classes['mb_3']}\" style=\"width:128px;height:128px;background-color:rgba(43,102,255,0.05)\">\n"
+             . "    <i class=\"{$icon} mdi-3x display-3\"></i>\n"
              . "  </div>\n"
              . "  <h5 class=\"{$this->classes['fw_bold']}\">{$title}</h5>\n"
              . "  <p class=\"{$this->classes['text_muted']}\">{$text}</p>\n"
@@ -523,7 +523,7 @@ class Renderer
         $html .= "  <div class=\"carousel-inner rounded-4 shadow-sm\">\n";
         foreach ($items as $index => $item) {
             $active = 0 === $index ? ' active' : '';
-            $src = htmlspecialchars($item['src'] ?? '', ENT_QUOTES);
+            $src = $this->sanitizeUrl($item['src'] ?? '');
             $title = $this->sanitizeHtml($item['title'] ?? '');
             $subtitle = $this->sanitizeHtml($item['subtitle'] ?? '');
 
@@ -618,7 +618,7 @@ class Renderer
         $period = htmlspecialchars($props['period'] ?? '', ENT_QUOTES);
         $features = explode("\n", $props['features'] ?? '');
         $btnText = htmlspecialchars($props['btn_text'] ?? 'Get Started', ENT_QUOTES);
-        $btnUrl = htmlspecialchars($props['btn_url'] ?? '#', ENT_QUOTES);
+        $btnUrl = $this->sanitizeUrl($props['btn_url'] ?? '#');
         $featured = $props['featured'] ?? false;
 
         $cardClass = $featured ? 'border-primary border-2 shadow' : 'shadow-sm';
@@ -655,14 +655,14 @@ class Renderer
         $role = htmlspecialchars($props['role'] ?? '', ENT_QUOTES);
         $image = $props['image'] ?? '';
 
-        $html = "<div class=\"card border-0 bg-light rounded-4 " . ($props['class'] ?? '') . "\">\n"
+        $html = "<div class=\"card border-0 bg-body-tertiary rounded-4 " . ($props['class'] ?? '') . "\">\n"
                . "  <div class=\"card-body p-4\">\n"
                . "    <div class=\"mb-3 text-primary\"><i class=\"mdi mdi-format-quote-open mdi-3x opacity-25\"></i></div>\n"
                . "    <div class=\"fs-5 mb-4\">{$quote}</div>\n"
                . "    <div class=\"d-flex align-items-center\">\n";
 
         if ($image) {
-            $html .= "      <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle me-3\" style=\"width:50px;height:50px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
+            $html .= "      <img src=\"" . $this->sanitizeUrl($image) . "\" class=\"rounded-circle me-3\" style=\"width:50px;height:50px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
         } else {
             $html .= "      <div class=\"rounded-circle bg-secondary me-3\" style=\"width:50px;height:50px\"></div>\n";
         }
@@ -686,7 +686,7 @@ class Renderer
 
         $html = "<div class=\"text-center " . ($props['class'] ?? '') . "\">\n";
         if ($image) {
-            $html .= "  <img src=\"" . htmlspecialchars($image, ENT_QUOTES) . "\" class=\"rounded-circle mb-3 shadow-sm\" style=\"width:150px;height:150px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
+            $html .= "  <img src=\"" . $this->sanitizeUrl($image) . "\" class=\"rounded-circle mb-3 shadow-sm\" style=\"width:150px;height:150px;object-fit:cover\" alt=\"\" loading=\"lazy\" decoding=\"async\">\n";
         }
         $html .= "  <h5 class=\"fw-bold mb-1\">{$name}</h5>\n"
                . "  <p class=\"text-primary mb-2\">{$role}</p>\n"
@@ -699,12 +699,12 @@ class Renderer
     private function renderCta(array $props, string $id): string
     {
         $bg = $props['background'] ?? 'primary';
-        $bgClass = 'primary' === $bg ? 'bg-primary text-white' : ('dark' === $bg ? 'bg-dark text-white' : 'bg-light');
+        $bgClass = 'primary' === $bg ? 'bg-primary text-white' : ('dark' === $bg ? 'bg-dark text-white' : 'bg-body-tertiary');
         $btnClass = 'primary' === $bg ? 'btn-light' : 'btn-primary';
         $title = $this->sanitizeHtml($props['title'] ?? '');
         $text = $this->sanitizeHtml($props['text'] ?? '');
         $btnText = htmlspecialchars($props['button_text'] ?? 'Get Started', ENT_QUOTES);
-        $btnUrl = htmlspecialchars($props['button_url'] ?? '#', ENT_QUOTES);
+        $btnUrl = $this->sanitizeUrl($props['button_url'] ?? '#');
 
         return "<div class=\"card border-0 {$bgClass} rounded-4 p-5 " . ($props['class'] ?? '') . "\">\n"
              . "  <div class=\"row align-items-center\">\n"
@@ -796,23 +796,82 @@ class Renderer
     }
 
     /**
-     * Sanitize HTML content — allow safe inline tags, strip dangerous ones.
+     * Sanitize URL string to prevent javascript:, data:, vbscript:, file: XSS attacks.
      */
-    private function sanitizeHtml($html = ''): string
+    private function sanitizeUrl(?string $url): string
     {
-        if (! $html) {
+        if (empty($url)) {
             return '';
         }
 
-        // Escape raw HTML first to prevent XSS via attributes or unallowed tags.
-        // Since we only allow Markdown, any raw HTML will be treated as plain text.
-        $html = htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $trimmed = trim($url);
 
-        // Convert Markdown to HTML
+        if (preg_match('/^(javascript|data|vbscript|file):/i', $trimmed)) {
+            return '#';
+        }
+
+        return htmlspecialchars($trimmed, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * Sanitize HTML content — allow safe WYSIWYG inline tags, strip dangerous ones.
+     * Allowed whitelist: <strong>, <b>, <i>, <u>, <del>, <s>, <strike>, <strikethrough>, <a>, <ol>, <ul>, <li>, <p>, <br>
+     */
+    private function sanitizeHtml(?string $html = ''): string
+    {
+        if (empty($html)) {
+            return '';
+        }
+
+        // Convert Markdown to HTML if markdown syntax is present
         $html = $this->markdownToHtml($html);
 
-        // We can safely return this because markdownToHtml only generates safe tags.
-        return $html;
+        // Allowed HTML tags whitelist
+        $allowedTags = '<strong><b><i><u><del><s><strike><strikethrough><a><ol><ul><li><p><br>';
+
+        // Strip tags outside whitelist
+        $clean = strip_tags($html, $allowedTags);
+
+        // Clean attributes: remove on* event handlers, dangerous attributes, and sanitize <a> href protocols
+        $clean = preg_replace_callback('/<([a-z1-6]+)([^>]*)>/i', function ($matches) {
+            $tag = strtolower($matches[1]);
+            $attrStr = $matches[2];
+
+            if ('br' === $tag) {
+                return '<br />';
+            }
+
+            // Remove all on* event handlers (onclick, onerror, onload, etc.)
+            $attrStr = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $attrStr);
+
+            // Remove dangerous style / id attributes
+            $attrStr = preg_replace('/\s+(style|id)\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $attrStr);
+
+            if ('a' === $tag) {
+                $href = '#';
+                $target = '';
+
+                if (preg_match('/href=["\']([^"\']*)["\']/i', $attrStr, $hrefMatch)) {
+                    $hrefUrl = trim($hrefMatch[1]);
+                    if (! preg_match('/^(javascript|data|vbscript|file):/i', $hrefUrl)) {
+                        $href = htmlspecialchars($hrefUrl, ENT_QUOTES, 'UTF-8');
+                    }
+                }
+
+                if (preg_match('/target=["\']([^"\']*)["\']/i', $attrStr, $targetMatch)) {
+                    $targetVal = strtolower(trim($targetMatch[1]));
+                    if (in_array($targetVal, ['_blank', '_self', '_parent', '_top'], true)) {
+                        $target = ' target="' . $targetVal . '"';
+                    }
+                }
+
+                return '<a href="' . $href . '"' . $target . '>';
+            }
+
+            return '<' . $tag . '>';
+        }, $clean);
+
+        return $clean;
     }
 
     /**
