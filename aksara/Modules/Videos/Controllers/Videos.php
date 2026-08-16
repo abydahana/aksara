@@ -40,7 +40,7 @@ class Videos extends Core
         }
 
         $this->setTitle(phrase('Videos'))
-        ->setDescription(phrase('Watch our latest videos'))
+        ->setDescription(phrase('Watch our latest videos'), (service('request')->getGet('q') ? phrase('No video is found related to your keywords.') : phrase('No video is available at the moment.')))
         ->setIcon('mdi mdi-youtube')
         ->select('
             videos.id,
@@ -64,8 +64,8 @@ class Videos extends Core
     public function watch($slug = '')
     {
         $this->setMethod('read')
-        ->setTitle('{{ title }}')
-        ->setDescription('{{ description }}')
+        ->setTitle('{{ title }}', phrase('No video is found!'))
+        ->setDescription('{{ description }}', phrase('The video you are looking for might have been deleted or the url is invalid.'))
         ->setIcon('mdi mdi-youtube')
         ->select('
             videos.id,

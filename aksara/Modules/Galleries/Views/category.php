@@ -19,9 +19,11 @@ if ($results) {
 
                 $output .= '
                     <div class="col-sm-6 col-md-3">
-                        <a href="' . current_page($src) . '" class="--xhr">
-                            <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 mb-4 fade-in" alt="' . $alt . '" loading="lazy" decoding="async" />
-                        </a>
+                        <div class="rounded-5 border-hover mb-4">
+                            <a href="' . current_page($src) . '" class="d-block --xhr">
+                                <img src="' . get_image('galleries', $src, 'thumb') . '" class="rounded-5 w-100 fade-in" alt="' . $alt . '" loading="lazy" decoding="async" />
+                            </a>
+                        </div>
                     </div>
                 ';
             }
@@ -51,23 +53,8 @@ if ($output): ?>
     <section class="section-padding fade-in">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5 fade-in">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('No album is found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('No album is available at the moment.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Galleries'); ?>
-                            </a>
-                        </p>
-                    </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search albums...')]); ?>
                 </div>
             </div>
         </div>

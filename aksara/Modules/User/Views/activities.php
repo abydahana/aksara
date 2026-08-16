@@ -1,9 +1,10 @@
 <?php
 
 /**
- * @var mixed $user
+ * @var object $meta
  * @var mixed $results
  * @var mixed $pagination
+ * @var mixed $user
  */
 if ($user): ?>
     <section class="section-padding">
@@ -93,20 +94,20 @@ if ($user): ?>
                                 <blockquote class="blockquote">
                                     <p><?= truncate($val->comments, 160); ?></p>
                                     <?php if ($val->attachment): ?>
-                                        <a href="<?= get_image('comment', $val->attachment); ?>" target="_blank">
+                                        <a href="<?= get_image('comment', $val->attachment); ?>" class="d-block" target="_blank">
                                             <img src="<?= get_image('comment', $val->attachment, 'icon'); ?>" class="img-fluid rounded-4" alt="Attachment" />
                                         </a>
                                     <?php endif; ?>
                                 </blockquote>
                                 <?php if (isset($metadata->title)): ?>
-                                <div class="rounded-4 border p-3">
-                                    <h5>
-                                        <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="text-body" target="_blank">
-                                            <?= $metadata->title; ?>
-                                        </a>
-                                    </h5>
-                                    <p><?= $metadata->description; ?></p>
-                                </div>
+                                    <div class="rounded-4 border p-3">
+                                        <h5>
+                                            <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]); ?>" class="text-body" target="_blank">
+                                                <?= $metadata->title; ?>
+                                            </a>
+                                        </h5>
+                                        <p><?= $metadata->description; ?></p>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -122,22 +123,7 @@ if ($user): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('User not found'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('The user you requested does not exists.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= base_url(); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Home'); ?>
-                            </a>
-                        </p>
-                    </div>
+                    <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search users...')]); ?>
                 </div>
             </div>
         </div>

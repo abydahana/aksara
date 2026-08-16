@@ -22,7 +22,7 @@ if ($results): ?>
                         <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                             <div class="input-group ps-4">
                                 <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search albums...'); ?>" required>
+                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search albums...'); ?>">
                                 <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
                                     <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
                                 </button>
@@ -56,7 +56,7 @@ if ($results): ?>
                             if (1 == $num) {
                                 $cover = $src;
                             } elseif ($num > 1) {
-                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="--xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" alt="' . htmlspecialchars((string) ($alt ?: $val->gallery_title)) . '" loading="lazy" decoding="async" /></a>';
+                                $thumbnail .= '<a href="' . go_to([$val->gallery_slug, $src]) . '" class="d-block --xhr"><img src="' . get_image('galleries', $src, 'thumb') . '" class="w-100" alt="' . htmlspecialchars((string) ($alt ?: $val->gallery_title)) . '" loading="lazy" decoding="async" /></a>';
                             }
 
                             $num++;
@@ -64,10 +64,10 @@ if ($results): ?>
                     }
                     ?>
                     <div class="col-lg-6">
-                        <div class="rounded-4 overflow-hidden mb-4 fade-in">
+                        <div class="rounded-5 border-hover overflow-hidden mb-4 fade-in">
                             <div class="row g-0">
                                 <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)); ?> text-center d-flex align-items-end" style="background:url(<?= get_image('galleries', $cover); ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
-                                    <div class="p-3 m-3 rounded-4 w-100" style="background:rgba(0, 0, 0, .5)">
+                                    <div class="p-3 m-3 rounded-5 w-100" style="background:rgba(0, 0, 0, .5)">
                                         <h2 class="h4 text-light">
                                             <span class="badge bg-primary float-end">
                                                 <?= count($images); ?>
@@ -109,28 +109,7 @@ if ($results): ?>
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <div class="py-5 fade-in">
-                        <div class="text-center mb-3">
-                            <img src="<?= get_module_asset('images/404.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('No album is found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= (service('request')->getGet('q') ? phrase('No album is found related to your keywords.') : phrase('No album is available at the moment.')); ?>
-                        </p>
-                        <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
-                            <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
-                                <div class="input-group ps-4">
-                                    <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                    <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search albums...'); ?>" required>
-                                    <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
-                                        <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search albums...')]); ?>
                 </div>
             </div>
         <?php endif; ?>

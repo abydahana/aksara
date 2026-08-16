@@ -98,52 +98,52 @@
                         </a>
                     </div>
                 <?php else: ?>
-                <div class="card border-light-subtle rounded-5 fade-in">
-                    <div class="card-body p-4">
-                        <h3 class="mb-3">
-                            <?= phrase('Direct Inquiry'); ?>
-                        </h2>
-                        <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
-                            <?= form_input($results->field_data->sender_full_name); ?>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->sender_phone); ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->sender_email); ?>
-                                </div>
-                            </div>
-                            <?= form_input($results->field_data->subject); ?>
-                            <?= form_input($results->field_data->messages); ?>
-                            <div class="form-group mb-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
-                                        <?php
-                                        if ($captcha->string) {
-                                            echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
-                                        } else {
-                                            echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
-                                        }
-                                        ?>
-                                    </span>
-                                    <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="<?= phrase('Bot Challenge'); ?>" maxlength="32" />
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <?= form_input($results->field_data->copy); ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary rounded-pill">
-                                            <?= phrase('Send Message'); ?> <i class="mdi mdi-send"></i>
-                                        </button>
+                    <div class="card border-light-subtle border-hover rounded-5 fade-in">
+                        <div class="card-body p-4">
+                            <h3 class="mb-3">
+                                <?= phrase('Direct Inquiry'); ?>
+                            </h2>
+                            <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
+                                <?= form_input($results->field_data->sender_full_name); ?>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <?= form_input($results->field_data->sender_phone); ?>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <?= form_input($results->field_data->sender_email); ?>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                                <?= form_input($results->field_data->subject); ?>
+                                <?= form_input($results->field_data->messages); ?>
+                                <div class="form-group mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha'); ?>">
+                                            <?php
+                                            if ($captcha->string) {
+                                                echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
+                                            } else {
+                                                echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
+                                            }
+                                            ?>
+                                        </span>
+                                        <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="<?= phrase('Bot Challenge'); ?>" maxlength="32" />
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <?= form_input($results->field_data->copy); ?>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary rounded-pill">
+                                                <?= phrase('Send Message'); ?> <i class="mdi mdi-send"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
                 <?php endif; ?>
             </div>
         </div>

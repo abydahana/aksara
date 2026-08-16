@@ -37,7 +37,7 @@ class Read extends Core
             $slug = $this->request->getGet('people_slug');
         }
 
-        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('The people you are looking for was not found!'))
+        $this->setTitle('{{ first_name }} {{ last_name }}', phrase('People is not found!'))
         ->setDescription('{{ biography }}', phrase('The people you are looking for was not found.'))
         ->setIcon('mdi mdi-account-outline')
         ->setOutput(

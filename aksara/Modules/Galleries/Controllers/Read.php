@@ -33,7 +33,7 @@ class Read extends Core
 
     public function index($category = null, $slug = null)
     {
-        $this->setTitle('{{ gallery_title }}', phrase('Album not found!'))
+        $this->setTitle('{{ gallery_title }}', phrase('No album is found!'))
         ->setDescription('{{ gallery_description }}', phrase('The album you requested was not found or its already been removed.'))
         ->setIcon('mdi mdi-image')
         ->setOutput(

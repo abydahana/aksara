@@ -53,11 +53,11 @@ if ($results): ?>
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
-                    $item_tags = array_map('trim', explode(',', $val->post_tags));
+                    $itemTags = array_map('trim', explode(',', $val->post_tags));
                     $tags = null;
 
-                    if (sizeof($item_tags) > 0) {
-                        foreach ($item_tags as $label => $badge) {
+                    if (sizeof($itemTags) > 0) {
+                        foreach ($itemTags as $label => $badge) {
                             if ($label == 2) {
                                 break;
                             }
@@ -77,35 +77,50 @@ if ($results): ?>
 
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column fade-in">
-                            <div class="d-flex flex-column flex-grow-1 border p-3 rounded-top-4">
-                                <div class="d-flex g-0 align-items-center mb-3">
-                                    <div class="pe-3">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary --xhr">
+                            <div class="d-flex flex-column flex-grow-1 border border-hover p-3 pb-0 rounded-5">
+                                <div class="d-flex g-0 align-items-end mb-3">
+                                    <div class="pe-2">
+                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-sm text-secondary d-block --xhr">
                                             <img src="<?= get_image('users', $val->photo, 'icon'); ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name; ?>" width="48" />
                                         </a>
                                     </div>
-                                    <div class="flex-grow-1 d-flex justify-content-between align-items-center overflow-hidden gap-0">
-                                        <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
-                                            <b class="fs-5"><?= $val->first_name . ' ' . $val->last_name; ?></b>
-                                        </a>
+                                    <div class="flex-grow-1 d-flex justify-content-between align-items-end overflow-hidden gap-0">
+                                        <div>
+                                            <p class="m-0">
+                                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
+                                                    <b class="fs-5"><?= $val->first_name . ' ' . $val->last_name; ?></b>
+                                                </a>
+                                            </p>
+                                            <p class="m-0 lh-1">
+                                                <a href="<?= base_url('user/' . $val->username); ?>" class="text-body ps-2 text-decoration-none --xhr">
+                                                    <span class="small text-secondary">@<?= $val->username; ?></span>
+                                                </a>
+                                            </p>
+                                        </div>
                                         <span class="text-muted small"><i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at); ?></span>
                                     </div>
                                 </div>
-                                <h2 class="h5" class="mb-3">
-                                    <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
-                                        <?= truncate($val->post_title, 120); ?>
-                                    </a>
-                                </h2>
-                                <p class="text-muted">
-                                    <?= truncate($val->post_excerpt, 120); ?>
-                                </p>
-                                <div style="z-index:1">
-                                    <?= $tags; ?>
+                                <div class="d-flex flex-column justify-content-between gap-3">
+                                    <div class="flex-grow-1">
+                                        <h2 class="h5" class="mb-3">
+                                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="text-body text-decoration-none --xhr">
+                                                <?= truncate($val->post_title, 120); ?>
+                                            </a>
+                                        </h2>
+                                        <p class="text-muted">
+                                            <?= truncate($val->post_excerpt, 120); ?>
+                                        </p>
+                                        <div style="z-index:1">
+                                            <?= $tags; ?>
+                                        </div>
+                                    </div>
+                                    <div style="margin-inline:-1rem">
+                                        <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="d-block --xhr">
+                                            <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-body-tertiary rounded-5" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]); ?>" class="--xhr">
-                                <img src="<?= get_image('blogs', $val->featured_image, 'thumb'); ?>" class="img-fluid w-100 bg-body-tertiary rounded-4" alt="<?= $val->post_title; ?>" style="aspect-ratio: 3/2; object-fit: cover;margin-top:-1rem">
-                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -114,23 +129,8 @@ if ($results): ?>
             <?= pagination($pagination); ?>
         <?php else: ?>
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5 fade-in">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('No category is found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center">
-                            <?= phrase('The category of post you requested was not found or it\'s been archived.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to News'); ?>
-                            </a>
-                        </p>
-                    </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['per_page' => null]), 'searchLabel' => phrase('Search posts...')]); ?>
                 </div>
             </div>
         <?php endif; ?>

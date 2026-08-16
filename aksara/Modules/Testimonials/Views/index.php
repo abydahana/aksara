@@ -27,7 +27,7 @@ if ($results): ?>
                         <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                             <div class="input-group ps-4">
                                 <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search testimonials...'); ?>" required>
+                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search testimonials...'); ?>">
                                 <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
                                     <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
                                 </button>
@@ -44,11 +44,11 @@ if ($results): ?>
     <div class="container">
         <div class="row">
             <!-- Left: Testimonial List -->
-            <div class="col-lg-7">
-                <main>
+            <div class="col-lg-<?= ($results ? '7' : '8 offset-lg-2'); ?>">
+                <main class="mb-4">
                     <?php if ($results): ?>
                         <?php foreach ($results as $key => $val): ?>
-                            <div class="border rounded-5 p-3 mb-3 fade-in">
+                            <div class="border border-hover rounded-5 p-3 mb-3 fade-in">
                                 <div class="row align-items-end mb-4">
                                     <div class="col-3 col-md-3 pt-2 order-sm-<?= ($key %2 === 0 ? '0' : '1'); ?>">
                                         <img src="<?= get_image('testimonials', $val->photo, 'thumb'); ?>" class="img-fluid w-100 rounded-circle p-2 border">
@@ -87,28 +87,7 @@ if ($results): ?>
                     <?php else: ?>
                         <div class="row">
                             <div class="col-lg-10 offset-lg-1">
-                                <div class="py-5 fade-in">
-                                    <div class="text-center mb-3">
-                                        <img src="<?= get_module_asset('images/404.png'); ?>" width="128" alt="404" />
-                                    </div>
-                                    <h2 class="text-center">
-                                        <?= phrase('No testimonial is found!'); ?>
-                                    </h2>
-                                    <p class="fs-5 text-center">
-                                        <?= service('request')->getGet('q') ? phrase('No testimonial matches your search.') : phrase('No testimonial is available at the moment.'); ?>
-                                    </p>
-                                    <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
-                                        <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
-                                            <div class="input-group ps-4">
-                                                <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search testimonials...'); ?>" required>
-                                                <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
-                                                    <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search testimonials...')]); ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -116,10 +95,10 @@ if ($results): ?>
             </div>
 
             <!-- Right: Submit Testimonial Form -->
-            <div class="col-lg-5">
+            <div class="col-lg-<?= ($results ? '5' : '8 offset-lg-2'); ?>">
                 <aside class="sticky-lg-top" style="top: 1rem">
                     <?php if (service('request')->getGet('success')): ?>
-                        <div class="card border-light-subtle rounded-5 fade-in">
+                        <div class="card border-light-subtle border-hover rounded-5 fade-in">
                             <div class="card-body p-4">
                                 <div class="text-center py-4">
                                     <i class="mdi mdi-check-circle-outline text-success" style="font-size: 4rem;"></i>
@@ -132,7 +111,7 @@ if ($results): ?>
                             </div>
                         </div>
                     <?php else: ?>
-                        <div class="card border-light-subtle rounded-5 fade-in">
+                        <div class="card border-light-subtle border-hover rounded-5 fade-in">
                             <div class="card-body p-4">
                                 <h3>
                                     <i class="mdi mdi-message-draw"></i> <?= phrase('Share Your Experience'); ?>

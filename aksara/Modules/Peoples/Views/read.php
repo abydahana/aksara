@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var object $meta
  * @var mixed $results
  */
 $field_data = $results->field_data ?? null;
@@ -22,8 +23,8 @@ if ($field_data): ?>
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="text-center" style="margin-top:-150px">
-                    <a href="<?= get_image('peoples', $field_data->photo->value); ?>" target="_blank">
-                        <img src="<?= get_image('peoples', $field_data->photo->value, 'thumb'); ?>" class="img-fluid rounded-pill mb-5" style="border:5px solid #fff" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" />
+                    <a href="<?= get_image('peoples', $field_data->photo->value); ?>" class="d-block" target="_blank">
+                        <img src="<?= get_image('peoples', $field_data->photo->value, 'thumb'); ?>" class="img-fluid bg-body rounded-pill mb-5" width="300" style="border:5px solid #fff" alt="<?= $field_data->first_name->value . ' ' . $field_data->last_name->value; ?>" />
                     </a>
                 </div>
                 <div class="mb-3">
@@ -97,26 +98,11 @@ if ($field_data): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="py-3 py-md-5">
+    <div class="section-padding">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="py-5">
-                        <div class="text-center">
-                            <img src="<?= base_url('assets/yao-ming.png'); ?>" width="128" alt="404" />
-                        </div>
-                        <h2 class="text-center">
-                            <?= phrase('People was not found!'); ?>
-                        </h2>
-                        <p class="fs-5 text-center mb-5">
-                            <?= phrase('The people you are looking for was not found.'); ?>
-                        </p>
-                        <p class="text-center">
-                            <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary rounded-pill px-5 --xhr">
-                                <i class="mdi mdi-arrow-left"></i> <?= phrase('Back to Peoples'); ?>
-                            </a>
-                        </p>
-                    </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search peoples...')]); ?>
                 </div>
             </div>
         </div>

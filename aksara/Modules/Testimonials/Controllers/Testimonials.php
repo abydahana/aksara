@@ -44,7 +44,7 @@ class Testimonials extends Core
         }
 
         $this->setTitle(phrase('Testimonials'))
-        ->setDescription(phrase('What have people said about us?'))
+        ->setDescription(phrase('What have people said about us?'), (service('request')->getGet('q') ? phrase('No testimonial matches your search.') : phrase('No testimonial is available at the moment.')))
         ->setIcon('mdi mdi-bullhorn-outline')
 
         ->select('app_users.username')
@@ -55,7 +55,7 @@ class Testimonials extends Core
         )
 
         ->where([
-            'status' => 1
+            'status' => 392
         ])
 
         ->orderBy('testimonials.created_at', 'DESC')

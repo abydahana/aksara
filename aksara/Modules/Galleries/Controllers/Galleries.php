@@ -47,7 +47,7 @@ class Galleries extends Core
         }
 
         $this->setTitle(phrase('Galleries'))
-        ->setDescription(phrase('Our gallery activities'))
+        ->setDescription(phrase('Our gallery activities'), (service('request')->getGet('q') ? phrase('No album is found related to your keywords.') : phrase('No album is available at the moment.')))
         ->setIcon('mdi mdi-folder-multiple-image')
         ->setPrimary('gallery_slug')
         ->orderBy('gallery_id', 'DESC')

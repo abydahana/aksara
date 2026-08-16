@@ -3,7 +3,7 @@
 /**
  * @var mixed $results
  */
-$view_mode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid';
+$viewMode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid';
 $directories = explode('/', service('request')->getGet('directory') ?? '');
 $paths = null;
 $breadcrumbs = null;
@@ -47,12 +47,12 @@ $breadcrumbs = null;
                 </div>
             </div>
 
-            <?php if ($view_mode === 'grid'): ?>
+            <?php if ($viewMode === 'grid'): ?>
                 <!-- Grid View -->
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
                         <div class="col-4 col-sm-3 col-xl-2 text-center">
-                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $view_mode]); ?>" class="--xhr">
+                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
                                 <div class="p-3">
                                     <i class="mdi mdi-arrow-left mdi-4x"></i>
                                 </div>
@@ -67,7 +67,7 @@ $breadcrumbs = null;
                         <?php foreach ($results->data as $key => $val): ?>
                             <?php if ($val->type == 'directory'): ?>
                                 <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $view_mode]); ?>" class="--xhr">
+                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
                                         <div class="p-3">
                                             <i class="mdi mdi-folder-image mdi-4x text-info"></i>
                                         </div>
@@ -78,7 +78,7 @@ $breadcrumbs = null;
                                 </div>
                             <?php else: ?>
                                 <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $view_mode]); ?>" class="--xhr">
+                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="--xhr">
                                         <div class="p-3">
                                             <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
                                         </div>
@@ -98,7 +98,7 @@ $breadcrumbs = null;
                         <div class="list-group">
                             <?php foreach ($results->data as $key => $val): ?>
                                 <?php if ($val->type == 'directory'): ?>
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $view_mode]); ?>" class="list-group-item list-group-item-action py-0 --xhr">
+                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action py-0 --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
                                                 <i class="mdi mdi-folder-image mdi-3x text-info" style="width: 48px; height: 48px"></i>
@@ -113,7 +113,7 @@ $breadcrumbs = null;
                                         </div>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $view_mode]); ?>" class="list-group-item list-group-item-action --xhr">
+                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
                                                 <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light" style="width: 48px; height: 48px; object-fit: contain;" alt="<?= $val->label; ?>" />
@@ -192,7 +192,7 @@ $breadcrumbs = null;
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $view_mode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove'); ?>" data-bs-original-title="<?= phrase('Remove'); ?>">
+                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $viewMode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove'); ?>" data-bs-original-title="<?= phrase('Remove'); ?>">
                                 <i class="mdi mdi-window-close"></i>
                                 <?= phrase('Remove'); ?>
                             </a>

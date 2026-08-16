@@ -27,14 +27,13 @@ class Peoples extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
         $this->limit(12);
     }
 
     public function index()
     {
         $this->setTitle(phrase('The Peoples Behind Us'))
-        ->setDescription(phrase('Meet the peoples behind us.'))
+        ->setDescription(phrase('Meet the peoples behind us.'), (service('request')->getGet('q') ? phrase('The people you are looking for was not found.') : phrase('No people is available at the moment.')))
         ->setIcon('mdi mdi-account-group-outline')
         ->where('status', 1)
 

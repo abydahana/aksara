@@ -37,8 +37,8 @@ class Category extends Core
             $slug = $this->request->getGet('gallery_slug');
         }
 
-        $this->setTitle('{{ gallery_title }}', phrase('Album not found!'))
-        ->setDescription('{{ gallery_description }}')
+        $this->setTitle('{{ gallery_title }}', phrase('No album is found!'))
+        ->setDescription('{{ gallery_description }}', phrase('The album you requested was not found or its already been removed.'))
         ->setIcon('mdi mdi-image')
         ->where('gallery_slug', $slug)
         ->limit(1)

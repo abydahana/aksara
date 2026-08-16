@@ -33,8 +33,8 @@ class Category extends Core
     {
         $language_id = get_userdata('language_id') ?? get_setting('app_language') ?? 0;
 
-        $this->setTitle('{{ category_title }}', phrase('No category were found!'))
-        ->setDescription('{{ category_description }}')
+        $this->setTitle('{{ category_title }}', phrase('No category is found!'))
+        ->setDescription('{{ category_description }}', phrase('The category of post you requested was not found or it\'s been archived.'))
         ->setIcon('mdi mdi-sitemap')
 
         ->setOutput([
