@@ -106,15 +106,15 @@
         ?>
 
         <?php if (get_setting('ai_enabled')): ?>
-        <script type="text/javascript">
-            window.AksaraAI = {
-                endpoint: '<?= base_url('xhr/ai'); ?>',
-                image: <?= (get_setting('ai_image_enabled') ? 'true' : 'false'); ?>
-            };
-        </script>
-        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/purify.min.js'); ?>"></script>
-        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/marked.min.js'); ?>"></script>
-        <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/ai.js'); ?>"></script>
+            <script type="text/javascript">
+                window.AksaraAI = {
+                    endpoint: '<?= base_url('xhr/ai'); ?>',
+                    image: <?= (get_setting('ai_image_enabled') ? 'true' : 'false'); ?>
+                };
+            </script>
+            <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/purify.min.js'); ?>"></script>
+            <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/marked.min.js'); ?>"></script>
+            <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/ai.js'); ?>"></script>
         <?php endif; ?>
 
     </body>
