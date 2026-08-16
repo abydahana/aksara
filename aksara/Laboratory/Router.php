@@ -21,24 +21,16 @@ use Config\Services;
 
 class Router
 {
-    private $_request;
     private string $_uriString;
     private bool $_found;
     private array $_collection;
 
-    public function __construct($routes = null)
+    public function register(\CodeIgniter\Router\RouteCollection $routes)
     {
-        $this->_request = Services::request();
         $this->_uriString = trim(uri_string(), '/');
 
-        if ($this->_uriString) {
-            $uri = $this->_request->getUri();
-            $uri = $uri->setPath($this->_uriString);
-            $this->_request = $this->_request->withUri($uri);
-        }
-
-        $find_duplicate = array_reverse(explode('/', $this->_uriString));
-        $is_duplicate = (isset($find_duplicate[0]) && isset($find_duplicate[1]) && $find_duplicate[0] == $find_duplicate[1] ? true : false);
+        $findDuplicate = array_reverse(explode('/', $this->_uriString));
+        $isDuplicate = (isset($findDuplicate[0]) && isset($findDuplicate[1]) && $findDuplicate[0] == $findDuplicate[1] ? true : false);
 
         $this->_found = false;
         $this->_collection = [];
@@ -61,39 +53,42 @@ class Router
 
             // Extract segments to find the actual method and its extra parameters
             $method = '';
-            $extra_params = [];
-            $uri_segments = explode('/', $this->_uriString);
-            $method_found = false;
+            $extraParams = [];
+            $uriSegments = explode('/', $this->_uriString);
+            $methodFound = false;
 
             if (class_exists($namespace)) {
-                foreach ($uri_segments as $segment) {
+                foreach ($uriSegments as $segment) {
                     if ($this->_normalizeRouteKey($segment) == $this->_normalizeRouteKey($controller)) {
                         continue;
                     }
-                    if (! $method_found) {
+
+                    if (! $methodFound) {
                         $discovered = $this->_discoverMethod($namespace, $segment);
+
                         if ($discovered && method_exists($namespace, $discovered)) {
                             $method = $discovered;
-                            $method_found = true;
+                            $methodFound = true;
                             continue;
                         }
                     }
-                    if ($method_found) {
-                        $extra_params[] = $segment;
+
+                    if ($methodFound) {
+                        $extraParams[] = $segment;
                     }
                 }
             }
 
             if (! $method) {
-                $last_segment = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
-                $method = ($this->_normalizeRouteKey($last_segment) == $this->_normalizeRouteKey($controller) ? '' : $last_segment);
+                $lastSegment = (strpos($this->_uriString, '/') !== false ? substr($this->_uriString, strrpos($this->_uriString, '/') + 1) : '');
+                $method = ($this->_normalizeRouteKey($lastSegment) == $this->_normalizeRouteKey($controller) ? '' : $lastSegment);
             }
 
             // Get priority file
             $file = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method) . '.php'), '\\')));
 
             // Get second file under hierarchy
-            $second_file = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method) . '.php'), '\\')));
+            $secondFile = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method) . '.php'), '\\')));
 
             // Check if priority file is exists
             if (file_exists(ROOTPATH . $file)) {
@@ -103,34 +98,39 @@ class Router
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
-                if (! empty($extra_params)) {
-                    $dest .= '/' . implode('/', $extra_params);
+                $dest = $namespace . ($isDuplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
+
+                if (! empty($extraParams)) {
+                    $dest .= '/' . implode('/', $extraParams);
                 }
                 $routes->add($this->_uriString, $dest);
             }
 
             // Check if second file is exists
-            elseif (file_exists(ROOTPATH . $second_file)) {
+            elseif (file_exists(ROOTPATH . $secondFile)) {
                 // File exists, apply to route
                 $namespace = str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));
 
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $dest = $namespace . ($is_duplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
-                if (! empty($extra_params)) {
-                    $dest .= '/' . implode('/', $extra_params);
+                $dest = $namespace . ($isDuplicate && $method && method_exists($namespace, $method) ? '::' . $method : null);
+
+                if (! empty($extraParams)) {
+                    $dest .= '/' . implode('/', $extraParams);
                 }
+
                 $routes->add($this->_uriString, $dest);
             } else {
                 $method = $this->_discoverMethod($namespace, $method);
 
                 // Add route for current request
-                $dest = $namespace . (! $is_duplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null);
-                if (! empty($extra_params)) {
-                    $dest .= '/' . implode('/', $extra_params);
+                $dest = $namespace . (! $isDuplicate && (method_exists($namespace, $method) || strtolower($controller) != strtolower($method)) ? '::' . $method : null);
+
+                if (! empty($extraParams)) {
+                    $dest .= '/' . implode('/', $extraParams);
                 }
+
                 $routes->add($this->_uriString, $dest);
             }
         }
@@ -159,11 +159,11 @@ class Router
                     stripos($namespace, '\Modules\\' . $module[0] . '\Config\\') !== false
                 ) {
                     // Apply route from module route config
-                    $extra_route = lcfirst(ltrim(str_replace('\\', '/', $namespace), '/')) . 'Routes.php';
+                    $extraRoute = lcfirst(ltrim(str_replace('\\', '/', $namespace), '/')) . 'Routes.php';
 
-                    if (file_exists(ROOTPATH . $extra_route)) {
+                    if (file_exists(ROOTPATH . $extraRoute)) {
                         // Add route of public module
-                        require ROOTPATH . $extra_route;
+                        require ROOTPATH . $extraRoute;
                     }
                 }
 
@@ -204,19 +204,24 @@ class Router
                         }
 
                         $this->_found = true;
-                    } elseif ($this->_normalizeRouteKey($module . '/' . $method) == $this->_normalizeRouteKey($this->_uriString) && ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))) {
+                    } elseif (
+                        $this->_normalizeRouteKey($module . '/' . $method) == $this->_normalizeRouteKey($this->_uriString) &&
+                        ROOTPATH . lcfirst(trim(str_replace('\\', '/', lcfirst(substr($namespace, 0, strrpos($namespace, '\\')) . '\\' . $val)), '/'))
+                    ) {
                         $x = $this->_routePriority($namespace . $val, $module . '/' . $method);
                         $this->_collection[$x] = $namespace . $val;
 
                         $this->_found = true;
                     } elseif (strpos($this->_uriString, $module . '/') === 0) {
-                        $remaining_path = substr($this->_uriString, strlen($module . '/'));
-                        $segments = explode('/', $remaining_path);
-                        $method_candidate = $segments[0] ?? '';
-                        $controller_class = $namespace . pathinfo($val, PATHINFO_FILENAME);
-                        if ($method_candidate && class_exists($controller_class)) {
-                            $matched_method = $this->_discoverMethod($controller_class, $method_candidate);
-                            if (method_exists($controller_class, $matched_method)) {
+                        $remainingPath = substr($this->_uriString, strlen($module . '/'));
+                        $segments = explode('/', $remainingPath);
+                        $methodCandidate = $segments[0] ?? '';
+                        $controllerClass = $namespace . pathinfo($val, PATHINFO_FILENAME);
+
+                        if ($methodCandidate && class_exists($controllerClass)) {
+                            $matchedMethod = $this->_discoverMethod($controllerClass, $methodCandidate);
+
+                            if (method_exists($controllerClass, $matchedMethod)) {
                                 $x = substr_count($namespace . $val, '\\');
                                 $this->_collection[$x] = $namespace . $val;
                                 $this->_found = true;
@@ -267,9 +272,9 @@ class Router
     private function _discoverMethod(string $namespace, string $method): string
     {
         if ($method && class_exists($namespace)) {
-            foreach (get_class_methods($namespace) as $class_method) {
-                if (strtolower(str_replace(['_', '-'], '', $method)) == strtolower($class_method)) {
-                    return $class_method;
+            foreach (get_class_methods($namespace) as $classMethod) {
+                if (strtolower(str_replace(['_', '-'], '', $method)) == strtolower($classMethod)) {
+                    return $classMethod;
                 }
             }
         }

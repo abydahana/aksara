@@ -37,4 +37,5 @@ $routes->add('/', 'Home::index');
 /**
  * Register the directory based routes
  */
-$routes_automation = new Router($routes);
+$routerAutomation = new Router();
+$routerAutomation->register($routes);
