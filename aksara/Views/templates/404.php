@@ -17,7 +17,7 @@
     <p class="fs-5 text-center">
         <?= $meta->description; ?>
     </p>
-    <form action="<?= ($searchAction ?? go_to(null, ['per_page' => null])); ?>" method="GET">
+    <form action="<?= ($searchAction ?? go_to(null, ['page' => null])); ?>" method="GET">
         <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
             <div class="input-group ps-4">
                 <i class="mdi mdi-magnify mdi-2x text-muted"></i>

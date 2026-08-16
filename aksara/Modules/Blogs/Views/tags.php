@@ -18,7 +18,7 @@
                 </p>
             </div>
             <div class="col-md-6">
-                <form action="<?= base_url('blogs/tags', ['per_page' => null]); ?>" method="GET" class="my-5">
+                <form action="<?= base_url('blogs/tags', ['page' => null]); ?>" method="GET" class="my-5">
                     <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                         <div class="input-group ps-4">
                             <i class="mdi mdi-magnify mdi-2x text-muted"></i>

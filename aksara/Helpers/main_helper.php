@@ -32,7 +32,7 @@ if (! function_exists('generate_token')) {
         $userIgnored = get_userdata('__ignored_query_string');
 
         // Default ignored params
-        $defaultIgnored = ['aksara', 'q', 'per_page', 'limit', 'order', 'column', 'sort'];
+        $defaultIgnored = ['aksara', 'q', 'page', 'limit', 'order', 'column', 'sort'];
 
         // Merge: split user ignored (if exists) with defaults
         $ignoredQueryString = array_merge(
@@ -523,7 +523,7 @@ if (! function_exists('pagination')) {
     function pagination(object $params)
     {
         // Check if pagination is necessary based on total rows and per page settings
-        if (! $params || ($params->total <= $params->per_page && ! service('request')->getGet('limit'))) {
+        if (! $params || ($params->total <= $params->limit && ! service('request')->getGet('limit'))) {
             return false;
         }
 

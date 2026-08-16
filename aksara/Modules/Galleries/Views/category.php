@@ -54,7 +54,7 @@ if ($output): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['per_page' => null]), 'searchLabel' => phrase('Search albums...')]); ?>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['page' => null]), 'searchLabel' => phrase('Search albums...')]); ?>
                 </div>
             </div>
         </div>

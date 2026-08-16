@@ -4,7 +4,6 @@
  * @var mixed $meta
  */
 ?>
-
 <section class="section-padding fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold">

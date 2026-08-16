@@ -6,33 +6,33 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-<section class="section-padding border-fade-bottom fade-in">
-    <div class="container text-center text-md-start">
-        <div class="row align-items-end">
-            <div class="col-lg-7">
-                <h1 class="display-4 fw-bold">
-                    <?= $meta->title; ?>
-                </h1>
-                <p class="fs-5 text-muted mb-0">
-                    <?= truncate($meta->description, 256); ?>
-                </p>
-            </div>
-            <div class="col-lg-5">
-                <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
-                    <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
-                        <div class="input-group ps-4">
-                            <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                            <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search peoples...'); ?>">
-                            <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
-                                <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
-                            </button>
+    <section class="section-padding border-fade-bottom fade-in">
+        <div class="container text-center text-md-start">
+            <div class="row align-items-end">
+                <div class="col-lg-7">
+                    <h1 class="display-4 fw-bold">
+                        <?= $meta->title; ?>
+                    </h1>
+                    <p class="fs-5 text-muted mb-0">
+                        <?= truncate($meta->description, 256); ?>
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <form action="<?= go_to(null, ['page' => null]); ?>" method="GET">
+                        <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
+                            <div class="input-group ps-4">
+                                <i class="mdi mdi-magnify mdi-2x text-muted"></i>
+                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search peoples...'); ?>">
+                                <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
+                                    <?= phrase('Search'); ?> <i class="mdi mdi-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <section class="section-padding">

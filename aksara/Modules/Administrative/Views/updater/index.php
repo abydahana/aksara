@@ -45,7 +45,6 @@ if (isset($updater->changelog)) {
     }
 }
 ?>
-
 <div class="container-fluid py-3">
     <?php if ($changelog): ?>
         <div class="alert alert-info rounded-0 border-0" style="margin-left:-1rem; margin-right:-1rem">

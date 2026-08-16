@@ -33,17 +33,17 @@ if ($user): ?>
                     <div class="overflow-x-auto">
                         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username, ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                <a href="<?= go_to($user->username, ['limit' => null, 'page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
                                     <i class="mdi mdi-information-outline"></i> <?= phrase('About'); ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/activities', ['limit' => null, 'per_page' => null]); ?>" class="nav-link active rounded-pill no-wrap --xhr">
+                                <a href="<?= go_to($user->username . '/activities', ['limit' => null, 'page' => null]); ?>" class="nav-link active rounded-pill no-wrap --xhr">
                                     <i class="mdi mdi-account-clock-outline"></i> <?= phrase('Activities'); ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/likes', ['limit' => null, 'per_page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                <a href="<?= go_to($user->username . '/likes', ['limit' => null, 'page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
                                     <i class="mdi mdi-heart"></i> <?= phrase('Likes'); ?>
                                 </a>
                             </li>

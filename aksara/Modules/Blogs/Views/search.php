@@ -8,7 +8,6 @@
  * @var mixed $pagination
  */
 ?>
-
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row">
@@ -19,7 +18,7 @@
                 <p class="fs-5">
                     <?= $meta->description; ?>
                 </p>
-                <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
+                <form action="<?= base_url('blogs/search', ['page' => null]); ?>" method="GET">
                     <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                         <div class="input-group ps-4">
                             <i class="mdi mdi-magnify mdi-2x text-muted"></i>

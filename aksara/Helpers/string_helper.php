@@ -247,7 +247,7 @@ if (! function_exists('time_ago')) {
         }
 
         static $conditions = null;
-        
+
         if (null === $conditions) {
             $conditions = [
                 31536000 => ['full' => 'year', 'short' => 'yr'],

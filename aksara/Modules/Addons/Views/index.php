@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="col-md-6 offset-md-2">
-            <form action="<?= go_to(null, ['per_page' => null]); ?>" method="POST" class="form-horizontal position-relative-form mb-3">
+            <form action="<?= go_to(null, ['page' => null]); ?>" method="POST" class="form-horizontal position-relative-form mb-3">
                 <div class="input-group input-group-sm">
                     <input type="text" name="q" class="form-control" placeholder="<?= phrase('Search Add-Ons'); ?>" value="<?= (service('request')->getGet('q') ? htmlspecialchars(service('request')->getGet('q')) : null); ?>" />
                     <button type="submit" class="btn btn-primary">
