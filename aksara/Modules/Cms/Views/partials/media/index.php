@@ -8,7 +8,6 @@ $directories = explode('/', service('request')->getGet('directory') ?? '');
 $paths = null;
 $breadcrumbs = null;
 ?>
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-body border-end">

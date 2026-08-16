@@ -178,7 +178,7 @@ if (! function_exists('generate_menu')) {
 
                     $output .= '
                         <li class="' . $liClass . ($children && $dropdownClass ? ' ' . $dropdownClass : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
-                            <a href="' . ($children ? '#' : $val->slug) . '" class="' . $aClass . ($children ? ' ' . $toggleClass : null) . '"' . ($children ? ' ' . $toggleInitial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
+                            <a href="' . ($children ? '#' : $val->slug) . '" class="' . $aClass . ($children ? ' ' . $toggleClass : null) . '"' . ($children ? ' ' . $toggleInitial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->newTab) && $val->newTab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
                                 ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<span class="hide-on-collapse">' . $val->label . '</span>
                             </a>
                             ' . ($children ? generate_menu($children, $ulClass, $liClass, $aClass, $toggleClass, $toggleInitial, $dropdownClass, $subUlClass, true, ($level + 1)) : null) . '

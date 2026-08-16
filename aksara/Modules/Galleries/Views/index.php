@@ -18,7 +18,7 @@ if ($results): ?>
                     </p>
                 </div>
                 <div class="col-lg-5">
-                    <form action="<?= go_to(null, ['per_page' => null]); ?>" method="GET">
+                    <form action="<?= go_to(null, ['page' => null]); ?>" method="GET">
                         <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                             <div class="input-group ps-4">
                                 <i class="mdi mdi-magnify mdi-2x text-muted"></i>

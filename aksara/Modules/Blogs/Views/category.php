@@ -19,7 +19,7 @@ if ($results): ?>
                     </p>
                     <div class="row">
                         <div class="col-lg-10">
-                            <form action="<?= base_url('blogs/search', ['per_page' => null]); ?>" method="GET">
+                            <form action="<?= base_url('blogs/search', ['page' => null]); ?>" method="GET">
                                 <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                                     <div class="input-group ps-4">
                                         <i class="mdi mdi-magnify mdi-2x text-muted"></i>
@@ -130,7 +130,7 @@ if ($results): ?>
         <?php else: ?>
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['per_page' => null]), 'searchLabel' => phrase('Search posts...')]); ?>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['page' => null]), 'searchLabel' => phrase('Search posts...')]); ?>
                 </div>
             </div>
         <?php endif; ?>
