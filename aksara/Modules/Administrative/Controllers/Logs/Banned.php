@@ -95,16 +95,16 @@ class Banned extends Core
                 'uri' => $payload['uri'] ?? '-',
                 'reason' => $payload['reason'] ?? '-',
                 'attempts' => $payload['attempts'] ?? 0,
-                'banned_at' => $bannedAt,
-                'expires_at' => $expiresAt,
-                'banned_at_label' => $this->_formatTimestamp($bannedAt),
-                'expires_at_label' => $this->_formatTimestamp($expiresAt),
-                'is_banned' => is_numeric($expiresAt) && $expiresAt > time()
+                'bannedAt' => $bannedAt,
+                'expiresAt' => $expiresAt,
+                'bannedAtLabel' => $this->_formatTimestamp($bannedAt),
+                'expiresAtLabel' => $this->_formatTimestamp($expiresAt),
+                'isBanned' => is_numeric($expiresAt) && $expiresAt > time()
             ];
         }
 
         usort($banned, function ($a, $b) {
-            return ($b->banned_at ?? 0) <=> ($a->banned_at ?? 0);
+            return ($b->bannedAt ?? 0) <=> ($a->bannedAt ?? 0);
         });
 
         return $banned;

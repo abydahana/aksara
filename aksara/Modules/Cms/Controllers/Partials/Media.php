@@ -230,8 +230,8 @@ class Media extends Core
             $file = new File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description = get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description['icon'] = $this->_getIcon($directory, $filename);
-            $description['mime_type'] = $file->getMimeType();
-            $description['server_path'] = str_replace('\\', '/', $description['server_path']);
+            $description['mimeType'] = $file->getMimeType();
+            $description['serverPath'] = str_replace('\\', '/', $description['server_path'] ?? '');
         }
 
         // Merge folder and files
@@ -247,9 +247,9 @@ class Media extends Core
         });
 
         return [
-            'parent_directory' => $parentDirectory,
+            'parentDirectory' => $parentDirectory,
             'directory' => $directory,
-            'cloud_storage' => false,
+            'cloudStorage' => false,
             'data' => $data,
             'description' => $description
         ];
@@ -300,12 +300,12 @@ class Media extends Core
         if ($filename && $storage->exists($filename)) {
             $description = [
                 'name' => basename($filename),
-                'server_path' => $storage->url($filename),
+                'serverPath' => $storage->url($filename),
                 'url' => $storage->url($filename),
                 'icon' => $this->_getIcon(dirname($filename) == '.' ? null : dirname($filename), basename($filename)),
-                'mime_type' => $this->_mimeType($filename),
+                'mimeType' => $this->_mimeType($filename),
                 'size' => $this->_fileSize($filename),
-                'formatted_size' => $this->_formatBytes($this->_fileSize($filename)),
+                'formattedSize' => $this->_formatBytes($this->_fileSize($filename)),
                 'date' => $this->_lastModified($filename)
             ];
         }
@@ -321,9 +321,9 @@ class Media extends Core
         });
 
         return [
-            'parent_directory' => $parentDirectory ? str_replace(DIRECTORY_SEPARATOR, '/', $parentDirectory) : null,
+            'parentDirectory' => $parentDirectory ? str_replace(DIRECTORY_SEPARATOR, '/', $parentDirectory) : null,
             'directory' => $directory,
-            'cloud_storage' => true,
+            'cloudStorage' => true,
             'data' => $data,
             'description' => $description
         ];

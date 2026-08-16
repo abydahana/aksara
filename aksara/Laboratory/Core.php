@@ -371,9 +371,9 @@ abstract class Core extends Controller
                 $context['scope'] = uri_string();
             }
 
-            if (! isset($context['max_tokens'])) {
-                // If the max_tokens is not set, use the default value from get_setting()
-                $context['max_tokens'] = (int) get_setting('ai_max_tokens', 4096);
+            if (! isset($context['maxTokens'])) {
+                // If maxTokens is not set, use default value from get_setting()
+                $context['maxTokens'] = (int) get_setting('ai_max_tokens', 4096);
             }
 
             $cacheKey = 'aksara_ai_custom_context_' . md5(trim((string) uri_string(), '/'));

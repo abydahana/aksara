@@ -121,7 +121,7 @@ $(document).ready(function() {
           <div class="comment-item">
             <div class="row g-0 mb-2">
               <div class="col-1 pt-1">
-                <a href="${ val.links.profile_url }" class="--xhr">
+                <a href="${ val.links.profileUrl }" class="--xhr">
                   <img src="${ val.photo }" class="img-fluid rounded-circle" loading="lazy" decoding="async" />
                 </a>
               </div>
@@ -129,7 +129,7 @@ $(document).ready(function() {
                 <div class="d-flex align-items-center gap-1 comment-bubble">
                   <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${ (val.highlight ? 'border border-warning' : '') }">
                     <div class="comment-header">
-                      <a href="${ val.links.profile_url }" class="text-body --xhr">
+                      <a href="${ val.links.profileUrl }" class="text-body --xhr">
                         <b id="comment-author-${ val.comment_id }">
                           ${ val.first_name } ${ val.last_name }
                         </b>
@@ -167,23 +167,23 @@ $(document).ready(function() {
                       <i class="mdi mdi-dots-horizontal fs-5"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="dropdownMenuButton${ val.comment_id }">
-                      ` + (val.links.update_url ? `
+                      ` + (val.links.updateUrl ? `
                         <li>
-                          <a class="dropdown-item --modal" href="${ val.links.update_url }">
+                          <a class="dropdown-item --modal" href="${ val.links.updateUrl }">
                             ${ phrase('Update') }
                           </a>
                         </li>
                       ` : `
                         <li>
-                          <a class="dropdown-item --modal" href="${ val.links.report_url }">
+                          <a class="dropdown-item --modal" href="${ val.links.reportUrl }">
                             ${ phrase('Report') }
                           </a>
                         </li>
                       `) +
 
-                      (val.links.hide_url ? `
+                      (val.links.hideUrl ? `
                         <li>
-                          <a class="dropdown-item --modal" href="${ val.links.hide_url }">
+                          <a class="dropdown-item --modal" href="${ val.links.hideUrl }">
                             ${ phrase('Visibility') }
                           </a>
                         </li>
@@ -192,11 +192,11 @@ $(document).ready(function() {
                   </div>
                 </div>
                 <div class="py-1 ps-3">
-                  <a href="${ val.links.upvote_url || window.location.href }" data-href="${ val.links.upvote_url }" class="small text-body --upvote">
+                  <a href="${ val.links.upvoteUrl || window.location.href }" data-href="${ val.links.upvoteUrl }" class="small text-body --upvote">
                     <b><span id="comment-upvote-${ val.comment_id }">${ (val.upvotes > 0 ? val.upvotes : '') }</span> ${ phrase('Upvote') }</b>
                   </a>
                   &middot;
-                  <a href="${ val.links.reply_url }" class="small text-body --reply" data-profile-photo="${ val.user_photo }" data-mention="${ val.first_name } ${ val.last_name }">
+                  <a href="${ val.links.replyUrl }" class="small text-body --reply" data-profile-photo="${ val.userPhoto }" data-mention="${ val.first_name } ${ val.last_name }">
                     <b>${ phrase('Reply') }</b>
                   </a>
                 </div>
@@ -209,7 +209,7 @@ $(document).ready(function() {
                     <div class="load-more-container row g-0">
                       <div class="col-12">
                         <div class="mb-3">
-                          <a href="${ val.links.replies_url || window.location.href }" data-href="${ val.links.replies_url }" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
+                          <a href="${ val.links.repliesUrl || window.location.href }" data-href="${ val.links.repliesUrl }" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
                             <i class="mdi mdi-chevron-down"></i>
                             ${ val.replies } ${ (val.replies ? (val.replies > 1 ? phrase('Replies') : 'Reply') : '') }
                           </a>
