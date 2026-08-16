@@ -52,14 +52,14 @@
                     </a>
                 </li>
                 <?php if (get_userdata('is_logged')): ?>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications" aria-label="<?= phrase('Notifications'); ?>">
-                        <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <!-- Notification list -->
-                    </ul>
-                </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="<?= base_url('notifications/partials'); ?>" data-bs-toggle="dropdown" data-role="notifications" aria-label="<?= phrase('Notifications'); ?>">
+                            <i class="mdi mdi-bell-ring"></i> <span class="d-md-none"><?= phrase('Notifications'); ?></span> <span id="notification-count" class="badge bg-danger"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <!-- Notification list -->
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language'); ?>" data-bs-toggle="dropdown" data-role="language" aria-label="<?= phrase('Language'); ?>">

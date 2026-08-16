@@ -52,60 +52,60 @@
             <div class="col-md-3">
                 <ul class="nav flex-column row">
                     <?php if (get_setting('office_address')): ?>
-                    <li class="nav-item">
-                        <a href="<?= base_url(); ?>" class="nav-link">
-                            <?= get_setting('office_address'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url(); ?>" class="nav-link">
+                                <?= get_setting('office_address'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_email')): ?>
-                    <li class="nav-item">
-                        <a href="<?= base_url(); ?>" class="nav-link">
-                            <?= get_setting('office_email'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url(); ?>" class="nav-link">
+                                <?= get_setting('office_email'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_phone')): ?>
-                    <li class="nav-item">
-                        <a href="<?= base_url(); ?>" class="nav-link">
-                            <?= get_setting('office_phone'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url(); ?>" class="nav-link">
+                                <?= get_setting('office_phone'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_fax')): ?>
-                    <li class="nav-item">
-                        <a href="<?= base_url(); ?>" class="nav-link">
-                            <?= get_setting('office_fax'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url(); ?>" class="nav-link">
+                                <?= get_setting('office_fax'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_whatsapp')): ?>
-                    <li class="nav-item">
-                        <a href="https://api.whatsapp.com/send?phone=<?= str_replace('+', '', get_setting('office_whatsapp')); ?>&text=Halo..." class="nav-link">
-                            <?= get_setting('office_whatsapp'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="https://api.whatsapp.com/send?phone=<?= str_replace('+', '', get_setting('office_whatsapp')); ?>&text=Halo..." class="nav-link">
+                                <?= get_setting('office_whatsapp'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_fanpage')): ?>
-                    <li class="nav-item">
-                        <a href="https://www.facebook.com/pages/<?= get_setting('office_fanpage'); ?>" class="nav-link">
-                            <?= get_setting('office_fanpage'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="https://www.facebook.com/pages/<?= get_setting('office_fanpage'); ?>" class="nav-link">
+                                <?= get_setting('office_fanpage'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_twitter')): ?>
-                    <li class="nav-item">
-                        <a href="https://www.twitter.com/<?= get_setting('office_twitter'); ?>" class="nav-link">
-                            <?= get_setting('office_twitter'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="https://www.twitter.com/<?= get_setting('office_twitter'); ?>" class="nav-link">
+                                <?= get_setting('office_twitter'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if (get_setting('office_instagram')): ?>
-                    <li class="nav-item">
-                        <a href="https://www.instagram.com/<?= get_setting('office_instagram'); ?>" class="nav-link">
-                            <?= get_setting('office_instagram'); ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="https://www.instagram.com/<?= get_setting('office_instagram'); ?>" class="nav-link">
+                                <?= get_setting('office_instagram'); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>

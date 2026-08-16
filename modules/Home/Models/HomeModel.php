@@ -27,10 +27,10 @@ class HomeModel extends Model
      * $this->model->getWhere('app_stats', [])->row();
      * $this->model->countAllResults('blogs');
      * etc...
-     * 
+     *
      * But because we need a complex query for the home layout,
      * separating the query like this will make the code more structured.
-     * 
+     *
      * This is also used as an example of how Aksara MVC works.
      */
     public function getStatistics(): array
