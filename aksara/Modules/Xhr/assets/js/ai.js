@@ -938,8 +938,8 @@
                 generatedFields = normalized.fields;
                 generatedLabels = normalized.labels;
                 renderResult(form, generatedFields, generatedLabels);
-                if (response.imageErrors && Object.keys(response.imageErrors).length) {
-                    status.textContent = phrase('Image generation failed.') + ' ' + Object.values(response.imageErrors).join(' ');
+                if (response.image_errors && Object.keys(response.image_errors).length) {
+                    status.textContent = phrase('Image generation failed.') + ' ' + Object.values(response.image_errors).join(' ');
                 } else {
                     status.textContent = Object.keys(generatedFields).length ? phrase('Ready') : phrase('AI returned no field values.');
                 }

@@ -35,10 +35,10 @@ class XHR extends Core
     {
         $output = [];
 
-        if ($this->request->getPost('hideGreeting')) {
-            set_userdata('hideGreeting', true);
+        if ($this->request->getPost('hide_greeting')) {
+            set_userdata('hide_greeting', true);
 
-            $output['hideGreeting'] = true;
+            $output['hide_greeting'] = true;
         }
 
         return make_json($output);

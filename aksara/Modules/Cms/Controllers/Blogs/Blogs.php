@@ -244,7 +244,7 @@ class Blogs extends Core
                     'title' => phrase('Choose Language'),
                     'icon' => 'mdi mdi-translate',
                     'popup' => true,
-                    'modalSize' => 'modal-sm'
+                    'modal_size' => 'modal-sm'
                 ],
                 'content' => $content,
                 'reactivate' => ['tooltip']

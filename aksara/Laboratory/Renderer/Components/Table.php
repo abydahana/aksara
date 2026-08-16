@@ -204,8 +204,8 @@ class Table
                     $columns[$field] = [
                         'field' => $field,
                         'label' => $label,
-                        'url' => go_to(null, array_merge($queryParams, ['order' => $field, 'sort' => ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'desc' : 'asc')])),
-                        'icon' => 'mdi mdi-sort-' . ('asc' == strtolower((string) get_userdata('sortOrder')) ? 'ascending' : 'descending'),
+                        'url' => go_to(null, array_merge($queryParams, ['order' => $field, 'sort' => ('asc' == strtolower((string) get_userdata('sort_order')) ? 'desc' : 'asc')])),
+                        'icon' => 'mdi mdi-sort-' . ('asc' == strtolower((string) get_userdata('sort_order')) ? 'ascending' : 'descending'),
                         'align' => (array_intersect(['int', 'integer', 'numeric', 'number_format', 'money', 'percent'], $fieldType) ? 'right' : 'left')
                     ];
                 }
@@ -328,7 +328,7 @@ class Table
                 'primary' => $primaryKey,
                 'buttons' => $this->_getButtons($primaryKey, $replacement),
                 'dropdowns' => $this->_getDropdowns($primaryKey, $replacement),
-                'fieldData' => $fieldData,
+                'field_data' => $fieldData,
                 'deleting' => $deleting
             ];
         }
@@ -357,9 +357,9 @@ class Table
         // Final Output Structure
         $finalOutput = [
             'columns' => $columns,
-            'tableData' => $output,
-            'itemReference' => $this->_itemReference,
-            'queryParams' => $queryParams,
+            'table_data' => $output,
+            'item_reference' => $this->_itemReference,
+            'query_params' => $queryParams,
             'toolbar' => [
                 'action' => current_page(null, ['page' => null]),
                 'buttons' => $buttons,
@@ -393,7 +393,7 @@ class Table
                     continue;
                 }
 
-                $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['newTab']);
+                $buttons[] = $this->_setLink($val['url'], $val['label'], $val['class'], $val['icon'], $val['parameter'], $val['new_tab']);
             }
         }
 
@@ -440,7 +440,7 @@ class Table
                     $override['class'],
                     $override['icon'],
                     $override['parameter'],
-                    $override['newTab']
+                    $override['new_tab']
                 );
             }
         }
@@ -462,7 +462,7 @@ class Table
                 'class' => 'btn-primary --modal',
                 'icon' => 'mdi mdi-magnify',
                 'parameter' => $queryParams,
-                'newTab' => false
+                'new_tab' => false
             ];
         }
 
@@ -473,7 +473,7 @@ class Table
                 'class' => 'btn-info --modal',
                 'icon' => 'mdi mdi-square-edit-outline',
                 'parameter' => $queryParams,
-                'newTab' => false
+                'new_tab' => false
             ];
         }
 
@@ -488,7 +488,7 @@ class Table
                 'class' => 'btn-danger --open-delete-confirm',
                 'icon' => 'mdi mdi-delete',
                 'parameter' => $queryParams,
-                'newTab' => false
+                'new_tab' => false
             ];
         }
 
@@ -510,7 +510,7 @@ class Table
                     'class' => '',
                     'icon' => 'mdi mdi-printer',
                     'parameter' => $queryParams,
-                    'newTab' => true
+                    'new_tab' => true
                 ];
             }
             if (! in_array('pdf', $this->_unsetMethod)) {
@@ -520,7 +520,7 @@ class Table
                     'class' => '',
                     'icon' => 'mdi mdi-file-pdf',
                     'parameter' => $queryParams,
-                    'newTab' => true
+                    'new_tab' => true
                 ];
             }
         }
@@ -559,7 +559,7 @@ class Table
                 $val['class'],
                 $val['icon'],
                 $val['parameter'],
-                $val['newTab'],
+                $val['new_tab'],
                 $val['attribution'] ?? null
             );
 
@@ -628,7 +628,7 @@ class Table
             'label' => $label,
             'class' => $class,
             'icon' => $icon,
-            'newTab' => $newTab,
+            'new_tab' => $newTab,
             'attribution' => $attribution
         ];
     }

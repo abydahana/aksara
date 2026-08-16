@@ -63,7 +63,7 @@ class Settings extends Core
 
     public function index()
     {
-        if ('storageProvider' === $this->request->getPost('fetch')) {
+        if ('storage_provider' === $this->request->getPost('fetch')) {
             return $this->_fetchStorageProvider();
         }
 

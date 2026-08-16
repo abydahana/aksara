@@ -123,7 +123,7 @@ class Cleaner extends Core
                 'status' => 200,
                 'meta' => [
                     'popup' => true,
-                    'modalSize' => 'modal-sm'
+                    'modal_size' => 'modal-sm'
                 ],
                 'content' => $html
             ]);

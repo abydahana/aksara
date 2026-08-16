@@ -5,7 +5,7 @@
  * @var mixed $meta
  * @var iterable|null $suggestions
  */
-$fieldData = $results->fieldData ?? null;
+$fieldData = $results->field_data ?? null;
 
 if ($fieldData): ?>
     <?php

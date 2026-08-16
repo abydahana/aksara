@@ -60,7 +60,7 @@ class AI
             }
 
             $type = (string) ($field['type'] ?? 'text');
-            $previousFields = $options['previousFields'] ?? [];
+            $previousFields = $options['previous_fields'] ?? [];
             $previousValue = is_array($previousFields) && array_key_exists((string) $field['name'], $previousFields)
                 ? $previousFields[(string) $field['name']]
                 : null;
@@ -70,8 +70,8 @@ class AI
                 'label' => (string) ($field['label'] ?? $field['name']),
                 'type' => $type,
                 'required' => ! empty($field['required']),
-                'currentValue' => 'pagebuilder' === strtolower($type) ? $this->_pageBuilderSummary((string) ($field['value'] ?? '')) : (string) ($field['value'] ?? ''),
-                'previousAiValue' => null !== $previousValue ? (string) $previousValue : null,
+                'current_value' => 'pagebuilder' === strtolower($type) ? $this->_pageBuilderSummary((string) ($field['value'] ?? '')) : (string) ($field['value'] ?? ''),
+                'previous_ai_value' => null !== $previousValue ? (string) $previousValue : null,
                 'options' => $field['options'] ?? []
             ];
         }
@@ -80,11 +80,11 @@ class AI
             $options['languages'] = $this->_languages();
         }
 
-        $context = new Context($options, $schema, (array) ($options['customContext'] ?? []));
+        $context = new Context($options, $schema, (array) ($options['custom_context'] ?? []));
         $prompt = $context->fillFormPrompt($instruction);
         $response = $this->_complete($prompt, array_merge($options, [
-            'maxTokens' => max((int) ($options['maxTokens'] ?? 0), $context->maxTokens()),
-            'systemPrompt' => 'You are Aksara CMS form assistant. You generate structured JSON values for existing CRUD form fields. Return valid JSON only, with no markdown fences or commentary.'
+            'max_tokens' => max((int) ($options['max_tokens'] ?? 0), $context->maxTokens()),
+            'system_prompt' => 'You are Aksara CMS form assistant. You generate structured JSON values for existing CRUD form fields. Return valid JSON only, with no markdown fences or commentary.'
         ]));
 
         $response['fields'] = $this->_normalizeResponseFields(
@@ -108,7 +108,7 @@ class AI
         $prompt = (new Context($options))->translatePrompt($content, $language);
 
         return $this->_complete($prompt, array_merge($options, [
-            'systemPrompt' => 'You are Aksara CMS translation assistant. Translate only the supplied CMS content. Preserve structure and return translated content only.'
+            'system_prompt' => 'You are Aksara CMS translation assistant. Translate only the supplied CMS content. Preserve structure and return translated content only.'
         ]));
     }
 
@@ -126,8 +126,8 @@ class AI
         return json_encode([
             'version' => $layout['version'] ?? '1.0',
             'framework' => $layout['framework'] ?? 'bootstrap5',
-            'componentCount' => array_sum($counts),
-            'componentTypes' => $counts
+            'component_count' => array_sum($counts),
+            'component_types' => $counts
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
     }
 
@@ -179,7 +179,7 @@ class AI
 
     private function _ready(array $config): bool
     {
-        return (bool) $config['enabled'] && '' !== $config['apiKey'] && '' !== $config['model'];
+        return (bool) $config['enabled'] && '' !== $config['api_key'] && '' !== $config['model'];
     }
 
     private function _normalize(AIResponse $response): array
@@ -189,7 +189,7 @@ class AI
 
     private function _systemPrompt(array $options = []): string
     {
-        return trim((string) ($options['systemPrompt'] ?? $options['system_prompt'] ?? 'You are Aksara CMS editorial assistant. Help administrators create, translate, improve, and optimize CMS content. Preserve HTML tags, shortcodes, internal links, media paths, placeholders, code snippets, SEO intent, and the source language unless the user explicitly asks for translation. Never provide credentials, secrets, sudo/chmod/chown instructions, shell commands, database destructive commands, filesystem access guidance, or privilege escalation steps. Return content that can be pasted directly into Aksara CMS fields.'));
+        return trim((string) ($options['system_prompt'] ?? 'You are Aksara CMS editorial assistant. Help administrators create, translate, improve, and optimize CMS content. Preserve HTML tags, shortcodes, internal links, media paths, placeholders, code snippets, SEO intent, and the source language unless the user explicitly asks for translation. Never provide credentials, secrets, sudo/chmod/chown instructions, shell commands, database destructive commands, filesystem access guidance, or privilege escalation steps. Return content that can be pasted directly into Aksara CMS fields.'));
     }
 
     private function _failure(string $message): array
@@ -297,7 +297,7 @@ class AI
     {
         $labels = [];
 
-        $referenceData = $options['customContext']['data'] ?? [];
+        $referenceData = $options['custom_context']['data'] ?? [];
 
         if (! isset($referenceData['language_id'])) {
             $referenceData['language_id'] = ! empty($options['languages']) ? $options['languages'] : $this->_languages();
@@ -689,29 +689,17 @@ class AI
 
     private function _settings(): array
     {
-        $apiKey = $this->_decrypt((string) get_setting('ai_api_key'));
-        $baseUrl = get_setting('ai_base_url') ?: '';
-        $maxTokens = get_setting('ai_max_tokens') ?: '2048';
-        $imageEnabled = (bool) get_setting('ai_image_enabled');
-        $imageModel = get_setting('ai_image_model') ?: 'gpt-image-2';
-
         return [
             'enabled' => (bool) get_setting('ai_enabled'),
             'provider' => get_setting('ai_provider') ?: 'openai',
-            'apiKey' => $apiKey,
-            'api_key' => $apiKey,
+            'api_key' => $this->_decrypt((string) get_setting('ai_api_key')),
             'model' => get_setting('ai_model') ?: 'gpt-5.6',
-            'baseUrl' => $baseUrl,
-            'base_url' => $baseUrl,
+            'base_url' => get_setting('ai_base_url') ?: '',
             'temperature' => get_setting('ai_temperature') ?: '0.7',
-            'maxTokens' => $maxTokens,
-            'max_tokens' => $maxTokens,
-            'imageEnabled' => $imageEnabled,
-            'image_enabled' => $imageEnabled,
-            'imageModel' => $imageModel,
-            'image_model' => $imageModel,
+            'max_tokens' => get_setting('ai_max_tokens') ?: '2048',
+            'image_enabled' => (bool) get_setting('ai_image_enabled'),
+            'image_model' => get_setting('ai_image_model') ?: 'gpt-image-2',
             'timeout' => 180,
-            'connectTimeout' => 15,
             'connect_timeout' => 15,
             'title' => get_setting('app_name') ?: 'Aksara CMS'
         ];
@@ -722,21 +710,15 @@ class AI
         $config = array_merge($this->_config, $options);
         $config['enabled'] = (bool) ($config['enabled'] ?? false);
         $config['provider'] = strtolower((string) ($config['provider'] ?? 'openai'));
-        $config['apiKey'] = trim((string) ($config['apiKey'] ?? $config['api_key'] ?? ''));
-        $config['api_key'] = $config['apiKey'];
+        $config['api_key'] = trim((string) ($config['api_key'] ?? ''));
         $config['model'] = trim((string) ($config['model'] ?? 'gpt-5.6'));
-        $config['baseUrl'] = rtrim((string) ($config['baseUrl'] ?? $config['base_url'] ?? ''), '/');
-        $config['base_url'] = $config['baseUrl'];
+        $config['base_url'] = rtrim((string) ($config['base_url'] ?? ''), '/');
         $config['temperature'] = (float) ($config['temperature'] ?? 0.7);
-        $config['maxTokens'] = (int) ($config['maxTokens'] ?? $config['max_tokens'] ?? 2048);
-        $config['max_tokens'] = $config['maxTokens'];
+        $config['max_tokens'] = (int) ($config['max_tokens'] ?? 2048);
         $config['timeout'] = (int) ($config['timeout'] ?? 180);
-        $config['connectTimeout'] = (int) ($config['connectTimeout'] ?? $config['connect_timeout'] ?? 15);
-        $config['connect_timeout'] = $config['connectTimeout'];
-        $config['imageEnabled'] = (bool) ($config['imageEnabled'] ?? $config['image_enabled'] ?? false);
-        $config['image_enabled'] = $config['imageEnabled'];
-        $config['imageModel'] = trim((string) ($config['imageModel'] ?? $config['image_model'] ?? 'gpt-image-2'));
-        $config['image_model'] = $config['imageModel'];
+        $config['connect_timeout'] = (int) ($config['connect_timeout'] ?? 15);
+        $config['image_enabled'] = (bool) ($config['image_enabled'] ?? false);
+        $config['image_model'] = trim((string) ($config['image_model'] ?? 'gpt-image-2'));
 
         return $config;
     }
@@ -745,7 +727,7 @@ class AI
     {
         $config = $this->_config($options);
 
-        if (! $config['imageEnabled'] || 'openai' !== $config['provider']) {
+        if (! $config['image_enabled'] || 'openai' !== $config['provider']) {
             return;
         }
 
@@ -785,8 +767,7 @@ class AI
                 . "Image direction: " . $prompt . "\n"
                 . "Avoid text, logos, watermarks, UI chrome, and distorted people. Use a polished editorial composition.",
                 [
-                    'imageModel' => $config['imageModel'],
-                    'image_model' => $config['imageModel'],
+                    'image_model' => $config['image_model'],
                     'size' => '1024x768'
                 ]
             );
@@ -796,7 +777,7 @@ class AI
                 $response['labels'][$name] = $field['label'] ?? $name;
             } else {
                 $message = trim((string) ($image['message'] ?? 'AI image generation failed.'));
-                $response['imageErrors'][$name] = $message;
+                $response['image_errors'][$name] = $message;
                 log_message('warning', 'AI image generation failed for field "{field}": {message}', [
                     'field' => $name,
                     'message' => $message

@@ -43,7 +43,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
 <div class="updater-placeholder"></div>
 
 <div class="container-fluid py-3">
-    <?php if (! get_userdata('hideGreeting')): ?>
+    <?php if (! get_userdata('hide_greeting')): ?>
         <div class="row" id="greeting-card">
             <div class="col-12">
                 <div class="card rounded-4 overflow-hidden mb-3">
@@ -545,7 +545,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             }
         })
         .done(function(response) {
-            if (response.updateAvailable) {
+            if (response.update_available) {
                 $('.updater-placeholder').html(`
                     <div class="alert alert-info rounded-0 border-0 p-3 mb-0">
                         <h4 class="h5">
@@ -572,7 +572,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 url: '<?= base_url('xhr/settings'); ?>',
                 method: 'POST',
                 data: {
-                    hideGreeting: true
+                    hide_greeting: true
                 }
             });
             $(this).closest('#greeting-card').slideUp()

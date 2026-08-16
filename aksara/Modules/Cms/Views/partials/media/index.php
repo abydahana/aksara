@@ -11,7 +11,7 @@ $breadcrumbs = null;
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-body border-end">
-            <?php if (! empty($results->cloudStorage) && ! get_userdata('hideCloudStorageMediaNotice')): ?>
+            <?php if (get_active_storage() != 'local' && ! get_userdata('hide_cloud_storage_media_notice')): ?>
                 <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
                     <?= phrase('Cloud storage is active. File browsing may be slower.'); ?>
                     <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close'); ?>"></button>
@@ -51,7 +51,7 @@ $breadcrumbs = null;
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
                         <div class="col-4 col-sm-3 col-xl-2 text-center">
-                            <a href="<?= current_page(null, ['directory' => $results->parentDirectory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
+                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
                                 <div class="p-3">
                                     <i class="mdi mdi-arrow-left mdi-4x"></i>
                                 </div>
@@ -136,10 +136,10 @@ $breadcrumbs = null;
         <div class="col-lg-4 pt-3 pb-3 full-height bg-body border-start" style="margin-left:-1px">
             <div class="sticky-top">
                 <?php if ($results->description): ?>
-                    <?php if (in_array($results->description->mimeType, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
+                    <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
                         <div class="text-center mb-3">
-                            <a href="<?= $results->description->url ?? base_url($results->description->serverPath); ?>" target="_blank">
-                                <img src="<?= $results->description->url ?? base_url($results->description->serverPath); ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ?? 'Preview'; ?>" style="max-width: 256px; max-height: 256px" />
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" target="_blank">
+                                <img src="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ?? 'Preview'; ?>" style="max-width: 256px; max-height: 256px" />
                             </a>
                         </div>
                     <?php endif; ?>
@@ -148,7 +148,7 @@ $breadcrumbs = null;
                             <?= phrase('Filename'); ?>
                         </span>
                         <div class="text-break-word">
-                            <a href="<?= $results->description->url ?? base_url($results->description->serverPath); ?>" download="<?= $results->description->name; ?>">
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" download="<?= $results->description->name; ?>">
                                 <?= $results->description->name; ?>
                             </a>
                         </div>
@@ -160,7 +160,7 @@ $breadcrumbs = null;
                                     <?= phrase('Mime Type'); ?>
                                 </span>
                                 <div class="text-break-word">
-                                    <?= $results->description->mimeType; ?>
+                                    <?= $results->description->mime_type; ?>
                                 </div>
                             </div>
                         </div>
@@ -170,7 +170,7 @@ $breadcrumbs = null;
                                     <?= phrase('Size'); ?>
                                 </span>
                                 <div class="text-break-word">
-                                    <?= $results->description->formattedSize ?? get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
+                                    <?= $results->description->formatted_size ?? get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@ $breadcrumbs = null;
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <a href="<?= $results->description->url ?? base_url($results->description->serverPath); ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name; ?>">
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name; ?>">
                                 <i class="mdi mdi-download"></i>
                                 <?= phrase('Download'); ?>
                             </a>
@@ -211,7 +211,7 @@ $breadcrumbs = null;
                 url: '<?= current_page(); ?>',
                 method: 'POST',
                 data: {
-                    hideCloudStorageMediaNotice: true
+                    hide_cloud_storage_media_notice: true
                 }
             });
 

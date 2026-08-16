@@ -7,7 +7,7 @@
      * @var mixed $related
      * @var mixed $categories
      */
-    $fieldData = $results->fieldData ?? null;
+    $fieldData = $results->field_data ?? null;
     $toc = null;
     $article = null;
     $featuredImage = null;

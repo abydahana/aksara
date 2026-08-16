@@ -4,7 +4,7 @@
  * @var object $meta
  * @var mixed $results
  */
-$fieldData = $results->fieldData ?? null;
+$fieldData = $results->field_data ?? null;
 $count = 0;
 $images = ($fieldData ? json_decode($fieldData->gallery_images->value) : []);
 $attributes = ($fieldData ? json_decode($fieldData->gallery_attributes->value) : []);

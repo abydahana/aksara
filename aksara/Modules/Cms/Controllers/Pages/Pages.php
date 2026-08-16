@@ -167,7 +167,7 @@ class Pages extends Core
                     'title' => phrase('Choose Language'),
                     'icon' => 'mdi mdi-translate',
                     'popup' => true,
-                    'modalSize' => 'modal-sm'
+                    'modal_size' => 'modal-sm'
                 ],
                 'content' => $content,
             ]);
@@ -288,7 +288,7 @@ class Pages extends Core
         $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages';
         $query = $this->request->getGet('q');
         $sort = $this->request->getGet('sort') ?? 'newest';
-        $page = (int) ($this->request->getGet('pageNo') ?? 1);
+        $page = (int) ($this->request->getGet('page') ?? 1);
         $perPage = 12;
 
         if (! is_dir($path)) {
@@ -338,8 +338,8 @@ class Pages extends Core
                 'thumb' => get_image('pages', $file, 'thumb'),
                 'size' => filesize($filePath),
                 'time' => filemtime($filePath),
-                'formattedSize' => number_format(filesize($filePath) / 1024, 2) . ' KB',
-                'formattedTime' => date('Y-m-d H:i', filemtime($filePath))
+                'formatted_size' => number_format(filesize($filePath) / 1024, 2) . ' KB',
+                'formatted_time' => date('Y-m-d H:i', filemtime($filePath))
             ];
         }
 
@@ -365,9 +365,9 @@ class Pages extends Core
 
         return make_json([
             'images' => $images,
-            'pageNo' => $page,
-            'pageSize' => $perPage,
-            'totalPages' => ceil($total / $perPage)
+            'page' => $page,
+            'limit' => $perPage,
+            'total_pages' => ceil($total / $perPage)
         ]);
     }
 

@@ -5,7 +5,7 @@
  * @var mixed $meta
  */
 
-$fieldData = $results->fieldData;
+$fieldData = $results->field_data;
 ?>
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">

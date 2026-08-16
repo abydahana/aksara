@@ -243,19 +243,19 @@ class Form
         }
 
         return [
-            'columnSize' => $this->_columnSize,
-            'columnTotal' => $highestColumn,
-            'extraAction' => [
+            'column_size' => $this->_columnSize,
+            'column_total' => $highestColumn,
+            'extra_action' => [
                 'submit' => $this->_submitButton
             ],
-            'formSize' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
-            'fieldSize' => $this->_fieldSize,
-            'fieldData' => $fieldData,
-            'mergedContent' => $this->_mergeContent,
-            'mergedField' => $this->_mergeField,
-            'setHeading' => $this->_setHeading,
-            'groupedField' => $this->_groupField,
-            'queryParams' => $queryParams
+            'form_size' => ($this->_modalSize ? str_replace('modal', 'form', $this->_modalSize) : ''),
+            'field_size' => $this->_fieldSize,
+            'field_data' => $fieldData,
+            'merged_content' => $this->_mergeContent,
+            'merged_field' => $this->_mergeField,
+            'set_heading' => $this->_setHeading,
+            'grouped_field' => $this->_groupField,
+            'query_params' => $queryParams
         ];
     }
 

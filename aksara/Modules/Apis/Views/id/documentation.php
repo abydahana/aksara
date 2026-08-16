@@ -474,8 +474,8 @@ if ($permission->groups) {
 
             if (response.results) {
                 $.each(response.results, function(key, val) {
-                    if (typeof val.queryParams !== 'undefined') {
-                        $.each(val.queryParams, function(_key, _val) {
+                    if (typeof val.query_params !== 'undefined') {
+                        $.each(val.query_params, function(_key, _val) {
                             if ($('.--query-' + key).hasClass('d-none')) {
                                 $('.--query-' + key).removeClass('d-none')
                             }
@@ -489,8 +489,8 @@ if ($permission->groups) {
                         })
                     }
 
-                    if (typeof val.fieldData !== 'undefined') {
-                        $.each(val.fieldData, function(_key, _val) {
+                    if (typeof val.field_data !== 'undefined') {
+                        $.each(val.field_data, function(_key, _val) {
                             if ($('.--parameter-' + key).hasClass('d-none')) {
                                 $('.--parameter-' + key).removeClass('d-none')
                             }
