@@ -134,7 +134,7 @@ class Documentation extends Core
         }
 
         $sampleParams = [
-            'formatResult' => ('complete' == $responseType ? 'complete' : null),
+            'format_result' => ('complete' == $responseType ? 'complete' : null),
             'limit' => 1
         ];
         $sampleParams = array_filter($sampleParams, fn ($value) => null !== $value);
@@ -206,7 +206,7 @@ class Documentation extends Core
 
                 if (in_array($val, ['create', 'update'])) {
                     // Get field data
-                    $request = $curl->get(base_url($slug . '/create', ['formatResult' => 'fieldData']));
+                    $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
                     $response = json_decode($request->getBody()) ?? [];
 
                     foreach ($response as $field => $params) {
@@ -223,7 +223,7 @@ class Documentation extends Core
                         $response->$field->type = array_keys((array) $params->type);
                     }
 
-                    $output[$val]['fieldData'] = $response;
+                    $output[$val]['field_data'] = $response;
                 } elseif (in_array($val, ['read'])) {
                     // Get field data
                     $request = $curl->get(base_url($slug, $sampleParams));
@@ -241,11 +241,11 @@ class Documentation extends Core
                 }
 
                 if (in_array($val, ['read', 'update', 'delete', 'export', 'print', 'pdf'])) {
-                    $request = $curl->get(base_url($slug, ['formatResult' => 'full', 'limit' => 1]));
+                    $request = $curl->get(base_url($slug, ['format_result' => 'full', 'limit' => 1]));
                     $response = json_decode($request->getBody());
 
-                    if (isset($response->results->tableData[0]->primary)) {
-                        $output[$val]['queryParams'] = $response->results->tableData[0]->primary;
+                    if (isset($response->results->table_data[0]->primary)) {
+                        $output[$val]['query_params'] = $response->results->table_data[0]->primary;
                     }
                 }
 
@@ -254,7 +254,7 @@ class Documentation extends Core
 
                 /*
                 // Call API request
-                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete']) ? '/' . $val : null), ['formatResult' => 'full', 'limit' => 1]));
+                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete']) ? '/' . $val : null), ['format_result' => 'full', 'limit' => 1]));
 
                 // Decode response
                 $response = json_decode($request->getBody());
@@ -265,17 +265,17 @@ class Documentation extends Core
                         $output[$val]['response']['success'] = trim($request->getHeaderLine('Content-Type'));
                         $output[$val]['response']['error'] = $exception;
 
-                        if (isset($response->results->tableData[0])) {
+                        if (isset($response->results->table_data[0])) {
                             $fieldData = [];
 
-                            foreach($response->results->tableData[0]->fieldData as $_key => $_val) {
+                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
                                 $fieldData[$_key] = $_val->content;
                             }
 
                             $output[$val]['response']['success'] = $fieldData;
                         }
                     } elseif (in_array($response->method, ['create', 'update'])) {
-                        $request = $curl->get(base_url($slug . '/create', ['formatResult' => 'fieldData']));
+                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
 
                         // Decode the response
                         $response = json_decode($request->getBody());
@@ -301,7 +301,7 @@ class Documentation extends Core
                                 }
                             }
 
-                            $output[$val]['fieldData'] = $fieldData;
+                            $output[$val]['field_data'] = $fieldData;
                             $output[$val]['response']['success'] = $exception;
                             $output[$val]['response']['error'] = [
                                 'status' => 400,
@@ -309,24 +309,24 @@ class Documentation extends Core
                             ];
                         }
                     } elseif (in_array($response->method, ['read'])) {
-                        $request = $curl->get(base_url($slug . '/create', ['formatResult' => 'fieldData']));
+                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
 
                         // Decode the response
                         $response = json_decode($request->getBody());
 
                         if (isset($response[0])) {
                         }
-                        if (isset($response->results->tableData[0])) {
+                        if (isset($response->results->table_data[0])) {
                             $fieldData = [];
 
-                            foreach($response->results->tableData[0]->fieldData as $_key => $_val) {
+                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
                                 $fieldData[$_key] = $_val->content;
                             }
 
                             $output[$val]['response']['success'] = $fieldData;
 
                             // Set query params
-                            $output[$val]['queryParams'] = $response->results->tableData[0]->primary;
+                            $output[$val]['query_params'] = $response->results->table_data[0]->primary;
                         }
                     }
                 }

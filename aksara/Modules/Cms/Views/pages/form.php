@@ -4,7 +4,7 @@
  * @var mixed $results
  * @var mixed $forms
  */
-$pageContent = (isset($results->fieldData->page_content->value) ? $results->fieldData->page_content->value : '{"components":[]}');
+$pageContent = (isset($results->field_data->page_content->value) ? $results->field_data->page_content->value : '{"components":[]}');
 ?>
 <style type="text/css">
     #title-wrapper, [data-role="meta"] {
@@ -79,11 +79,11 @@ $pageContent = (isset($results->fieldData->page_content->value) ? $results->fiel
 
         <!-- Container: Page Metadata Settings (Hidden, will be moved to modal) -->
         <div id="pb-settings-container" style="display:none">
-            <?= (isset($results->fieldData->page_title) ? form_input($results->fieldData->page_title) : null); ?>
-            <?= (isset($results->fieldData->page_slug) ? form_input($results->fieldData->page_slug) : null); ?>
-            <?= (isset($results->fieldData->page_description) ? form_input($results->fieldData->page_description) : null); ?>
-            <?= (isset($results->fieldData->language_id) ? form_input($results->fieldData->language_id) : null); ?>
-            <?= (isset($results->fieldData->status) ? form_input($results->fieldData->status) : null); ?>
+            <?= (isset($results->field_data->page_title) ? form_input($results->field_data->page_title) : null); ?>
+            <?= (isset($results->field_data->page_slug) ? form_input($results->field_data->page_slug) : null); ?>
+            <?= (isset($results->field_data->page_description) ? form_input($results->field_data->page_description) : null); ?>
+            <?= (isset($results->field_data->language_id) ? form_input($results->field_data->language_id) : null); ?>
+            <?= (isset($results->field_data->status) ? form_input($results->field_data->status) : null); ?>
             <div data-role="validation-callback"></div>
         </div>
     </form>

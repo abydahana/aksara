@@ -4,7 +4,7 @@
  * @var object $meta
  * @var mixed $results
  */
-$fieldData = $results->fieldData ?? null;
+$fieldData = $results->field_data ?? null;
 
 if ($fieldData): ?>
     <div class="border-fade-bottom">

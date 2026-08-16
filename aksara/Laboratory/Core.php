@@ -371,9 +371,9 @@ abstract class Core extends Controller
                 $context['scope'] = uri_string();
             }
 
-            if (! isset($context['maxTokens'])) {
-                // If maxTokens is not set, use default value from get_setting()
-                $context['maxTokens'] = (int) get_setting('ai_max_tokens', 4096);
+            if (! isset($context['max_tokens'])) {
+                // If max_tokens is not set, use default value from get_setting()
+                $context['max_tokens'] = (int) get_setting('ai_max_tokens', 4096);
             }
 
             $cacheKey = 'aksara_ai_custom_context_' . md5(trim((string) uri_string(), '/'));
@@ -773,7 +773,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'newTab' => $newTab,
+                'new_tab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -788,7 +788,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
+                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -820,7 +820,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'newTab' => $newTab,
+                'new_tab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -835,7 +835,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
+                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -867,7 +867,7 @@ abstract class Core extends Controller
                 'class' => $class,
                 'icon' => $icon,
                 'parameter' => $parameter,
-                'newTab' => $newTab,
+                'new_tab' => $newTab,
                 'attribution' => $attribution
             ];
 
@@ -882,7 +882,7 @@ abstract class Core extends Controller
                 'class' => (isset($val['class']) ? $val['class'] : $class),
                 'icon' => (isset($val['icon']) ? $val['icon'] : $icon),
                 'parameter' => (isset($val['parameter']) ? $val['parameter'] : $parameter),
-                'newTab' => (isset($val['newTab']) ? $val['newTab'] : $newTab),
+                'new_tab' => (isset($val['new_tab']) ? $val['new_tab'] : $newTab),
                 'attribution' => (isset($val['attribution']) ? $val['attribution'] : $attribution)
             ];
         }
@@ -937,7 +937,7 @@ abstract class Core extends Controller
             'icon' => $icon,
             'class' => $class,
             'parameter' => $parameter,
-            'newTab' => $newTab
+            'new_tab' => $newTab
         ];
 
         return $this;
@@ -1006,7 +1006,7 @@ abstract class Core extends Controller
             'thumbnail' => $thumbnail,
             'hyperlink' => $hyperlink,
             'parameter' => $parameter,
-            'newTab' => $newTab
+            'new_tab' => $newTab
         ];
 
         return $this;
@@ -1320,20 +1320,20 @@ abstract class Core extends Controller
         $finalLimit = is_numeric($limit) && $limit > 0 ? $limit : $this->_limit;
 
         $offset = (
-            is_numeric(Services::request()->getPost('pageNo'))
-                ? Services::request()->getPost('pageNo') - 1
+            is_numeric(Services::request()->getPost('page_no'))
+                ? Services::request()->getPost('page_no') - 1
                 : 0
         ) * $finalLimit;
 
         $this->_setRelation[$alias] = [
             'select' => $select,
-            'primaryKey' => $fieldLocal,
-            'relationTable' => $relationTable,
-            'relationKey' => $relationKeys,
+            'primary_key' => $fieldLocal,
+            'relation_table' => $relationTable,
+            'relation_key' => $relationKeys,
             'where' => $where,
             'join' => $join,
-            'orderBy' => $orderBy,
-            'groupBy' => $groupBy,
+            'order_by' => $orderBy,
+            'group_by' => $groupBy,
             'limit' => $finalLimit,
             'offset' => $offset,
             'output' => $output,
@@ -1421,13 +1421,13 @@ abstract class Core extends Controller
         $this->_setAutocomplete[$field] = [
             'select' => $select,
             'output' => $output,
-            'primaryKey' => $field,
-            'relationTable' => $relationTable,
-            'relationKey' => $relationKey,
+            'primary_key' => $field,
+            'relation_table' => $relationTable,
+            'relation_key' => $relationKey,
             'where' => $where,
             'join' => $join,
-            'orderBy' => $orderBy,
-            'groupBy' => $groupBy,
+            'order_by' => $orderBy,
+            'group_by' => $groupBy,
             'limit' => $limit
         ];
 
@@ -2456,7 +2456,7 @@ abstract class Core extends Controller
                                         // Use query builder that supports parameter binding
                                         // Example with CodeIgniter 4:
                                         $escapedQuery = $this->model->escape($searchQuery);
-                                        $this->_prepare('orderBy', [
+                                        $this->_prepare('order_by', [
                                             "(CASE
                                                 WHEN {$orderField} LIKE {$escapedQuery} THEN 1
                                                 WHEN {$orderField} LIKE CONCAT({$escapedQuery}, '%') THEN 2
@@ -2617,7 +2617,7 @@ abstract class Core extends Controller
                             $queryString = str_replace('\\', '\\\\', $queryString);
                             $queryString = str_replace(['%', '_'], ['\\%', '\\_'], $queryString);
 
-                            $this->_prepare('orderBy', ['(CASE WHEN ' . $val . ' LIKE \'%' . $queryString . '%\' ESCAPE \'\\\' THEN 1 WHEN ' . $val . ' LIKE \'%' . $queryString . '\' ESCAPE \'\\\' THEN 3 ELSE 2 END)']);
+                            $this->_prepare('order_by', ['(CASE WHEN ' . $val . ' LIKE \'%' . $queryString . '%\' ESCAPE \'\\\' THEN 1 WHEN ' . $val . ' LIKE \'%' . $queryString . '\' ESCAPE \'\\\' THEN 3 ELSE 2 END)']);
                         }
 
                         $compiledLike[] = $fieldOrigin;
@@ -2690,10 +2690,10 @@ abstract class Core extends Controller
 
             if ($this->request->getGet('sort') && 'desc' == strtolower($this->request->getGet('sort'))) {
                 // Order DESC from query string
-                set_userdata('sortOrder', 'DESC');
+                set_userdata('sort_order', 'DESC');
             } else {
                 // Order ASC from query string
-                set_userdata('sortOrder', 'ASC');
+                set_userdata('sort_order', 'ASC');
             }
 
             $orderField = $this->request->getGet('order');
@@ -2715,8 +2715,8 @@ abstract class Core extends Controller
                         // Match order by the primary table
                         // Push order to the prepared query builder
                         $this->_prepare[] = [
-                            'function' => 'orderBy',
-                            'arguments' => [$this->_table . '.' . $checkField, get_userdata('sortOrder')]
+                            'function' => 'order_by',
+                            'arguments' => [$this->_table . '.' . $checkField, get_userdata('sort_order')]
                         ];
                     } elseif ($this->_compiledTable) {
                         // Otherwhise, find it from the relation table
@@ -2730,8 +2730,8 @@ abstract class Core extends Controller
 
                                 // Push order to the prepared query builder
                                 $this->_prepare[] = [
-                                    'function' => 'orderBy',
-                                    'arguments' => [$dbTable . '.' . $checkField, get_userdata('sortOrder')]
+                                    'function' => 'order_by',
+                                    'arguments' => [$dbTable . '.' . $checkField, get_userdata('sort_order')]
                                 ];
                                 break;
                             }
@@ -2994,7 +2994,7 @@ abstract class Core extends Controller
             }
         }
 
-        if ($this->apiClient && 'complete' === $this->request->getGet('formatResult')) {
+        if ($this->apiClient && 'complete' === $this->request->getGet('format_result')) {
             // Requested from API Client in formatted result
             return make_json($results);
         }
@@ -3007,12 +3007,12 @@ abstract class Core extends Controller
             }
         }
 
-        if (! $this->_modalSize && isset($results['columnTotal'])) {
-            if ($results['columnTotal'] > 3) {
+        if (! $this->_modalSize && isset($results['column_total'])) {
+            if ($results['column_total'] > 3) {
                 $this->_modalSize = 'modal-xxl';
-            } elseif ($results['columnTotal'] > 2) {
+            } elseif ($results['column_total'] > 2) {
                 $this->_modalSize = 'modal-xl';
-            } elseif ($results['columnTotal'] > 1) {
+            } elseif ($results['column_total'] > 1) {
                 $this->_modalSize = 'modal-lg';
             }
         }
@@ -3029,18 +3029,18 @@ abstract class Core extends Controller
                 'description' => preg_replace('/[^\S ]+/', '', $this->_setDescription ?? ''),
                 'icon' => $this->_setIcon,
                 'title' => $this->_setTitle,
-                'modalSize' => ($this->_modalSize ? $this->_modalSize : ''),
+                'modal_size' => ($this->_modalSize ? $this->_modalSize : ''),
                 'segmentation' => array_map(function ($segment = null) {
                     return str_replace('.', '-', preg_replace('/[^a-zA-Z0-9]/', '_', $segment));
                 }, $uri->getSegments())
             ],
             'breadcrumb' => $this->template->breadcrumb($this->_setBreadcrumb, $this->_setTitle, $this->_setPrimary),
             'links' => [
-                'baseUrl' => base_url(),
-                'currentModule' => go_to(null, $queryParams),
-                'currentPage' => current_page()
+                'base_url' => base_url(),
+                'current_module' => go_to(null, $queryParams),
+                'current_page' => current_page()
             ],
-            'queryParams' => $this->request->getGet(),
+            'query_params' => $this->request->getGet(),
             'results' => $results,
             '_token' => $this->_token
         ];
@@ -3052,7 +3052,7 @@ abstract class Core extends Controller
             $output['pagination'] = $this->template->pagination([
                 'total' => $total,
                 'limit' => $this->_limit,
-                'limitBackup' => $this->_limitBackup,
+                'limit_backup' => $this->_limitBackup,
                 'offset' => $this->_offset,
                 'url' => current_page(null, ['page' => null])
             ]);
@@ -3064,7 +3064,7 @@ abstract class Core extends Controller
         }
 
         // Elapsed time
-        $output['elapsedTime'] = (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00;
+        $output['elapsed_time'] = (float) $timer->has('elapsed_time') ? $timer->getElapsedTime('elapsed_time') : 0.00;
 
         // Generate the output
         if (in_array($this->_method, ['print', 'export', 'pdf'])) {
@@ -3094,7 +3094,7 @@ abstract class Core extends Controller
                 $output['pagination']['filters'],
                 $output['pagination']['information'],
                 $output['pagination']['links'],
-                $output['queryParams'],
+                $output['query_params'],
                 $output['total'],
                 $output['_token']
             );
@@ -3191,19 +3191,19 @@ abstract class Core extends Controller
             }
 
             return [
-                'columnSize' => [],
-                'columnTotal' => 1,
-                'extraAction' => [
+                'column_size' => [],
+                'column_total' => 1,
+                'extra_action' => [
                     'submit' => $this->_submitButton
                 ],
-                'formSize' => '',
-                'fieldSize' => [],
-                'fieldData' => [],
-                'mergedContent' => [],
-                'mergedField' => [],
-                'setHeading' => [],
-                'groupedField' => [],
-                'queryParams' => $queryParams
+                'form_size' => '',
+                'field_size' => [],
+                'field_data' => [],
+                'merged_content' => [],
+                'merged_field' => [],
+                'set_heading' => [],
+                'grouped_field' => [],
+                'query_params' => $queryParams
             ];
         }
 
@@ -3301,7 +3301,7 @@ abstract class Core extends Controller
             $data = [array_fill_keys($this->model->listFields($this->_table), '')];
         }
 
-        if ($this->apiClient && (! $this->request->getGet('formatResult') || ! in_array($this->request->getGet('formatResult'), ['fieldData', 'complete', 'full']))) {
+        if ($this->apiClient && (! $this->request->getGet('format_result') || ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full']))) {
             // Requested from API Client in unformatted result
             return make_json($data);
         }
@@ -3316,7 +3316,7 @@ abstract class Core extends Controller
             $output[$row] = $this->serializeRow($array, false, $fieldData, $mockFields, $fieldNames);
         }
 
-        if ($this->apiClient && 'fieldData' === $this->request->getGet('formatResult')) {
+        if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
             // Requested from API Client with field data information
             return make_json($output);
         }
@@ -3714,13 +3714,13 @@ abstract class Core extends Controller
 
                     // Relation table validation
                     if (in_array('required', $val['validation'])) {
-                        $relationKey = $this->_setRelation[$key]['relationKey'];
+                        $relationKey = $this->_setRelation[$key]['relation_key'];
 
                         if (is_array($relationKey) && isset($relationKey[0])) {
                             $relationKey = $relationKey[0];
                         }
 
-                        $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $relationKey . ']';
+                        $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relation_table'], ' ') !== false ? substr($this->_setRelation[$key]['relation_table'], 0, strpos($this->_setRelation[$key]['relation_table'], ' ')) : $this->_setRelation[$key]['relation_table']) . '.' . $relationKey . ']';
 
                         if (! in_array($relationChecker, $val['validation'], true)) {
                             $val['validation'][] = $relationChecker;
@@ -3737,7 +3737,7 @@ abstract class Core extends Controller
                             // Find foreign data with loop
                             foreach ($foreignData as $_key => $_val) {
                                 // Table has foreign key
-                                if ($this->_setRelation[$key]['relationTable'] == $_val->foreign_table_name) {
+                                if ($this->_setRelation[$key]['relation_table'] == $_val->foreign_table_name) {
                                     // Set constraint
                                     $constrained = true;
                                 }
@@ -3750,7 +3750,7 @@ abstract class Core extends Controller
                                 : array_merge(['required'], $val['validation']);
 
                             if (! in_array('permit_empty', $relationValidation, true)) {
-                                $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relationTable'], ' ') !== false ? substr($this->_setRelation[$key]['relationTable'], 0, strpos($this->_setRelation[$key]['relationTable'], ' ')) : $this->_setRelation[$key]['relationTable']) . '.' . $this->_setRelation[$key]['relationKey'] . ']';
+                                $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relation_table'], ' ') !== false ? substr($this->_setRelation[$key]['relation_table'], 0, strpos($this->_setRelation[$key]['relation_table'], ' ')) : $this->_setRelation[$key]['relation_table']) . '.' . $this->_setRelation[$key]['relation_key'] . ']';
                                 $relationValidation[] = $relationChecker;
                             }
 
@@ -5698,7 +5698,7 @@ abstract class Core extends Controller
                         $condition = str_replace('__PRIMARY_TABLE__', $table, $params['condition']);
 
                         foreach ($this->_setRelation ?? [] as $relation) {
-                            if (($relation['relationTable'] ?? null) !== $dbTable) {
+                            if (($relation['relation_table'] ?? null) !== $dbTable) {
                                 continue;
                             }
 
@@ -5751,7 +5751,7 @@ abstract class Core extends Controller
             $function = $val['function'];
             $arguments = $val['arguments'];
 
-            if ($recycling && in_array($function, ['select', 'orderBy', 'limit', 'offset'], true)) {
+            if ($recycling && in_array($function, ['select', 'order_by', 'limit', 'offset'], true)) {
                 continue;
             }
 
@@ -5833,7 +5833,7 @@ abstract class Core extends Controller
             } elseif ('selectSubquery' == $function) {
                 // Free query builder
                 $this->model->resetQuery();
-            } elseif ('orderBy' == $function) {
+            } elseif ('order_by' == $function) {
                 if (in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
                     // Prevent order on create, read, update, and delete method
                     continue;
@@ -5958,14 +5958,14 @@ abstract class Core extends Controller
         }
 
         // Use default value if nothing is selected and a default is defined.
-        $fieldNameForDefault = is_array($params['primaryKey']) ? end($params['primaryKey']) : ($params['primaryKey'] ?? null);
+        $fieldNameForDefault = is_array($params['primary_key']) ? end($params['primary_key']) : ($params['primary_key'] ?? null);
         if (! $selected && ($this->_defaultValue[$fieldNameForDefault] ?? null)) {
             $selected = $this->_defaultValue[$fieldNameForDefault];
         }
 
         $compiledSelect = [];
         $like = [];
-        $primaryKey = is_array($params['primaryKey']) ? end($params['primaryKey']) : ($params['primaryKey'] ?? null);
+        $primaryKey = is_array($params['primary_key']) ? end($params['primary_key']) : ($params['primary_key'] ?? null);
 
         // --- 1. SELECT and LIKE Clause Construction ---
         foreach ($params['select'] as $key => $val) {
@@ -5974,7 +5974,7 @@ abstract class Core extends Controller
             $table = $parts[0] ?? null;
 
             // Handle column aliasing to prevent ambiguity if column names clash.
-            if (in_array($column, $compiledSelect) && $table != $params['relationTable']) {
+            if (in_array($column, $compiledSelect) && $table != $params['relation_table']) {
                 $val .= ' AS ' . $column . '_' . $table;
             }
 
@@ -6012,9 +6012,9 @@ abstract class Core extends Controller
 
         // --- 3. WHERE Clause Modification for Selected Item ---
         if ($selected) {
-            $relationTable = (strpos($params['relationTable'], ' ') !== false)
-                ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1)
-                : $params['relationTable'];
+            $relationTable = (strpos($params['relation_table'], ' ') !== false)
+                ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1)
+                : $params['relation_table'];
 
             /*
             * When resolving selected value on update form, do not let relation scope
@@ -6029,24 +6029,24 @@ abstract class Core extends Controller
                     $whereField = substr($whereKey, strlen($relationTable . '.'));
 
                     if (
-                        ! is_array($params['relationKey']) &&
-                        $whereField !== $params['relationKey']
+                        ! is_array($params['relation_key']) &&
+                        $whereField !== $params['relation_key']
                     ) {
                         unset($params['where'][$whereKey]);
                     }
                 }
             }
 
-            if (is_array($params['relationKey'])) {
+            if (is_array($params['relation_key'])) {
                 $selectedParts = explode('.', $selected);
 
-                foreach ($params['relationKey'] as $k => $relKey) {
+                foreach ($params['relation_key'] as $k => $relKey) {
                     if (isset($selectedParts[$k])) {
                         $params['where'][$relationTable . '.' . $relKey] = $selectedParts[$k];
                     }
                 }
             } else {
-                $params['where'][$relationTable . '.' . $params['relationKey']] = $selected;
+                $params['where'][$relationTable . '.' . $params['relation_key']] = $selected;
             }
 
             $params['limit'] = 1;
@@ -6054,8 +6054,8 @@ abstract class Core extends Controller
 
         // --- 3.5 Capture Depends Payload (AJAX) ---
         if ($ajax) {
-            $relationTable = (strpos($params['relationTable'], ' ') !== false) ? substr($params['relationTable'], strpos($params['relationTable'], ' ') + 1) : $params['relationTable'];
-            $reserved = ['aksara', 'method', 'source', 'selectedList', 'search', 'pageNo'];
+            $relationTable = (strpos($params['relation_table'], ' ') !== false) ? substr($params['relation_table'], strpos($params['relation_table'], ' ') + 1) : $params['relation_table'];
+            $reserved = ['aksara', 'method', 'source', 'selected_list', 'search', 'page_no'];
 
             foreach ($this->request->getPost() as $key => $val) {
                 if (! in_array($key, $reserved) && '' !== $val && null !== $val) {
@@ -6095,23 +6095,23 @@ abstract class Core extends Controller
         }
 
         // --- 5. Apply ORDER BY and GROUP BY ---
-        if ($params['orderBy'] && ! $selected) {
-            if (is_array($params['orderBy'])) {
-                foreach ($params['orderBy'] as $key => $val) {
+        if ($params['order_by'] && ! $selected) {
+            if (is_array($params['order_by'])) {
+                foreach ($params['order_by'] as $key => $val) {
                     if (strpos($key, '.') === false && strpos($key, '(') === false && strpos($key, ')') === false) {
                         // Add table name prefix if not present to prevent ambiguity
-                        $key = $params['relationTable'] . '.' . $key;
+                        $key = $params['relation_table'] . '.' . $key;
                     }
 
                     $this->model->orderBy($key, $val);
                 }
             } else {
-                $this->model->orderBy($params['orderBy']);
+                $this->model->orderBy($params['order_by']);
             }
         }
 
-        if ($params['join'] && $params['groupBy'] && ! $selected) {
-            $this->model->groupBy($params['groupBy']);
+        if ($params['join'] && $params['group_by'] && ! $selected) {
+            $this->model->groupBy($params['group_by']);
         }
 
         // --- 6. Initialize Output Array ---
@@ -6119,7 +6119,7 @@ abstract class Core extends Controller
         if (! $selected) {
             if ($ajax) {
                 // AJAX (Select2): add "None" option if it's the first page
-                if ($this->request->getPost('pageNo') <= 1) {
+                if ($this->request->getPost('page_no') <= 1) {
                     $output[] = ['id' => 0, 'text' => phrase('None')];
                 }
             } else {
@@ -6129,7 +6129,7 @@ abstract class Core extends Controller
         }
 
         // --- 7. Run Query and Format Results ---
-        $query = $this->model->get($params['relationTable'], $params['limit'], $params['offset'])->result();
+        $query = $this->model->get($params['relation_table'], $params['limit'], $params['offset'])->result();
 
         if ($query) {
             foreach ($query as $key => $val) {
@@ -6165,19 +6165,19 @@ abstract class Core extends Controller
                 if (in_array($this->_method, ['create', 'update'])) {
                     // Formatting for form field (dropdown/select2)
 
-                    if (is_array($params['primaryKey'])) {
+                    if (is_array($params['primary_key'])) {
                         // Composite key value and selected status determination.
-                        $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['primaryKey']));
+                        $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['primary_key']));
                     } else {
                         // Determine the value/ID for the option
                         $value = $val->$primaryKey ?? null;
                     }
 
                     if (null === $value) {
-                        if (is_array($params['relationKey'])) {
-                            $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['relationKey']));
+                        if (is_array($params['relation_key'])) {
+                            $value = implode('.', array_map(fn ($k) => $val->$k ?? 0, $params['relation_key']));
                         } else {
-                            $relationKey = $params['relationKey'];
+                            $relationKey = $params['relation_key'];
                             $value = $val->$relationKey ?? 0;
                         }
                     }

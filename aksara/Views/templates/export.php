@@ -6,11 +6,11 @@ $singlePrint = false;
 $method = (isset($method) ? $method : null);
 $pagination = (isset($pagination) ? $pagination : new stdClass());
 
-if (isset($results->tableData)) {
-    foreach($results->tableData as $key => $row) {
+if (isset($results->table_data)) {
+    foreach($results->table_data as $key => $row) {
         $rows = null;
 
-        foreach($row->fieldData as $fields => $params) {
+        foreach($row->field_data as $fields => $params) {
             if($params->hidden) continue;
 
             $label = $params->label; // Backup label
@@ -25,10 +25,10 @@ if (isset($results->tableData)) {
 
         $tbody .= '<tr>' . $rows . '</tr>';
     }
-} else if(isset($results->fieldData)) {
+} else if(isset($results->field_data)) {
     $singlePrint = true;
 
-    foreach($results->fieldData as $field => $params) {
+    foreach($results->field_data as $field => $params) {
         $label = $params->label; // Backup label
         $params->label = null; // Remove label
 

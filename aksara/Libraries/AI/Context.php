@@ -29,7 +29,7 @@ class Context
      * Supported keys:
      *   - 'scope'        (string) Explicit scope override ('blog', 'pagebuilder', 'general', or custom).
      *   - 'instructions' (string) Extra system instructions appended after built-in scope instructions.
-     *   - 'maxTokens'    (int)    Token limit override.
+     *   - 'max_tokens'   (int)    Token limit override.
      *   - 'data'         (array)  Extra reference data available to the AI.
      *   - 'tone'         (string) Writing tone (forwarded to options).
      *   - 'audience'     (string) Target audience (forwarded to options).
@@ -60,8 +60,8 @@ class Context
     public function maxTokens(): int
     {
         // Custom override from controller takes priority.
-        if (! empty($this->_customContext['maxTokens'])) {
-            return (int) $this->_customContext['maxTokens'];
+        if (! empty($this->_customContext['max_tokens'])) {
+            return (int) $this->_customContext['max_tokens'];
         }
 
         return match ($this->_scope) {
@@ -180,7 +180,7 @@ class Context
             . "When pagebuilder visual content components require image, src, or hero background props, use the supplied pagebuilder asset sample URLs instead of leaving them empty.\n"
             . "Do not put placeholder image URLs into section, container, row, or column background props; leave those layout backgrounds empty unless the administrator explicitly asks for a background image.\n"
             . "If a language_id field exists, infer the final page language from the instruction and generated content, then use an available language id.\n"
-            . (! empty($this->_options['contextReady']) ? "The Aksara CMS PageBuilder schema has already been prepared for this form session. Continue the same component contract and refine from previousAiValue when requested.\n" : '')
+            . (! empty($this->_options['context_ready']) ? "The Aksara CMS PageBuilder schema has already been prepared for this form session. Continue the same component contract and refine from previous_ai_value when requested.\n" : '')
             . "\n";
     }
 
@@ -194,13 +194,13 @@ class Context
     private function _referenceBlocks(string $instruction): string
     {
         $blocks = [
-            "Previous instruction:\n" . trim((string) ($this->_options['previousInstruction'] ?? '')),
+            "Previous instruction:\n" . trim((string) ($this->_options['previous_instruction'] ?? '')),
             "Instruction:\n" . $instruction,
             "Available languages:\n" . json_encode($this->_options['languages'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ];
 
-        if ('pagebuilder' === $this->_scope && ! empty($this->_options['contextSummary'])) {
-            $blocks[] = "Cached PageBuilder context summary:\n" . json_encode($this->_options['contextSummary'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ('pagebuilder' === $this->_scope && ! empty($this->_options['context_summary'])) {
+            $blocks[] = "Cached PageBuilder context summary:\n" . json_encode($this->_options['context_summary'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         // Extra reference data from controller module.

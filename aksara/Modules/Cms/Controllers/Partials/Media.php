@@ -48,8 +48,8 @@ class Media extends Core
 
     public function index()
     {
-        if ($this->request->getPost('hideCloudStorageMediaNotice')) {
-            set_userdata('hideCloudStorageMediaNotice', true);
+        if ($this->request->getPost('hide_cloud_storage_media_notice')) {
+            set_userdata('hide_cloud_storage_media_notice', true);
 
             return make_json([
                 'status' => 200
@@ -230,8 +230,9 @@ class Media extends Core
             $file = new File(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description = get_file_info(UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $description['icon'] = $this->_getIcon($directory, $filename);
-            $description['mimeType'] = $file->getMimeType();
-            $description['serverPath'] = str_replace('\\', '/', $description['server_path'] ?? '');
+            $description['mime_type'] = $file->getMimeType();
+            $description['server_path'] = str_replace('\\', '/', $description['server_path'] ?? '');
+            $description['formatted_size'] = $this->_formatBytes((int) ($description['size'] ?? 0));
         }
 
         // Merge folder and files
@@ -247,9 +248,9 @@ class Media extends Core
         });
 
         return [
-            'parentDirectory' => $parentDirectory,
+            'parent_directory' => $parentDirectory,
             'directory' => $directory,
-            'cloudStorage' => false,
+            'cloud_storage' => false,
             'data' => $data,
             'description' => $description
         ];
@@ -300,12 +301,12 @@ class Media extends Core
         if ($filename && $storage->exists($filename)) {
             $description = [
                 'name' => basename($filename),
-                'serverPath' => $storage->url($filename),
+                'server_path' => $storage->url($filename),
                 'url' => $storage->url($filename),
                 'icon' => $this->_getIcon(dirname($filename) == '.' ? null : dirname($filename), basename($filename)),
-                'mimeType' => $this->_mimeType($filename),
+                'mime_type' => $this->_mimeType($filename),
                 'size' => $this->_fileSize($filename),
-                'formattedSize' => $this->_formatBytes($this->_fileSize($filename)),
+                'formatted_size' => $this->_formatBytes($this->_fileSize($filename)),
                 'date' => $this->_lastModified($filename)
             ];
         }
@@ -321,9 +322,9 @@ class Media extends Core
         });
 
         return [
-            'parentDirectory' => $parentDirectory ? str_replace(DIRECTORY_SEPARATOR, '/', $parentDirectory) : null,
+            'parent_directory' => $parentDirectory ? str_replace(DIRECTORY_SEPARATOR, '/', $parentDirectory) : null,
             'directory' => $directory,
-            'cloudStorage' => true,
+            'cloud_storage' => true,
             'data' => $data,
             'description' => $description
         ];

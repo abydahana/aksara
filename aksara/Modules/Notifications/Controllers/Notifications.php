@@ -88,7 +88,7 @@ class Notifications extends Core
                 $query[$key]->avatar = get_image('users', $val->avatar, 'icon');
                 $query[$key]->text = ('comment' === $val->type ? phrase('commented on your post.') : ('reply' === $val->type ? phrase('replying to your comment.') : ('like' === $val->type ? phrase('likes your post') : ('upvote' === $val->type ? phrase('upvoted your comment.') : phrase('reacted to your post.')))));
                 $query[$key]->url = base_url($val->url, $queryParams);
-                $query[$key]->createdAt = time_ago($val->created_at);
+                $query[$key]->created_at = time_ago($val->created_at);
             }
         }
 
