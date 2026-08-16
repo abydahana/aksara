@@ -261,6 +261,8 @@ class Pages extends Core
         $html = $pb->render($decoded);
         $theme = (get_userdata('app_theme') === 'dark' ? 'dark' : 'light');
 
+        $frontendTheme = get_setting('frontend_theme') ?: 'default';
+
         echo '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
         echo '<meta charset="UTF-8" />';
         echo '<meta http-equiv="X-UA-Compatible" content="IE=edge" />';
@@ -271,14 +273,12 @@ class Pages extends Core
         echo '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />';
         echo '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
         echo '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
-        echo '<link rel="stylesheet" href="' . get_theme_asset('css/styles.min.css') . '">';
-        echo '<link rel="stylesheet" href="' . get_theme_asset('css/theme.min.css') . '">';
+        echo '<link rel="stylesheet" href="' . base_url('themes/' . $frontendTheme . '/assets/local/css/theme.min.css') . '">';
         echo '<link rel="icon" type="image/x-icon" href="' . get_image('settings', get_setting('app_icon'), 'icon') . '" />';
         echo '<style>.section-padding{padding:80px 0}</style>';
         echo '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
         echo '</head><body>' . $html;
         echo '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
-        echo '<script src="' . get_theme_asset('js/scripts.min.js') . '"></script>';
         echo '</body></html>';
         exit;
     }
