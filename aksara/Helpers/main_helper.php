@@ -245,12 +245,21 @@ if (! function_exists('throw_exception')) {
 
         // Logic for AJAX Request: Return JSON Response
         $exception = [];
+        $responseData = null;
 
         if (is_array($data)) {
-            foreach ($data as $key => $val) {
-                // Remove bracket notation from validation keys
-                $key = str_replace('[]', '', $key);
-                $exception[$key] = $val;
+            if (array_key_exists('data', $data)) {
+                $responseData = $data['data'];
+                unset($data['data']);
+            }
+            if (isset($data['message'])) {
+                $exception = $data['message'];
+            } else {
+                foreach ($data as $key => $val) {
+                    // Remove bracket notation from validation keys
+                    $key = str_replace('[]', '', $key);
+                    $exception[$key] = $val;
+                }
             }
         } else {
             $exception = $data;
@@ -261,19 +270,29 @@ if (! function_exists('throw_exception')) {
             $redirect = (service('request')->getPost('__modal_index') <= 1 && 301 === $code ? 'soft' : false);
         }
 
-        $output = json_encode([
+        $response = [
             'code' => $code,
             'message' => $exception,
             'target' => $target ?: '',
             'redirect' => $redirect
-        ]);
+        ];
+
+        if (null !== $responseData) {
+            unset($response['target'], $response['redirect']);
+
+            $response['data'] = $responseData;
+        }
+
+        $output = json_encode($response);
 
         // Set header response code
         http_response_code($code);
 
         header('Content-Type: application/json; charset=utf-8');
 
-        exit($output);
+        echo $output;
+
+        exit;
     }
 }
 
