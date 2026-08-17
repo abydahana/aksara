@@ -60,6 +60,7 @@ class Activities extends Core
         ->orderBy('id', 'desc')
 
         ->setAlias([
+            'user_id' => phrase('User'),
             'path' => phrase('Path'),
             'method' => phrase('Method'),
             'browser' => phrase('Browser'),
