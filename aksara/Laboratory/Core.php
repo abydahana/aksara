@@ -172,7 +172,7 @@ abstract class Core extends Controller
         }
 
         // --- API Handshake & Logging ---
-        if ($this->request->getHeaderLine('X-API-KEY')) {
+        if ($this->request->getHeaderLine('X-API-KEY') || $this->request->getHeaderLine('X-ACCESS-TOKEN')) {
             // Perform API handshake.
             $this->_handshake($this->request->getHeaderLine('X-API-KEY'));
         } else {
@@ -3655,6 +3655,13 @@ abstract class Core extends Controller
                     continue;
                 }
 
+                // API Partial Update Mode: Skip validation for fields not present in POST or FILES
+                if ($this->apiClient && 'update' === $this->_method) {
+                    if (! array_key_exists($key, $this->request->getPost()) && ! isset($_FILES[$key])) {
+                        continue;
+                    }
+                }
+
                 foreach ($val['validation'] as $index => $callback) {
                     if (! $callback) {
                         // Unset empty validation
@@ -4012,16 +4019,16 @@ abstract class Core extends Controller
                         if ($this->request->getPost($field)) {
                             // Use its own data as slug
                             $title = $this->request->getPost($field);
+                            $prepare[$field] = format_slug($title);
                         } elseif ($this->request->getPost($value['type']['slug']['parameter'])) {
                             // Or match other field from given parameter
                             $title = $this->request->getPost($value['type']['slug']['parameter']);
-                        } else {
-                            // Otherwise, use the time instead
+                            $prepare[$field] = format_slug($title);
+                        } elseif ('create' === $this->_method || $this->_cloning) {
+                            // Otherwise, use the time instead for new records
                             $title = time();
+                            $prepare[$field] = format_slug($title);
                         }
-
-                        // Push the slug to the data preparation
-                        $prepare[$field] = format_slug($title);
                     } elseif (array_intersect(['current_user'], $type)) {
                         // Push current user id to the data preparation
                         $prepare[$field] = get_userdata('user_id');
@@ -4051,14 +4058,14 @@ abstract class Core extends Controller
 
                 // Check if the field is sets to use the default value
                 if (isset($this->_setDefault[$field]) && ($this->_setDefault[$field] || is_numeric($this->_setDefault[$field]))) {
-                    // Push the default value to the data preparation
-                    $prepare[$field] = $this->_setDefault[$field];
+                        // Push the default value to the data preparation
+                        $prepare[$field] = $this->_setDefault[$field];
                 }
 
                 // Or when it's a boolean and no value
                 elseif (array_intersect(['boolean'], $type) && ! $this->request->getPost($field) && ! in_array($field, $this->_unsetField)) {
-                    // Sets to "0" instead of null
-                    $prepare[$field] = 0;
+                        // Sets to "0" instead of null
+                        $prepare[$field] = 0;
                 }
 
                 if (! array_intersect(['wysiwyg', 'encryption'], $type) && isset($prepare[$field])) {
@@ -4226,10 +4233,30 @@ abstract class Core extends Controller
                     $this->afterInsert();
                 }
 
-                $this->_invalidateToken();
+                if ($this->apiClient) {
+                    $primaryKeyField = (is_array($this->_setPrimary) && ! empty($this->_setPrimary)) ? reset($this->_setPrimary) : null;
+                    $whereInsert = ($this->_insertId && $primaryKeyField) ? [$primaryKeyField => $this->_insertId] : (($primaryKeyField && isset($data[$primaryKeyField])) ? [$primaryKeyField => $data[$primaryKeyField]] : $data);
+
+                    $fullRow = ($table && $whereInsert) ? $this->model->getWhere($table, $whereInsert, 1)->rowArray() : [];
+
+                    if ($fullRow) {
+                        $insertedData = $fullRow;
+                    } else {
+                        $insertedData = array_merge(($this->_insertId && $primaryKeyField ? [$primaryKeyField => $this->_insertId] : []), $data);
+                    }
+
+                    if ($this->_unsetField && is_array($insertedData)) {
+                        $insertedData = array_diff_key($insertedData, array_flip($this->_unsetField));
+                    }
+
+                    return throw_exception(200, [
+                        'message' => phrase('The data was successfully submitted.'),
+                        'data' => $insertedData
+                    ], $this->_redirectBack);
+                }
 
                 // Send success response
-                return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully submitted.'), $this->_redirectBack);
+                return throw_exception(301, phrase('The data was successfully submitted.'), $this->_redirectBack);
             } else {
                 // --- 6. Failure: Error Handling and Cleanup ---
                 $this->_unlinkFiles(Validation::$uploadedFiles);
@@ -4336,7 +4363,14 @@ abstract class Core extends Controller
 
             $this->_invalidateToken();
 
-            return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
+            if ($this->apiClient) {
+                return throw_exception(200, [
+                    'message' => phrase('The data was successfully updated.'),
+                    'data' => $this->request->getPost()
+                ], $this->_redirectBack);
+            }
+
+            return throw_exception(301, phrase('The data was successfully updated.'), $this->_redirectBack);
         }
 
         // --- 3. Table Existence Check and WHERE Determination ---
@@ -4411,8 +4445,27 @@ abstract class Core extends Controller
 
                     $this->_invalidateToken();
 
+                    if ($this->apiClient) {
+                        $fullRow = ($table && $where) ? $this->model->getWhere($table, $where, 1)->rowArray() : [];
+
+                        if ($fullRow) {
+                            $updatedData = $fullRow;
+                        } else {
+                            $updatedData = array_merge($where, $data);
+                        }
+
+                        if ($this->_unsetField && is_array($updatedData)) {
+                            $updatedData = array_diff_key($updatedData, array_flip($this->_unsetField));
+                        }
+
+                        return throw_exception(200, [
+                            'message' => phrase('The data was successfully updated.'),
+                            'data' => $updatedData
+                        ], $this->_redirectBack);
+                    }
+
                     // Send success response
-                    return throw_exception(($this->apiClient ? 200 : 301), phrase('The data was successfully updated.'), $this->_redirectBack);
+                    return throw_exception(301, phrase('The data was successfully updated.'), $this->_redirectBack);
                 } else {
                     // Failure: Error Handling
                     $this->_unlinkFiles(Validation::$uploadedFiles);
@@ -6385,6 +6438,9 @@ abstract class Core extends Controller
      */
     private function _handshake(string|int $apiKey = 0): static
     {
+        // Set client header to recognize as an AJAX/API request.
+        $this->request->setHeader('X-Requested-With', 'XMLHttpRequest');
+
         // --- 1. Basic Authentication (Fallback) ---
         // If no access token is provided and API token doesn't match encryption key, check Basic Auth.
         if (! $this->request->getHeaderLine('X-ACCESS-TOKEN') && ENCRYPTION_KEY !== $this->request->getHeaderLine('X-API-TOKEN')) {
@@ -6401,10 +6457,9 @@ abstract class Core extends Controller
                     }
                 }
             }
+        } elseif ($this->request->getHeaderLine('X-ACCESS-TOKEN') && ! $this->request->getHeaderLine('X-API-KEY')) {
+            return throw_exception(403, phrase('The API Key (X-API-KEY) is missing.'));
         }
-
-        // Set client header to recognize as an AJAX/API request.
-        $this->request->setHeader('X-Requested-With', 'XMLHttpRequest');
 
         // --- 2. Retrieve REST Client Configuration ---
         $client = $this->model->getWhere(
@@ -6477,7 +6532,7 @@ abstract class Core extends Controller
             $this->model->update(
                 'app_sessions',
                 [
-                    'data' => session_encode(),
+                    'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode()),
                     'timestamp' => date('Y-m-d H:i:s')
                 ],
                 [
