@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => 'يجب أن يكون بعد الصورة رقمياً فقط!',
     'Thumbnail dimension must be numeric only!' => 'يجب أن يكون بعد الصورة المصغرة رقمياً فقط!',
     'Icon dimension must be numeric only!' => 'يجب أن يكون بعد الأيقونة رقمياً فقط!',
-    'All catched up!' => 'كل شيء جاهز!',
+    'All caught up!' => 'كل شيء جاهز!',
     'Your application is ready to install using provided settings.' => 'تطبيقك جاهز للتثبيت باستخدام الإعدادات المتوفرة.',
     'Just one more step' => 'خطوة واحدة إضافية،',
     'Make sure what you filled in on the previous form is correct.' => 'تأكد من أن البيانات التي ملأتها في النموذج السابق صحيحة.',

@@ -40,7 +40,7 @@ class Category extends Core
         ->setIcon('mdi mdi-sitemap')
 
         ->setOutput([
-            /* category detail */
+            // Category detail
             'category' => $this->model->getWhere(
                 'blogs_categories',
                 [

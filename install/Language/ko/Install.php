@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => '이미지 크기는 숫자여야 합니다!',
     'Thumbnail dimension must be numeric only!' => '썸네일 크기는 숫자여야 합니다!',
     'Icon dimension must be numeric only!' => '아이콘 크기는 숫자여야 합니다!',
-    'All catched up!' => '모두 준비되었습니다!',
+    'All caught up!' => '모두 준비되었습니다!',
     'Your application is ready to install using provided settings.' => '제공된 설정으로 애플리케이션을 설치할 준비가 되었습니다.',
     'Just one more step' => '이제 한 단계만 더 남았습니다.',
     'Make sure what you filled in on the previous form is correct.' => '이전 양식에 입력한 내용이 정확한지 확인하십시오.',

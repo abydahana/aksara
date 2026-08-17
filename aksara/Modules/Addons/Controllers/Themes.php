@@ -531,7 +531,7 @@ class Themes extends Core
                 return throw_exception(400, ['theme' => phrase('Changes will not saved in demo mode.')]);
             }
 
-            // Check if theme property is exists
+            // Check if theme property exists
             if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json')) {
                 $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme') . DIRECTORY_SEPARATOR . 'theme.json'));
 

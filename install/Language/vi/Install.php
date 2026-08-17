@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => 'Kích thước hình ảnh phải là số!',
     'Thumbnail dimension must be numeric only!' => 'Kích thước ảnh thu nhỏ phải là số!',
     'Icon dimension must be numeric only!' => 'Kích thước biểu tượng phải là số!',
-    'All catched up!' => 'Tất cả đã sẵn sàng!',
+    'All caught up!' => 'Tất cả đã sẵn sàng!',
     'Your application is ready to install using provided settings.' => 'Ứng dụng của bạn đã sẵn sàng để cài đặt với các cài đặt được cung cấp.',
     'Just one more step' => 'Chỉ một bước nữa thôi,',
     'Make sure what you filled in on the previous form is correct.' => 'Hãy chắc chắn rằng những gì bạn đã điền vào biểu mẫu trước đó là chính xác.',

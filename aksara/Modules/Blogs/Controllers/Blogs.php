@@ -38,13 +38,13 @@ class Blogs extends Core
         ->setDescription(phrase('Follow an update from us'))
         ->setIcon('mdi mdi-newspaper')
         ->setOutput([
-            /* get highlighed articles */
+            // Get highlighed articles
             'spotlight' => $this->_getSpotlight(),
 
-            /* get latest post by categories */
+            // Get latest post by categories
             'articles' => $this->_getArticles(),
 
-            /* get latest post */
+            // Get latest post
             'latest' => $this->_getLatest()
         ])
 

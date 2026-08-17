@@ -90,7 +90,7 @@ class Router
             // Get second file under hierarchy
             $secondFile = str_replace('\\', '/', lcfirst(ltrim(str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method) . '.php'), '\\')));
 
-            // Check if priority file is exists
+            // Check if priority file exists
             if (file_exists(ROOTPATH . $file)) {
                 // File exists, apply to route
                 $namespace = str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, $namespace . '\\' . ucfirst($method));
@@ -106,7 +106,7 @@ class Router
                 $routes->add($this->_uriString, $dest);
             }
 
-            // Check if second file is exists
+            // Check if second file exists
             elseif (file_exists(ROOTPATH . $secondFile)) {
                 // File exists, apply to route
                 $namespace = str_replace('\\' . $controller . '\\' . $controller, '\\' . $controller, substr($namespace, 0, strripos($namespace, '\\')) . '\\' . ucfirst($method));

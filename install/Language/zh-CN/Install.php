@@ -67,7 +67,7 @@ return [
     'Image dimension must be numeric only!' => '图片尺寸必须仅为数字！',
     'Thumbnail dimension must be numeric only!' => '缩略图尺寸必须仅为数字！',
     'Icon dimension must be numeric only!' => '图标尺寸必须仅为数字！',
-    'All catched up!' => '一切准备就绪！',
+    'All caught up!' => '一切准备就绪！',
     'Your application is ready to install using provided settings.' => '您的应用程序已准备好使用提供的设置进行安装。',
     'Just one more step' => '最后一步，',
     'Make sure what you filled in on the previous form is correct.' => '请确保您在上一张表单中填写的内容是正确的。',

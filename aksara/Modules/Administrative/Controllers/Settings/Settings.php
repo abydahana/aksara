@@ -250,7 +250,7 @@ class Settings extends Core
             'office_address' => 'required|max_length[255]',
             'office_map' => 'required|valid_geojson',
 
-            /* MEMBERSHIP */
+            // MEMBERSHIP
             'username_change' => 'boolean',
             'frontend_registration' => 'boolean',
             'auto_active_registration' => 'boolean',
@@ -260,19 +260,19 @@ class Settings extends Core
             'account_age_restriction' => 'numeric|max_length[3]',
             'spam_timer' => 'numeric|max_length[5]',
 
-            /* STORAGE */
+            // STORAGE
             'provider' => 'in_list[disabled,s3,r2,spaces,minio,wasabi]',
             'endpoint' => ($requiredStorageEndpoint ? $requiredStorageEndpoint . 'valid_url|max_length[255]' : 'permit_empty|valid_url|max_length[255]'),
             'sync_existing_uploads' => 'boolean',
 
-            /* APIS */
+            // APIS
             'openlayers_search_provider' => 'in_list[openlayers,google,osm]',
             'openlayers_search_key' => ($requiredApiKey ? $requiredApiKey . 'alpha_dash|max_length[128]' : null),
             'maps_provider' => 'in_list[disabled,google,openlayers]',
             'default_map_tile' => $defaultMapTile,
             'google_analytics_key' => ($requiredAnalyticKey ? $requiredAnalyticKey . 'alpha_dash|max_length[32]' : null),
 
-            /* AI */
+            // AI
             'ai_enabled' => 'boolean',
             'ai_image_enabled' => 'boolean',
             'ai_provider' => 'in_list[openai,anthropic,gemini,deepseek,openrouter,openai_compatible,custom]',
@@ -283,13 +283,13 @@ class Settings extends Core
             'ai_temperature' => 'permit_empty|decimal',
             'ai_max_tokens' => 'permit_empty|integer',
 
-            /* OAUTH */
+            // OAUTH
             'facebook_app_id' => $requiredFacebookAppId,
             'facebook_app_secret' => $requiredFacebookAppSecret,
             'google_client_id' => $requiredGoogleClientId,
             'google_client_secret' => $requiredGoogleClientSecret,
 
-            /* NOTIFIER */
+            // NOTIFIER
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
             'smtp_port' => 'integer|max_length[5]'
@@ -312,7 +312,7 @@ class Settings extends Core
             'app_language' => phrase('System Language'),
             'force_system_language' => phrase('Force System Language'),
 
-            /* MEMBERSHIP */
+            // MEMBERSHIP
             'one_device_login' => phrase('One Device Login'),
             'login_attempt' => phrase('Login Attempt'),
             'blocking_time' => phrase('Blocking Time'),
@@ -323,14 +323,14 @@ class Settings extends Core
             'auto_active_registration' => phrase('Auto Active Registration'),
             'username_change' => phrase('Enable Username Changes'),
 
-            /* APIS */
+            // APIS
             'maps_provider' => phrase('Maps Provider'),
             'openlayers_search_provider' => phrase('OpenLayers Search Provider'),
             'openlayers_search_key' => phrase('OpenLayers Search Key'),
             'default_map_tile' => phrase('Default Map Tile'),
             'google_analytics_key' => phrase('Google Analytics Key'),
 
-            /* AI */
+            // AI
             'ai_enabled' => phrase('Enable AI'),
             'ai_image_enabled' => phrase('Generate Images'),
             'ai_provider' => phrase('AI Provider'),
@@ -341,13 +341,13 @@ class Settings extends Core
             'ai_temperature' => phrase('Temperature'),
             'ai_max_tokens' => phrase('Max Tokens'),
 
-            /* OAUTH */
+            // OAUTH
             'facebook_app_id' => phrase('Facebook APP ID'),
             'facebook_app_secret' => phrase('Facebook APP Secret'),
             'google_client_id' => phrase('Google Client ID'),
             'google_client_secret' => phrase('Google Client Secret'),
 
-            /* NOTIFIER */
+            // NOTIFIER
             'action_sound' => phrase('Action Sound'),
             'update_check' => phrase('Update Check'),
             'smtp_hostname' => phrase('SMTP Hostname'),
@@ -355,7 +355,7 @@ class Settings extends Core
             'smtp_username' => phrase('SMTP Username'),
             'smtp_password' => phrase('SMTP Password'),
 
-            /* STORAGE */
+            // STORAGE
             'provider' => phrase('Provider'),
             'endpoint' => phrase('Endpoint'),
             'region' => phrase('Region'),

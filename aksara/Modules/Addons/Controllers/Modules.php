@@ -570,7 +570,7 @@ class Modules extends Core
                 return throw_exception(400, ['module' => phrase('Changes will not saved in demo mode.')]);
             }
 
-            // Check if module property is exists
+            // Check if module property exists
             if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module') . DIRECTORY_SEPARATOR . 'theme.json')) {
                 $query = $this->model->orderBy('id', 'DESC')->getWhere(
                     config('Migrations')->table,
@@ -644,7 +644,7 @@ class Modules extends Core
                     }
                 }
 
-                // Check if package property is exists
+                // Check if package property exists
                 if (isset($package->permission) && is_object($package->permission)) {
                     // Package property exist, loops the permissions
                     foreach ($package->permission as $key => $val) {

@@ -74,7 +74,7 @@ return [
     'Image dimension must be numeric only!' => 'Dimensi gambar harus menggunakan angka!',
     'Thumbnail dimension must be numeric only!' => 'Dimensi thumbnail harus menggunakan angka!',
     'Icon dimension must be numeric only!' => 'Dimensi ikon harus menggunakan angka!',
-    'All catched up!' => 'Semua telah siap!',
+    'All caught up!' => 'Semua telah siap!',
     'Your application is ready to install using provided settings.' => 'Aplikasi Anda siap diinstal menggunakan pengaturan yang diberikan.',
     'Just one more step' => 'Tinggal selangkah lagi,',
     'Make sure what you filled in on the previous form is correct.' => 'Pastikan apa yang Anda isi pada formulir sebelumnya telah sesuai.',

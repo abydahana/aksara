@@ -76,9 +76,9 @@ class Translations extends Core
 
     public function afterInsert()
     {
-        /* try to add language file */
+        // Try to add language file
         try {
-            /* check if language directory is exists */
+            // Check if language directory exists
             $languageCode = $this->request->getPost('code');
 
             if (! is_dir(WRITEPATH . 'translations') && mkdir(WRITEPATH . 'translations', 0755, true)) {
@@ -95,9 +95,9 @@ class Translations extends Core
 
     public function afterUpdate()
     {
-        /* try to update language file */
+        // Try to update language file
         try {
-            /* check if language directory is exists */
+            // Check if language directory exists
             $oldCode = $this->request->getGet('code');
             $newCode = $this->request->getPost('code');
 
