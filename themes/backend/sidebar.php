@@ -39,10 +39,10 @@
 
     <?= generate_menu($menus, 'nav flex-column', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-toggle="expand-collapse"', '', 'list-unstyled flex-column collapse') ?>
 </aside>
-<div class="sidebar-toggle-wrapper d-none d-lg-flex border-top bg-body align-items-center justify-content-center py-2">
+<div class="sidebar-toggle-wrapper d-none d-lg-flex border-top bg-body-tertiary align-items-center justify-content-center py-2">
     <button type="button" class="btn btn-sm btn-outline-secondary border-secondary rounded-circle d-flex align-items-center justify-content-center p-0 sidebar-toggle-btn" style="width: 32px; height: 32px;" data-toggle="sidebar" aria-label="<?= phrase(
       'Toggle sidebar',
     ) ?>">
-        <i class="mdi mdi-chevron-left mdi-2x" data-sidebar-toggle-icon></i>
+        <i class="mdi mdi-chevron-left fs-5" data-sidebar-toggle-icon></i>
     </button>
 </div>
