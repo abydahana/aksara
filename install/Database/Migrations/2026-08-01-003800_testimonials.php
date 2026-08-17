@@ -57,11 +57,6 @@ class Testimonials extends Migration
                 'default' => 5,
                 'null' => false
             ],
-            'language_id' => [
-                'type' => 'int',
-                'unsigned' => true,
-                'null' => false
-            ],
             'status' => [
                 'type' => 'tinyint',
                 'default' => '0',
@@ -89,10 +84,7 @@ class Testimonials extends Migration
 
         // Add primary and unique index
         $this->forge->addKey('testimonial_id', true, true);
-        $this->forge->addKey('language_id');
         $this->forge->addKey('status');
-
-        $this->forge->addForeignKey('language_id', 'app_languages', 'id', 'CASCADE', 'RESTRICT');
 
         // Create table
         $this->forge->addKey('created_by');
