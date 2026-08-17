@@ -6,9 +6,10 @@
 $driverList = null;
 
 foreach ($drivers as $key => $val) {
-  $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+    $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
 }
 ?>
+
 <form action="<?= site_url('security') ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Database Configuration') ?>
@@ -107,8 +108,7 @@ foreach ($drivers as $key => $val) {
         <div class="col-6">
             <div class="d-grid">
                 <a href="<?= site_url('requirement') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
@@ -116,8 +116,7 @@ foreach ($drivers as $key => $val) {
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue') ?>
+                    <i class="mdi mdi-check"></i> <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

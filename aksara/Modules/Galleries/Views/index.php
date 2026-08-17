@@ -6,6 +6,7 @@
  * @var mixed $pagination
  */
 if ($results): ?>
+
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <div class="row align-items-end">
@@ -45,38 +46,39 @@ if ($results): ?>
                     $thumbnail = null;
                     $images = json_decode($val->gallery_images, true);
 
-                    if (!empty($images)) {
-                      $num = 1;
+                    if (! empty($images)) {
+                        $num = 1;
 
-                      foreach ($images as $src => $alt) {
-                        if ($num >= 4) {
-                          break;
+                        ob_start();
+
+                        foreach ($images as $src => $alt) {
+                            if ($num >= 4) {
+                                break;
+                            }
+
+                            if (1 == $num) {
+                                $cover = $src;
+                            } elseif ($num > 1) {
+                                ?>
+                                <a href="<?= go_to([$val->gallery_slug, $src]) ?>" class="d-block --xhr">
+                                    <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="w-100" alt="<?= htmlspecialchars((string) ($alt ?: $val->gallery_title)) ?>" loading="lazy" decoding="async" />
+                                </a>
+                                <?php
+                            }
+
+                            $num++;
                         }
 
-                        if (1 == $num) {
-                          $cover = $src;
-                        } elseif ($num > 1) {
-                          $thumbnail .=
-                            '<a href="' .
-                            go_to([$val->gallery_slug, $src]) .
-                            '" class="d-block --xhr"><img src="' .
-                            get_image('galleries', $src, 'thumb') .
-                            '" class="w-100" alt="' .
-                            htmlspecialchars((string) ($alt ?: $val->gallery_title)) .
-                            '" loading="lazy" decoding="async" /></a>';
-                        }
-
-                        $num++;
-                      }
+                        $thumbnail = ob_get_clean();
                     }
                     ?>
                     <div class="col-lg-6">
                         <div class="rounded-5 border-hover overflow-hidden mb-4 fade-in">
                             <div class="row g-0">
                                 <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)) ?> text-center d-flex align-items-end" style="background:url(<?= get_image(
-   'galleries',
-   $cover,
- ) ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
+                                    'galleries',
+                                    $cover,
+                                ) ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
                                     <div class="p-3 m-3 rounded-5 w-100" style="background:rgba(0, 0, 0, .5)">
                                         <h2 class="h4 text-light">
                                             <span class="badge bg-primary float-end">
@@ -90,13 +92,11 @@ if ($results): ?>
                                         <p class="text-light">
                                             <?php if (count($images) > 4): ?>
                                                 <a href="<?= go_to($val->gallery_slug) ?>" class="btn btn-outline-light rounded-pill --xhr">
-                                                    <i class="mdi mdi-folder-multiple-image"></i>
-                                                    <?= phrase('Show all') ?>
+                                                    <i class="mdi mdi-folder-multiple-image"></i> <?= phrase('Show all') ?>
                                                 </a>
                                             <?php else: ?>
                                                 <a href="<?= go_to([$val->gallery_slug, $cover]) ?>" class="btn btn-outline-light rounded-pill px-4 --xhr">
-                                                    <i class="mdi mdi-magnify-plus"></i>
-                                                    <?= phrase('Show') ?>
+                                                    <i class="mdi mdi-magnify-plus"></i> <?= phrase('Show') ?>
                                                 </a>
                                             <?php endif; ?>
                                         </p>

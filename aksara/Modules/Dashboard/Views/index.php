@@ -9,19 +9,20 @@
  * @var mixed $logs
  * @var mixed $systemLanguage
  */
-if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permission->writable)): ?>
+if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
+
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <h4 class="h5">
             <?= phrase('Notice') ?>
         </h4>
 
-        <?php if (!$permission->uploads): ?>
+        <?php if (! $permission->uploads): ?>
             <p class="mb-0">
                 <b><?= str_replace('\\', '/', FCPATH . UPLOAD_PATH) ?></b> <?= phrase('is not writable.') ?>
             </p>
         <?php endif; ?>
 
-        <?php if (!$permission->uploads): ?>
+        <?php if (! $permission->uploads): ?>
             <p class="mb-0">
                 <b><?= str_replace('\\', '/', WRITEPATH) ?></b> <?= phrase('is not writable.') ?>
             </p>
@@ -43,7 +44,7 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
 <div class="updater-placeholder"></div>
 
 <div class="container-fluid py-3">
-    <?php if (!get_userdata('hide_greeting')): ?>
+    <?php if (! get_userdata('hide_greeting')): ?>
         <div class="row" id="greeting-card">
             <div class="col-12">
                 <div class="card rounded-4 overflow-hidden mb-3">
@@ -111,8 +112,8 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
                                     </div>
                                     <div class="col-11">
                                         <?= phrase('Manage') ?> <a href="<?= base_url('addons') ?>" class="text-primary --xhr"><?= phrase('Add-Ons') ?></a> <?= phrase('or') ?> <a href="<?= base_url(
-   'administrative/menus',
- ) ?>" class="text-primary --xhr"><?= phrase('Menus') ?></a>
+                                            'administrative/menus',
+                                        ) ?>" class="text-primary --xhr"><?= phrase('Menus') ?></a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -247,64 +248,64 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
                             </div>
                             <div class="card-body">
                                 <?php
-                                $num = 0;
+                                                                       $num = 0;
 
-                                if (isset($visitors->browsers)) {
-                                  foreach ($visitors->browsers as $key => $val) {
-                                    echo '
+if (isset($visitors->browsers)) {
+    foreach ($visitors->browsers as $key => $val) {
+        echo '
                                             ' .
-                                      ($num ? '<hr class="border-secondary my-0" />' : null) .
-                                      '
+          ($num ? '<hr class="border-secondary my-0" />' : null) .
+          '
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-3 col-sm-2">
                                                     <i class="mdi mdi-' .
-                                      ($key == 'chrome'
-                                        ? 'google-chrome text-success'
-                                        : ($key == 'firefox'
-                                          ? 'firefox text-warning'
-                                          : ($key == 'safari'
-                                            ? 'apple-safari text-primary'
-                                            : ($key == 'edge'
-                                              ? 'edge text-info'
-                                              : ($key == 'opera'
-                                                ? 'opera text-danger'
-                                                : ($key == 'explorer'
-                                                  ? 'internet-explorer text-info'
-                                                  : 'web text-muted')))))) .
-                                      ' mdi-3x"></i>
+          ('chrome' == $key
+            ? 'google-chrome text-success'
+            : ('firefox' == $key
+              ? 'firefox text-warning'
+              : ('safari' == $key
+                ? 'apple-safari text-primary'
+                : ('edge' == $key
+                  ? 'edge text-info'
+                  : ('opera' == $key
+                    ? 'opera text-danger'
+                    : ('explorer' == $key
+                      ? 'internet-explorer text-info'
+                      : 'web text-muted')))))) .
+          ' mdi-3x"></i>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">
                                                     <b>
                                                         ' .
-                                      ($key == 'chrome'
-                                        ? 'Google Chrome'
-                                        : ($key == 'firefox'
-                                          ? 'Mozilla Firefox'
-                                          : ($key == 'safari'
-                                            ? 'Safari'
-                                            : ($key == 'edge'
-                                              ? 'Microsoft Edge'
-                                              : ($key == 'opera'
-                                                ? 'Opera'
-                                                : ($key == 'explorer'
-                                                  ? 'Internet Explorer'
-                                                  : phrase('Unknown'))))))) .
-                                      '
+          ('chrome' == $key
+            ? 'Google Chrome'
+            : ('firefox' == $key
+              ? 'Mozilla Firefox'
+              : ('safari' == $key
+                ? 'Safari'
+                : ('edge' == $key
+                  ? 'Microsoft Edge'
+                  : ('opera' == $key
+                    ? 'Opera'
+                    : ('explorer' == $key
+                      ? 'Internet Explorer'
+                      : phrase('Unknown'))))))) .
+          '
                                                     </b>
                                                     <p class="mb-0 text-sm text-muted">
                                                         ' .
-                                      number_format($val) .
-                                      ' ' .
-                                      phrase('usage in a week') .
-                                      '
+          number_format($val) .
+          ' ' .
+          phrase('usage in a week') .
+          '
                                                     </p>
                                                 </div>
                                             </div>
                                         ';
-                                    $num++;
-                                  }
-                                }
-                                ?>
+        $num++;
+    }
+}
+?>
                             </div>
                         </div>
                     </div>
@@ -317,38 +318,38 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
                             </div>
                             <div class="card-body">
                                 <?php foreach ($recentSigned as $key => $val) {
-                                  echo '
+                                    echo '
                                         ' .
-                                    ($key ? '<hr class="mt-2 mb-2" />' : null) .
-                                    '
+                                      ($key ? '<hr class="mt-2 mb-2" />' : null) .
+                                      '
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-3 col-sm-2">
                                                 <a href="' .
-                                    base_url('user', ['user_id' => $val->user_id]) .
-                                    '" target="_blank">
+                                      base_url('user', ['user_id' => $val->user_id]) .
+                                      '" target="_blank">
                                                     <img src="' .
-                                    get_image('users', $val->photo, 'icon') .
-                                    '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
-                                    htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
-                                    '" loading="lazy" decoding="async" />
+                                      get_image('users', $val->photo, 'icon') .
+                                      '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
+                                      htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
+                                      '" loading="lazy" decoding="async" />
                                                 </a>
                                             </div>
                                             <div class="col-9 col-sm-10 ps-3">
                                                 <a href="' .
-                                    base_url('user', ['user_id' => $val->user_id]) .
-                                    '" target="_blank">
+                                      base_url('user', ['user_id' => $val->user_id]) .
+                                      '" target="_blank">
                                                     <b>
                                                         ' .
-                                    $val->first_name .
-                                    ' ' .
-                                    $val->last_name .
-                                    '
+                                      $val->first_name .
+                                      ' ' .
+                                      $val->last_name .
+                                      '
                                                     </b>
                                                 </a>
                                                 <p class="mb-0 text-sm text-muted">
                                                     ' .
-                                    $val->group_name .
-                                    '
+                                      $val->group_name .
+                                      '
                                                 </p>
                                             </div>
                                         </div>
@@ -429,8 +430,7 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="text-center py-4 text-muted">
-                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                                <?= phrase('No announcements available.') ?>
+                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i> <?= phrase('No announcements available.') ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -606,8 +606,7 @@ if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permi
                         </p>
                         <hr />
                         <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-success rounded-pill --xhr">
-                            <i class="mdi mdi-update"></i>
-                            <?= phrase('Update Now') ?>
+                            <i class="mdi mdi-update"></i> <?= phrase('Update Now') ?>
                         </a>
                     </div>
                 `)

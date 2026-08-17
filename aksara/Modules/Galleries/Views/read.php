@@ -13,29 +13,24 @@ $current = service('uri')->getSegment(3);
 $carousel = null;
 
 if ($images) {
-  foreach ($images as $key => $val) {
-    $carousel .=
-      '
-            <div class="carousel-item text-center' .
-      ($current == $key || (!$count && !in_array($current, (array) $images)) ? ' active' : null) .
-      '">
-                <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
-                    <img src="' .
-      get_image('galleries', $key) .
-      '" class="img-fluid" alt="' .
-      $val .
-      '" loading="lazy" decoding="async">
-                    <div class="carousel-caption d-none d-md-block text-shadow">
-                        ' .
-      $val .
-      '
-                    </div>
+    ob_start();
+
+    foreach ($images as $key => $val) {
+        ?>
+
+        <div class="carousel-item text-center<?= $current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null ?>">
+            <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
+                <img src="<?= get_image('galleries', $key) ?>" class="img-fluid" alt="<?= $val ?>" loading="lazy" decoding="async">
+                <div class="carousel-caption d-none d-md-block text-shadow">
+                    <?= $val ?>
                 </div>
             </div>
-        ';
+        </div>
+    <?php
+        $count++;
+    }
 
-    $count++;
-  }
+    $carousel = ob_get_clean();
 }
 
 if ($fieldData): ?>
@@ -92,30 +87,23 @@ if ($fieldData): ?>
                 <div>
                     <?= custom_nl2br($fieldData->gallery_description->value, 1) ?>
                 </div>
-                <?php if ($attributes) {
-                  echo '<hr class="border-secondary" />';
-
-                  foreach ($attributes as $label => $value) {
-                    if (!$value) {
-                      continue;
-                    }
-
-                    echo '
-                            <div class="row">
-                                <div class="col-sm-4 col-lg-3 text-muted">
-                                    ' .
-                      $label .
-                      '
-                                </div>
-                                <div class="col-sm-8 col-lg-9">
-                                    ' .
-                      $value .
-                      '
-                                </div>
+                <?php if ($attributes): ?>
+                    <hr class="border-secondary" />
+                    <?php foreach ($attributes as $label => $value):
+                        if (! $value) {
+                            continue;
+                        }
+                        ?>
+                        <div class="row">
+                            <div class="col-sm-4 col-lg-3 text-muted">
+                                <?= $label ?>
                             </div>
-                        ';
-                  }
-                } ?>
+                            <div class="col-sm-8 col-lg-9">
+                                <?= $value ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
                 <div>
                     <?= comment_widget(['post_id' => $fieldData->gallery_id->value, 'path' => $path]) ?>
                 </div>

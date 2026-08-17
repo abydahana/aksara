@@ -6,62 +6,47 @@
 $changelog = null;
 
 if (isset($updater->changelog)) {
-  $parsedown = new \Aksara\Libraries\Parsedown();
+    $parsedown = new \Aksara\Libraries\Parsedown();
 
-  foreach ($updater->changelog as $key => $val) {
-    if ($key) {
-      $changelog .= '<hr class="mt-1 mb-1" />';
-    }
+    ob_start();
 
-    $changelog .=
-      '
-            <a href="' .
-      $val->commit_url .
-      '" target="_blank">
+    foreach ($updater->changelog as $key => $val) {
+        if ($key) {
+            echo '<hr class="mt-1 mb-1" />';
+        }
+        ?>
+
+            <a href="<?= $val->commit_url ?>" target="_blank">
                 <h2>
-                    ' .
-      $val->title .
-      '
+                    <?= $val->title ?>
                     <i class="mdi mdi-launch"></i>
                 </h2>
             </a>
             <hr />
             <div class="row no-gutters">
                 <div class="col-4 col-md-2 col-lg-1 pt-1">
-                    <a href="' .
-      $val->profile_url .
-      '" target="_blank">
-                        <img src="' .
-      $val->profile_avatar .
-      '" class="img-fluid rounded-more" alt="' .
-      htmlspecialchars((string) $val->committer) .
-      '" />
+                    <a href="<?= $val->profile_url ?>" target="_blank">
+                        <img src="<?= $val->profile_avatar ?>" class="img-fluid rounded-more" alt="<?= htmlspecialchars((string) $val->committer) ?>" />
                     </a>
                 </div>
                 <div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">
-                    <a href="' .
-      $val->profile_url .
-      '" target="_blank">
+                    <a href="<?= $val->profile_url ?>" target="_blank">
                         <h5>
-                            ' .
-      $val->committer .
-      '
+                            <?= $val->committer ?>
                             <i class="mdi mdi-launch"></i>
                         </h5>
                     </a>
                     <span>
-                        ' .
-      $val->date .
-      '
+                        <?= $val->date ?>
                     </span>
                 </div>
             </div>
             <hr />
-            ' .
-      $parsedown->parse($val->message) .
-      '
-        ';
-  }
+            <?= $parsedown->parse($val->message) ?>
+    <?php
+    }
+
+    $changelog = ob_get_clean();
 }
 ?>
 <div class="container-fluid py-3">
@@ -84,12 +69,10 @@ if (isset($updater->changelog)) {
             <div class="row">
                 <div class="col-lg-8">
                     <button type="submit" class="btn btn-success rounded-pill">
-                        <i class="mdi mdi-reload"></i>
-                        <?= phrase('Update Now') ?>
+                        <i class="mdi mdi-reload"></i> <?= phrase('Update Now') ?>
                     </button>
                     <a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ms-3">
-                        <i class="mdi mdi-hammer"></i>
-                        <?= phrase('Manual Update') ?>
+                        <i class="mdi mdi-hammer"></i> <?= phrase('Manual Update') ?>
                     </a>
                 </div>
             </div>
@@ -105,8 +88,7 @@ if (isset($updater->changelog)) {
                         <?= phrase('No update available at the moment. The update will be inform to you if available.') ?>
                     </p>
                     <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-primary rounded-pill px-5 --xhr show-progress">
-                        <i class="mdi mdi-update"></i>
-                        <?= phrase('Check Again') ?>
+                        <i class="mdi mdi-update"></i> <?= phrase('Check Again') ?>
                     </a>
                 </div>
             </div>

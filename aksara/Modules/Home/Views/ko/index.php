@@ -5,19 +5,20 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (isset($permission) && (!$permission->uploads || !$permission->writable)): ?>
+if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
+
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 알림!
             </h2>
-            <?php if (!$permission->uploads): ?>
+            <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH ?></b> 는 쓰기 가능하지 않습니다.
                 </p>
             <?php endif; ?>
 
-            <?php if (!$permission->uploads): ?>
+            <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= WRITEPATH ?></b> 는 쓰기 가능하지 않습니다.
                 </p>

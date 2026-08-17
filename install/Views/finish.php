@@ -1,5 +1,6 @@
 <h4>
     <?= phrase('Congratulations!') ?>
+
 </h4>
 <p>
     <?= phrase('Aksara has been successfully installed on your system!') ?>
@@ -66,8 +67,7 @@
     <div class="col-sm-6">
         <div class="d-grid">
             <a href="<?= site_url('xhr/boot') ?>" class="btn btn-outline-success btn-sm rounded-pill fw-bold" aria-label="<?= phrase('Launch Site') ?>">
-                <i class="mdi mdi-rocket"></i>
-                <?= phrase('Launch Site') ?>
+                <i class="mdi mdi-rocket"></i> <?= phrase('Launch Site') ?>
             </a>
         </div>
     </div>

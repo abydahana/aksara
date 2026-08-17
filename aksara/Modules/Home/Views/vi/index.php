@@ -5,19 +5,20 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (isset($permission) && (!$permission->uploads || !$permission->writable)): ?>
+if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
+
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 Thông báo!
             </h2>
-            <?php if (!$permission->uploads): ?>
+            <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH ?></b> không thể ghi.
                 </p>
             <?php endif; ?>
 
-            <?php if (!$permission->uploads): ?>
+            <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= WRITEPATH ?></b> không thể ghi.
                 </p>

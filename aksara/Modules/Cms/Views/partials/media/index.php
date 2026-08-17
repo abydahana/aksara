@@ -8,10 +8,11 @@ $directories = explode('/', service('request')->getGet('directory') ?? '');
 $paths = null;
 $breadcrumbs = null;
 ?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-body border-end">
-            <?php if (get_active_storage() && get_active_storage() != 'disabled' && !get_userdata('hide_cloud_storage_media_notice')): ?>
+            <?php if (get_active_storage() && get_active_storage() != 'disabled' && ! get_userdata('hide_cloud_storage_media_notice')): ?>
                 <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
                     <?= phrase('Cloud storage is active. File browsing may be slower.') ?>
                     <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close') ?>"></button>
@@ -20,9 +21,9 @@ $breadcrumbs = null;
             <div class="row align-items-center mb-3">
                 <div class="col-md-9">
                     <?php foreach ($directories as $key => $val) {
-                      $breadcrumbs .= '<li class="breadcrumb-item"><a href="' . current_page(null, ['directory' => $paths . $val]) . '" class="--xhr">' . $val . '</a></li>';
+                        $breadcrumbs .= '<li class="breadcrumb-item"><a href="' . current_page(null, ['directory' => $paths . $val]) . '" class="--xhr">' . $val . '</a></li>';
 
-                      $paths .= $val . '/';
+                        $paths .= $val . '/';
                     } ?>
 
                     <nav class="d-none d-md-block" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -44,7 +45,7 @@ $breadcrumbs = null;
                 </div>
             </div>
 
-            <?php if ($viewMode === 'grid'): ?>
+            <?php if ('grid' === $viewMode): ?>
                 <!-- Grid View -->
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
@@ -66,7 +67,7 @@ $breadcrumbs = null;
 
                     <?php if ($results->data): ?>
                         <?php foreach ($results->data as $key => $val): ?>
-                            <?php if ($val->type == 'directory'): ?>
+                            <?php if ('directory' == $val->type): ?>
                                 <div class="col-4 col-sm-3 col-xl-2">
                                     <div class="rounded-4 border-hover text-center py-3 mb-3">
                                         <a href="<?= current_page(null, [
@@ -109,7 +110,7 @@ $breadcrumbs = null;
                     <?php if ($results->data): ?>
                         <div class="list-group">
                             <?php foreach ($results->data as $key => $val): ?>
-                                <?php if ($val->type == 'directory'): ?>
+                                <?php if ('directory' == $val->type): ?>
                                     <a href="<?= current_page(null, [
                                       'directory' => ($results->directory ? $results->directory . '/' : null) . $val->source,
                                       'file' => null,
@@ -207,8 +208,7 @@ $breadcrumbs = null;
                     <div class="row">
                         <div class="col-6">
                             <a href="<?= $results->description->url ?? base_url($results->description->server_path) ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name ?>">
-                                <i class="mdi mdi-download"></i>
-                                <?= phrase('Download') ?>
+                                <i class="mdi mdi-download"></i> <?= phrase('Download') ?>
                             </a>
                         </div>
                         <div class="col-6">
@@ -216,8 +216,7 @@ $breadcrumbs = null;
                               'action' => 'delete',
                               'mode' => $viewMode,
                             ]) ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove') ?>" data-bs-original-title="<?= phrase('Remove') ?>">
-                                <i class="mdi mdi-window-close"></i>
-                                <?= phrase('Remove') ?>
+                                <i class="mdi mdi-window-close"></i> <?= phrase('Remove') ?>
                             </a>
                         </div>
                     </div>

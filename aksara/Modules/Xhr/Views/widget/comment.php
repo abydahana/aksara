@@ -5,14 +5,13 @@
  * @var mixed $_token
  */
 ?>
+
 <div class="py-3" id="comment-widget">
     <div class="pb-3">
         <div class="row">
             <div class="col-4">
                 <div class="d-grid">
-                    <button type="button" data-href="<?= current_page('repute') ?>" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like') ?>" data-post-id="<?= service(
-  'request',
-)->getGet('post_id') ?>">
+                    <button type="button" data-href="<?= current_page('repute') ?>" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate --upvote" data-bs-toggle="tooltip" title="<?= phrase('Like') ?>" data-post-id="<?= service('request')->getGet('post_id') ?>">
                         <i class="mdi mdi-heart<?= $likesCount ? ' me-2' : null ?>"></i>
                         <b class="likes-count fw-bold"><?= $likesCount ? $likesCount : '' ?></b>
                     </button>
@@ -29,8 +28,7 @@
             <div class="col-4">
                 <div class="d-grid">
                     <button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill text-truncate" data-role="share" data-href="<?= service('request')->getGet('path') ?>">
-                        <i class="mdi mdi-share"></i>
-                        <?= phrase('Share') ?>
+                        <i class="mdi mdi-share"></i> <?= phrase('Share') ?>
                     </button>
                 </div>
             </div>
@@ -48,9 +46,7 @@
                     <div class="position-relative">
                         <textarea name="comments" class="form-control nofocus" placeholder="<?= phrase('Type a comment') ?>" rows="1"></textarea>
                         <div class="btn-group position-absolute bottom-0 end-0">
-                            <button type="button" class="btn btn-link text-body" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase(
-                              'Attach photo',
-                            ) ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
+                            <button type="button" class="btn btn-link text-body" data-toggle="tooltip" data-bs-toggle="tooltip" title="<?= phrase('Attach photo') ?>" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
                                 <i class="mdi mdi-camera"></i>
                             </button>
                         </div>
@@ -61,11 +57,7 @@
                             <div class="fileupload-new text-center">
                                 <img class="img-fluid upload_preview" src="<?= get_image('comment', 'placeholder.png', 'icon') ?>" alt="<?= phrase('Preview') ?>" loading="lazy" decoding="async" />
                             </div>
-                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', '<?= get_image(
-                              'comment',
-                              'placeholder.png',
-                              'icon',
-                            ) ?>'), $(this).closest('.fileupload').addClass('d-none'))">
+                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', '<?= get_image('comment', 'placeholder.png', 'icon') ?>'), $(this).closest('.fileupload').addClass('d-none'))">
                                 <i class="mdi mdi-window-close"></i>
                             </button>
                         </span>

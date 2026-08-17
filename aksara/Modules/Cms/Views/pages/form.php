@@ -5,6 +5,7 @@
  * @var mixed $forms
  */
 $pageContent = $results->field_data->page_content->value ?? '{"components":[]}'; ?>
+
 <style type="text/css">
     #title-wrapper, [data-role="meta"] {
         display: none !important;

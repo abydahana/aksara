@@ -11,60 +11,61 @@ $groupCollector = [];
 $accessToken = false;
 $method = [];
 
-if (!in_array($responseType, ['simple', 'complete'])) {
-  $responseType = 'simple';
+if (! in_array($responseType, ['simple', 'complete'])) {
+    $responseType = 'simple';
 }
 
 if ($permission->groups) {
-  $groups = null;
-  $privileges = [];
+    $groups = null;
+    $privileges = [];
 
-  foreach ($permission->groups as $key => $val) {
-    $groupCollector[] = $val->group_id;
-    $actions = null;
-    $extractPrivileges = json_decode($val->group_privileges);
+    foreach ($permission->groups as $key => $val) {
+        $groupCollector[] = $val->group_id;
+        $actions = null;
+        $extractPrivileges = json_decode($val->group_privileges);
 
-    if (isset($extractPrivileges->$active)) {
-      foreach ($extractPrivileges->$active as $_key => $_val) {
-        $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
-      }
+        if (isset($extractPrivileges->$active)) {
+            foreach ($extractPrivileges->$active as $_key => $_val) {
+                $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
+            }
+        }
+
+        if ($val->group_id) {
+            $accessToken = true;
+        }
+
+        $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
+
+        $privileges[$selected] = $actions;
     }
-
-    if ($val->group_id) {
-      $accessToken = true;
-    }
-
-    $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
-
-    $privileges[$selected] = $actions;
-  }
 }
 ?>
+
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-3">
             <div class="sticky-top --api-documentation-sidebar">
                 <div class="pretty-scrollbar --api-documentation-list">
-                    <a href="<?= base_url('apis/documentation') ?>" class="<?= !$active ? 'text-primary fw-bold' : null ?> --xhr">
+                    <a href="<?= base_url('apis/documentation') ?>" class="<?= ! $active ? 'text-primary fw-bold' : null ?> --xhr">
                         <?= phrase('Getting Started') ?>
                     </a>
                     <br />
 
                     <?php if ($modules) {
-                      foreach ($modules as $key => $val) {
-                        echo '
+                        foreach ($modules as $key => $val) {
+                            echo '
                                 <a href="' .
-                          current_page(null, ['slug' => $val, 'group' => null]) .
-                          '" class="' .
-                          ($val == $active ? ' text-primary fw-bold' : null) .
-                          ' --xhr">
+                              current_page(null, ['slug' => $val, 'group' => null]) .
+                              '" class="' .
+                              ($val == $active ? ' text-primary fw-bold' : null) .
+                              ' --xhr">
                                     ' .
-                          str_replace('/', ' &gt; ', $val) .
-                          '
+                              str_replace('/', ' &gt; ', $val) .
+                              '
                                 </a>
                                 <br />
                             ';
-                      }
+                        }
                     } ?>
                 </div>
             </div>
@@ -239,7 +240,7 @@ if ($permission->groups) {
                     </h4>
                     <p>
                         Untuk dapat menggunakan fitur API, Anda perlu menambahkan kunci API dari menu <a href="<?= go_to(
-                          '../services',
+                            '../services',
                         ) ?>" class="text-primary"><b>Pengelola Layanan API</b></a>. Tentukan metode permintaan yang diizinkan, rentang IP yang diizinkan, dan juga tanggal kedaluwarsa kunci API yang dibuat.
                     </p>
                     <p>

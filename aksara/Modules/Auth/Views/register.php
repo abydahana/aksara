@@ -81,9 +81,9 @@
                                         <div class="input-group">
                                             <span class="input-group-text bg-body-tertiary p-0 captcha-refresh" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha') ?>">
                                                 <?php if ($captcha->string) {
-                                                  echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
+                                                    echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
                                                 } else {
-                                                  echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
+                                                    echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
                                                 } ?>
                                             </span>
                                             <input type="text" name="captcha" class="form-control" id="captcha_input" placeholder="XXXXXX" maxlength="32" />

@@ -7,54 +7,55 @@ $method = $method ?? null;
 $pagination = $pagination ?? new stdClass();
 
 if (isset($results->table_data)) {
-  foreach ($results->table_data as $key => $row) {
-    $rows = null;
+    foreach ($results->table_data as $key => $row) {
+        $rows = null;
 
-    foreach ($row->field_data as $fields => $params) {
-      if ($params->hidden) {
-        continue;
-      }
+        foreach ($row->field_data as $fields => $params) {
+            if ($params->hidden) {
+                continue;
+            }
 
-      $label = $params->label; // Backup label
-      $params->label = null; // Remove label
+            $label = $params->label; // Backup label
+            $params->label = null; // Remove label
 
-      if (0 == $key) {
-        $thead .= '<th class="bordered">' . $label . '</th>';
-      }
+            if (0 == $key) {
+                $thead .= '<th class="bordered">' . $label . '</th>';
+            }
 
-      $rows .= '<td class="bordered">' . form_read($params) . '</td>';
+            $rows .= '<td class="bordered">' . form_read($params) . '</td>';
+        }
+
+        $tbody .= '<tr>' . $rows . '</tr>';
     }
-
-    $tbody .= '<tr>' . $rows . '</tr>';
-  }
 } elseif (isset($results->field_data)) {
-  $singlePrint = true;
+    $singlePrint = true;
 
-  foreach ($results->field_data as $field => $params) {
-    $label = $params->label; // Backup label
-    $params->label = null; // Remove label
+    foreach ($results->field_data as $field => $params) {
+        $label = $params->label; // Backup label
+        $params->label = null; // Remove label
 
-    $tbody .=
-      '
+        $tbody .=
+          '
             <tr>
                 <td class="text-muted text-uppercase text-end">
                     ' .
-      $label .
-      '
+          $label .
+          '
                 </td>
                 <td width="70%">
                     ' .
-      form_read($params) .
-      '
+          form_read($params) .
+          '
                     <hr />
                 </td>
             </tr>
         ';
-  }
+    }
 } else {
-  exit(phrase('No results could be rendered!'));
+    exit(phrase('No results could be rendered!'));
 }
 ?>
+
 <html>
     <head>
         <title><?= $meta->title ?? get_setting('app_name') ?></title>
@@ -238,7 +239,7 @@ if (isset($results->table_data)) {
             </tbody>
         </table>
 
-        <?php if ($method == 'pdf'): ?>
+        <?php if ('pdf' == $method): ?>
             <htmlpagefooter name="footer" class="print">
                 <table>
                     <tfoot>
@@ -258,7 +259,7 @@ if (isset($results->table_data)) {
                     </tfoot>
                 </table>
             </htmlpagefooter>
-        <?php elseif ($method == 'print'): ?>
+        <?php elseif ('print' == $method): ?>
             <div class="no-print">
                 <?= pagination($pagination) ?>
             </div>

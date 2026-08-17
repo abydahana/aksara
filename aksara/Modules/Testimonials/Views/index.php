@@ -11,6 +11,7 @@
  * @var mixed $captcha
  */
 if ($results): ?>
+
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <div class="row align-items-end">
@@ -166,9 +167,9 @@ if ($results): ?>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-body-tertiary p-0 captcha-refresh rounded-pill rounded-end-0 overflow-hidden" style="cursor: pointer;" data-bs-toggle="tooltip" title="<?= phrase('Reload Captcha') ?>">
                                                     <?php if ($captcha->string) {
-                                                      echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
+                                                        echo '<b class="text-body pe-3 ps-3">' . $captcha->string . '</b>';
                                                     } else {
-                                                      echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
+                                                        echo '<img src="' . $captcha->image . '" class="img-fluid" alt="CAPTCHA" />';
                                                     } ?>
                                                 </span>
                                                 <input type="text" name="captcha" class="form-control rounded-pill rounded-start-0" id="captcha_input" placeholder="<?= phrase('Bot Challenge') ?>" maxlength="32" />

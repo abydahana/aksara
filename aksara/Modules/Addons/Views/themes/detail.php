@@ -7,50 +7,44 @@ $carousel = null;
 $attribution = null;
 
 if (isset($detail->screenshot) && $detail->screenshot) {
-  foreach ($detail->screenshot as $key => $val) {
-    if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(['../', '..\\', './', '.\\'], '', $val->src))) {
-      $screenshot = base_url('themes/' . $detail->folder . '/' . str_replace(['../', '..\\', './', '.\\'], '', $val->src));
-    } else {
-      $screenshot = get_image(null, 'placeholder_thumb.png');
+    ob_start();
+
+    foreach ($detail->screenshot as $key => $val) {
+        if (file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . str_replace(['../', '..\\', './', '.\\'], '', $val->src))) {
+            $screenshot = base_url('themes/' . $detail->folder . '/' . str_replace(['../', '..\\', './', '.\\'], '', $val->src));
+        } else {
+            $screenshot = get_image(null, 'placeholder_thumb.png');
+        }
+        ?>
+
+        <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
+            <a href="<?= $screenshot ?>" target="_blank">
+                <img src="<?= $screenshot ?>" class="d-block rounded w-100" alt="<?= $val->alt ?>">
+            </a>
+        </div>
+    <?php
     }
 
-    $carousel .=
-      '
-            <div class="carousel-item rounded' .
-      (!$key ? ' active' : null) .
-      '">
-                <a href="' .
-      $screenshot .
-      '" target="_blank">
-                    <img src="' .
-      $screenshot .
-      '" class="d-block rounded w-100" alt="' .
-      $val->alt .
-      '">
-                </a>
-            </div>
-        ';
-  }
+    $carousel = ob_get_clean();
 }
 
 if (isset($detail->attribution) && $detail->attribution) {
-  foreach ($detail->attribution as $key => $val) {
-    $attribution .=
-      '
-            <div class="row">
-                <div class="col-4 text-muted">
-                    ' .
-      $key .
-      '
-                </div>
-                <div class="col-8">
-                    ' .
-      $val .
-      '
-                </div>
+    ob_start();
+
+    foreach ($detail->attribution as $key => $val) {
+        ?>
+        <div class="row">
+            <div class="col-4 text-muted">
+                <?= $key ?>
             </div>
-        ';
-  }
+            <div class="col-8">
+                <?= $val ?>
+            </div>
+        </div>
+    <?php
+    }
+
+    $attribution = ob_get_clean();
 }
 ?>
 
@@ -76,7 +70,7 @@ if (isset($detail->attribution) && $detail->attribution) {
         <div class="col-md-6 col-lg-5">
             <h5>
                 <?= $detail->name ?>
-                <?= $detail->type == 'backend' ? '<span class="badge bg-dark float-end">' . phrase('Back End') . '</span>' : '<span class="badge bg-success float-end">' . phrase('Front End') . '</span>' ?>
+                <?= 'backend' == $detail->type ? '<span class="badge bg-dark float-end">' . phrase('Back End') . '</span>' : '<span class="badge bg-success float-end">' . phrase('Front End') . '</span>' ?>
             </h5>
             <hr class="mt-1 mb-1" />
             <div class="row">
@@ -107,8 +101,7 @@ if (isset($detail->attribution) && $detail->attribution) {
         <div class="col-md-6 col-lg-7">
             <a href="<?= current_page('../update', ['item' => $detail->folder]) ?>" class="btn btn-outline-success btn-sm --modal">
                 &nbsp;
-                <i class="mdi mdi-auto-fix"></i>
-                <?= phrase('Update') ?>
+                <i class="mdi mdi-auto-fix"></i> <?= phrase('Update') ?>
                 &nbsp;
             </a>
         </div>
@@ -116,15 +109,13 @@ if (isset($detail->attribution) && $detail->attribution) {
             <div class="row">
                 <div class="col-sm-4">
                     <div class="d-grid">
-                        <?php if (($detail->type == 'backend' && $detail->folder == get_setting('backend_theme')) || ($detail->type == 'frontend' && $detail->folder == get_setting('frontend_theme'))): ?>
+                        <?php if (('backend' == $detail->type && get_setting('backend_theme') == $detail->folder) || ('frontend' == $detail->type && get_setting('frontend_theme') == $detail->folder)): ?>
                             <a href="<?= current_page('../customize', ['theme' => $detail->folder]) ?>" class="btn btn-dark btn-sm --modal">
-                                <i class="mdi mdi-cogs"></i>
-                                <?= phrase('Customize') ?>
+                                <i class="mdi mdi-cogs"></i> <?= phrase('Customize') ?>
                             </a>
                         <?php else: ?>
                             <a href="<?= current_page('../activate') ?>" class="btn btn-success btn-sm --modal">
-                                <i class="mdi mdi-check"></i>
-                                <?= phrase('Activate') ?>
+                                <i class="mdi mdi-check"></i> <?= phrase('Activate') ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -136,8 +127,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                           'aksara_theme' => $detail->folder,
                           'integrity_check' => $detail->integrity,
                         ]) ?>" class="btn btn-outline-primary btn-sm" target="_blank">
-                            <i class="mdi mdi-magnify"></i>
-                            <?= phrase('Preview') ?>
+                            <i class="mdi mdi-magnify"></i> <?= phrase('Preview') ?>
                         </a>
                     </div>
                 </div>
@@ -146,8 +136,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <a href="<?= current_page('../delete', [
                           'item' => $detail->folder,
                         ]) ?>" class="btn btn-outline-danger btn-sm --modal">
-                            <i class="mdi mdi-window-close"></i>
-                            <?= phrase('Delete') ?>
+                            <i class="mdi mdi-window-close"></i> <?= phrase('Delete') ?>
                         </a>
                     </div>
                 </div>

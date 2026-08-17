@@ -4,17 +4,18 @@ $logs = $logs ?? [];
 $announcements = $announcements ?? [];
 $groupName = $groupName ?? phrase('Unknown');
 
-if (!get_userdata('username') || !get_userdata('password')): ?>
+if (! get_userdata('username') || ! get_userdata('password')): ?>
+
     <div class="alert alert-danger border-0 rounded-0 mb-0">
         <h5>
             <?= phrase('Notice') ?>
         </h5>
-        <?php if (!get_userdata('username')): ?>
+        <?php if (! get_userdata('username')): ?>
             <p class="mb-0">
                 <?= phrase('Please set your username as an alternative to the email when signing in.') ?>
             </p>
         <?php endif; ?>
-        <?php if (!get_userdata('password')): ?>
+        <?php if (! get_userdata('password')): ?>
             <p class="mb-0">
                 <?= phrase('Please set your password to keep your account safe.') ?>
             </p>
@@ -150,8 +151,7 @@ if (!get_userdata('username') || !get_userdata('password')): ?>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="text-center py-4 text-muted">
-                            <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                            <?= phrase('No announcements available.') ?>
+                            <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i> <?= phrase('No announcements available.') ?>
                         </div>
                     <?php endif; ?>
                 </div>

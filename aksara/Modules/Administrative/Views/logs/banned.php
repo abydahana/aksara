@@ -65,13 +65,11 @@
                         <div class="card-footer bg-transparent border-secondary-subtle">
                             <?php if ($val->isBanned) { ?>
                                 <a href="<?= go_to('unban', ['file' => $val->file]) ?>" class="btn btn-success btn-sm rounded-pill --modal">
-                                    <i class="mdi mdi-shield-check-outline"></i>
-                                    <?= phrase('Unban') ?>
+                                    <i class="mdi mdi-shield-check-outline"></i> <?= phrase('Unban') ?>
                                 </a>
                             <?php } else { ?>
                                 <a href="<?= go_to('ban', ['file' => $val->file]) ?>" class="btn btn-danger btn-sm rounded-pill --modal">
-                                    <i class="mdi mdi-shield-alert-outline"></i>
-                                    <?= phrase('Ban') ?>
+                                    <i class="mdi mdi-shield-alert-outline"></i> <?= phrase('Ban') ?>
                                 </a>
                             <?php } ?>
                         </div>

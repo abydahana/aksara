@@ -1,4 +1,6 @@
-<form action="<?= site_url('run') ?>" method="POST" class="--validate-form">
+<form action="<?= site_url('run') ?>
+
+" method="POST" class="--validate-form">
     <h4>
         <?= phrase('The installer was interrupted!') ?>
     </h4>
@@ -27,8 +29,7 @@
         <code><?= ROOTPATH ?></code>
         <br /><br />
         <a href="<?= site_url('run') ?>?download=1" target="_blank" class="btn btn-secondary rounded-pill btn-sm" aria-label="<?= phrase('Download Configuration') ?>">
-            <i class="mdi mdi-download"></i>
-            <?= phrase('Download Configuration') ?>
+            <i class="mdi mdi-download"></i> <?= phrase('Download Configuration') ?>
         </a>
     </p>
     <p>
@@ -42,8 +43,7 @@
         <div class="col-6">
             <div class="d-grid">
                 <a href="<?= site_url('system') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
@@ -51,8 +51,7 @@
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Refresh') ?>">
-                    <i class="mdi mdi-reload"></i>
-                    <?= phrase('Refresh') ?>
+                    <i class="mdi mdi-reload"></i> <?= phrase('Refresh') ?>
                 </button>
             </div>
         </div>

@@ -6,6 +6,7 @@
  * @var mixed $spotlight
  */
 if ($articles): ?>
+
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container">
             <div class="row align-items-center">
@@ -37,7 +38,7 @@ if ($articles): ?>
                         <div class="carousel slide" id="carouselExampleCaptions" data-bs-ride="carousel">
                             <div class="carousel-inner rounded-5 border-hover overflow-hidden">
                                 <?php foreach ($spotlight as $key => $val): ?>
-                                    <div class="carousel-item<?= !$key ? ' active' : null ?>">
+                                    <div class="carousel-item<?= ! $key ? ' active' : null ?>">
                                         <div class="clip gradient-top"></div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]) ?>" class="d-block --xhr">
                                             <img src="<?= get_image('blogs', $val->featured_image) ?>" class="d-block w-100 carousel-headline" alt="<?= $val->post_title ?>">
@@ -145,9 +146,9 @@ if ($articles): ?>
                                                 <div style="margin-inline:-1rem">
                                                     <a href="<?= base_url(['blogs', $val->category_slug, $_val->post_slug]) ?>" class="d-block --xhr">
                                                         <img src="<?= get_image(
-                                                          'blogs',
-                                                          $_val->featured_image,
-                                                          'thumb',
+                                                            'blogs',
+                                                            $_val->featured_image,
+                                                            'thumb',
                                                         ) ?>" class="img-fluid rounded-5 w-100 bg-body-tertiary" alt="<?= $_val->post_title ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover">
                                                     </a>
                                                 </div>

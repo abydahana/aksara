@@ -1,5 +1,7 @@
 <div class="container-fluid py-3">
-    <form action="<?= current_page() ?>" method="POST" class="--api-debug no-ajax">
+    <form action="<?= current_page() ?>
+
+" method="POST" class="--api-debug no-ajax">
         <div class="row --apply-increase-one border-bottom">
             <div class="col-md-10">
                 <div class="input-group mb-3">
@@ -20,8 +22,7 @@
             <div class="col-md-2">
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-dark">
-                        <i class="mdi mdi-send"></i>
-                        <?= phrase('Send') ?>
+                        <i class="mdi mdi-send"></i> <?= phrase('Send') ?>
                     </button>
                 </div>
             </div>
@@ -60,8 +61,7 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm --add-parameter" data-parameter="header">
-                        <i class="mdi mdi-plus"></i>
-                        <?= phrase('Add Parameter') ?>
+                        <i class="mdi mdi-plus"></i> <?= phrase('Add Parameter') ?>
                     </button>
                 </div>
                 <div class="tab-pane border-bottom p-3" id="params-body" role="tabpanel">
@@ -83,8 +83,7 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm --add-parameter" data-parameter="body">
-                        <i class="mdi mdi-plus"></i>
-                        <?= phrase('Add Parameter') ?>
+                        <i class="mdi mdi-plus"></i> <?= phrase('Add Parameter') ?>
                     </button>
                 </div>
                 <div class="tab-pane border-bottom p-3 p-3 show active" id="results-pretty" role="tabpanel">

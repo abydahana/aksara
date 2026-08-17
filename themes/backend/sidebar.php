@@ -24,12 +24,10 @@
                 </p>
                 <p class="d-lg-none d-xl-none mb-0">
                     <a href="<?= base_url('xhr/partial/account') ?>" class="btn btn-outline-primary btn-sm rounded-pill --modal --force-xs">
-                        <i class="mdi mdi-cogs"></i>
-                        <?= phrase('Account') ?>
+                        <i class="mdi mdi-cogs"></i> <?= phrase('Account') ?>
                     </a>
                     <a href="<?= base_url('xhr/partial/language') ?>" class="btn btn-sm rounded-pill float-end --modal --force-xs">
-                        <i class="mdi mdi-translate"></i>
-                        <?= phrase('Language') ?>
+                        <i class="mdi mdi-translate"></i> <?= phrase('Language') ?>
                         <i class="mdi mdi-chevron-down"></i>
                     </a>
                 </p>

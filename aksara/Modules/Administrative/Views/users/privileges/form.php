@@ -8,6 +8,7 @@
  * @var mixed $links
  */
 ?>
+
 <div class="container-fluid py-3">
     <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">
@@ -51,10 +52,10 @@
                             <?php
                             $options = null;
 
-                            foreach ($year as $key => $val) {
-                              $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
-                            }
-                            ?>
+                    foreach ($year as $key => $val) {
+                        $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
+                    }
+                    ?>
                             <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose') ?>">
                                 <?= $options ?>
                             </select>
@@ -88,11 +89,11 @@
                         <?php
                         $option = null;
                         foreach ($subLevel as $key => $val) {
-                          if (!isset($val->id) || !isset($val->label)) {
-                            continue;
-                          }
+                            if (! isset($val->id) || ! isset($val->label)) {
+                                continue;
+                            }
 
-                          $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
+                            $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
                         }
                         ?>
                         <select name="sub_level_1" class="form-control" id="sub_level_1_input" placeholder="<?= phrase('Please choose') ?>">
@@ -110,13 +111,11 @@
         <div class="row opt-btn">
             <div class="col-12 col-md-10 d-flex justify-content-between align-items-center gap-2">
                 <a href="<?= $links->currentModule ?>" class="btn btn-link --xhr">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
                 <div class="d-flex justify-content-end align-items-center gap-1">
                     <button type="submit" class="btn btn-primary">
-                        <i class="mdi mdi-check"></i>
-                        <?= phrase('Update') ?>
+                        <i class="mdi mdi-check"></i> <?= phrase('Update') ?>
                         <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
                     </button>
                 </div>

@@ -6,6 +6,7 @@
  */
 
 $fieldData = $results->field_data; ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold">
@@ -35,8 +36,7 @@ $fieldData = $results->field_data; ?>
                         </em>
                     </p>
                     <a href="<?= current_page('../') ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
-                        <i class="mdi mdi-arrow-left"></i>
-                        <?= phrase('Back') ?>
+                        <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                     </a>
                 <?php else: ?>
                     <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['page' => null]), 'searchLabel' => phrase('Search announcements...')]) ?>

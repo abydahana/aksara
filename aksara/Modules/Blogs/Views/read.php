@@ -7,52 +7,53 @@
      * @var mixed $categories
      */
     $fieldData = $results->field_data ?? null;
-    $toc = null;
-    $article = null;
-    $featuredImage = null;
-    $postTags = null;
+$toc = null;
+$article = null;
+$featuredImage = null;
+$postTags = null;
 
-    if ($fieldData) {
-      $tags = explode(',', $fieldData->post_tags->value);
+if ($fieldData) {
+    $tags = explode(',', $fieldData->post_tags->value);
 
-      if (sizeof($tags) > 0) {
+    if (sizeof($tags) > 0) {
         // Get post tags
         foreach ($tags as $tag => $label) {
-          if (!$label) {
-            continue;
-          } // empty label
+            if (! $label) {
+                continue;
+            } // empty label
 
-          $postTags .=
-            '
+            $postTags .=
+              '
                     <a href="' .
-            go_to('../tags', ['q' => trim($label)]) .
-            '" class="me-2 --xhr">
+              go_to('../tags', ['q' => trim($label)]) .
+              '" class="me-2 --xhr">
                         <span class="badge bg-secondary">
                             ' .
-            trim($label) .
-            '
+              trim($label) .
+              '
                         </span>
                     </a>
                 ';
         }
-      }
-
-      // Reformat article output
-      [$toc, $article] = toc_generator(
-        str_replace(
-          'MsoNormalTable',
-          'table table-bordered',
-          preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $fieldData->post_content->value))),
-        ),
-      );
-
-      if ($fieldData->featured_image->value && $fieldData->featured_image->value != 'placeholder.png') {
-        // Get featured image
-        $featuredImage = $fieldData->featured_image->value;
-      }
     }
 
-    if ($article): ?>
+    // Reformat article output
+    [$toc, $article] = toc_generator(
+        str_replace(
+            'MsoNormalTable',
+            'table table-bordered',
+            preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $fieldData->post_content->value))),
+        ),
+    );
+
+    if ($fieldData->featured_image->value && 'placeholder.png' != $fieldData->featured_image->value) {
+        // Get featured image
+        $featuredImage = $fieldData->featured_image->value;
+    }
+}
+
+if ($article): ?>
+
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <h1 class="display-4 fw-bold">
@@ -138,8 +139,8 @@
                                 </div>
 
                                 <i class="text-muted text-sm"><?= $fieldData->updated_at->value
-                                  ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value
-                                  : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
+                              ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value
+                              : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
                             </div>
                             <div class="fade-in">
                                 <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]) ?>
@@ -233,13 +234,12 @@
                         <div class="card rounded-4 mt-5">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">
-                                    <i class="mdi mdi-newspaper-variant-outline text-primary me-2"></i>
-                                    <?= phrase('Recommended Articles') ?>
+                                    <i class="mdi mdi-newspaper-variant-outline text-primary me-2"></i> <?= phrase('Recommended Articles') ?>
                                 </h5>
                                 <div class="list-group list-group-flush">
                                     <?php foreach ($recommendations as $val): ?>
                                         <?php
-                                        $link = is_array($val) ? $val['link'] ?? '#' : $val->link ?? '#';
+                                    $link = is_array($val) ? $val['link'] ?? '#' : $val->link ?? '#';
                                         $title = is_array($val) ? $val['title'] ?? '' : $val->title ?? '';
                                         $image = is_array($val) ? $val['image'] ?? null : $val->image ?? null;
                                         ?>

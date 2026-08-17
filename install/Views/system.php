@@ -7,16 +7,17 @@
 $options = null;
 
 foreach ($installationMode as $key => $val) {
-  $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (!session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
+    $options .= '<option value="' . $val['id'] . '"' . (session()->get('installation_mode') == $val['id'] || (! session()->get('installation_mode') && $val['selected']) ? ' selected' : null) . '>' . $val['label'] . '</option>';
 }
 
 // Get timezone options
 $timeZoneList = null;
 
 foreach ($timeZone as $key => $val) {
-  $timeZoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
+    $timeZoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
 }
 ?>
+
 <form action="<?= site_url('finalizing') ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('System Configuration') ?>
@@ -179,8 +180,7 @@ foreach ($timeZone as $key => $val) {
         <div class="col-6">
             <div class="d-grid">
                 <a href="<?= site_url('security') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
@@ -188,8 +188,7 @@ foreach ($timeZone as $key => $val) {
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue') ?>
+                    <i class="mdi mdi-check"></i> <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

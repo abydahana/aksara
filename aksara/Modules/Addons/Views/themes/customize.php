@@ -5,7 +5,7 @@
  */
 ?>
 
-<?php if (!$writable): ?>
+<?php if (! $writable): ?>
     <div class="alert alert-danger border-0 rounded-0 mb-0">
         <div class="container">
             <h5>
@@ -136,13 +136,11 @@
         <div class="row opt-btn">
             <div class="col-12 col-md-8 d-flex justify-content-between align-items-center gap-2">
                 <a href="<?= current_page('../', ['theme' => null]) ?>" class="btn btn-link --xhr">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
                 <div class="d-flex justify-content-end align-items-center gap-1">
                     <button type="submit" class="btn btn-primary">
-                        <i class="mdi mdi-check"></i>
-                        <?= phrase('Update') ?>
+                        <i class="mdi mdi-check"></i> <?= phrase('Update') ?>
                         <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
                     </button>
                 </div>

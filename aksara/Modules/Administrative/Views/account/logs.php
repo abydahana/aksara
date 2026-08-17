@@ -25,12 +25,11 @@
                                     <?php endif; ?>
 
                                     <div>
-                                        <?php if ($session->ip_address != service('request')->getIPAddress()): ?>
+                                        <?php if (service('request')->getIPAddress() != $session->ip_address): ?>
                                             <a href="<?= current_page('kick', [
                                               'session' => $session->session_id,
                                             ]) ?>" class="btn btn-sm btn-danger float-end rounded-pill --xhr">
-                                                <i class="mdi mdi-logout"></i>
-                                                <?= phrase('Kick') ?>
+                                                <i class="mdi mdi-logout"></i> <?= phrase('Kick') ?>
                                             </a>
                                         <?php endif; ?>
                                         <b>
@@ -44,10 +43,9 @@
                                                 <?= $session->ip_address ?> <i class="mdi mdi-launch"></i>
                                             </b>
                                         </a>
-                                        <?php if ($session->ip_address == service('request')->getIPAddress()): ?>
+                                        <?php if (service('request')->getIPAddress() == $session->ip_address): ?>
                                             <br />
-                                            <i class="mdi mdi-check-circle text-primary"></i>
-                                            <?= phrase('Your current session') ?>
+                                            <i class="mdi mdi-check-circle text-primary"></i> <?= phrase('Your current session') ?>
                                         <?php endif; ?>
                                     </div>
                                 <?php endforeach; ?>

@@ -15,7 +15,7 @@
 </style>
 
 <div class="vh-100">
-    <div class="<?= !$activation ? 'h-100 d-flex align-items-center justify-content-center' : null ?>">
+    <div class="<?= ! $activation ? 'h-100 d-flex align-items-center justify-content-center' : null ?>">
         <?php if ($activation): ?>
             <div class="alert alert-info border-0 rounded-0">
                 <div class="container text-center py-5">
@@ -63,24 +63,24 @@
                         </div>
 
                         <?php if ($years) {
-                          $option = null;
+                            $option = null;
 
-                          foreach ($years as $key => $val) {
-                            $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
-                          }
+                            foreach ($years as $key => $val) {
+                                $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
+                            }
 
-                          echo '
+                            echo '
                                 <div class="form-group mb-3">
                                     <div class="input-group">
                                         <span class="input-group-text rounded-pill rounded-end-0">
                                             <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                         </span>
                                         <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' .
-                            phrase('Choose year') .
-                            '" id="year_input">
+                              phrase('Choose year') .
+                              '" id="year_input">
                                             ' .
-                            $option .
-                            '
+                              $option .
+                              '
                                         </select>
                                     </div>
                                 </div>

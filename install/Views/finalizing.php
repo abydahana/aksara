@@ -1,4 +1,6 @@
-<form action="<?= site_url('run') ?>" method="POST" class="--validate-form">
+<form action="<?= site_url('run') ?>
+
+" method="POST" class="--validate-form">
     <h4>
         <?= phrase('All caught up!') ?>
     </h4>
@@ -31,8 +33,7 @@
         <div class="col-4 col-sm-6">
             <div class="d-grid">
                 <a href="<?= site_url('system') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
@@ -40,8 +41,7 @@
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Run Installer') ?>">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Run Installer') ?>
+                    <i class="mdi mdi-check"></i> <?= phrase('Run Installer') ?>
                 </button>
             </div>
         </div>

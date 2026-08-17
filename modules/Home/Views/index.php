@@ -144,8 +144,7 @@
     <div class="container">
         <div class="fade-in">
             <div class="hero-kicker mb-4">
-                <i class="mdi mdi-sparkles"></i>
-                <?= phrase('Welcome') ?>
+                <i class="mdi mdi-sparkles"></i> <?= phrase('Welcome') ?>
             </div>
             <h1 class="hero-title fw-bold mb-4">
                 <?= get_setting('app_name') ?><span>.</span>
@@ -175,13 +174,13 @@
             <div class="row align-items-center">
                 <?php foreach ($categories as $key => $val): ?>
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card rounded-5 border-hover overflow-hidden mb-3 <?= $key < 4 ? (($key + 1) % 2 == 0 ? 'bg-body-tertiary' : 'bg-body-secondary') : (($key + 1) % 2 == 0 ? 'bg-body-secondary' : 'bg-body-tertiary') ?>">
+                        <div class="card rounded-5 border-hover overflow-hidden mb-3 <?= $key < 4 ? (0 == ($key + 1) % 2 ? 'bg-body-tertiary' : 'bg-body-secondary') : (0 == ($key + 1) % 2 ? 'bg-body-secondary' : 'bg-body-tertiary') ?>">
                             <div class="card-body clip gradient-top position-relative py-lg-5 text-center">
                                 <a href="<?= base_url('blogs/' . $val->category_slug) ?>" class="d-block --xhr">
                                     <img src="<?= get_image(
-                                      'blogs',
-                                      $val->category_image,
-                                      'thumb',
+                                        'blogs',
+                                        $val->category_image,
+                                        'thumb',
                                     ) ?>" class="img-fluid rounded-circle border border-3 border-light mb-3" width="128" alt="<?= $val->category_title ?>" loading="lazy" decoding="async" />
                                 </a>
                                 <br />
@@ -247,9 +246,9 @@
                                         <div style="margin-inline:-1rem">
                                             <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]) ?>" class="d-block --xhr">
                                                 <img src="<?= get_image(
-                                                  'blogs',
-                                                  $val->featured_image,
-                                                  'thumb',
+                                                    'blogs',
+                                                    $val->featured_image,
+                                                    'thumb',
                                                 ) ?>" class="img-fluid rounded-5 w-100 bg-body-tertiary" alt="<?= $val->post_title ?>" loading="lazy" decoding="async" style="aspect-ratio: 3/2; object-fit: cover">
                                             </a>
                                         </div>
@@ -281,8 +280,8 @@
                         <?php
                         $images = json_decode($val->gallery_images);
 
-                        if (!$images) {
-                          continue;
+                        if (! $images) {
+                            continue;
                         }
                         ?>
                         <?php foreach ($images as $src => $alt): ?>
