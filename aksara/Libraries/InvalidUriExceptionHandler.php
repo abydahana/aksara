@@ -336,7 +336,6 @@ class InvalidUriExceptionHandler extends BaseExceptionHandler implements Excepti
             ->setHeader('Expires', '0')
             ->setBody(
                 view($view, $data)
-            )
-            ->send();
+            );
     }
 }

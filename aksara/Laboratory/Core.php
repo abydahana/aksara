@@ -22,6 +22,7 @@ use Throwable;
 use Config\Services;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\Response;
+use CodeIgniter\HTTP\ResponseInterface;
 use Aksara\Laboratory\Validation;
 use Aksara\Laboratory\Renderer\Renderer;
 use Aksara\Libraries\Document;
@@ -221,8 +222,17 @@ abstract class Core extends Controller
 
             // This forces 'protected' methods to fall through to the fallback.
             if ($ref->isPublic()) {
-                // Ensure it's not a core Aksara method
-                call_user_func_array([$this, $method], $params);
+                // Execute the controller method
+                $output = call_user_func_array([$this, $method], $params);
+
+                // If the controller returns a value, pass it back to CI4
+                if ($output) {
+                    return $output;
+                }
+
+                // Fallback: If the controller returns void (because it didn't use 'return'),
+                // we return the global Response object so CI4 Middlewares can still process it!
+                return Services::response();
             } else {
                 // For security reason, redirect to homepage
                 return $this->response->redirect(base_url('/'));
@@ -233,7 +243,13 @@ abstract class Core extends Controller
              * If the method is Protected, Private, or doesn't exist:
              * We pass the method name as the first parameter to index().
              */
-            call_user_func_array([$this, 'index'], array_merge([$method], $params));
+            $output = call_user_func_array([$this, 'index'], array_merge([$method], $params));
+
+            if ($output) {
+                return $output;
+            }
+
+            return Services::response();
         }
     }
 
@@ -440,7 +456,7 @@ abstract class Core extends Controller
         if (in_array($this->_method, $this->_unsetMethod)) {
             return throw_exception(403, phrase('The method you requested is not acceptable.'));
         } elseif ($this->_setPermission && ! get_userdata('is_logged') && ! $this->_apiToken) {
-            return throw_exception(403, phrase('Your session has been expired.'));
+            return throw_exception(403, phrase('Your session has expired.'));
         } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_apiToken) {
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         } elseif ($permissiveGroup && ! in_array(get_userdata('group_id'), $permissiveGroup) && ! $this->_apiToken) {
@@ -1961,10 +1977,8 @@ abstract class Core extends Controller
      *
      * This method coordinates security checks, query building, form handling (CRUD),
      * and output formatting, serving as the main dispatcher for the framework's output.
-     *
-     * @return object|string Returns the result of the executed controller method (View content string, JSON array, or Exception object).
      */
-    protected function render(?string $table = null, ?string $view = null): object|array|string|null
+    protected function render(?string $table = null, ?string $view = null): mixed
     {
         // Debugger
         if (in_array($this->_debugging, ['properties', 'property'])) {
@@ -1998,7 +2012,7 @@ abstract class Core extends Controller
             if ($this->_setPermission) {
                 if (! get_userdata('access_token') && ! $this->request->getHeaderLine('X-ACCESS-TOKEN')) {
                     // Access token is not set
-                    return throw_exception(403, phrase('This service is require an access token.'));
+                    return throw_exception(403, phrase('This service requires an access token.'));
                 } elseif (! $this->_apiToken) {
                     // Access token is not valid
                     return throw_exception(403, phrase('The access token is invalid or already expired.'));
@@ -2145,7 +2159,7 @@ abstract class Core extends Controller
             if (! $this->_setPrimary) {
                 if ('backend' == $this->template->getThemeProperty('type')) {
                     // Add notification into table heading
-                    $this->setDescription('<div><b>' . phrase('No primary key is found.') . '</b> ' . phrase('Please define it manually and refer to {{set_primary}}.', ['set_primary' => '<code>set_primary()</code>']) . ' ' . phrase('Without primary key, you only allowed to insert the data.') . '</div>');
+                    $this->setDescription('<div><b>' . phrase('No primary key is found.') . '</b> ' . phrase('Please define it manually and refer to {{set_primary}}.', ['set_primary' => '<code>set_primary()</code>']) . ' ' . phrase('Without a primary key, you are only allowed to insert data.') . '</div>');
                 }
 
                 // Unset method
@@ -2259,7 +2273,7 @@ abstract class Core extends Controller
                     }
                 } else {
                     // Token isn't valid, throw exception
-                    return throw_exception(403, phrase('The submitted token has been expired or the request is made from the restricted source.'), $this->_redirectBack);
+                    return throw_exception(403, phrase('The submitted token has expired or the request is made from the restricted source.'), $this->_redirectBack);
                 }
             } elseif ($this->apiClient && in_array($this->request->getMethod(), ['POST']) && (in_array($this->_method, ['create', 'update']) || ($this->_formCallback && method_exists($this, $this->_formCallback)))) {
                 // Request is sent from REST
@@ -2914,6 +2928,10 @@ abstract class Core extends Controller
                 // Get formatted results
                 $results = ($singlePrint ? $this->renderRead($results) : $this->renderTable($results));
 
+                if ($results instanceof ResponseInterface) {
+                    return $results;
+                }
+
                 // Set icon property
                 $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
 
@@ -2936,6 +2954,10 @@ abstract class Core extends Controller
 
                 // Get formatted results
                 $results = (! $viewExist ? $this->renderTable($results) : $results);
+
+                if ($results instanceof ResponseInterface) {
+                    return $results;
+                }
 
                 // Set icon property
                 $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
@@ -3244,17 +3266,27 @@ abstract class Core extends Controller
     /**
      * Renders and formats the output data into a structured array ready for table view.
      */
-    protected function renderTable(array $data): array
+    protected function renderTable(array $data): array|ResponseInterface
     {
         // If Primary Key is not defined, disable Update and Delete actions for safety.
         if (! $this->_setPrimary) {
             $this->_unsetMethod = array_merge($this->_unsetMethod, ['update', 'delete']);
         }
 
+        if ($this->apiClient && ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full'])) {
+            // Requested from API Client in unformatted result
+            return make_json($data);
+        }
+
         // Serialize data (convert raw objects/arrays into a standardized format)
         timer('Core::serialize() Data Formatting');
         $serialized = $this->serialize($data);
         timer('Core::serialize() Data Formatting');
+
+        if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
+            // Requested from API Client with field data information
+            return make_json($serialized);
+        }
 
         $tableData = [];
 
@@ -3294,16 +3326,11 @@ abstract class Core extends Controller
     /**
      * Serializes data rows, detecting field types, primary keys, and applying formatting.
      */
-    protected function serialize(array $data): array|string
+    protected function serialize(array $data): array
     {
         if (! $data && $this->model->tableExists($this->_table)) {
             // Flip columns
             $data = [array_fill_keys($this->model->listFields($this->_table), '')];
-        }
-
-        if ($this->apiClient && (! $this->request->getGet('format_result') || ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full']))) {
-            // Requested from API Client in unformatted result
-            return make_json($data);
         }
 
         $output = [];
@@ -3316,18 +3343,13 @@ abstract class Core extends Controller
             $output[$row] = $this->serializeRow($array, false, $fieldData, $mockFields, $fieldNames);
         }
 
-        if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
-            // Requested from API Client with field data information
-            return make_json($output);
-        }
-
         return $output;
     }
 
     /**
      * Serializes a single row
      */
-    protected function serializeRow(array|object $data, bool $return = true, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|string
+    protected function serializeRow(array|object $data, bool $return = true, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|ResponseInterface
     {
         $fieldData ??= $this->_compiledFieldData();
 
@@ -4630,7 +4652,7 @@ abstract class Core extends Controller
         if ($affectedRows) {
             $this->_invalidateToken();
 
-            $message = phrase('{{affected_rows}} of {{items}} data was successfully removed.', [
+            $message = phrase('{{affected_rows}} of {{items}} items were successfully removed.', [
                 'affected_rows' => $affectedRows,
                 'items' => $totalItems
             ]);
@@ -5946,7 +5968,7 @@ abstract class Core extends Controller
      * Constructs a complex query based on provided parameters, handles search ('like'),
      * joins, where clauses, and formats the output using magic string replacement.
      */
-    private function _getRelation(array $params = [], int|string|null $selected = 0, bool $ajax = false): array|string
+    private function _getRelation(array $params = [], int|string|null $selected = 0, bool $ajax = false): array|string|ResponseInterface
     {
         // Try to fetch from runtime cache first to avoid N+1 query bottleneck
         $cacheKey = '';
@@ -6267,7 +6289,7 @@ abstract class Core extends Controller
      *
      * It swaps the old order keys (retrieved from the database) with the new positions in the submitted list.
      */
-    private function _sortTable(array $orderedId = []): string
+    private function _sortTable(array $orderedId = []): ResponseInterface
     {
         // Check if sorting is enabled or if the input format is invalid.
         if (! $this->_sortable || ! is_array($orderedId)) {
@@ -6410,9 +6432,9 @@ abstract class Core extends Controller
         if (! $client) {
             return throw_exception(403, phrase('Your API Key is not eligible to access the requested module or its already expired.'));
         } elseif (! $client->status) {
-            return throw_exception(403, phrase('Your API Key is temporary deactivated.'));
+            return throw_exception(403, phrase('Your API Key is temporarily deactivated.'));
         } elseif (! in_array($this->request->getMethod(), json_decode($client->method, true))) {
-            return throw_exception(403, phrase('Your API Key is not eligible to use the method') . ': ' . $this->request->getMethod());
+            return throw_exception(403, phrase('Your API Key is not eligible to use this method.') . ': ' . $this->request->getMethod());
         } elseif ($client->ip_range && (! $this->_ipInRange($client->ip_range) || $this->request->getIPAddress() != $this->request->getServer('SERVER_ADDR'))) {
             return throw_exception(403, phrase('Your API Client is not permitted to access the requested source.'));
         }
@@ -6466,6 +6488,9 @@ abstract class Core extends Controller
 
         // Final state update
         $this->apiClient = true;
+
+        // Pass a flag to the Response object so middlewares (like JsonFormatter) know this is an API request
+        $this->response->setHeader('X-Is-Api-Client', 'true');
 
         return $this;
     }

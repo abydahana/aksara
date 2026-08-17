@@ -101,7 +101,7 @@ class Document
 
             $response->setContentType('application/pdf');
 
-            return $response->setBody($output)->send();
+            return $response->setBody($output);
         }
     }
 
