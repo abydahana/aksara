@@ -50,7 +50,7 @@ class Testimonials extends Core
 
         $this->setTitle(phrase('Testimonials'))
         ->setIcon('mdi mdi-comment-account-outline')
-        ->unsetColumn('testimonial_id, testimonial_content, language')
+        ->unsetColumn('testimonial_id, language')
         ->unsetField('testimonial_id, created_by')
         ->unsetView('testimonial_id')
 
