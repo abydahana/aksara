@@ -1333,13 +1333,17 @@ function _viewport_modifier() {
   if (UA != 'mobile') {
     require.css([config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.css']);
     require.js([config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.js'], function () {
-      $('[data-role=sidebar]').height(fullHeight);
+      $('[data-role=sidebar]').height(fullHeight - 48);
       $('[data-role=table]').width($(window).outerWidth(true) - ($('[data-role=sidebar]').outerWidth(true) + 24));
       $('[data-role=table]').height(fullHeight - (($('[data-role=meta]').outerHeight(true) ?? 0) + ($('[data-role=toolbar]').outerHeight(true) ?? 0) + ($('[data-role=pagination]').outerHeight(true) ?? 0)));
       $('[data-role=grid]').height(fullHeight - (($('[data-role=meta]').outerHeight(true) ?? 0) + ($('[data-role=toolbar]').outerHeight(true) ?? 0) + ($('[data-role=pagination]').outerHeight(true) ?? 0)));
 
       // Initialize OverlayScrollbars
       const osOptions = {
+        overflow: {
+          x: 'hidden',
+          y: 'scroll'
+        },
         scrollbars: {
           theme: 'os-theme-dark',
           autoHide: 'leave',

@@ -108,18 +108,18 @@
         </div>
         <div class="opt-btn-overlap-fix"></div>
         <div class="row opt-btn">
-            <div class="col-md-10">
+            <div class="col-12 col-md-10 d-flex justify-content-between align-items-center gap-2">
                 <a href="<?= $links->currentModule ?>" class="btn btn-link --xhr">
                     <i class="mdi mdi-arrow-left"></i>
-                    &nbsp;
                     <?= phrase('Back') ?>
                 </a>
-                <button type="submit" class="btn btn-primary float-end">
-                    <i class="mdi mdi-check"></i>
-                    &nbsp;
-                    <?= phrase('Update') ?>
-                    <em class="text-sm">(ctrl+s)</em>
-                </button>
+                <div class="d-flex justify-content-end align-items-center gap-1">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-check"></i>
+                        <?= phrase('Update') ?>
+                        <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
+                    </button>
+                </div>
             </div>
         </div>
     </form>

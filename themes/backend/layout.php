@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid border-bottom description-collapse collapse alias-description-collapse<?= $meta->description ? ' show' : '' ?>" id="description-collapse" data-role="description">
+                <div class="container-fluid border-bottom py-3 py-md-0 description-collapse collapse alias-description-collapse<?= $meta->description ? ' show' : '' ?><?= str_contains($meta->description, '</div>') ? ' bg-info-subtle text-info-emphasis' : '' ?>" id="description-collapse" data-role="description">
                     <?= $meta->description ?>
                 </div>
             </section>

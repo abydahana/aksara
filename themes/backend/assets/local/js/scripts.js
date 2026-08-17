@@ -5,6 +5,11 @@
   var saved = localStorage.getItem('bs-theme') || 'light';
   document.documentElement.setAttribute('data-bs-theme', saved);
 
+  // Apply saved sidebar collapse state immediately on desktop
+  if (window.innerWidth >= 992 && localStorage.getItem('sidebar-collapsed') === 'true') {
+    document.body.classList.add('sidebar-collapsed');
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     const icons = document.querySelectorAll('[data-sidebar-toggle-icon]');
     const toggles = document.querySelectorAll('.mobile-menu-toggle[data-toggle="sidebar"]');
@@ -14,12 +19,13 @@
     }
 
     const updateSidebarIcon = function () {
-      const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-      const isExpanded = document.body.classList.contains('sidebar-expanded');
+      const isDesktop = window.innerWidth >= 992;
+      const isCollapsed = isDesktop ? document.body.classList.contains('sidebar-collapsed') : !document.body.classList.contains('sidebar-expanded');
+      const isExpanded = !isCollapsed;
 
       icons.forEach(function (icon) {
-        icon.classList.toggle('mdi-menu', isCollapsed);
-        icon.classList.toggle('mdi-menu-open', !isCollapsed);
+        icon.classList.toggle('mdi-chevron-right', isCollapsed);
+        icon.classList.toggle('mdi-chevron-left', !isCollapsed);
       });
 
       toggles.forEach(function (toggle) {
@@ -28,9 +34,20 @@
       });
     };
 
+    const observer = new MutationObserver(function () {
+      updateSidebarIcon();
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
     document.body.addEventListener('click', function (event) {
       if (event.target.closest('[data-toggle="sidebar"]')) {
-        setTimeout(updateSidebarIcon, 0);
+        setTimeout(function () {
+          if (window.innerWidth >= 992) {
+            const collapsed = document.body.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebar-collapsed', collapsed ? 'true' : 'false');
+          }
+          updateSidebarIcon();
+        }, 0);
       }
     });
 
