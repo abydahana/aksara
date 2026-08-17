@@ -34,14 +34,14 @@ class Addons extends Core
         $this->setTheme('backend');
 
         helper('filesystem');
-
-        if ('market' == $this->request->getPost('source')) {
-            return $this->_listing();
-        }
     }
 
     public function index()
     {
+        if ('market' == $this->request->getPost('source')) {
+            return $this->_listing();
+        }
+
         $this->setTitle(phrase('Add-Ons Market'))
         ->setIcon('mdi mdi-cart')
 
@@ -53,50 +53,43 @@ class Addons extends Core
      */
     public function detail()
     {
-        $package = [];
-
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../'));
-        } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../'));
         }
 
-        if (! $package) {
-            try {
-                $curl = Services::curlrequest(
-                    [
-                        'timeout' => 5,
-                        'http_errors' => false
+        $package = [];
+        try {
+            $curl = Services::curlrequest([
+                'timeout' => 5,
+                'http_errors' => false
+            ]);
+
+            $response = $curl->post(
+                'https://www.aksaracms.com/market/api/detail',
+                [
+                    'allow_redirects' => [
+                        'max' => 2
+                    ],
+                    'headers' => [
+                        'Referer' => base_url()
+                    ],
+                    'form_params' => [
+                        'type' => $this->request->getGet('type'),
+                        'initial' => $this->request->getGet('item'),
+                        'version' => aksara('version')
                     ]
-                );
+                ]
+            );
+        } catch (Throwable $e) {
+            return make_json([
+                'error' => $e->getMessage()
+            ]);
+        }
 
-                $response = $curl->post(
-                    'https://www.aksaracms.com/market/api/detail',
-                    [
-                        'allow_redirects' => [
-                            'max' => 2
-                        ],
-                        'headers' => [
-                            'Referer' => base_url()
-                        ],
-                        'form_params' => [
-                            'type' => $this->request->getGet('type'),
-                            'initial' => $this->request->getGet('item'),
-                            'version' => aksara('version')
-                        ]
-                    ]
-                );
-            } catch (Throwable $e) {
-                return make_json([
-                    'error' => $e->getMessage()
-                ]);
-            }
+        $package = json_decode($response->getBody());
 
-            $package = json_decode($response->getBody());
-
-            if ($response->getStatusCode() !== 200) {
-                return throw_exception(403, $response->getReasonPhrase(), current_page('../'));
-            }
+        if ($response->getStatusCode() !== 200) {
+            return throw_exception(403, $response->getReasonPhrase(), current_page('../'));
         }
 
         $this->setTitle((isset($package->name) ? $package->name : phrase('No item found!')))
@@ -120,10 +113,6 @@ class Addons extends Core
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return throw_exception(403, phrase('The cURL module is not enabled.'), go_to());
-        } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return [
-                'error' => phrase('Unable to connect to the Aksara Market.')
-            ];
         }
 
         if (in_array($this->request->getGet('type'), ['theme', 'module'])) {
@@ -537,10 +526,6 @@ class Addons extends Core
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return make_json([
                 'error' => phrase('The cURL module is not enabled.')
-            ]);
-        } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return make_json([
-                'error' => phrase('Unable to connect to the Aksara Market.')
             ]);
         }
 

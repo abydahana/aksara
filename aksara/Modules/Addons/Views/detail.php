@@ -7,44 +7,35 @@ $carousel = null;
 $attribution = null;
 
 if ($detail->screenshot) {
-  foreach ($detail->screenshot as $key => $val) {
-    $carousel .=
-      '
-            <div class="carousel-item rounded' .
-      (!$key ? ' active' : null) .
-      '">
-                <a href="' .
-      $val->src .
-      '" target="_blank">
-                    <img src="' .
-      $val->src .
-      '" class="d-block rounded w-100" alt="' .
-      $val->alt .
-      '">
-                </a>
-            </div>
-        ';
-  }
+    ob_start();
+
+    foreach ($detail->screenshot as $key => $val): ?>
+
+        <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
+            <a href="<?= $val->src ?>" target="_blank">
+                <img src="<?= $val->src ?>" class="d-block rounded w-100" alt="<?= $val->alt ?>">
+            </a>
+        </div>
+    <?php endforeach;
+
+    $carousel = ob_get_clean();
 }
 
 if (isset($detail->attribution) && $detail->attribution) {
-  foreach ($detail->attribution as $key => $val) {
-    $attribution .=
-      '
-            <div class="row">
-                <div class="col-4 text-muted">
-                    ' .
-      $key .
-      '
-                </div>
-                <div class="col-8">
-                    ' .
-      $val .
-      '
-                </div>
+    ob_start();
+
+    foreach ($detail->attribution as $key => $val): ?>
+        <div class="row">
+            <div class="col-4 text-muted">
+                <?= $key ?>
             </div>
-        ';
-  }
+            <div class="col-8">
+                <?= $val ?>
+            </div>
+        </div>
+    <?php endforeach;
+
+    $attribution = ob_get_clean();
 }
 ?>
 
@@ -70,9 +61,9 @@ if (isset($detail->attribution) && $detail->attribution) {
         <div class="col-md-6 col-lg-5">
             <h5>
                 <?= $detail->name ?>
-                <?= $detail->type == 'backend'
+                <?= 'backend' == $detail->type
                   ? '<span class="badge bg-dark float-end">' . phrase('Backend Theme') . '</span>'
-                  : ($detail->type == 'frontend'
+                  : ('frontend' == $detail->type
                     ? '<span class="badge bg-success float-end">' . phrase('Frontend Theme') . '</span>'
                     : '<span class="badge bg-primary float-end">' . phrase('Module') . '</span>') ?>
             </h5>
@@ -110,16 +101,14 @@ if (isset($detail->attribution) && $detail->attribution) {
                           'item' => $detail->path,
                           'type' => $detail->addon_type,
                         ]) ?>" class="btn btn-primary btn-sm --keep-modal show-progress">
-                            <i class="mdi mdi-plus"></i>
-                            <?= phrase('Install') ?>
+                            <i class="mdi mdi-plus"></i> <?= phrase('Install') ?>
                         </a>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="d-grid">
                         <a href="<?= $detail->demo_url ?>" class="btn btn-outline-primary btn-sm" target="_blank">
-                            <i class="mdi mdi-magnify"></i>
-                            <?= phrase('Preview') ?>
+                            <i class="mdi mdi-magnify"></i> <?= phrase('Preview') ?>
                         </a>
                     </div>
                 </div>

@@ -96,8 +96,6 @@ class Themes extends Core
 
         if (! function_exists('curl_init') || ! function_exists('curl_exec')) {
             return throw_exception(403, phrase('The cURL module is not enabled.'), current_page('../', ['item' => null]));
-        } elseif (! @fsockopen('www.aksaracms.com', 443)) {
-            return throw_exception(403, phrase('Unable to connect to the Aksara Market.'), current_page('../', ['item' => null]));
         }
 
         try {

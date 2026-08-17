@@ -2,21 +2,20 @@
     <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to() ?>" class="nav-link rounded-pill active no-wrap --xhr">
-                    <i class="mdi mdi-cart"></i>
-                    <?= phrase('Market') ?>
+                <a href="<?= go_to() ?>
+
+" class="nav-link rounded-pill active no-wrap --xhr">
+                    <i class="mdi mdi-cart"></i> <?= phrase('Market') ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="<?= go_to('themes') ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-palette"></i>
-                    <?= phrase('Installed Theme') ?>
+                    <i class="mdi mdi-palette"></i> <?= phrase('Installed Theme') ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="<?= go_to('modules') ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-puzzle"></i>
-                    <?= phrase('Installed Module') ?>
+                    <i class="mdi mdi-puzzle"></i> <?= phrase('Installed Module') ?>
                 </a>
             </li>
         </ul>
@@ -77,7 +76,7 @@
             if (! response || Object.keys(response).length === 0) {
                 $('.addon-listing').html(`
                     <div class="col-lg-12">
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning callout">
                             <i class="mdi mdi-information-outline"></i> <?= phrase('No add-ons available for your current Aksara version.') ?>
                         </div>
                     </div>
@@ -87,7 +86,7 @@
             } else if (typeof response.error !== 'undefined') {
                 $('.addon-listing').html(`
                     <div class="col-lg-12">
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning callout">
                             <i class="mdi mdi-information-outline"></i> ${ response.error }
                         </div>
                     </div>
@@ -99,15 +98,17 @@
             $('.addon-listing').html(''),
 
             $.each(response, function(key, val) {
+                var badge = (val.type == 'backend' ? '<span class="badge bg-warning float-end mt-3 me-3"><?= phrase('Backend Theme') ?></span>' : '<span class="badge bg-success float-end mt-3 me-3"><?= phrase('Frontend Theme') ?></span>');
+                var install_label = '<?= phrase('Install') ?>';
+                var preview_label = '<?= phrase('Preview') ?>';
+
                 if (val.addon_type == 'theme') {
                     $(`
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="card rounded-4 mb-3">
                                 <div class="card-body p-3">
                                     <div class="position-relative mb-3">
-                                        ${ (val.type == 'backend' ? '<span class="badge bg-warning float-end mt-3 me-3"><?= phrase('Backend Theme') ?></span>' : '<span class="badge bg-success float-end mt-3 me-3"><?= phrase(
-  'Frontend Theme',
-) ?></span>') }
+                                        ${ badge }
                                         <img src="${ val.thumbnail }" class="img-fluid rounded-4 border" alt="${ val.name }" />
                                     </div>
                                     <div class="mb-3">
@@ -118,12 +119,12 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <a href="${ val.install_url }" class="btn btn-primary d-block btn-xs show-progress">
-                                                <i class="mdi mdi-plus"></i> <?= phrase('Install') ?>
+                                                <i class="mdi mdi-plus"></i> ${ install_label }
                                             </a>
                                         </div>
                                         <div class="col-6">
                                             <a href="${ val.demo_url }" class="btn btn-outline-primary d-block btn-xs" target="_blank">
-                                                <i class="mdi mdi-magnify"></i> <?= phrase('Preview') ?>
+                                                <i class="mdi mdi-magnify"></i> ${ preview_label }
                                             </a>
                                         </div>
                                     </div>
@@ -148,12 +149,12 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <a href="${ val.install_url }" class="btn btn-primary d-block btn-xs show-progress">
-                                                <i class="mdi mdi-plus"></i> <?= phrase('Install') ?>
+                                                <i class="mdi mdi-plus"></i> ${ install_label }
                                             </a>
                                         </div>
                                         <div class="col-6">
                                             <a href="${ val.demo_url }" class="btn btn-outline-primary d-block btn-xs" target="_blank">
-                                                <i class="mdi mdi-magnify"></i> <?= phrase('Preview') ?>
+                                                <i class="mdi mdi-magnify"></i> ${ preview_label }
                                             </a>
                                         </div>
                                     </div>
