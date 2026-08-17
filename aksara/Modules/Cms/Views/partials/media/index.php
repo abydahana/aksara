@@ -11,7 +11,7 @@ $breadcrumbs = null;
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-body border-end">
-            <?php if (get_active_storage() != 'local' && ! get_userdata('hide_cloud_storage_media_notice')): ?>
+            <?php if (get_active_storage() && get_active_storage() != 'disabled' && ! get_userdata('hide_cloud_storage_media_notice')): ?>
                 <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
                     <?= phrase('Cloud storage is active. File browsing may be slower.'); ?>
                     <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close'); ?>"></button>
@@ -50,10 +50,10 @@ $breadcrumbs = null;
                 <!-- Grid View -->
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
-                        <div class="col-4 col-sm-3 col-xl-2 text-center">
+                        <div class="col-4 col-sm-3 col-xl-2 text-center py-3 mb-3">
                             <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
-                                <div class="p-3">
-                                    <i class="mdi mdi-arrow-left mdi-4x"></i>
+                                <div>
+                                    <i class="mdi mdi-arrow-left display-3"></i>
                                 </div>
                                 <div class="d-block text-truncate">
                                     <?= phrase('Back'); ?>
@@ -65,26 +65,30 @@ $breadcrumbs = null;
                     <?php if ($results->data): ?>
                         <?php foreach ($results->data as $key => $val): ?>
                             <?php if ($val->type == 'directory'): ?>
-                                <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
-                                        <div class="p-3">
-                                            <i class="mdi mdi-folder-image mdi-4x text-info"></i>
-                                        </div>
-                                        <div class="text-truncate">
-                                            <?= $val->label; ?>
-                                        </div>
-                                    </a>
+                                <div class="col-4 col-sm-3 col-xl-2">
+                                    <div class="rounded-4 border-hover text-center py-3 mb-3">
+                                        <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
+                                            <div>
+                                                <i class="mdi mdi-folder-image display-3 text-info"></i>
+                                            </div>
+                                            <div class="text-truncate">
+                                                <?= $val->label; ?>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             <?php else: ?>
-                                <div class="col-4 col-sm-3 col-xl-2 text-center">
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="--xhr">
-                                        <div class="p-3">
-                                            <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
-                                        </div>
-                                        <div class="text-truncate">
-                                            <?= $val->label; ?>
-                                        </div>
-                                    </a>
+                                <div class="col-4 col-sm-3 col-xl-2">
+                                    <div class="rounded-4 border-hover text-center py-3 mb-3">
+                                        <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="--xhr">
+                                            <div class="px-3">
+                                                <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
+                                            </div>
+                                            <div class="text-truncate">
+                                                <?= $val->label; ?>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
