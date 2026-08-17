@@ -35,196 +35,108 @@ class Core
         // Template for Table View
         // Includes: Toolbar, Bulk Delete Checkbox, Sortable Headers, Data Loop, and Pagination
         $component = <<<EOF
-        <div class="container-fluid">
-            <div data-role="toolbar" class="alias-table-toolbar py-1 border-bottom">
-                {# Include toolbar component #}
-                {% include 'core/toolbar.twig' with results.toolbar %}
-            </div>
-            <div data-role="table" class="table-responsive alias-table-index">
-                <table class="table table-sm table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th width="1">
-                                <div class="mb-0">
-                                    <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" aria-label="{{ phrase('Check All') }}" data-role="checker" data-parent="table">
-                                </div>
+        <div data-role="toolbar" class="alias-table-toolbar p-2 border-bottom">
+            {# Include toolbar component #}
+            {% include 'core/toolbar.twig' with results.toolbar %}
+        </div>
+        <div data-role="table" class="table-responsive alias-table-index px-2">
+            <table class="table table-sm table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="1">
+                            <div class="mb-0">
+                                <input type="checkbox" class="form-check-input bulk-delete" data-bs-toggle="tooltip" title="{{ phrase('Check All') }}" aria-label="{{ phrase('Check All') }}" data-role="checker" data-parent="table">
+                            </div>
+                        </th>
+                        <th>
+                            {{ phrase('Options') }}
+                        </th>
+                        {% set colspan = 0 %}
+                        {% for column in results.columns %}
+                            {% set colspan = colspan + 1 %}
+                            <th align="{{ column.align }}" class="no-wrap">
+                                {% if column.url %}
+                                    <a href="{{ column.url }}" class="fw-bold --xhr {{ column.class }}">
+                                        {{ column.label }}
+                                        <i class="{{ column.icon }}"></i>
+                                    </a>
+                                {% else %}
+                                    <span class="fw-bold">
+                                        {{ column.label }}
+                                    </span>
+                                {% endif %}
                             </th>
-                            <th>
-                                {{ phrase('Options') }}
-                            </th>
-                            {% set colspan = 0 %}
-                            {% for column in results.columns %}
-                                {% set colspan = colspan + 1 %}
-                                <th align="{{ column.align }}" class="no-wrap">
-                                    {% if column.url %}
-                                        <a href="{{ column.url }}" class="fw-bold --xhr {{ column.class }}">
-                                            {{ column.label }}
-                                            <i class="{{ column.icon }}"></i>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody {{ results.sortable ? 'data-role="sortable" data-url="' ~ results.sortable.sort_url ~ '"' : 'data-role="tbody"' }}>
+                    {% set references = [] %}
+                    {% for key, row in results.table_data %}
+                        {% set unique_reference = '' %}
+                        {% for reference in results.item_reference %}
+                            {% if row.field_data[reference].value is not null %}
+                                {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
+                                {% if unique_reference not in references %}
+                                    <tr>
+                                        <td colspan="2">&nbsp;</td>
+                                        <td colspan="{{ colspan }}">
+                                            <b class="text-primary">{{ row.field_data[reference].value }}</b>
+                                        </td>
+                                    </tr>
+
+                                    {% set references = references | merge([unique_reference]) %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <tr id="row_{{ key }}" data-id="{{ row.primary[results.sortable.primary_key] }}">
+                            <td>
+                                {% if row.deleting %}
+                                    <div class="mb-0">
+                                        <input type="checkbox" name="bulk_delete[]" value="{{ row.primary | json_encode | escape }}" class="form-check-input" aria-label="{{ phrase('Select Row') }}">
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-xs">
+                                    {% for button in row.buttons %}
+                                        <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <i class="{{ button.icon }}"></i>
                                         </a>
-                                    {% else %}
-                                        <span class="fw-bold">
-                                            {{ column.label }}
-                                        </span>
+                                    {% endfor %}
+                                    {% if row.dropdowns | length > 0 %}
+                                        <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" aria-label="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <i class="mdi mdi-format-list-bulleted"></i>
+                                        </a>
                                     {% endif %}
-                                </th>
+                                </div>
+                            </td>
+                            {% for field in row.field_data %}
+                                <td colspan="{{ field.colspan }}">
+                                    {# Include table component #}
+                                    {% include 'table/' ~ field.type ~ '.twig' with field %}
+                                </td>
                             {% endfor %}
                         </tr>
-                    </thead>
-                    <tbody {{ results.sortable ? 'data-role="sortable" data-url="' ~ results.sortable.sort_url ~ '"' : 'data-role="tbody"' }}>
-                        {% set references = [] %}
-                        {% for key, row in results.table_data %}
-                            {% set unique_reference = '' %}
-                            {% for reference in results.item_reference %}
-                                {% if row.field_data[reference].value is not null %}
-                                    {% set unique_reference = unique_reference ~ row.field_data[reference].value %}
-                                    {% if unique_reference not in references %}
-                                        <tr>
-                                            <td colspan="2">&nbsp;</td>
-                                            <td colspan="{{ colspan }}">
-                                                <b class="text-primary">{{ row.field_data[reference].value }}</b>
-                                            </td>
-                                        </tr>
-
-                                        {% set references = references | merge([unique_reference]) %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                            <tr id="row_{{ key }}" data-id="{{ row.primary[results.sortable.primary_key] }}">
-                                <td>
-                                    {% if row.deleting %}
-                                        <div class="mb-0">
-                                            <input type="checkbox" name="bulk_delete[]" value="{{ row.primary | json_encode | escape }}" class="form-check-input" aria-label="{{ phrase('Select Row') }}">
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" aria-label="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
-                                                <i class="{{ button.icon }}"></i>
-                                            </a>
-                                        {% endfor %}
-                                        {% if row.dropdowns | length > 0 %}
-                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" aria-label="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
-                                                <i class="mdi mdi-format-list-bulleted"></i>
-                                            </a>
-                                        {% endif %}
+                    {% else %}
+                        <tr class="no-hover">
+                            <td colspan="{{ colspan + 2 }}">
+                                <div class="d-flex flex-column align-items-center justify-content-center py-5 text-center" style="min-height:50vh">
+                                    <div class="mb-3">
+                                        <i class="mdi mdi-emoticon-sad-outline mdi-5x text-muted"></i>
                                     </div>
-                                </td>
-                                {% for field in row.field_data %}
-                                    <td colspan="{{ field.colspan }}">
-                                        {# Include table component #}
-                                        {% include 'table/' ~ field.type ~ '.twig' with field %}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div data-role="pagination" class="alias-pagination border-top py-2">
-                {# Include pagination component #}
-                {% include 'core/pagination.twig' with pagination %}
-            </div>
-        </div>
-        EOF;
-
-        return [
-            'type' => __FUNCTION__,
-            'component' => $component
-        ];
-    }
-
-    /**
-     * Generate Grid View Component.
-     * Renders a card-based layout, useful for galleries or blogs.
-     */
-    public function index_grid(): array
-    {
-        // Template for Grid View
-        // Includes: Toolbar, Card Loop (Bootstrap Grid), Image Carousel logic, and Pagination
-        $component = <<<EOF
-        <div data-role="toolbar" class="alias-table-toolbar py-2 border-bottom">
-            <div class="container-fluid">
-                {# Include toolbar component #}
-                {% include 'core/toolbar.twig' with results.toolbar %}
-            </div>
-        </div>
-        <div data-role="grid" class="pt-3">
-            <div class="container-fluid">
-                <div class="row">
-                    {% for key, row in results.table_data %}
-                        <div class="col-sm-6 col-md-4 col-xl-3">
-                            <div class="card border-hover shadow-sm rounded-4 overflow-hidden mb-3">
-                                {% set break = false %}
-                                {% for field in row.field_data %}
-                                    {% if not break and field.type == 'images' %}
-                                        <div id="slideshow_{{ key }}" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-inner">
-                                                {% for carouselKey, carouselItem in field.content %}
-                                                    <div class="carousel-item position-relative rounded-4 {% if carouselKey is same as(0) %} active {% endif %}">
-                                                        <a href="{{ carouselItem.url }}" target="_blank">
-                                                            <div class="clip gradient-top rounded-top"></div>
-                                                            <img src="{{ carouselItem.thumbnail }}" class="d-block rounded w-100" alt="{{ carouselItem.label ? carouselItem.label : phrase('Image') }}" loading="lazy" decoding="async">
-                                                        </a>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev" aria-label="{{ phrase('Previous') }}">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            </a>
-                                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next" aria-label="{{ phrase('Next') }}">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            </a>
-                                        </div>
-
-                                        {% set break = true %}
-                                    {% elseif not break and field.type == 'image' %}
-                                        <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
-                                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}" loading="lazy" decoding="async">
-                                        </a>
-
-                                        {% set break = true %}
-                                    {% endif %}
-                                {% endfor %}
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        {% for field in row.field_data %}
-                                            {% if field.type != 'image' and field.type != 'images' %}
-                                                <li class="list-group-item px-0">
-                                                    <span class="text-sm text-muted d-block">{{ field.label }}</span>
-                                                    {# Include table component #}
-                                                    {% include 'table/' ~ field.type ~ '.twig' with field %}
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
+                                    <h5 class="text-muted mb-0">
+                                        {{ phrase('No data found') }}
+                                    </h5>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="btn-group btn-group-sm d-flex">
-                                        {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-outline-secondary" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
-                                                <i class="{{ button.icon }}"></i>
-                                            </a>
-                                        {% endfor %}
-                                        {% if row.dropdowns | length > 0 %}
-                                            <a href="{{ current_page() }}" class="btn btn-outline-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
-                                                <i class="mdi mdi-format-list-bulleted"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
                     {% endfor %}
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
-        <div data-role="pagination" class="alias-pagination py-2 border-top">
-            <div class="container-fluid">
-                {# Include pagination component #}
-                {% include 'core/pagination.twig' with pagination %}
-            </div>
+        <div data-role="pagination" class="alias-pagination border-top py-2 px-2">
+            {# Include pagination component #}
+            {% include 'core/pagination.twig' with pagination %}
         </div>
         EOF;
 
@@ -309,20 +221,309 @@ class Core
                                 </div>
                             </div>
                         </div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="d-flex flex-column align-items-center justify-content-center text-center py-5 my-5" style="min-height: 50vh;">
+                                <div class="mb-3">
+                                    <i class="mdi mdi-emoticon-sad-outline mdi-5x text-muted"></i>
+                                </div>
+                                <h5 class="text-muted mb-0">
+                                    {{ phrase('No data found') }}
+                                </h5>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div data-role="pagination" class="alias-pagination pb-3">
+        {% if results.table_data | length > 0 or pagination.page > 1 %}
+            <div data-role="pagination" class="alias-pagination pb-3">
+                <div class="container-fluid">
+                    {# Include pagination component #}
+                    {% include 'core/pagination.twig' with pagination %}
+                </div>
+            </div>
+        {% endif %}
+        <div data-role="toolbar" class="alias-table-toolbar py-1">
+            <div class="container-fluid">
+                {# Include toolbar component #}
+                {% include 'core/toolbar_mobile.twig' with results.toolbar %}
+            </div>
+        </div>
+        EOF;
+
+        return [
+            'type' => __FUNCTION__,
+            'component' => $component
+        ];
+    }
+
+    /**
+     * Generate Grid View Component.
+     * Renders a card-based layout, useful for galleries or blogs.
+     */
+    public function index_grid(): array
+    {
+        // Template for Grid View
+        // Includes: Toolbar, Card Loop (Bootstrap Grid), Image Carousel logic, and Pagination
+        $component = <<<EOF
+        <div data-role="toolbar" class="alias-table-toolbar py-2 border-bottom">
+            <div class="container-fluid">
+                {# Include toolbar component #}
+                {% include 'core/toolbar.twig' with results.toolbar %}
+            </div>
+        </div>
+        <div data-role="grid">
+            <div class="p-3">
+                {% set use_horizontal_card = false %}
+                {% if results.table_data | length > 0 %}
+                    {% set first_row_has_image = false %}
+                    {% set first_row_non_image_count = 0 %}
+                    {% for field in results.table_data[0].field_data %}
+                        {% if field.type == 'image' or field.type == 'images' %}
+                            {% set first_row_has_image = true %}
+                        {% else %}
+                            {% set first_row_non_image_count = first_row_non_image_count + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if first_row_has_image and first_row_non_image_count > 3 %}
+                        {% set use_horizontal_card = true %}
+                    {% endif %}
+                {% endif %}
+
+                <div class="row row-gap-4">
+                    {% for key, row in results.table_data %}
+                        {% if use_horizontal_card %}
+                            {# Include horizontal card component #}
+                            {% include 'core/card_horizontal.twig' with {row: row, key: key} %}
+                        {% else %}
+                            {# Include vertical card component #}
+                            {% include 'core/card_vertical.twig' with {row: row, key: key} %}
+                        {% endif %}
+                    {% else %}
+                        <div class="col-12">
+                            <div class="d-flex flex-column align-items-center justify-content-center py-5 text-center" style="min-height:50vh">
+                                <div class="mb-3">
+                                    <i class="mdi mdi-emoticon-sad-outline mdi-5x text-muted"></i>
+                                </div>
+                                <h5 class="text-muted mb-0">
+                                    {{ phrase('No data found') }}
+                                </h5>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div data-role="pagination" class="alias-pagination py-2 border-top">
             <div class="container-fluid">
                 {# Include pagination component #}
                 {% include 'core/pagination.twig' with pagination %}
             </div>
         </div>
-        <div data-role="toolbar" class="alias-table-toolbar py-1">
-            <div class="container-fluid">
-                {# Include toolbar component #}
-                {% include 'core/toolbar_mobile.twig' with results.toolbar %}
+        EOF;
+
+        return [
+            'type' => __FUNCTION__,
+            'component' => $component
+        ];
+    }
+
+    /**
+     * Generate Horizontal Card Component.
+     * 2-column card layout with image on left and fields on right.
+     */
+    public function card_horizontal(): array
+    {
+        $component = <<<EOF
+        {# 2-column horizontal card (Image on left, Fields on right). Grid per row: max 2 cards (col-12 col-lg-6) #}
+        <div class="col-12 col-lg-6">
+            <div class="card border border-hover rounded-4 overflow-hidden h-100 position-relative">
+                {% if row.buttons | length > 0 or row.dropdowns | length > 0 %}
+                    <div class="position-absolute top-0 end-0 p-2 z-1">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-sm btn-light border-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
+                                <i class="mdi mdi-dots-vertical mdi-18px"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                                {% for button in row.buttons %}
+                                    {% set clean_class = button.class
+                                        | replace({'btn-primary': '', 'btn-secondary': '', 'btn-success': '', 'btn-danger': 'text-danger', 'btn-warning': '', 'btn-info': '', 'btn-light': '', 'btn-dark': '', 'btn-link': ''})
+                                        | replace({'btn-outline-primary': '', 'btn-outline-secondary': '', 'btn-outline-success': '', 'btn-outline-danger': 'text-danger', 'btn-outline-warning': '', 'btn-outline-info': '', 'btn-outline-light': '', 'btn-outline-dark': ''})
+                                        | replace({'btn-sm': '', 'btn-lg': '', 'btn-xs': '', 'btn': ''})
+                                    %}
+                                    <li>
+                                        <a href="{{ button.url }}" class="dropdown-item d-flex align-items-center py-2 px-3 {{ clean_class }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <i class="{{ button.icon }} me-2 text-muted"></i>
+                                            <span>{{ button.label }}</span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                {% if row.dropdowns | length > 0 %}
+                                    {% if row.buttons | length > 0 %}
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                    {% endif %}
+                                    <li>
+                                        <a href="{{ current_page() }}" class="dropdown-item d-flex align-items-center py-2 px-3 --open-item-option" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <i class="mdi mdi-format-list-bulleted me-2 text-muted"></i>
+                                            <span>{{ phrase('More options') }}</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row g-0 h-100">
+                    <div class="col-4 col-sm-3 col-md-4 d-flex align-items-center justify-content-center p-3">
+                        {% set break = false %}
+                        {% for field in row.field_data %}
+                            {% if not break and field.type == 'images' %}
+                                <div id="slideshow_{{ key }}" class="carousel slide w-100" data-bs-ride="carousel">
+                                    <div class="carousel-inner rounded-3 overflow-hidden">
+                                        {% for carouselKey, carouselItem in field.content %}
+                                            <div class="carousel-item position-relative {% if carouselKey is same as(0) %} active {% endif %}">
+                                                <a href="{{ carouselItem.url }}" target="_blank" class="d-block">
+                                                    <img src="{{ carouselItem.thumbnail }}" class="d-block w-100 rounded-4" alt="{{ carouselItem.label ? carouselItem.label : phrase('Image') }}" loading="lazy" decoding="async">
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if field.content | length > 1 %}
+                                        <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev" aria-label="{{ phrase('Previous') }}">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next" aria-label="{{ phrase('Next') }}">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                {% set break = true %}
+                            {% elseif not break and field.type == 'image' %}
+                                <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank" class="d-block text-center w-100">
+                                    <img src="{{ field.content }}" class="img-fluid rounded-3" alt="{{ field.label ? field.label : phrase('Image') }}" loading="lazy" decoding="async">
+                                </a>
+
+                                {% set break = true %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-8 col-sm-9 col-md-8 p-3 pe-5">
+                        <ul class="list-group list-group-flush mb-0">
+                            {% for field in row.field_data %}
+                                {% if field.type != 'image' and field.type != 'images' %}
+                                    <li class="list-group-item px-0 py-1 border-0">
+                                        <span class="text-xs text-muted d-block">{{ field.label }}</span>
+                                        {# Include table component #}
+                                        {% include 'table/' ~ field.type ~ '.twig' with field %}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        EOF;
+
+        return [
+            'type' => __FUNCTION__,
+            'component' => $component
+        ];
+    }
+
+    /**
+     * Generate Vertical Card Component.
+     * 1-column card layout with image on top and fields below.
+     */
+    public function card_vertical(): array
+    {
+        $component = <<<EOF
+        {# Standard 1-column card (Image on top, Fields below). Grid per row: max 4 cards (col-sm-6 col-md-4 col-xl-3) #}
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="card border border-hover rounded-4 overflow-hidden h-100 position-relative">
+                {% if row.buttons | length > 0 or row.dropdowns | length > 0 %}
+                    <div class="position-absolute top-0 end-0 p-2 z-1">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-sm btn-light border-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
+                                <i class="mdi mdi-dots-vertical mdi-18px"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                                {% for button in row.buttons %}
+                                    {% set clean_class = button.class
+                                        | replace({'btn-primary': '', 'btn-secondary': '', 'btn-success': '', 'btn-danger': 'text-danger', 'btn-warning': '', 'btn-info': '', 'btn-light': '', 'btn-dark': '', 'btn-link': ''})
+                                        | replace({'btn-outline-primary': '', 'btn-outline-secondary': '', 'btn-outline-success': '', 'btn-outline-danger': 'text-danger', 'btn-outline-warning': '', 'btn-outline-info': '', 'btn-outline-light': '', 'btn-outline-dark': ''})
+                                        | replace({'btn-sm': '', 'btn-lg': '', 'btn-xs': '', 'btn': ''})
+                                    %}
+                                    <li>
+                                        <a href="{{ button.url }}" class="dropdown-item d-flex align-items-center py-2 px-3 {{ clean_class }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <i class="{{ button.icon }} me-2 text-muted"></i>
+                                            <span>{{ button.label }}</span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                {% if row.dropdowns | length > 0 %}
+                                    {% if row.buttons | length > 0 %}
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                    {% endif %}
+                                    <li>
+                                        <a href="{{ current_page() }}" class="dropdown-item d-flex align-items-center py-2 px-3 --open-item-option" data-options="{{ row.dropdowns | json_encode | escape }}">
+                                            <i class="mdi mdi-format-list-bulleted me-2 text-muted"></i>
+                                            <span>{{ phrase('More options') }}</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% set break = false %}
+                {% for field in row.field_data %}
+                    {% if not break and field.type == 'images' %}
+                        <div id="slideshow_{{ key }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for carouselKey, carouselItem in field.content %}
+                                    <div class="carousel-item position-relative rounded-4 {% if carouselKey is same as(0) %} active {% endif %}">
+                                        <a href="{{ carouselItem.url }}" target="_blank">
+                                            <div class="clip gradient-top rounded-top"></div>
+                                            <img src="{{ carouselItem.thumbnail }}" class="d-block rounded-4 w-100" alt="{{ carouselItem.label ? carouselItem.label : phrase('Image') }}" loading="lazy" decoding="async">
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <a class="carousel-control-prev gradient-right" href="#slideshow_{{ key }}" role="button" data-bs-slide="prev" aria-label="{{ phrase('Previous') }}">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </a>
+                            <a class="carousel-control-next gradient-left" href="#slideshow_{{ key }}" role="button" data-bs-slide="next" aria-label="{{ phrase('Next') }}">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </a>
+                        </div>
+
+                        {% set break = true %}
+                    {% elseif not break and field.type == 'image' %}
+                        <a href="{{ field.content | replace({'/thumbs/': '/'}) }}" target="_blank">
+                            <img src="{{ field.content }}" class="d-block rounded w-100" alt="{{ field.label ? field.label : phrase('Image') }}" loading="lazy" decoding="async">
+                        </a>
+
+                        {% set break = true %}
+                    {% endif %}
+                {% endfor %}
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for field in row.field_data %}
+                            {% if field.type != 'image' and field.type != 'images' %}
+                                <li class="list-group-item px-0">
+                                    <span class="text-sm text-muted d-block">{{ field.label }}</span>
+                                    {# Include table component #}
+                                    {% include 'table/' ~ field.type ~ '.twig' with field %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         EOF;
@@ -476,8 +677,8 @@ class Core
                     {% for input in filters.hidden %}
                         <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
                     {% endfor %}
-                    <nav class="float-sm-end pagination" aria-label="{{ phrase('Pagination') }}">
-                        <ul class="pagination pagination-sm mb-0 me-1">
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-end gap-2">
+                        <ul class="pagination pagination-sm mb-0">
                             {% for link in links %}
                                 <li class="{{ link.parent_class }}">
                                     <a href="{{ link.href }}" class="{{ link.class }}">
@@ -486,7 +687,7 @@ class Core
                                 </li>
                             {% endfor %}
                         </ul>
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm w-auto">
                             {% for input in filters.select %}
                                 <select name="{{ input.name }}" class="form-control" aria-label="{{ phrase('Per Page') }}">
                                     {% for option in input.values %}
@@ -495,13 +696,13 @@ class Core
                                 </select>
                             {% endfor %}
                             {% for input in filters.number %}
-                                <input type="number" name="{{ input.name }}" value="{{ input.value }}" min="{{ input.min }}" max="{{ input.max }}" class="form-control" aria-label="{{ phrase('Page Number') }}">
+                                <input type="number" name="{{ input.name }}" value="{{ input.value }}" min="{{ input.min }}" max="{{ input.max }}" class="form-control" style="max-width: 65px;" aria-label="{{ phrase('Page Number') }}">
                             {% endfor %}
                             <button type="submit" class="btn btn-primary" aria-label="{{ phrase('Submit') }}">
                                 OK
                             </button>
                         </div>
-                    </nav>
+                    </div>
                 </form>
             </div>
         </div>
@@ -574,7 +775,7 @@ class Core
                     </div>
                     <div class="opt-btn-overlap-fix"></div>
                     <div class="row opt-btn">
-                        <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
+                        <div class="col-12 {% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
                             <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back') }}
@@ -765,7 +966,7 @@ class Core
                 </div>
                 <div class="opt-btn-overlap-fix"></div>
                 <div class="row opt-btn">
-                    <div class="{% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %}">
+                    <div class="col-12 {% if results.column_total > 2 or results.form_size == 'form-xl' %} col-md-12 col-xxl-12 {% elseif results.column_total == 2 or results.form_size == 'form-lg' %} col-md-10 col-xxl-8 {% else %} col-md-6 col-xxl-6 {% endif %} d-flex justify-content-between align-items-center gap-2">
                         <a href="{{ links.current_module }}" class="btn btn-link --xhr">
                             <i class="mdi mdi-arrow-left"></i>
                             {{ phrase('Back') }}
@@ -1020,7 +1221,7 @@ class Core
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="' . phrase('Close') . '"></button>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="{{ phrase('Close') }}"></button>
                 </div>
             </div>
         </div>

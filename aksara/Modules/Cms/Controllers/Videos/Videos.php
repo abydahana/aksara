@@ -31,6 +31,8 @@ class Videos extends Core
 
         $this->setPermission();
         $this->setTheme('backend');
+
+        $this->gridView('cover', 'videos', ['slug' => 'slug'], true);
     }
 
     public function index()
